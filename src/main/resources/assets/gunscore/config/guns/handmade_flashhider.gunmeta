@@ -1,0 +1,11 @@
+{
+    "gunscore:model": {
+        "origin": [8.0, 8.0, 8.0]
+    },
+    "gunscore:barrel": {
+        "muzzleFlash": {
+            "translation": [8.0, 8.0, 3.9],
+			"scale": [0.1, 0.1, 0.1]
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "gunscore:workbench",
+  "materials": [
+    {
+      "tag": "forge:ingots/iron",
+      "count": 40
+    }
+  ],
+  "result": {
+    "item": "gunscore:fatman"
+  }
+}

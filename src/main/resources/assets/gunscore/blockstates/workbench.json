@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "gunscore:block/workbench", "y": 0   },
+        "facing=east":  { "model": "gunscore:block/workbench", "y": 90  },
+        "facing=south": { "model": "gunscore:block/workbench", "y": 180 },
+        "facing=west":  { "model": "gunscore:block/workbench", "y": 270 }
+    }
+}

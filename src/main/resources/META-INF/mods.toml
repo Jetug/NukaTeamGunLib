@@ -1,0 +1,48 @@
+modLoader="javafml"
+loaderVersion="[40,)"
+license="GPL3"
+
+[[mods]]
+modId="gunscore"
+version="${file.jarVersion}"
+displayName="Guns Core"
+updateJSONURL=""
+displayURL=""
+logoFile=""
+authors="Dayton, Jetug"
+credits = "MrCrayfish, AzureDoom"
+description=""
+
+[[dependencies.gunscore]]
+modId="forge"
+mandatory=true
+versionRange="[40.2.0,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.gunscore]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.18.2,1.19)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.gunscore]]
+modId="framework"
+mandatory=true
+versionRange="[0.4.2,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.gunscore]]
+modId="chassis_core"
+mandatory=true
+versionRange="[2.2.0,)"
+ordering="AFTER"
+side="BOTH"
+[[dependencies.gunscore]]
+modId="azurelib"
+mandatory=true
+versionRange="[1.0.23,)"
+ordering="AFTER"
+side="BOTH"
+
+[modproperties.gunscore]
+    catalogueImageIcon=""
