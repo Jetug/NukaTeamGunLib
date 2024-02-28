@@ -37,7 +37,7 @@ import static mod.azure.azurelib.core.animation.RawAnimation.*;
 import static net.minecraft.client.renderer.block.model.ItemTransforms.*;
 
 @OnlyIn(Dist.CLIENT)
-public class GunItemAnimator extends ItemAnimator implements IResourceProvider, IConfigProvider {
+public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
     private final Lazy<ItemConfig> config = Lazy.of(() -> modResourceManager.getItemConfig(getName()));
     private final Minecraft minecraft = Minecraft.getInstance();
     private int chamberId = 1;
@@ -64,12 +64,6 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider, 
     @Override
     public String getNamespace() {
         return ((IResourceProvider) GUN_RENDERER.getRenderStack().getItem()).getNamespace();
-    }
-
-    @Override
-    @Nullable
-    public ItemConfig getConfig() {
-        return config.get();
     }
 
     private ItemStack getStack() {

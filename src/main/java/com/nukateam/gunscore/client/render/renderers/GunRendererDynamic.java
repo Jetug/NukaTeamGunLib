@@ -1,6 +1,5 @@
 package com.nukateam.gunscore.client.render.renderers;
 
-import com.jetug.chassis_core.common.foundation.item.StackUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.gunscore.client.animators.GunItemAnimator;
@@ -106,19 +105,19 @@ public class GunRendererDynamic extends GeoDynamicItemRenderer<GunItemAnimator> 
     }
 
     protected void renderAttachments(ItemStack stack, GunItemAnimator item) {
-        var config = item.getConfig();
-
-        if (config != null) {
-            var allMods = config.mods;
-            var visibleMods = StackUtils.getAttachments(stack);
-            var names = getAttachmentNames(stack);
-
-            for (var name : allMods)
-                getGeoModel().getBone(name).ifPresent((bone) -> bone.setHidden(true));
-//            for (var name : visibleMods)
+//        var config = item.getConfig();
+//
+//        if (config != null) {
+//            var allMods = config.mods;
+////            var visibleMods = StackUtils.getAttachments(stack);
+//            var names = getAttachmentNames(stack);
+//
+//            for (var name : allMods)
+//                getGeoModel().getBone(name).ifPresent((bone) -> bone.setHidden(true));
+////            for (var name : visibleMods)
+////                getGeoModel().getBone(name).ifPresent((bone) -> bone.setHidden(false));
+//            for (var name : names)
 //                getGeoModel().getBone(name).ifPresent((bone) -> bone.setHidden(false));
-            for (var name : names)
-                getGeoModel().getBone(name).ifPresent((bone) -> bone.setHidden(false));
-        }
+//        }
     }
 }

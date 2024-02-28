@@ -5,7 +5,7 @@ import com.nukateam.gunscore.common.base.CustomGunLoader;
 import com.nukateam.gunscore.common.data.constants.Tags;
 import com.nukateam.gunscore.common.network.message.S2CMessageUpdateGuns;
 import com.nukateam.gunscore.GunMod;
-import com.nukateam.gunscore.common.foundation.ModGuns;
+import com.nukateam.example.common.registery.ModGuns;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -38,21 +38,21 @@ public class CustomGunManager {
         return true;
     }
 
-    public static void fill(NonNullList<ItemStack> items) {
-        if (customGunMap != null) {
-            customGunMap.forEach((id, gun) ->
-            {
-                ItemStack stack = new ItemStack(ModGuns.PISTOL10MM.get());
-                stack.setHoverName(new TranslatableComponent("item." + id.getNamespace() + "." + id.getPath() + ".name"));
-                CompoundTag tag = stack.getOrCreateTag();
-                tag.put("Model", gun.getModel().save(new CompoundTag()));
-                tag.put("Gun", gun.getGun().serializeNBT());
-                tag.putBoolean("Custom", true);
-                tag.putInt(Tags.AMMO_COUNT, gun.getGun().getGeneral().getMaxAmmo());
-                items.add(stack);
-            });
-        }
-    }
+//    public static void fill(NonNullList<ItemStack> items) {
+//        if (customGunMap != null) {
+//            customGunMap.forEach((id, gun) ->
+//            {
+//                ItemStack stack = new ItemStack(ModGuns.PISTOL.get());
+//                stack.setHoverName(new TranslatableComponent("item." + id.getNamespace() + "." + id.getPath() + ".name"));
+//                CompoundTag tag = stack.getOrCreateTag();
+//                tag.put("Model", gun.getModel().save(new CompoundTag()));
+//                tag.put("Gun", gun.getGun().serializeNBT());
+//                tag.putBoolean("Custom", true);
+//                tag.putInt(Tags.AMMO_COUNT, gun.getGun().getGeneral().getMaxAmmo());
+//                items.add(stack);
+//            });
+//        }
+//    }
 
     @SubscribeEvent
     public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event) {

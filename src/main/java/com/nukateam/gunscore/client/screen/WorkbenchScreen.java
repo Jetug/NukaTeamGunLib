@@ -11,7 +11,7 @@ import com.nukateam.gunscore.common.foundation.item.*;
 import com.nukateam.gunscore.common.foundation.item.attachment.IAttachment;
 import com.nukateam.gunscore.common.network.PacketHandler;
 import com.nukateam.gunscore.common.network.message.C2SMessageCraft;
-import com.nukateam.gunscore.common.foundation.ModGuns;
+import com.nukateam.example.common.registery.ModGuns;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -101,8 +101,8 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         }
 
         if (!weapons.isEmpty()) {
-//            ItemStack icon = new ItemStack(ModGuns.PISTOL10MM.get());
-//            icon.getOrCreateTag().putInt("AmmoCount", ModGuns.PISTOL10MM.get().getGun().getGeneral().getMaxAmmo());
+//            ItemStack icon = new ItemStack(ModGuns.PISTOL.get());
+//            icon.getOrCreateTag().putInt("AmmoCount", ModGuns.PISTOL.get().getGun().getGeneral().getMaxAmmo());
 //            this.tabs.add(new Tab(icon, "weapons", weapons));
 //            var cat = new ArrayList<String>();
             var categoryRecipes = new HashMap<String, List<WorkbenchRecipe>>();

@@ -8,7 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import static com.nukateam.gunscore.common.foundation.ModGuns.BASEGRENADE;
+import static com.nukateam.example.common.registery.ModGuns.BASEGRENADE;
 
 public class ThrowableBaseGrenadeEntity extends ThrowableGrenadeEntity{
 

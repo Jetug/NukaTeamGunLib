@@ -1,5 +1,6 @@
 package com.nukateam.gunscore.common.foundation;
 
+import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.example.common.registery.ModItemTabs;
 import com.nukateam.gunscore.common.foundation.block.WorkbenchBlock;
 import com.nukateam.gunscore.GunMod;

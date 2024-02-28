@@ -1,5 +1,6 @@
 package com.nukateam.gunscore.client.render.pose;
 
+import com.nukateam.gunscore.GunMod;
 import com.nukateam.gunscore.client.data.IHeldAnimation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -20,8 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import static com.jetug.chassis_core.client.render.renderers.CustomHandRenderer.doSafe;
 
 /**
  * Author: MrCrayfish
@@ -52,14 +51,18 @@ public class OneHandedPose implements IHeldAnimation {
 //    @Override
     @OnlyIn(Dist.CLIENT)
     public void applyGeoModelRotation(LivingEntity entity, AnimationProcessor animationProcessor) {
-        doSafe(() -> {
+        try {
             CoreGeoBone head = animationProcessor.getBone("head");
             CoreGeoBone rightArm = animationProcessor.getBone("right_arm");
             rightArm.setRotX(head.getRotX());
             rightArm.setRotY(head.getRotY());
             rightArm.setRotZ(head.getRotZ());
             rightArm.setRotX(head.getRotX() + 70);
-        });
+        }
+        catch (Exception e){
+            GunMod.LOGGER.debug(e.getMessage(), e);
+        }
+
     }
 
 

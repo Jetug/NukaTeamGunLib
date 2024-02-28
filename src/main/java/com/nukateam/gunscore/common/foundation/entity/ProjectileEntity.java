@@ -1,5 +1,6 @@
 package com.nukateam.gunscore.common.foundation.entity;
 
+import com.nukateam.example.common.data.interfaces.IExplosiveOnHit;
 import com.nukateam.gunscore.Config;
 import com.nukateam.gunscore.common.base.utils.BoundingBoxManager;
 import com.nukateam.gunscore.common.base.gun.Gun;
@@ -251,7 +252,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     /**
      * Called when the projectile has run out of it's life. In other words, the projectile managed
-     * to not hit any blocks and instead aged. The grenade uses this to explode in the air.
+     * to not hit any blocks and instead aged. The grenade uses this to explodeOnHit in the air.
      */
     protected void onExpired() {
     }
@@ -396,6 +397,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             if (block instanceof BellBlock bell) {
                 bell.attemptToRing(this.level, pos, blockHitResult.getDirection());
+            }
+
+            if (block instanceof IExplosiveOnHit explosive) {
+                explosive.explodeOnHit(this.level, blockHitResult.getBlockPos());
             }
 
 //            if (block instanceof LandMineBlock mine) {
@@ -681,7 +686,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     /**
      * Creates a projectile explosion for the specified entity.
      *
-     * @param entity    The entity to explode
+     * @param entity    The entity to explodeOnHit
      * @param radius    The amount of radius the entity should deal
      * @param forceNone If true, forces the explosion mode to be NONE instead of config value
      */

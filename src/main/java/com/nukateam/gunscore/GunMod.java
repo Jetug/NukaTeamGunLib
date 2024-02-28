@@ -9,7 +9,7 @@ import com.nukateam.gunscore.common.base.utils.BoundingBoxManager;
 import com.nukateam.gunscore.common.base.utils.ProjectileManager;
 import com.nukateam.gunscore.common.data.datagen.*;
 import com.nukateam.gunscore.common.foundation.ModBlocks;
-import com.nukateam.gunscore.common.foundation.ModGuns;
+import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.gunscore.common.foundation.crafting.ModRecipeType;
 import com.nukateam.gunscore.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.gunscore.common.foundation.entity.GrenadeEntity;
@@ -34,7 +34,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.slf4j.Logger;
 
-import static com.nukateam.gunscore.common.foundation.ModGuns.GRENADE;
+import static com.nukateam.example.common.registery.ModGuns.GRENADE;
 
 @Mod(GunMod.MOD_ID)
 public class GunMod {
