@@ -1,7 +1,7 @@
 package com.nukateam.gunscore.client.render.entity;
 
+import com.nukateam.gunscore.common.foundation.entity.StunGrenadeEntity;
 import com.nukateam.gunscore.common.foundation.entity.ThrowableGrenadeEntity;
-import com.nukateam.gunscore.common.foundation.entity.ThrowableStunGrenadeEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
@@ -43,7 +43,7 @@ public class ThrowableGrenadeRenderer extends EntityRenderer<ThrowableGrenadeEnt
         poseStack.mulPose(Vector3f.XP.rotationDegrees(-rotation));
         poseStack.translate(0, -0.15, 0);
 
-        if (entity instanceof ThrowableStunGrenadeEntity) {
+        if (entity instanceof StunGrenadeEntity) {
             poseStack.translate(0, entity.getDimensions(Pose.STANDING).height / 2, 0);
             poseStack.mulPose(Vector3f.ZP.rotationDegrees(-90F));
             poseStack.translate(0, -entity.getDimensions(Pose.STANDING).height / 2, 0);

@@ -23,8 +23,7 @@ public class ModEntities {
     public static final RegistryObject<EntityType<GrenadeEntity>> BASEGRENADE = registerBasic("basegrenade", BaseGrenadeEntity::new);
     public static final RegistryObject<EntityType<MissileEntity>> MISSILE = registerBasic("missile", MissileEntity::new);
     public static final RegistryObject<EntityType<ThrowableGrenadeEntity>> THROWABLE_GRENADE = registerBasic("throwable_grenade", ThrowableGrenadeEntity::new);
-    public static final RegistryObject<EntityType<ThrowableBaseGrenadeEntity>> THROWABLE_BASEGRENADE = registerBasic("throwable_basegrenade", ThrowableBaseGrenadeEntity::new);
-    public static final RegistryObject<EntityType<ThrowableStunGrenadeEntity>> THROWABLE_STUN_GRENADE = registerBasic("throwable_stun_grenade", ThrowableStunGrenadeEntity::new);
+    public static final RegistryObject<EntityType<StunGrenadeEntity>> THROWABLE_STUN_GRENADE = registerBasic("throwable_stun_grenade", StunGrenadeEntity::new);
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function) {
         return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)

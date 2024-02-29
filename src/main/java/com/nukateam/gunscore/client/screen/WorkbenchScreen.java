@@ -131,7 +131,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         }
 
         if (!attachments.isEmpty()) {
-            this.tabs.add(new Tab(new ItemStack(ModGuns.BASEGRENADE.get()), "attachments", attachments));
+            this.tabs.add(new Tab(new ItemStack(ModGuns.GRENADE.get()), "attachments", attachments));
         }
 
         if (!melee.isEmpty()) {

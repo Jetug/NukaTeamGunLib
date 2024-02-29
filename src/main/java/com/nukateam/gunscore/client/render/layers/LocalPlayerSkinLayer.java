@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 
-import static com.jetug.chassis_core.common.util.helpers.TextureHelper.createResource;
 import static com.jetug.chassis_core.common.util.helpers.TextureHelper.getTextureSize;
 
 public class LocalPlayerSkinLayer<T extends GeoAnimatable> extends LayerBase<T> {

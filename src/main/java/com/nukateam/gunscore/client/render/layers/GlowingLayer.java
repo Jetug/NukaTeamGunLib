@@ -1,12 +1,12 @@
 package com.nukateam.gunscore.client.render.layers;
 
 import com.ibm.icu.impl.Pair;
-import com.jetug.chassis_core.client.render.layers.LayerBase;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.renderer.GeoRenderer;
+import mod.azure.azurelib.renderer.layer.GeoRenderLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import static com.jetug.chassis_core.common.util.helpers.TextureHelper.getTextureSize;
 import static mod.azure.azurelib.cache.texture.GeoAbstractTexture.appendToPath;
 
-public class GlowingLayer<T extends GeoAnimatable> extends LayerBase<T> {
+public class GlowingLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {
     private Pair<Integer, Integer> size;
 
     public GlowingLayer(GeoRenderer<T> entityRenderer) {
@@ -39,7 +39,6 @@ public class GlowingLayer<T extends GeoAnimatable> extends LayerBase<T> {
 //        }
     }
 
-    @Override
     protected void renderLayer(PoseStack poseStack, T entity, BakedGeoModel bakedModel, MultiBufferSource bufferSource,
                                float partialTick, int packedLight, ResourceLocation texture) {
         int overlay = OverlayTexture.NO_OVERLAY;

@@ -11,7 +11,6 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ModGuns {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, GunMod.MOD_ID);
-
     ///GUNS
     public static final RegistryObject<GunItem> PISTOL = ITEMS.register("pistol10mm", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 //    public static final RegistryObject<GunItem> PIPE_PISTOL = ITEMS.register("pipepistol", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
@@ -24,10 +23,14 @@ public class ModGuns {
 
 //    public static final RegistryObject<GunItem> POWDERGUN = ITEMS.register("powdergun", () -> new ShotGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 
-    public static final RegistryObject<Item> MISSILE = ITEMS.register("missile", () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
-    public static final RegistryObject<Item> GRENADE = ITEMS.register("grenade", () -> new GrenadeItem(new Item.Properties().tab(ModItemTabs.WEAPONS), 20 * 4));
-    public static final RegistryObject<Item> BASEGRENADE = ITEMS.register("baseballgrenade", () -> new BaseGrenadeItem(new Item.Properties().tab(ModItemTabs.WEAPONS), 20 * 4));
-    public static final RegistryObject<Item> STUN_GRENADE = ITEMS.register("stun_grenade", () -> new StunGrenadeItem(new Item.Properties().tab(ModItemTabs.WEAPONS), 72000));
+    public static final RegistryObject<Item> MISSILE = ITEMS.register("missile",
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+
+    public static final RegistryObject<Item> GRENADE = ITEMS.register("grenade",
+            () -> new GrenadeItem(new Item.Properties().tab(ModItemTabs.WEAPONS), 20 * 4));
+
+    public static final RegistryObject<Item> STUN_GRENADE = ITEMS.register("stun_grenade",
+            () -> new StunGrenadeItem(new Item.Properties().tab(ModItemTabs.WEAPONS), 72000));
 
     //Rounds
     public static final RegistryObject<Item> ROUND10MM = ITEMS.register("round10mm",

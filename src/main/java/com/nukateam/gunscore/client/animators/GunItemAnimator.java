@@ -1,7 +1,5 @@
 package com.nukateam.gunscore.client.animators;
 
-import com.jetug.chassis_core.common.data.json.ItemConfig;
-import com.jetug.chassis_core.common.foundation.item.IConfigProvider;
 import com.nukateam.example.common.data.interfaces.IResourceProvider;
 import com.nukateam.gunscore.client.audio.GunShotSound;
 import com.nukateam.gunscore.client.data.handler.AimingHandler;
@@ -23,11 +21,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Lazy;
-
-import javax.annotation.Nullable;
-
-import static com.jetug.chassis_core.client.ClientConfig.*;
 import static com.nukateam.example.common.data.constants.Animations.*;
 import static com.nukateam.gunscore.client.data.util.TransformUtils.*;
 import static com.nukateam.gunscore.client.render.Render.*;
@@ -38,7 +31,6 @@ import static net.minecraft.client.renderer.block.model.ItemTransforms.*;
 
 @OnlyIn(Dist.CLIENT)
 public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
-    private final Lazy<ItemConfig> config = Lazy.of(() -> modResourceManager.getItemConfig(getName()));
     private final Minecraft minecraft = Minecraft.getInstance();
     private int chamberId = 1;
     private GunItem currentGun = null;

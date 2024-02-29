@@ -35,17 +35,17 @@ import javax.annotation.Nullable;
 import static com.nukateam.example.common.registery.ModGuns.STUN_GRENADE;
 
 @Mod.EventBusSubscriber
-public class ThrowableStunGrenadeEntity extends ThrowableGrenadeEntity {
-    public ThrowableStunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world) {
+public class StunGrenadeEntity extends ThrowableGrenadeEntity {
+    public StunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    public ThrowableStunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world, LivingEntity player) {
+    public StunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world, LivingEntity player) {
         super(entityType, world, player);
         this.setItem(new ItemStack(STUN_GRENADE.get()));
     }
 
-    public ThrowableStunGrenadeEntity(Level world, LivingEntity player, int maxCookTime) {
+    public StunGrenadeEntity(Level world, LivingEntity player, int maxCookTime) {
         super(ModEntities.THROWABLE_STUN_GRENADE.get(), world, player);
         this.setItem(new ItemStack(STUN_GRENADE.get()));
         this.setMaxLife(maxCookTime);

@@ -1,7 +1,7 @@
 package com.nukateam.gunscore.common.foundation.item;
 
+import com.nukateam.gunscore.common.foundation.entity.StunGrenadeEntity;
 import com.nukateam.gunscore.common.foundation.entity.ThrowableGrenadeEntity;
-import com.nukateam.gunscore.common.foundation.entity.ThrowableStunGrenadeEntity;
 import com.nukateam.gunscore.common.foundation.init.ModSounds;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,7 +16,7 @@ public class StunGrenadeItem extends GrenadeItem {
 
     @Override
     public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft) {
-        return new ThrowableStunGrenadeEntity(world, entity, 20 * 2);
+        return new StunGrenadeEntity(world, entity, 20 * 2);
     }
 
     @Override
