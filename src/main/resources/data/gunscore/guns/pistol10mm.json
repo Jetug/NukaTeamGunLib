@@ -14,10 +14,11 @@
   },
   "projectile": {
     "item": "gunscore:round10mm",
+    "visible": true,
     "damage": 9.0,
     "size": 0.2,
     "speed": 21.0,
-    "life": 10,
+    "life": 1000,
     "type": "ballistic"
   },
   "sounds": {

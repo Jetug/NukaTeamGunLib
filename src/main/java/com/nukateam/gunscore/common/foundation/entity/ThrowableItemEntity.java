@@ -43,8 +43,6 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
         super(entityType, x, y, z, world);
     }
 
-
-
     public void setItem(ItemStack item) {
         this.item = item;
     }

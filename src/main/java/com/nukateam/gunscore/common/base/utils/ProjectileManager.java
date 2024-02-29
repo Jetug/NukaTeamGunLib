@@ -1,5 +1,6 @@
 package com.nukateam.gunscore.common.base.utils;
 
+import com.nukateam.gunscore.common.base.gun.Gun;
 import com.nukateam.gunscore.common.data.interfaces.IProjectileFactory;
 import com.nukateam.gunscore.common.foundation.entity.ProjectileEntity;
 import com.nukateam.gunscore.common.foundation.init.ModEntities;
@@ -24,7 +25,9 @@ public class ProjectileManager {
         return instance;
     }
 
-    private final IProjectileFactory DEFAULT_FACTORY = (worldIn, entity, weapon, item, modifiedGun) -> new ProjectileEntity(ModEntities.PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun);
+    private final IProjectileFactory DEFAULT_FACTORY = (worldIn, entity, weapon, item, modifiedGun) ->
+            new ProjectileEntity(ModEntities.PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun);
+
     private final Map<ResourceLocation, IProjectileFactory> projectileFactoryMap = new HashMap<>();
 
     /**
@@ -44,7 +47,7 @@ public class ProjectileManager {
      * @param id the resource id of the projectile factory (the id of the item)
      * @return the custom projectile factory or the default factory if nothing exists for the id
      */
-    public IProjectileFactory getFactory(ResourceLocation id) {
-        return this.projectileFactoryMap.getOrDefault(id, DEFAULT_FACTORY);
+    public IProjectileFactory getFactory(Gun.Projectile projectile) {
+        return this.projectileFactoryMap.getOrDefault(projectile.getItem(), DEFAULT_FACTORY);
     }
 }

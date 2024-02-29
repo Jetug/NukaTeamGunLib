@@ -17,7 +17,8 @@ import javax.annotation.Nullable;
 @OnlyIn(Dist.CLIENT)
 public class TrailParticle extends BaseAshSmokeParticle {
     protected TrailParticle(ClientLevel world, double x, double y, double z, float scale, float red, float green, float blue, SpriteSet spriteWithAge) {
-        super(world, x, y, z, 0.0F, 0.0F, 0.0F, 0.0, 0.0, 0.0, scale, spriteWithAge, 0.2F, 0, 0, false);
+        super(world, x, y, z, 0.0F, 0.0F, 0.0F, 0.0, 0.0,
+                0.0, scale, spriteWithAge, 0.2F, 0, 0, false);
         this.lifetime = 4;
         this.rCol = red;
         this.gCol = green;

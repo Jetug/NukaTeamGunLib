@@ -64,8 +64,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData {
-    private static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
-    private static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
+    protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
+    protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
 
     protected int shooterId;
     protected LivingEntity shooter;
@@ -350,7 +350,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return new EntityResult(entity, hitPos, headshot);
     }
 
-    private void onHit(HitResult result, Vec3 startVec, Vec3 endVec) {
+    protected void onHit(HitResult result, Vec3 startVec, Vec3 endVec) {
         if (MinecraftForge.EVENT_BUS.post(new GunProjectileHitEvent(result, this))) {
             return;
         }
@@ -471,11 +471,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         /* Send blood particle to tracking clients. */
         PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new S2CMessageBlood(hitVec.x, hitVec.y, hitVec.z));
+        doImpactEffects(hitVec);
     }
 
     protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z) {
-        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> this.level.getChunkAt(pos)), new S2CMessageProjectileHitBlock(x, y, z, pos, face));
+        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_CHUNK.with(() ->
+                this.level.getChunkAt(pos)), new S2CMessageProjectileHitBlock(x, y, z, pos, face));
+        doImpactEffects(new Vec3(x, y, z));
     }
+
+    protected void doImpactEffects(Vec3 hitVec) {}
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
@@ -602,7 +607,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
      * @param ignorePredicate the block state predicate
      * @return a result of the raytrace
      */
-    private static BlockHitResult rayTraceBlocks(Level world, ClipContext context, Predicate<BlockState> ignorePredicate) {
+    protected static BlockHitResult rayTraceBlocks(Level world, ClipContext context, Predicate<BlockState> ignorePredicate) {
         return performRayTrace(context, (rayTraceContext, blockPos) -> {
             BlockState blockState = world.getBlockState(blockPos);
             if (ignorePredicate.test(blockState)) return null;

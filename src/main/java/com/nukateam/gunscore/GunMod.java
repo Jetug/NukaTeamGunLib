@@ -13,6 +13,8 @@ import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.gunscore.common.foundation.crafting.ModRecipeType;
 import com.nukateam.gunscore.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.gunscore.common.foundation.entity.GrenadeEntity;
+import com.nukateam.gunscore.common.foundation.entity.LaserProjectile;
+import com.nukateam.gunscore.common.foundation.entity.MissileEntity;
 import com.nukateam.gunscore.common.foundation.init.*;
 import com.nukateam.gunscore.common.network.PacketHandler;
 import mod.azure.azurelib.AzureLib;
@@ -34,7 +36,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.slf4j.Logger;
 
-import static com.nukateam.example.common.registery.ModGuns.GRENADE;
+import static com.nukateam.example.common.registery.ModGuns.*;
 
 @Mod(GunMod.MOD_ID)
 public class GunMod {
@@ -106,15 +108,25 @@ public class GunMod {
             ModSyncedDataKeys.register();
             CraftingHelper.register(new ResourceLocation(MOD_ID, "workbench_ingredient"),
                     WorkbenchIngredient.Serializer.INSTANCE);
-            ProjectileManager.getInstance().registerFactory(GRENADE.get(),
-                    (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
-//            ProjectileManager.getInstance().registerFactory(MISSILE.get(),
-//                  (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
+
+            registerProjectiles();
+
             PacketHandler.init();
             if (Config.COMMON.gameplay.improvedHitboxes.get()) {
                 MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
             }
         });
+    }
+
+    private static void registerProjectiles() {
+        ProjectileManager.getInstance().registerFactory(GRENADE.get(),
+                (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
+
+        ProjectileManager.getInstance().registerFactory(MISSILE.get(),
+              (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
+
+        ProjectileManager.getInstance().registerFactory(ROUND10MM.get(),
+              (worldIn, entity, weapon, item, modifiedGun) -> new LaserProjectile(ModEntities.LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {

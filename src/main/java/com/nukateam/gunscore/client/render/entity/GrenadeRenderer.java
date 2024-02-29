@@ -1,5 +1,6 @@
 package com.nukateam.gunscore.client.render.entity;
 
+import com.nukateam.gunscore.GunMod;
 import com.nukateam.gunscore.common.foundation.entity.GrenadeEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -29,6 +30,8 @@ public class GrenadeRenderer extends EntityRenderer<GrenadeEntity> {
         if (!entity.getProjectile().isVisible() || entity.tickCount <= 1) {
             return;
         }
+
+        GunMod.LOGGER.warn("Grenade render");
 
         poseStack.pushPose();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
