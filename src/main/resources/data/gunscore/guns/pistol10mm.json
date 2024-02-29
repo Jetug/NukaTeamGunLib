@@ -17,7 +17,8 @@
     "damage": 9.0,
     "size": 0.2,
     "speed": 21.0,
-    "life": 10
+    "life": 10,
+    "type": "ballistic"
   },
   "sounds": {
     "fire": "gunscore:item.pistol10mm.fire",
