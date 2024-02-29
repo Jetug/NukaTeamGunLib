@@ -21,16 +21,11 @@ public class LaserProjectile extends AbstractBeamProjectile {
 
     public LaserProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
         super(entityType, worldIn, shooter, weapon, item, modifiedGun);
-//        trace();
+        trace();
     }
 
     public int getLife(){
         return life;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
     }
 
     //    @Override
