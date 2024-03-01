@@ -24,6 +24,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	
 	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn) {
 		super(entityType, worldIn);
+		life = 20;
 		maxTicks = (short) life;
 	}
 
@@ -31,29 +32,29 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		super(entityType, worldIn, shooter, weapon, item, modifiedGun);
 	}
 
+	@Override
+	public void tick() {
+		if (this.tickCount >= this.life) {
+			if (this.isAlive()) {
+				this.onExpired();
+			}
+			this.remove(RemovalReason.KILLED);
+		}
+	}
+
+	public Vec3 startVec = new Vec3(0 ,0 ,0);
+	public Vec3 endVec   = new Vec3(0 ,0 ,0);
+
 	protected void trace() {
 		Vec3 startVec = new Vec3(this.getX(), this.getY(), this.getZ());
 		Vec3 endVec = startVec.add(this.getDeltaMovement());
-//		Vec3 endVec = new Vec3(this.getX() + this.motionX, this.getY() + this.motionY, this.getZ() + this.motionZ);
 
 		HitResult raytraceresult = rayTraceBlocks(this.level, new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER,
 				ClipContext.Fluid.NONE, this), IGNORE_LEAVES);
 
-//		RayTraceResult raytraceresult = this.level.rayTraceBlocks(startVec, endVec, false, true, false);
-
 		if (raytraceresult.getType() != HitResult.Type.MISS) {
 			endVec = raytraceresult.getLocation();
 		}
-
-//		if (raytraceresult != null) {
-//			endVec = new Vec3(raytraceresult.getLocation().x, raytraceresult.hitVec.y, raytraceresult.hitVec.z);
-//		}
-
-		/*Entity entity = this.findEntityOnPath(startVec, endVec);
-
-		if (entity != null) {
-			raytraceresult = new RayTraceResult(entity);
-		}*/
 
 		var entityResult = this.findEntityOnPath(shooter, startVec, endVec);
 
@@ -66,19 +67,6 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 			}
 		}
 
-//		RayTraceResult rayTraceResultEntity = this.findEntityOnPath(startVec, endVec);
-//		if(rayTraceResultEntity!=null) {
-//			raytraceresult=rayTraceResultEntity;
-//		}
-//
-//		if (raytraceresult != null && raytraceresult.entityHit instanceof EntityPlayer) {
-//			EntityPlayer entityplayer = (EntityPlayer) raytraceresult.entityHit;
-//
-//			if (this.shooter instanceof EntityPlayer && !((EntityPlayer) this.shooter).canAttackPlayer(entityplayer)) {
-//				raytraceresult = null;
-//			}
-//		}
-
 		if (raytraceresult != null) {
 //			this.onHit(raytraceresult, startVec, endVec);
 			var hitVec = raytraceresult.getLocation();
@@ -90,6 +78,11 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		if (distance <= 0) {
 			distance = this.projectile.getSpeed();
 		}
+
+		this.startVec  	= startVec;
+		this.endVec  	= endVec  ;
+
+		this.setPos(endVec);
 	}
 
 	@Override

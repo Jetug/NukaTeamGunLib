@@ -29,30 +29,6 @@ public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
         return texture;
     }
 
-//    @Override
-//    public void render(LaserProjectile entity, float entityYaw, float partialTicks,
-//                       PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light) {
-//        Minecraft minecraft = Minecraft.getInstance();
-//        TextureManager textureManager = minecraft.getTextureManager();
-//        RenderSystem.setShaderColor(1.0F, 0.0F, 0.0F, 1.0F); // Устанавливаем цвет лазерного луча (например, красный)
-//
-//        poseStack.pushPose();
-//        poseStack.translate(0.0D, -0.1D, 0.0D); // Смещаем лазерный луч немного вверх относительно центра сущности
-//
-//        // Рисуем лазерный луч как прямую линию
-//        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-//        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-//        bufferBuilder.vertex(-0.05D, 0.0D, 0.0D).color(255, 0, 0, 255).endVertex();
-//        bufferBuilder.vertex(0.05D, 0.0D, 0.0D).color(255, 0, 0, 255).endVertex();
-//        bufferBuilder.vertex(0.05D, 10.0D, 0.0D).color(255, 0, 0, 255).endVertex();
-//        bufferBuilder.vertex(-0.05D, 10.0D, 0.0D).color(255, 0, 0, 255).endVertex();
-//        bufferBuilder.end();
-//
-//        BufferUploader.end(bufferBuilder);
-//
-//        poseStack.popPose();
-//    }
-
     @Override
     public void render(LaserProjectile entity, float entityYaw, float partialTicks,
                        PoseStack poseStack, MultiBufferSource bufferSource, int light) {
@@ -97,28 +73,33 @@ public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
         pPoseStack.pushPose();
 
         pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f * 2.25F - 45.0F));
-        float minX = -pGlowRadius;
-        float maxX = -pGlowRadius;
-        float minZ = -pGlowRadius;
-        float maxZ = -pBeamRadius;
+        var minX = -pGlowRadius;
+        var maxX = -pGlowRadius;
+        var minZ = -pGlowRadius;
+        var maxZ = -pBeamRadius;
+        var f12 = -pBeamRadius;
+        var v = -1.0F + f2;
+        var u = (float)pHeight * pTextureScale * (0.5F / pBeamRadius) + v;
 
-        float f12 = -pBeamRadius;
-        float f15 = -1.0F + f2;
-        float f16 = (float)pHeight * pTextureScale * (0.5F / pBeamRadius) + f15;
+        var vertexConsumer = pBufferSource.getBuffer(RenderType.beaconBeam(pBeamLocation, false));
 
-        renderPart(pPoseStack, pBufferSource.getBuffer(RenderType.beaconBeam(pBeamLocation, false)),
-                pColors.setAlpha(1.0F), pYOffset, maxY, 0.0F, pBeamRadius, pBeamRadius,
-                0.0F, maxZ, 0.0F, 0.0F, f12, f16, f15);
+        renderPart(pPoseStack, vertexConsumer, pColors.setAlpha(1.0F),
+                pYOffset, maxY,
+                0.0F, pBeamRadius,
+                pBeamRadius, 0.0F,
+                maxZ, 0.0F,
+                0.0F, f12,
+                u, v);
 
         pPoseStack.popPose();
 
         maxZ = -pGlowRadius;
-        f15 = -1.0F + f2;
-        f16 = (float)pHeight * pTextureScale + f15;
+        v = -1.0F + f2;
+        u = (float)pHeight * pTextureScale + v;
 
         renderPart(pPoseStack, pBufferSource.getBuffer(RenderType.beaconBeam(pBeamLocation, true)),
                 pColors.setAlpha(0.125F), pYOffset, maxY, minX, maxX, pGlowRadius, minZ, maxZ,
-                pGlowRadius, pGlowRadius, pGlowRadius, f16, f15);
+                pGlowRadius, pGlowRadius, pGlowRadius, u, v);
 
         pPoseStack.popPose();
     }
@@ -126,9 +107,11 @@ public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
     private static void renderPart(PoseStack pPoseStack, VertexConsumer pConsumer,
                                    Rgba pColors,
                                    int pMinY, int pMaxY,
-                                   float minX, float maxX, float minZ, float maxZ,
-                                   float pX2, float pZ2, float pX3, float pZ3,
-                                   float pMinV, float pMaxV) {
+                                   float minX, float maxX,
+                                   float minZ, float maxZ,
+                                   float pX2, float pZ2,
+                                   float pX3, float pZ3,
+                                   float u, float v) {
         PoseStack.Pose posestack$pose = pPoseStack.last();
         Matrix4f matrix4f = posestack$pose.pose();
         Matrix3f matrix3f = posestack$pose.normal();
@@ -138,10 +121,10 @@ public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
         float blue  = pColors.b();
         float alpha = pColors.a();
 
-        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, minX, maxX, minZ, maxZ, pMinV, pMaxV);
-        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, pX3, pZ3, pX2, pZ2, pMinV, pMaxV);
-        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, minZ, maxZ, pX3, pZ3, pMinV, pMaxV);
-        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, pX2, pZ2, minX, maxX, pMinV, pMaxV);
+        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, minX, maxX, minZ, maxZ, u, v);
+        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, pX3, pZ3, pX2, pZ2, u, v);
+        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, minZ, maxZ, pX3, pZ3, u, v);
+        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, pX2, pZ2, minX, maxX, u, v);
     }
 
     private static void renderQuad(Matrix4f pPose, Matrix3f pNormal, VertexConsumer pConsumer,
