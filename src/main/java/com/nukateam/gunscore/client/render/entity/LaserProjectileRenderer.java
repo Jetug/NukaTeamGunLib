@@ -1,15 +1,16 @@
 package com.nukateam.gunscore.client.render.entity;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import com.nukateam.gunscore.GunMod;
+import com.nukateam.gunscore.common.data.util.Rgba;
 import com.nukateam.gunscore.common.foundation.entity.LaserProjectile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -19,8 +20,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
-    public static ResourceLocation texture = new ResourceLocation(GunMod.MOD_ID, "textures/fx/laser2.png");
-    private final double laserWidth = 3.0;
+    public static final float BEAM_ALPHA = 0.7F;
+    public static ResourceLocation texture = new ResourceLocation(GunMod.MOD_ID, "textures/fx/laser.png");
+    private final double laserRadius = 0.05F;
+    private final double laserGlowRadius = 0.06F;
 
     private static final ResourceLocation GUARDIAN_LOCATION = new ResourceLocation("textures/entity/guardian.png");
     private static final ResourceLocation GUARDIAN_BEAM_LOCATION = new ResourceLocation("textures/entity/guardian_beam.png");
@@ -42,187 +45,179 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
         return new Vec3(d0, d1, d2);
     }
 
-    private Vec3 getPosition(Vec3 vec3, double pYOffset) {
-        return new Vec3(vec3.x, vec3.y + pYOffset, vec3.z);
-    }
+    public void render(LaserProjectile laserProjectile, float entityYaw, float partialTicks,
+                       PoseStack poseStack, MultiBufferSource bufferSource, int light) {
 
-    public void render2(LaserProjectile entity, float entityYaw, float partialTicks,
-                       PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light) {
-        GunMod.LOGGER.warn("Laser render");
+//        var poseStack = new PoseStack();
+//        var player = Minecraft.getInstance().player;
+//        poseStack.translate(player.getX(), player.getY(), player.getZ());
 
-        var distance = (float)entity.distance;
-        var maxTicks = entity.getLife();
-        var prog = ((float)entity.tickCount) / ((float)maxTicks);
-        var width = (float)(laserWidth * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
-        var distance_start = (float)Math.min(1.0d, distance);
-        var u = (float)(distance / laserWidth) * 2.0f;
+        var eyeHeight = laserProjectile.getEyeHeight();
+        var shooterId = laserProjectile.getShooterId();
+        var shooter = Minecraft.getInstance().level.getEntity(shooterId);
 
-//        bindTexture(texture); // Замените на соответствующий метод загрузки текстуры
-        Minecraft.getInstance().getTextureManager().bindForSetup(texture);
+        float prog = ((float)laserProjectile.tickCount)/((float)laserProjectile.getLife());
 
-        poseStack.pushPose();
-        RenderSystem.enableBlend();
-//        RenderSystem.enableRescaleNormal();
-        RenderSystem.disableCull();
-        RenderSystem.depthMask(false);
+        float radius = (float)(laserRadius * (Math.sin(Math.sqrt(prog)*Math.PI)) * 2);
+        float glowRadius = (float)(laserGlowRadius * (Math.sin(Math.sqrt(prog)*Math.PI)) * 2);
 
-        poseStack.translate(entity.getX(), entity.getY(), entity.getZ());
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(entity.laserYaw - 90F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(entity.laserPitch));
-
-        float f10 = 0.0125F;
-
-        var bufferbuilder = renderTypeBuffer.getBuffer(BEAM_RENDER_TYPE);
-
-
-        distance *= 80.0D;
-        distance_start *= 80.0D;
-
-        float rot_x = 45f + (prog * 180f);
-
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(rot_x + 90f));
-        poseStack.scale(f10, f10, f10);
-
-        float brightness = (float) Math.sin(Math.sqrt(prog) * Math.PI);
-
-        var pose = poseStack.last();
-        var matrix4f = pose.pose();
-        var matrix3f = pose.normal();
-
-        int r = 255;
-        int g = 255;
-        int b = 255;
-
-        if (distance > distance_start) { // Beam Segment
-            poseStack.pushPose();
-            for (int i = 0; i < 2; ++i) {
-                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-//                bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-
-                vertex(bufferbuilder, matrix4f, matrix3f,   distance      , -width, 0.0f,       r, g, b, u + prog, 0);
-                vertex(bufferbuilder, matrix4f, matrix3f,   distance_start, -width, 0.0f,       r, g, b,        prog, 0);
-                vertex(bufferbuilder, matrix4f, matrix3f,   distance_start,  width, 0.0f,       r, g, b,        prog, 1);
-                vertex(bufferbuilder, matrix4f, matrix3f,   distance      ,  width, 0.0f,       r, g, b, u + prog, 1);
-
-
-//                bufferbuilder.vertex(distance, -width, 0.0D         ).uv(u + prog, 0).color(255, 255, 255, (int) (brightness * 255)).endVertex();
-//                bufferbuilder.vertex(distance_start, -width, 0.0D   ).uv(prog        , 0).color(255, 255, 255, (int) (brightness * 255)).endVertex();
-//                bufferbuilder.vertex(distance_start, width, 0.0D    ).uv(prog        , 1).color(255, 255, 255, (int) (brightness * 255)).endVertex();
-//                bufferbuilder.vertex(distance, width, 0.0D          ).uv(u + prog, 1).color(255, 255, 255, (int) (brightness * 255)).endVertex();
-
-            }
-            poseStack.popPose();
-        }
+        if (shooter == null) return;
 
         poseStack.pushPose();
-        for (int i = 0; i < 2; ++i) { // Beam start segment
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-//            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        {
+//            poseStack.mulPose(Vector3f.YP.rotationDegrees(entityYaw));
+//            poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getXRot() - 90));
+//            poseStack.translate(0, -1, 0);
+//            poseStack.translate(-100, 0, 0);
+//            poseStack.mulPose(Vector3f.YP.rotationDegrees(entityYaw));
 
-            vertex(bufferbuilder, matrix4f, matrix3f,   distance_start, -width, 0.0f,       r, g, b, 1, 0);
-            vertex(bufferbuilder, matrix4f, matrix3f,   0          , -width, 0.0f,       r, g, b, 0, 0);
-            vertex(bufferbuilder, matrix4f, matrix3f,   0          ,  width, 0.0f,       r, g, b, 0, 1);
-            vertex(bufferbuilder, matrix4f, matrix3f,   distance_start,  width, 0.0f,       r, g, b, 1, 1);
 
-//            bufferbuilder.vertex(distance_start, -width, 0.0D).uv(1, 0).color(255, 255, 255, (int) (brightness * 255)).endVertex();
-//            bufferbuilder.vertex(0, -width, 0.0D         ).uv(0, 0).color(255, 255, 255, (int) (brightness * 255)).endVertex();
-//            bufferbuilder.vertex(0, width, 0.0D          ).uv(0, 1).color(255, 255, 255, (int) (brightness * 255)).endVertex();
-//            bufferbuilder.vertex(distance_start, width, 0.0D ).uv(1, 1).color(255, 255, 255, (int) (brightness * 255)).endVertex();
+//            poseStack.mulPose(Vector3f.XP.rotationDegrees(90));
+//            poseStack.mulPose(Vector3f.XP.rotationDegrees(shooter.getXRot()));
+//            poseStack.mulPose(Vector3f.ZP.rotationDegrees(shooter.getYRot()));
+
+//            poseStack.translate(0, 15, 0);
+
+//            poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
+            poseStack.translate(0.0D, eyeHeight, 0.0D);
+
+//            poseStack.scale(0.25f, 1, 0.25f);
+
+//            var playerPos = this.getPosition(shooter, (double) shooter.getBbHeight() * 0.5D, partialTicks);
+//            var laserPos = this.getPosition(laserProjectile, eyeHeight, partialTicks); //getPosition(laserProjectile.endVec, (double) eyeHeight);
+
+            var playerPos = laserProjectile.endVec;
+            var laserPos  = laserProjectile.startVec;
+            var pos       = playerPos.subtract(laserPos);
+
+            var y = (float) (pos.length() + 1.0D);
+            pos = pos.normalize();
+            float yPos = (float) Math.acos(pos.y);
+            float xzPos = (float) Math.atan2(pos.z, pos.x);
+
+            poseStack.mulPose(Vector3f.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
+
+//            poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+
+
+            long gameTime = laserProjectile.getLevel().getGameTime();
+            int yOffset = 0; //(int) laserProjectile.position().y;
+            var color = new Rgba(1, 1, 1, 1);
+
+            renderBeam(poseStack, bufferSource, texture, partialTicks, 1.0F,
+                    gameTime, (float) yOffset, (float)laserProjectile.distance, color, radius, glowRadius);
         }
-        poseStack.popPose();
-
-        RenderSystem.depthMask(true);
-        RenderSystem.enableCull();
-//        RenderSystem.disableRescaleNormal();
-        RenderSystem.disableBlend();
-
         poseStack.popPose();
     }
 
-    public void render(LaserProjectile laserProjectile, float pEntityYaw, float pPartialTicks, PoseStack poseStack, MultiBufferSource pBuffer, int pPackedLight) {
-        super.render(laserProjectile, pEntityYaw, pPartialTicks, poseStack, pBuffer, pPackedLight);
-        var entity = Minecraft.getInstance().player;
-        if (entity != null) {
-            var gameTime = (float)laserProjectile.level.getGameTime() + pPartialTicks;
-            var f2 = gameTime * 0.5F % 1.0F;
-            var eyeHeight = laserProjectile.getEyeHeight();
+    //
+//    protected static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_CUTOUT_NO_CULL_SHADER
+//            = new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEntityCutoutNoCullShader);
+//
+//    private static final BiFunction<ResourceLocation, Boolean, RenderType> ENTITY_CUTOUT_NO_CULL = Util.memoize((p_173233_, p_173234_) -> {
+//        RenderType.CompositeState rendertype$compositestate = RenderType
+//                .CompositeState.builder()
+//                .setShaderState(RENDERTYPE_ENTITY_CUTOUT_NO_CULL_SHADER)
+//                .setTextureState(new RenderStateShard.TextureStateShard(p_173233_, false, false))
+//                .setTransparencyState(NO_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(p_173234_);
+//        return RenderType.create("entity_cutout_no_cull", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, rendertype$compositestate);
+//    });
 
-            poseStack.pushPose();
-            {
-                poseStack.translate(0.0D, eyeHeight, 0.0D);
-                var playerPos = this.getPosition(entity, (double) entity.getBbHeight() * 0.5D, pPartialTicks);
-                var laserPos = this.getPosition(laserProjectile, eyeHeight, pPartialTicks); //getPosition(laserProjectile.endVec, (double) eyeHeight);
-                var pos = playerPos.subtract(laserPos);
-                var y = (float) (pos.length() + 1.0D);
-                pos = pos.normalize();
-                float yPos = (float) Math.acos(pos.y);
-                float xzPos = (float) Math.atan2(pos.z, pos.x);
+    public static void renderBeam(PoseStack pPoseStack, MultiBufferSource pBufferSource, ResourceLocation pBeamLocation,
+                                  float pPartialTick, float pTextureScale, long pGameTime, float pYOffset, float pHeight,
+                                  Rgba pColors, float pBeamRadius, float pGlowRadius) {
+        var maxY = pYOffset + pHeight;
+        pPoseStack.pushPose();
 
-                poseStack.mulPose(Vector3f.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
-                poseStack.mulPose(Vector3f.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
+        //jet
+//        pPoseStack.translate(0.5D, 0.0D, 0.5D);
+        float f = (float)Math.floorMod(pGameTime, 40) + pPartialTick;
+        float f1 = pHeight < 0 ? f : -f;
+        float f2 = Mth.frac(f1 * 0.2F - (float)Mth.floor(f1 * 0.1F));
+        pPoseStack.pushPose();
 
-                float f7 = 1 * 0.05F * -1.5F;
+//        pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f * 2.25F - 45.0F));
+        var minX = -pGlowRadius;
+        var maxX = -pGlowRadius;
+        var minZ = -pGlowRadius;
+        var maxZ = -pBeamRadius;
+        var f12  = -pBeamRadius;
+        var v = -1.0F + f2;
+        var u = pHeight * pTextureScale * (BEAM_ALPHA / pBeamRadius) + v;
 
-                int r = 255;
-                int g = 255;
-                int b = 255;
+        var vertexConsumer = pBufferSource.getBuffer(RenderType.beaconBeam(pBeamLocation, false));
 
-                float x1 = Mth.cos(f7 + 2.3561945F) * 0.282F;
-                float z1 = Mth.sin(f7 + 2.3561945F) * 0.282F;
-                float x2 = Mth.cos(f7 + ((float) Math.PI / 4F)) * 0.282F;
-                float z2 = Mth.sin(f7 + ((float) Math.PI / 4F)) * 0.282F;
-                float x4 = Mth.cos(f7 + 3.926991F) * 0.282F;
-                float z4 = Mth.sin(f7 + 3.926991F) * 0.282F;
-                float x3 = Mth.cos(f7 + 5.4977875F) * 0.282F;
-                float z3 = Mth.sin(f7 + 5.4977875F) * 0.282F;
-                float x5 = Mth.cos(f7 + (float) Math.PI) * 0.2F;
-                float z5 = Mth.sin(f7 + (float) Math.PI) * 0.2F;
-                float x6 = Mth.cos(f7 + 0.0F) * 0.2F;
-                float z6 = Mth.sin(f7 + 0.0F) * 0.2F;
-                float x7 = Mth.cos(f7 + ((float) Math.PI / 2F)) * 0.2F;
-                float z7 = Mth.sin(f7 + ((float) Math.PI / 2F)) * 0.2F;
-                float x8 = Mth.cos(f7 + ((float) Math.PI * 1.5F)) * 0.2F;
-                float z8 = Mth.sin(f7 + ((float) Math.PI * 1.5F)) * 0.2F;
-                float v2 = -1.0F + f2;
-                float v = y * 2.5F + v2;
+        renderPart(pPoseStack, vertexConsumer, pColors.setAlpha(1.0F),
+                pYOffset, maxY,
+                0.0F, pBeamRadius,
+                pBeamRadius, 0.0F,
+                maxZ, 0.0F,
+                0.0F, f12,
+                u, v);
 
-                var vertexconsumer = pBuffer.getBuffer(BEAM_RENDER_TYPE);
-                var pose = poseStack.last();
-                var matrix4f = pose.pose();
-                var matrix3f = pose.normal();
+        pPoseStack.popPose();
 
-                vertex(vertexconsumer, matrix4f, matrix3f, x5, y, z5,       r, g, b, 0.4999F, v);
-                vertex(vertexconsumer, matrix4f, matrix3f, x5, 0.0F, z5, r, g, b, 0.4999F, v2);
-                vertex(vertexconsumer, matrix4f, matrix3f, x6, 0.0F, z6, r, g, b, 0.0F  , v2);
-                vertex(vertexconsumer, matrix4f, matrix3f, x6, y, z6,       r, g, b, 0.0F   , v);
+        maxZ = -pGlowRadius;
+        v = -1.0F + f2;
+        u = (float)pHeight * pTextureScale + v;
 
+        renderPart(pPoseStack, pBufferSource.getBuffer(RenderType.beaconBeam(pBeamLocation, true)),
+                pColors.setAlpha(BEAM_ALPHA), pYOffset, maxY, minX, maxX, pGlowRadius, minZ, maxZ,
+                pGlowRadius, pGlowRadius, pGlowRadius, u, v);
 
-                vertex(vertexconsumer, matrix4f, matrix3f, x7, y, z7,       r, g, b, 0.4999F, v);
-                vertex(vertexconsumer, matrix4f, matrix3f, x7, 0.0F, z7, r, g, b, 0.4999F, v2);
-                vertex(vertexconsumer, matrix4f, matrix3f, x8, 0.0F, z8, r, g, b, 0.0F, v2);
-                vertex(vertexconsumer, matrix4f, matrix3f, x8, y, z8,       r, g, b, 0.0F, v);
-
-                var v3 = 0.0F;
-
-                if (laserProjectile.tickCount % 2 == 0)
-                    v3 = 0.5F;
-
-                vertex(vertexconsumer, matrix4f, matrix3f, x1, y, z1, r, g, b, 0.5F, v3 + 0.5F);
-                vertex(vertexconsumer, matrix4f, matrix3f, x2, y, z2, r, g, b, 1.0F, v3 + 0.5F);
-                vertex(vertexconsumer, matrix4f, matrix3f, x3, y, z3, r, g, b, 1.0F, v3);
-                vertex(vertexconsumer, matrix4f, matrix3f, x4, y, z4, r, g, b, 0.5F, v3);
-            }
-            poseStack.popPose();
-        }
+        pPoseStack.popPose();
     }
 
-    private static void vertex(VertexConsumer vertexConsumer, Matrix4f matrix4f, Matrix3f matrix3f,
-                               float x, float y, float z,
-                               int r, int g, int b, float u, float v) {
-        vertexConsumer.vertex(matrix4f, x, y, z)
-                .color(r, g, b, 255)
-                .uv(u, v).overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(15728880).normal(matrix3f, 0.0F, 1.0F, 0.0F)
+    private static void renderPart(PoseStack pPoseStack, VertexConsumer pConsumer,
+                                   Rgba pColors,
+                                   float pMinY, float pMaxY,
+                                   float minX, float maxX,
+                                   float minZ, float maxZ,
+                                   float pX2, float pZ2,
+                                   float pX3, float pZ3,
+                                   float u, float v) {
+        var posestack$pose = pPoseStack.last();
+        var matrix4f = posestack$pose.pose();
+        var matrix3f = posestack$pose.normal();
+
+        float red   = pColors.r();
+        float green = pColors.g();
+        float blue  = pColors.b();
+        float alpha = pColors.a();
+
+        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, minX, maxX, minZ, maxZ, u, v);
+        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, pX3, pZ3, pX2, pZ2, u, v);
+        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, minZ, maxZ, pX3, pZ3, u, v);
+        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, pX2, pZ2, minX, maxX, u, v);
+    }
+
+    private static void renderQuad(Matrix4f pPose, Matrix3f pNormal, VertexConsumer pConsumer,
+                                   float pRed, float pGreen, float pBlue, float pAlpha,
+                                   float pMinY, float pMaxY,
+                                   float pMinX, float pMinZ,
+                                   float pMaxX, float pMaxZ,
+
+                                   float pMinV, float pMaxV) {
+        addVertex(pPose, pNormal, pConsumer, pRed, pGreen, pBlue, pAlpha, pMaxY, pMinX, pMinZ, 1, pMinV);
+        addVertex(pPose, pNormal, pConsumer, pRed, pGreen, pBlue, pAlpha, pMinY, pMinX, pMinZ, 1, pMaxV);
+        addVertex(pPose, pNormal, pConsumer, pRed, pGreen, pBlue, pAlpha, pMinY, pMaxX, pMaxZ, 0, pMaxV);
+        addVertex(pPose, pNormal, pConsumer, pRed, pGreen, pBlue, pAlpha, pMaxY, pMaxX, pMaxZ, 0, pMinV);
+    }
+
+    private static void addVertex(Matrix4f pPose, Matrix3f pNormal, VertexConsumer pConsumer,
+                                  float pRed, float pGreen, float pBlue, float pAlpha, float pY,
+                                  float pX, float pZ, float pU, float pV) {
+        pConsumer.vertex(pPose, pX, pY, pZ)
+                .color(pRed, pGreen, pBlue, pAlpha).uv(pU, pV)
+                .overlayCoords(OverlayTexture.NO_OVERLAY)
+                .uv2(15728880)
+                .normal(pNormal, 0.0F, 1.0F, 0.0F)
                 .endVertex();
+    }
+
+    @Override
+    public boolean shouldRender(LaserProjectile pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
+        return true;
     }
 }

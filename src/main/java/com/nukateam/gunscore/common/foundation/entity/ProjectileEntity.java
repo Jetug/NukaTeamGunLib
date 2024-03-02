@@ -72,8 +72,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected Gun modifiedGun;
     protected Gun.General general;
     protected Gun.Projectile projectile;
-    private ItemStack weapon = ItemStack.EMPTY;
-    private ItemStack item = ItemStack.EMPTY;
+    protected ItemStack weapon = ItemStack.EMPTY;
+    protected ItemStack item = ItemStack.EMPTY;
     protected float additionalDamage = 0.0F;
     protected EntityDimensions entitySize;
     protected double modifiedGravity;
@@ -350,6 +350,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return new EntityResult(entity, hitPos, headshot);
     }
 
+    protected boolean removeOnHit(){
+        return true;
+    }
+
     protected void onHit(HitResult result, Vec3 startVec, Vec3 endVec) {
         if (MinecraftForge.EVENT_BUS.post(new GunProjectileHitEvent(result, this))) {
             return;
@@ -376,7 +380,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 }
             }
 
-            if (!state.getMaterial().isReplaceable()) {
+            if (!state.getMaterial().isReplaceable() && removeOnHit()) {
                 this.remove(RemovalReason.KILLED);
             }
 
@@ -443,7 +447,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             this.onHitEntity(entity, result.getLocation(), startVec, endVec, entityHitResult.isHeadshot());
 
             int collateralLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.COLLATERAL.get(), weapon);
-            if (collateralLevel == 0) {
+            if (collateralLevel == 0 && removeOnHit()) {
                 this.remove(RemovalReason.KILLED);
             }
 
