@@ -52,6 +52,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 
 	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
 		super(entityType, worldIn, shooter, weapon, item, modifiedGun);
+		this.startVec = new Vec3(this.getX(), this.getY(), this.getZ());
 	}
 
 	@Override
@@ -62,14 +63,17 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 			}
 			this.remove(RemovalReason.KILLED);
 		}
+
+//		super.tick();
+//		this.endVec = this.position().add(this.getDeltaMovement());
 	}
 
 	public Vec3 startVec = new Vec3(0 ,0 ,0);
 	public Vec3 endVec   = new Vec3(0 ,0 ,0);
 
 	protected void trace() {
-		Vec3 startVec = new Vec3(this.getX(), this.getY(), this.getZ());
-		Vec3 endVec = startVec.add(this.getDeltaMovement());
+		var startVec = new Vec3(this.getX(), this.getY(), this.getZ());
+		var endVec = startVec.add(this.getDeltaMovement());
 
 		HitResult raytraceresult = rayTraceBlocks(this.level, new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER,
 				ClipContext.Fluid.NONE, this), IGNORE_LEAVES);
