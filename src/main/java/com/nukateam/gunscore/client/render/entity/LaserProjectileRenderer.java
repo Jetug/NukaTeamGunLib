@@ -79,7 +79,7 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
 //            poseStack.translate(0, 15, 0);
 
 //            poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
-            poseStack.translate(0.0D, eyeHeight, 0.0D);
+//            poseStack.translate(0.0D, eyeHeight, 0.0D);
 
 //            poseStack.scale(0.25f, 1, 0.25f);
 
