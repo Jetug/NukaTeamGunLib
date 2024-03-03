@@ -23,7 +23,7 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
     public static ResourceLocation texture = new ResourceLocation(GunMod.MOD_ID, "textures/fx/laser.png");
     private final double laserRadius = 0.05F;
-    private final double laserGlowRadius = 0.06F;
+    private final double laserGlowRadius = 0.055F;
 
     private static final ResourceLocation GUARDIAN_LOCATION = new ResourceLocation("textures/entity/guardian.png");
     private static final ResourceLocation GUARDIAN_BEAM_LOCATION = new ResourceLocation("textures/entity/guardian_beam.png");
@@ -95,11 +95,13 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
             float yPos = (float) Math.acos(pos.y);
             float xzPos = (float) Math.atan2(pos.z, pos.x);
 
+            var side = laserProjectile.isRightHand() ? -1 : 1;
+
             poseStack.mulPose(Vector3f.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
             poseStack.mulPose(Vector3f.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
 
+            poseStack.translate(side * 0.25, 0, 0);
 //            poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
-
 
             long gameTime = laserProjectile.getLevel().getGameTime();
             int yOffset = 0; //(int) laserProjectile.position().y;

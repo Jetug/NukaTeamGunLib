@@ -38,6 +38,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
@@ -73,11 +74,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected Gun.General general;
     protected Gun.Projectile projectile;
     protected ItemStack weapon = ItemStack.EMPTY;
-    protected ItemStack item = ItemStack.EMPTY;
+    protected ItemStack ammoStack = ItemStack.EMPTY;
     protected float additionalDamage = 0.0F;
     protected EntityDimensions entitySize;
     protected double modifiedGravity;
     protected int life;
+    protected boolean isRightHand;
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -93,6 +95,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
         this.modifiedGravity = modifiedGun.getProjectile().isGravity() ? GunModifierHelper.getModifiedProjectileGravity(weapon, -0.04) : 0.0;
         this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.projectile.getLife());
+        this.isRightHand = shooter.getItemInHand(InteractionHand.MAIN_HAND) == weapon;
 
         /* Get speed and set motion */
         Vec3 dir = this.getDirection(shooter, weapon, item, modifiedGun);
@@ -123,7 +126,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             if (customModelData != -1) {
                 ammoStack.getOrCreateTag().putInt("CustomModelData", customModelData);
             }
-            this.item = ammoStack;
+            this.ammoStack = ammoStack;
         }
     }
 
@@ -165,11 +168,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     public void setItem(ItemStack item) {
-        this.item = item;
+        this.ammoStack = item;
     }
 
     public ItemStack getItem() {
-        return this.item;
+        return this.ammoStack;
     }
 
     public void setAdditionalDamage(float additionalDamage) {
@@ -509,9 +512,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         buffer.writeNbt(this.projectile.serializeNBT());
         buffer.writeNbt(this.general.serializeNBT());
         buffer.writeInt(this.shooterId);
-        BufferUtil.writeItemStackToBufIgnoreTag(buffer, this.item);
+        BufferUtil.writeItemStackToBufIgnoreTag(buffer, this.ammoStack);
         buffer.writeDouble(this.modifiedGravity);
         buffer.writeVarInt(this.life);
+        buffer.writeBoolean(this.isRightHand);
     }
 
     @Override
@@ -521,10 +525,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.general = new Gun.General();
         this.general.deserializeNBT(buffer.readNbt());
         this.shooterId = buffer.readInt();
-        this.item = BufferUtil.readItemStackFromBufIgnoreTag(buffer);
+        this.ammoStack = BufferUtil.readItemStackFromBufIgnoreTag(buffer);
         this.modifiedGravity = buffer.readDouble();
         this.life = buffer.readVarInt();
         this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
+        this.isRightHand = buffer.readBoolean();
     }
 
     public void updateHeading() {
@@ -733,6 +738,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 player.connection.send(new ClientboundExplodePacket(entity.getX(), entity.getY(), entity.getZ(), radius, explosion.getToBlow(), explosion.getHitPlayers().get(player)));
             }
         }
+    }
+
+    public boolean isRightHand() {
+        return isRightHand;
     }
 
     /**
