@@ -85,7 +85,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         super(entityType, worldIn);
     }
 
-    public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
+    public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn, LivingEntity shooter,
+                            ItemStack weapon, GunItem item, Gun modifiedGun) {
         this(entityType, worldIn);
         this.shooterId = shooter.getId();
         this.shooter = shooter;
@@ -96,7 +97,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.modifiedGravity = modifiedGun.getProjectile().isGravity() ? GunModifierHelper.getModifiedProjectileGravity(weapon, -0.04) : 0.0;
         this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.projectile.getLife());
         this.isRightHand = shooter.getItemInHand(InteractionHand.MAIN_HAND) == weapon;
-
+        this.weapon = weapon;
         /* Get speed and set motion */
         Vec3 dir = this.getDirection(shooter, weapon, item, modifiedGun);
         double speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);

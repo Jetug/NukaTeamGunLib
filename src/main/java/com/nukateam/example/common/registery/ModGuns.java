@@ -17,7 +17,7 @@ public class ModGuns {
 //    public static final RegistryObject<GunItem> CLASSIC10MM = ITEMS.register("classic10mm", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 //    public static final RegistryObject<GunItem> SCOUT10MM = ITEMS.register("scout10mm", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     //public static final RegistryObject<GunItem> CLASSIC10MM_ZAP = ITEMS.register("classic10mm_zapaway", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.NUKA_EQUIP)));
-//    public static final RegistryObject<GunItem> PIPEREVOLVER = ITEMS.register("piperevolver", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<GunItem> PIPEREVOLVER = ITEMS.register("piperevolver", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 //    public static final RegistryObject<GunItem> FATMAN = ITEMS.register("fatman", () -> new FatmanGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 //    public static final RegistryObject<GunItem> MINIGUN = ITEMS.register("minigun", () -> new MinigunGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 
@@ -39,8 +39,8 @@ public class ModGuns {
 //            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 //    public static final RegistryObject<Item> STEELBALLS = ITEMS.register("steel_ball",
 //            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
-//    public static final RegistryObject<Item> ROUND45 = ITEMS.register("round45",
-//            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<Item> ROUND45 = ITEMS.register("round45",
+            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 //    public static final RegistryObject<Item> ROUND5MM = ITEMS.register("round5mm",
 //            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 //    public static final RegistryObject<Item> ROUND44 = ITEMS.register("round44",

@@ -15,6 +15,7 @@ import com.nukateam.gunscore.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.gunscore.common.foundation.entity.GrenadeEntity;
 import com.nukateam.gunscore.common.foundation.entity.LaserProjectile;
 import com.nukateam.gunscore.common.foundation.entity.MissileEntity;
+import com.nukateam.gunscore.common.foundation.entity.TeslaProjectile;
 import com.nukateam.gunscore.common.foundation.init.*;
 import com.nukateam.gunscore.common.network.PacketHandler;
 import mod.azure.azurelib.AzureLib;
@@ -37,6 +38,7 @@ import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.slf4j.Logger;
 
 import static com.nukateam.example.common.registery.ModGuns.*;
+import static com.nukateam.gunscore.common.foundation.entity.TeslaProjectile.CHAIN_TARGETS;
 
 @Mod(GunMod.MOD_ID)
 public class GunMod {
@@ -123,10 +125,15 @@ public class GunMod {
                 (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
 
         ProjectileManager.getInstance().registerFactory(MISSILE.get(),
-              (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
+                (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
 
         ProjectileManager.getInstance().registerFactory(ROUND10MM.get(),
-              (worldIn, entity, weapon, item, modifiedGun) -> new LaserProjectile(ModEntities.LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
+                (worldIn, entity, weapon, item, modifiedGun) ->
+                      new LaserProjectile(ModEntities.LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
+
+        ProjectileManager.getInstance().registerFactory(ROUND45.get(),
+                (worldIn, entity, weapon, item, modifiedGun) ->
+                      new TeslaProjectile(ModEntities.TESLA_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {
