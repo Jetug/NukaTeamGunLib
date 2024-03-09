@@ -17,8 +17,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
+
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
@@ -27,8 +28,11 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
     private final float laserGlowRadius = 0.055F;
     private float laserWidth = 3.0f;
 
-    double offset = 0.20; // Distance per bolt vertex
+    private static final int MIN_ANGLE = -45;
+    private static final int MAX_ANGLE = 45;
+    private Random random = new Random();
 
+    double offset = 0.50; // Distance per bolt vertex
 
     public TeslaProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -66,34 +70,58 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
             float xzPos = (float) Math.atan2(pos.z, pos.x);
 
             var side = laserProjectile.isRightHand() ? -1 : 1;
+
             poseStack.mulPose(Vector3f.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
             poseStack.mulPose(Vector3f.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
             poseStack.translate(side * 0.25, 0, 0);
 
+//            var angle = getRandomAngle();
             var angle = 30;
             var flag = 1;
 
             var length = distance / count;
+            var totalOffset = 0d;
 
             for (int i = 0; i <= count; i++) {
+            poseStack.pushPose();
+//                if(flag < 0) {
+//                    angle = getRandomAngle();
+//                }
+
                 flag = -flag;
 
-                var offsetY = length * Mth.sin(angle) * flag;
+                var offsetZ = length * Mth.sin(Mth.abs(angle)) * flag;
+//                var offsetY = length * Mth.cos(Mth.abs(angle));
+                var offsetY = Math.sqrt(length * length - offsetZ * offsetZ);
+                var v = offsetY;
 
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(angle * flag));
-                poseStack.translate(0, 0, offsetY / 2 );
+                if(flag < 0){
+                    poseStack.mulPose(Vector3f.XP.rotationDegrees(angle * flag));
+
+                }
+                poseStack.translate(0, 0, offsetZ / 2 );
 
                 var gameTime = laserProjectile.getLevel().getGameTime();
                 var yOffset = 0; //(int) laserProjectile.position().y;
                 var color = new Rgba(1, 1, 1, 1);
 
-                poseStack.translate(0, offset, 0);
+                totalOffset = offsetY;
+//                poseStack.translate(0, totalOffset, 0);
+//                poseStack.translate(0, offset, 0);
 
                 renderBeam(poseStack, bufferSource, texture, partialTicks, 1.0F,
-                        gameTime, (float) yOffset - laserRadius, (float)(length + laserRadius), color, radius, glowRadius);
+                        gameTime, (float)yOffset - 0.1f, (float)(length + 0.1), color, radius, glowRadius);
+
+            poseStack.popPose();
+                poseStack.translate(0, offset - 0.1, 0);
             }
         }
         poseStack.popPose();
+    }
+
+    private int getRandomAngle(){
+        return ThreadLocalRandom.current().nextInt(MIN_ANGLE, MAX_ANGLE + 1);
     }
 
     public static void renderBeam(PoseStack pPoseStack, MultiBufferSource pBufferSource, ResourceLocation pBeamLocation,
