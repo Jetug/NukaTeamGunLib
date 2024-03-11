@@ -1,6 +1,7 @@
 package com.nukateam.gunscore.common.foundation.item;
 
 import com.nukateam.example.common.data.interfaces.IResourceProvider;
+import com.nukateam.example.common.data.utils.ResourceUtils;
 import com.nukateam.gunscore.client.render.renderers.GunItemRenderer;
 import com.nukateam.gunscore.common.base.gun.Gun;
 import com.nukateam.gunscore.common.base.NetworkGunManager;
@@ -10,8 +11,6 @@ import com.nukateam.gunscore.common.data.util.GunModifierHelper;
 import com.nukateam.gunscore.common.debug.Debug;
 import com.nukateam.gunscore.common.foundation.enchantment.EnchantmentTypes;
 import com.nukateam.gunscore.GunMod;
-import com.jetug.chassis_core.client.render.utils.ResourceHelper;
-import com.jetug.chassis_core.common.foundation.item.CustomizableItem;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
@@ -40,12 +39,13 @@ import java.util.function.Consumer;
 import static java.util.Objects.requireNonNull;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
-public class GunItem extends CustomizableItem implements GeoItem, IColored, IMeta, IResourceProvider {
+public class GunItem extends Item implements GeoItem, IColored, IMeta, IResourceProvider {
 //    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    private final Lazy<String> name = Lazy.of(() -> ResourceHelper.getResourceName(getRegistryName()));
+    private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
 
     private Gun gun = new Gun();
+
 
     public GunItem(Item.Properties properties) {
         super(properties.stacksTo(1));
@@ -82,8 +82,6 @@ public class GunItem extends CustomizableItem implements GeoItem, IColored, IMet
             }
         });
     }
-
-
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {

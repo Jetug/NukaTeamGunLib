@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
-import static com.jetug.chassis_core.common.util.helpers.TextureHelper.getTextureSize;
+import static com.nukateam.gunscore.client.data.util.TextureUtils.getTextureSize;
 import static mod.azure.azurelib.cache.texture.GeoAbstractTexture.appendToPath;
 
 public class GlowingLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {

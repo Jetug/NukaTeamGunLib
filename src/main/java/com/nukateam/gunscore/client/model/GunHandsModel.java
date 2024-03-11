@@ -7,12 +7,12 @@ import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
-import static com.nukateam.example.common.data.utils.Resources.nukaResource;
+import static com.nukateam.example.common.data.utils.ResourceUtils.modResource;
 
 public class GunHandsModel<T extends IResourceProvider & GeoAnimatable> extends GeoModel<T> {
     @Override
     public ResourceLocation getModelResource(T geoAnimatable) {
-        return nukaResource("geo/hand/gun_hands.geo.json");
+        return modResource("geo/hand/gun_hands.geo.json");
     }
 
     @Override
@@ -24,6 +24,6 @@ public class GunHandsModel<T extends IResourceProvider & GeoAnimatable> extends 
 
     @Override
     public ResourceLocation getAnimationResource(T geoAnimatable) {
-        return nukaResource("animations/hand/hands.animation.json");
+        return modResource("animations/hand/hands.animation.json");
     }
 }

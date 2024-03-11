@@ -88,30 +88,25 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
             for (int i = 0; i <= count; i++) {
             poseStack.pushPose();
-//                if(flag > 0) {
-//                    angleX = getRandomAngle();
-//                }
+                if(flag > 0) {
+                    angleX = getRandomAngle();
+                }
 
                 var radiansX = (angleX * (Math.PI)) / 180;
-                var radiansZ = (angleZ * (Math.PI)) / 180;
 
                 var offsetZ = length * Math.sin(Math.abs(radiansX)) * -flag;
                 var offsetY = length * Math.cos(Math.abs(radiansX));
 //                var offsetY = Math.sqrt(length * length - offsetZ * offsetZ);
 
-//                offsetZ = offsetZ * Math.sin(Math.abs(radiansZ)) * -flag;
-
-                poseStack.mulPose(Vector3f.ZP.rotationDegrees(angleX * flag));
-//                poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(angleX * flag));
 //                poseStack.mulPose(Vector3f.YP.rotationDegrees(angleZ * flag));
 //                if(flag > 0){
 //                    poseStack.mulPose(Vector3f.XP.rotationDegrees(angleX * flag));
 //                }
 
-                if(angleX > 0) offsetZ = -offsetZ;
+                if(angleX < 0) offsetZ = -offsetZ;
 
-//                poseStack.translate(0, 0, offsetZ / 2 );
-                poseStack.translate(offsetZ / 2, 0,  0);
+                poseStack.translate(0, 0, offsetZ / 2 );
 
                 var gameTime = projectile.getLevel().getGameTime();
                 var yOffset = 0; //(int) projectile.position().y;

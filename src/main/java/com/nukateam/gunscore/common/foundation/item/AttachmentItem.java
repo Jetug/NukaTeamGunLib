@@ -9,7 +9,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import static com.jetug.chassis_core.client.render.utils.ResourceHelper.*;
+import static com.nukateam.example.common.data.utils.ResourceUtils.getResourceName;
+
 
 /**
  * Author: MrCrayfish

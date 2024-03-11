@@ -6,12 +6,12 @@ import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
-import static com.nukateam.example.common.data.utils.Resources.nukaResource;
+import static com.nukateam.example.common.data.utils.ResourceUtils.modResource;
 
 public class LeftHandModel<T extends IResourceProvider & GeoAnimatable> extends GeoModel<T> {
     @Override
     public ResourceLocation getModelResource(T geoAnimatable) {
-        return nukaResource("geo/hand/left_hand.geo.json");
+        return modResource("geo/hand/left_hand.geo.json");
     }
 
     @Override

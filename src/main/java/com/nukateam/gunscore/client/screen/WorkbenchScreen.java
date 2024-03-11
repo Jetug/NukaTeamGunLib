@@ -1,6 +1,7 @@
 package com.nukateam.gunscore.client.screen;
 
 import com.nukateam.example.common.data.interfaces.IMeleeWeapon;
+import com.nukateam.gunscore.GunMod;
 import com.nukateam.gunscore.client.data.util.RenderUtil;
 import com.nukateam.gunscore.common.base.NetworkGunManager;
 import com.nukateam.gunscore.common.foundation.container.WorkbenchContainer;
@@ -45,8 +46,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.jetug.chassis_core.client.render.renderers.CustomHandRenderer.doSafe;
 
 /**
  * Author: MrCrayfish
@@ -285,8 +284,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        doSafe(() ->
-        {
+        try {
             this.renderBackground(poseStack);
             super.render(poseStack, mouseX, mouseY, partialTicks);
             this.renderTooltip(poseStack, mouseX, mouseY);
@@ -316,7 +314,10 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             if (RenderUtil.isMouseWithin(mouseX, mouseY, startX + 8, startY + 38, 160, 48)) {
                 this.renderTooltip(poseStack, this.displayStack, mouseX, mouseY);
             }
-        });
+        }
+        catch (Exception e){
+            GunMod.LOGGER.debug(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -331,8 +332,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         partialTicks = Minecraft.getInstance().getFrameTime();
 
         float finalPartialTicks = partialTicks;
-        doSafe(() ->
-        {
+        try {
             int startX = this.leftPos;
             int startY = this.topPos;
 
@@ -445,7 +445,10 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                     Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(this.font, stack, startX + 172 + 2, startY + i * 19 + 1 + 63, null);
                 }
             }
-        });
+        }
+        catch (Exception e){
+            GunMod.LOGGER.debug(e.getMessage(), e);
+        }
     }
 
     private List<MaterialItem> getMaterials() {
