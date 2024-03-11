@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import static com.nukateam.gunscore.client.render.entity.TeslaProjectileRenderer.getRandomAngle;
 import static com.nukateam.gunscore.common.foundation.init.ModEntities.*;
 
 public class TeslaProjectile extends AbstractBeamProjectile {
@@ -21,8 +22,9 @@ public class TeslaProjectile extends AbstractBeamProjectile {
     public static final float CHAIN_DAMAGE_FACTOR = 0.75f;
 //    private final float rotationPitch;
 //    private final float rotationYaw;
-
     public long seed = 0;
+
+    public float angle = getRandomAngle();
 
     protected int chainTargets = CHAIN_TARGETS;
     protected Entity prevTarget = null;

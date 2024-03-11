@@ -75,8 +75,9 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
             poseStack.mulPose(Vector3f.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
             poseStack.translate(side * 0.25, 0, 0);
 
-//            var angle = getRandomAngle();
-            var angle = 45f;
+            var angle = getRandomAngle();
+//            var angle = -30f;
+//            var angle = laserProjectile.angle;
             var flag = 1;
 
             var length = distance / count;
@@ -100,6 +101,9 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 //                if(flag > 0){
 //                    poseStack.mulPose(Vector3f.XP.rotationDegrees(angle * flag));
 //                }
+
+                if(angle < 0) offsetZ = -offsetZ;
+
                 poseStack.translate(0, 0, offsetZ / 2 );
 
                 var gameTime = laserProjectile.getLevel().getGameTime();
@@ -114,14 +118,14 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
                         gameTime, (float)yOffset - 0.1f, (float)(length + 0.1), color, radius, glowRadius);
 
             poseStack.popPose();
-                poseStack.translate(0, offset, 0);
+                poseStack.translate(0, offsetY, 0);
                 flag = -flag;
             }
         }
         poseStack.popPose();
     }
 
-    private int getRandomAngle(){
+    public static int getRandomAngle(){
         return ThreadLocalRandom.current().nextInt(MIN_ANGLE, MAX_ANGLE + 1);
     }
 
