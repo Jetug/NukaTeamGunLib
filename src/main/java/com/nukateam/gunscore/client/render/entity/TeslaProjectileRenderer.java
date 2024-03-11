@@ -76,7 +76,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
             poseStack.translate(side * 0.25, 0, 0);
 
 //            var angle = getRandomAngle();
-            var angle = 30;
+            var angle = 45f;
             var flag = 1;
 
             var length = distance / count;
@@ -84,22 +84,22 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
             for (int i = 0; i <= count; i++) {
             poseStack.pushPose();
-//                if(flag < 0) {
+//                if(flag > 0) {
 //                    angle = getRandomAngle();
 //                }
 
-                flag = -flag;
+                var radians = (angle * (Math.PI)) / 180;
+                var abs = Math.abs(radians);
+                var sin = Math.sin(abs);
 
-                var offsetZ = length * Mth.sin(Mth.abs(angle)) * flag;
-//                var offsetY = length * Mth.cos(Mth.abs(angle));
-                var offsetY = Math.sqrt(length * length - offsetZ * offsetZ);
-                var v = offsetY;
+                var offsetZ = length * sin * -flag;
+                var offsetY = length * Math.cos(Math.abs(radians));
+//                var offsetY = Math.sqrt(length * length - offsetZ * offsetZ);
 
                 poseStack.mulPose(Vector3f.XP.rotationDegrees(angle * flag));
-                if(flag < 0){
-                    poseStack.mulPose(Vector3f.XP.rotationDegrees(angle * flag));
-
-                }
+//                if(flag > 0){
+//                    poseStack.mulPose(Vector3f.XP.rotationDegrees(angle * flag));
+//                }
                 poseStack.translate(0, 0, offsetZ / 2 );
 
                 var gameTime = laserProjectile.getLevel().getGameTime();
@@ -108,13 +108,14 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
                 totalOffset = offsetY;
 //                poseStack.translate(0, totalOffset, 0);
-//                poseStack.translate(0, offset, 0);
+//                poseStack.translate(0, offsetY, 0);
 
                 renderBeam(poseStack, bufferSource, texture, partialTicks, 1.0F,
                         gameTime, (float)yOffset - 0.1f, (float)(length + 0.1), color, radius, glowRadius);
 
             poseStack.popPose();
-                poseStack.translate(0, offset - 0.1, 0);
+                poseStack.translate(0, offset, 0);
+                flag = -flag;
             }
         }
         poseStack.popPose();
