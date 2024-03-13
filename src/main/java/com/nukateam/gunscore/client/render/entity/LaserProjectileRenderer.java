@@ -22,8 +22,8 @@ import net.minecraft.world.phys.Vec3;
 public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
     public static ResourceLocation texture = new ResourceLocation(GunMod.MOD_ID, "textures/fx/laser.png");
-    private final float laserRadius = 0.05F / 2;
-    private final float laserGlowRadius = 0.055F / 2;
+    private final float laserRadius = 0.05F / 4;
+    private final float laserGlowRadius = 0.055F / 4;
     private float laserWidth = 3.0f;
     private static final ResourceLocation GUARDIAN_LOCATION = new ResourceLocation("textures/entity/guardian.png");
     private static final ResourceLocation GUARDIAN_BEAM_LOCATION = new ResourceLocation("textures/entity/guardian_beam.png");
