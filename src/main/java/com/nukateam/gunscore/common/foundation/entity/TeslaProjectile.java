@@ -1,7 +1,6 @@
 package com.nukateam.gunscore.common.foundation.entity;
 
 import com.nukateam.gunscore.common.base.gun.Gun;
-import com.nukateam.gunscore.common.foundation.init.ModEntities;
 import com.nukateam.gunscore.common.foundation.item.GunItem;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -13,7 +12,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import static com.nukateam.gunscore.client.render.entity.TeslaProjectileRenderer.getRandomAngle;
-import static com.nukateam.gunscore.common.foundation.init.ModEntities.*;
+import static com.nukateam.gunscore.common.foundation.init.Projectiles.*;
 
 public class TeslaProjectile extends AbstractBeamProjectile {
     public static final int TTL = 10;

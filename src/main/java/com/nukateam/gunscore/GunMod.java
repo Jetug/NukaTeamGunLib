@@ -39,7 +39,6 @@ import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.slf4j.Logger;
 
 import static com.nukateam.example.common.registery.ModGuns.*;
-import static com.nukateam.gunscore.common.foundation.entity.TeslaProjectile.CHAIN_TARGETS;
 
 @Mod(GunMod.MOD_ID)
 public class GunMod {
@@ -81,7 +80,7 @@ public class GunMod {
         ModContainers.REGISTER.register(MOD_EVENT_BUS);
         ModEffects.REGISTER.register(MOD_EVENT_BUS);
         ModEnchantments.REGISTER.register(MOD_EVENT_BUS);
-        ModEntities.REGISTER.register(MOD_EVENT_BUS);
+        Projectiles.REGISTER.register(MOD_EVENT_BUS);
 //        ModItems.REGISTER.register(MOD_EVENT_BUS);
         ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
         ModRecipeSerializers.REGISTER.register(MOD_EVENT_BUS);
@@ -124,18 +123,18 @@ public class GunMod {
 
     private static void registerProjectiles() {
         ProjectileManager.getInstance().registerFactory(GRENADE.get(),
-                (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(ModEntities.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
+                (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(Projectiles.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
 
         ProjectileManager.getInstance().registerFactory(MISSILE.get(),
-                (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(ModEntities.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
+                (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(Projectiles.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
 
         ProjectileManager.getInstance().registerFactory(ROUND10MM.get(),
                 (worldIn, entity, weapon, item, modifiedGun) ->
-                      new LaserProjectile(ModEntities.LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
+                      new LaserProjectile(Projectiles.LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
 
         ProjectileManager.getInstance().registerFactory(ROUND45.get(),
                 (worldIn, entity, weapon, item, modifiedGun) ->
-                      new TeslaProjectile(ModEntities.TESLA_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
+                      new TeslaProjectile(Projectiles.TESLA_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {

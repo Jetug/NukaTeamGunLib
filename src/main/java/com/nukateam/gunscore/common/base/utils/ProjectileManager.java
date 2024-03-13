@@ -3,7 +3,7 @@ package com.nukateam.gunscore.common.base.utils;
 import com.nukateam.gunscore.common.base.gun.Gun;
 import com.nukateam.gunscore.common.data.interfaces.IProjectileFactory;
 import com.nukateam.gunscore.common.foundation.entity.ProjectileEntity;
-import com.nukateam.gunscore.common.foundation.init.ModEntities;
+import com.nukateam.gunscore.common.foundation.init.Projectiles;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -26,7 +26,7 @@ public class ProjectileManager {
     }
 
     private final IProjectileFactory DEFAULT_FACTORY = (worldIn, entity, weapon, item, modifiedGun) ->
-            new ProjectileEntity(ModEntities.PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun);
+            new ProjectileEntity(Projectiles.PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun);
 
     private final Map<ResourceLocation, IProjectileFactory> projectileFactoryMap = new HashMap<>();
 

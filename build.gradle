@@ -140,7 +140,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.2.9'
 //    implementation fg.deobf('curse.maven:curios-309927:3841948')
     implementation fg.deobf("mod.azure.azurelib:azurelib-forge-1.18.2:1.0.31")
-    implementation fg.deobf('com.jetug:chassis_core:2.2.1')
+//    implementation fg.deobf('com.jetug:chassis_core:2.2.1')
 //    implementation fg.deobf("curse.maven:chassis_core-908954:5030459")
 //    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.18:3.0.57')
     implementation fg.deobf('curse.maven:framework-549225:4613856')

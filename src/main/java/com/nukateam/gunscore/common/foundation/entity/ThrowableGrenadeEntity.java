@@ -1,7 +1,7 @@
 package com.nukateam.gunscore.common.foundation.entity;
 
 import com.nukateam.gunscore.Config;
-import com.nukateam.gunscore.common.foundation.init.ModEntities;
+import com.nukateam.gunscore.common.foundation.init.Projectiles;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,7 +27,7 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity {
     }
 
     public ThrowableGrenadeEntity(Level world, LivingEntity entity, int timeLeft) {
-        super(ModEntities.THROWABLE_GRENADE.get(), world, entity);
+        super(Projectiles.THROWABLE_GRENADE.get(), world, entity);
         this.setShouldBounce(true);
         this.setGravityVelocity(0.05F);
         this.setItem(new ItemStack(GRENADE.get()));

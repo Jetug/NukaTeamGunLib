@@ -2,7 +2,7 @@ package com.nukateam.gunscore.common.foundation.entity;
 
 import com.nukateam.gunscore.Config;
 import com.nukateam.gunscore.common.foundation.init.ModEffects;
-import com.nukateam.gunscore.common.foundation.init.ModEntities;
+import com.nukateam.gunscore.common.foundation.init.Projectiles;
 import com.nukateam.gunscore.common.foundation.init.ModSounds;
 import com.nukateam.gunscore.common.network.PacketHandler;
 import com.nukateam.gunscore.common.network.message.S2CMessageStunGrenade;
@@ -46,7 +46,7 @@ public class StunGrenadeEntity extends ThrowableGrenadeEntity {
     }
 
     public StunGrenadeEntity(Level world, LivingEntity player, int maxCookTime) {
-        super(ModEntities.THROWABLE_STUN_GRENADE.get(), world, player);
+        super(Projectiles.THROWABLE_STUN_GRENADE.get(), world, player);
         this.setItem(new ItemStack(STUN_GRENADE.get()));
         this.setMaxLife(maxCookTime);
     }

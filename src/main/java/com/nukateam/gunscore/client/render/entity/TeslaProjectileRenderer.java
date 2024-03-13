@@ -24,8 +24,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
     public static ResourceLocation texture = new ResourceLocation(GunMod.MOD_ID, "textures/fx/tesla.png");
-    private final float laserRadius = 0.05F;
-    private final float laserGlowRadius = 0.055F;
+    private final float laserRadius = 0.05F / 2;
+    private final float laserGlowRadius = 0.055F / 2;
     private float laserWidth = 3.0f;
 
     private static final int MIN_ANGLE = -45;
@@ -61,6 +61,8 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
         var playerPos = projectile.endVec;
         var laserPos = projectile.startVec;
+//        var shooter = Minecraft.getInstance().level.getEntity(projectile.getShooterId());
+//        var laserPos = shooter.position();
         var pos = playerPos.subtract(laserPos);
 
         poseStack.pushPose();
@@ -78,9 +80,9 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
 //            var angleX = getRandomAngle();
 //            var angleZ = getRandomAngle();
-            var angleX = 30f;
-            var angleZ = 30f;
-//            var angleX = projectile.angleX;
+//            var angleX = 30f;
+//            var angleZ = 30f;
+            var angleX = projectile.angle;
             var flag = 1;
 
             var length = distance / count;
@@ -93,7 +95,6 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
                 }
 
                 var radiansX = (angleX * (Math.PI)) / 180;
-
                 var offsetZ = length * Math.sin(Math.abs(radiansX)) * -flag;
                 var offsetY = length * Math.cos(Math.abs(radiansX));
 //                var offsetY = Math.sqrt(length * length - offsetZ * offsetZ);
