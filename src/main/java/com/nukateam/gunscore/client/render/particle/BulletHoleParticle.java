@@ -64,7 +64,7 @@ public class BulletHoleParticle extends TextureSheetParticle {
         super.setSprite(sprite);
         this.uOffset = this.random.nextInt(16);
         this.vOffset = this.random.nextInt(16);
-        this.textureDensity = (sprite.getU1() - sprite.getU0()) / 16.0F; //Assuming texture is a square
+        this.textureDensity = (sprite.getU1() - sprite.getU0()) / 16.0F; //Assuming TESLA_TEXTURE is a square
     }
 
     private TextureAtlasSprite getSprite(BlockPos pos) {

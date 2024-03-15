@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
- * A texture state that represents the buffer after the world has been rendered but before the HUD
+ * A TESLA_TEXTURE state that represents the buffer after the world has been rendered but before the HUD
  * is rendered. Used for rendering scopes. This object is restricted to one get.
  * <p>
  * Author: MrCrayfish
@@ -71,12 +71,12 @@ public class ScreenTextureState extends RenderStateShard.TexturingStateShard {
 
         RenderSystem.bindTexture(this.getTextureId());
         if (mainWindow.getScreenWidth() != this.lastWindowWidth || mainWindow.getScreenHeight() != this.lastWindowHeight) {
-            // When window resizes the texture needs to be re-initialized and copied, so both are done in the same call
+            // When window resizes the TESLA_TEXTURE needs to be re-initialized and copied, so both are done in the same call
             this.lastWindowWidth = mainWindow.getScreenWidth();
             this.lastWindowHeight = mainWindow.getScreenHeight();
             glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, mainWindow.getWidth(), mainWindow.getHeight(), 0);
         } else {
-            // Copy sub-image is faster than copy because the texture does not need to be initialized
+            // Copy sub-image is faster than copy because the TESLA_TEXTURE does not need to be initialized
             glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, mainWindow.getWidth(), mainWindow.getHeight());
         }
     }

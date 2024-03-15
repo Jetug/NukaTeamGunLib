@@ -21,13 +21,10 @@ import net.minecraft.world.phys.Vec3;
 
 public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
-    public static ResourceLocation texture = new ResourceLocation(GunMod.MOD_ID, "textures/fx/laser.png");
+    public static ResourceLocation LASER_TEXTURE = new ResourceLocation(GunMod.MOD_ID, "textures/fx/laser.png");
     private final float laserRadius = 0.05F / 4;
     private final float laserGlowRadius = 0.055F / 4;
     private float laserWidth = 3.0f;
-    private static final ResourceLocation GUARDIAN_LOCATION = new ResourceLocation("textures/entity/guardian.png");
-    private static final ResourceLocation GUARDIAN_BEAM_LOCATION = new ResourceLocation("textures/entity/guardian_beam.png");
-    private static final RenderType BEAM_RENDER_TYPE = RenderType.entityCutoutNoCull(texture);
 
     public LaserProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -35,7 +32,7 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
 
     @Override
     public ResourceLocation getTextureLocation(LaserProjectile entity) {
-        return texture;
+        return LASER_TEXTURE;
     }
 
     private Vec3 getPosition(Entity pLivingEntity, double pYOffset, float pPartialTick) {
@@ -66,7 +63,7 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
 //        Tessellator tessellator = Tessellator.getInstance();
 //        BufferBuilder bufferbuilder = tessellator.getBuffer();
 
-        var vertexConsumer = bufferSource.getBuffer(RenderType.beaconBeam(texture, false));
+        var vertexConsumer = bufferSource.getBuffer(RenderType.beaconBeam(getTextureLocation(laser), false));
         float scale = 0.0125F;
 
         poseStack.pushPose();
@@ -190,7 +187,7 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
             int yOffset = 0; //(int) laserProjectile.position().y;
             var color = new Rgba(1, 1, 1, 1);
 
-            renderBeam(poseStack, bufferSource, texture, partialTicks, 1.0F,
+            renderBeam(poseStack, bufferSource, getTextureLocation(laserProjectile), partialTicks, 1.0F,
                     gameTime, (float) yOffset, (float) laserProjectile.distance, color, radius, glowRadius);
         }
         poseStack.popPose();

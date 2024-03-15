@@ -164,8 +164,8 @@ public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
 //        var distance_start = Math.min(1.0d, distance);
 //        var u = (float)(distance / laserWidth) * 2.0f;
 //
-////        bindTexture(texture); // Замените на соответствующий метод загрузки текстуры
-//        Minecraft.getInstance().getTextureManager().bindForSetup(texture);
+////        bindTexture(TESLA_TEXTURE); // Замените на соответствующий метод загрузки текстуры
+//        Minecraft.getInstance().getTextureManager().bindForSetup(TESLA_TEXTURE);
 //
 //        poseStack.pushPose();
 //        RenderSystem.enableBlend();

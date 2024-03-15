@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
@@ -30,9 +29,8 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
     private static final int MIN_ANGLE = -45;
     private static final int MAX_ANGLE = 45;
-    private Random random = new Random();
 
-    double offset = 0.50; // Distance per bolt vertex
+    static final double offset = 0.50; // Distance per bolt vertex
 
     public TeslaProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -45,6 +43,11 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
     public void render(TeslaProjectile projectile, float entityYaw, float partialTicks,
                         PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+        renderLightning(projectile, partialTicks, poseStack, bufferSource);
+        renderLightning2(projectile, partialTicks, poseStack, bufferSource);
+    }
+
+    private void renderLightning(TeslaProjectile projectile, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource) {
         var shooterId = projectile.getShooterId();
         var shooter = Minecraft.getInstance().level.getEntity(shooterId);
 
@@ -108,6 +111,90 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
                 if(angleX < 0) offsetZ = -offsetZ;
 
                 poseStack.translate(0, 0, offsetZ / 2 );
+
+                var gameTime = projectile.getLevel().getGameTime();
+                var yOffset = 0; //(int) projectile.position().y;
+                var color = new Rgba(1, 1, 1, 1);
+
+                totalOffset = offsetY;
+//                poseStack.translate(0, totalOffset, 0);
+//                poseStack.translate(0, offsetY, 0);
+
+                renderBeam(poseStack, bufferSource, texture, partialTicks, 1.0F,
+                        gameTime, (float)yOffset - 0.1f, (float)(length + 0.1), color, radius, glowRadius);
+
+            poseStack.popPose();
+                poseStack.translate(0, offsetY, 0);
+                flag = -flag;
+            }
+        }
+        poseStack.popPose();
+    }
+
+    private void renderLightning2(TeslaProjectile projectile, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource) {
+        var shooterId = projectile.getShooterId();
+        var shooter = Minecraft.getInstance().level.getEntity(shooterId);
+
+        float prog = ((float) projectile.tickCount) / ((float) projectile.getLife());
+
+        float radius = (float) (laserRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
+        float glowRadius = (float) (laserGlowRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
+
+        if (shooter == null) return;
+
+        double distance = projectile.distance;
+        int count = (int) Math.round(distance / offset);
+//        offset = (distance / (double) count);
+
+        var playerPos = projectile.endVec;
+        var laserPos = projectile.startVec;
+//        var shooter = Minecraft.getInstance().level.getEntity(projectile.getShooterId());
+//        var laserPos = shooter.position();
+        var pos = playerPos.subtract(laserPos);
+
+        poseStack.pushPose();
+        {
+//            poseStack.mulPose(Vector3f.XP.rotationDegrees(projectile.angle));
+            pos = pos.normalize();
+            float yPos = (float) Math.acos(pos.y);
+            float xzPos = (float) Math.atan2(pos.z, pos.x);
+
+            var side = projectile.isRightHand() ? -1 : 1;
+
+            poseStack.mulPose(Vector3f.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
+            poseStack.translate(side * 0.25, 0, 0);
+
+//            var angleX = getRandomAngle();
+//            var angleZ = getRandomAngle();
+//            var angleX = 30f;
+//            var angleZ = 30f;
+            var angleX = projectile.angle;
+            var flag = 1;
+
+            var length = distance / count;
+            var totalOffset = 0d;
+
+            for (int i = 0; i <= count; i++) {
+            poseStack.pushPose();
+                if(flag > 0) {
+                    angleX = getRandomAngle();
+                }
+
+                var radiansX = (angleX * (Math.PI)) / 180;
+                var offsetZ = length * Math.sin(Math.abs(radiansX)) * -flag;
+                var offsetY = length * Math.cos(Math.abs(radiansX));
+//                var offsetY = Math.sqrt(length * length - offsetZ * offsetZ);
+
+                poseStack.mulPose(Vector3f.ZP.rotationDegrees(angleX * flag));
+//                poseStack.mulPose(Vector3f.YP.rotationDegrees(angleZ * flag));
+//                if(flag > 0){
+//                    poseStack.mulPose(Vector3f.XP.rotationDegrees(angleX * flag));
+//                }
+
+                if(angleX > 0) offsetZ = -offsetZ;
+
+                poseStack.translate(offsetZ / 2, 0,  0);
 
                 var gameTime = projectile.getLevel().getGameTime();
                 var yOffset = 0; //(int) projectile.position().y;

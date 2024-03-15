@@ -33,9 +33,9 @@ public class GlowingLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {
         renderLayer(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, texture);
 
 //        if(model instanceof IGlowingModel glowingModel) {
-//            var texture = glowingModel.getGlowingTextureResource(animatable);
-//            if (texture != null)
-//                renderLayer(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, texture);
+//            var TESLA_TEXTURE = glowingModel.getGlowingTextureResource(animatable);
+//            if (TESLA_TEXTURE != null)
+//                renderLayer(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, TESLA_TEXTURE);
 //        }
     }
 
