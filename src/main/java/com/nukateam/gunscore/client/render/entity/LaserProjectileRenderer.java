@@ -16,8 +16,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
 
 public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
@@ -35,15 +33,54 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
         return LASER_TEXTURE;
     }
 
-    private Vec3 getPosition(Entity pLivingEntity, double pYOffset, float pPartialTick) {
-        double d0 = Mth.lerp(pPartialTick, pLivingEntity.xOld, pLivingEntity.getX());
-        double d1 = Mth.lerp(pPartialTick, pLivingEntity.yOld, pLivingEntity.getY()) + pYOffset;
-        double d2 = Mth.lerp(pPartialTick, pLivingEntity.zOld, pLivingEntity.getZ());
-        return new Vec3(d0, d1, d2);
+    public void render(LaserProjectile laserProjectile, float entityYaw, float partialTicks,
+                        PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+        var eyeHeight = laserProjectile.getEyeHeight();
+        var shooterId = laserProjectile.getShooterId();
+        var shooter = Minecraft.getInstance().level.getEntity(shooterId);
+
+        float prog = ((float) laserProjectile.tickCount) / ((float) laserProjectile.getLife());
+
+        float radius = (float) (laserRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
+        float glowRadius = (float) (laserGlowRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
+
+        if (shooter == null) return;
+
+        poseStack.pushPose();
+        {
+            var playerPos = laserProjectile.endVec;
+            var laserPos = laserProjectile.startVec;
+            var pos = playerPos.subtract(laserPos);
+            var offsetX = 0.20f;
+            var offsetY = 0.25f;
+            var offsetZ = 0.07f;
+            var distance = (float)laserProjectile.distance - offsetY;
+
+            pos = pos.normalize();
+            float yPos = (float) Math.acos(pos.y);
+            float xzPos = (float) Math.atan2(pos.z, pos.x);
+
+            var side = laserProjectile.isRightHand() ? -1 : 1;
+
+            poseStack.mulPose(Vector3f.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
+
+            poseStack.translate(side * offsetX, offsetY, offsetZ);
+//            poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+
+            long gameTime = laserProjectile.getLevel().getGameTime();
+            int yOffset = 0; //(int) laserProjectile.position().y;
+            var color = new Rgba(1, 1, 1, 1);
+
+            renderBeam(poseStack, bufferSource, getTextureLocation(laserProjectile), partialTicks, 1.0F,
+                    gameTime, (float) yOffset, distance, color, radius, glowRadius);
+        }
+        poseStack.popPose();
     }
 
+
     public void render2(LaserProjectile laser, float entityYaw, float partialTicks,
-                       PoseStack poseStack2, MultiBufferSource bufferSource, int light) {
+                        PoseStack poseStack2, MultiBufferSource bufferSource, int light) {
         float distance = (float) laser.distance;
         int maxTicks = laser.maxTicks;
 
@@ -152,46 +189,6 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
         poseStack.popPose();
     }
 
-    public void render(LaserProjectile laserProjectile, float entityYaw, float partialTicks,
-                        PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-        var eyeHeight = laserProjectile.getEyeHeight();
-        var shooterId = laserProjectile.getShooterId();
-        var shooter = Minecraft.getInstance().level.getEntity(shooterId);
-
-        float prog = ((float) laserProjectile.tickCount) / ((float) laserProjectile.getLife());
-
-        float radius = (float) (laserRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
-        float glowRadius = (float) (laserGlowRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
-
-        if (shooter == null) return;
-
-        poseStack.pushPose();
-        {
-            var playerPos = laserProjectile.endVec;
-            var laserPos = laserProjectile.startVec;
-            var pos = playerPos.subtract(laserPos);
-
-            pos = pos.normalize();
-            float yPos = (float) Math.acos(pos.y);
-            float xzPos = (float) Math.atan2(pos.z, pos.x);
-
-            var side = laserProjectile.isRightHand() ? -1 : 1;
-
-            poseStack.mulPose(Vector3f.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
-
-            poseStack.translate(side * 0.25, 0, 0);
-//            poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
-
-            long gameTime = laserProjectile.getLevel().getGameTime();
-            int yOffset = 0; //(int) laserProjectile.position().y;
-            var color = new Rgba(1, 1, 1, 1);
-
-            renderBeam(poseStack, bufferSource, getTextureLocation(laserProjectile), partialTicks, 1.0F,
-                    gameTime, (float) yOffset, (float) laserProjectile.distance, color, radius, glowRadius);
-        }
-        poseStack.popPose();
-    }
 
     public static void renderBeam(PoseStack pPoseStack, MultiBufferSource pBufferSource, ResourceLocation pBeamLocation,
                                   float pPartialTick, float pTextureScale, long pGameTime, float pYOffset, float pHeight,

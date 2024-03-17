@@ -66,7 +66,7 @@ public class ServerPlayHandler {
      * Fires the weapon the player is currently holding.
      * This is only intended for use on the logical server.
      *
-     * @param shooter the living entity for who's weapon to fire
+     * @param shooter the living entity for whose weapon to fire
      */
     public static void handleShoot(MessageShoot message, LivingEntity shooter) {
         if (shooter.isSpectator())
