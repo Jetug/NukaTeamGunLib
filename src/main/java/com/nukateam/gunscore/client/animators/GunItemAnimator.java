@@ -76,14 +76,14 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
 //            var stack = GUN_RENDERER.getRenderStack();
 //            if (stack == null || stack.isEmpty()) return PlayState.STOP;
 
-            if (isFirstPerson(transformType) && AimingHandler.get().isAiming()) {
+            if (/*isFirstPerson(transformType) && */AimingHandler.get().isAiming()) {
                 var animation = begin().then("aim", HOLD_ON_LAST_FRAME);
                 return event.setAndContinue(animation);
             } else {
                 return PlayState.STOP;
             }
         };
-}   
+}
 
     private AnimationController.AnimationStateHandler<GunItemAnimator> animate() {
         return event -> {
@@ -103,8 +103,14 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                 RawAnimation animation;
 
                 if (reloadHandler.isReloading(entity, arm)) {
-                    animation = begin().then(RELOAD, HOLD_ON_LAST_FRAME);
-                    syncAnimation(event, RELOAD, general.getReloadTime());
+                    animation = begin()
+                            .then("reload_start", PLAY_ONCE)
+                            .then(RELOAD, LOOP)
+                            .then("reload_end", PLAY_ONCE);
+
+                    if(event.getController().getCurrentAnimation().animation().name().equals(RELOAD))
+                        syncAnimation(event, RELOAD, general.getReloadTime());
+
                 } else if (isShooting) {
                     animation = begin().then(SHOT, LOOP);
                     syncAnimation(event, SHOT, general.getRate());

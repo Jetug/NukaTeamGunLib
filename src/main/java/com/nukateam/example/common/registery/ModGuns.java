@@ -25,6 +25,7 @@ public class ModGuns {
     public static final RegistryObject<GunItem> MINIGUN = ITEMS.register("minigun", () -> new MinigunGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 
     public static final RegistryObject<GunItem> POWDERGUN = ITEMS.register("powdergun", () -> new ShotGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<GunItem> SHOTGUN = ITEMS.register("shotgun", () -> new ShotGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 
     public static final RegistryObject<Item> MISSILE = ITEMS.register("missile",
             () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
