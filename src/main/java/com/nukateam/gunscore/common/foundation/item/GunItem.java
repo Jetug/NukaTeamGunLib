@@ -110,14 +110,16 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         float damage = modifiedGun.getProjectile().getDamage();
         damage = GunModifierHelper.getModifiedProjectileDamage(stack, damage);
         damage = GunEnchantmentHelper.getAcceleratorDamage(stack, damage);
-        tooltip.add(new TranslatableComponent("info.gunscore.damage", ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage) + additionalDamageText).withStyle(ChatFormatting.GRAY));
+        tooltip.add(new TranslatableComponent("info.gunscore.damage",
+                ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage) + additionalDamageText).withStyle(ChatFormatting.GRAY));
 
         if (tagCompound != null) {
             if (tagCompound.getBoolean("IgnoreAmmo")) {
                 tooltip.add(new TranslatableComponent("info.gunscore.ignore_ammo").withStyle(ChatFormatting.AQUA));
             } else {
                 int ammoCount = tagCompound.getInt(Tags.AMMO_COUNT);
-                tooltip.add(new TranslatableComponent("info.gunscore.ammo", ChatFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)).withStyle(ChatFormatting.GRAY));
+                tooltip.add(new TranslatableComponent("info.gunscore.ammo",
+                        ChatFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)).withStyle(ChatFormatting.GRAY));
             }
         }
         //tooltip.add(new TranslatableComponent("info.gunscore.attachment_help", new KeybindComponent("key.gunscore.attachments").getString().toUpperCase(Locale.ENGLISH)).withStyle(ChatFormatting.YELLOW));
