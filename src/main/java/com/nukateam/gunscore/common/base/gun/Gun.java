@@ -314,7 +314,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
             return this.maxAmmo;
         }
-
         /**
          * @return The amount of ammo to add to the weapon each reload cycle
          */
