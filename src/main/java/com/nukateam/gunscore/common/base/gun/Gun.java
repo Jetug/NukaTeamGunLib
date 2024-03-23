@@ -388,6 +388,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Optional
         private boolean damageReduceOverLife;
         @Optional
+        private boolean magazineMode;
+        @Optional
         private int trailColor = 0xFFD289;
         @Optional
         private double trailLengthMultiplier = 1.0;
@@ -403,6 +405,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             tag.putInt("Life", this.life);
             tag.putBoolean("Gravity", this.gravity);
             tag.putBoolean("DamageReduceOverLife", this.damageReduceOverLife);
+            tag.putBoolean("MagazineMode", this.magazineMode);
             tag.putInt("TrailColor", this.trailColor);
             tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
             return tag;
@@ -434,6 +437,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (tag.contains("DamageReduceOverLife", Tag.TAG_ANY_NUMERIC)) {
                 this.damageReduceOverLife = tag.getBoolean("DamageReduceOverLife");
             }
+            if (tag.contains("MagazineMode", Tag.TAG_ANY_NUMERIC)) {
+                this.magazineMode = tag.getBoolean("MagazineMode");
+            }
             if (tag.contains("TrailColor", Tag.TAG_ANY_NUMERIC)) {
                 this.trailColor = tag.getInt("TrailColor");
             }
@@ -457,6 +463,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             object.addProperty("life", this.life);
             if (this.gravity) object.addProperty("gravity", true);
             if (this.damageReduceOverLife) object.addProperty("damageReduceOverLife", this.damageReduceOverLife);
+            if (this.magazineMode) object.addProperty("magazineMode", this.magazineMode);
             if (this.trailColor != 0xFFD289) object.addProperty("trailColor", this.trailColor);
             if (this.trailLengthMultiplier != 1.0)
                 object.addProperty("trailLengthMultiplier", this.trailLengthMultiplier);
@@ -473,6 +480,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             projectile.life = this.life;
             projectile.gravity = this.gravity;
             projectile.damageReduceOverLife = this.damageReduceOverLife;
+            projectile.magazineMode = this.magazineMode;
             projectile.trailColor = this.trailColor;
             projectile.trailLengthMultiplier = this.trailLengthMultiplier;
             return projectile;
@@ -532,6 +540,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
          */
         public boolean isDamageReduceOverLife() {
             return this.damageReduceOverLife;
+        }
+
+
+        public boolean isMagazineMode() {
+            return this.magazineMode;
         }
 
         /**
@@ -1385,6 +1398,32 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return AmmoContext.NONE;
     }
 
+    public static AmmoContext findMagazine(Player player, ResourceLocation id) {
+        if (player.isCreative()) {
+            Item item = ForgeRegistries.ITEMS.getValue(id);
+            ItemStack ammo = item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
+            return new AmmoContext(ammo, null);
+        }
+
+        ItemStack ammo = null;
+
+        for (int i = 0; i < player.getInventory().getContainerSize(); ++i) {
+            ItemStack stack = player.getInventory().getItem(i);
+            if (isAmmo(stack, id)) {
+                if(stack.getDamageValue() == 0)
+                    return new AmmoContext(stack, player.getInventory());
+                if (ammo == null || (stack.getDamageValue() < ammo.getDamageValue() && ammo.getDamageValue() < ammo.getMaxDamage()))
+                    ammo = stack;
+            }
+        }
+
+        if (GunMod.backpackedLoaded) {
+            return BackpackHelper.findMagazine(player, id);
+        }
+
+        return ammo == null ? AmmoContext.NONE : new AmmoContext(ammo, player.getInventory());
+    }
+
     public static boolean isAmmo(ItemStack stack, ResourceLocation id) {
         return stack != null && stack.getItem().getRegistryName().equals(id);
     }
@@ -1554,6 +1593,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         public Builder setReduceDamageOverLife(boolean damageReduceOverLife) {
             this.gun.projectile.damageReduceOverLife = damageReduceOverLife;
+            return this;
+        }
+
+        public Builder setMagazineMode(boolean magazineMode) {
+            this.gun.projectile.magazineMode = magazineMode;
             return this;
         }
 

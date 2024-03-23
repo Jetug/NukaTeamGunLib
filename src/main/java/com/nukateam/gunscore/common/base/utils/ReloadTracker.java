@@ -6,6 +6,7 @@ import com.nukateam.gunscore.common.data.constants.Tags;
 import com.nukateam.gunscore.common.data.util.GunEnchantmentHelper;
 import com.nukateam.gunscore.common.data.util.GunModifierHelper;
 import com.nukateam.gunscore.common.data.util.LivingEntityUtils;
+import com.nukateam.gunscore.common.data.util.StackUtils;
 import com.nukateam.gunscore.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.gunscore.common.foundation.item.GunItem;
 import com.nukateam.gunscore.common.network.PacketHandler;
@@ -19,12 +20,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -116,8 +119,13 @@ public class ReloadTracker {
     }
 
     private void reloadMagazine(Player player) {
-        var amount = this.gun.getGeneral().getMaxAmmo();
-        addAmmo(player, amount);
+        if(this.gun.getProjectile().isMagazineMode()){
+            addMagazine(player);
+        }
+        else{
+            var amount = this.gun.getGeneral().getMaxAmmo();
+            addAmmo(player, amount);
+        }
     }
 
     private void addCartridge(Player player) {
@@ -138,6 +146,40 @@ public class ReloadTracker {
                 tag.putInt(Tags.AMMO_COUNT, tag.getInt(Tags.AMMO_COUNT) + amount);
             }
             ammo.shrink(amount);
+
+            // Trigger that the container changed
+            var container = context.container();
+            if (container != null) {
+                container.setChanged();
+            }
+        }
+//        playReloadSound(player);
+    }
+
+    private void addMagazine(Player player) {
+        var ammoId = this.gun.getProjectile().getItem();
+        var context = Gun.findMagazine(player, ammoId);
+        var ammo = context.stack();
+
+        if (!ammo.isEmpty()) {
+            var amount = StackUtils.getDurability(ammo);
+            var tag = this.stack.getTag();
+            amount = Math.min(this.gun.getGeneral().getMaxAmmo(), amount);
+
+            if (tag != null) {
+                var maxAmmo = GunEnchantmentHelper.getAmmoCapacity(this.stack, this.gun);
+                var currentAmmo = tag.getInt(Tags.AMMO_COUNT);
+
+                if(currentAmmo > 0) {
+                    var usedMagazine = new ItemStack(ForgeRegistries.ITEMS.getValue(ammoId));
+                    StackUtils.setDurability(usedMagazine, currentAmmo);
+                    player.addItem(usedMagazine);
+                }
+//                amount = Math.min(amount, maxAmmo - currentAmmo);
+                tag.putInt(Tags.AMMO_COUNT, amount);
+            }
+
+            ammo.shrink(1);
 
             // Trigger that the container changed
             var container = context.container();

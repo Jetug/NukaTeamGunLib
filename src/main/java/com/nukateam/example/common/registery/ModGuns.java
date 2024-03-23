@@ -38,7 +38,7 @@ public class ModGuns {
 
     //Rounds
     public static final RegistryObject<Item> ROUND10MM = ITEMS.register("round10mm",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new Item(new Item.Properties().durability(10).tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> ROUND38 = ITEMS.register("round38",
             () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> STEELBALLS = ITEMS.register("steel_ball",

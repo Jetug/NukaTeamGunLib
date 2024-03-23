@@ -6,6 +6,7 @@ import com.nukateam.gunscore.common.base.utils.ProjectileManager;
 import com.nukateam.gunscore.common.base.utils.ShootTracker;
 import com.nukateam.gunscore.common.base.utils.SpreadTracker;
 import com.nukateam.gunscore.common.data.constants.Tags;
+import com.nukateam.gunscore.common.data.util.StackUtils;
 import com.nukateam.gunscore.common.foundation.container.AttachmentContainer;
 import com.nukateam.gunscore.common.foundation.container.WorkbenchContainer;
 import com.nukateam.gunscore.common.data.util.GunEnchantmentHelper;
@@ -246,12 +247,22 @@ public class ServerPlayHandler {
     }
 
     private static void unloadArm(ServerPlayer player, ItemStack stack) {
+        var gunItem = (GunItem) stack.getItem();
+        var gun = gunItem.getModifiedGun(stack);
+
+        if(gun.getProjectile().isMagazineMode())
+            unloadMagazine(player, stack);
+        else
+            unloadAmmo(player, stack);
+    }
+
+    private static void unloadAmmo(ServerPlayer player, ItemStack stack) {
 //        ItemStack stack = player.getMainHandItem();
         if (stack.getItem() instanceof GunItem) {
             var tag = stack.getTag();
-            if (tag != null && tag.contains("AmmoCount", Tag.TAG_INT)) {
-                int count = tag.getInt("AmmoCount");
-                tag.putInt("AmmoCount", 0);
+            if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
+                int count = tag.getInt(Tags.AMMO_COUNT);
+                tag.putInt(Tags.AMMO_COUNT, 0);
 
                 var gunItem = (GunItem) stack.getItem();
                 var gun = gunItem.getModifiedGun(stack);
@@ -273,6 +284,28 @@ public class ServerPlayHandler {
                 if (remaining > 0) {
                     spawnAmmo(player, new ItemStack(item, remaining));
                 }
+            }
+        }
+    }
+
+    private static void unloadMagazine(ServerPlayer player, ItemStack stack) {
+        if (stack.getItem() instanceof GunItem) {
+            var tag = stack.getTag();
+            if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
+                int count = tag.getInt(Tags.AMMO_COUNT);
+                tag.putInt(Tags.AMMO_COUNT, 0);
+
+                var gunItem = (GunItem) stack.getItem();
+                var gun = gunItem.getModifiedGun(stack);
+                var id = gun.getProjectile().getItem();
+                var item = ForgeRegistries.ITEMS.getValue(id);
+
+                if (item == null) return;
+
+                var usedMagazine = new ItemStack(item);
+                StackUtils.setDurability(usedMagazine, count);
+//                player.addItem(usedMagazine);
+                spawnAmmo(player, usedMagazine);
             }
         }
     }
