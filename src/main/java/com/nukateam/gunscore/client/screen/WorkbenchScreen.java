@@ -123,7 +123,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 if (!recipeList.isEmpty()) {
                     var item = (GunItem)recipeList.get(0).getItem().getItem();
                     var icon = new ItemStack(item);
-                    icon.getOrCreateTag().putInt("AmmoCount", item.getGun().getGeneral().getMaxAmmo());
+                    icon.getOrCreateTag().putInt("AmmoCount", item.getGun().getGeneral().getMaxAmmo(new ItemStack(item)));
                     this.tabs.add(new Tab(icon, category, recipeList));
                 }
             }

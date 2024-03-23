@@ -10,7 +10,8 @@
 	"recoilKick": 0.3,
     "recoilAdsReduction": 0.25,
     "alwaysSpread": true,
-    "spread": 1.0
+    "spread": 1.0,
+    "chargingTime": 20
   },
   "projectile": {
     "item": "gunscore:round10mm",

@@ -139,6 +139,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Optional
         private int projectileAmount = 1;
         @Optional
+        private int chargingTime = 0;
+        @Optional
         private boolean alwaysSpread;
         @Optional
         private float spread;
@@ -159,6 +161,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             tag.putFloat    (RECOIL_DURATION_OFFSET, this.recoilDurationOffset);
             tag.putFloat    (RECOIL_ADS_REDUCTION, this.recoilAdsReduction);
             tag.putInt      (PROJECTILE_AMOUNT, this.projectileAmount);
+            tag.putInt      (PROJECTILE_AMOUNT, this.chargingTime);
             tag.putFloat    (SPREAD, this.spread);
             tag.putBoolean  (ALWAYS_SPREAD, this.alwaysSpread);
             return tag;
@@ -205,6 +208,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (tag.contains(PROJECTILE_AMOUNT, Tag.TAG_ANY_NUMERIC)) {
                 this.projectileAmount = tag.getInt(PROJECTILE_AMOUNT);
             }
+            if (tag.contains("ChargingTime", Tag.TAG_ANY_NUMERIC)) {
+                this.chargingTime = tag.getInt("ChargingTime");
+            }
             if (tag.contains(ALWAYS_SPREAD, Tag.TAG_ANY_NUMERIC)) {
                 this.alwaysSpread = tag.getBoolean(ALWAYS_SPREAD);
             }
@@ -224,6 +230,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             Preconditions.checkArgument(this.recoilDurationOffset >= 0.0F && this.recoilDurationOffset <= 1.0F, "Recoil duration offset must be between 0.0 and 1.0");
             Preconditions.checkArgument(this.recoilAdsReduction >= 0.0F && this.recoilAdsReduction <= 1.0F, "Recoil ads reduction must be between 0.0 and 1.0");
             Preconditions.checkArgument(this.projectileAmount >= 1, "Projectile amount must be more than or equal to one");
+            Preconditions.checkArgument(this.chargingTime >= 0, "Projectile amount must be more than or equal to zero");
             Preconditions.checkArgument(this.spread >= 0.0F, "Spread must be more than or equal to zero");
             JsonObject object = new JsonObject();
             if (this.auto) object.addProperty("auto", true);
@@ -239,6 +246,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 object.addProperty("recoilDurationOffset", this.recoilDurationOffset);
             if (this.recoilAdsReduction != 0.2F) object.addProperty("recoilAdsReduction", this.recoilAdsReduction);
             if (this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
+            if (this.chargingTime != 0) object.addProperty("chargingTime", this.chargingTime);
             if (this.alwaysSpread) object.addProperty("alwaysSpread", true);
             if (this.spread != 0.0F) object.addProperty("spread", this.spread);
             return object;
@@ -262,6 +270,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             general.recoilDurationOffset = this.recoilDurationOffset;
             general.recoilAdsReduction = this.recoilAdsReduction;
             general.projectileAmount = this.projectileAmount;
+            general.chargingTime = this.chargingTime;
             general.alwaysSpread = this.alwaysSpread;
             general.spread = this.spread;
             return general;
@@ -291,7 +300,18 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         /**
          * @return The maximum amount of ammo this weapon can hold
          */
-        public int getMaxAmmo() {
+        public int getMaxAmmo(@Nullable ItemStack gunStack) {
+            if(gunStack != null && gunStack.getItem() instanceof GunItem gunItem) {
+                var gun = gunItem.getModifiedGun(gunStack);
+
+                if(gun.getProjectile().isMagazineMode()) {
+                    var id = gun.getProjectile().getItem();
+                    var item = ForgeRegistries.ITEMS.getValue(id);
+
+                    return item.getMaxDamage(new ItemStack(item));
+                }
+
+            }
             return this.maxAmmo;
         }
 
@@ -357,6 +377,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
          */
         public int getProjectileAmount() {
             return this.projectileAmount;
+        }
+
+        /**
+         * @return Time to charge the gun
+         */
+        public int getChargingTime() {
+            return this.chargingTime;
         }
 
         /**
@@ -1436,7 +1463,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static void fillAmmo(ItemStack gunStack) {
         if(gunStack.getItem() instanceof GunItem gunItem){
             var tag = gunStack.getOrCreateTag();
-            var maxAmmo = gunItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo();
+            var maxAmmo = gunItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo(gunStack);
             tag.putInt(Tags.AMMO_COUNT, maxAmmo);
         }
     }
@@ -1533,6 +1560,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         public Builder setProjectileAmount(int projectileAmount) {
             this.gun.general.projectileAmount = projectileAmount;
+            return this;
+        }
+
+        public Builder setСhargingTime(int chargingTime) {
+            this.gun.general.chargingTime = chargingTime;
             return this;
         }
 

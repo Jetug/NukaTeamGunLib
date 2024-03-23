@@ -127,7 +127,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> stacks) {
         if (this.allowdedIn(group)) {
             ItemStack stack = new ItemStack(this);
-            stack.getOrCreateTag().putInt(Tags.AMMO_COUNT, this.gun.getGeneral().getMaxAmmo());
+            stack.getOrCreateTag().putInt(Tags.AMMO_COUNT, this.gun.getGeneral().getMaxAmmo(stack));
             stacks.add(stack);
         }
     }
@@ -163,6 +163,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         if (GunMod.isDebugging()) {
             return Debug.getGun(this);
         }
+
         return this.gun;
     }
 

@@ -119,14 +119,20 @@ public class ShootingHandler {
         var mc = Minecraft.getInstance();
         event.setSwingHand(false);
         event.setCanceled(true);
-        this.fire(mc.player, heldItem);
         var gun = gunItem.getModifiedGun(heldItem);
 
-        if (!gun.getGeneral().isAuto()) {
-            if(event.isAttack())
-                mc.options.keyAttack.setDown(false);
-            else if (event.isUseItem())
-                mc.options.keyUse.setDown(false);
+        if(gun.getGeneral().getChargingTime() == 0) {
+            this.fire(mc.player, heldItem);
+
+            if (!gun.getGeneral().isAuto()) {
+                if(event.isAttack())
+                    mc.options.keyAttack.setDown(false);
+                else if (event.isUseItem())
+                    mc.options.keyUse.setDown(false);
+            }
+        }
+        else {
+
         }
     }
 

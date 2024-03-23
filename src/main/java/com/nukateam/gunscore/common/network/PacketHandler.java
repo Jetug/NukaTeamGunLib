@@ -22,6 +22,7 @@ public class PacketHandler {
             .create(GunMod.MOD_ID, "guns", 1)
                 .registerPlayMessage(C2SMessageAim.class, NetworkDirection.PLAY_TO_SERVER)
                 .registerPlayMessage(C2SMessageReload.class, NetworkDirection.PLAY_TO_SERVER)
+                .registerPlayMessage(C2SMessageCharge.class, NetworkDirection.PLAY_TO_SERVER)
                 .registerPlayMessage(MessageShoot.class, NetworkDirection.PLAY_TO_SERVER)
                 .registerPlayMessage(C2SMessageUnload.class, NetworkDirection.PLAY_TO_SERVER)
                 .registerPlayMessage(C2SMessageCraft.class, NetworkDirection.PLAY_TO_SERVER)
