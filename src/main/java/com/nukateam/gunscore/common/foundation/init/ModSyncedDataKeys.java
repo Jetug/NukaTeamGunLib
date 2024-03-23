@@ -12,35 +12,13 @@ import net.minecraft.world.entity.LivingEntity;
  * Author: MrCrayfish
  */
 public class ModSyncedDataKeys {
-    public static final SyncedDataKey<LivingEntity, Boolean> AIMING = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
-            .id(new ResourceLocation(GunMod.MOD_ID, "aiming"))
-            .defaultValueSupplier(() -> false)
-            .resetOnDeath()
-            .build();
-
-    public static final SyncedDataKey<LivingEntity, Boolean> SHOOTING_RIGHT = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
-            .id(new ResourceLocation(GunMod.MOD_ID, "shooting_right"))
-            .defaultValueSupplier(() -> false)
-            .resetOnDeath()
-            .build();
-
-    public static final SyncedDataKey<LivingEntity, Boolean> SHOOTING_LEFT = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
-            .id(new ResourceLocation(GunMod.MOD_ID, "shooting_left"))
-            .defaultValueSupplier(() -> false)
-            .resetOnDeath()
-            .build();
-
-    public static final SyncedDataKey<LivingEntity, Boolean> RELOADING_RIGHT = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
-            .id(new ResourceLocation(GunMod.MOD_ID, "reloading_right"))
-            .defaultValueSupplier(() -> false)
-            .resetOnDeath()
-            .build();
-
-    public static final SyncedDataKey<LivingEntity, Boolean> RELOADING_LEFT = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
-            .id(new ResourceLocation(GunMod.MOD_ID, "reloading_left"))
-            .defaultValueSupplier(() -> false)
-            .resetOnDeath()
-            .build();
+    public static final SyncedDataKey<LivingEntity, Boolean> AIMING          = registerBooleanKey("aiming"         );
+    public static final SyncedDataKey<LivingEntity, Boolean> SHOOTING_RIGHT  = registerBooleanKey("shooting_right" );
+    public static final SyncedDataKey<LivingEntity, Boolean> SHOOTING_LEFT   = registerBooleanKey("shooting_left"  );
+    public static final SyncedDataKey<LivingEntity, Boolean> RELOADING_RIGHT = registerBooleanKey("reloading_right");
+    public static final SyncedDataKey<LivingEntity, Boolean> RELOADING_LEFT  = registerBooleanKey("reloading_left" );
+    public static final SyncedDataKey<LivingEntity, Boolean> CHARGING_RIGHT  = registerBooleanKey("charging_right" );
+    public static final SyncedDataKey<LivingEntity, Boolean> CHARGING_LEFT   = registerBooleanKey("charging_left"  );
 
     public static void register() {
         FrameworkAPI.registerSyncedDataKey(AIMING);
@@ -48,5 +26,15 @@ public class ModSyncedDataKeys {
         FrameworkAPI.registerSyncedDataKey(SHOOTING_LEFT);
         FrameworkAPI.registerSyncedDataKey(RELOADING_RIGHT);
         FrameworkAPI.registerSyncedDataKey(RELOADING_LEFT);
+        FrameworkAPI.registerSyncedDataKey(CHARGING_RIGHT);
+        FrameworkAPI.registerSyncedDataKey(CHARGING_LEFT);
+    }
+
+    private static SyncedDataKey<LivingEntity, Boolean> registerBooleanKey(String name) {
+        return SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
+                .id(new ResourceLocation(GunMod.MOD_ID, name))
+                .defaultValueSupplier(() -> false)
+                .resetOnDeath()
+                .build();
     }
 }

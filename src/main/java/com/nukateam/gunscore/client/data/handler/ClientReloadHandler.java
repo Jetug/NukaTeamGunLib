@@ -90,8 +90,6 @@ public class ClientReloadHandler {
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
 
-        ;
-
         if (mainHandItem.getItem() instanceof GunItem
                 && !GunModifierHelper.isWeaponFull(mainHandItem)){
             setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), HumanoidArm.RIGHT);
