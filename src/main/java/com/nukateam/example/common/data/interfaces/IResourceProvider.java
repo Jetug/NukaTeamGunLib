@@ -1,7 +1,7 @@
 package com.nukateam.example.common.data.interfaces;
 
 public interface IResourceProvider {
-    public String getName();
+    String getName();
 
-    public String getNamespace();
+    String getNamespace();
 }

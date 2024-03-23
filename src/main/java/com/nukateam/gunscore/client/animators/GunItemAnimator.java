@@ -6,9 +6,11 @@ import com.nukateam.gunscore.client.data.handler.AimingHandler;
 import com.nukateam.gunscore.client.data.handler.ClientReloadHandler;
 import com.nukateam.gunscore.client.data.handler.ShootingHandler;
 import com.nukateam.gunscore.client.model.GeoGunModel;
+import com.nukateam.gunscore.common.base.gun.Gun;
 import com.nukateam.gunscore.common.foundation.item.GunItem;
 
 import mod.azure.azurelib.cache.AzureLibCache;
+import mod.azure.azurelib.core.animation.Animation;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.core.animation.RawAnimation;
@@ -21,6 +23,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+
 import static com.nukateam.example.common.data.constants.Animations.*;
 import static com.nukateam.gunscore.client.data.util.TransformUtils.*;
 import static com.nukateam.gunscore.client.render.Render.*;
@@ -31,6 +37,8 @@ import static net.minecraft.client.renderer.block.model.ItemTransforms.*;
 
 @OnlyIn(Dist.CLIENT)
 public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
+    public static final String RELOAD_START = "reload_start";
+    public static final String RELOAD_END = "reload_end";
     private final Minecraft minecraft = Minecraft.getInstance();
     private int chamberId = 1;
     private GunItem currentGun = null;
@@ -103,14 +111,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                 RawAnimation animation;
 
                 if (reloadHandler.isReloading(entity, arm)) {
-                    animation = begin()
-                            .then("reload_start", PLAY_ONCE)
-                            .then(RELOAD, LOOP)
-                            .then("reload_end", PLAY_ONCE);
-
-                    if(event.getController().getCurrentAnimation().animation().name().equals(RELOAD))
-                        syncAnimation(event, RELOAD, general.getReloadTime());
-
+                    animation = getReloadAnimation(event, general);
                 } else if (isShooting) {
                     animation = begin().then(SHOT, LOOP);
                     syncAnimation(event, SHOT, general.getRate());
@@ -136,6 +137,24 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                 return PlayState.STOP;
             }
         };
+    }
+
+    @NotNull
+    private RawAnimation getReloadAnimation(AnimationState<GunItemAnimator> event, Gun.General general) {
+        RawAnimation animation;
+        animation = begin();
+
+        if(containsAnimation(RELOAD_START))
+            animation.then(RELOAD_START, PLAY_ONCE);
+
+        animation.then(RELOAD, LOOP);
+
+        if(containsAnimation(RELOAD_END))
+            animation.then(RELOAD_END, PLAY_ONCE);
+
+        if(event.getController().getCurrentAnimation().animation().name().equals(RELOAD))
+            syncAnimation(event, RELOAD, general.getReloadTime());
+        return animation;
     }
 
     private AnimationController.AnimationStateHandler<GunItemAnimator> animateRevolver() {
@@ -179,12 +198,20 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
     }
 
     private double getAnimationDuration(String animationName) {
+        var animation = getAnimation(animationName);
+        return animation != null ? animation.length() : 1;
+    }
+
+    private boolean containsAnimation(String animationName) {
+        return getAnimation(animationName) != null;
+    }
+
+    @Nullable
+    private Animation getAnimation(String animationName){
         var map = AzureLibCache.getBakedAnimations();
         var animationResource = GeoGunModel.INSTANCE.getAnimationResource(this);
         var bakedAnimations = map.get(animationResource);
-        var animation = bakedAnimations.animations().get(animationName);
-
-        return animation != null ? animation.length() : 1;
+        return bakedAnimations.animations().get(animationName);
     }
 
     private void soundHandler(SoundKeyframeEvent<GunItemAnimator> event) {
