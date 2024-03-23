@@ -291,10 +291,20 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         /**
          * @return The maximum amount of ammo this weapon can hold
          */
-        public int getMaxAmmo() {
+        public int getMaxAmmo(@Nullable ItemStack gunStack) {
+            if(gunStack != null && gunStack.getItem() instanceof GunItem gunItem) {
+                var gun = gunItem.getModifiedGun(gunStack);
+
+                if(gun.getProjectile().isMagazineMode()) {
+                    var id = gun.getProjectile().getItem();
+                    var item = ForgeRegistries.ITEMS.getValue(id);
+
+                    return item.getMaxDamage(new ItemStack(item));
+                }
+
+            }
             return this.maxAmmo;
         }
-
         /**
          * @return The amount of ammo to add to the weapon each reload cycle
          */
@@ -1436,7 +1446,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static void fillAmmo(ItemStack gunStack) {
         if(gunStack.getItem() instanceof GunItem gunItem){
             var tag = gunStack.getOrCreateTag();
-            var maxAmmo = gunItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo();
+            var maxAmmo = gunItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo(gunStack);
             tag.putInt(Tags.AMMO_COUNT, maxAmmo);
         }
     }

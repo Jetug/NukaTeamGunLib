@@ -51,7 +51,7 @@ public class GunEnchantmentHelper {
     }
 
     public static int getAmmoCapacity(ItemStack weapon, Gun modifiedGun) {
-        int capacity = modifiedGun.getGeneral().getMaxAmmo();
+        int capacity = modifiedGun.getGeneral().getMaxAmmo(weapon);
         int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), weapon);
         if (level > 0) {
             capacity += Math.max(level, (capacity / 2) * level);

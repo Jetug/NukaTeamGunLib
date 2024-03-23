@@ -123,7 +123,7 @@ public class ReloadTracker {
             addMagazine(player);
         }
         else{
-            var amount = this.gun.getGeneral().getMaxAmmo();
+            var amount = this.gun.getGeneral().getMaxAmmo(stack);
             addAmmo(player, amount);
         }
     }
@@ -164,7 +164,7 @@ public class ReloadTracker {
         if (!ammo.isEmpty()) {
             var amount = StackUtils.getDurability(ammo);
             var tag = this.stack.getTag();
-            amount = Math.min(this.gun.getGeneral().getMaxAmmo(), amount);
+            amount = Math.min(this.gun.getGeneral().getMaxAmmo(stack), amount);
 
             if (tag != null) {
                 var maxAmmo = GunEnchantmentHelper.getAmmoCapacity(this.stack, this.gun);
