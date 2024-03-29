@@ -118,8 +118,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
                 tooltip.add(new TranslatableComponent("info.gunscore.ignore_ammo").withStyle(ChatFormatting.AQUA));
             } else {
                 int ammoCount = tagCompound.getInt(Tags.AMMO_COUNT);
-                tooltip.add(new TranslatableComponent("info.gunscore.ammo",
-                        ChatFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)).withStyle(ChatFormatting.GRAY));
+                tooltip.add(new TranslatableComponent("info.gunscore.ammo", ChatFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)).withStyle(ChatFormatting.GRAY));
             }
         }
         //tooltip.add(new TranslatableComponent("info.gunscore.attachment_help", new KeybindComponent("key.gunscore.attachments").getString().toUpperCase(Locale.ENGLISH)).withStyle(ChatFormatting.YELLOW));
