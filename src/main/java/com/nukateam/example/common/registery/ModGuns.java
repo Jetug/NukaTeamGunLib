@@ -1,9 +1,5 @@
 package com.nukateam.example.common.registery;
 
-import com.nukateam.example.common.foundation.items.guns.FatmanGun;
-import com.nukateam.example.common.foundation.items.guns.MinigunGun;
-import com.nukateam.example.common.foundation.items.guns.PistolGun;
-import com.nukateam.example.common.foundation.items.guns.ShotGun;
 import com.nukateam.gunscore.common.foundation.item.*;
 import com.nukateam.gunscore.GunMod;
 import net.minecraft.world.item.Item;
@@ -15,17 +11,18 @@ import net.minecraftforge.registries.RegistryObject;
 public class ModGuns {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, GunMod.MOD_ID);
     ///GUNS
-    public static final RegistryObject<GunItem> PISTOL = ITEMS.register("pistol10mm", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
-    public static final RegistryObject<GunItem> PIPE_PISTOL = ITEMS.register("pipepistol", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
-    public static final RegistryObject<GunItem> CLASSIC10MM = ITEMS.register("classic10mm", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
-    public static final RegistryObject<GunItem> SCOUT10MM = ITEMS.register("scout10mm", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<GunItem> PISTOL = ITEMS.register("pistol10mm", () -> new GunItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<GunItem> PIPE_PISTOL = ITEMS.register("pipepistol", () -> new GunItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<GunItem> CLASSIC10MM = ITEMS.register("classic10mm", () -> new GunItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<GunItem> SCOUT10MM = ITEMS.register("scout10mm", () -> new GunItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 //    public static final RegistryObject<GunItem> CLASSIC10MM_ZAP = ITEMS.register("classic10mm_zapaway", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.NUKA_EQUIP)));
-    public static final RegistryObject<GunItem> PIPEREVOLVER = ITEMS.register("piperevolver", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
-    public static final RegistryObject<GunItem> FATMAN = ITEMS.register("fatman", () -> new FatmanGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
-    public static final RegistryObject<GunItem> MINIGUN = ITEMS.register("minigun", () -> new MinigunGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<GunItem> PIPEREVOLVER = ITEMS.register("piperevolver", () -> new GunItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<GunItem> FATMAN = ITEMS.register("fatman", () -> new GunItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<GunItem> MINIGUN = ITEMS.register("minigun", () -> new GunItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 
-    public static final RegistryObject<GunItem> POWDERGUN = ITEMS.register("powdergun", () -> new ShotGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
-    public static final RegistryObject<GunItem> SHOTGUN = ITEMS.register("shotgun", () -> new ShotGun(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<GunItem> POWDERGUN = ITEMS.register("powdergun", () -> new GunItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<GunItem> SHOTGUN = ITEMS.register("shotgun", () -> new GunItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+    public static final RegistryObject<GunItem> FLAMER = ITEMS.register("flamer", () -> new GunItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 
     public static final RegistryObject<Item> MISSILE = ITEMS.register("missile",
             () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));

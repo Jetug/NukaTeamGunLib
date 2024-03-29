@@ -49,11 +49,11 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
 
     @Override
     public void registerControllers(ControllerRegistrar controllerRegistrar) {
-        var mainController = new AnimationController<>(this, "controller1", 0, animate())
+        var mainController = new AnimationController<>(this, "mainController", 0, animate())
                 .setSoundKeyframeHandler(this::soundHandler);
         controllerRegistrar.add(mainController);
-        controllerRegistrar.add(new AnimationController<>(this, "controller2", 0, holdAnimation()));
-        controllerRegistrar.add(new AnimationController<>(this, "controller3", 0, animateRevolver()));
+        controllerRegistrar.add(new AnimationController<>(this, "aimController", 0, holdAnimation()));
+        controllerRegistrar.add(new AnimationController<>(this, "revolverController", 0, animateRevolver()));
     }
 
     @Override
@@ -84,7 +84,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
 //            var stack = GUN_RENDERER.getRenderStack();
 //            if (stack == null || stack.isEmpty()) return PlayState.STOP;
 
-            if (/*isFirstPerson(transformType) && */AimingHandler.get().isAiming()) {
+            if (isFirstPerson(transformType) && AimingHandler.get().isAiming()) {
                 var animation = begin().then("aim", HOLD_ON_LAST_FRAME);
                 return event.setAndContinue(animation);
             } else {

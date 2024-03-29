@@ -183,7 +183,7 @@ public class AimingHandler {
         if (!(mainHandItem.getItem() instanceof GunItem))
             return false;
 
-        if(canRenderInOffhand(mainHandItem) && canRenderInOffhand(offhandItem))
+        if(!mainHandItem.isEmpty() && !offhandItem.isEmpty() && canRenderInOffhand(mainHandItem) && canRenderInOffhand(offhandItem))
             return false;
 
         var gun = ((GunItem) mainHandItem.getItem()).getModifiedGun(mainHandItem);

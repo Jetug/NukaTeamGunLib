@@ -13,10 +13,7 @@ import com.nukateam.gunscore.common.foundation.ModBlocks;
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.gunscore.common.foundation.crafting.ModRecipeType;
 import com.nukateam.gunscore.common.foundation.crafting.WorkbenchIngredient;
-import com.nukateam.gunscore.common.foundation.entity.GrenadeEntity;
-import com.nukateam.gunscore.common.foundation.entity.LaserProjectile;
-import com.nukateam.gunscore.common.foundation.entity.MissileEntity;
-import com.nukateam.gunscore.common.foundation.entity.TeslaProjectile;
+import com.nukateam.gunscore.common.foundation.entity.*;
 import com.nukateam.gunscore.common.foundation.init.*;
 import com.nukateam.gunscore.common.network.PacketHandler;
 import mod.azure.azurelib.AzureLib;
@@ -135,6 +132,10 @@ public class GunMod {
         ProjectileManager.getInstance().registerFactory(ROUND45.get(),
                 (worldIn, entity, weapon, item, modifiedGun) ->
                       new TeslaProjectile(Projectiles.TESLA_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
+
+        ProjectileManager.getInstance().registerFactory(ROUND5MM.get(),
+                (worldIn, entity, weapon, item, modifiedGun) ->
+                      new FlameProjectile(Projectiles.FLAME_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {
