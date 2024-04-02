@@ -35,31 +35,31 @@ public class ModGuns {
 
     //Rounds
     public static final RegistryObject<Item> ROUND10MM = ITEMS.register("round10mm",
-            () -> new Item(new Item.Properties().durability(25).tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().durability(25).tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> ROUND38 = ITEMS.register("round38",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> STEELBALLS = ITEMS.register("steel_ball",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> ROUND45 = ITEMS.register("round45",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> ROUND5MM = ITEMS.register("round5mm",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> ROUND44 = ITEMS.register("round44",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> ROUND50 = ITEMS.register("round50",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> ROUND380 = ITEMS.register("round380",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> ROUND556 = ITEMS.register("round556",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> SHOTSHELL = ITEMS.register("shotshell",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> ROUND127 = ITEMS.register("round127",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> ROUND22 = ITEMS.register("round22",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
     public static final RegistryObject<Item> MININUKE = ITEMS.register("mini_nuke",
-            () -> new Item(new Item.Properties().tab(ModItemTabs.WEAPONS)));
+            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

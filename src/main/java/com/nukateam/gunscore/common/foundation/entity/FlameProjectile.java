@@ -3,27 +3,52 @@ package com.nukateam.gunscore.common.foundation.entity;
 import com.nukateam.gunscore.Config;
 import com.nukateam.gunscore.common.base.gun.Gun;
 import com.nukateam.gunscore.common.foundation.item.GunItem;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.FlintAndSteelItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.CandleBlock;
+import net.minecraft.world.level.block.CandleCakeBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 
 /**
  * Author: MrCrayfish
  */
 public class FlameProjectile extends ProjectileEntity {
+    private static final float GROUND_FIRE_CHANCE = 0.4f;
+    private static final float ENTITY_FIRE_CHANCE = 1.0f;
+
     public FlameProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
 
     public FlameProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
         super(entityType, worldIn, shooter, weapon, item, modifiedGun);
+    }
+
+    public float getBlockFireChance(){
+        return GROUND_FIRE_CHANCE;
+    }
+
+    public float getEntityFireChance(){
+        return ENTITY_FIRE_CHANCE;
     }
 
     @Override
@@ -39,15 +64,31 @@ public class FlameProjectile extends ProjectileEntity {
         }
     }
 
-//    @Override
-//    protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
-//        createExplosion(this, Config.COMMON.missiles.explosionRadius.get().floatValue(), false);
-//    }
-//
-//    @Override
-//    protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z) {
-//        createExplosion(this, Config.COMMON.missiles.explosionRadius.get().floatValue(), false);
-//    }
+    @Override
+    protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
+        super.onHitEntity(entity, hitVec, startVec, endVec, headshot);
+        if(random.nextFloat() <= getEntityFireChance())
+            entity.setRemainingFireTicks(20);
+    }
+
+    @Override
+    protected void onHitBlock(BlockState blockstate, BlockPos blockpos, Direction face, double x, double y, double z) {
+        super.onHitBlock(blockstate, blockpos, face, x, y, z);
+
+        if(random.nextFloat() <= getBlockFireChance()) {
+            if (!CampfireBlock.canLight(blockstate) && !CandleBlock.canLight(blockstate) && !CandleCakeBlock.canLight(blockstate)) {
+                var blockpos1 = blockpos.relative(face);
+
+                if (BaseFireBlock.canBePlacedAt(level, blockpos1, face)) {
+                    var blockstate1 = BaseFireBlock.getState(level, blockpos1);
+                    level.setBlock(blockpos1, blockstate1, 11);
+
+                }
+            } else {
+                level.setBlock(blockpos, blockstate.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)), 11);
+            }
+        }
+    }
 //
 //    @Override
 //    public void onExpired() {
