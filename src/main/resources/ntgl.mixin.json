@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "package": "com.nukateam.ntgl.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "common.EndPortalBlockMixin",
+    "common.LivingEntityMixin",
+    "common.SittingPhaseMixin"
+  ],
+  "client": [
+    "client.ItemInHandLayerMixin",
+    "client.ItemRendererMixin",
+    "client.LevelRendererMixin",
+    "client.LivingEntityModelMixin",
+    "client.MinecraftMixin",
+    "client.MinecraftStaticMixin",
+    "client.MouseHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "ntgl.mixin-refmap.json",
+  "minVersion": "0.8",
+  "plugin": "com.nukateam.ntgl.mixin.MixinPlugin"
+}

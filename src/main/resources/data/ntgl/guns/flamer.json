@@ -1,0 +1,27 @@
+{
+  "general": {
+    "auto": true,
+    "rate": 1,
+    "gripType": "ntgl:mini_gun",
+    "category": "heavy",
+    "maxAmmo": 100,
+    "reloadTime": 80,
+    "reloadAmount": 10,
+    "recoilAngle": 1.0,
+    "alwaysSpread": true,
+    "spread": 7.0
+  },
+  "projectile": {
+    "item": "ntgl:round5mm",
+    "visible": true,
+    "damage": 5.0,
+    "size": 0.2,
+    "speed": 1.0,
+    "life": 10
+  },
+  "sounds": {
+    "fire": "ntgl:item.minigun.fire",
+    "reload": "ntgl:item.pistol.reload",
+    "enchantedFire": "ntgl:item.minigun.fire"
+  }
+}

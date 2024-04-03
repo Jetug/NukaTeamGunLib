@@ -1,0 +1,30 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [22, 22],
+	"textures": {
+		"0": "ntgl:guns/classic10mm/classic10mm_zapaway",
+		"particle": "ntgl:guns/classic10mm/classic10mm_zapaway"
+	},
+	"elements": [
+		{
+			"from": [7.701, -1.4, 13.7],
+			"to": [8.299, -0.7, 15],
+			"rotation": {"angle": -22.5, "axis": "x", "origin": [8, 4.5, 15]},
+			"faces": {
+				"north": {"uv": [5.81818, 10.03636, 6.18181, 10.54546], "texture": "#0"},
+				"east": {"uv": [0, 9.27272, 0.54545, 8.72727], "texture": "#0"},
+				"south": {"uv": [5.81818, 10, 6.18182, 10.54545], "texture": "#0"},
+				"west": {"uv": [0, 9.27273, 0.54546, 8.72728], "texture": "#0"},
+				"down": {"uv": [9.81818, 1.45455, 9.45455, 2.36364], "texture": "#0"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "magazine1",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [0]
+		}
+	]
+}
