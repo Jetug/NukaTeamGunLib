@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.data.handler;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.audio.StunRingingSound;
 import com.nukateam.ntgl.common.foundation.init.ModEffects;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -138,7 +138,7 @@ public class SoundHandler {
     }
 
     private boolean isStunGrenade(ResourceLocation loc) {
-        return loc.toString().equals(GunMod.MOD_ID + ":grenade_stun_explosion");
+        return loc.toString().equals(Ntgl.MOD_ID + ":grenade_stun_explosion");
     }
 
     private float getMutedVolume(float duration, float volumeBase) {

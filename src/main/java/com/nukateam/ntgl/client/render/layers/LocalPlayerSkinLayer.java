@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.layers;
 import com.ibm.icu.impl.Pair;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.renderer.GeoRenderer;
@@ -31,7 +31,7 @@ public class LocalPlayerSkinLayer<T extends GeoAnimatable> extends GeoRenderLaye
         var player = Minecraft.getInstance().player;
         if(player == null) return;
 
-        var texture = GunMod.SKIN_STORAGE.getSkin(player, size);
+        var texture = Ntgl.SKIN_STORAGE.getSkin(player, size);
 
         if (texture != null) {
             renderLayer(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, texture);

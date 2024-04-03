@@ -15,7 +15,7 @@ import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.common.foundation.item.attachment.*;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
@@ -63,7 +63,7 @@ public class GunRenderingHandler {
         return instance;
     }
 
-    public static final ResourceLocation MUZZLE_FLASH_TEXTURE = new ResourceLocation(GunMod.MOD_ID, "textures/effect/muzzle_flash.png");
+    public static final ResourceLocation MUZZLE_FLASH_TEXTURE = new ResourceLocation(Ntgl.MOD_ID, "textures/effect/muzzle_flash.png");
 
     private final Random random = new Random();
     private final Set<Integer> entityIdForMuzzleFlash = new HashSet<>();

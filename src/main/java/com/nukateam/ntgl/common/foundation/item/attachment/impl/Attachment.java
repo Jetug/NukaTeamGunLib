@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.foundation.item.attachment.impl;
 
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -21,7 +21,7 @@ import java.util.List;
  * <p>
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public abstract class Attachment {
     protected IGunModifier[] modifiers;
     private List<Component> perks = null;

@@ -12,7 +12,7 @@ import com.nukateam.ntgl.common.debug.screen.*;
 import com.nukateam.ntgl.common.foundation.init.ModContainers;
 import com.nukateam.ntgl.common.foundation.item.IColored;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.ModBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
@@ -43,7 +43,7 @@ import static com.nukateam.ntgl.client.data.handler.ShootingHandler.gunCooldown;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientHandler {
     private static Field mouseOptionsField;
 
@@ -59,7 +59,7 @@ public class ClientHandler {
         MinecraftForge.EVENT_BUS.register(new EntityModelHandler());
 
         /* Only register controller events if Controllable is loaded otherwise it will crash */
-        if (GunMod.controllableLoaded) {
+        if (Ntgl.controllableLoaded) {
             MinecraftForge.EVENT_BUS.register(new ControllerHandler());
             GunButtonBindings.register();
         }

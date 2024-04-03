@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.data.datagen;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.ModTags;
-import com.nukateam.ntgl.GunMod;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.tags.BlockTags;
@@ -11,7 +11,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class BlockTagGen extends BlockTagsProvider {
     public BlockTagGen(DataGenerator generatorIn, ExistingFileHelper existingFileHelper) {
-        super(generatorIn, GunMod.MOD_ID, existingFileHelper);
+        super(generatorIn, Ntgl.MOD_ID, existingFileHelper);
     }
 
     @Override

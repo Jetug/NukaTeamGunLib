@@ -1,4 +1,4 @@
-package com.nukateam.example.common.foundation.goals;
+package com.nukateam.ntgl.common.foundation.goals;
 
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.GunItem;

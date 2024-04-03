@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
@@ -32,7 +32,7 @@ public class DamageSourceProjectile extends IndirectEntityDamageSource {
     @Override
     public Component getLocalizedDeathMessage(LivingEntity entityLivingBaseIn) {
         Component textComponent = this.getEntity() == null ? this.entity.getDisplayName() : this.getEntity().getDisplayName();
-        String deathKey = String.format("death.attack.%s.%s.%s", GunMod.MOD_ID, this.msgId, DEATH_TYPES[RAND.nextInt(DEATH_TYPES.length)]);
+        String deathKey = String.format("death.attack.%s.%s.%s", Ntgl.MOD_ID, this.msgId, DEATH_TYPES[RAND.nextInt(DEATH_TYPES.length)]);
         return new TranslatableComponent(deathKey, entityLivingBaseIn.getDisplayName(), textComponent);
     }
 }

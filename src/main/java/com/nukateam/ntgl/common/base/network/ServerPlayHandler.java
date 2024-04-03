@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.base.network;
 
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.base.utils.ShootTracker;
@@ -24,7 +25,6 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.MessageBulletTrail;
 import com.nukateam.ntgl.common.network.message.MessageGunSound;
 import com.nukateam.ntgl.common.network.message.MessageShoot;
-import com.nukateam.ntgl.GunMod;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -96,7 +96,7 @@ public class ServerPlayHandler {
                 ShootTracker tracker = ShootTracker.getShootTracker(shooter);
 
                 if (tracker.hasCooldown(item) && tracker.getRemaining(item) > Config.SERVER.cooldownThreshold.get()) {
-                    GunMod.LOGGER.warn(shooter.getName().getContents() + "(" + shooter.getUUID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
+                    Ntgl.LOGGER.warn(shooter.getName().getContents() + "(" + shooter.getUUID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
                     return;
                 }
 

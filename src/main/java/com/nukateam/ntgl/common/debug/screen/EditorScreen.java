@@ -1,9 +1,9 @@
 package com.nukateam.ntgl.common.debug.screen;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.util.ScreenUtil;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
-import com.nukateam.ntgl.GunMod;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
@@ -28,7 +28,7 @@ import java.util.function.Supplier;
  * Author: MrCrayfish
  */
 public class EditorScreen extends Screen {
-    private static final ResourceLocation WINDOW_TEXTURE = new ResourceLocation(GunMod.MOD_ID, "textures/gui/debug.png");
+    private static final ResourceLocation WINDOW_TEXTURE = new ResourceLocation(Ntgl.MOD_ID, "textures/gui/debug.png");
     private static final int WIDTH = 150;
 
     private final Screen parent;

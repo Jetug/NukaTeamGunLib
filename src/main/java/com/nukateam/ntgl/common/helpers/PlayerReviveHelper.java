@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.helpers;
 
 
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.world.entity.player.Player;
 
 import java.lang.reflect.InvocationTargetException;
@@ -16,7 +16,7 @@ public class PlayerReviveHelper {
     private static Method isBleeding;
 
     public static boolean isBleeding(Player player) {
-        if (!GunMod.playerReviveLoaded || disable)
+        if (!Ntgl.playerReviveLoaded || disable)
             return false;
 
         try {

@@ -37,16 +37,16 @@ import org.slf4j.Logger;
 
 import static com.nukateam.example.common.registery.ModGuns.*;
 
-@Mod(GunMod.MOD_ID)
-public class GunMod {
+@Mod(Ntgl.MOD_ID)
+public class Ntgl {
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final String MOD_ID = "ntgl";
     public static final IEventBus MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
     public static final PlayerSkinStorage SKIN_STORAGE = PlayerSkinStorage.INSTANCE;
 
-//    public GunMod() {
+//    public Ntgl() {
 //        AzureLib.initialize();
-//        new com.nukateam.guns.GunMod().initGunMod(MOD_EVENT_BUS);
+//        new com.nukateam.guns.Ntgl().initGunMod(MOD_EVENT_BUS);
 //
 //        ModGuns.register(MOD_EVENT_BUS);
 //        ModBlocks.register(MOD_EVENT_BUS);
@@ -62,9 +62,9 @@ public class GunMod {
     public static boolean controllableLoaded = false;
     public static boolean backpackedLoaded = false;
     public static boolean playerReviveLoaded = false;
-//    public static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(com.nukateam.ntgl.GunMod.MOD_ID);
+//    public static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(com.nukateam.ntgl.Ntgl.MOD_ID);
 
-    public GunMod() {
+    public Ntgl() {
         AzureLib.initialize();
 
         ModGuns.register(MOD_EVENT_BUS);

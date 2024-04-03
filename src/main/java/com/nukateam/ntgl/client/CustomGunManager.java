@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client;
 import com.nukateam.ntgl.common.base.gun.CustomGun;
 import com.nukateam.ntgl.common.base.CustomGunLoader;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +19,7 @@ import java.util.Optional;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class CustomGunManager {
     private static Map<ResourceLocation, CustomGun> customGunMap;
 

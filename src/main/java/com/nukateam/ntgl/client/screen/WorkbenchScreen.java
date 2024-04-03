@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.screen;
 
 import com.nukateam.example.common.data.interfaces.IMeleeWeapon;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.util.RenderUtil;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
@@ -316,7 +316,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             }
         }
         catch (Exception e){
-            GunMod.LOGGER.debug(e.getMessage(), e);
+            Ntgl.LOGGER.debug(e.getMessage(), e);
         }
     }
 
@@ -447,7 +447,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             }
         }
         catch (Exception e){
-            GunMod.LOGGER.debug(e.getMessage(), e);
+            Ntgl.LOGGER.debug(e.getMessage(), e);
         }
     }
 

@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.jei;
 import com.nukateam.ntgl.client.data.util.RenderUtil;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
 import com.nukateam.ntgl.common.foundation.item.IColored;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.ModBlocks;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -44,10 +44,10 @@ import java.util.stream.Stream;
  * Author: MrCrayfish
  */
 public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
-    public static final ResourceLocation ID = new ResourceLocation(GunMod.MOD_ID, "workbench");
-    public static final ResourceLocation BACKGROUND = new ResourceLocation(GunMod.MOD_ID, "textures/gui/workbench.png");
-    public static final String TITLE_KEY = GunMod.MOD_ID + ".category.workbench.title";
-    public static final String MATERIALS_KEY = GunMod.MOD_ID + ".category.workbench.materials";
+    public static final ResourceLocation ID = new ResourceLocation(Ntgl.MOD_ID, "workbench");
+    public static final ResourceLocation BACKGROUND = new ResourceLocation(Ntgl.MOD_ID, "textures/gui/workbench.png");
+    public static final String TITLE_KEY = Ntgl.MOD_ID + ".category.workbench.title";
+    public static final String MATERIALS_KEY = Ntgl.MOD_ID + ".category.workbench.materials";
 
     private final IDrawableStatic background;
     private final IDrawableStatic window;

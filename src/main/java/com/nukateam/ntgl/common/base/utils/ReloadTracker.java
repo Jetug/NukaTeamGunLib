@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.base.utils;
 
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
@@ -12,7 +13,6 @@ import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.MessageGunSound;
 import com.nukateam.ntgl.common.network.message.S2CMessageReload;
-import com.nukateam.ntgl.GunMod;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,7 +37,7 @@ import static com.nukateam.ntgl.common.data.util.LivingEntityUtils.getInteractio
  * Author: MrCrayfish
  */
 @SuppressWarnings("unused")
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class ReloadTracker {
     private static final Map<Player, ReloadTracker> RELOAD_TRACKER_MAP = new WeakHashMap<>();
 

@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.render.pose;
 
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.IHeldAnimation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -60,7 +60,7 @@ public class OneHandedPose implements IHeldAnimation {
             rightArm.setRotX(head.getRotX() + 70);
         }
         catch (Exception e){
-            GunMod.LOGGER.debug(e.getMessage(), e);
+            Ntgl.LOGGER.debug(e.getMessage(), e);
         }
 
     }

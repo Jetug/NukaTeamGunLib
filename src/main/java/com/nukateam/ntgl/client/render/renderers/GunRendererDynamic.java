@@ -6,7 +6,7 @@ import com.nukateam.ntgl.client.animators.GunItemAnimator;
 import com.nukateam.ntgl.client.model.GeoGunModel;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.render.layers.LocalPlayerSkinLayer;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import mod.azure.azurelib.cache.object.GeoBone;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -65,7 +65,7 @@ public class GunRendererDynamic extends GeoDynamicItemRenderer<GunItemAnimator> 
         }
 
         if(entity instanceof Raider){
-            GunMod.LOGGER.debug("");
+            Ntgl.LOGGER.debug("");
         }
 
 //        poseStack.pushPose();

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.LaserProjectile;
 import net.minecraft.client.Minecraft;
@@ -19,7 +19,7 @@ import net.minecraft.util.Mth;
 
 public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
-    public static ResourceLocation LASER_TEXTURE = new ResourceLocation(GunMod.MOD_ID, "textures/fx/laser.png");
+    public static ResourceLocation LASER_TEXTURE = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/laser.png");
     private final float laserRadius = 0.05F / 4;
     private final float laserGlowRadius = 0.055F / 4;
     private float laserWidth = 3.0f;

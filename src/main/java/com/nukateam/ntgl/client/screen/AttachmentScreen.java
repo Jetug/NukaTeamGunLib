@@ -285,7 +285,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     }
 
 //    private void openConfigScreen() {
-//        ModList.get().getModContainerById(GunMod.MOD_ID).ifPresent(container ->
+//        ModList.get().getModContainerById(Ntgl.MOD_ID).ifPresent(container ->
 //        {
 //            Screen screen = container.getCustomExtension(ConfigGuiHandler.ConfigGuiFactory.class).map(function -> function.screenFunction().apply(this.minecraft, null)).orElse(null);
 //            if (screen != null) {
