@@ -22,8 +22,8 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
 
 version = '1.18.2-1.0.0'
-group = 'com.nukateam.gunscore' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'gunscore'
+group = 'com.nukateam.ntgl' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'ntgl'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -51,12 +51,12 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'gunscore'
+            property 'forge.enabledGameTestNamespaces', 'ntgl'
 
-            arg "-mixin.config=gunscore.mixin.json"
+            arg "-mixin.config=ntgl.mixin.json"
 
             mods {
-                gunscore {
+                ntgl {
                     source sourceSets.main
                 }
             }
@@ -67,11 +67,11 @@ minecraft {
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'gunscore'
-            arg "-mixin.config=gunscore.mixin.json"
+            property 'forge.enabledGameTestNamespaces', 'ntgl'
+            arg "-mixin.config=ntgl.mixin.json"
 
             mods {
-                gunscore {
+                ntgl {
                     source sourceSets.main
                 }
             }
@@ -82,12 +82,12 @@ minecraft {
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'gunscore'
+            property 'forge.enabledGameTestNamespaces', 'ntgl'
 
-            arg "-mixin.config=gunscore.mixin.json"
+            arg "-mixin.config=ntgl.mixin.json"
 
             mods {
-                gunscore {
+                ntgl {
                     source sourceSets.main
                 }
             }
@@ -101,10 +101,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'gunscore', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'ntgl', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                gunscore {
+                ntgl {
                     source sourceSets.main
                 }
             }
@@ -161,22 +161,22 @@ dependencies {
 }
 
 mixin {
-    add sourceSets.main, "gunscore.mixin-refmap.json"
+    add sourceSets.main, "ntgl.mixin-refmap.json"
 }
 
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "gunscore",
+                "Specification-Title"     : "ntgl",
                 "Specification-Vendor"    : "NukaTeam",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
-                "Implementation-Title"    : "gunscore",
+                "Implementation-Title"    : "ntgl",
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "NukaTeam",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                 "TweakClass"              : "org.spongepowered.asm.launch.MixinTweaker",
                 "TweakOrder"              : 0,
-                "MixinConfigs"            : "gunscore.mixin.json"
+                "MixinConfigs"            : "ntgl.mixin.json"
         ])
     }
 }

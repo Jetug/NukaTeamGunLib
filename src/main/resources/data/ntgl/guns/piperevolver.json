@@ -1,0 +1,47 @@
+{
+  "general": {
+    "rate": 5,
+    "gripType": "ntgl:one_handed",
+    "maxAmmo": 6,
+    "reloadTime": 20,
+    "reloadAmount": 2,
+    "recoilAngle": 5.6,
+    "recoilKick": 0.8,
+    "recoilAdsReduction": 0.27,
+    "alwaysSpread": true,
+    "spread": 1.4
+  },
+  "projectile": {
+    "item": "ntgl:round45",
+    "damage": 7.0,
+    "size": 0.2,
+    "speed": 23.0,
+    "life": 16
+  },
+  "sounds": {
+    "fire": "ntgl:item.pistol45mm.fire",
+    "reload": "ntgl:item.pistol45mm.reload",
+    "cock": "ntgl:item.pistol45mm.cock",
+    "silencedFire": "ntgl:item.pistol45mm.silenced_fire",
+    "enchantedFire": "ntgl:item.pistol45mm.enchanted_fire"
+  },
+  "modules": {
+    "zoom": {
+      "yOffset": 4.6,
+      "zOffset": 1.5,
+      "fovModifier": 0.7
+    },
+    "attachments": {
+      "scope": {
+        "yOffset": 4.2,
+        "zOffset": 4.7,
+        "scale": 0.79
+      },
+      "barrel": {
+        "yOffset": 3.3,
+        "zOffset": 5.75,
+        "scale": 0.5
+      }
+    }
+  }
+}

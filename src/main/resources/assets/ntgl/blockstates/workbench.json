@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "ntgl:block/workbench", "y": 0   },
+        "facing=east":  { "model": "ntgl:block/workbench", "y": 90  },
+        "facing=south": { "model": "ntgl:block/workbench", "y": 180 },
+        "facing=west":  { "model": "ntgl:block/workbench", "y": 270 }
+    }
+}

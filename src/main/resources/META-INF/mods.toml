@@ -3,9 +3,9 @@ loaderVersion="[40,)"
 license="GPL3"
 
 [[mods]]
-modId="gunscore"
+modId="ntgl"
 version="${file.jarVersion}"
-displayName="Guns Core"
+displayName="NukaTeam Gun Lib"
 updateJSONURL=""
 displayURL=""
 logoFile=""
@@ -13,30 +13,30 @@ authors="Dayton, Jetug"
 credits = "MrCrayfish, AzureDoom"
 description=""
 
-[[dependencies.gunscore]]
+[[dependencies.ntgl]]
 modId="forge"
 mandatory=true
 versionRange="[40.2.0,)"
 ordering="NONE"
 side="BOTH"
-[[dependencies.gunscore]]
+[[dependencies.ntgl]]
 modId="minecraft"
 mandatory=true
 versionRange="[1.18.2,1.19)"
 ordering="NONE"
 side="BOTH"
-[[dependencies.gunscore]]
+[[dependencies.ntgl]]
 modId="framework"
 mandatory=true
 versionRange="[0.4.2,)"
 ordering="NONE"
 side="BOTH"
-[[dependencies.gunscore]]
+[[dependencies.ntgl]]
 modId="azurelib"
 mandatory=true
 versionRange="[1.0.23,)"
 ordering="AFTER"
 side="BOTH"
 
-[modproperties.gunscore]
+[modproperties.ntgl]
     catalogueImageIcon=""

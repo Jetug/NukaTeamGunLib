@@ -1,6 +1,6 @@
 package com.nukateam.example.common.data.utils;
 
-import com.nukateam.gunscore.GunMod;
+import com.nukateam.ntgl.GunMod;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.io.FilenameUtils;
 

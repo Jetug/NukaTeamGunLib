@@ -1,0 +1,56 @@
+{
+  "general": {
+    "rate": 4,
+    "gripType": "ntgl:one_handed",
+    "maxAmmo": 5,
+    "reloadTime": 20,
+    "reloadAmount": 1,
+    "recoilAngle": 5.5,
+	"recoilKick": 0.6,
+    "recoilAdsReduction": 0.12,
+    "alwaysSpread": true,
+    "spread": 1.0
+  },
+  "projectile": {
+    "item": "ntgl:round38",
+    "damage": 6.0,
+    "size": 0.2,
+    "speed": 29.0,
+    "life": 16
+  },
+  "sounds": {
+    "fire": "ntgl:item.pistol38mm.fire",
+    "reload": "ntgl:item.pistol38mm.reload",
+    "cock": "ntgl:item.pistol38mm.cock",
+    "silencedFire": "ntgl:item.pistol38mm.silenced_fire",
+    "enchantedFire": "ntgl:item.pistol38mm.fire"
+  },
+  "modules": {
+    "zoom": {
+      "yOffset": 4.6,
+      "zOffset": 1.5,
+      "fovModifier": 0.7
+    },
+    "attachments": {
+      "scope": {
+        "yOffset": 4.2,
+        "zOffset": 4.7,
+        "scale": 0.59
+      },
+      "stock": {
+        "yOffset": 3.4,
+        "zOffset": 8.2
+      },
+      "barrel": {
+        "yOffset": 3.3,
+        "zOffset": 5.75,
+        "scale": 0.5
+      },
+      "underBarrel": {
+        "yOffset": 2.499,
+        "zOffset": -1.0,
+        "scale": 0.0
+      }
+    }
+  }
+}
