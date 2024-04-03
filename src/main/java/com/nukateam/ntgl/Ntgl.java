@@ -44,6 +44,7 @@ public class Ntgl {
     public static final IEventBus MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
     public static final PlayerSkinStorage SKIN_STORAGE = PlayerSkinStorage.INSTANCE;
 
+
 //    public Ntgl() {
 //        AzureLib.initialize();
 //        new com.nukateam.guns.Ntgl().initGunMod(MOD_EVENT_BUS);
