@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.init;
 
 import com.nukateam.ntgl.common.foundation.entity.*;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -16,7 +16,7 @@ import java.util.function.BiFunction;
  * Author: MrCrayfish
  */
 public class Projectiles {
-    public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, GunMod.MOD_ID);
+    public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, Ntgl.MOD_ID);
 
     public static final RegistryObject<EntityType<ProjectileEntity>> PROJECTILE = registerProjectile("projectile", ProjectileEntity::new);
     public static final RegistryObject<EntityType<LaserProjectile>> LASER_PROJECTILE =

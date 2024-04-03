@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.render.entity;
 
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.entity.GrenadeEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -31,7 +31,7 @@ public class GrenadeRenderer extends EntityRenderer<GrenadeEntity> {
             return;
         }
 
-        GunMod.LOGGER.warn("Grenade render");
+        Ntgl.LOGGER.warn("Grenade render");
 
         poseStack.pushPose();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));

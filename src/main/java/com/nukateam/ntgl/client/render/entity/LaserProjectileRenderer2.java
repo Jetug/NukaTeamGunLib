@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.LaserProjectile;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
-    public static ResourceLocation texture = new ResourceLocation(GunMod.MOD_ID, "textures/fx/laser.png");
+    public static ResourceLocation texture = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/laser.png");
     private final double laserWidth = 3.0;
 
     public LaserProjectileRenderer2(EntityRendererProvider.Context context) {
@@ -155,7 +155,7 @@ public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
 //    @Override
 //    public void render(LaserProjectile entity, float entityYaw, float partialTicks,
 //                       PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light) {
-//        GunMod.LOGGER.warn("Laser render");
+//        Ntgl.LOGGER.warn("Laser render");
 //
 //        var distance = entity.distance;
 //        var maxTicks = entity.getLife();

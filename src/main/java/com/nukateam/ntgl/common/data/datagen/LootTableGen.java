@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.data.datagen;
 
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 
 import com.nukateam.ntgl.common.foundation.ModBlocks;
 import com.google.common.collect.ImmutableList;
@@ -47,7 +47,7 @@ public class LootTableGen extends LootTableProvider {
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
-            return ForgeRegistries.BLOCKS.getValues().stream().filter(entityType -> entityType.getRegistryName() != null && GunMod.MOD_ID.equals(entityType.getRegistryName().getNamespace())).collect(Collectors.toSet());
+            return ForgeRegistries.BLOCKS.getValues().stream().filter(entityType -> entityType.getRegistryName() != null && Ntgl.MOD_ID.equals(entityType.getRegistryName().getNamespace())).collect(Collectors.toSet());
         }
     }
 }

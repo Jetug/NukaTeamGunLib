@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.base;
 
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.event.TickEvent;
@@ -20,7 +20,7 @@ import java.util.List;
  * <p>
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class DelayedTask {
     public static List<Impl> tasks = new ArrayList<>();
 

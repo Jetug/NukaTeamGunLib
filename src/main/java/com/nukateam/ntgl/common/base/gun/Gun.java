@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.base.gun;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.data.annotation.Ignored;
 import com.nukateam.ntgl.common.data.annotation.Optional;
@@ -17,7 +18,6 @@ import com.nukateam.ntgl.common.foundation.item.ScopeItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
 import com.nukateam.ntgl.common.helpers.BackpackHelper;
-import com.nukateam.ntgl.GunMod;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
@@ -386,7 +386,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static class Projectile implements INBTSerializable<CompoundTag> {
-        private ResourceLocation item = new ResourceLocation(GunMod.MOD_ID, "basic_ammo");
+        private ResourceLocation item = new ResourceLocation(Ntgl.MOD_ID, "basic_ammo");
         @Optional
         private boolean visible;
         private float damage;
@@ -1363,7 +1363,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 ItemStack scopeStack = ItemStack.of(attachment.getCompound("Scope"));
                 Scope scope = null;
                 if (scopeStack.getItem() instanceof ScopeItem scopeItem) {
-                    if (GunMod.isDebugging()) {
+                    if (Ntgl.isDebugging()) {
                         return Debug.getScope(scopeItem);
                     }
                     scope = scopeItem.getProperties();
@@ -1402,7 +1402,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 return new AmmoContext(stack, player.getInventory());
             }
         }
-        if (GunMod.backpackedLoaded) {
+        if (Ntgl.backpackedLoaded) {
             return BackpackHelper.findAmmo(player, id);
         }
         return AmmoContext.NONE;
@@ -1427,7 +1427,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
         }
 
-        if (GunMod.backpackedLoaded) {
+        if (Ntgl.backpackedLoaded) {
             return BackpackHelper.findMagazine(player, id);
         }
 

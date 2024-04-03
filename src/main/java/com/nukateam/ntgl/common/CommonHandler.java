@@ -1,12 +1,12 @@
 package com.nukateam.ntgl.common;
 
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID, value = Dist.DEDICATED_SERVER)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.DEDICATED_SERVER)
 public class CommonHandler {
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {

@@ -1,9 +1,9 @@
 package com.nukateam.ntgl.common.network;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.CustomGunManager;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.nukateam.ntgl.common.network.message.*;
-import com.nukateam.ntgl.GunMod;
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.network.FrameworkChannelBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +19,7 @@ public class PacketHandler {
 
     public static void init() {
         PLAY_CHANNEL = FrameworkChannelBuilder
-            .create(GunMod.MOD_ID, "guns", 1)
+            .create(Ntgl.MOD_ID, "guns", 1)
                 .registerPlayMessage(C2SMessageAim.class, NetworkDirection.PLAY_TO_SERVER)
                 .registerPlayMessage(C2SMessageReload.class, NetworkDirection.PLAY_TO_SERVER)
                 .registerPlayMessage(MessageShoot.class, NetworkDirection.PLAY_TO_SERVER)
@@ -39,7 +39,7 @@ public class PacketHandler {
                 .registerPlayMessage(S2CMessageRemoveProjectile.class, NetworkDirection.PLAY_TO_CLIENT)
                 .build();
 
-        FrameworkAPI.registerLoginData(new ResourceLocation(GunMod.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
-        FrameworkAPI.registerLoginData(new ResourceLocation(GunMod.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
+        FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
+        FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
     }
 }

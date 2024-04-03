@@ -1,7 +1,7 @@
 package com.nukateam.example.common.registery;
 
 import com.nukateam.ntgl.common.foundation.item.*;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -9,7 +9,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ModGuns {
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, GunMod.MOD_ID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Ntgl.MOD_ID);
     ///GUNS
     public static final RegistryObject<GunItem> PISTOL = registerGun("pistol10mm");
     public static final RegistryObject<GunItem> PIPE_PISTOL = registerGun("pipepistol");

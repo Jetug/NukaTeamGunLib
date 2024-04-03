@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.debug.screen.widget.DebugToggle;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.ScopeItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class Debug {
     private static final Map<Item, Gun> GUNS = new HashMap<>();
     private static final Map<Item, Scope> SCOPES = new HashMap<>();

@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.jei;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
-import com.nukateam.ntgl.GunMod;
 import com.nukateam.ntgl.common.foundation.ModBlocks;
 
 import mezz.jei.api.IModPlugin;
@@ -24,11 +24,11 @@ import java.util.Objects;
  */
 @JeiPlugin
 public class GunModPlugin implements IModPlugin {
-    public static final RecipeType<WorkbenchRecipe> WORKBENCH = RecipeType.create(GunMod.MOD_ID, "workbench", WorkbenchRecipe.class);
+    public static final RecipeType<WorkbenchRecipe> WORKBENCH = RecipeType.create(Ntgl.MOD_ID, "workbench", WorkbenchRecipe.class);
 
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(GunMod.MOD_ID, "crafting");
+        return new ResourceLocation(Ntgl.MOD_ID, "crafting");
     }
 
     @Override

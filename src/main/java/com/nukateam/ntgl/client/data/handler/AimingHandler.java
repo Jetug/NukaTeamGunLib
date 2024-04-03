@@ -13,7 +13,7 @@ import com.nukateam.ntgl.common.helpers.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAim;
 import com.nukateam.ntgl.common.foundation.ModBlocks;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tags.BlockTags;
@@ -201,7 +201,7 @@ public class AimingHandler {
             return false;
 
         boolean zooming = mc.options.keyUse.isDown();
-        if (GunMod.controllableLoaded) {
+        if (Ntgl.controllableLoaded) {
             zooming |= ControllerHandler.isAiming();
         }
 

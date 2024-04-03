@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.data.enums;
 
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public enum SpecialModels {
     ASSAULT_RIFLE("gun/assault_rifle"),
     BAZOOKA("gun/bazooka"),
@@ -45,7 +45,7 @@ public enum SpecialModels {
      * @param modelName name of the model file
      */
     SpecialModels(String modelName) {
-        this.modelLocation = new ResourceLocation(GunMod.MOD_ID, "special/" + modelName);
+        this.modelLocation = new ResourceLocation(Ntgl.MOD_ID, "special/" + modelName);
     }
 
     /**

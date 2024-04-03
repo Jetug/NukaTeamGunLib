@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.TeslaProjectile;
 import net.minecraft.client.Minecraft;
@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
-    public static ResourceLocation texture = new ResourceLocation(GunMod.MOD_ID, "textures/fx/tesla.png");
+    public static ResourceLocation texture = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/tesla.png");
     private final float laserRadius = 0.05F / 5;
     private final float laserGlowRadius = 0.055F / 5;
     private float laserWidth = 3.0f;

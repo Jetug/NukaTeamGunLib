@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.data.datagen;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.init.ModRecipeSerializers;
-import com.nukateam.ntgl.GunMod;
 import com.nukateam.ntgl.common.foundation.ModBlocks;
 import com.google.gson.JsonObject;
 import net.minecraft.data.DataGenerator;
@@ -36,7 +36,7 @@ public class RecipeGen extends RecipeProvider {
 
             @Override
             public ResourceLocation getId() {
-                return new ResourceLocation(GunMod.MOD_ID, "dye_item");
+                return new ResourceLocation(Ntgl.MOD_ID, "dye_item");
             }
 
             @Override

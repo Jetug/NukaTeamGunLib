@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.init;
 
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.data.sync.Serializers;
 import com.mrcrayfish.framework.api.data.sync.SyncedClassKey;
@@ -32,7 +32,7 @@ public class ModSyncedDataKeys {
 
     private static SyncedDataKey<LivingEntity, Boolean> registerBooleanKey(String name) {
         return SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
-                .id(new ResourceLocation(GunMod.MOD_ID, name))
+                .id(new ResourceLocation(Ntgl.MOD_ID, name))
                 .defaultValueSupplier(() -> false)
                 .resetOnDeath()
                 .build();

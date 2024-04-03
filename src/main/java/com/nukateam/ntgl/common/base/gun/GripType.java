@@ -1,11 +1,11 @@
 package com.nukateam.ntgl.common.base.gun;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.IHeldAnimation;
 import com.nukateam.ntgl.client.render.pose.BazookaPose;
 import com.nukateam.ntgl.client.render.pose.MiniGunPose;
 import com.nukateam.ntgl.client.render.pose.OneHandedPose;
 import com.nukateam.ntgl.client.render.pose.TwoHandedPose;
-import com.nukateam.ntgl.GunMod;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
@@ -23,23 +23,23 @@ public class GripType {
     /**
      * A grip type designed for weapons that are held with only one hand, like a pistol
      */
-    public static final GripType ONE_HANDED = new GripType(new ResourceLocation(GunMod.MOD_ID, "one_handed"), new OneHandedPose());
+    public static final GripType ONE_HANDED = new GripType(new ResourceLocation(Ntgl.MOD_ID, "one_handed"), new OneHandedPose());
 
     /**
      * A grip type designed for weapons that are held with two hands, like an assault rifle
      */
-    public static final GripType TWO_HANDED = new GripType(new ResourceLocation(GunMod.MOD_ID, "two_handed"), new TwoHandedPose());
+    public static final GripType TWO_HANDED = new GripType(new ResourceLocation(Ntgl.MOD_ID, "two_handed"), new TwoHandedPose());
 
     /**
      * A custom grip type designed for the mini gun simply due it's nature of being a completely
      * unique way to hold the weapon
      */
-    public static final GripType MINI_GUN = new GripType(new ResourceLocation(GunMod.MOD_ID, "mini_gun"), new MiniGunPose());
+    public static final GripType MINI_GUN = new GripType(new ResourceLocation(Ntgl.MOD_ID, "mini_gun"), new MiniGunPose());
 
     /**
      * A custom grip type designed for the bazooka.
      */
-    public static final GripType BAZOOKA = new GripType(new ResourceLocation(GunMod.MOD_ID, "bazooka"), new BazookaPose());
+    public static final GripType BAZOOKA = new GripType(new ResourceLocation(Ntgl.MOD_ID, "bazooka"), new BazookaPose());
 
     /**
      * A common method to set up a transformation of the weapon onto the entities' back.

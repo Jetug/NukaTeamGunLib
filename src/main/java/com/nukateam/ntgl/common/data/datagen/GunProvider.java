@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.data.datagen;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.Gun;
-import com.nukateam.ntgl.GunMod;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -66,6 +66,6 @@ public abstract class GunProvider implements DataProvider {
 
     @Override
     public String getName() {
-        return "Guns: " + GunMod.MOD_ID;
+        return "Guns: " + Ntgl.MOD_ID;
     }
 }

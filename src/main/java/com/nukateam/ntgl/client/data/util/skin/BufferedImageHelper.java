@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.data.util.skin;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -26,7 +26,7 @@ public class BufferedImageHelper {
             byte[] imageArr = nativeImage.asByteArray();
             return getImage(imageArr);
         } catch (IOException var4) {
-            GunMod.LOGGER.error(var4.getMessage(), var4);
+            Ntgl.LOGGER.error(var4.getMessage(), var4);
             return null;
         }
     }

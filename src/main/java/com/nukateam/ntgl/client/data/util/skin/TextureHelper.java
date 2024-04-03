@@ -7,7 +7,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -164,7 +164,7 @@ public class TextureHelper {
             return ImageIO.read(new URL(jsonUrl));
         } catch (Exception var7) {
             if (!(var7 instanceof IOException) && !(var7 instanceof IllegalStateException)) {
-                GunMod.LOGGER.error(var7.getMessage(), var7);
+                Ntgl.LOGGER.error(var7.getMessage(), var7);
             }
 
             return null;
@@ -172,7 +172,7 @@ public class TextureHelper {
     }
 
     public static ResourceLocation createResource(BufferedImage image, String name) {
-        return createResource(image, GunMod.MOD_ID, name);
+        return createResource(image, Ntgl.MOD_ID, name);
     }
 
     public static ResourceLocation createResource(BufferedImage image, String namespace, String name) {

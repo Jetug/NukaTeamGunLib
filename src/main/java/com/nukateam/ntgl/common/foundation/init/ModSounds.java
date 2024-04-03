@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.init;
 
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.registries.DeferredRegister;
@@ -8,7 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ModSounds {
-    public static final DeferredRegister<SoundEvent> REGISTER = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, GunMod.MOD_ID);
+    public static final DeferredRegister<SoundEvent> REGISTER = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Ntgl.MOD_ID);
 
     public static final RegistryObject<SoundEvent> ITEM_PISTOL_FIRE = register("item.pistol.fire");
     public static final RegistryObject<SoundEvent> ITEM_PISTOL_SILENCED_FIRE = register("item.pistol.silenced_fire");
@@ -67,6 +67,6 @@ public class ModSounds {
     public static final RegistryObject<SoundEvent> ITEM_45MM_RELOAD = register("item.pistol45mm.reload");
 
     private static RegistryObject<SoundEvent> register(String key) {
-        return REGISTER.register(key, () -> new SoundEvent(new ResourceLocation(GunMod.MOD_ID, key)));
+        return REGISTER.register(key, () -> new SoundEvent(new ResourceLocation(Ntgl.MOD_ID, key)));
     }
 }

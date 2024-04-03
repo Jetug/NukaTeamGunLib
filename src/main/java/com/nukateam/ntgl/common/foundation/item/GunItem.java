@@ -10,7 +10,7 @@ import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.enchantment.EnchantmentTypes;
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
@@ -161,7 +161,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
                 }
             });
         }
-        if (GunMod.isDebugging()) {
+        if (Ntgl.isDebugging()) {
             return Debug.getGun(this);
         }
 

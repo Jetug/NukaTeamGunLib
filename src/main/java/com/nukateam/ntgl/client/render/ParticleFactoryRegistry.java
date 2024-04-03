@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.client.render;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.render.particle.BloodParticle;
 import com.nukateam.ntgl.client.render.particle.BulletHoleParticle;
 import com.nukateam.ntgl.client.render.particle.TrailParticle;
 import com.nukateam.ntgl.common.foundation.init.ModParticleTypes;
-import com.nukateam.ntgl.GunMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ParticleFactoryRegistry {
     @SubscribeEvent
     public static void onRegisterParticleFactory(ParticleFactoryRegisterEvent event) {

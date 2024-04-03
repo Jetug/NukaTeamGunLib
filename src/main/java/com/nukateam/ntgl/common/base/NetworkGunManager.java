@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.base;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.util.Easings;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.base.gun.Gun;
@@ -8,7 +9,6 @@ import com.nukateam.ntgl.common.data.annotation.Validator;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
-import com.nukateam.ntgl.GunMod;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
@@ -40,7 +40,7 @@ import java.util.*;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunItem, Gun>> {
     private static final int FILE_TYPE_LENGTH_VALUE = ".json".length();
     private static final Gson GSON_INSTANCE = Util.make(() -> {
@@ -67,7 +67,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
                 List<ResourceLocation> resources = new ArrayList<>(manager.listResources("guns", (fileName) -> fileName.endsWith(id.getPath() + ".json")));
                 resources.sort((r1, r2) -> {
                     if (r1.getNamespace().equals(r2.getNamespace())) return 0;
-                    return r2.getNamespace().equals(GunMod.MOD_ID) ? 1 : -1;
+                    return r2.getNamespace().equals(Ntgl.MOD_ID) ? 1 : -1;
                 });
                 resources.forEach(resource ->
                 {
@@ -87,14 +87,14 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
                         if (gun != null && Validator.isValidObject(gun)) {
                             map.put((GunItem) item, gun);
                         } else {
-                            GunMod.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using default gun data", resource);
+                            Ntgl.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using default gun data", resource);
                             map.putIfAbsent((GunItem) item, new Gun());
                         }
                     } catch (InvalidObjectException e) {
-                        GunMod.LOGGER.error("Missing required properties for {}", resource);
+                        Ntgl.LOGGER.error("Missing required properties for {}", resource);
                         e.printStackTrace();
                     } catch (IOException e) {
-                        GunMod.LOGGER.error("Couldn't parse data file {}", resource);
+                        Ntgl.LOGGER.error("Couldn't parse data file {}", resource);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }

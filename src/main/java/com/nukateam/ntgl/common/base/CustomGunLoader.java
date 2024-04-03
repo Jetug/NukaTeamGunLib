@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.common.base;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.CustomGun;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.base.utils.JsonDeserializers;
 import com.nukateam.ntgl.common.data.annotation.Validator;
-import com.nukateam.ntgl.GunMod;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class CustomGunLoader extends SimpleJsonResourceReloadListener {
     private static final Gson GSON_INSTANCE = Util.make(() -> {
         GsonBuilder builder = new GsonBuilder();
@@ -56,10 +56,10 @@ public class CustomGunLoader extends SimpleJsonResourceReloadListener {
                 if (customGun != null && Validator.isValidObject(customGun)) {
                     builder.put(resourceLocation, customGun);
                 } else {
-                    GunMod.LOGGER.error("Couldn't load data file {} as it is missing or malformed", resourceLocation);
+                    Ntgl.LOGGER.error("Couldn't load data file {} as it is missing or malformed", resourceLocation);
                 }
             } catch (InvalidObjectException e) {
-                GunMod.LOGGER.error("Missing required properties for {}", resourceLocation);
+                Ntgl.LOGGER.error("Missing required properties for {}", resourceLocation);
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

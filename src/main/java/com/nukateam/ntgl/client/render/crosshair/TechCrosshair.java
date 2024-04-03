@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.client.render.crosshair;
 
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.handler.AimingHandler;
-import com.nukateam.ntgl.GunMod;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -17,8 +17,8 @@ import net.minecraft.util.Mth;
  * Author: MrCrayfish
  */
 public class TechCrosshair extends Crosshair {
-    private static final ResourceLocation TECH_CROSSHAIR = new ResourceLocation(GunMod.MOD_ID, "textures/crosshair/tech.png");
-    private static final ResourceLocation DOT_CROSSHAIR = new ResourceLocation(GunMod.MOD_ID, "textures/crosshair/dot.png");
+    private static final ResourceLocation TECH_CROSSHAIR = new ResourceLocation(Ntgl.MOD_ID, "textures/crosshair/tech.png");
+    private static final ResourceLocation DOT_CROSSHAIR = new ResourceLocation(Ntgl.MOD_ID, "textures/crosshair/dot.png");
 
     private float scale;
     private float prevScale;
@@ -26,7 +26,7 @@ public class TechCrosshair extends Crosshair {
     private float prevRotation;
 
     public TechCrosshair() {
-        super(new ResourceLocation(GunMod.MOD_ID, "tech"));
+        super(new ResourceLocation(Ntgl.MOD_ID, "tech"));
     }
 
     @Override

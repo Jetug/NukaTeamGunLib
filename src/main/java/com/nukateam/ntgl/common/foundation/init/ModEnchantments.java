@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.init;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.enchantment.*;
-import com.nukateam.ntgl.GunMod;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -11,7 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
  * Author: MrCrayfish
  */
 public class ModEnchantments {
-    public static final DeferredRegister<Enchantment> REGISTER = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, GunMod.MOD_ID);
+    public static final DeferredRegister<Enchantment> REGISTER = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, Ntgl.MOD_ID);
 
     public static final RegistryObject<Enchantment> QUICK_HANDS = REGISTER.register("quick_hands", QuickHandsEnchantment::new);
     public static final RegistryObject<Enchantment> TRIGGER_FINGER = REGISTER.register("trigger_finger", TriggerFingerEnchantment::new);

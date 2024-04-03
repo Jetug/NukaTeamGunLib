@@ -1,9 +1,9 @@
 package com.nukateam.ntgl.common.base.utils;
 
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.GunMod;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -21,7 +21,7 @@ import java.util.WeakHashMap;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class SpreadTracker {
     private static final Map<LivingEntity, SpreadTracker> TRACKER_MAP = new WeakHashMap<>();
 

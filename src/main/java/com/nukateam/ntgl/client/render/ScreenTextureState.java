@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.render;
 
-import com.nukateam.ntgl.GunMod;
+import com.nukateam.ntgl.Ntgl;
 import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -21,7 +21,7 @@ import static org.lwjgl.opengl.GL11.*;
  * Author: MrCrayfish
  */
 @Deprecated(since = "1.3.0", forRemoval = true)
-@Mod.EventBusSubscriber(modid = GunMod.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ScreenTextureState extends RenderStateShard.TexturingStateShard {
     private static ScreenTextureState instance = null;
 
