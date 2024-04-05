@@ -1,6 +1,6 @@
 modLoader="javafml"
 loaderVersion="[40,)"
-license="GPL3"
+license="LGPL 2.1"
 
 [[mods]]
 modId="ntgl"
@@ -8,7 +8,7 @@ version="${file.jarVersion}"
 displayName="NukaTeam Gun Lib"
 updateJSONURL=""
 displayURL=""
-logoFile=""
+logoFile="logo.png"
 authors="Dayton, Jetug"
 credits = "MrCrayfish, AzureDoom"
 description=""

@@ -1427,11 +1427,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
         }
 
+        if(ammo != null) return new AmmoContext(ammo, player.getInventory());
+
         if (Ntgl.backpackedLoaded) {
             return BackpackHelper.findMagazine(player, id);
         }
 
-        return ammo == null ? AmmoContext.NONE : new AmmoContext(ammo, player.getInventory());
+        return AmmoContext.NONE;
     }
 
     public static boolean isAmmo(ItemStack stack, ResourceLocation id) {

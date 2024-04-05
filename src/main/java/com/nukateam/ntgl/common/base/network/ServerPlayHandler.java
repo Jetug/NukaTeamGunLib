@@ -293,6 +293,8 @@ public class ServerPlayHandler {
             var tag = stack.getTag();
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
                 int count = tag.getInt(Tags.AMMO_COUNT);
+                if(count == 0) return;
+
                 tag.putInt(Tags.AMMO_COUNT, 0);
 
                 var gunItem = (GunItem) stack.getItem();

@@ -14,6 +14,7 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.MessageGunSound;
 import com.nukateam.ntgl.common.network.message.S2CMessageReload;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -122,13 +123,21 @@ public class ReloadTracker {
             addMagazine(player);
         }
         else{
-            var amount = this.gun.getGeneral().getMaxAmmo(stack);
-            addAmmo(player, amount);
+//            var amount = this.gun.getGeneral().getMaxAmmo(stack);
+            addAmmo(player);
         }
     }
 
     private void addCartridge(Player player) {
         addAmmo(player, gun.getGeneral().getReloadAmount());
+    }
+
+    private void addAmmo(Player player) {
+        var amount = this.gun.getGeneral().getMaxAmmo(stack);
+
+        while (isNotReloaded(player)){
+            addAmmo(player, amount);
+        }
     }
 
     private void addAmmo(Player player, int amount) {
@@ -155,6 +164,14 @@ public class ReloadTracker {
 //        playReloadSound(player);
     }
 
+    private boolean isNotReloaded(Player player) {
+        var ammoItem = this.gun.getProjectile().getItem();
+        var tag = this.stack.getTag();
+
+        return !Gun.findAmmo(player, ammoItem).stack().isEmpty() &&
+                tag.getInt(Tags.AMMO_COUNT) < GunEnchantmentHelper.getAmmoCapacity(this.stack, this.gun);
+    }
+
     private void addMagazine(Player player) {
         var ammoId = this.gun.getProjectile().getItem();
         var context = Gun.findMagazine(player, ammoId);
@@ -172,7 +189,8 @@ public class ReloadTracker {
                 if(currentAmmo > 0) {
                     var usedMagazine = new ItemStack(ForgeRegistries.ITEMS.getValue(ammoId));
                     StackUtils.setDurability(usedMagazine, currentAmmo);
-                    player.addItem(usedMagazine);
+
+                    addOrDropStack(player, usedMagazine);
                 }
 //                amount = Math.min(amount, maxAmmo - currentAmmo);
                 tag.putInt(Tags.AMMO_COUNT, amount);
@@ -187,6 +205,12 @@ public class ReloadTracker {
             }
         }
 //        playReloadSound(player);
+    }
+
+    private static void addOrDropStack(Player player, ItemStack usedMagazine) {
+        if(!player.addItem(usedMagazine)){
+            player.drop(usedMagazine, false);
+        }
     }
 
     private void playReloadSound(Player player) {
