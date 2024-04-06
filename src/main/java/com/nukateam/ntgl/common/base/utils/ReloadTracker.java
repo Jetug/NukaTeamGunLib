@@ -69,18 +69,23 @@ public class ReloadTracker {
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && !event.player.level.isClientSide) {
-            var player = event.player;
+        try {
+            if (event.phase == TickEvent.Phase.START && !event.player.level.isClientSide) {
+                var player = event.player;
 
-            if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(player)) {
-                handTick(player, HumanoidArm.RIGHT);
+                if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(player)) {
+                    handTick(player, HumanoidArm.RIGHT);
+                }
+                else if (ModSyncedDataKeys.RELOADING_LEFT.getValue(player)) {
+                    handTick(player, HumanoidArm.LEFT);
+                }
+                else if (RELOAD_TRACKER_MAP.containsKey(player)) {
+                    RELOAD_TRACKER_MAP.remove(player);
+                }
             }
-            else if (ModSyncedDataKeys.RELOADING_LEFT.getValue(player)) {
-                handTick(player, HumanoidArm.LEFT);
-            }
-            else if (RELOAD_TRACKER_MAP.containsKey(player)) {
-                RELOAD_TRACKER_MAP.remove(player);
-            }
+        }
+        catch (Exception e){
+            Ntgl.LOGGER.error(e.getMessage(), e);
         }
     }
 
