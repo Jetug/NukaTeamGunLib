@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.base.network;
 
+import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.Gun;
@@ -127,9 +128,14 @@ public class ServerPlayHandler {
                     projectileEntity.tick();
                 }
                 if (!projectileProps.isVisible()) {
+                    var spawnX = shooter.getX();
+                    var spawnY = shooter.getY() + 1.0;
+                    var spawnZ = shooter.getZ();
+                    var radius = Config.COMMON.network.projectileTrackingRange.get();
                     var data = GunEnchantmentHelper.getParticle(heldItem);
                     var messageBulletTrail = new MessageBulletTrail(spawnedProjectiles, projectileProps, shooter.getId(), data);
-                    PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(shooter.getX(), shooter.getY(), shooter.getZ(), Config.COMMON.network.projectileTrackingRange.get(), shooter.level.dimension())), messageBulletTrail);
+
+                    PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(shooter.level, spawnX, spawnY, spawnZ, radius), messageBulletTrail);
                 }
 
                 MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem));
@@ -162,8 +168,7 @@ public class ServerPlayHandler {
                     double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                     boolean muzzle = modifiedGun.getDisplay().getFlash() != null;
                     var messageSound = new MessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, shooter.getId(), muzzle, false);
-                    PacketDistributor.TargetPoint targetPoint = new PacketDistributor.TargetPoint(posX, posY, posZ, radius, shooter.level.dimension());
-                    PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> targetPoint), messageSound);
+                    PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(shooter.level, posX, posY, posZ, radius), messageSound);
                 }
 
                 if (!(shooter instanceof Player player && player.isCreative())) {

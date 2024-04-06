@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.base.utils;
 
+import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.Gun;
@@ -213,18 +214,18 @@ public class ReloadTracker {
         }
     }
 
-    private void playReloadSound(Player player) {
-        var reloadSound = this.gun.getSounds().getReload();
-        if (reloadSound != null) {
-            var pos = player.position().add(0, 1, 0);
-            var radius = Config.SERVER.reloadMaxDistance.get();
-            var message = new MessageGunSound(reloadSound, SoundSource.PLAYERS, pos,
-                    1.0F, 1.0F, player.getId(), false, true);
-            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() ->
-                    new PacketDistributor.TargetPoint(
-                            player.getX(), (player.getY() + 1.0), player.getZ(), radius, player.level.dimension())), message);
-        }
-    }
+//    private void playReloadSound(Player player) {
+//        var reloadSound = this.gun.getSounds().getReload();
+//        if (reloadSound != null) {
+//            var pos = player.position().add(0, 1, 0);
+//            var radius = Config.SERVER.reloadMaxDistance.get();
+//            var message = new MessageGunSound(reloadSound, SoundSource.PLAYERS, pos,
+//                    1.0F, 1.0F, player.getId(), false, true);
+//            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() ->
+//                    new PacketDistributor.TargetPoint(
+//                            player.getX(), (player.getY() + 1.0), player.getZ(), radius, player.level.dimension())), message);
+//        }
+//    }
 
     private static void handTick(Player player, HumanoidArm arm) {
         var reloadKey = arm == HumanoidArm.RIGHT ?
@@ -294,19 +295,22 @@ public class ReloadTracker {
 
         var oppositeStack = LivingEntityUtils.getItemInHand(player, arm.getOpposite());
         if (arm == HumanoidArm.RIGHT && oppositeStack.getItem() instanceof GunItem && !GunModifierHelper.isWeaponFull(oppositeStack)) {
-            PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new S2CMessageReload(true, arm.getOpposite()));
+            PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) player, new S2CMessageReload(true, arm.getOpposite()));
         }
     }
 
-    private static void playCockSound(Gun gun, Player finalPlayer) {
-        var cockSound = gun.getSounds().getCock();
-        if (cockSound != null && finalPlayer.isAlive()) {
-            var radius = Config.SERVER.reloadMaxDistance.get();
-            var messageSound = new MessageGunSound(cockSound, SoundSource.PLAYERS, finalPlayer,
-                    1.0F, 1.0F, false, true);
-            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() ->
-                    new PacketDistributor.TargetPoint(finalPlayer.getX(), finalPlayer.getY() + 1.0, finalPlayer.getZ(),
-                            radius, finalPlayer.level.dimension())), messageSound);
-        }
-    }
+//    private static void playCockSound(Gun gun, Player finalPlayer) {
+//        var cockSound = gun.getSounds().getCock();
+//        if (cockSound != null && finalPlayer.isAlive()) {
+//            var radius = Config.SERVER.reloadMaxDistance.get();
+//            var messageSound = new MessageGunSound(cockSound, SoundSource.PLAYERS, finalPlayer,
+//                    1.0F, 1.0F, false, true);
+//            PacketHandler.getPlayChannel().sendToNearbyPlayers(() ->
+//                            LevelLocation.create(finalPlayer.level,
+//                                    finalPlayer.getX(),
+//                                    finalPlayer.getY() + 1.0,
+//                                    finalPlayer.getZ(), radius),
+//                            messageSound);
+//        }
+//    }
 }
