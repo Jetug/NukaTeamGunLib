@@ -5,13 +5,13 @@ license="LGPL 2.1"
 [[mods]]
 modId="ntgl"
 version="${file.jarVersion}"
-displayName="NukaTeam Gun Lib"
+displayName="NukaTeam's Gun Lib"
 updateJSONURL=""
 displayURL=""
 logoFile="logo.png"
 authors="Dayton, Jetug"
 credits = "MrCrayfish, AzureDoom"
-description=""
+description="Core for gun mods"
 
 [[dependencies.ntgl]]
 modId="forge"
