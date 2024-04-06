@@ -65,7 +65,7 @@ public class WorkbenchRecipe implements Recipe<WorkbenchBlockEntity> {
 
     @Override
     public net.minecraft.world.item.crafting.RecipeType<?> getType() {
-        return ModRecipeType.WORKBENCH;
+        return ModRecipeType.WORKBENCH.get();
     }
 
     public boolean hasMaterials(Player player) {

@@ -81,6 +81,7 @@ public class Ntgl {
         ModEnchantments.REGISTER.register(MOD_EVENT_BUS);
         Projectiles.REGISTER.register(MOD_EVENT_BUS);
 //        ModItems.REGISTER.register(MOD_EVENT_BUS);
+        ModRecipeType.REGISTER.register(MOD_EVENT_BUS);
         ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
         ModRecipeSerializers.REGISTER.register(MOD_EVENT_BUS);
         ModSounds.REGISTER.register(MOD_EVENT_BUS);
@@ -108,14 +109,13 @@ public class Ntgl {
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            ModRecipeType.init();
+            PacketHandler.init();
             ModSyncedDataKeys.register();
             CraftingHelper.register(new ResourceLocation(MOD_ID, "workbench_ingredient"),
                     WorkbenchIngredient.Serializer.INSTANCE);
 
             registerProjectiles();
 
-            PacketHandler.init();
             if (Config.COMMON.gameplay.improvedHitboxes.get()) {
                 MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
             }
