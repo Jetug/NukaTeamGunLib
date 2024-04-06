@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
@@ -24,13 +25,13 @@ public class C2SMessageAttachments extends PlayMessage<C2SMessageAttachments> {
     }
 
     @Override
-    public void handle(C2SMessageAttachments message, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() -> {
-            ServerPlayer player = supplier.get().getSender();
+    public void handle(C2SMessageAttachments message, MessageContext supplier) {
+        supplier.execute((() -> {
+            ServerPlayer player = supplier.getPlayer();
             if (player != null) {
 //                ServerPlayHandler.handleAttachments(player);
             }
-        });
-        supplier.get().setPacketHandled(true);
+        }));
+        supplier.setHandled(true);
     }
 }

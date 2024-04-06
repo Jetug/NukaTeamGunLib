@@ -8,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.nukateam.example.common.data.utils.ResourceUtils.getResourceName;
 
@@ -16,7 +17,7 @@ import static com.nukateam.example.common.data.utils.ResourceUtils.getResourceNa
  * Author: MrCrayfish
  */
 public class AttachmentItem extends Item implements IMeta, IResourceProvider {
-    private final Lazy<String> name = Lazy.of(() -> getResourceName(getRegistryName()));
+    private final Lazy<String> name = Lazy.of(() -> getResourceName(ForgeRegistries.ITEMS.getKey(this)));
 
     public AttachmentItem(Properties properties) {
         super(properties);
@@ -41,6 +42,6 @@ public class AttachmentItem extends Item implements IMeta, IResourceProvider {
 
     @Override
     public String getNamespace() {
-        return getRegistryName().getNamespace();
+        return ForgeRegistries.ITEMS.getKey(this).getNamespace();
     }
 }

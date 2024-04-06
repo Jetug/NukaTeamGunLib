@@ -140,16 +140,16 @@ public class ClientHandler {
     }
 
     @SubscribeEvent
-    public static void onScreenInit(ScreenEvent.InitScreenEvent.Post event) {
-        if (event.getScreen() instanceof MouseSettingsScreen) {
-            MouseSettingsScreen screen = (MouseSettingsScreen) event.getScreen();
+    public static void onScreenInit(ScreenEvent.Init.Post event) {
+        if (event.getScreen() instanceof MouseSettingsScreen screen) {
             if (mouseOptionsField == null) {
                 mouseOptionsField = ObfuscationReflectionHelper.findField(MouseSettingsScreen.class, "f_96218_");
                 mouseOptionsField.setAccessible(true);
             }
             try {
                 OptionsList list = (OptionsList) mouseOptionsField.get(screen);
-                list.addSmall(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
+                //list.addBig(OptionInstance.createBoolean("t", true));
+                //list.addSmall(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }

@@ -24,7 +24,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -75,7 +74,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     @Override
     public Component getEditorLabel() {
-        return new TextComponent("Gun");
+        return Component.literal("Gun");
     }
 
     @Override
@@ -84,12 +83,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
             ItemStack scope = Gun.getScopeStack(heldItem);
             if (scope.getItem() instanceof ScopeItem scopeItem) {
-                widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(new TextComponent("Edit"), btn -> {
+                widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(Component.literal("Edit"), btn -> {
                     Minecraft.getInstance().setScreen(createEditorScreen(Debug.getScope(scopeItem)));
                 })));
             }
 
-            widgets.add(Pair.of(this.modules.getEditorLabel(), () -> new DebugButton(new TextComponent(">"), btn -> {
+            widgets.add(Pair.of(this.modules.getEditorLabel(), () -> new DebugButton(Component.literal(">"), btn -> {
                 Minecraft.getInstance().setScreen(createEditorScreen(this.modules));
             })));
         });
@@ -820,13 +819,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         @Override
         public Component getEditorLabel() {
-            return new TextComponent("Modules");
+            return Component.literal("Modules");
         }
 
         @Override
         public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                widgets.add(Pair.of(new TextComponent("Enabled Iron Sights"), () -> new DebugToggle(this.zoom != null, val -> {
+                widgets.add(Pair.of(Component.literal("Enabled Iron Sights"), () -> new DebugToggle(this.zoom != null, val -> {
                     if (val) {
                         if (this.cachedZoom != null) {
                             this.zoom = this.cachedZoom;
@@ -840,7 +839,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                     }
                 })));
 
-                widgets.add(Pair.of(new TextComponent("Adjust Iron Sights"), () -> new DebugButton(new TextComponent(">"), btn -> {
+                widgets.add(Pair.of(Component.literal("Adjust Iron Sights"), () -> new DebugButton(Component.literal(">"), btn -> {
                     if (btn.active && this.zoom != null) {
                         Minecraft.getInstance().setScreen(createEditorScreen(this.zoom));
                     }
@@ -884,13 +883,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
             @Override
             public Component getEditorLabel() {
-                return new TextComponent("Zoom");
+                return Component.literal("Zoom");
             }
 
             @Override
             public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
                 DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                    widgets.add(Pair.of(new TextComponent("FOV Modifier"), () -> new DebugSlider(0.0, 1.0, this.fovModifier, 0.01, 3, val -> {
+                    widgets.add(Pair.of(Component.literal("FOV Modifier"), () -> new DebugSlider(0.0, 1.0, this.fovModifier, 0.01, 3, val -> {
                         this.fovModifier = val.floatValue();
                     })));
                 });
@@ -1437,7 +1436,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static boolean isAmmo(ItemStack stack, ResourceLocation id) {
-        return stack != null && stack.getItem().getRegistryName().equals(id);
+        return stack != null && Objects.equals(ForgeRegistries.ITEMS.getKey(stack.getItem()), id);
     }
 
     public static boolean hasAmmo(ItemStack gunStack) {
@@ -1559,7 +1558,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
 
         public Builder setAmmo(Item item) {
-            this.gun.projectile.item = item.getRegistryName();
+            this.gun.projectile.item = ForgeRegistries.ITEMS.getKey(item);
             return this;
         }
 
@@ -1613,28 +1612,33 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this;
         }
 
-        public Builder setFireSound(SoundEvent sound) {
-            this.gun.sounds.fire = sound.getRegistryName();
+        public Builder setFireSound(SoundEvent sound)
+        {
+            this.gun.sounds.fire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 
-        public Builder setReloadSound(SoundEvent sound) {
-            this.gun.sounds.reload = sound.getRegistryName();
+        public Builder setReloadSound(SoundEvent sound)
+        {
+            this.gun.sounds.reload = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 
-        public Builder setCockSound(SoundEvent sound) {
-            this.gun.sounds.cock = sound.getRegistryName();
+        public Builder setCockSound(SoundEvent sound)
+        {
+            this.gun.sounds.cock = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 
-        public Builder setSilencedFireSound(SoundEvent sound) {
-            this.gun.sounds.silencedFire = sound.getRegistryName();
+        public Builder setSilencedFireSound(SoundEvent sound)
+        {
+            this.gun.sounds.silencedFire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 
-        public Builder setEnchantedFireSound(SoundEvent sound) {
-            this.gun.sounds.enchantedFire = sound.getRegistryName();
+        public Builder setEnchantedFireSound(SoundEvent sound)
+        {
+            this.gun.sounds.enchantedFire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 

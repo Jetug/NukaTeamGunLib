@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.HumanoidArm;
@@ -38,9 +39,9 @@ public class S2CMessageReload extends PlayMessage<S2CMessageReload> {
     }
 
     @Override
-    public void handle(S2CMessageReload message, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleReload(message));
-        supplier.get().setPacketHandled(true);
+    public void handle(S2CMessageReload message, MessageContext supplier) {
+        supplier.execute((() -> ClientPlayHandler.handleReload(message)));
+        supplier.setHandled(true);
     }
 
     public boolean isReload() {

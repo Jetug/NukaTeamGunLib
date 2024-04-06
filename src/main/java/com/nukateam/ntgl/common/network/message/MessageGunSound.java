@@ -1,7 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.client.ClientPlayHandler;
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
@@ -100,9 +101,9 @@ public class MessageGunSound extends PlayMessage<MessageGunSound> {
     }
 
     @Override
-    public void handle(MessageGunSound message, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageGunSound(message));
-        supplier.get().setPacketHandled(true);
+    public void handle(MessageGunSound message, MessageContext supplier) {
+        supplier.execute((() -> ClientPlayHandler.handleMessageGunSound(message)));
+        supplier.setHandled(true);
     }
 
     public ResourceLocation getId() {

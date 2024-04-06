@@ -291,7 +291,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 //            if (screen != null) {
 //                this.minecraft.setScreen(screen);
 //            } else if (this.minecraft != null && this.minecraft.player != null) {
-//                MutableComponent modName = new TextComponent("Configured");
+//                MutableComponent modName = Component.literal("Configured");
 //                modName.setStyle(modName.getStyle()
 //                        .withColor(ChatFormatting.YELLOW)
 //                        .withUnderlined(true)

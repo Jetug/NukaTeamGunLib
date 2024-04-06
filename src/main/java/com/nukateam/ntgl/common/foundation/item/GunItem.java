@@ -14,12 +14,14 @@ import com.nukateam.ntgl.Ntgl;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.*;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -27,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -38,7 +41,7 @@ import static java.util.Objects.requireNonNull;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
 public class GunItem extends Item implements GeoItem, IColored, IMeta, IResourceProvider {
-//    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    protected final AnimatableInstanceCache cache = createInstanceCache(this);
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
 
@@ -64,16 +67,20 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
 
     @Override
     public String getNamespace() {
-        return getNamespace();
+        return getRegistryName().getNamespace();
+    }
+
+    private ResourceLocation getRegistryName(){
+        return ForgeRegistries.ITEMS.getKey(this);
     }
 
     @Override
-    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(new IItemRenderProperties() {
-            private GunItemRenderer renderer;
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            private GunItemRenderer renderer = null;
 
             @Override
-            public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (renderer == null)
                     return new GunItemRenderer();
                 return this.renderer;
@@ -124,7 +131,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
 
     @Override
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> stacks) {
-        if (this.allowdedIn(group)) {
+        if (this.allowedIn(group)) {
             ItemStack stack = new ItemStack(this);
             stack.getOrCreateTag().putInt(Tags.AMMO_COUNT, this.gun.getGeneral().getMaxAmmo(stack));
             stacks.add(stack);
@@ -192,7 +199,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
 
     @Override
     public boolean isEnchantable(ItemStack stack) {
-        return this.getItemStackLimit(stack) == 1;
+        return this.getMaxStackSize(stack) == 1;
     }
 
     @Override
@@ -210,7 +217,6 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         stackAnimations.put(stack, null);
     }
 
-    protected final AnimatableInstanceCache cache = createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}

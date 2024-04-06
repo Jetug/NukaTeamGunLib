@@ -1,7 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.client.ClientPlayHandler;
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -37,9 +38,9 @@ public class S2CMessageBlood extends PlayMessage<S2CMessageBlood> {
     }
 
     @Override
-    public void handle(S2CMessageBlood message, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBlood(message));
-        supplier.get().setPacketHandled(true);
+    public void handle(S2CMessageBlood message, MessageContext supplier) {
+        supplier.execute((() -> ClientPlayHandler.handleMessageBlood(message)));
+        supplier.setHandled(true);
     }
 
     public double getX() {

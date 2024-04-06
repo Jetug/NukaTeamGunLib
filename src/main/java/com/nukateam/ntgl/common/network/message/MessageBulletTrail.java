@@ -1,10 +1,11 @@
 package com.nukateam.ntgl.common.network.message;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.client.ClientPlayHandler;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.network.BufferUtil;
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
@@ -117,9 +118,9 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail> {
     }
 
     @Override
-    public void handle(MessageBulletTrail message, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleMessageBulletTrail(message));
-        supplier.get().setPacketHandled(true);
+    public void handle(MessageBulletTrail message, MessageContext supplier) {
+        supplier.execute((() -> ClientPlayHandler.handleMessageBulletTrail(message)));
+        supplier.setHandled(true);
     }
 
     public int getCount() {

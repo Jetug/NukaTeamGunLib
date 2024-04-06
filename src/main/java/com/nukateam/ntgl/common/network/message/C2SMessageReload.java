@@ -1,8 +1,9 @@
 package com.nukateam.ntgl.common.network.message;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.HumanoidArm;
@@ -42,10 +43,10 @@ public class C2SMessageReload extends PlayMessage<C2SMessageReload> {
     }
 
     @Override
-    public void handle(C2SMessageReload message, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() ->
+    public void handle(C2SMessageReload message, MessageContext supplier) {
+        supplier.execute((() ->
         {
-            ServerPlayer player = supplier.get().getSender();
+            ServerPlayer player = supplier.getPlayer();
             if (player != null && !player.isSpectator()) {
 
                 var dataKey = message.isRightHand ?
@@ -66,7 +67,7 @@ public class C2SMessageReload extends PlayMessage<C2SMessageReload> {
                 }
                 MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, gun));
             }
-        });
-        supplier.get().setPacketHandled(true);
+        }));
+        supplier.setHandled(true);
     }
 }

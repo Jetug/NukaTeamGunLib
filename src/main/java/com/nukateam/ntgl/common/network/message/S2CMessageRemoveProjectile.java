@@ -1,7 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.client.ClientPlayHandler;
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -31,9 +32,9 @@ public class S2CMessageRemoveProjectile extends PlayMessage<S2CMessageRemoveProj
     }
 
     @Override
-    public void handle(S2CMessageRemoveProjectile message, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleRemoveProjectile(message));
-        supplier.get().setPacketHandled(true);
+    public void handle(S2CMessageRemoveProjectile message, MessageContext supplier) {
+        supplier.execute((() -> ClientPlayHandler.handleRemoveProjectile(message)));
+        supplier.setHandled(true);
     }
 
     public int getEntityId() {

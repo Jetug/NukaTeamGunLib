@@ -1,7 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -30,13 +31,13 @@ public class MessageShooting extends PlayMessage<MessageShooting> {
     }
 
     @Override
-    public void handle(MessageShooting message, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() -> {
-            var player = supplier.get().getSender();
+    public void handle(MessageShooting message, MessageContext supplier) {
+        supplier.execute((() -> {
+            var player = supplier.getPlayer();
             if (player != null) {
                 ModSyncedDataKeys.SHOOTING_RIGHT.setValue(player, message.shooting);
             }
-        });
-        supplier.get().setPacketHandled(true);
+        }));
+        supplier.setHandled(true);
     }
 }

@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.foundation.entity;
 
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;

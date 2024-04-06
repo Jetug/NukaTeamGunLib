@@ -16,7 +16,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -53,7 +52,7 @@ public class EditorScreen extends Screen {
         this.windowLeft = 10;
         this.windowTop = (this.height - this.windowHeight) / 2;
 
-        this.addRenderableWidget(new Button(this.windowLeft + WIDTH - 12 - 4, this.windowTop + 4, 12, 12, new TextComponent("<"), btn -> {
+        this.addRenderableWidget(new Button(this.windowLeft + WIDTH - 12 - 4, this.windowTop + 4, 12, 12, Component.literal("<"), btn -> {
             Minecraft.getInstance().setScreen(this.parent);
         }));
 

@@ -1,7 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.client.ClientPlayHandler;
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
@@ -50,9 +51,9 @@ public class S2CMessageProjectileHitBlock extends PlayMessage<S2CMessageProjecti
     }
 
     @Override
-    public void handle(S2CMessageProjectileHitBlock message, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleProjectileHitBlock(message));
-        supplier.get().setPacketHandled(true);
+    public void handle(S2CMessageProjectileHitBlock message, MessageContext supplier) {
+        supplier.execute((() -> ClientPlayHandler.handleProjectileHitBlock(message)));
+        supplier.setHandled(true);
     }
 
     public double getX() {

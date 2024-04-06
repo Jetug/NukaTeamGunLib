@@ -68,7 +68,7 @@ public class ShootingHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onMouseClick(InputEvent.ClickInputEvent event) {
+    public void onMouseClick(InputEvent.InteractionKeyMappingTriggered event) {
         if (event.isCanceled())
             return;
 
@@ -115,7 +115,7 @@ public class ShootingHandler {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void handleGunInput(InputEvent.ClickInputEvent event, ItemStack heldItem, GunItem gunItem) {
+    private void handleGunInput(InputEvent.InteractionKeyMappingTriggered event, ItemStack heldItem, GunItem gunItem) {
         var mc = Minecraft.getInstance();
         event.setSwingHand(false);
         event.setCanceled(true);

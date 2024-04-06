@@ -1,7 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.common.base.network.ServerPlayHandler;
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.network.NetworkEvent;
@@ -52,17 +53,17 @@ public class MessageShoot extends PlayMessage<MessageShoot> {
     }
 
     @Override
-    public void handle(MessageShoot messageShoot, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() -> {
-            var player = supplier.get().getSender();
+    public void handle(MessageShoot messageShoot, MessageContext supplier) {
+        supplier.execute((() -> {
+            var player = supplier.getPlayer();
             if (player != null) {
                 var shooter = player.level.getEntity(messageShoot.shooterId);
 
                 if (shooter instanceof LivingEntity livingEntity)
                     ServerPlayHandler.handleShoot(messageShoot, livingEntity);
             }
-        });
-        supplier.get().setPacketHandled(true);
+        }));
+        supplier.setHandled(true);
     }
 
     public boolean isMainHand() {

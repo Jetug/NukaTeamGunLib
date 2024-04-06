@@ -33,7 +33,7 @@ public class GunListOption<E extends IResourceLocation> {
         return new CycleButton.Builder<E>(this.displayNameGetter)
                 .withValues(this.supplier.get())
                 .withInitialValue(this.getter.get())
-                .create(x, y, width, 20, new TextComponent(""));
+                .create(x, y, width, 20, Component.literal(""));
 
         *//*return new CycleButton.Builder<E>(x, y, width, 20, this, this.getTitle(), (button) -> {
             List<E> list = this.supplier.get();

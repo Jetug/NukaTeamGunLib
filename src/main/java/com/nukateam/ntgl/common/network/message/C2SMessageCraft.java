@@ -1,7 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.common.base.network.ServerPlayHandler;
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -37,14 +38,14 @@ public class C2SMessageCraft extends PlayMessage<C2SMessageCraft> {
     }
 
     @Override
-    public void handle(C2SMessageCraft message, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() ->
+    public void handle(C2SMessageCraft message, MessageContext supplier) {
+        supplier.execute(() ->
         {
-            ServerPlayer player = supplier.get().getSender();
+            ServerPlayer player = supplier.getPlayer();
             if (player != null) {
                 ServerPlayHandler.handleCraft(player, message.id, message.pos);
             }
         });
-        supplier.get().setPacketHandled(true);
+        supplier.setHandled(true);
     }
 }

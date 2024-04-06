@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.common.foundation.init;
 
+import com.mrcrayfish.framework.api.sync.Serializers;
+import com.mrcrayfish.framework.api.sync.SyncedClassKey;
+import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.mrcrayfish.framework.api.FrameworkAPI;
-import com.mrcrayfish.framework.api.data.sync.Serializers;
-import com.mrcrayfish.framework.api.data.sync.SyncedClassKey;
-import com.mrcrayfish.framework.api.data.sync.SyncedDataKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 

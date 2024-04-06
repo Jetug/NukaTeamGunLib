@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.debug.screen.widget;
 
 import com.nukateam.ntgl.common.debug.IDebugWidget;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 
@@ -26,6 +26,6 @@ public class DebugToggle extends DebugButton implements IDebugWidget {
     }
 
     private void updateMessage() {
-        this.setMessage(this.enabled ? new TextComponent("On") : new TextComponent("Off"));
+        this.setMessage(this.enabled ? Component.literal("On") : Component.literal("Off"));
     }
 }

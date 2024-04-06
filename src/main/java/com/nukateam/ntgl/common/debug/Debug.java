@@ -10,8 +10,6 @@ import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -65,7 +63,7 @@ public class Debug {
     public static class Menu implements IEditorMenu {
         @Override
         public Component getEditorLabel() {
-            return new TextComponent("Editor Menu");
+            return Component.literal("Editor Menu");
         }
 
         @Override
@@ -73,11 +71,11 @@ public class Debug {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                 ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
                 if (heldItem.getItem() instanceof GunItem gunItem) {
-                    widgets.add(Pair.of(Component.translatable(gunItem.getDescriptionId()), () -> new DebugButton(new TextComponent("Edit"), btn -> {
+                    widgets.add(Pair.of(Component.translatable(gunItem.getDescriptionId()), () -> new DebugButton(Component.literal("Edit"), btn -> {
                         Minecraft.getInstance().setScreen(ClientHandler.createEditorScreen(getGun(gunItem)));
                     })));
                 }
-                widgets.add(Pair.of(new TextComponent("Settings"), () -> new DebugButton(new TextComponent(">"), btn -> {
+                widgets.add(Pair.of(Component.literal("Settings"), () -> new DebugButton(Component.literal(">"), btn -> {
                     Minecraft.getInstance().setScreen(ClientHandler.createEditorScreen(new Settings()));
                 })));
             });
@@ -87,13 +85,13 @@ public class Debug {
     public static class Settings implements IEditorMenu {
         @Override
         public Component getEditorLabel() {
-            return new TextComponent("Settings");
+            return Component.literal("Settings");
         }
 
         @Override
         public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                widgets.add(Pair.of(new TextComponent("Force Aim"), () -> new DebugToggle(Debug.forceAim, value -> Debug.forceAim = value)));
+                widgets.add(Pair.of(Component.literal("Force Aim"), () -> new DebugToggle(Debug.forceAim, value -> Debug.forceAim = value)));
             });
         }
     }

@@ -31,8 +31,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -155,7 +153,7 @@ public class AimingHandler {
     }
 
     @SubscribeEvent
-    public void onClientTick(ClientPlayerNetworkEvent.LoggedOutEvent event) {
+    public void onClientTick(ClientPlayerNetworkEvent.LoggingOut event) {
         this.aimingMap.clear();
     }
 

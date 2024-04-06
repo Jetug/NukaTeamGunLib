@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class ProjectileManager {
      * @param factory a custom projectile implementation
      */
     public void registerFactory(Item ammo, IProjectileFactory factory) {
-        this.projectileFactoryMap.put(ammo.getRegistryName(), factory);
+        this.projectileFactoryMap.put(ForgeRegistries.ITEMS.getKey(ammo), factory);
     }
 
     /**

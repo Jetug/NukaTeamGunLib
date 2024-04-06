@@ -1,15 +1,15 @@
 package com.nukateam.ntgl.common.network.message;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.ClientPlayHandler;
 import com.nukateam.ntgl.common.base.gun.CustomGun;
 import com.nukateam.ntgl.common.base.CustomGunLoader;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.framework.api.network.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkEvent;
 import org.apache.commons.lang3.Validate;
 
 import java.util.function.Supplier;
@@ -41,9 +41,9 @@ public class S2CMessageUpdateGuns extends PlayMessage<S2CMessageUpdateGuns> {
     }
 
     @Override
-    public void handle(S2CMessageUpdateGuns message, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() -> ClientPlayHandler.handleUpdateGuns(message));
-        supplier.get().setPacketHandled(true);
+    public void handle(S2CMessageUpdateGuns message, MessageContext supplier) {
+        supplier.execute((() -> ClientPlayHandler.handleUpdateGuns(message)));
+        supplier.setHandled(true);
     }
 
     public ImmutableMap<ResourceLocation, Gun> getRegisteredGuns() {

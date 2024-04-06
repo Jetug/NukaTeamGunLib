@@ -1,7 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.common.base.network.ServerPlayHandler;
-import com.mrcrayfish.framework.api.network.PlayMessage;
+import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
@@ -22,14 +23,14 @@ public class C2SMessageUnload extends PlayMessage<C2SMessageUnload> {
     }
 
     @Override
-    public void handle(C2SMessageUnload message, Supplier<NetworkEvent.Context> supplier) {
-        supplier.get().enqueueWork(() ->
+    public void handle(C2SMessageUnload message, MessageContext supplier) {
+        supplier.execute((() ->
         {
-            ServerPlayer player = supplier.get().getSender();
+            ServerPlayer player = supplier.getPlayer();
             if (player != null && !player.isSpectator()) {
                 ServerPlayHandler.handleUnload(player);
             }
-        });
-        supplier.get().setPacketHandled(true);
+        }));
+        supplier.setHandled(true);
     }
 }
