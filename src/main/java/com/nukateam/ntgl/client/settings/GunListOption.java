@@ -94,13 +94,13 @@ public class GunListOption<E extends IResourceLocation> {
 
     public Component getTitle()
     {
-        Component component = new TranslatableComponent("ntgl.option_list.no_items");
+        Component component = Component.translatable("ntgl.option_list.no_items");
         E e = this.get();
         if(e != null)
         {
             component = this.displayNameGetter.apply(e);
         }
-        return new TranslatableComponent(this.title + ".format", component);
+        return Component.translatable(this.title + ".format", component);
     }
 
     public interface IAdditionalRenderer

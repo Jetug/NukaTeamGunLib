@@ -5,7 +5,7 @@ import com.nukateam.ntgl.client.data.handler.CrosshairHandler;
 import com.nukateam.ntgl.client.render.crosshair.Crosshair;
 import net.minecraft.client.CycleOption;
 import net.minecraft.client.ProgressOption;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -25,13 +25,13 @@ public class GunOptions {
         Config.saveClientConfig();
     }, (gameSettings, option) -> {
         double adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
-        return new TranslatableComponent("ntgl.options.adsSensitivity.format", FORMAT.format(adsSensitivity));
+        return Component.translatable("ntgl.options.adsSensitivity.format", FORMAT.format(adsSensitivity));
     });
 
     public static final CycleOption<ResourceLocation> CROSSHAIR = CycleOption.create("ntgl.options.crosshair", () -> {
         return CrosshairHandler.get().getRegisteredCrosshairs().stream().map(Crosshair::getLocation).collect(Collectors.toList());
     }, id -> {
-        return new TranslatableComponent(id.getNamespace() + ".crosshair." + id.getPath());
+        return Component.translatable(id.getNamespace() + ".crosshair." + id.getPath());
     }, (options) -> {
         return ResourceLocation.tryParse(Config.CLIENT.display.crosshair.get());
     }, (options, option, id) -> {
@@ -50,7 +50,7 @@ public class GunOptions {
         CrosshairHandler.get().setCrosshair(value);
     }, (value) -> {
         ResourceLocation id = value.getLocation();
-        return new TranslatableComponent(id.getNamespace() + ".crosshair." + id.getPath());
+        return Component.translatable(id.getNamespace() + ".crosshair." + id.getPath());
     }).setRenderer((button, poseStack, partialTicks) -> {
         poseStack.translate(button.x, button.y, 0);
         poseStack.translate(button.getWidth() + 2, 2, 0);

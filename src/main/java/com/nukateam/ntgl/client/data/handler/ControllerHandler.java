@@ -20,7 +20,7 @@ import com.mrcrayfish.controllable.event.GatherActionsEvent;
 import com.mrcrayfish.controllable.event.GatherNavigationPointsEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -102,19 +102,19 @@ public class ControllerHandler {
         if (player != null) {
             ItemStack heldItem = player.getMainHandItem();
             if (heldItem.getItem() instanceof GunItem) {
-                event.getActions().put(GunButtonBindings.AIM, new Action(new TranslatableComponent("ntgl.action.aim"), Action.Side.RIGHT));
-                event.getActions().put(GunButtonBindings.SHOOT, new Action(new TranslatableComponent("ntgl.action.shoot"), Action.Side.RIGHT));
+                event.getActions().put(GunButtonBindings.AIM, new Action(Component.translatable("ntgl.action.aim"), Action.Side.RIGHT));
+                event.getActions().put(GunButtonBindings.SHOOT, new Action(Component.translatable("ntgl.action.shoot"), Action.Side.RIGHT));
 
                 GunItem gunItem = (GunItem) heldItem.getItem();
                 Gun modifiedGun = gunItem.getModifiedGun(heldItem);
                 CompoundTag tag = heldItem.getTag();
                 if (tag != null && tag.getInt("AmmoCount") < GunEnchantmentHelper.getAmmoCapacity(heldItem, modifiedGun)) {
-                    event.getActions().put(GunButtonBindings.RELOAD, new Action(new TranslatableComponent("ntgl.action.reload"), Action.Side.LEFT));
+                    event.getActions().put(GunButtonBindings.RELOAD, new Action(Component.translatable("ntgl.action.reload"), Action.Side.LEFT));
                 }
 
                 Scope scope = Gun.getScope(heldItem);
                 if (scope != null && scope.isStable() && AimingHandler.get().isAiming()) {
-                    event.getActions().put(GunButtonBindings.STEADY_AIM, new Action(new TranslatableComponent("ntgl.action.steady_aim"), Action.Side.RIGHT));
+                    event.getActions().put(GunButtonBindings.STEADY_AIM, new Action(Component.translatable("ntgl.action.steady_aim"), Action.Side.RIGHT));
                 }
             }
         }

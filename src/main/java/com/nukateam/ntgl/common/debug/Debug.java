@@ -11,7 +11,7 @@ import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -73,7 +73,7 @@ public class Debug {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                 ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
                 if (heldItem.getItem() instanceof GunItem gunItem) {
-                    widgets.add(Pair.of(new TranslatableComponent(gunItem.getDescriptionId()), () -> new DebugButton(new TextComponent("Edit"), btn -> {
+                    widgets.add(Pair.of(Component.translatable(gunItem.getDescriptionId()), () -> new DebugButton(new TextComponent("Edit"), btn -> {
                         Minecraft.getInstance().setScreen(ClientHandler.createEditorScreen(getGun(gunItem)));
                     })));
                 }

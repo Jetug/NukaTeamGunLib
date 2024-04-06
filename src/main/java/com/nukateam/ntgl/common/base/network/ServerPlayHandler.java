@@ -27,7 +27,7 @@ import com.nukateam.ntgl.common.network.message.MessageGunSound;
 import com.nukateam.ntgl.common.network.message.MessageShoot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -330,7 +330,7 @@ public class ServerPlayHandler {
         ItemStack heldItem = player.getMainHandItem();
         if (heldItem.getItem() instanceof GunItem) {
             NetworkHooks.openGui(player, new SimpleMenuProvider((windowId, playerInventory, player1) ->
-                    new AttachmentContainer(windowId, playerInventory, heldItem), new TranslatableComponent("container.ntgl.attachments")));
+                    new AttachmentContainer(windowId, playerInventory, heldItem), Component.translatable("container.ntgl.attachments")));
         }
     }
 }

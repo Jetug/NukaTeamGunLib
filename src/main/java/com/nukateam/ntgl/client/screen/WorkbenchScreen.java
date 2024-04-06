@@ -192,7 +192,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 this.loadItem(index + 1);
         }));
         this.btnCraft = this.addRenderableWidget(new Button(this.leftPos + 195, this.topPos + 16, 74, 20,
-                new TranslatableComponent("gui.ntgl.workbench.assemble"), button ->
+                Component.translatable("gui.ntgl.workbench.assemble"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
             WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
@@ -201,7 +201,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         }));
         this.btnCraft.active = false;
         this.checkBoxMaterials = this.addRenderableWidget(new CheckBox(this.leftPos + 172, this.topPos + 51,
-                new TranslatableComponent("gui.ntgl.workbench.show_remaining")));
+                Component.translatable("gui.ntgl.workbench.show_remaining")));
         this.checkBoxMaterials.setToggled(WorkbenchScreen.showRemaining);
         this.loadItem(this.currentTab.getCurrentIndex());
     }
@@ -294,7 +294,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
 
             for (int i = 0; i < this.tabs.size(); i++) {
                 if (RenderUtil.isMouseWithin(mouseX, mouseY, startX + 28 * i, startY - 28, 28, 28)) {
-                    this.renderTooltip(poseStack, new TranslatableComponent(this.tabs.get(i).getTabKey()), mouseX, mouseY);
+                    this.renderTooltip(poseStack, Component.translatable(this.tabs.get(i).getTabKey()), mouseX, mouseY);
                     return;
                 }
             }

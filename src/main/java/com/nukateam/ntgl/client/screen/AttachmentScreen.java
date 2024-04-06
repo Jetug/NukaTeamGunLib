@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class AttachmentScreen extends AbstractContainerScreen<AttachmentContainer> {
     private static final ResourceLocation GUI_TEXTURES = new ResourceLocation("ntgl:textures/gui/attachments.png");
-    private static final Component CONFIG_TOOLTIP = new TranslatableComponent("ntgl.button.config.tooltip");
+    private static final Component CONFIG_TOOLTIP = Component.translatable("ntgl.button.config.tooltip");
 
     private final Inventory playerInventory;
     private final Container weaponInventory;
@@ -112,11 +112,11 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
             if (RenderUtil.isMouseWithin(mouseX, mouseY, startX + 7, startY + 16 + i * 18, 18, 18)) {
                 IAttachment.Type type = IAttachment.Type.values()[i];
                 if (!this.menu.getSlot(i).isActive()) {
-                    this.renderComponentTooltip(poseStack, Arrays.asList(new TranslatableComponent("slot.ntgl.attachment." + type.getTranslationKey()), new TranslatableComponent("slot.ntgl.attachment.not_applicable")), mouseX, mouseY);
+                    this.renderComponentTooltip(poseStack, Arrays.asList(Component.translatable("slot.ntgl.attachment." + type.getTranslationKey()), Component.translatable("slot.ntgl.attachment.not_applicable")), mouseX, mouseY);
                 } else if (this.menu.getSlot(i) instanceof AttachmentSlot slot && slot.getItem().isEmpty() && !this.isCompatible(this.menu.getCarried(), slot)) {
-                    this.renderComponentTooltip(poseStack, Arrays.asList(new TranslatableComponent("slot.ntgl.attachment.incompatible").withStyle(ChatFormatting.YELLOW)), mouseX, mouseY);
+                    this.renderComponentTooltip(poseStack, Arrays.asList(Component.translatable("slot.ntgl.attachment.incompatible").withStyle(ChatFormatting.YELLOW)), mouseX, mouseY);
                 } else if (this.weaponInventory.getItem(i).isEmpty()) {
-                    this.renderComponentTooltip(poseStack, Collections.singletonList(new TranslatableComponent("slot.ntgl.attachment." + type.getTranslationKey())), mouseX, mouseY);
+                    this.renderComponentTooltip(poseStack, Collections.singletonList(Component.translatable("slot.ntgl.attachment." + type.getTranslationKey())), mouseX, mouseY);
                 }
             }
         }
@@ -295,9 +295,9 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 //                modName.setStyle(modName.getStyle()
 //                        .withColor(ChatFormatting.YELLOW)
 //                        .withUnderlined(true)
-//                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("ntgl.chat.open_curseforge_page")))
+//                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("ntgl.chat.open_curseforge_page")))
 //                        .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/configured")));
-//                Component message = new TranslatableComponent("ntgl.chat.install_configured", modName);
+//                Component message = Component.translatable("ntgl.chat.install_configured", modName);
 //                this.minecraft.player.displayClientMessage(message, false);
 //            }
 //        });

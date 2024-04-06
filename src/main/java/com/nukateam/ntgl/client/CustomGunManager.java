@@ -37,7 +37,7 @@ public class CustomGunManager {
 //            customGunMap.forEach((id, gun) ->
 //            {
 //                ItemStack stack = new ItemStack(ModGuns.PISTOL.get());
-//                stack.setHoverName(new TranslatableComponent("item." + id.getNamespace() + "." + id.getPath() + ".name"));
+//                stack.setHoverName(Component.translatable("item." + id.getNamespace() + "." + id.getPath() + ".name"));
 //                CompoundTag tag = stack.getOrCreateTag();
 //                tag.put("Model", gun.getModel().save(new CompoundTag()));
 //                tag.put("Gun", gun.getGun().serializeNBT());

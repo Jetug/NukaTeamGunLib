@@ -5,7 +5,7 @@ import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -53,7 +53,7 @@ public abstract class Attachment {
             IAttachment<?> attachment = (IAttachment<?>) stack.getItem();
             List<Component> perks = attachment.getProperties().getPerks();
             if (perks != null && perks.size() > 0) {
-                event.getToolTip().add(new TranslatableComponent("perk.ntgl.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
+                event.getToolTip().add(Component.translatable("perk.ntgl.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
                 event.getToolTip().addAll(perks);
                 return;
             }
@@ -192,13 +192,13 @@ public abstract class Attachment {
             positivePerks.addAll(negativePerks);
             attachment.getProperties().setPerks(positivePerks);
             if (positivePerks.size() > 0) {
-                event.getToolTip().add(new TranslatableComponent("perk.ntgl.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
+                event.getToolTip().add(Component.translatable("perk.ntgl.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
                 event.getToolTip().addAll(positivePerks);
             }
         }
     }
 
     private static void addPerk(List<Component> components, boolean positive, String id, Object... params) {
-        components.add(new TranslatableComponent(positive ? "perk.ntgl.entry.positive" : "perk.ntgl.entry.negative", new TranslatableComponent(id, params).withStyle(ChatFormatting.WHITE)).withStyle(positive ? ChatFormatting.DARK_AQUA : ChatFormatting.GOLD));
+        components.add(Component.translatable(positive ? "perk.ntgl.entry.positive" : "perk.ntgl.entry.negative", Component.translatable(id, params).withStyle(ChatFormatting.WHITE)).withStyle(positive ? ChatFormatting.DARK_AQUA : ChatFormatting.GOLD));
     }
 }

@@ -31,7 +31,8 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
 //    mappings channel: 'official', version: '1.18.2'
-    mappings channel: 'parchment', version: '2022.11.06-1.18.2'
+//    mappings channel: 'parchment', version: '2022.11.06-1.18.2'
+    mappings channel: 'official', version: '1.19.2'
 
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
@@ -137,19 +138,18 @@ dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.18.2-40.2.9'
+//    minecraft 'net.minecraftforge:forge:1.18.2-40.2.9'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
 //    implementation fg.deobf('curse.maven:curios-309927:3841948')
-    implementation fg.deobf("mod.azure.azurelib:azurelib-forge-1.18.2:1.0.31")
-//    implementation fg.deobf('com.jetug:chassis_core:2.2.1')
-//    implementation fg.deobf("curse.maven:chassis_core-908954:5030459")
-//    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.18:3.0.57')
-    implementation fg.deobf('curse.maven:framework-549225:4613856')
-    implementation fg.deobf('curse.maven:configured-457570:4010624')
-    implementation fg.deobf('curse.maven:catalogue-459701:3803098')
-    compileOnly    fg.deobf('curse.maven:controllable-317269:4120618')
-    implementation fg.deobf('curse.maven:backpacked-352835:3923041')
-    compileOnly    fg.deobf("mezz.jei:jei-1.18.2:9.7.1.255:api")
-    compileOnly    fg.deobf("mezz.jei:jei-1.18.2:9.7.1.255")
+    implementation fg.deobf("mod.azure.azurelib:azurelib-forge-1.19.2:1.0.41")
+    implementation fg.deobf('curse.maven:framework-549225:4718247')
+    implementation fg.deobf('curse.maven:configured-457570:4011355')
+    implementation fg.deobf('curse.maven:catalogue-459701:4171024')
+    implementation fg.deobf('curse.maven:backpacked-352835:3923045')
+    compileOnly fg.deobf('curse.maven:controllable-317269:3936915')
+    compileOnly fg.deobf("mezz.jei:jei-1.19.2-common-api:11.4.0.274")
+    compileOnly fg.deobf("mezz.jei:jei-1.19.2-forge-api:11.4.0.274")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.19.2-forge:11.4.0.274")
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency

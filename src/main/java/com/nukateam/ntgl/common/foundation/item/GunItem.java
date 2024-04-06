@@ -20,7 +20,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -28,7 +27,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -66,7 +64,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
 
     @Override
     public String getNamespace() {
-        return getRegistryName().getNamespace();
+        return getNamespace();
     }
 
     @Override
@@ -89,7 +87,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         var ammo = ForgeRegistries.ITEMS.getValue(modifiedGun.getProjectile().getItem());
 
         if (ammo != null) {
-            tooltip.add(new TranslatableComponent("info.ntgl.ammo_type", new TranslatableComponent(ammo.getDescriptionId()).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("info.ntgl.ammo_type", Component.translatable(ammo.getDescriptionId()).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GRAY));
         }
 
         var additionalDamageText = "";
@@ -110,18 +108,18 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         float damage = modifiedGun.getProjectile().getDamage();
         damage = GunModifierHelper.getModifiedProjectileDamage(stack, damage);
         damage = GunEnchantmentHelper.getAcceleratorDamage(stack, damage);
-        tooltip.add(new TranslatableComponent("info.ntgl.damage",
+        tooltip.add(Component.translatable("info.ntgl.damage",
                 ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage) + additionalDamageText).withStyle(ChatFormatting.GRAY));
 
         if (tagCompound != null) {
             if (tagCompound.getBoolean("IgnoreAmmo")) {
-                tooltip.add(new TranslatableComponent("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
+                tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
             } else {
                 int ammoCount = tagCompound.getInt(Tags.AMMO_COUNT);
-                tooltip.add(new TranslatableComponent("info.ntgl.ammo", ChatFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)).withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("info.ntgl.ammo", ChatFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)).withStyle(ChatFormatting.GRAY));
             }
         }
-        //tooltip.add(new TranslatableComponent("info.ntgl.attachment_help", new KeybindComponent("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH)).withStyle(ChatFormatting.YELLOW));
+        //tooltip.add(Component.translatable("info.ntgl.attachment_help", new KeybindComponent("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH)).withStyle(ChatFormatting.YELLOW));
     }
 
     @Override
