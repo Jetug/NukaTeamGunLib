@@ -56,7 +56,7 @@ public class TwoHandedPose extends WeaponPose {
 
         if (Config.CLIENT.display.oldAnimations.get()) {
             Minecraft mc = Minecraft.getInstance();
-            boolean right = mc.options.mainHand == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
+            boolean right = mc.options.mainHand().get() == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
             ModelPart mainArm = right ? rightArm : leftArm;
             ModelPart secondaryArm = right ? leftArm : rightArm;
             mainArm.xRot = head.xRot;
@@ -85,7 +85,7 @@ public class TwoHandedPose extends WeaponPose {
     @OnlyIn(Dist.CLIENT)
     public void applyEntityPreRender(LivingEntity entity, InteractionHand hand, float aimProgress, PoseStack poseStack, MultiBufferSource buffer) {
         if (Config.CLIENT.display.oldAnimations.get()) {
-            boolean right = Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
+            boolean right = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
             entity.yBodyRotO = entity.yRotO + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
             entity.yBodyRot = entity.getYRot() + (right ? 25F : -25F) + aimProgress * (right ? 20F : -20F);
         } else {
@@ -98,7 +98,7 @@ public class TwoHandedPose extends WeaponPose {
     public void applyHeldItemTransforms(LivingEntity entity, InteractionHand hand, float aimProgress, PoseStack poseStack, MultiBufferSource buffer) {
 //        if (Config.CLIENT.display.oldAnimations.get()) {
 //            if (hand == InteractionHand.MAIN_HAND) {
-//                boolean right = Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ?
+//                boolean right = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT ?
 //                        hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
 //                poseStack.translate(0, 0, 0.05);
 //                float invertRealProgress = 1.0F - aimProgress;

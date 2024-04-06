@@ -1,7 +1,9 @@
 package com.nukateam.ntgl.client.input;
 
+import com.nukateam.ntgl.Config;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.client.ClientRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Field;
@@ -12,23 +14,23 @@ import java.util.List;
  * Author: MrCrayfish
  */
 public class KeyBinds {
-    public static final KeyMapping KEY_RELOAD = new KeyMapping("key.ntgl.reload", GLFW.GLFW_KEY_R, "key.categories.ntgl");
-    public static final KeyMapping KEY_UNLOAD = new KeyMapping("key.ntgl.unload", GLFW.GLFW_KEY_U, "key.categories.ntgl");
-    public static final KeyMapping KEY_ATTACHMENTS = new KeyMapping("key.ntgl.attachments", GLFW.GLFW_KEY_Z, "key.categories.ntgl");
+    public static final KeyMapping KEY_RELOAD = new KeyMapping("key.cgm.reload", GLFW.GLFW_KEY_R, "key.categories.cgm");
+    public static final KeyMapping KEY_UNLOAD = new KeyMapping("key.cgm.unload", GLFW.GLFW_KEY_U, "key.categories.cgm");
+    public static final KeyMapping KEY_ATTACHMENTS = new KeyMapping("key.cgm.attachments", GLFW.GLFW_KEY_Z, "key.categories.cgm");
 
-    public static void register(){
-        for (KeyMapping key: getKeys())
-            ClientRegistry.registerKeyBinding(key);
+    public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.register(KEY_RELOAD);
+        event.register(KEY_UNLOAD);
+        event.register(KEY_ATTACHMENTS);
     }
 
-    private static List<KeyMapping> getKeys() {
-        List<KeyMapping> keys = new ArrayList<>();
+    public static KeyMapping getAimMapping() {
+        Minecraft mc = Minecraft.getInstance();
+        return Config.CLIENT.controls.flipControls.get() ? mc.options.keyAttack : mc.options.keyUse;
+    }
 
-        for (Field field: KeyBinds.class.getFields()) try {
-            if (field.get(null) instanceof KeyMapping)
-                keys.add((KeyMapping)field.get(null));
-        } catch (IllegalAccessException ignored) {}
-
-        return keys;
+    public static KeyMapping getShootMapping() {
+        Minecraft mc = Minecraft.getInstance();
+        return Config.CLIENT.controls.flipControls.get() ? mc.options.keyUse : mc.options.keyAttack;
     }
 }

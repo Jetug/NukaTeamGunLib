@@ -50,7 +50,7 @@ public class MiniGunPose extends WeaponPose {
     public void applyHumanoidModelRotation(LivingEntity entity, ModelPart rightArm, ModelPart leftArm, ModelPart head, InteractionHand hand, float aimProgress) {
         if(hand == InteractionHand.OFF_HAND) return;
         if (Config.CLIENT.display.oldAnimations.get()) {
-            boolean right = Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
+            boolean right = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
             ModelPart mainArm = right ? rightArm : leftArm;
             ModelPart secondaryArm = right ? leftArm : rightArm;
             mainArm.xRot = (float) Math.toRadians(-15F);
@@ -78,7 +78,7 @@ public class MiniGunPose extends WeaponPose {
     }
 
     public static boolean rightHandIsMain(InteractionHand hand){
-        return Minecraft.getInstance().options.mainHand == HumanoidArm.RIGHT ?
+        return Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT ?
                 hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
     }
 

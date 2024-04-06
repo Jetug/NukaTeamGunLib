@@ -13,8 +13,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.config.ModConfig;
@@ -99,12 +99,11 @@ public class CrosshairHandler {
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.PreLayer event) {
-        if (event.getOverlay() != ForgeIngameGui.CROSSHAIR_ELEMENT)
+    public void onRenderOverlay(RenderGuiOverlayEvent.Pre event) {
+        if (event.getOverlay() != VanillaGuiOverlay.CROSSHAIR.type())
             return;
 
-        var crosshair = this.getCurrentCrosshair();
-
+        Crosshair crosshair = this.getCurrentCrosshair();
         if (AimingHandler.get().getNormalisedAdsProgress() > 0.5) {
             event.setCanceled(true);
             return;
@@ -130,11 +129,11 @@ public class CrosshairHandler {
         if (mc.player.getUseItem().getItem() == Items.SHIELD)
             return;
 
-        PoseStack stack = event.getMatrixStack();
+        PoseStack stack = event.getPoseStack();
         stack.pushPose();
         int scaledWidth = event.getWindow().getGuiScaledWidth();
         int scaledHeight = event.getWindow().getGuiScaledHeight();
-        crosshair.render(mc, stack, scaledWidth, scaledHeight, event.getPartialTicks());
+        crosshair.render(mc, stack, scaledWidth, scaledHeight, event.getPartialTick());
         stack.popPose();
     }
 

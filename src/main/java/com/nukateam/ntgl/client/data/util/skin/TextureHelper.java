@@ -186,8 +186,8 @@ public class TextureHelper {
 
     public static Pair<Integer, Integer> getTextureSize(ResourceLocation resourceLocation) {
         try {
-            Resource resource = Minecraft.getInstance().getResourceManager().getResource(resourceLocation);
-            NativeImage nativeImage = NativeImage.read(resource.getInputStream());
+            Resource resource = Minecraft.getInstance().getResourceManager().getResource(resourceLocation).get();
+            NativeImage nativeImage = NativeImage.read(resource.open());
             return Pair.of(nativeImage.getWidth(), nativeImage.getHeight());
         } catch (IOException var3) {
             return Pair.of(0, 0);

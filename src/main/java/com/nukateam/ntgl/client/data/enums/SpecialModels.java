@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -46,6 +47,28 @@ public enum SpecialModels {
     }
 
     /**
+     * Registers the special models into the Forge Model Bakery. This is only called once on the
+     * load of the game.
+     */
+    @SubscribeEvent
+    public static void registerAdditional(ModelEvent.RegisterAdditional event) {
+        for (SpecialModels model : values()) {
+            event.register(model.modelLocation);
+        }
+    }
+
+    /**
+     * Clears the cached BakedModel since it's been rebuilt. This is needed since the models may
+     * have changed when a resource pack was applied, or if resources are reloaded.
+     */
+    @SubscribeEvent
+    public static void onBake(ModelEvent.BakingCompleted event) {
+        for (SpecialModels model : values()) {
+            model.cachedModel = null;
+        }
+    }
+
+    /**
      * Gets the model
      *
      * @return isolated model
@@ -55,27 +78,5 @@ public enum SpecialModels {
             this.cachedModel = Minecraft.getInstance().getModelManager().getModel(this.modelLocation);
         }
         return this.cachedModel;
-    }
-
-    /**
-     * Registers the special models into the Forge Model Bakery. This is only called once on the
-     * load of the game.
-     */
-    @SubscribeEvent
-    public static void register(ModelRegistryEvent event) {
-        for (SpecialModels model : values()) {
-            ForgeModelBakery.addSpecialModel(model.modelLocation);
-        }
-    }
-
-    /**
-     * Clears the cached BakedModel since it's been rebuilt. This is needed since the models may
-     * have changed when a resource pack was applied, or if resources are reloaded.
-     */
-    @SubscribeEvent
-    public static void onBake(ModelBakeEvent event) {
-        for (SpecialModels model : values()) {
-            model.cachedModel = null;
-        }
     }
 }

@@ -5,13 +5,14 @@ import com.nukateam.ntgl.common.foundation.init.ModEffects;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 
 public class StunRingingSound extends AbstractTickableSoundInstance {
     public StunRingingSound() {
-        super(ModSounds.ENTITY_STUN_GRENADE_RING.get(), SoundSource.MASTER);
+        super(ModSounds.ENTITY_STUN_GRENADE_RING.get(), SoundSource.MASTER, SoundInstance.createUnseededRandom());
         this.looping = true;
         this.attenuation = Attenuation.NONE;
         this.tick();

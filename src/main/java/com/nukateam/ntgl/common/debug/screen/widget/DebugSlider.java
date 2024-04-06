@@ -16,7 +16,7 @@ public class DebugSlider extends ForgeSlider implements IDebugWidget {
     private final Consumer<Double> callback;
 
     public DebugSlider(double minValue, double maxValue, double currentValue, double stepSize, int precision, Consumer<Double> callback) {
-        super(0, 0, 0, 14, TextComponent.EMPTY, TextComponent.EMPTY, minValue, maxValue, currentValue, stepSize, precision, true);
+        super(0, 0, 0, 14, Component.empty(), Component.empty(), minValue, maxValue, currentValue, stepSize, precision, true);
         this.callback = callback;
     }
 

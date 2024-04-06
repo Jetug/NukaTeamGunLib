@@ -13,7 +13,7 @@ import net.minecraft.world.phys.Vec3;
 public class GunShotSound extends AbstractSoundInstance {
     public GunShotSound(ResourceLocation soundIn, SoundSource categoryIn, double x, double y, double z,
                         float volume, float pitch, boolean reload) {
-        super(soundIn, categoryIn);
+        super(soundIn, categoryIn, Minecraft.getInstance().level.getRandom());
         this.x = x;
         this.y = y;
         this.z = z;

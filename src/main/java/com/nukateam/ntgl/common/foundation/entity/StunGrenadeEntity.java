@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.foundation.init.ModEffects;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
@@ -33,6 +34,7 @@ import net.minecraftforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 
 import static com.nukateam.example.common.registery.ModGuns.STUN_GRENADE;
+import static com.nukateam.ntgl.common.foundation.init.Projectiles.THROWABLE_STUN_GRENADE;
 
 @Mod.EventBusSubscriber
 public class StunGrenadeEntity extends ThrowableGrenadeEntity {
@@ -46,16 +48,15 @@ public class StunGrenadeEntity extends ThrowableGrenadeEntity {
     }
 
     public StunGrenadeEntity(Level world, LivingEntity player, int maxCookTime) {
-        super(Projectiles.THROWABLE_STUN_GRENADE.get(), world, player);
+        super(THROWABLE_STUN_GRENADE.get(), world, player);
         this.setItem(new ItemStack(STUN_GRENADE.get()));
         this.setMaxLife(maxCookTime);
     }
 
     @SubscribeEvent
     public static void blindMobs(LivingSetAttackTargetEvent event) {
-
-        if (Config.COMMON.stunGrenades.blind.blindMobs.get() && event.getTarget() != null && event.getEntityLiving() instanceof Mob && event.getEntityLiving().hasEffect(ModEffects.BLINDED.get())) {
-            ((Mob) event.getEntityLiving()).setTarget(null);
+        if (Config.COMMON.stunGrenades.blind.blindMobs.get() && event.getTarget() != null && event.getEntity() instanceof Mob && event.getEntity().hasEffect(ModEffects.BLINDED.get())) {
+            ((Mob) event.getEntity()).setTarget(null);
         }
     }
 
@@ -66,7 +67,7 @@ public class StunGrenadeEntity extends ThrowableGrenadeEntity {
         if (this.level.isClientSide) {
             return;
         }
-        PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(this.getX(), y, this.getZ(), 64, this.level.dimension())), new S2CMessageStunGrenade(this.getX(), y, this.getZ()));
+        PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(this.level, this.getX(), y, this.getZ(), 64), new S2CMessageStunGrenade(this.getX(), y, this.getZ()));
 
         // Calculate bounds of area where potentially effected players my be
         double diameter = Math.max(Config.COMMON.stunGrenades.deafen.criteria.radius.get(), Config.COMMON.stunGrenades.blind.criteria.radius.get()) * 2 + 1;
@@ -106,7 +107,7 @@ public class StunGrenadeEntity extends ThrowableGrenadeEntity {
         double angleMax = criteria.angleEffect.get() * 0.5;
         if (distance <= criteria.radius.get() && angleMax > 0 && angle <= angleMax) {
             // Verify that light can pass through all blocks obstructing the entity's line of sight to the grenade
-            if (effect != ModEffects.BLINDED.get() || rayTraceOpaqueBlocks(this.level, eyes, grenade, false, false, false) == null) {
+            if (effect != ModEffects.BLINDED.get() || !Config.COMMON.stunGrenades.blind.criteria.raytraceOpaqueBlocks.get() || rayTraceOpaqueBlocks(this.level, eyes, grenade, false, false, false) == null) {
                 // Duration attenuated by distance
                 int durationBlinded = (int) Math.round(criteria.durationMax.get() - (criteria.durationMax.get() - criteria.durationMin.get()) * (distance / criteria.radius.get()));
 

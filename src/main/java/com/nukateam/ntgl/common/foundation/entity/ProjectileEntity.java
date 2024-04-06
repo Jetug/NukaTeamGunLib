@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.example.common.data.interfaces.IExplosiveOnHit;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
@@ -38,6 +39,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -478,17 +480,17 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         if (this.shooter instanceof Player) {
             int hitType = critical ? S2CMessageProjectileHitEntity.HitType.CRITICAL : headshot ? S2CMessageProjectileHitEntity.HitType.HEADSHOT : S2CMessageProjectileHitEntity.HitType.NORMAL;
-            PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) this.shooter), new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
+            PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) this.shooter, new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
         }
 
         /* Send blood particle to tracking clients. */
-        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new S2CMessageBlood(hitVec.x, hitVec.y, hitVec.z));
+        PacketHandler.getPlayChannel().sendToTracking(() -> entity, new S2CMessageBlood(hitVec.x, hitVec.y, hitVec.z));
+
         doImpactEffects(hitVec);
     }
 
     protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z) {
-        PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_CHUNK.with(() ->
-                this.level.getChunkAt(pos)), new S2CMessageProjectileHitBlock(x, y, z, pos, face));
+        PacketHandler.getPlayChannel().sendToTrackingChunk(() -> this.level.getChunkAt(pos), new S2CMessageProjectileHitBlock(x, y, z, pos, face));
         doImpactEffects(new Vec3(x, y, z));
     }
 
@@ -583,7 +585,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return Math.max(0F, damage);
     }
 
-    private float getCriticalDamage(ItemStack weapon, Random rand, float damage) {
+    private float getCriticalDamage(ItemStack weapon, RandomSource rand, float damage) {
         float chance = GunModifierHelper.getCriticalChance(weapon);
         if (rand.nextFloat() < chance) {
             return (float) (damage * Config.COMMON.gameplay.criticalDamageMultiplier.get());
@@ -599,12 +601,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     @Override
     public void onRemovedFromWorld() {
         if (!this.level.isClientSide) {
-            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(this::getDeathTargetPoint), new S2CMessageRemoveProjectile(this.getId()));
+            PacketHandler.getPlayChannel().sendToNearbyPlayers(this::getDeathTargetPoint, new S2CMessageRemoveProjectile(this.getId()));
         }
     }
 
-    private PacketDistributor.TargetPoint getDeathTargetPoint() {
-        return new PacketDistributor.TargetPoint(this.getX(), this.getY(), this.getZ(), 256, this.level.dimension());
+    private LevelLocation getDeathTargetPoint() {
+        return LevelLocation.create(this.level, this.getX(), this.getY(), this.getZ(), 256);
     }
 
     @Override

@@ -119,7 +119,7 @@ public class EditorScreen extends Screen {
         buffer.vertex(x + width, y + height, 0).uv((u + textureWidth) * uScale, (v + textureHeight) * vScale).endVertex();
         buffer.vertex(x + width, y, 0).uv((u + textureWidth) * uScale, v * vScale).endVertex();
         buffer.vertex(x, y, 0).uv(u * uScale, v * vScale).endVertex();
-        BufferUploader.end(buffer);
+        BufferUploader.drawWithShader(buffer.end());
     }
 
     private class PropertyList extends ContainerObjectSelectionList<PropertyEntry> {

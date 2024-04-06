@@ -6,6 +6,7 @@ import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.MetaLoader;
 import com.nukateam.ntgl.client.data.handler.CrosshairHandler;
 import com.nukateam.ntgl.client.data.util.skin.PlayerSkinStorage;
+import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.data.datagen.*;
@@ -23,6 +24,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
@@ -32,7 +34,6 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import org.slf4j.Logger;
 
 import static com.nukateam.example.common.registery.ModGuns.*;
@@ -88,10 +89,12 @@ public class Ntgl {
         MOD_EVENT_BUS.addListener(this::onClientSetup);
         MOD_EVENT_BUS.addListener(this::onGatherData);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            FrameworkClientAPI.registerDataLoader(MetaLoader.getInstance());
+            MOD_EVENT_BUS.addListener(KeyBinds::registerKeyMappings);
             MOD_EVENT_BUS.addListener(CrosshairHandler::onConfigReload);
             MOD_EVENT_BUS.addListener(ClientHandler::onRegisterReloadListener);
-            FrameworkClientAPI.registerDataLoader(MetaLoader.getInstance());
         });
+
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
@@ -147,11 +150,11 @@ public class Ntgl {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         BlockTagGen blockTagGen = new BlockTagGen(generator, existingFileHelper);
-        generator.addProvider(new RecipeGen(generator));
-        generator.addProvider(new LootTableGen(generator));
-        generator.addProvider(blockTagGen);
-        generator.addProvider(new ItemTagGen(generator, blockTagGen, existingFileHelper));
-        generator.addProvider(new LanguageGen(generator));
-        generator.addProvider(new GunGen(generator));
+        generator.addProvider(event.includeServer(), new RecipeGen(generator));
+        generator.addProvider(event.includeServer(), new LootTableGen(generator));
+        generator.addProvider(event.includeServer(), blockTagGen);
+        generator.addProvider(event.includeServer(), new ItemTagGen(generator, blockTagGen, existingFileHelper));
+        generator.addProvider(event.includeServer(), new LanguageGen(generator));
+        generator.addProvider(event.includeServer(), new GunGen(generator));
     }
 }

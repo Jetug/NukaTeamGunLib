@@ -10,6 +10,31 @@ import java.util.Collections;
 import java.util.List;
 
 public class Config {
+    public static final Config.Client CLIENT;
+    public static final Config.Common COMMON;
+    public static final Config.Server SERVER;
+    static final ForgeConfigSpec clientSpec;
+    static final ForgeConfigSpec commonSpec;
+    static final ForgeConfigSpec serverSpec;
+
+    static {
+        final Pair<Client, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(Config.Client::new);
+        clientSpec = clientSpecPair.getRight();
+        CLIENT = clientSpecPair.getLeft();
+
+        final Pair<Common, ForgeConfigSpec> commonSpecPair = new ForgeConfigSpec.Builder().configure(Common::new);
+        commonSpec = commonSpecPair.getRight();
+        COMMON = commonSpecPair.getLeft();
+
+        final Pair<Server, ForgeConfigSpec> serverSpecPair = new ForgeConfigSpec.Builder().configure(Server::new);
+        serverSpec = serverSpecPair.getRight();
+        SERVER = serverSpecPair.getLeft();
+    }
+
+    public static void saveClientConfig() {
+        clientSpec.save();
+    }
+
     /**
      * Client related config options
      */
@@ -66,7 +91,7 @@ public class Config {
     public static class Display {
         public final ForgeConfigSpec.BooleanValue oldAnimations;
         public final ForgeConfigSpec.ConfigValue<String> crosshair;
-//        public final ForgeConfigSpec.BooleanValue cooldownIndicator;
+        public final ForgeConfigSpec.BooleanValue cooldownIndicator;
         public final ForgeConfigSpec.BooleanValue weaponSway;
         public final ForgeConfigSpec.DoubleValue swaySensitivity;
         public final ForgeConfigSpec.EnumValue<SwayType> swayType;
@@ -75,14 +100,13 @@ public class Config {
         public final ForgeConfigSpec.BooleanValue restrictCameraRollToWeapons;
         public final ForgeConfigSpec.BooleanValue sprintAnimation;
         public final ForgeConfigSpec.DoubleValue bobbingIntensity;
-        public final ForgeConfigSpec.DoubleValue bulletTrailOpacity;
 
         public Display(ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration for display related options").push("display");
             {
                 this.oldAnimations = builder.comment("If true, uses the old animation poses for weapons. This is only for nostalgic reasons and not recommended to switch back.").define("oldAnimations", false);
                 this.crosshair = builder.comment("The custom crosshair to use for weapons. Go to (Options > Controls > Mouse Settings > Crosshair) in game to change this!").define("crosshair", Crosshair.DEFAULT.getLocation().toString());
-//                this.cooldownIndicator = builder.comment("If enabled, renders a cooldown indicator to make it easier to learn when you fire again.").define("cooldownIndicator", true);
+                this.cooldownIndicator = builder.comment("If enabled, renders a cooldown indicator to make it easier to learn when you fire again.").define("cooldownIndicator", true);
                 this.weaponSway = builder.comment("If enabled, the weapon will sway when the player moves their look direction. This does not affect aiming and is only visual.").define("weaponSway", true);
                 this.swaySensitivity = builder.comment("The sensistivity of the visual weapon sway when the player moves their look direciton. The higher the value the more sway.").defineInRange("swaySensitivity", 0.3, 0.0, 1.0);
                 this.swayType = builder.comment("The animation to use for sway. Directional follows the camera better while Drag is more immersive").defineEnum("swayType", SwayType.DRAG);
@@ -91,8 +115,6 @@ public class Config {
                 this.restrictCameraRollToWeapons = builder.comment("When enabled, the Camera Roll Effect is only applied when holding a weapon.").define("restrictCameraRollToWeapons", true);
                 this.sprintAnimation = builder.comment("Enables the sprinting animation on weapons for better immersion. This only applies to weapons that support a sprinting animation.").define("sprintingAnimation", true);
                 this.bobbingIntensity = builder.comment("The intensity of the custom bobbing animation while holding a gun").defineInRange("bobbingIntensity", 1.0, 0.0, 2.0);
-                this.bulletTrailOpacity = builder.comment("Adjusts the opacity, AKA how see through the bullet trails are seen as, higher values can be seen better indoors or at daytime.")
-                        .defineInRange("bulletTrailOpacity", 0.5, 0.1, 1.0);
             }
             builder.pop();
         }
@@ -123,11 +145,13 @@ public class Config {
 
     public static class Controls {
         public final ForgeConfigSpec.DoubleValue aimDownSightSensitivity;
+        public final ForgeConfigSpec.BooleanValue flipControls;
 
         public Controls(ForgeConfigSpec.Builder builder) {
             builder.comment("Properties relating to controls").push("controls");
             {
                 this.aimDownSightSensitivity = builder.comment("A value to multiple the mouse sensitivity by when aiming down weapon sights. Go to (Options > Controls > Mouse Settings > ADS Sensitivity) in game to change this!").defineInRange("aimDownSightSensitivity", 0.75, 0.0, 1.0);
+                this.flipControls = builder.comment("When enabled, switches the shoot and aim controls of weapons. Due to technical reasons, you won't be able to use offhand items if you enable this setting.").define("flipControls", false);
             }
             builder.pop();
         }
@@ -434,32 +458,5 @@ public class Config {
                 builder.pop();
             }
         }
-    }
-
-    public static final ForgeConfigSpec clientSpec;
-    public static final Config.Client CLIENT;
-
-    public static final ForgeConfigSpec commonSpec;
-    public static final Config.Common COMMON;
-
-    public static final ForgeConfigSpec serverSpec;
-    public static final Config.Server SERVER;
-
-    static {
-        final Pair<Client, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(Config.Client::new);
-        clientSpec = clientSpecPair.getRight();
-        CLIENT = clientSpecPair.getLeft();
-
-        final Pair<Common, ForgeConfigSpec> commonSpecPair = new ForgeConfigSpec.Builder().configure(Common::new);
-        commonSpec = commonSpecPair.getRight();
-        COMMON = commonSpecPair.getLeft();
-
-        final Pair<Server, ForgeConfigSpec> serverSpecPair = new ForgeConfigSpec.Builder().configure(Server::new);
-        serverSpec = serverSpecPair.getRight();
-        SERVER = serverSpecPair.getLeft();
-    }
-
-    public static void saveClientConfig() {
-        clientSpec.save();
     }
 }

@@ -9,11 +9,11 @@ import java.util.function.Consumer;
  * Author: MrCrayfish
  */
 public class DebugToggle extends DebugButton implements IDebugWidget {
-    private boolean enabled;
     private final Consumer<Boolean> callback;
+    private boolean enabled;
 
     public DebugToggle(boolean initialValue, Consumer<Boolean> callback) {
-        super(TextComponent.EMPTY, btn -> ((DebugToggle) btn).toggle());
+        super(Component.empty(), btn -> ((DebugToggle) btn).toggle());
         this.enabled = initialValue;
         this.callback = callback;
         this.updateMessage();

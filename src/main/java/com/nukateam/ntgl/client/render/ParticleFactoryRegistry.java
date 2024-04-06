@@ -18,11 +18,9 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ParticleFactoryRegistry {
     @SubscribeEvent
-    public static void onRegisterParticleFactory(ParticleFactoryRegisterEvent event) {
+    public static void onRegisterParticleFactory(RegisterParticleProvidersEvent event) {
         ParticleEngine particleManager = Minecraft.getInstance().particleEngine;
-        particleManager.register(ModParticleTypes.BULLET_HOLE.get(),
-                (typeIn, worldIn, x, y, z, xSpeed, ySpeed, zSpeed) ->
-                        new BulletHoleParticle(worldIn, x, y, z, typeIn.getDirection(), typeIn.getPos()));
+        particleManager.register(ModParticleTypes.BULLET_HOLE.get(), (typeIn, worldIn, x, y, z, xSpeed, ySpeed, zSpeed) -> new BulletHoleParticle(worldIn, x, y, z, typeIn.getDirection(), typeIn.getPos()));
         particleManager.register(ModParticleTypes.BLOOD.get(), BloodParticle.Factory::new);
         particleManager.register(ModParticleTypes.TRAIL.get(), TrailParticle.Factory::new);
     }

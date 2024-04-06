@@ -92,7 +92,7 @@ public class DyeItemRecipe extends CustomRecipe {
         NonNullList<ItemStack> remainingItems = NonNullList.withSize(inventory.getContainerSize(), ItemStack.EMPTY);
         for (int i = 0; i < remainingItems.size(); ++i) {
             ItemStack stack = inventory.getItem(i);
-            remainingItems.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(stack));
+            remainingItems.set(i, net.minecraftforge.common.ForgeHooks.getCraftingRemainingItem(stack));
         }
         return remainingItems;
     }

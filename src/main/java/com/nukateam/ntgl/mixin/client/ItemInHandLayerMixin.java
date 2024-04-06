@@ -30,9 +30,9 @@ public class ItemInHandLayerMixin {
     private void renderArmWithItem(LivingEntity entity, ItemStack stack,
                                        ItemTransforms.TransformType transformType, HumanoidArm arm,
                                        PoseStack poseStack, MultiBufferSource source, int light, CallbackInfo ci) {
-        var hand = Minecraft.getInstance().options.mainHand == arm ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        var hand = Minecraft.getInstance().options.mainHand().get() == arm ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         if(stack != entity.getItemInHand(hand)) return;
-        var oppositeHand = Minecraft.getInstance().options.mainHand == arm ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+        var oppositeHand = Minecraft.getInstance().options.mainHand().get() == arm ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         var oppositeStack = entity.getItemInHand(oppositeHand);
 
         if (hand == InteractionHand.OFF_HAND) {

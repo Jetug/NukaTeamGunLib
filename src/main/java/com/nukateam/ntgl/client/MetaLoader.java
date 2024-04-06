@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.client;
 
+import com.mrcrayfish.framework.client.resources.IDataLoader;
+import com.mrcrayfish.framework.client.resources.IResourceSupplier;
 import com.nukateam.ntgl.common.foundation.item.IMeta;
-import com.mrcrayfish.framework.api.client.resources.IDataLoader;
-import com.mrcrayfish.framework.api.client.resources.IResourceSupplier;
 import com.mrcrayfish.framework.api.serialize.DataObject;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
@@ -20,17 +20,16 @@ import java.util.List;
  */
 public final class MetaLoader implements IDataLoader<MetaLoader.ItemResource> {
     private static MetaLoader instance;
+    private final Object2ObjectMap<Item, DataObject> itemToData = Util.make(new Object2ObjectOpenCustomHashMap<>(Util.identityStrategy()), map -> map.defaultReturnValue(DataObject.EMPTY));
+
+    private MetaLoader() {
+    }
 
     public static MetaLoader getInstance() {
         if (instance == null) {
             instance = new MetaLoader();
         }
         return instance;
-    }
-
-    private final Object2ObjectMap<Item, DataObject> itemToData = Util.make(new Object2ObjectOpenCustomHashMap<>(Util.identityStrategy()), map -> map.defaultReturnValue(DataObject.EMPTY));
-
-    private MetaLoader() {
     }
 
     public DataObject getData(Item item) {
@@ -42,8 +41,8 @@ public final class MetaLoader implements IDataLoader<MetaLoader.ItemResource> {
         List<ItemResource> resources = new ArrayList<>();
         ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof IMeta).forEach(item ->
         {
-            var key = item.builtInRegistryHolder().key().location();
-            var location = new ResourceLocation(key.getNamespace(), "config/guns/" + key.getPath() + ".gunmeta");
+            ResourceLocation key = item.builtInRegistryHolder().key().location();
+            ResourceLocation location = new ResourceLocation(key.getNamespace(), "models/item/" + key.getPath() + ".cgmmeta");
             resources.add(new ItemResource(item, location));
         });
         return resources;

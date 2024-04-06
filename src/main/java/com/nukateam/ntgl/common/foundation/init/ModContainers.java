@@ -15,7 +15,7 @@ import net.minecraftforge.registries.RegistryObject;
  * Author: MrCrayfish
  */
 public class ModContainers {
-    public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.CONTAINERS, Ntgl.MOD_ID);
+    public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Ntgl.MOD_ID);
 
     public static final RegistryObject<MenuType<WorkbenchContainer>> WORKBENCH =
             register("workbench", (IContainerFactory<WorkbenchContainer>) (windowId, playerInventory, data) -> {

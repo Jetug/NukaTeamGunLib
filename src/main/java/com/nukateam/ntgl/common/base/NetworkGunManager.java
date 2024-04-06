@@ -208,7 +208,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
     @SubscribeEvent
     public static void onDatapackSync(OnDatapackSyncEvent event) {
         if (event.getPlayer() == null) {
-            PacketHandler.getPlayChannel().send(PacketDistributor.ALL.noArg(), new S2CMessageUpdateGuns());
+            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateGuns());
         }
     }
 

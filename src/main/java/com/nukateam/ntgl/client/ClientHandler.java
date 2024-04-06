@@ -5,7 +5,6 @@ import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.client.screen.AttachmentScreen;
 import com.nukateam.ntgl.client.screen.WorkbenchScreen;
-import com.nukateam.ntgl.client.settings.GunOptions;
 import com.nukateam.ntgl.client.data.util.PropertyHelper;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.debug.screen.*;
@@ -63,8 +62,6 @@ public class ClientHandler {
             MinecraftForge.EVENT_BUS.register(new ControllerHandler());
             GunButtonBindings.register();
         }
-
-        KeyBinds.register();
 
         setupRenderLayers();
         registerColors();
@@ -157,7 +154,7 @@ public class ClientHandler {
     }
 
 //    @SubscribeEvent
-//    public static void onKeyPressed(InputEvent.KeyInputEvent event) {
+//    public static void onKeyPressed(InputEvent.Key event) {
 //        Minecraft mc = Minecraft.getInstance();
 //        if (mc.player != null && mc.screen == null && event.getAction() == GLFW.GLFW_PRESS) {
 //            if (KeyBinds.KEY_ATTACHMENTS.isDown()) {

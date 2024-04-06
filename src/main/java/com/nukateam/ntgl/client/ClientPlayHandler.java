@@ -24,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -40,7 +41,7 @@ import java.util.Random;
 public class ClientPlayHandler {
     public static void handleMessageGunSound(MessageGunSound message) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null)
+        if (mc.player == null || mc.level == null)
             return;
 
         if (message.showMuzzleFlash()) {
@@ -48,14 +49,9 @@ public class ClientPlayHandler {
         }
 
         if (message.getShooterId() == mc.player.getId()) {
-            Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(message.getId(), SoundSource.PLAYERS,
-                    message.getVolume(), message.getPitch(), false, 0, SoundInstance.Attenuation.NONE,
-                    0, 0, 0, true));
+            Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(message.getId(), SoundSource.PLAYERS, message.getVolume(), message.getPitch(), mc.level.getRandom(), false, 0, SoundInstance.Attenuation.NONE, 0, 0, 0, true));
         } else {
-            Minecraft.getInstance().getSoundManager().play(
-                    new GunShotSound(message.getId(), SoundSource.PLAYERS,
-                            message.getX(), message.getY(), message.getZ(),
-                            message.getVolume(), message.getPitch(), message.isReload()));
+            Minecraft.getInstance().getSoundManager().play(new GunShotSound(message.getId(), SoundSource.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch(), message.isReload()));
         }
     }
 
@@ -112,7 +108,7 @@ public class ClientPlayHandler {
         }
     }
 
-    private static Particle spawnParticle(ParticleEngine manager, ParticleOptions data, double x, double y, double z, Random rand, double velocityMultiplier) {
+    private static Particle spawnParticle(ParticleEngine manager, ParticleOptions data, double x, double y, double z, RandomSource rand, double velocityMultiplier) {
         return manager.createParticle(data, x, y, z, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier, (rand.nextDouble() - 0.5) * velocityMultiplier);
     }
 
@@ -140,7 +136,7 @@ public class ClientPlayHandler {
         }
     }
 
-    private static double getRandomDir(Random random) {
+    private static double getRandomDir(RandomSource random) {
         return -0.25 + random.nextDouble() * 0.5;
     }
 
