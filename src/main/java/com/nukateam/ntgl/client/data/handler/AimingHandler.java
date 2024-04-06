@@ -31,6 +31,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -124,7 +126,7 @@ public class AimingHandler {
     }
 
     @SubscribeEvent
-    public void onFovUpdate(EntityViewRenderEvent.FieldOfView event) {
+    public void onFovUpdate(ViewportEvent.ComputeFov event) {
         if (!GunRenderingHandler.get().getUsedConfiguredFov())
             return;
 
@@ -161,8 +163,8 @@ public class AimingHandler {
      * Prevents the crosshair from rendering when aiming down sight
      */
     @SubscribeEvent(receiveCanceled = true)
-    public void onRenderOverlay(RenderGameOverlayEvent event) {
-        this.normalisedAdsProgress = this.localTracker.getNormalProgress(event.getPartialTicks());
+    public void onRenderOverlay(RenderGuiOverlayEvent event) {
+        this.normalisedAdsProgress = this.localTracker.getNormalProgress(event.getPartialTick());
     }
 
     public boolean isZooming() {

@@ -21,8 +21,8 @@ public class BufferedImageHelper {
     @Nullable
     public static BufferedImage resourceToBufferedImage(ResourceLocation resourceLocation) {
         try {
-            Resource resource = Minecraft.getInstance().getResourceManager().getResource(resourceLocation);
-            NativeImage nativeImage = NativeImage.read(resource.getInputStream());
+            var resource = Minecraft.getInstance().getResourceManager().getResource(resourceLocation).get();
+            NativeImage nativeImage = NativeImage.read(resource.open());
             byte[] imageArr = nativeImage.asByteArray();
             return getImage(imageArr);
         } catch (IOException var4) {
