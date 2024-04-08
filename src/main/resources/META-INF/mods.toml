@@ -16,13 +16,13 @@ description="Core for gun mods"
 [[dependencies.ntgl]]
 modId="forge"
 mandatory=true
-versionRange="[43.2.0,)"
+versionRange="[46, 48)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.ntgl]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.19,1.20)"
+versionRange="[1.20, 1.20.2)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.ntgl]]
@@ -31,6 +31,7 @@ mandatory=true
 versionRange="[0.6.16,)"
 ordering="NONE"
 side="BOTH"
+
 [[dependencies.ntgl]]
 modId="controllable"
 mandatory=false
@@ -42,13 +43,20 @@ modId="backpacked"
 mandatory=false
 versionRange="[2.1.9,)"
 ordering="AFTER"
-side="CLIENT"
+side="BOTH"
 [[dependencies.ntgl]]
 modId="azurelib"
 mandatory=true
-versionRange="[1.0.23,)"
+versionRange="[2.0.20,)"
 ordering="AFTER"
 side="BOTH"
+
+[[dependencies.ntgl]]
+modId="jei"
+mandatory=false
+versionRange="[12.1.1,)"
+ordering="AFTER"
+side="CLIENT"
 
 [modproperties.ntgl]
     catalogueImageIcon=""

@@ -2,7 +2,6 @@ package com.nukateam.ntgl.client.render.particle;
 
 import com.nukateam.ntgl.Config;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternionf;
 import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -19,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
 
 /**
  * Author: MrCrayfish

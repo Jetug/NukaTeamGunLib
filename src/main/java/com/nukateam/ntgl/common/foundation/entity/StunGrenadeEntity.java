@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.foundation.init.ModEffects;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
@@ -9,6 +10,7 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageStunGrenade;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
@@ -20,13 +22,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
@@ -44,18 +46,18 @@ public class StunGrenadeEntity extends ThrowableGrenadeEntity {
 
     public StunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world, LivingEntity player) {
         super(entityType, world, player);
-        this.setItem(new ItemStack(STUN_GRENADE.get()));
+        this.setItem(new ItemStack(ModGuns.STUN_GRENADE.get()));
     }
 
     public StunGrenadeEntity(Level world, LivingEntity player, int maxCookTime) {
-        super(THROWABLE_STUN_GRENADE.get(), world, player);
-        this.setItem(new ItemStack(STUN_GRENADE.get()));
+        super(Projectiles.THROWABLE_STUN_GRENADE.get(), world, player);
+        this.setItem(new ItemStack(ModGuns.STUN_GRENADE.get()));
         this.setMaxLife(maxCookTime);
     }
 
     @SubscribeEvent
-    public static void blindMobs(LivingSetAttackTargetEvent event) {
-        if (Config.COMMON.stunGrenades.blind.blindMobs.get() && event.getTarget() != null && event.getEntity() instanceof Mob && event.getEntity().hasEffect(ModEffects.BLINDED.get())) {
+    public static void blindMobs(LivingChangeTargetEvent event) {
+        if (Config.COMMON.stunGrenades.blind.blindMobs.get() && event.getOriginalTarget() != null && event.getEntity() instanceof Mob && event.getEntity().hasEffect(ModEffects.BLINDED.get())) {
             ((Mob) event.getEntity()).setTarget(null);
         }
     }
@@ -63,11 +65,11 @@ public class StunGrenadeEntity extends ThrowableGrenadeEntity {
     @Override
     public void onDeath() {
         double y = this.getY() + this.getType().getDimensions().height * 0.5;
-        this.level.playSound(null, this.getX(), y, this.getZ(), ModSounds.ENTITY_STUN_GRENADE_EXPLOSION.get(), SoundSource.BLOCKS, 4, (1 + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
-        if (this.level.isClientSide) {
+        this.level().playSound(null, this.getX(), y, this.getZ(), ModSounds.ENTITY_STUN_GRENADE_EXPLOSION.get(), SoundSource.BLOCKS, 4, (1 + (level().random.nextFloat() - level().random.nextFloat()) * 0.2F) * 0.7F);
+        if (this.level().isClientSide) {
             return;
         }
-        PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(this.level, this.getX(), y, this.getZ(), 64), new S2CMessageStunGrenade(this.getX(), y, this.getZ()));
+        PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(this.level(), this.getX(), y, this.getZ(), 64), new S2CMessageStunGrenade(this.getX(), y, this.getZ()));
 
         // Calculate bounds of area where potentially effected players my be
         double diameter = Math.max(Config.COMMON.stunGrenades.deafen.criteria.radius.get(), Config.COMMON.stunGrenades.blind.criteria.radius.get()) * 2 + 1;
@@ -82,7 +84,7 @@ public class StunGrenadeEntity extends ThrowableGrenadeEntity {
         Vec3 grenade = new Vec3(this.getX(), y, this.getZ());
         Vec3 eyes, directionGrenade;
         double distance;
-        for (LivingEntity entity : this.level.getEntitiesOfClass(LivingEntity.class, new AABB(minX, minY, minZ, maxX, maxY, maxZ))) {
+        for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, new AABB(minX, minY, minZ, maxX, maxY, maxZ))) {
             if (entity.ignoreExplosion())
                 continue;
 
@@ -107,7 +109,7 @@ public class StunGrenadeEntity extends ThrowableGrenadeEntity {
         double angleMax = criteria.angleEffect.get() * 0.5;
         if (distance <= criteria.radius.get() && angleMax > 0 && angle <= angleMax) {
             // Verify that light can pass through all blocks obstructing the entity's line of sight to the grenade
-            if (effect != ModEffects.BLINDED.get() || !Config.COMMON.stunGrenades.blind.criteria.raytraceOpaqueBlocks.get() || rayTraceOpaqueBlocks(this.level, eyes, grenade, false, false, false) == null) {
+            if (effect != ModEffects.BLINDED.get() || !Config.COMMON.stunGrenades.blind.criteria.raytraceOpaqueBlocks.get() || rayTraceOpaqueBlocks(this.level(), eyes, grenade, false, false, false) == null) {
                 // Duration attenuated by distance
                 int durationBlinded = (int) Math.round(criteria.durationMax.get() - (criteria.durationMax.get() - criteria.durationMin.get()) * (distance / criteria.radius.get()));
 
@@ -224,7 +226,7 @@ public class StunGrenadeEntity extends ThrowableGrenadeEntity {
                     BlockState state = world.getBlockState(pos);
 
                     // Added light opacity check
-                    if (state.getLightBlock(world, pos) != 0 && (!ignoreBlockWithoutBoundingBox || state.getMaterial() == Material.PORTAL || state.getCollisionShape(world, pos) != Shapes.empty())) {
+                    if (state.getLightBlock(world, pos) != 0 && (!ignoreBlockWithoutBoundingBox || state.is(Blocks.NETHER_PORTAL) || state.getCollisionShape(world, pos) != Shapes.empty())) {
                         return world.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                     }
                 }
@@ -233,5 +235,10 @@ public class StunGrenadeEntity extends ThrowableGrenadeEntity {
             return null;
         }
         return null;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        super.deserializeNBT(nbt);
     }
 }

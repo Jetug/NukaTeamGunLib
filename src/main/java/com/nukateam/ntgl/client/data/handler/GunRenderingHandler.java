@@ -19,6 +19,7 @@ import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
@@ -542,11 +543,12 @@ public class GunRenderingHandler {
                     RenderSystem.setShader(GameRenderer::getPositionTexShader);
                     RenderSystem.setShaderTexture(0, GUI_ICONS_LOCATION);
 
-                    PoseStack stack = new PoseStack();
-                    stack.scale(scale, scale, scale);
+                    GuiGraphics graphics = new GuiGraphics(mc, mc.renderBuffers().bufferSource());
+                    graphics.pose().scale(scale, scale, scale);
                     int progress = (int) Math.ceil((cookTime) * 17.0F) - 1;
-                    Screen.blit(stack, j, i, 36, 94, 16, 4, 256, 256);
-                    Screen.blit(stack, j, i, 52, 94, progress, 4, 256, 256);
+
+                    graphics.blit(GUI_ICONS_LOCATION, j, i, 36, 94, 16, 4, 256, 256);
+                    graphics.blit(GUI_ICONS_LOCATION, j, i, 52, 94, progress, 4, 256, 256);
 
                     RenderSystem.disableBlend();
                 }

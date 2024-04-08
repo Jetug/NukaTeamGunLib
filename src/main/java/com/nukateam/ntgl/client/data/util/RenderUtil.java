@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.mojang.math.MatrixUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -36,9 +37,13 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
+import static net.minecraft.client.renderer.ItemBlockRenderTypes.getRenderType;
 import static net.minecraft.client.renderer.block.model.ItemTransforms.*;
 
 public class RenderUtil {
+    private static final ModelResourceLocation TRIDENT_MODEL = ModelResourceLocation.vanilla("trident", "inventory");
+    private static final ModelResourceLocation SPYGLASS_MODEL = ModelResourceLocation.vanilla("spyglass", "inventory");
+
     public static void scissor(int x, int y, int width, int height) {
         Minecraft mc = Minecraft.getInstance();
         int scale = (int) mc.getWindow().getGuiScale();
@@ -79,19 +84,23 @@ public class RenderUtil {
         renderModel(model, transformType, null, stack, ItemStack.EMPTY, poseStack, buffer, light, overlay);
     }
 
-    public static void renderModel(BakedModel model, ItemDisplayContext transformType, @Nullable Transform transform, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
+    public static void renderModel(BakedModel model, ItemDisplayContext display, @Nullable Runnable transform, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
         if (!stack.isEmpty()) {
             poseStack.pushPose();
-            boolean flag = transformType == ItemDisplayContext.GUI || transformType == ItemDisplayContext.GROUND || transformType == ItemDisplayContext.FIXED;
-            if (stack.getItem() == Items.TRIDENT && flag) {
-                model = Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
+            boolean flag = display == ItemDisplayContext.GUI || display == ItemDisplayContext.GROUND || display == ItemDisplayContext.FIXED;
+            if (flag) {
+                if (stack.is(Items.TRIDENT)) {
+                    model = Minecraft.getInstance().getModelManager().getModel(TRIDENT_MODEL);
+                } else if (stack.is(Items.SPYGLASS)) {
+                    model = Minecraft.getInstance().getModelManager().getModel(SPYGLASS_MODEL);
+                }
             }
 
-            model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(poseStack, model, transformType, false);
+            model = model.applyTransform(display, poseStack, false);
             poseStack.translate(-0.5D, -0.5D, -0.5D);
             if (!model.isCustomRenderer() && (stack.getItem() != Items.TRIDENT || flag)) {
                 boolean entity = true;
-                if (transformType != ItemDisplayContext.GUI && !transformType.firstPerson() && stack.getItem() instanceof BlockItem) {
+                if (display != ItemDisplayContext.GUI && !display.firstPerson() && stack.getItem() instanceof BlockItem) {
                     Block block = ((BlockItem) stack.getItem()).getBlock();
                     entity = !(block instanceof HalfTransparentBlock) && !(block instanceof StainedGlassPaneBlock);
                 }
@@ -101,10 +110,10 @@ public class RenderUtil {
                 if (stack.getItem() == Items.COMPASS && stack.hasFoil()) {
                     poseStack.pushPose();
                     PoseStack.Pose entry = poseStack.last();
-                    if (transformType == ItemDisplayContext.GUI) {
-                        entry.pose().multiply(0.5F);
-                    } else if (transformType.firstPerson()) {
-                        entry.pose().multiply(0.75F);
+                    if (display == ItemDisplayContext.GUI) {
+                        MatrixUtil.mulComponentWise(entry.pose(), 0.5F);
+                    } else if (display.firstPerson()) {
+                        MatrixUtil.mulComponentWise(entry.pose(), 0.75F);
                     }
 
                     if (entity) {
@@ -120,9 +129,9 @@ public class RenderUtil {
                     builder = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
                 }
 
-                renderModel(model, stack, parent, transform, poseStack, builder, light, overlay);
+                renderModel(model, stack, parent, null, poseStack, builder, light, overlay);
             } else {
-                IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, transformType, poseStack, buffer, light, overlay);
+                IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, display, poseStack, buffer, light, overlay);
             }
 
             poseStack.popPose();

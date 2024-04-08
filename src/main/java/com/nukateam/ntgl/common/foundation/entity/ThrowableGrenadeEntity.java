@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import net.minecraft.core.particles.ParticleTypes;
@@ -7,8 +8,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import static com.nukateam.example.common.registery.ModGuns.GRENADE;
 
 public class ThrowableGrenadeEntity extends ThrowableItemEntity {
     public float rotation;
@@ -22,7 +21,7 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity {
         super(entityType, world, entity);
         this.setShouldBounce(true);
         this.setGravityVelocity(0.05F);
-        this.setItem(new ItemStack(GRENADE.get()));
+        this.setItem(new ItemStack(ModGuns.GRENADE.get()));
         this.setMaxLife(20 * 3);
     }
 
@@ -30,7 +29,7 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity {
         super(Projectiles.THROWABLE_GRENADE.get(), world, entity);
         this.setShouldBounce(true);
         this.setGravityVelocity(0.05F);
-        this.setItem(new ItemStack(GRENADE.get()));
+        this.setItem(new ItemStack(ModGuns.GRENADE.get()));
         this.setMaxLife(timeLeft);
     }
 
@@ -46,13 +45,18 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity {
         if (speed > 0.1) {
             this.rotation += speed * 50;
         }
-        if (this.level.isClientSide) {
-            this.level.addParticle(ParticleTypes.SMOKE, true, this.getX(), this.getY() + 0.25, this.getZ(), 0, 0, 0);
+        if (this.level().isClientSide) {
+            this.level().addParticle(ParticleTypes.SMOKE, true, this.getX(), this.getY() + 0.25, this.getZ(), 0, 0, 0);
         }
     }
 
     @Override
     public void onDeath() {
-        GrenadeEntity.createExplosion(this, Config.COMMON.grenades.explosionRadius.get().floatValue(), true);
+        GrenadeEntity.createExplosion(this, Config.COMMON.grenades.explosionRadius.get().floatValue(), Config.COMMON.grenades.enableBlockRemoval.get());
+    }
+
+    @Override
+    public boolean alwaysAccepts() {
+        return super.alwaysAccepts();
     }
 }

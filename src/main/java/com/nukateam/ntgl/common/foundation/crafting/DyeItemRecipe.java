@@ -3,10 +3,12 @@ package com.nukateam.ntgl.common.foundation.crafting;
 import com.nukateam.ntgl.common.foundation.init.ModRecipeSerializers;
 import com.nukateam.ntgl.common.foundation.item.IColored;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -18,8 +20,8 @@ import java.util.List;
  * Author: MrCrayfish
  */
 public class DyeItemRecipe extends CustomRecipe {
-    public DyeItemRecipe(ResourceLocation id) {
-        super(id);
+    public DyeItemRecipe(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class DyeItemRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inventory) {
+    public ItemStack assemble(CraftingContainer inventory, RegistryAccess access) {
         ItemStack item = ItemStack.EMPTY;
         List<DyeItem> dyes = new ArrayList<>();
 
@@ -78,7 +80,7 @@ public class DyeItemRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess access) {
         return ItemStack.EMPTY;
     }
 

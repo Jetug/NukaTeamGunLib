@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.screen.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
@@ -13,27 +14,22 @@ public class MiniButton extends Button {
     private final ResourceLocation texture;
 
     public MiniButton(int x, int y, int u, int v, ResourceLocation texture, OnPress onPress) {
-        this(x, y, u, v, texture, onPress, NO_TOOLTIP);
-    }
-
-    public MiniButton(int x, int y, int u, int v, ResourceLocation texture, OnPress onPress, OnTooltip onTooltip) {
-        super(x, y, 10, 10, CommonComponents.EMPTY, onPress, onTooltip);
+        super(x, y, 10, 10, CommonComponents.EMPTY, onPress, DEFAULT_NARRATION);
         this.u = u;
         this.v = v;
         this.texture = texture;
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTick) {
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, this.texture);
+        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(matrixStack, this.x, this.y, this.u, this.v, this.width, this.height);
+        graphics.blit(texture, this.getX(), this.getY(), this.u, this.v, this.width, this.height);
         if (this.isHovered) {
-            this.fillGradient(matrixStack, this.x, this.y, this.x + 10, this.y + 10, -2130706433, -2130706433);
+            graphics.fillGradient(this.getX(), this.getY(), this.getX() + 10, this.getY() + 10, -2130706433, -2130706433);
         }
     }
 }

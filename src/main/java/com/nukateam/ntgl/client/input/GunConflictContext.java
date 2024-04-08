@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.input;
 
+import com.mrcrayfish.controllable.client.binding.IBindingContext;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.settings.IKeyConflictContext;
@@ -8,7 +9,7 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 /**
  * Author: MrCrayfish
  */
-public enum GunConflictContext implements IKeyConflictContext {
+public enum GunConflictContext implements IBindingContext {
     IN_GAME_HOLDING_WEAPON {
         @Override
         public boolean isActive() {
@@ -16,7 +17,7 @@ public enum GunConflictContext implements IKeyConflictContext {
         }
 
         @Override
-        public boolean conflicts(IKeyConflictContext other) {
+        public boolean conflicts(IBindingContext other) {
             return this == other;
         }
     }

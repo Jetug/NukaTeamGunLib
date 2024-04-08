@@ -18,7 +18,9 @@ import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import mod.azure.azurelib.AzureLib;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,6 +37,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
+
+import java.util.concurrent.CompletableFuture;
 
 import static com.nukateam.example.common.registery.ModGuns.*;
 
@@ -147,13 +151,16 @@ public class Ntgl {
     }
 
     private void onGatherData(GatherDataEvent event) {
-        DataGenerator generator = event.getGenerator();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        BlockTagGen blockTagGen = new BlockTagGen(generator, existingFileHelper);
+        var generator = event.getGenerator();
+        var output = generator.getPackOutput();
+        var lookupProvider = event.getLookupProvider();
+        var existingFileHelper = event.getExistingFileHelper();
+
+        BlockTagGen blockTagGen = new BlockTagGen(output, lookupProvider, existingFileHelper);
         generator.addProvider(event.includeServer(), new RecipeGen(generator));
         generator.addProvider(event.includeServer(), new LootTableGen(generator));
         generator.addProvider(event.includeServer(), blockTagGen);
-        generator.addProvider(event.includeServer(), new ItemTagGen(generator, blockTagGen, existingFileHelper));
+        generator.addProvider(event.includeServer(), new ItemTagGen(output, lookupProvider, blockTagGen.contentsGetter(), existingFileHelper));
         generator.addProvider(event.includeServer(), new LanguageGen(generator));
         generator.addProvider(event.includeServer(), new GunGen(generator));
     }

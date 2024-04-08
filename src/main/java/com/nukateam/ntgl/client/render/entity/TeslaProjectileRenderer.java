@@ -2,8 +2,6 @@ package com.nukateam.ntgl.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.util.Rgba;
@@ -17,6 +15,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -112,7 +112,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
                 poseStack.translate(0, 0, offsetZ / 2 );
 
-                var gameTime = projectile.getLevel().getGameTime();
+                var gameTime = projectile.level().getGameTime();
                 var yOffset = 0; //(int) projectile.position().y;
                 var color = new Rgba(1, 1, 1, 1);
 
@@ -196,7 +196,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
                 poseStack.translate(offsetZ / 2, 0,  0);
 
-                var gameTime = projectile.getLevel().getGameTime();
+                var gameTime = projectile.level().getGameTime();
                 var yOffset = 0; //(int) projectile.position().y;
                 var color = new Rgba(1, 1, 1, 1);
 

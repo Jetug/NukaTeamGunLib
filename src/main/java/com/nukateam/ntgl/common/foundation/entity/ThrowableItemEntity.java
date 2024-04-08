@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -31,7 +33,7 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
     /* The max life of the entity. If -1, will stay alive forever and will need to be explicitly removed. */
     private int maxLife = 20 * 10;
 
-    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, Level worldIn){
+    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
 
@@ -87,11 +89,12 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
                 BlockHitResult blockResult = (BlockHitResult) result;
                 if (this.shouldBounce) {
                     BlockPos resultPos = blockResult.getBlockPos();
-                    BlockState state = this.level.getBlockState(resultPos);
-                    SoundEvent event = state.getBlock().getSoundType(state, this.level, resultPos, this).getStepSound();
+                    BlockState state = this.level().getBlockState(resultPos);
+                    SoundEvent event = state.getBlock().getSoundType(state, this.level(), resultPos, this).getStepSound();
                     double speed = this.getDeltaMovement().length();
                     if (speed > 0.1) {
-                        this.level.playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, event, SoundSource.AMBIENT, 1.0F, 1.0F);
+                        this.level().playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, event, SoundSource.AMBIENT, 1.0F, 1.0F);
+                        this.level().gameEvent(GameEvent.PROJECTILE_LAND, position(), GameEvent.Context.of(this));
                     }
                     this.bounce(blockResult.getDirection());
                 } else {
@@ -105,7 +108,7 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
                 if (this.shouldBounce) {
                     double speed = this.getDeltaMovement().length();
                     if (speed > 0.1) {
-                        entity.hurt(DamageSource.thrown(this, this.getOwner()), 1.0F);
+                        entity.hurt(entity.damageSources().thrown(this, this.getOwner()), 1.0F);
                     }
                     this.bounce(Direction.getNearest(this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z()).getOpposite());
                     this.setDeltaMovement(this.getDeltaMovement().multiply(0.25, 1.0, 0.25));
@@ -156,7 +159,7 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

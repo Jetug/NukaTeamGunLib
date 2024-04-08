@@ -1,18 +1,18 @@
 package com.nukateam.ntgl.client.input;
 
-import com.mrcrayfish.controllable.client.BindingRegistry;
-import com.mrcrayfish.controllable.client.ButtonBinding;
-import com.mrcrayfish.controllable.client.Buttons;
+import com.mrcrayfish.controllable.client.binding.BindingRegistry;
+import com.mrcrayfish.controllable.client.binding.ButtonBinding;
+import com.mrcrayfish.controllable.client.input.Buttons;
 
 /**
  * Author: MrCrayfish
  */
 public class GunButtonBindings {
-    public static final ButtonBinding SHOOT = new ButtonBinding(Buttons.RIGHT_TRIGGER, "ntgl.button.shoot", "button.categories.ntgl", GunConflictContext.IN_GAME_HOLDING_WEAPON);
-    public static final ButtonBinding AIM = new ButtonBinding(Buttons.LEFT_TRIGGER, "ntgl.button.aim", "button.categories.ntgl", GunConflictContext.IN_GAME_HOLDING_WEAPON);
-    public static final ButtonBinding RELOAD = new ButtonBinding(Buttons.X, "ntgl.button.reload", "button.categories.ntgl", GunConflictContext.IN_GAME_HOLDING_WEAPON);
-    public static final ButtonBinding OPEN_ATTACHMENTS = new ButtonBinding(Buttons.B, "ntgl.button.attachments", "button.categories.ntgl", GunConflictContext.IN_GAME_HOLDING_WEAPON);
-    public static final ButtonBinding STEADY_AIM = new ButtonBinding(Buttons.RIGHT_THUMB_STICK, "ntgl.button.steadyAim", "button.categories.ntgl", GunConflictContext.IN_GAME_HOLDING_WEAPON);
+    public static final ButtonBinding SHOOT = new ButtonBinding(Buttons.RIGHT_TRIGGER, "cgm.button.shoot", "button.categories.cgm", GunConflictContext.IN_GAME_HOLDING_WEAPON);
+    public static final ButtonBinding AIM = new ButtonBinding(Buttons.LEFT_TRIGGER, "cgm.button.aim", "button.categories.cgm", GunConflictContext.IN_GAME_HOLDING_WEAPON);
+    public static final ButtonBinding RELOAD = new ButtonBinding(Buttons.X, "cgm.button.reload", "button.categories.cgm", GunConflictContext.IN_GAME_HOLDING_WEAPON);
+    public static final ButtonBinding OPEN_ATTACHMENTS = new ButtonBinding(Buttons.B, "cgm.button.attachments", "button.categories.cgm", GunConflictContext.IN_GAME_HOLDING_WEAPON);
+    public static final ButtonBinding STEADY_AIM = new ButtonBinding(Buttons.RIGHT_THUMB_STICK, "cgm.button.steadyAim", "button.categories.cgm", GunConflictContext.IN_GAME_HOLDING_WEAPON);
 
     public static void register() {
         BindingRegistry.getInstance().register(SHOOT);
