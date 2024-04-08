@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.base.gun;
 
+import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.IHeldAnimation;
 import com.nukateam.ntgl.client.render.pose.BazookaPose;
@@ -7,7 +8,6 @@ import com.nukateam.ntgl.client.render.pose.MiniGunPose;
 import com.nukateam.ntgl.client.render.pose.OneHandedPose;
 import com.nukateam.ntgl.client.render.pose.TwoHandedPose;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -53,12 +53,12 @@ public class GripType {
             return false;
         }
 
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
         if (entity.isCrouching()) {
             poseStack.translate(0 * 0.0625, -7 * 0.0625, -4 * 0.0625);
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(30F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(30F));
         } else {
             poseStack.translate(0 * 0.0625, -5 * 0.0625, -2 * 0.0625);
         }
@@ -67,7 +67,7 @@ public class GripType {
             poseStack.translate(0, 0, -1 * 0.0625);
         }
 
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(-45F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-45F));
         poseStack.scale(0.5F, 0.5F, 0.5F);
 
         return true;

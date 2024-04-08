@@ -1,20 +1,18 @@
 package com.nukateam.ntgl.client.data.handler;
 
-import com.nukateam.ntgl.client.data.BulletTrail;
-import com.nukateam.ntgl.client.render.GunRenderType;
-import com.nukateam.ntgl.client.data.util.RenderUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
+import com.nukateam.ntgl.client.data.BulletTrail;
+import com.nukateam.ntgl.client.data.util.RenderUtil;
+import com.nukateam.ntgl.client.render.GunRenderType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -95,38 +93,39 @@ public class BulletTrailRenderingHandler {
     }
 
     private void renderBulletTrail(BulletTrail trail, PoseStack poseStack, float deltaTicks) {
-        Minecraft mc = Minecraft.getInstance();
-        Entity entity = mc.getCameraEntity();
+        var mc = Minecraft.getInstance();
+        var entity = mc.getCameraEntity();
+
         if (entity == null || trail.isDead())
             return;
 
         poseStack.pushPose();
 
-        Vec3 view = mc.gameRenderer.getMainCamera().getPosition();
-        Vec3 position = trail.getPosition();
-        Vec3 motion = trail.getMotion();
-        double bulletX = position.x + motion.x * deltaTicks;
-        double bulletY = position.y + motion.y * deltaTicks;
-        double bulletZ = position.z + motion.z * deltaTicks;
+        var view = mc.gameRenderer.getMainCamera().getPosition();
+        var position = trail.getPosition();
+        var motion = trail.getMotion();
+        var bulletX = position.x + motion.x * deltaTicks;
+        var bulletY = position.y + motion.y * deltaTicks;
+        var bulletZ = position.z + motion.z * deltaTicks;
+
         poseStack.translate(bulletX - view.x(), bulletY - view.y(), bulletZ - view.z());
+        poseStack.mulPose(Axis.YP.rotationDegrees(trail.getYaw()));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-trail.getPitch() + 90));
 
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(trail.getYaw()));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-trail.getPitch() + 90));
-
-        Vec3 motionVec = new Vec3(motion.x, motion.y, motion.z);
-        float trailLength = (float) (motionVec.length() * trail.getTrailLengthMultiplier());
-        float red = (float) (trail.getTrailColor() >> 16 & 255) / 255.0F;
-        float green = (float) (trail.getTrailColor() >> 8 & 255) / 255.0F;
-        float blue = (float) (trail.getTrailColor() & 255) / 255.0F;
-        float alpha = 0.3F;
+        var motionVec = new Vec3(motion.x, motion.y, motion.z);
+        var trailLength = (float) (motionVec.length() * trail.getTrailLengthMultiplier());
+        var red = (float) (trail.getTrailColor() >> 16 & 255) / 255.0F;
+        var green = (float) (trail.getTrailColor() >> 8 & 255) / 255.0F;
+        var blue = (float) (trail.getTrailColor() & 255) / 255.0F;
+        var alpha = 0.3F;
 
         // Prevents the trail length from being longer than the distance to shooter
-        Entity shooter = trail.getShooter();
+        var shooter = trail.getShooter();
         if (shooter != null) {
             trailLength = (float) Math.min(trailLength, shooter.getEyePosition(deltaTicks).distanceTo(new Vec3(bulletX, bulletY, bulletZ)));
         }
 
-        Matrix4f matrix4f = poseStack.last().pose();
+        var matrix4f = poseStack.last().pose();
         MultiBufferSource.BufferSource renderTypeBuffer = mc.renderBuffers().bufferSource();
 
         if (trail.isTrailVisible()) {
@@ -144,12 +143,12 @@ public class BulletTrailRenderingHandler {
         }
 
         if (!trail.getItem().isEmpty()) {
-            poseStack.mulPose(Vector3f.YP.rotationDegrees((trail.getAge() + deltaTicks) * (float) 50));
+            poseStack.mulPose(Axis.YP.rotationDegrees((trail.getAge() + deltaTicks) * (float) 50));
             poseStack.scale(0.275F, 0.275F, 0.275F);
 
-            int combinedLight = LevelRenderer.getLightColor(entity.level, new BlockPos(entity.position()));
+            int combinedLight = LevelRenderer.getLightColor(entity.level(), BlockPos.containing(entity.position()));
             ItemStack stack = trail.getItem();
-            RenderUtil.renderModel(stack, ItemTransforms.TransformType.NONE, poseStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY, null, null);
+            RenderUtil.renderModel(stack, ItemDisplayContext.NONE, poseStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY, null, null);
         }
 
         poseStack.popPose();

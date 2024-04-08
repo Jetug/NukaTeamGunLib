@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.entity;
 import com.nukateam.ntgl.common.foundation.entity.StunGrenadeEntity;
 import com.nukateam.ntgl.common.foundation.entity.ThrowableGrenadeEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -34,25 +34,25 @@ public class ThrowableGrenadeRenderer extends EntityRenderer<ThrowableGrenadeEnt
         poseStack.pushPose();
 
         /* Makes the grenade face in the direction of travel */
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(entityYaw));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(entityYaw));
 
         /* Offsets to the center of the grenade before applying rotation */
         float rotation = entity.prevRotation + (entity.rotation - entity.prevRotation) * partialTicks;
         poseStack.translate(0, 0.15, 0);
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(-rotation));
+        poseStack.mulPose(Axis.XP.rotationDegrees(-rotation));
         poseStack.translate(0, -0.15, 0);
 
         if (entity instanceof StunGrenadeEntity) {
             poseStack.translate(0, entity.getDimensions(Pose.STANDING).height / 2, 0);
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(-90F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(-90F));
             poseStack.translate(0, -entity.getDimensions(Pose.STANDING).height / 2, 0);
         }
 
         /* */
         poseStack.translate(0.0, 0.5, 0.0);
 
-        Minecraft.getInstance().getItemRenderer().renderStatic(entity.getItem(), ItemTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, 0);
+        Minecraft.getInstance().getItemRenderer().renderStatic(entity.getItem(), ItemDisplayContext.NONE, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, 0);
 
         poseStack.popPose();
     }

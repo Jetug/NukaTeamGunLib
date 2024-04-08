@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -399,11 +399,11 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 {
                     modelViewStack.translate(startX + 88, startY + 60, 100);
                     modelViewStack.scale(50F, -50F, 50F);
-                    modelViewStack.mulPose(Vector3f.XP.rotationDegrees(5F));
-                    modelViewStack.mulPose(Vector3f.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + finalPartialTicks));
+                    modelViewStack.mulPose(Axis.XP.rotationDegrees(5F));
+                    modelViewStack.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + finalPartialTicks));
                     RenderSystem.applyModelViewMatrix();
                     MultiBufferSource.BufferSource buffer = this.minecraft.renderBuffers().bufferSource();
-                    Minecraft.getInstance().getItemRenderer().render(currentItem, ItemTransforms.TransformType.FIXED,
+                    Minecraft.getInstance().getItemRenderer().render(currentItem, ItemDisplayContext.FIXED,
                             false, poseStack, buffer, 15728880, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(currentItem));
                     buffer.endBatch();
                 }

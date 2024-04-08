@@ -26,7 +26,7 @@ public class EntityModelHandler {
             if(gun.getGeneral().getGripType().getHeldAnimation().applyOffhandTransforms(player, event.getPlayerModel(), heldItem, poseStack, event.getDeltaTicks()))
             {
                 MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-                GunRenderingHandler.get().renderWeapon(player, heldItem, ItemTransforms.TransformType.FIXED, poseStack, buffer, event.getLight(), event.getDeltaTicks());
+                GunRenderingHandler.get().renderWeapon(player, heldItem, ItemDisplayContext.FIXED, poseStack, buffer, event.getLight(), event.getDeltaTicks());
             }
             poseStack.popPose();
         }

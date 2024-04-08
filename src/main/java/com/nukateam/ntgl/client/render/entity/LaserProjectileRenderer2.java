@@ -3,8 +3,8 @@ package com.nukateam.ntgl.client.render.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+
+import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.LaserProjectile;
@@ -39,9 +39,9 @@ public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
 
         poseStack.pushPose();
         {
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(entityYaw));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(entity.getXRot() - 90));
+            poseStack.mulPose(Axis.YP.rotationDegrees(180F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(entityYaw));
+            poseStack.mulPose(Axis.XP.rotationDegrees(entity.getXRot() - 90));
             poseStack.translate(0, -1, 0);
             poseStack.translate(-100, 0, 0);
 
@@ -72,7 +72,7 @@ public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
         float f2 = Mth.frac(f1 * 0.2F - (float)Mth.floor(f1 * 0.1F));
         pPoseStack.pushPose();
 
-        pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f * 2.25F - 45.0F));
+        pPoseStack.mulPose(Axis.YP.rotationDegrees(f * 2.25F - 45.0F));
         var minX = -pGlowRadius;
         var maxX = -pGlowRadius;
         var minZ = -pGlowRadius;
@@ -174,8 +174,8 @@ public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
 //        RenderSystem.depthMask(false);
 //
 //        poseStack.translate(entity.getX(), entity.getY(), entity.getZ());
-//        poseStack.mulPose(Vector3f.YP.rotationDegrees(entity.laserYaw - 90F));
-//        poseStack.mulPose(Vector3f.ZP.rotationDegrees(entity.laserPitch));
+//        poseStack.mulPose(Axis.YP.rotationDegrees(entity.laserYaw - 90F));
+//        poseStack.mulPose(Axis.ZP.rotationDegrees(entity.laserPitch));
 //
 //        var tesselator = Tesselator.getInstance();
 //        var bufferbuilder = tesselator.getBuilder();
@@ -186,7 +186,7 @@ public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
 //
 //        float rot_x = 45f + (prog * 180f);
 //
-//        poseStack.mulPose(Vector3f.XP.rotationDegrees(rot_x + 90f));
+//        poseStack.mulPose(Axis.XP.rotationDegrees(rot_x + 90f));
 //        poseStack.scale(f10, f10, f10);
 //
 //        float brightness = (float) Math.sin(Math.sqrt(prog) * Math.PI);
@@ -194,7 +194,7 @@ public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
 //        if (distance > distance_start) { // Beam Segment
 //            poseStack.pushPose();
 //            for (int i = 0; i < 2; ++i) {
-//                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+//                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
 //                bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 //                bufferbuilder.vertex(distance, -width, 0.0D).uv(u + prog, 0).color(255, 255, 255, (int) (brightness * 255)).endVertex();
 //                bufferbuilder.vertex(distance_start, -width, 0.0D).uv(prog, 0).color(255, 255, 255, (int) (brightness * 255)).endVertex();
@@ -208,7 +208,7 @@ public class LaserProjectileRenderer2 extends EntityRenderer<LaserProjectile> {
 //
 //        poseStack.pushPose();
 //        for (int i = 0; i < 2; ++i) { // Beam start segment
-//            poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
+//            poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
 //            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 //
 //            bufferbuilder.vertex(distance_start, -width, 0.0D).uv(1, 0).color(255, 255, 255, (int) (brightness * 255)).endVertex();

@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.render.pose;
 
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 /**
  * Author: MrCrayfish
@@ -21,8 +21,8 @@ public class AimPose {
         private LimbPose leftArm = new LimbPose();
         private LimbPose rightArm = new LimbPose();
         private float renderYawOffset = 5F;
-        private Vector3f itemTranslate = new Vector3f();
-        private Vector3f itemRotation = new Vector3f();
+        private Axis itemTranslate = new Axis();
+        private Axis itemRotation = new Axis();
 
         public LimbPose getLeftArm() {
             return this.leftArm;
@@ -51,20 +51,20 @@ public class AimPose {
             return this;
         }
 
-        public Vector3f getItemTranslate() {
+        public Axis getItemTranslate() {
             return this.itemTranslate;
         }
 
-        public Instance setItemTranslate(Vector3f itemTranslate) {
+        public Instance setItemTranslate(Axis itemTranslate) {
             this.itemTranslate = itemTranslate;
             return this;
         }
 
-        public Vector3f getItemRotation() {
+        public Axis getItemRotation() {
             return this.itemRotation;
         }
 
-        public Instance setItemRotation(Vector3f itemRotation) {
+        public Instance setItemRotation(Axis itemRotation) {
             this.itemRotation = itemRotation;
             return this;
         }

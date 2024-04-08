@@ -8,7 +8,7 @@ import com.nukateam.ntgl.common.foundation.ModBlocks;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -119,9 +119,9 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
             stack.mulPoseMatrix(poseStack.last().pose());
             stack.translate(81, 40, 0);
             stack.scale(40F, 40F, 40F);
-            stack.mulPose(Vector3f.XP.rotationDegrees(-5F));
+            stack.mulPose(Axis.XP.rotationDegrees(-5F));
             float partialTicks = Minecraft.getInstance().getFrameTime();
-            stack.mulPose(Vector3f.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
+            stack.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
             stack.scale(-1, -1, -1);
             RenderSystem.applyModelViewMatrix();
 
@@ -129,7 +129,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
             Lighting.setupFor3DItems();
 
             MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-            Minecraft.getInstance().getItemRenderer().render(output, ItemTransforms.TransformType.FIXED, false, new PoseStack(), buffer, 15728880, OverlayTexture.NO_OVERLAY, model);
+            Minecraft.getInstance().getItemRenderer().render(output, ItemDisplayContext.FIXED, false, new PoseStack(), buffer, 15728880, OverlayTexture.NO_OVERLAY, model);
             buffer.endBatch();
         }
         stack.popPose();

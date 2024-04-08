@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.pose;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.IHeldAnimation;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
@@ -75,7 +75,7 @@ public class OneHandedPose implements IHeldAnimation {
     @Override
     public void renderFirstPersonArms(Player player, HumanoidArm hand, ItemStack stack, PoseStack poseStack,
                                       MultiBufferSource buffer, int light, float partialTicks) {
-//        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+//        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
 //        var model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level, player, 0);
 //        var translateX = model.getTransforms().firstPersonRightHand.translation.x();
 //        var translateZ = model.getTransforms().firstPersonRightHand.translation.z();
@@ -89,7 +89,7 @@ public class OneHandedPose implements IHeldAnimation {
 //        poseStack.translate(0.8 * side, 1.45, -2.9);
 // //       poseStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
 ////        poseStack.translate(0, 0.15, -1.3125);
-//        poseStack.mulPose(Vector3f.XP.rotationDegrees(75F));
+//        poseStack.mulPose(Axis.XP.rotationDegrees(75F));
 
 //        RIGHT_HAND_RENDERER.render();
 
@@ -102,8 +102,8 @@ public class OneHandedPose implements IHeldAnimation {
 
     @Override
     public boolean applyOffhandTransforms(LivingEntity entity, HumanoidModel<LivingEntity> model, ItemStack stack, PoseStack poseStack, float partialTicks) {
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
         if (entity.isCrouching()) {
             poseStack.translate(-4.5 * 0.0625, -15 * 0.0625, -4 * 0.0625);
@@ -113,9 +113,9 @@ public class OneHandedPose implements IHeldAnimation {
             poseStack.translate(-3.5 * 0.0625, -13 * 0.0625, 1 * 0.0625);
         }
 
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(90F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(75F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees((float) (Math.toDegrees(model.rightLeg.xRot) / 10F)));
+        poseStack.mulPose(Axis.YP.rotationDegrees(90F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(75F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees((float) (Math.toDegrees(model.rightLeg.xRot) / 10F)));
         poseStack.scale(0.5F, 0.5F, 0.5F);
 
         return true;

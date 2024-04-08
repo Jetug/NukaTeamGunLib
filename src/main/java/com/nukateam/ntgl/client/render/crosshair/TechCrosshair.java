@@ -6,8 +6,8 @@ import com.nukateam.ntgl.client.data.handler.AimingHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -73,7 +73,7 @@ public class TechCrosshair extends Crosshair {
             stack.translate(windowWidth / 2F, windowHeight / 2F, 0);
             float scale = 1F + Mth.lerp(partialTicks, this.prevScale, this.scale);
             stack.scale(scale, scale, scale);
-            stack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, this.prevRotation, this.rotation)));
+            stack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, this.prevRotation, this.rotation)));
             stack.translate(-size / 2F, -size / 2F, 0);
             RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

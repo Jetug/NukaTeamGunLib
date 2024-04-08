@@ -17,11 +17,14 @@ plugins {
     id 'eclipse'
     id 'maven-publish'
 }
+
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
 
 version = '1.19.2-1.0.2'
+version = "${mod_version}+-+${minecraft_version}"
+
 group = 'com.nukateam.ntgl' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'ntgl'
 
@@ -30,10 +33,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-//    mappings channel: 'official', version: '1.18.2'
-//    mappings channel: 'parchment', version: '2022.11.06-1.18.2'
-//    mappings channel: 'official', version: '1.19.2'
-    mappings channel: 'parchment', version: '2022.08.14-1.19.2'
+    mappings channel: mappings_channel, version: mappings_version
 
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
@@ -133,24 +133,36 @@ repositories {
     flatDir {
         dirs 'lib'
     }
+    mavenLocal()
+    maven {
+        url "https://www.cursemaven.com"
+    }
+    maven {
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
 }
 
 dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-//    minecraft 'net.minecraftforge:forge:1.18.2-40.2.9'
-    minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
 //    implementation fg.deobf('curse.maven:curios-309927:3841948')
-    implementation fg.deobf("mod.azure.azurelib:azurelib-forge-1.19.2:1.0.41")
-    implementation fg.deobf('curse.maven:framework-549225:4718247')
-    implementation fg.deobf('curse.maven:configured-457570:4011355')
-    implementation fg.deobf('curse.maven:catalogue-459701:4171024')
-    implementation fg.deobf('curse.maven:backpacked-352835:3923045')
-    compileOnly fg.deobf('curse.maven:controllable-317269:3936915')
-    compileOnly fg.deobf("mezz.jei:jei-1.19.2-common-api:11.4.0.274")
-    compileOnly fg.deobf("mezz.jei:jei-1.19.2-forge-api:11.4.0.274")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.19.2-forge:11.4.0.274")
+    implementation fg.deobf("mod.azure.azurelib:azurelib-neo-1.20.1:2.0.20")
+
+    implementation fg.deobf("curse.maven:framework-549225:${framework_file_id}")
+    implementation fg.deobf("curse.maven:configured-457570:${configured_file_id}")
+    implementation fg.deobf("curse.maven:catalogue-459701:${catalogue_file_id}")
+    implementation fg.deobf("curse.maven:backpacked-352835:${backpacked_file_id}")
+    compileOnly fg.deobf("curse.maven:controllable-317269:${controllable_file_id}")
+
+    compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
+
+    annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency

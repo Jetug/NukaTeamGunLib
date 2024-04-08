@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.data.handler;
 
+import com.mrcrayfish.controllable.client.input.Controller;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.screen.WorkbenchScreen;
@@ -13,11 +14,7 @@ import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
-import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.controllable.client.gui.navigation.BasicNavigationPoint;
-import com.mrcrayfish.controllable.event.ControllerEvent;
-import com.mrcrayfish.controllable.event.GatherActionsEvent;
-import com.mrcrayfish.controllable.event.GatherNavigationPointsEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

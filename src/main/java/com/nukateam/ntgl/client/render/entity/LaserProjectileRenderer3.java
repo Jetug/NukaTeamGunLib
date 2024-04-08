@@ -3,8 +3,8 @@ package com.nukateam.ntgl.client.render.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+
+import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.entity.LaserProjectile;
 import net.minecraft.client.Minecraft;
@@ -65,8 +65,8 @@ public class LaserProjectileRenderer3 extends EntityRenderer<LaserProjectile> {
                 float yPos = (float) Math.acos(pos.y);
                 float xzPos = (float) Math.atan2(pos.z, pos.x);
 
-                poseStack.mulPose(Vector3f.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
-                poseStack.mulPose(Vector3f.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
+                poseStack.mulPose(Axis.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
+                poseStack.mulPose(Axis.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
 
                 float f7 = 1 * 0.05F * -1.5F;
 

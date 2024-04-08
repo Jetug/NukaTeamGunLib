@@ -130,9 +130,9 @@ public abstract class WeaponPose implements IHeldAnimation {
 //            var rotateX = this.getValue(idle.getItemRotation().x(), aiming.getItemRotation().x(), this.forwardPose.getIdle().getItemRotation().x(), this.forwardPose.getAiming().getItemRotation().x(), 0F, angleAbs, zoom, 1F);
 //            var rotateY = this.getValue(idle.getItemRotation().y(), aiming.getItemRotation().y(), this.forwardPose.getIdle().getItemRotation().y(), this.forwardPose.getAiming().getItemRotation().y(), 0F, angleAbs, zoom, 1F);
 //            var rotateZ = this.getValue(idle.getItemRotation().z(), aiming.getItemRotation().z(), this.forwardPose.getIdle().getItemRotation().z(), this.forwardPose.getAiming().getItemRotation().z(), 0F, angleAbs, zoom, 1F);
-//            poseStack.mulPose(Vector3f.XP.rotationDegrees(rotateX));
-//            poseStack.mulPose(Vector3f.YP.rotationDegrees(rotateY * leftHanded));
-//            poseStack.mulPose(Vector3f.ZP.rotationDegrees(rotateZ * leftHanded));
+//            poseStack.mulPose(Axis.XP.rotationDegrees(rotateX));
+//            poseStack.mulPose(Axis.YP.rotationDegrees(rotateY * leftHanded));
+//            poseStack.mulPose(Axis.ZP.rotationDegrees(rotateZ * leftHanded));
 //        }
     }
 

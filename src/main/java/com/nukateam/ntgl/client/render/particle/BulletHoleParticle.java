@@ -2,8 +2,8 @@ package com.nukateam.ntgl.client.render.particle;
 
 import com.nukateam.ntgl.Config;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Quaternionf;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -111,15 +111,15 @@ public class BulletHoleParticle extends TextureSheetParticle {
         float particleX = (float) (Mth.lerp((double) partialTicks, this.xo, this.x) - view.x());
         float particleY = (float) (Mth.lerp((double) partialTicks, this.yo, this.y) - view.y());
         float particleZ = (float) (Mth.lerp((double) partialTicks, this.zo, this.z) - view.z());
-        Quaternion quaternion = this.direction.getRotation();
-        Vector3f[] points = new Vector3f[]{new Vector3f(-1.0F, 0.0F, -1.0F), new Vector3f(-1.0F, 0.0F, 1.0F), new Vector3f(1.0F, 0.0F, 1.0F), new Vector3f(1.0F, 0.0F, -1.0F)};
+        Quaternionf quaternion = this.direction.getRotation();
+        Axis[] points = new Axis[]{new Axis(-1.0F, 0.0F, -1.0F), new Axis(-1.0F, 0.0F, 1.0F), new Axis(1.0F, 0.0F, 1.0F), new Axis(1.0F, 0.0F, -1.0F)};
         float scale = this.getQuadSize(partialTicks);
 
         for (int i = 0; i < 4; ++i) {
-            Vector3f vector3f = points[i];
-            vector3f.transform(quaternion);
-            vector3f.mul(scale);
-            vector3f.add(particleX, particleY, particleZ);
+            Axis Axis = points[i];
+            Axis.transform(quaternion);
+            Axis.mul(scale);
+            Axis.add(particleX, particleY, particleZ);
         }
 
         float f7 = this.getU0();

@@ -3,9 +3,7 @@ package com.nukateam.ntgl.client.data.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -23,16 +21,15 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -61,11 +58,11 @@ public class RenderUtil {
 
     public static void rotateZ(PoseStack poseStack, float xOffset, float yOffset, float rotation) {
         poseStack.translate(xOffset, yOffset, 0);
-        poseStack.mulPose(Vector3f.ZN.rotationDegrees(rotation));
+        poseStack.mulPose(Axis.ZN.rotationDegrees(rotation));
         poseStack.translate(-xOffset, -yOffset, 0);
     }
 
-    public static void renderModel(ItemStack stack, TransformType transformType, PoseStack poseStack,
+    public static void renderModel(ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack,
                                    MultiBufferSource buffer, int light, int overlay,
                                    @Nullable Level world, @Nullable LivingEntity entity) {
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, world, entity, 0);
@@ -74,18 +71,18 @@ public class RenderUtil {
 
     public static void renderModel(BakedModel model, ItemStack stack, PoseStack poseStack,
                                    MultiBufferSource buffer, int light, int overlay) {
-        renderModel(model, TransformType.NONE, stack, poseStack, buffer, light, overlay);
+        renderModel(model, ItemDisplayContext.NONE, stack, poseStack, buffer, light, overlay);
     }
 
-    public static void renderModel(BakedModel model, TransformType transformType, ItemStack stack,
+    public static void renderModel(BakedModel model, ItemDisplayContext transformType, ItemStack stack,
                                    PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
         renderModel(model, transformType, null, stack, ItemStack.EMPTY, poseStack, buffer, light, overlay);
     }
 
-    public static void renderModel(BakedModel model, ItemTransforms.TransformType transformType, @Nullable Transform transform, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
+    public static void renderModel(BakedModel model, ItemDisplayContext transformType, @Nullable Transform transform, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
         if (!stack.isEmpty()) {
             poseStack.pushPose();
-            boolean flag = transformType == ItemTransforms.TransformType.GUI || transformType == ItemTransforms.TransformType.GROUND || transformType == ItemTransforms.TransformType.FIXED;
+            boolean flag = transformType == ItemDisplayContext.GUI || transformType == ItemDisplayContext.GROUND || transformType == ItemDisplayContext.FIXED;
             if (stack.getItem() == Items.TRIDENT && flag) {
                 model = Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
             }
@@ -94,7 +91,7 @@ public class RenderUtil {
             poseStack.translate(-0.5D, -0.5D, -0.5D);
             if (!model.isCustomRenderer() && (stack.getItem() != Items.TRIDENT || flag)) {
                 boolean entity = true;
-                if (transformType != ItemTransforms.TransformType.GUI && !transformType.firstPerson() && stack.getItem() instanceof BlockItem) {
+                if (transformType != ItemDisplayContext.GUI && !transformType.firstPerson() && stack.getItem() instanceof BlockItem) {
                     Block block = ((BlockItem) stack.getItem()).getBlock();
                     entity = !(block instanceof HalfTransparentBlock) && !(block instanceof StainedGlassPaneBlock);
                 }
@@ -104,7 +101,7 @@ public class RenderUtil {
                 if (stack.getItem() == Items.COMPASS && stack.hasFoil()) {
                     poseStack.pushPose();
                     PoseStack.Pose entry = poseStack.last();
-                    if (transformType == ItemTransforms.TransformType.GUI) {
+                    if (transformType == ItemDisplayContext.GUI) {
                         entry.pose().multiply(0.5F);
                     } else if (transformType.firstPerson()) {
                         entry.pose().multiply(0.75F);
@@ -132,7 +129,7 @@ public class RenderUtil {
         }
     }
 
-    public static void renderModelWithTransforms(ItemStack child, ItemStack parent, TransformType transformType, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
+    public static void renderModelWithTransforms(ItemStack child, ItemStack parent, ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
         poseStack.pushPose();
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(child);
         model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(poseStack, model, transformType, false);
@@ -190,16 +187,16 @@ public class RenderUtil {
         return color;
     }
 
-    public static void applyTransformType(ItemStack stack, PoseStack poseStack, TransformType transformType, @Nullable LivingEntity entity) {
-        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity != null ? entity.level : null, entity, 0);
-        boolean leftHanded = transformType == TransformType.FIRST_PERSON_LEFT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND;
+    public static void applyTransformType(ItemStack stack, PoseStack poseStack, ItemDisplayContext transformType, @Nullable LivingEntity entity) {
+        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity != null ? entity.level() : null, entity, 0);
+        boolean leftHanded = transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || transformType == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
         ForgeHooksClient.handleCameraTransforms(poseStack, model, transformType, leftHanded);
 
         /* Flips the model and normals if left handed. */
         if (leftHanded) {
-            Matrix4f scale = Matrix4f.createScaleMatrix(-1, 1, 1);
+            Matrix4f scale = new Matrix4f().scale(-1, 1, 1);
             Matrix3f normal = new Matrix3f(scale);
-            poseStack.last().pose().multiply(scale);
+            poseStack.last().pose().mul(scale);
             poseStack.last().normal().mul(normal);
         }
     }

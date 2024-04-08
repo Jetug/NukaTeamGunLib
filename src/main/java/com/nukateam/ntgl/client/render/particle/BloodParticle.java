@@ -1,8 +1,7 @@
 package com.nukateam.ntgl.client.render.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -12,6 +11,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 /**
  * Author: MrCrayfish
@@ -52,18 +53,19 @@ public class BloodParticle extends TextureSheetParticle {
             y += 0.01;
         }
 
-        Quaternion rotation = Direction.NORTH.getRotation();
+        var rotation = Direction.NORTH.getRotation();
+
         if (this.roll == 0.0F) {
             if (!this.onGround) {
                 rotation = renderInfo.rotation();
             }
         } else {
-            rotation = new Quaternion(renderInfo.rotation());
+            rotation = new Quaternionf(renderInfo.rotation());
             float angle = Mth.lerp(partialTicks, this.oRoll, this.roll);
-            rotation.mul(Vector3f.ZP.rotation(angle));
+            rotation.mul(Axis.ZP.rotation(angle));
         }
 
-        Vector3f[] vertices = new Vector3f[]{
+        var vertices = new Vector3f[] {
                 new Vector3f(-1.0F, -1.0F, 0.0F),
                 new Vector3f(-1.0F, 1.0F, 0.0F),
                 new Vector3f(1.0F, 1.0F, 0.0F),
@@ -71,9 +73,9 @@ public class BloodParticle extends TextureSheetParticle {
         };
 
         float scale = this.getQuadSize(partialTicks);
-        for (int i = 0; i < 4; ++i) {
+        for(int i = 0; i < 4; ++i) {
             Vector3f vertex = vertices[i];
-            vertex.transform(rotation);
+            vertex.rotate(rotation);
             vertex.mul(scale);
             vertex.add(x, y, z);
         }

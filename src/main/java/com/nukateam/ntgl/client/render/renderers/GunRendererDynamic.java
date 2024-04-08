@@ -12,11 +12,12 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.raid.Raider;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import static net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import static net.minecraft.client.renderer.block.model.ItemTransforms.TransformType.*;
+import static net.minecraft.world.item.ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
+import static net.minecraft.world.item.ItemDisplayContext.FIRST_PERSON_RIGHT_HAND;
 
 public class GunRendererDynamic extends GeoDynamicItemRenderer<GunItemAnimator> {
     public static final int PACKED_OVERLAY = 15728880;
@@ -52,7 +53,7 @@ public class GunRendererDynamic extends GeoDynamicItemRenderer<GunItemAnimator> 
 //    }
 
     @Override
-    public void render(LivingEntity entity, ItemStack stack, TransformType transformType, PoseStack poseStack,
+    public void render(LivingEntity entity, ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack,
                        @Nullable MultiBufferSource bufferSource,
                        @Nullable RenderType renderType, @Nullable VertexConsumer buffer, int packedLight) {
 

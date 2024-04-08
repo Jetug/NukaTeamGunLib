@@ -3,8 +3,8 @@ package com.nukateam.ntgl.client.render.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+
+import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.TeslaProjectile;
@@ -70,15 +70,15 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
         poseStack.pushPose();
         {
-//            poseStack.mulPose(Vector3f.XP.rotationDegrees(projectile.angle));
+//            poseStack.mulPose(Axis.XP.rotationDegrees(projectile.angle));
             pos = pos.normalize();
             float yPos = (float) Math.acos(pos.y);
             float xzPos = (float) Math.atan2(pos.z, pos.x);
 
             var side = projectile.isRightHand() ? -1 : 1;
 
-            poseStack.mulPose(Vector3f.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
+            poseStack.mulPose(Axis.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
+            poseStack.mulPose(Axis.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
             poseStack.translate(side * 0.25, 0, 0);
 
 //            var angleX = getRandomAngle();
@@ -102,10 +102,10 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
                 var offsetY = length * Math.cos(Math.abs(radiansX));
 //                var offsetY = Math.sqrt(length * length - offsetZ * offsetZ);
 
-                poseStack.mulPose(Vector3f.XP.rotationDegrees(angleX * flag));
-//                poseStack.mulPose(Vector3f.YP.rotationDegrees(angleZ * flag));
+                poseStack.mulPose(Axis.XP.rotationDegrees(angleX * flag));
+//                poseStack.mulPose(Axis.YP.rotationDegrees(angleZ * flag));
 //                if(flag > 0){
-//                    poseStack.mulPose(Vector3f.XP.rotationDegrees(angleX * flag));
+//                    poseStack.mulPose(Axis.XP.rotationDegrees(angleX * flag));
 //                }
 
                 if(angleX < 0) offsetZ = -offsetZ;
@@ -154,15 +154,15 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
         poseStack.pushPose();
         {
-//            poseStack.mulPose(Vector3f.XP.rotationDegrees(projectile.angle));
+//            poseStack.mulPose(Axis.XP.rotationDegrees(projectile.angle));
             pos = pos.normalize();
             float yPos = (float) Math.acos(pos.y);
             float xzPos = (float) Math.atan2(pos.z, pos.x);
 
             var side = projectile.isRightHand() ? -1 : 1;
 
-            poseStack.mulPose(Vector3f.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
+            poseStack.mulPose(Axis.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
+            poseStack.mulPose(Axis.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
             poseStack.translate(side * 0.25, 0, 0);
 
 //            var angleX = getRandomAngle();
@@ -186,10 +186,10 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
                 var offsetY = length * Math.cos(Math.abs(radiansX));
 //                var offsetY = Math.sqrt(length * length - offsetZ * offsetZ);
 
-                poseStack.mulPose(Vector3f.ZP.rotationDegrees(angleX * flag));
-//                poseStack.mulPose(Vector3f.YP.rotationDegrees(angleZ * flag));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(angleX * flag));
+//                poseStack.mulPose(Axis.YP.rotationDegrees(angleZ * flag));
 //                if(flag > 0){
-//                    poseStack.mulPose(Vector3f.XP.rotationDegrees(angleX * flag));
+//                    poseStack.mulPose(Axis.XP.rotationDegrees(angleX * flag));
 //                }
 
                 if(angleX > 0) offsetZ = -offsetZ;
@@ -232,7 +232,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
         float f2 = Mth.frac(f1 * 0.2F - (float) Mth.floor(f1 * 0.1F));
         pPoseStack.pushPose();
 
-//        pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f * 2.25F - 45.0F));
+//        pPoseStack.mulPose(Axis.YP.rotationDegrees(f * 2.25F - 45.0F));
         var minX = -pGlowRadius;
         var maxX = -pGlowRadius;
         var minZ = -pGlowRadius;

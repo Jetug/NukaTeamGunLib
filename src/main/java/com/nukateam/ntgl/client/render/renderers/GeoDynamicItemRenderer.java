@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.renderers;
 import com.nukateam.ntgl.client.animators.ItemAnimator;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
+
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.constant.DataTickets;
 import mod.azure.azurelib.core.animation.AnimationState;
@@ -13,29 +13,31 @@ import mod.azure.azurelib.renderer.GeoObjectRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import static net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+
 public class GeoDynamicItemRenderer<T extends ItemAnimator> extends GeoObjectRenderer<T> {
-    private final Map<LivingEntity, Map<TransformType, T>> animatorsByTransform = new HashMap<>();
-    private final Function<TransformType, T> animatorFactory;
+    private final Map<LivingEntity, Map<ItemDisplayContext, T>> animatorsByTransform = new HashMap<>();
+    private final Function<ItemDisplayContext, T> animatorFactory;
     protected ItemStack currentItemStack;
-    protected TransformType currentTransform;
+    protected ItemDisplayContext currentTransform;
     protected LivingEntity currentEntity;
 
-    public GeoDynamicItemRenderer(GeoModel<T> model, Function<TransformType, T> animatorFactory) {
+    public GeoDynamicItemRenderer(GeoModel<T> model, Function<ItemDisplayContext, T> animatorFactory) {
         super(model);
         this.animatorFactory = animatorFactory;
     }
 
-    public void render(LivingEntity entity, ItemStack stack, TransformType transformType,
+    public void render(LivingEntity entity, ItemStack stack, ItemDisplayContext transformType,
                        PoseStack poseStack,
                        @Nullable MultiBufferSource bufferSource,
                        @Nullable RenderType renderType,
@@ -47,7 +49,7 @@ public class GeoDynamicItemRenderer<T extends ItemAnimator> extends GeoObjectRen
         super.render(poseStack, getRenderItem(entity, transformType), bufferSource, renderType, buffer, packedLight);
     }
 
-    public T getRenderItem(LivingEntity entity, TransformType transformType) {
+    public T getRenderItem(LivingEntity entity, ItemDisplayContext transformType) {
         if (!animatorsByTransform.containsKey(entity)) {
             animatorsByTransform.put(entity, createAnimators());
         }
@@ -80,9 +82,9 @@ public class GeoDynamicItemRenderer<T extends ItemAnimator> extends GeoObjectRen
         poseStack.popPose();
     }
 
-    protected Map<TransformType, T> createAnimators(){
-        var result = new HashMap<TransformType, T>();
-        for (var transform: TransformType.values())
+    protected Map<ItemDisplayContext, T> createAnimators(){
+        var result = new HashMap<ItemDisplayContext, T>();
+        for (var transform: ItemDisplayContext.values())
             result.put(transform, animatorFactory.apply(transform));
         return result;
     }

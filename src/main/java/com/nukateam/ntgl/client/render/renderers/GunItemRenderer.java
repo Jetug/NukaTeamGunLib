@@ -17,7 +17,7 @@ public class GunItemRenderer extends GeoItemRenderer<GunItem> {
     }
 
     @Override
-    public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack,
+    public void renderByItem(ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack,
                              MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         var player = Minecraft.getInstance().player;
 

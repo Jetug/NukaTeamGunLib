@@ -20,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,7 +44,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
     private int chamberId = 1;
     private GunItem currentGun = null;
 
-    public GunItemAnimator(TransformType transformType) {
+    public GunItemAnimator(ItemDisplayContext transformType) {
         super(transformType);
     }
 
