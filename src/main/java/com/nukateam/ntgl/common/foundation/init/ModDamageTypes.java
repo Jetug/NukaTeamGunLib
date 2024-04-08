@@ -47,11 +47,11 @@ public class ModDamageTypes
 
         public static class BulletDamageSource extends DamageSource {
             private static final String[] msgSuffix = {
-                    "cgm.bullet.killed",
-                    "cgm.bullet.eliminated",
-                    "cgm.bullet.executed",
-                    "cgm.bullet.annihilated",
-                    "cgm.bullet.decimated"
+                    "ntgl.bullet.killed",
+                    "ntgl.bullet.eliminated",
+                    "ntgl.bullet.executed",
+                    "ntgl.bullet.annihilated",
+                    "ntgl.bullet.decimated"
             };
             public BulletDamageSource(Holder<DamageType> pType, Entity pDirectEntity, Entity pCausingEntity) {
                 super(pType, pDirectEntity, pCausingEntity);

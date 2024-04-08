@@ -1,7 +1,8 @@
 package com.nukateam.ntgl.client.screen;
 
-import com.mrcrayfish.configured.Reference;
+
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
 import com.nukateam.ntgl.client.screen.widget.MiniButton;
 import com.nukateam.ntgl.client.data.util.RenderUtil;
@@ -44,8 +45,8 @@ import java.util.List;
  * Author: MrCrayfish
  */
 public class AttachmentScreen extends AbstractContainerScreen<AttachmentContainer> {
-    private static final ResourceLocation GUI_TEXTURES = new ResourceLocation("cgm:textures/gui/attachments.png");
-    private static final Component CONFIG_TOOLTIP = Component.translatable("cgm.button.config.tooltip");
+    private static final ResourceLocation GUI_TEXTURES = new ResourceLocation("ntgl:textures/gui/attachments.png");
+    private static final Component CONFIG_TOOLTIP = Component.translatable("ntgl.button.config.tooltip");
 
     private final Inventory playerInventory;
     private final Container weaponInventory;
@@ -119,11 +120,11 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
             if (RenderUtil.isMouseWithin(mouseX, mouseY, startX + 7, startY + 16 + i * 18, 18, 18)) {
                 IAttachment.Type type = IAttachment.Type.values()[i];
                 if (!this.menu.getSlot(i).isActive()) {
-                    graphics.renderComponentTooltip(this.font, Arrays.asList(Component.translatable("slot.cgm.attachment." + type.getTranslationKey()), Component.translatable("slot.cgm.attachment.not_applicable")), mouseX, mouseY);
+                    graphics.renderComponentTooltip(this.font, Arrays.asList(Component.translatable("slot.ntgl.attachment." + type.getTranslationKey()), Component.translatable("slot.ntgl.attachment.not_applicable")), mouseX, mouseY);
                 } else if (this.menu.getSlot(i) instanceof AttachmentSlot slot && slot.getItem().isEmpty() && !this.isCompatible(this.menu.getCarried(), slot)) {
-                    graphics.renderComponentTooltip(this.font, Arrays.asList(Component.translatable("slot.cgm.attachment.incompatible").withStyle(ChatFormatting.YELLOW)), mouseX, mouseY);
+                    graphics.renderComponentTooltip(this.font, Arrays.asList(Component.translatable("slot.ntgl.attachment.incompatible").withStyle(ChatFormatting.YELLOW)), mouseX, mouseY);
                 } else if (this.weaponInventory.getItem(i).isEmpty()) {
-                    graphics.renderComponentTooltip(this.font, Collections.singletonList(Component.translatable("slot.cgm.attachment." + type.getTranslationKey())), mouseX, mouseY);
+                    graphics.renderComponentTooltip(this.font, Collections.singletonList(Component.translatable("slot.ntgl.attachment." + type.getTranslationKey())), mouseX, mouseY);
                 }
             }
         }
@@ -165,7 +166,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         if (this.showHelp) {
             graphics.pose().pushPose();
             graphics.pose().scale(0.5F, 0.5F, 0.5F);
-            graphics.drawString(minecraft.font, I18n.get("container.cgm.attachments.window_help"), 56, 38, 0xFFFFFF, false);
+            graphics.drawString(minecraft.font, I18n.get("container.ntgl.attachments.window_help"), 56, 38, 0xFFFFFF, false);
             graphics.pose().popPose();
         }
     }
@@ -267,14 +268,14 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     }
 
     private void openConfigScreen() {
-        ModList.get().getModContainerById(Reference.MOD_ID).ifPresent(container -> {
+        ModList.get().getModContainerById(Ntgl.MOD_ID).ifPresent(container -> {
             Screen screen = container.getCustomExtension(ConfigScreenHandler.ConfigScreenFactory.class).map(function -> function.screenFunction().apply(this.minecraft, null)).orElse(null);
             if (screen != null) {
                 this.minecraft.setScreen(screen);
             } else if (this.minecraft != null && this.minecraft.player != null) {
                 MutableComponent modName = Component.literal("Configured");
-                modName.setStyle(modName.getStyle().withColor(ChatFormatting.YELLOW).withUnderlined(true).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("cgm.chat.open_curseforge_page"))).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/configured")));
-                Component message = Component.translatable("cgm.chat.install_configured", modName);
+                modName.setStyle(modName.getStyle().withColor(ChatFormatting.YELLOW).withUnderlined(true).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("ntgl.chat.open_curseforge_page"))).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/configured")));
+                Component message = Component.translatable("ntgl.chat.install_configured", modName);
                 this.minecraft.player.displayClientMessage(message, false);
             }
         });

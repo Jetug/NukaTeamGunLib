@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.data.datagen;
 
-import com.mrcrayfish.configured.Reference;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.ModTags;
 import net.minecraft.core.HolderLookup;

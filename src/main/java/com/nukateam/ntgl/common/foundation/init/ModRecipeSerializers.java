@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.foundation.init;
 
-import com.mrcrayfish.configured.Reference;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.crafting.DyeItemRecipe;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipeSerializer;

@@ -4,6 +4,7 @@ import com.nukateam.ntgl.common.data.util.InventoryUtil;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.foundation.init.ModRecipeSerializers;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +40,7 @@ public class WorkbenchRecipe implements Recipe<WorkbenchBlockEntity> {
     }
 
     @Override
-    public ItemStack assemble(WorkbenchBlockEntity inv) {
+    public ItemStack assemble(WorkbenchBlockEntity entity, RegistryAccess access) {
         return ItemStack.EMPTY;
     }
 
@@ -49,7 +50,7 @@ public class WorkbenchRecipe implements Recipe<WorkbenchBlockEntity> {
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(RegistryAccess access) {
         return this.item.copy();
     }
 

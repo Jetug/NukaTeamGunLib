@@ -158,7 +158,7 @@ public class Ntgl {
 
         BlockTagGen blockTagGen = new BlockTagGen(output, lookupProvider, existingFileHelper);
         generator.addProvider(event.includeServer(), new RecipeGen(generator));
-        generator.addProvider(event.includeServer(), new LootTableGen(generator));
+        generator.addProvider(event.includeServer(), new LootTableGen(output));
         generator.addProvider(event.includeServer(), blockTagGen);
         generator.addProvider(event.includeServer(), new ItemTagGen(output, lookupProvider, blockTagGen.contentsGetter(), existingFileHelper));
         generator.addProvider(event.includeServer(), new LanguageGen(generator));

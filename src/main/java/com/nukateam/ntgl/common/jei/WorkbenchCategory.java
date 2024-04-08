@@ -9,6 +9,7 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemDisplayContext;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -22,7 +23,6 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -36,6 +36,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.awt.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -99,12 +100,12 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
     }
 
     @Override
-    public void draw(WorkbenchRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack poseStack, double mouseX, double mouseY) {
-        this.window.draw(poseStack, 0, 0);
-        this.inventory.draw(poseStack, 0, this.window.getHeight() + 2 + 11 + 2);
-        this.dyeSlot.draw(poseStack, 140, 51);
+    public void draw(WorkbenchRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+        this.window.draw(graphics, 0, 0);
+        this.inventory.draw(graphics, 0, this.window.getHeight() + 2 + 11 + 2);
+        this.dyeSlot.draw(graphics, 140, 51);
 
-        Minecraft.getInstance().font.draw(poseStack, I18n.get(MATERIALS_KEY), 0, 78, 0x7E7E7E);
+        graphics.drawString(Minecraft.getInstance().font, I18n.get(MATERIALS_KEY), 0, 78, Color.WHITE.getRGB());
 
         ItemStack output = recipe.getItem();
         MutableComponent displayName = output.getHoverName().copy();
@@ -112,12 +113,12 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
             displayName.append(Component.literal(" x " + output.getCount()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
         }
         int titleX = this.window.getWidth() / 2;
-        GuiComponent.drawCenteredString(poseStack, Minecraft.getInstance().font, displayName, titleX, 5, 0xFFFFFFFF);
+        graphics.drawCenteredString(Minecraft.getInstance().font, displayName, titleX, 5, Color.WHITE.getRGB());
 
         PoseStack stack = RenderSystem.getModelViewStack();
         stack.pushPose();
         {
-            stack.mulPoseMatrix(poseStack.last().pose());
+            stack.mulPoseMatrix(graphics.pose().last().pose());
             stack.translate(81, 40, 0);
             stack.scale(40F, 40F, 40F);
             stack.mulPose(Axis.XP.rotationDegrees(-5F));

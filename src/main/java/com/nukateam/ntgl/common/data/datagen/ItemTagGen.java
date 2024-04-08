@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.data.datagen;
 
-import com.mrcrayfish.configured.Reference;
+
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ItemTagGen extends ItemTagsProvider {
     public ItemTagGen(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> blockTagProvider, ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, blockTagProvider, Reference.MOD_ID, existingFileHelper);
+        super(output, lookupProvider, blockTagProvider, Ntgl.MOD_ID, existingFileHelper);
     }
 
     @Override
