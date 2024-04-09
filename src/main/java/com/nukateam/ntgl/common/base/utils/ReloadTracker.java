@@ -70,7 +70,7 @@ public class ReloadTracker {
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         try {
-            if (event.phase == TickEvent.Phase.START && !event.player.level.isClientSide) {
+            if (event.phase == TickEvent.Phase.START && !event.player.level().isClientSide) {
                 var player = event.player;
 
                 if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(player)) {

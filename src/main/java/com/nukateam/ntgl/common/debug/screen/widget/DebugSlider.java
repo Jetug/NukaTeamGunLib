@@ -4,8 +4,10 @@ import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.gui.widget.ForgeSlider;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -26,11 +28,10 @@ public class DebugSlider extends ForgeSlider implements IDebugWidget {
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, Minecraft mc, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, WIDGETS_LOCATION);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    public void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         int i = (this.isHoveredOrFocused() ? 2 : 1) * 20;
-        this.blit(poseStack, this.x + (int) (this.value * (double) (this.width - 8)), this.y, 0, 46 + i, 4, this.height);
-        this.blit(poseStack, this.x + (int) (this.value * (double) (this.width - 8)) + 4, this.y, 196, 46 + i, 4, this.height);
+        graphics.blit(WIDGETS_LOCATION, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY(), 0, 46 + i, 4, this.height);
+        graphics.blit(WIDGETS_LOCATION, this.getX() + (int) (this.value * (double) (this.width - 8)) + 4, this.getY(), 196, 46 + i, 4, this.height);
     }
 }

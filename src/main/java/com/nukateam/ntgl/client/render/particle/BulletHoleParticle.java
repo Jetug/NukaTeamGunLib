@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 /**
  * Author: MrCrayfish
@@ -112,14 +113,14 @@ public class BulletHoleParticle extends TextureSheetParticle {
         float particleY = (float) (Mth.lerp((double) partialTicks, this.yo, this.y) - view.y());
         float particleZ = (float) (Mth.lerp((double) partialTicks, this.zo, this.z) - view.z());
         Quaternionf quaternion = this.direction.getRotation();
-        Axis[] points = new Axis[]{new Axis(-1.0F, 0.0F, -1.0F), new Axis(-1.0F, 0.0F, 1.0F), new Axis(1.0F, 0.0F, 1.0F), new Axis(1.0F, 0.0F, -1.0F)};
+        Vector3f[] points = new Vector3f[]{new Vector3f(-1.0F, 0.0F, -1.0F), new Vector3f(-1.0F, 0.0F, 1.0F), new Vector3f(1.0F, 0.0F, 1.0F), new Vector3f(1.0F, 0.0F, -1.0F)};
         float scale = this.getQuadSize(partialTicks);
 
         for (int i = 0; i < 4; ++i) {
-            Axis Axis = points[i];
-            Axis.transform(quaternion);
-            Axis.mul(scale);
-            Axis.add(particleX, particleY, particleZ);
+            Vector3f vector3f = points[i];
+            vector3f.rotate(quaternion);
+            vector3f.mul(scale);
+            vector3f.add(particleX, particleY, particleZ);
         }
 
         float f7 = this.getU0();

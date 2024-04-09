@@ -53,7 +53,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		var startVec = new Vec3(this.getX(), this.getY(), this.getZ());
 		var endVec = startVec.add(this.getDeltaMovement());
 
-		HitResult raytraceresult = rayTraceBlocks(this.level, new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER,
+		HitResult raytraceresult = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER,
 				ClipContext.Fluid.NONE, this), IGNORE_LEAVES);
 
 		if (raytraceresult.getType() != HitResult.Type.MISS) {

@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.joml.Matrix4f;
 
 /**
  * Author: MrCrayfish
@@ -56,7 +57,7 @@ public class TechCrosshair extends Crosshair {
             RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, DOT_CROSSHAIR);
-            Matrix4f matrix = stack.last().pose();
+            var matrix = stack.last().pose();
             stack.translate((windowWidth - size) / 2F, (windowHeight - size) / 2F, 0);
             buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             buffer.vertex(matrix, 0, size, 0).uv(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();

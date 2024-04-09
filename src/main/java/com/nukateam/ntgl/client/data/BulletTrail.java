@@ -67,7 +67,7 @@ public class BulletTrail {
         var shooter = this.getShooter();
 //        if (shooter instanceof Player && ((Player) shooter).isLocalPlayer()) {
         if(shooter instanceof LivingEntity) {
-            shooter.level.addAlwaysVisibleParticle(this.particleData, true,
+            shooter.level().addAlwaysVisibleParticle(this.particleData, true,
                     this.position.x(), this.position.y(), this.position.z(),
                     this.motion.x, this.motion.y, this.motion.z);
         }

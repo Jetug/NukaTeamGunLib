@@ -67,6 +67,6 @@ public class ModSounds {
     public static final RegistryObject<SoundEvent> ITEM_45MM_RELOAD = register("item.pistol45mm.reload");
 
     private static RegistryObject<SoundEvent> register(String key) {
-        return REGISTER.register(key, () -> new SoundEvent(new ResourceLocation(Ntgl.MOD_ID, key)));
+        return REGISTER.register(key, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Ntgl.MOD_ID, key)));
     }
 }

@@ -73,7 +73,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         this.imageWidth = 275;
         this.imageHeight = 184;
         this.materials = new ArrayList<>();
-        this.createTabs(WorkbenchRecipes.getAll(playerInventory.player.level));
+        this.createTabs(WorkbenchRecipes.getAll(playerInventory.player.level()));
         if (!this.tabs.isEmpty()) {
             this.imageHeight += 28;
         }
@@ -285,40 +285,36 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        try {
-            this.renderBackground(poseStack);
-            super.render(poseStack, mouseX, mouseY, partialTicks);
-            this.renderTooltip(poseStack, mouseX, mouseY);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(graphics);
+        super.render(graphics, mouseX, mouseY, partialTicks);
+        this.renderTooltip(graphics, mouseX, mouseY);
 
-            int startX = this.leftPos;
-            int startY = this.topPos;
+        int startX = this.leftPos;
+        int startY = this.topPos;
 
-            for (int i = 0; i < this.tabs.size(); i++) {
-                if (RenderUtil.isMouseWithin(mouseX, mouseY, startX + 28 * i, startY - 28, 28, 28)) {
-                    this.renderTooltip(poseStack, Component.translatable(this.tabs.get(i).getTabKey()), mouseX, mouseY);
+        for (int i = 0; i < this.tabs.size(); i++) {
+            if (RenderUtil.isMouseWithin(mouseX, mouseY, startX + 28 * i, startY - 28, 28, 28)) {
+                this.setTooltipForNextRenderPass(Component.translatable(this.tabs.get(i).getTabKey()));
+                this.renderTooltip(graphics, mouseX, mouseY);
+                return;
+            }
+        }
+
+        for (int i = 0; i < this.filteredMaterials.size(); i++) {
+            int itemX = startX + 172;
+            int itemY = startY + i * 19 + 63;
+            if (RenderUtil.isMouseWithin(mouseX, mouseY, itemX, itemY, 80, 19)) {
+                MaterialItem materialItem = this.filteredMaterials.get(i);
+                if (materialItem != MaterialItem.EMPTY) {
+                    graphics.renderTooltip(this.font, materialItem.getDisplayStack(), mouseX, mouseY);
                     return;
                 }
             }
-
-            for (int i = 0; i < this.filteredMaterials.size(); i++) {
-                int itemX = startX + 172;
-                int itemY = startY + i * 19 + 63;
-                if (RenderUtil.isMouseWithin(mouseX, mouseY, itemX, itemY, 80, 19)) {
-                    MaterialItem materialItem = this.filteredMaterials.get(i);
-                    if (materialItem != MaterialItem.EMPTY) {
-                        this.renderTooltip(poseStack, materialItem.getDisplayStack(), mouseX, mouseY);
-                        return;
-                    }
-                }
-            }
-
-            if (RenderUtil.isMouseWithin(mouseX, mouseY, startX + 8, startY + 38, 160, 48)) {
-                this.renderTooltip(poseStack, this.displayStack, mouseX, mouseY);
-            }
         }
-        catch (Exception e){
-            Ntgl.LOGGER.debug(e.getMessage(), e);
+
+        if (RenderUtil.isMouseWithin(mouseX, mouseY, startX + 8, startY + 38, 160, 48)) {
+            graphics.renderTooltip(this.font, this.displayStack, mouseX, mouseY);
         }
     }
 

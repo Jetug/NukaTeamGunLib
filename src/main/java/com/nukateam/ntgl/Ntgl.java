@@ -157,11 +157,11 @@ public class Ntgl {
         var existingFileHelper = event.getExistingFileHelper();
 
         BlockTagGen blockTagGen = new BlockTagGen(output, lookupProvider, existingFileHelper);
-        generator.addProvider(event.includeServer(), new RecipeGen(generator));
+//        generator.addProvider(event.includeServer(), new RecipeGen(generator));
         generator.addProvider(event.includeServer(), new LootTableGen(output));
         generator.addProvider(event.includeServer(), blockTagGen);
         generator.addProvider(event.includeServer(), new ItemTagGen(output, lookupProvider, blockTagGen.contentsGetter(), existingFileHelper));
-        generator.addProvider(event.includeServer(), new LanguageGen(generator));
-        generator.addProvider(event.includeServer(), new GunGen(generator));
+//        generator.addProvider(event.includeServer(), new LanguageGen(generator));
+//        generator.addProvider(event.includeServer(), new GunGen(generator));
     }
 }

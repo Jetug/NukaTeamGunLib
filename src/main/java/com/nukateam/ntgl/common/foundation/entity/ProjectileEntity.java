@@ -634,7 +634,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             return blockDistance <= fluidDistance ? blockResult : fluidResult;
         }, (rayTraceContext) -> {
             Vec3 Vector3d = rayTraceContext.getFrom().subtract(rayTraceContext.getTo());
-            return BlockHitResult.miss(rayTraceContext.getTo(), Direction.getNearest(Vector3d.x, Vector3d.y, Vector3d.z), new BlockPos(rayTraceContext.getTo()));
+            return BlockHitResult.miss(rayTraceContext.getTo(), Direction.getNearest(Vector3d.x, Vector3d.y, Vector3d.z), BlockPos.containing(rayTraceContext.getTo()));
         });
     }
 
@@ -711,8 +711,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if (world.isClientSide())
             return;
 
-        DamageSource source = entity instanceof ProjectileEntity projectile ? DamageSource.explosion(projectile.getShooter()) : null;
-        Explosion.BlockInteraction mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.NONE;
+        DamageSource source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
+        Explosion.BlockInteraction mode = forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
         Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
 
         if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
@@ -731,7 +731,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         });
 
         // Clears the affected blocks if mode is none
-        if (mode == Explosion.BlockInteraction.NONE) {
+        if (!explosion.interactsWithBlocks()) {
             explosion.clearToBlow();
         }
 

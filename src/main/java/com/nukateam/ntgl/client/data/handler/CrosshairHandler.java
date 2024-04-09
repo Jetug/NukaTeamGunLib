@@ -103,7 +103,8 @@ public class CrosshairHandler {
         if (event.getOverlay() != VanillaGuiOverlay.CROSSHAIR.type())
             return;
 
-        Crosshair crosshair = this.getCurrentCrosshair();
+        var crosshair = this.getCurrentCrosshair();
+
         if (AimingHandler.get().getNormalisedAdsProgress() > 0.5) {
             event.setCanceled(true);
             return;
@@ -129,7 +130,7 @@ public class CrosshairHandler {
         if (mc.player.getUseItem().getItem() == Items.SHIELD)
             return;
 
-        PoseStack stack = event.getPoseStack();
+        var stack = event.getGuiGraphics().pose();
         stack.pushPose();
         int scaledWidth = event.getWindow().getGuiScaledWidth();
         int scaledHeight = event.getWindow().getGuiScaledHeight();

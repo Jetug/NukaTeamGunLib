@@ -80,7 +80,7 @@ public class ServerPlayHandler {
         if (shooter.getUseItem().getItem() == Items.SHIELD)
             return;
 
-        var world = shooter.level;
+        var world = shooter.level();
         var hand = message.isMainHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         var heldItem = shooter.getItemInHand(hand);
 
@@ -135,7 +135,7 @@ public class ServerPlayHandler {
                     var data = GunEnchantmentHelper.getParticle(heldItem);
                     var messageBulletTrail = new MessageBulletTrail(spawnedProjectiles, projectileProps, shooter.getId(), data);
 
-                    PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(shooter.level, spawnX, spawnY, spawnZ, radius), messageBulletTrail);
+                    PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(shooter.level(), spawnX, spawnY, spawnZ, radius), messageBulletTrail);
                 }
 
                 MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem));
@@ -168,14 +168,14 @@ public class ServerPlayHandler {
                     double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
                     boolean muzzle = modifiedGun.getDisplay().getFlash() != null;
                     var messageSound = new MessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, shooter.getId(), muzzle, false);
-                    PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(shooter.level, posX, posY, posZ, radius), messageSound);
+                    PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(shooter.level(), posX, posY, posZ, radius), messageSound);
                 }
 
                 if (!(shooter instanceof Player player && player.isCreative())) {
                     tag = heldItem.getOrCreateTag();
                     if (!tag.getBoolean("IgnoreAmmo")) {
                         int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.RECLAIMED.get(), heldItem);
-                        if (level == 0 || shooter.level.random.nextInt(4 - Mth.clamp(level, 1, 2)) != 0) {
+                        if (level == 0 || shooter.level().random.nextInt(4 - Mth.clamp(level, 1, 2)) != 0) {
                             tag.putInt(Tags.AMMO_COUNT, Math.max(0, tag.getInt(Tags.AMMO_COUNT) - 1));
                         }
                     }
@@ -215,7 +215,7 @@ public class ServerPlayHandler {
      * @param pos    the block position of the workstation the player is using
      */
     public static void handleCraft(ServerPlayer player, ResourceLocation id, BlockPos pos) {
-        Level world = player.level;
+        Level world = player.level();
 
         if (player.containerMenu instanceof WorkbenchContainer workbench) {
             if (workbench.getPos().equals(pos)) {
@@ -327,7 +327,7 @@ public class ServerPlayHandler {
     private static void spawnAmmo(ServerPlayer player, ItemStack stack) {
         player.getInventory().add(stack);
         if (stack.getCount() > 0) {
-            player.level.addFreshEntity(new ItemEntity(player.level, player.getX(), player.getY(), player.getZ(), stack.copy()));
+            player.level().addFreshEntity(new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack.copy()));
         }
     }
 

@@ -12,6 +12,7 @@ import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.enchantment.EnchantmentTypes;
 import com.nukateam.ntgl.Ntgl;
 import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.util.AzureLibUtil;
@@ -36,6 +37,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
@@ -44,9 +46,9 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
+    private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
     private Gun gun = new Gun();
-
 
     public GunItem(Item.Properties properties) {
         super(properties.stacksTo(1));
@@ -75,8 +77,8 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     }
 
     @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
+    public void createRenderer(Consumer<Object> consumer) {
+        consumer.accept(new RenderProvider() {
             private GunItemRenderer renderer = null;
 
             @Override
@@ -86,6 +88,11 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
                 return this.renderer;
             }
         });
+    }
+
+    @Override
+    public Supplier<Object> getRenderProvider() {
+        return renderProvider;
     }
 
     @Override
@@ -129,14 +136,14 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         //tooltip.add(Component.translatable("info.ntgl.attachment_help", new KeybindComponent("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH)).withStyle(ChatFormatting.YELLOW));
     }
 
-    @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> stacks) {
-        if (this.allowedIn(group)) {
-            ItemStack stack = new ItemStack(this);
-            stack.getOrCreateTag().putInt(Tags.AMMO_COUNT, this.gun.getGeneral().getMaxAmmo(stack));
-            stacks.add(stack);
-        }
-    }
+//    @Override
+//    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> stacks) {
+//        if (this.allowedIn(group)) {
+//            ItemStack stack = new ItemStack(this);
+//            stack.getOrCreateTag().putInt(Tags.AMMO_COUNT, this.gun.getGeneral().getMaxAmmo(stack));
+//            stacks.add(stack);
+//        }
+//    }
 
     @Override
     public boolean isBarVisible(ItemStack stack) {

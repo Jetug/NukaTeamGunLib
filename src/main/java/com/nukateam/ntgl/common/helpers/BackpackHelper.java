@@ -16,14 +16,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
  */
 public class BackpackHelper {
     public static AmmoContext findAmmo(Player player, ResourceLocation id) {
-        ItemStack backpack = Backpacked.getBackpackStack(player);
-        if (backpack.isEmpty())
-            return AmmoContext.NONE;
+        var inventory = ((BackpackedInventoryAccess) player).getBackpackedInventory();
 
-        if (EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.MARKSMAN.get(), backpack) <= 0)
-            return AmmoContext.NONE;
-
-        BackpackInventory inventory = ((BackpackedInventoryAccess) player).getBackpackedInventory();
         if (inventory == null)
             return AmmoContext.NONE;
 
@@ -38,13 +32,6 @@ public class BackpackHelper {
     }
 
     public static AmmoContext findMagazine(Player player, ResourceLocation id) {
-        ItemStack backpack = Backpacked.getBackpackStack(player);
-        if (backpack.isEmpty())
-            return AmmoContext.NONE;
-
-        if (EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.MARKSMAN.get(), backpack) <= 0)
-            return AmmoContext.NONE;
-
         var inventory = ((BackpackedInventoryAccess) player).getBackpackedInventory();
 
         if (inventory == null)
@@ -61,7 +48,6 @@ public class BackpackHelper {
                     ammo = stack;
             }
         }
-
 
         return ammo == null ? AmmoContext.NONE : new AmmoContext(ammo, inventory);
     }

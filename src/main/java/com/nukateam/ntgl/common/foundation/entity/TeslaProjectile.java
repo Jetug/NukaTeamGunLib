@@ -106,21 +106,21 @@ public class TeslaProjectile extends AbstractBeamProjectile {
     protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
         super.onHitEntity(entity, hitVec, startVec, endVec, headshot);
 
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if (this.chainTargets > 0) {
                 var nextTarget = findNextTarget(entity);
                 if (nextTarget != null) {
                     var projectile = new TeslaProjectile(
-                            TESLA_PROJECTILE.get(), level, this.shooter, entity, nextTarget, weapon, (GunItem) weapon.getItem(),
+                            TESLA_PROJECTILE.get(), level(), this.shooter, entity, nextTarget, weapon, (GunItem) weapon.getItem(),
                             modifiedGun, chainTargets - 1);
-                    level.addFreshEntity(projectile);
+                    level().addFreshEntity(projectile);
                 }
             }
         }
     }
 
     private LivingEntity findNextTarget(Entity lastTarget) {
-        var list = this.level.getEntities(lastTarget, new AABB(
+        var list = this.level().getEntities(lastTarget, new AABB(
                         lastTarget.getX() - CHAIN_RANGE,
                         lastTarget.getY() - CHAIN_RANGE,
                         lastTarget.getZ() - CHAIN_RANGE,
@@ -143,7 +143,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
                         var to = new Vec3(livingEntity.getX(), livingEntity.getY() + livingEntity.getEyeHeight() * 0.5f, livingEntity.getZ());
 
                         var context = new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this);
-                        var raytraceResult = rayTraceBlocks(level, context, IGNORE_LEAVES);
+                        var raytraceResult = rayTraceBlocks(level(), context, IGNORE_LEAVES);
                         ;//this.level.rayTraceBlocks(vec3d1, vec3d2, false, true, false);
 
 //                        if (raytraceResult == null)

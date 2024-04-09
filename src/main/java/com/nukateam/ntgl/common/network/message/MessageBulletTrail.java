@@ -10,6 +10,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -85,7 +86,7 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail> {
         buffer.writeDouble(message.gravity);
         buffer.writeInt(message.shooterId);
         buffer.writeBoolean(message.enchanted);
-        buffer.writeInt(Registry.PARTICLE_TYPE.getId(message.particleData.getType()));
+        buffer.writeInt(BuiltInRegistries.PARTICLE_TYPE.getId(message.particleData.getType()));
         message.particleData.writeToNetwork(buffer);
     }
 
@@ -107,7 +108,7 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail> {
         double gravity = buffer.readDouble();
         int shooterId = buffer.readInt();
         boolean enchanted = buffer.readBoolean();
-        ParticleType<?> type = Registry.PARTICLE_TYPE.byId(buffer.readInt());
+        ParticleType<?> type = BuiltInRegistries.PARTICLE_TYPE.byId(buffer.readInt());
         if (type == null) type = ParticleTypes.CRIT;
         ParticleOptions particleData = this.readParticle(buffer, type);
         return new MessageBulletTrail(entityIds, positions, motions, item, trailColor, trailLengthMultiplier, life, gravity, shooterId, enchanted, particleData);

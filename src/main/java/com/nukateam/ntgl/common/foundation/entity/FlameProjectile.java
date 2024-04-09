@@ -45,13 +45,13 @@ public class FlameProjectile extends ProjectileEntity {
 
     @Override
     protected void onProjectileTick() {
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             for (int i = 5; i > 0; i--) {
-                this.level.addParticle(ParticleTypes.FLAME, true, this.getX() - (this.getDeltaMovement().x() / i), this.getY() - (this.getDeltaMovement().y() / i), this.getZ() - (this.getDeltaMovement().z() / i), 0, 0, 0);
+                this.level().addParticle(ParticleTypes.FLAME, true, this.getX() - (this.getDeltaMovement().x() / i), this.getY() - (this.getDeltaMovement().y() / i), this.getZ() - (this.getDeltaMovement().z() / i), 0, 0, 0);
             }
-            if (this.level.random.nextInt(2) == 0) {
-                this.level.addParticle(ParticleTypes.SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-                this.level.addParticle(ParticleTypes.FLAME, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+            if (this.level().random.nextInt(2) == 0) {
+                this.level().addParticle(ParticleTypes.SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                this.level().addParticle(ParticleTypes.FLAME, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
             }
         }
     }
@@ -76,13 +76,13 @@ public class FlameProjectile extends ProjectileEntity {
             if (!CampfireBlock.canLight(blockstate) && !CandleBlock.canLight(blockstate) && !CandleCakeBlock.canLight(blockstate)) {
                 var blockpos1 = blockpos.relative(face);
 
-                if (BaseFireBlock.canBePlacedAt(level, blockpos1, face)) {
-                    var blockstate1 = BaseFireBlock.getState(level, blockpos1);
-                    level.setBlock(blockpos1, blockstate1, 11);
+                if (BaseFireBlock.canBePlacedAt(level(), blockpos1, face)) {
+                    var blockstate1 = BaseFireBlock.getState(level(), blockpos1);
+                    level().setBlock(blockpos1, blockstate1, 11);
 
                 }
             } else {
-                level.setBlock(blockpos, blockstate.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)), 11);
+                level().setBlock(blockpos, blockstate.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)), 11);
             }
         }
     }

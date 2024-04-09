@@ -57,7 +57,7 @@ public class MessageShoot extends PlayMessage<MessageShoot> {
         supplier.execute((() -> {
             var player = supplier.getPlayer();
             if (player != null) {
-                var shooter = player.level.getEntity(messageShoot.shooterId);
+                var shooter = player.level().getEntity(messageShoot.shooterId);
 
                 if (shooter instanceof LivingEntity livingEntity)
                     ServerPlayHandler.handleShoot(messageShoot, livingEntity);
