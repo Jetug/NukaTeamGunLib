@@ -8,14 +8,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageGunSound extends PlayMessage<MessageGunSound> {
+public class S2CMessageGunSound extends PlayMessage<S2CMessageGunSound> {
     private ResourceLocation id;
     private SoundSource category;
     private float x;
@@ -27,10 +24,10 @@ public class MessageGunSound extends PlayMessage<MessageGunSound> {
     private boolean muzzle;
     private boolean reload;
 
-    public MessageGunSound() {}
+    public S2CMessageGunSound() {}
 
-    public MessageGunSound(ResourceLocation id, SoundSource category, LivingEntity shooter,
-                           float volume, float pitch, boolean muzzle, boolean reload) {
+    public S2CMessageGunSound(ResourceLocation id, SoundSource category, LivingEntity shooter,
+                              float volume, float pitch, boolean muzzle, boolean reload) {
         this.id = id;
         this.category = category;
         this.x = (float)shooter.position().x;
@@ -43,8 +40,8 @@ public class MessageGunSound extends PlayMessage<MessageGunSound> {
         this.reload = reload;
     }
 
-    public MessageGunSound(ResourceLocation id, SoundSource category, Vec3 position,
-                           float volume, float pitch, int shooterId, boolean muzzle, boolean reload) {
+    public S2CMessageGunSound(ResourceLocation id, SoundSource category, Vec3 position,
+                              float volume, float pitch, int shooterId, boolean muzzle, boolean reload) {
         this.id = id;
         this.category = category;
         this.x = (float)position.x;
@@ -57,8 +54,8 @@ public class MessageGunSound extends PlayMessage<MessageGunSound> {
         this.reload = reload;
     }
 
-    public MessageGunSound(ResourceLocation id, SoundSource category, float x, float y, float z,
-                           float volume, float pitch, int shooterId, boolean muzzle, boolean reload) {
+    public S2CMessageGunSound(ResourceLocation id, SoundSource category, float x, float y, float z,
+                              float volume, float pitch, int shooterId, boolean muzzle, boolean reload) {
         this.id = id;
         this.category = category;
         this.x = x;
@@ -72,7 +69,7 @@ public class MessageGunSound extends PlayMessage<MessageGunSound> {
     }
 
     @Override
-    public void encode(MessageGunSound message, FriendlyByteBuf buffer) {
+    public void encode(S2CMessageGunSound message, FriendlyByteBuf buffer) {
         buffer.writeResourceLocation(message.id);
         buffer.writeEnum(message.category);
         buffer.writeFloat(message.x);
@@ -86,7 +83,7 @@ public class MessageGunSound extends PlayMessage<MessageGunSound> {
     }
 
     @Override
-    public MessageGunSound decode(FriendlyByteBuf buffer) {
+    public S2CMessageGunSound decode(FriendlyByteBuf buffer) {
         var id = buffer.readResourceLocation();
         var category = buffer.readEnum(SoundSource.class);
         float x = buffer.readFloat();
@@ -97,11 +94,11 @@ public class MessageGunSound extends PlayMessage<MessageGunSound> {
         int shooterId = buffer.readInt();
         boolean muzzle = buffer.readBoolean();
         boolean reload = buffer.readBoolean();
-        return new MessageGunSound(id, category, x, y, z, volume, pitch, shooterId, muzzle, reload);
+        return new S2CMessageGunSound(id, category, x, y, z, volume, pitch, shooterId, muzzle, reload);
     }
 
     @Override
-    public void handle(MessageGunSound message, MessageContext supplier) {
+    public void handle(S2CMessageGunSound message, MessageContext supplier) {
         supplier.execute((() -> ClientPlayHandler.handleMessageGunSound(message)));
         supplier.setHandled(true);
     }

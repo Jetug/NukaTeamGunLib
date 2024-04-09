@@ -42,11 +42,12 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
         var shooter = Minecraft.getInstance().level.getEntity(shooterId);
 
         float prog = ((float) laserProjectile.tickCount) / ((float) laserProjectile.getLife());
-
         float radius = (float) (laserRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
         float glowRadius = (float) (laserGlowRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
 
-        if (shooter == null) return;
+//        if (shooter == null) return;
+
+//        laserProjectile.trace();
 
         poseStack.pushPose();
         {

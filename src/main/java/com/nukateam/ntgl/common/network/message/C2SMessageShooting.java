@@ -4,34 +4,31 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageShooting extends PlayMessage<MessageShooting> {
+public class C2SMessageShooting extends PlayMessage<C2SMessageShooting> {
     private boolean shooting;
 
-    public MessageShooting() {}
+    public C2SMessageShooting() {}
 
-    public MessageShooting(boolean shooting) {
+    public C2SMessageShooting(boolean shooting) {
         this.shooting = shooting;
     }
 
     @Override
-    public void encode(MessageShooting message, FriendlyByteBuf buffer) {
+    public void encode(C2SMessageShooting message, FriendlyByteBuf buffer) {
         buffer.writeBoolean(message.shooting);
     }
 
     @Override
-    public MessageShooting decode(FriendlyByteBuf buffer) {
-        return new MessageShooting(buffer.readBoolean());
+    public C2SMessageShooting decode(FriendlyByteBuf buffer) {
+        return new C2SMessageShooting(buffer.readBoolean());
     }
 
     @Override
-    public void handle(MessageShooting message, MessageContext supplier) {
+    public void handle(C2SMessageShooting message, MessageContext supplier) {
         supplier.execute((() -> {
             var player = supplier.getPlayer();
             if (player != null) {

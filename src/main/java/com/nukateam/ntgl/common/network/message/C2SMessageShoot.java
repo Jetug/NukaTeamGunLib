@@ -5,14 +5,11 @@ import com.nukateam.ntgl.common.base.network.ServerPlayHandler;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageShoot extends PlayMessage<MessageShoot> {
+public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
     private int shooterId;
     private float rotationYaw;
     private float rotationPitch;
@@ -20,9 +17,9 @@ public class MessageShoot extends PlayMessage<MessageShoot> {
     private float randY;
     private boolean isMainHand;
 
-    public MessageShoot() {}
+    public C2SMessageShoot() {}
 
-    public MessageShoot(int shooterId, float yaw, float pitch, float randP, float randY, boolean isMainHand) {
+    public C2SMessageShoot(int shooterId, float yaw, float pitch, float randP, float randY, boolean isMainHand) {
         this.shooterId = shooterId;
         this.rotationPitch = pitch;
         this.rotationYaw = yaw;
@@ -32,7 +29,7 @@ public class MessageShoot extends PlayMessage<MessageShoot> {
     }
 
     @Override
-    public void encode(MessageShoot messageShoot, FriendlyByteBuf buffer) {
+    public void encode(C2SMessageShoot messageShoot, FriendlyByteBuf buffer) {
         buffer.writeInt(messageShoot.shooterId);
         buffer.writeFloat(messageShoot.rotationYaw);
         buffer.writeFloat(messageShoot.rotationPitch);
@@ -42,8 +39,8 @@ public class MessageShoot extends PlayMessage<MessageShoot> {
     }
 
     @Override
-    public MessageShoot decode(FriendlyByteBuf buffer) {
-        return new MessageShoot(
+    public C2SMessageShoot decode(FriendlyByteBuf buffer) {
+        return new C2SMessageShoot(
                 buffer.readInt(),
                 buffer.readFloat(),
                 buffer.readFloat(),
@@ -53,7 +50,7 @@ public class MessageShoot extends PlayMessage<MessageShoot> {
     }
 
     @Override
-    public void handle(MessageShoot messageShoot, MessageContext supplier) {
+    public void handle(C2SMessageShoot messageShoot, MessageContext supplier) {
         supplier.execute((() -> {
             var player = supplier.getPlayer();
             if (player != null) {

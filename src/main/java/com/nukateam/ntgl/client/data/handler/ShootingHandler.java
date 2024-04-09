@@ -152,11 +152,11 @@ public class ShootingHandler {
                 var shooting = mc.options.keyAttack.isDown();
                 if (shooting ^ this.shooting) {
                     this.shooting = shooting;
-                    PacketHandler.getPlayChannel().sendToServer(new MessageShooting(shooting));
+                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(shooting));
                 }
             } else if (this.shooting) {
                 this.shooting = false;
-                PacketHandler.getPlayChannel().sendToServer(new MessageShooting(false));
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(false));
             }
         } else {
             this.shooting = false;
@@ -306,7 +306,7 @@ public class ShootingHandler {
             shootMsGap = calcShootTickGap((int) rpm);
             RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
             RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
-            PacketHandler.getPlayChannel().sendToServer(new MessageShoot(shooter.getId(), shooter.getViewYRot(1),
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
                             shooter.getViewXRot(1),
                             RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, isMainHand));
 

@@ -1,7 +1,5 @@
 package com.nukateam.ntgl.common.base.utils;
 
-import com.mrcrayfish.framework.api.network.LevelLocation;
-import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
@@ -12,13 +10,10 @@ import com.nukateam.ntgl.common.data.util.StackUtils;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.MessageGunSound;
 import com.nukateam.ntgl.common.network.message.S2CMessageReload;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +22,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
@@ -224,7 +218,7 @@ public class ReloadTracker {
 //        if (reloadSound != null) {
 //            var pos = player.position().add(0, 1, 0);
 //            var radius = Config.SERVER.reloadMaxDistance.get();
-//            var message = new MessageGunSound(reloadSound, SoundSource.PLAYERS, pos,
+//            var message = new S2CMessageGunSound(reloadSound, SoundSource.PLAYERS, pos,
 //                    1.0F, 1.0F, player.getId(), false, true);
 //            PacketHandler.getPlayChannel().send(PacketDistributor.NEAR.with(() ->
 //                    new PacketDistributor.TargetPoint(
@@ -308,7 +302,7 @@ public class ReloadTracker {
 //        var cockSound = gun.getSounds().getCock();
 //        if (cockSound != null && finalPlayer.isAlive()) {
 //            var radius = Config.SERVER.reloadMaxDistance.get();
-//            var messageSound = new MessageGunSound(cockSound, SoundSource.PLAYERS, finalPlayer,
+//            var messageSound = new S2CMessageGunSound(cockSound, SoundSource.PLAYERS, finalPlayer,
 //                    1.0F, 1.0F, false, true);
 //            PacketHandler.getPlayChannel().sendToNearbyPlayers(() ->
 //                            LevelLocation.create(finalPlayer.level,

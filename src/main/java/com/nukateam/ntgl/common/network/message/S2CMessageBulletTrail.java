@@ -6,7 +6,6 @@ import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.network.BufferUtil;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
@@ -14,14 +13,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageBulletTrail extends PlayMessage<MessageBulletTrail> {
+public class S2CMessageBulletTrail extends PlayMessage<S2CMessageBulletTrail> {
     private int[] entityIds;
     private Vec3[] positions;
     private Vec3[] motions;
@@ -34,10 +30,10 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail> {
     private boolean enchanted;
     private ParticleOptions particleData;
 
-    public MessageBulletTrail() {
+    public S2CMessageBulletTrail() {
     }
 
-    public MessageBulletTrail(ProjectileEntity[] spawnedProjectiles, Gun.Projectile projectileProps, int shooterId, ParticleOptions particleData) {
+    public S2CMessageBulletTrail(ProjectileEntity[] spawnedProjectiles, Gun.Projectile projectileProps, int shooterId, ParticleOptions particleData) {
         this.positions = new Vec3[spawnedProjectiles.length];
         this.motions = new Vec3[spawnedProjectiles.length];
         this.entityIds = new int[spawnedProjectiles.length];
@@ -57,7 +53,7 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail> {
         this.particleData = particleData;
     }
 
-    public MessageBulletTrail(int[] entityIds, Vec3[] positions, Vec3[] motions, ItemStack item, int trailColor, double trailLengthMultiplier, int life, double gravity, int shooterId, boolean enchanted, ParticleOptions particleData) {
+    public S2CMessageBulletTrail(int[] entityIds, Vec3[] positions, Vec3[] motions, ItemStack item, int trailColor, double trailLengthMultiplier, int life, double gravity, int shooterId, boolean enchanted, ParticleOptions particleData) {
         this.entityIds = entityIds;
         this.positions = positions;
         this.motions = motions;
@@ -72,7 +68,7 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail> {
     }
 
     @Override
-    public void encode(MessageBulletTrail message, FriendlyByteBuf buffer) {
+    public void encode(S2CMessageBulletTrail message, FriendlyByteBuf buffer) {
         buffer.writeInt(message.entityIds.length);
         for (int i = 0; i < message.entityIds.length; i++) {
             buffer.writeInt(message.entityIds[i]);
@@ -91,7 +87,7 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail> {
     }
 
     @Override
-    public MessageBulletTrail decode(FriendlyByteBuf buffer) {
+    public S2CMessageBulletTrail decode(FriendlyByteBuf buffer) {
         int size = buffer.readInt();
         int[] entityIds = new int[size];
         Vec3[] positions = new Vec3[size];
@@ -111,7 +107,7 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail> {
         ParticleType<?> type = BuiltInRegistries.PARTICLE_TYPE.byId(buffer.readInt());
         if (type == null) type = ParticleTypes.CRIT;
         ParticleOptions particleData = this.readParticle(buffer, type);
-        return new MessageBulletTrail(entityIds, positions, motions, item, trailColor, trailLengthMultiplier, life, gravity, shooterId, enchanted, particleData);
+        return new S2CMessageBulletTrail(entityIds, positions, motions, item, trailColor, trailLengthMultiplier, life, gravity, shooterId, enchanted, particleData);
     }
 
     private <T extends ParticleOptions> T readParticle(FriendlyByteBuf buffer, ParticleType<T> type) {
@@ -119,7 +115,7 @@ public class MessageBulletTrail extends PlayMessage<MessageBulletTrail> {
     }
 
     @Override
-    public void handle(MessageBulletTrail message, MessageContext supplier) {
+    public void handle(S2CMessageBulletTrail message, MessageContext supplier) {
         supplier.execute((() -> ClientPlayHandler.handleMessageBulletTrail(message)));
         supplier.setHandled(true);
     }

@@ -56,7 +56,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
         float radius = (float) (laserRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
         float glowRadius = (float) (laserGlowRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
 
-        if (shooter == null) return;
+//        if (shooter == null) return;
 
         double distance = projectile.distance;
         int count = (int) Math.round(distance / offset);
@@ -140,7 +140,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
         float radius = (float) (laserRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
         float glowRadius = (float) (laserGlowRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
 
-        if (shooter == null) return;
+//        if (shooter == null) return;
 
         double distance = projectile.distance;
         int count = (int) Math.round(distance / offset);

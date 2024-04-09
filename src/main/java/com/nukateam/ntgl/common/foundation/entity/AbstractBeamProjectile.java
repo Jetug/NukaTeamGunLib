@@ -3,6 +3,9 @@ package com.nukateam.ntgl.common.foundation.entity;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.util.math.ExtendedEntityRayTraceResult;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.S2CMessageEntityData;
+import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -12,16 +15,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	public double distance = -1d;
 	public float laserPitch = 0.0f;
 	public float laserYaw = 0.0f;
 	public short maxTicks = 0;
-	
+
 	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn) {
 		super(entityType, worldIn);
 		life = 20;
@@ -49,7 +54,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	public Vec3 startVec = new Vec3(0 ,0 ,0);
 	public Vec3 endVec   = new Vec3(0 ,0 ,0);
 
-	protected void trace() {
+	public void trace() {
 		var startVec = new Vec3(this.getX(), this.getY(), this.getZ());
 		var endVec = startVec.add(this.getDeltaMovement());
 
@@ -101,6 +106,10 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		this.startVec  	= startVec;
 		this.endVec  	= endVec  ;
 
+		var tag = new CompoundTag();
+		addAdditionalSaveData(tag);
+		sendS2CData(tag);
+
 //		this.setPos(endVec);
 	}
 
@@ -110,20 +119,35 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	}
 
 	@Override
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+		var start = compound.getCompound("StartVec");
+		startVec = readVec(start);
+
+		var end = compound.getCompound("EndVec");
+		startVec = readVec(end);
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag compound) {
+		super.addAdditionalSaveData(compound);
+
+		var start = saveVec(startVec);
+		compound.put("StartVec", start);
+
+		var end = saveVec(endVec);
+		compound.put("EndVec", end);
+	}
+
+	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer) {
 		super.writeSpawnData(buffer);
 
-		var startPosTag = new CompoundTag();
-		startPosTag.putDouble("x", startVec.x);
-		startPosTag.putDouble("y", startVec.y);
-		startPosTag.putDouble("z", startVec.z);
-		buffer.writeNbt(startPosTag);
+		var start = saveVec(startVec);
+		buffer.writeNbt(start);
 
-		var endPosTag = new CompoundTag();
-		endPosTag.putDouble("x", endVec.x);
-		endPosTag.putDouble("y", endVec.y);
-		endPosTag.putDouble("z", endVec.z);
-		buffer.writeNbt(endPosTag);
+		var end = saveVec(endVec);
+		buffer.writeNbt(end);
 
 		buffer.writeDouble(this.distance);
 		buffer.writeFloat(this.laserPitch);
@@ -136,31 +160,33 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		super.readSpawnData(buffer);
 
 		var startPos = buffer.readNbt();
-		if(startPos != null) {
-			this.startVec = new Vec3(
-					startPos.getDouble("x"),
-					startPos.getDouble("y"),
-					startPos.getDouble("z"));
-		}
+		if(startPos != null) this.startVec = readVec(startPos);
 
 		var endPos = buffer.readNbt();
-		if(endPos != null) {
-			this.endVec = new Vec3(
-					endPos.getDouble("x"),
-					endPos.getDouble("y"),
-					endPos.getDouble("z"));
-		}
+		if(endPos != null) this.endVec = readVec(endPos);
 
 		this.distance = buffer.readDouble();
 		this.laserPitch = buffer.readFloat();
 		this.laserYaw = buffer.readFloat();
 		this.maxTicks = buffer.readShort();
 	}
-	
-//	@Override
-//	public AxisAlignedBB getRenderBoundingBox() { //TODO
-//		//Vec3 pos2 = new Vec3(0, 0, distance).rotatePitch(laserPitch).rotateYaw(laserYaw);
-//		Vec3 pos2 = new Vec3(this.motionX, this.motionY, this.motionZ).normalize().scale(distance);
-//		return new AxisAlignedBB(this.getX(), this.getY(), this.getZ(), this.getX()+pos2.z, this.getY() + pos2.y, this.getZ() + pos2.z);
-//	}
+
+	private CompoundTag saveVec(Vec3 vec) {
+		var start = new CompoundTag();
+		start.putDouble("x", vec.x);
+		start.putDouble("y", vec.y);
+		start.putDouble("z", vec.z);
+		return start;
+	}
+
+	private Vec3 readVec(CompoundTag tag) {
+		var x = tag.getDouble("x");
+		var y = tag.getDouble("y");
+		var z = tag.getDouble("z");
+		return new Vec3(x, y, z);
+	}
+
+	private void sendS2CData(CompoundTag data){
+		PacketHandler.getPlayChannel().sendToAll(new S2CMessageEntityData(this.getId(), data));
+	}
 }

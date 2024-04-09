@@ -497,7 +497,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void doImpactEffects(Vec3 hitVec) {}
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
         this.projectile = new Gun.Projectile();
         this.projectile.deserializeNBT(compound.getCompound("Projectile"));
         this.general = new Gun.General();
@@ -507,7 +507,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(CompoundTag compound) {
         compound.put("Projectile", this.projectile.serializeNBT());
         compound.put("General", this.general.serializeNBT());
         compound.putDouble("ModifiedGravity", this.modifiedGravity);

@@ -7,6 +7,7 @@ import com.nukateam.ntgl.client.data.handler.BulletTrailRenderingHandler;
 import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
+import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.ModParticleTypes;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.particles.BulletHoleData;
@@ -33,13 +34,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 /**
  * Author: MrCrayfish
  */
 public class ClientPlayHandler {
-    public static void handleMessageGunSound(MessageGunSound message) {
+    public static void handleMessageGunSound(S2CMessageGunSound message) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null)
             return;
@@ -67,7 +67,7 @@ public class ClientPlayHandler {
         }
     }
 
-    public static void handleMessageBulletTrail(MessageBulletTrail message) {
+    public static void handleMessageBulletTrail(S2CMessageBulletTrail message) {
         Level world = Minecraft.getInstance().level;
         if (world != null) {
             int[] entityIds = message.getEntityIds();
@@ -133,6 +133,17 @@ public class ClientPlayHandler {
             if (distance <= Config.CLIENT.sounds.impactSoundDistance.get()) {
                 world.playLocalSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 2.0F, 2.0F, false);
             }
+        }
+    }
+
+
+    public static void handleEntityData(S2CMessageEntityData message) {
+        Minecraft mc = Minecraft.getInstance();
+        Level level = mc.level;
+        if (level != null) {
+            var entity = level.getEntity(message.getEntityId());
+            if(entity instanceof ProjectileEntity projectile)
+                projectile.readAdditionalSaveData(message.getData());
         }
     }
 
