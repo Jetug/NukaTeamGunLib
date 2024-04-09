@@ -34,6 +34,7 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
         return LASER_TEXTURE;
     }
 
+    @Override
     public void render(LaserProjectile laserProjectile, float entityYaw, float partialTicks,
                         PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         var eyeHeight = laserProjectile.getEyeHeight();
@@ -78,118 +79,6 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
         }
         poseStack.popPose();
     }
-
-
-    public void render2(LaserProjectile laser, float entityYaw, float partialTicks,
-                        PoseStack poseStack2, MultiBufferSource bufferSource, int light) {
-        float distance = (float) laser.distance;
-        int maxTicks = laser.maxTicks;
-
-        var prog = ((float) laser.tickCount) / ((float) maxTicks);
-        var width = laserWidth * (Mth.sin(Mth.sqrt(prog) * Mth.PI)) * 2;
-        var distance_start = (float)Math.min(1.0d, distance);
-        var u = (distance / laserWidth) * 2.0f;
-
-        var poseStack = new PoseStack();
-        poseStack.translate(laser.getX(), laser.getY(), laser.getZ());
-
-//        GlStateManager.rotate(laser.laserYaw - 90F, 0.0F, 1.0F, 0.0F);
-//        GlStateManager.rotate(laser.laserPitch, 0.0F, 0.0F, 1.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(laser.laserYaw - 90F));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(laser.laserPitch));
-
-//        Tessellator tessellator = Tessellator.getInstance();
-//        BufferBuilder bufferbuilder = tessellator.getBuffer();
-
-        var vertexConsumer = bufferSource.getBuffer(RenderType.beaconBeam(getTextureLocation(laser), false));
-        float scale = 0.0125F;
-
-        poseStack.pushPose();
-        {
-            distance *= 80.0D;
-            distance_start *= 80.0D;
-
-            float rot_x = 45f + (prog * 180f);
-
-            poseStack.mulPose(Axis.XP.rotationDegrees(rot_x));
-//            GlStateManager.rotate(rot_x + 90f, 1.0F, 0.0F, 0.0F);
-            poseStack.scale(scale, scale, scale);
-
-            float brightness = (float) Math.sin(Math.sqrt(prog) * Math.PI);
-
-            var pose = poseStack.last();
-            var matrix4f = pose.pose();
-            var matrix3f = pose.normal();
-
-            if (distance > distance_start) { //Beam Segment
-                poseStack.pushPose();
-                for (int i = 0; i < 2; ++i) {
-//                    GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-                    poseStack.mulPose(Axis.XP.rotationDegrees(90f));
-//                    GlStateManager.glNormal3f(0.0F, 0.0F, scale); //????
-//                    bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-
-//                    pConsumer.vertex(pPose, pX, pY, pZ)
-//                            .color(pRed, pGreen, pBlue, pAlpha)
-//                            .uv(pU, pV)
-//                            .overlayCoords(OverlayTexture.NO_OVERLAY)
-//                            .uv2(15728880)
-//                            .normal(matrix3f, 0.0F, 1.0F, 0.0F)
-//                            .endVertex();
-
-                    vertexConsumer.vertex(matrix4f, distance, -width, 0.0F)
-                            .color(1.0f, 1.0f, 1.0f, brightness)
-                            .uv(u + prog, 0)
-                            .overlayCoords(OverlayTexture.NO_OVERLAY)
-                            .uv2(15728880)
-                            .normal(matrix3f, 0.0F, 1.0F, 0.0F)
-                            .endVertex();
-                    vertexConsumer.vertex(matrix4f, distance_start, -width, 0.0F)
-                            .color(1.0f, 1.0f, 1.0f, brightness)
-                            .uv(prog, 0)
-                            .overlayCoords(OverlayTexture.NO_OVERLAY)
-                            .uv2(15728880)
-                            .normal(matrix3f, 0.0F, 1.0F, 0.0F)
-                            .endVertex();
-                    vertexConsumer.vertex(matrix4f, distance_start, width, 0.0F)
-                            .color(1.0f, 1.0f, 1.0f, brightness)
-                            .uv(prog, 1)
-                            .overlayCoords(OverlayTexture.NO_OVERLAY)
-                            .uv2(15728880)
-                            .normal(matrix3f, 0.0F, 1.0F, 0.0F)
-                            .endVertex();
-                    vertexConsumer.vertex(matrix4f, distance, width, 0.0F)
-                            .color(1.0f, 1.0f, 1.0f, brightness)
-                            .uv(u + prog, 1).color(1.0f, 1.0f, 1.0f, brightness)
-                            .overlayCoords(OverlayTexture.NO_OVERLAY)
-                            .uv2(15728880)
-                            .normal(matrix3f, 0.0F, 1.0F, 0.0F)
-                            .endVertex();
-                }
-                poseStack.popPose();
-            }
-
-            poseStack.pushPose();
-//            renderManager.renderEngine.bindTexture(textureStart);
-
-//            for (int i = 0; i < 2; ++i) //Beam start segment
-//            {
-//                GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
-//                GlStateManager.glNormal3f(0.0F, 0.0F, scale); //????
-//
-//                bufferbuilder.begin(7, FefaultVertexFormats.POSITION_TEX_COLOR);
-//
-//                bufferbuilder.pos(distance_start, -width, 0.0F).tex(1, 0).color(1.0f, 1.0f, 1.0f, brightness).endVertex();
-//                bufferbuilder.pos(0, -width, 0.0F).tex(0, 0).color(1.0f, 1.0f, 1.0f, brightness).endVertex();
-//                bufferbuilder.pos(0, width, 0.0F).tex(0, 1).color(1.0f, 1.0f, 1.0f, brightness).endVertex();
-//                bufferbuilder.pos(distance_start, width, 0.0F).tex(1, 1).color(1.0f, 1.0f, 1.0f, brightness).endVertex();
-//            }
-
-            poseStack.popPose();
-        }
-        poseStack.popPose();
-    }
-
 
     public static void renderBeam(PoseStack pPoseStack, MultiBufferSource pBufferSource, ResourceLocation pBeamLocation,
                                   float pPartialTick, float pTextureScale, long pGameTime, float pYOffset, float pHeight,

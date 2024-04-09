@@ -1,0 +1,13 @@
+
+{
+  "type": "ntgl:workbench",
+  "materials": [
+    {
+      "tag": "forge:ingots/iron",
+      "count": 14
+    }
+  ],
+  "result": {
+    "item": "nukacraft:pistol10mm"
+  }
+}

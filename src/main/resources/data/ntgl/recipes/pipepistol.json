@@ -1,0 +1,12 @@
+{
+  "type": "nukacraft:workbench",
+  "materials": [
+    {
+      "item": "nukacraft:pipepistol",
+      "count": 3
+    }
+  ],
+  "result": {
+    "item": "nukacraft:pipepistol"
+  }
+}

@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.debug.screen;
 
+import com.mrcrayfish.configured.Reference;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.util.ScreenUtil;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
@@ -7,6 +8,7 @@ import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -27,7 +29,7 @@ import java.util.function.Supplier;
  * Author: MrCrayfish
  */
 public class EditorScreen extends Screen {
-    private static final ResourceLocation WINDOW_TEXTURE = new ResourceLocation(Ntgl.MOD_ID, "textures/gui/debug.png");
+    private static final ResourceLocation WINDOW_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/debug.png");
     private static final int WIDTH = 150;
 
     private final Screen parent;
@@ -52,9 +54,9 @@ public class EditorScreen extends Screen {
         this.windowLeft = 10;
         this.windowTop = (this.height - this.windowHeight) / 2;
 
-        this.addRenderableWidget(new Button(this.windowLeft + WIDTH - 12 - 4, this.windowTop + 4, 12, 12, Component.literal("<"), btn -> {
+        this.addRenderableWidget(Button.builder(Component.literal("<"), btn -> {
             Minecraft.getInstance().setScreen(this.parent);
-        }));
+        }).pos(this.windowLeft + WIDTH - 12 - 4, this.windowTop + 4).size(12, 12).build());
 
         this.list = new PropertyList();
         this.list.setRenderBackground(false);
@@ -70,12 +72,12 @@ public class EditorScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         this.drawHeader(this.windowLeft, this.windowTop, this.windowWidth);
         this.drawBody(this.windowLeft + 4, this.windowTop + 20, this.windowWidth - 8, this.windowHeight - 20); // Remove header height
-        this.list.render(poseStack, mouseX, mouseY, partialTicks);
-        super.render(poseStack, mouseX, mouseY, partialTicks);
-        Screen.drawString(poseStack, this.font, this.getTitle(), this.windowLeft + 5, this.windowTop + 6, 0xFFFFFF);
+        this.list.render(graphics, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTicks);
+        graphics.drawString(this.font, this.getTitle(), this.windowLeft + 5, this.windowTop + 6, 0xFFFFFF);
     }
 
     @Override
@@ -154,9 +156,9 @@ public class EditorScreen extends Screen {
         }
 
         @Override
-        public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             ScreenUtil.startScissor(this.x0, this.y0, this.x1 - this.x0, this.y1 - this.y0);
-            super.render(poseStack, mouseX, mouseY, partialTick);
+            super.render(graphics, mouseX, mouseY, partialTick);
             ScreenUtil.endScissor();
         }
     }
@@ -171,12 +173,12 @@ public class EditorScreen extends Screen {
         }
 
         @Override
-        public void render(PoseStack poseStack, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-            Screen.drawString(poseStack, EditorScreen.this.minecraft.font, this.label, left + 5, top, 0xFFFFFF);
-            this.widget.x = left;
-            this.widget.y = top + 10;
+        public void render(GuiGraphics graphics, int index, int top, int left, int rowWidth, int rowHeight, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+            graphics.drawString(EditorScreen.this.getMinecraft().font, this.label, left + 5, top, 0xFFFFFF);
+            this.widget.setX(left);
+            this.widget.setY(top + 10);
             this.widget.setWidth(rowWidth);
-            this.widget.render(poseStack, mouseX, mouseY, partialTicks);
+            this.widget.render(graphics, mouseX, mouseY, partialTicks);
         }
 
         @Override

@@ -19,12 +19,15 @@ import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import mod.azure.azurelib.AzureLib;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -38,6 +41,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import static com.nukateam.example.common.registery.ModGuns.*;
@@ -150,6 +154,8 @@ public class Ntgl {
         event.enqueueWork(ClientHandler::setup);
     }
 
+    private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder().add(Registries.DAMAGE_TYPE, ModDamageTypes::bootstrap);
+
     private void onGatherData(GatherDataEvent event) {
         var generator = event.getGenerator();
         var output = generator.getPackOutput();
@@ -163,5 +169,9 @@ public class Ntgl {
         generator.addProvider(event.includeServer(), new ItemTagGen(output, lookupProvider, blockTagGen.contentsGetter(), existingFileHelper));
 //        generator.addProvider(event.includeServer(), new LanguageGen(generator));
 //        generator.addProvider(event.includeServer(), new GunGen(generator));
+//        generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
+
+        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
+                output, event.getLookupProvider(), BUILDER, Set.of(Ntgl.MOD_ID)));
     }
 }
