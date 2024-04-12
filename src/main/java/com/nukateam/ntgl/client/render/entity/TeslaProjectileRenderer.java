@@ -52,18 +52,18 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
         var shooter = Minecraft.getInstance().level.getEntity(shooterId);
 
         float prog = ((float) projectile.tickCount) / ((float) projectile.getLife());
-
         float radius = (float) (laserRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
         float glowRadius = (float) (laserGlowRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
 
 //        if (shooter == null) return;
 
-        double distance = projectile.distance;
+        double distance = projectile.getDistance();
         int count = (int) Math.round(distance / offset);
 //        offset = (distance / (double) count);
 
-        var playerPos = projectile.endVec;
-        var laserPos = projectile.startVec;
+        var playerPos = projectile.getEndVec();
+        var laserPos = projectile.getStartVec();
+
 //        var shooter = Minecraft.getInstance().level.getEntity(projectile.getShooterId());
 //        var laserPos = shooter.position();
         var pos = playerPos.subtract(laserPos);
@@ -136,18 +136,17 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
         var shooter = Minecraft.getInstance().level.getEntity(shooterId);
 
         float prog = ((float) projectile.tickCount) / ((float) projectile.getLife());
-
         float radius = (float) (laserRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
         float glowRadius = (float) (laserGlowRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
 
 //        if (shooter == null) return;
 
-        double distance = projectile.distance;
-        int count = (int) Math.round(distance / offset);
+        var distance = projectile.getDistance();
+        var count = (int) Math.round(distance / offset);
 //        offset = (distance / (double) count);
 
-        var playerPos = projectile.endVec;
-        var laserPos = projectile.startVec;
+        var playerPos = projectile.getStartVec();
+        var laserPos = projectile.getEndVec();
 //        var shooter = Minecraft.getInstance().level.getEntity(projectile.getShooterId());
 //        var laserPos = shooter.position();
         var pos = playerPos.subtract(laserPos);

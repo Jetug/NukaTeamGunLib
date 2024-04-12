@@ -152,14 +152,12 @@ public class ClientPlayHandler {
     }
 
     public static void handleProjectileHitEntity(S2CMessageProjectileHitEntity message) {
-        Minecraft mc = Minecraft.getInstance();
-        Level world = mc.level;
-        if (world == null)
-            return;
+        var mc = Minecraft.getInstance();
+        var world = mc.level;
 
-        SoundEvent event = getHitSound(message.isCritical(), message.isHeadshot(), message.isPlayer());
-        if (event == null)
-            return;
+        if (world == null) return;
+        var event = getHitSound(message.isCritical(), message.isHeadshot(), message.isPlayer());
+        if (event == null) return;
 
         mc.getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F, 1.0F + world.random.nextFloat() * 0.2F));
     }

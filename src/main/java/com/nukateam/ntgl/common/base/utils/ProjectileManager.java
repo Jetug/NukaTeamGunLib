@@ -38,7 +38,7 @@ public class ProjectileManager {
         this.projectileFactoryMap.put(ForgeRegistries.ITEMS.getKey(ammo), factory);
     }
 
-    public IProjectileFactory getFactory(Gun.Projectile projectile) {
-        return this.projectileFactoryMap.getOrDefault(projectile.getItem(), this.DEFAULT_FACTORY);
+    public IProjectileFactory getFactory(ResourceLocation id) {
+        return this.projectileFactoryMap.getOrDefault(id, this.DEFAULT_FACTORY);
     }
 }

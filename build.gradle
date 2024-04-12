@@ -22,8 +22,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.19.2-1.0.2'
-version = "${mod_version}+-+${minecraft_version}"
+version = "${minecraft_version}-${mod_version}"
 
 group = 'com.nukateam.ntgl' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'ntgl'
@@ -162,7 +161,6 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
 
-    annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency

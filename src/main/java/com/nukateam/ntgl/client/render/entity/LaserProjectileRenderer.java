@@ -6,6 +6,8 @@ import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.LaserProjectile;
+import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.C2SRequestEntityData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -17,6 +19,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+
+import static com.nukateam.ntgl.common.foundation.entity.AbstractBeamProjectile.*;
 
 public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
@@ -35,35 +39,36 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     }
 
     @Override
-    public void render(LaserProjectile laserProjectile, float entityYaw, float partialTicks,
+    public void render(LaserProjectile projectile, float entityYaw, float partialTicks,
                         PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-        var eyeHeight = laserProjectile.getEyeHeight();
-        var shooterId = laserProjectile.getShooterId();
+//        PacketHandler.getPlayChannel().sendToServer(new C2SRequestEntityData(laserProjectile.getId()));
+        var eyeHeight = projectile.getEyeHeight();
+        var shooterId = projectile.getShooterId();
         var shooter = Minecraft.getInstance().level.getEntity(shooterId);
 
-        float prog = ((float) laserProjectile.tickCount) / ((float) laserProjectile.getLife());
+        float prog = ((float) projectile.tickCount) / ((float) projectile.getLife());
         float radius = (float) (laserRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
         float glowRadius = (float) (laserGlowRadius * (Math.sin(Math.sqrt(prog) * Math.PI)) * 2);
 
-//        if (shooter == null) return;
-
-//        laserProjectile.trace();
+        if (shooter == null) return;
 
         poseStack.pushPose();
         {
-            var playerPos = laserProjectile.endVec;
-            var laserPos = laserProjectile.startVec;
+            var playerPos = projectile.getEndVec();
+            var laserPos = projectile.getStartVec();
+
             var pos = playerPos.subtract(laserPos);
             var offsetX = 0.20f;
             var offsetY = 0.25f;
             var offsetZ = 0.07f;
-            var distance = (float)laserProjectile.distance - offsetY;
+//            var distance = projectile.distance - offsetY;
+            var distance = projectile.getDistance() - offsetY;
 
             pos = pos.normalize();
             float yPos = (float) Math.acos(pos.y);
             float xzPos = (float) Math.atan2(pos.z, pos.x);
 
-            var side = laserProjectile.isRightHand() ? -1 : 1;
+            var side = projectile.isRightHand() ? -1 : 1;
 
             poseStack.mulPose(Axis.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
             poseStack.mulPose(Axis.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
@@ -71,11 +76,11 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
             poseStack.translate(side * offsetX, offsetY, offsetZ);
 //            poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
-            long gameTime = laserProjectile.level().getGameTime();
-            int yOffset = 0; //(int) laserProjectile.position().y;
+            long gameTime = projectile.level().getGameTime();
+            int yOffset = 0; //(int) projectile.position().y;
             var color = new Rgba(1, 1, 1, 1);
 
-            renderBeam(poseStack, bufferSource, getTextureLocation(laserProjectile), partialTicks, 1.0F,
+            renderBeam(poseStack, bufferSource, getTextureLocation(projectile), partialTicks, 1.0F,
                     gameTime, (float) yOffset, distance, color, radius, glowRadius);
         }
         poseStack.popPose();

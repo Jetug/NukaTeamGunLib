@@ -75,7 +75,7 @@ public class Ntgl {
 //    public static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(com.nukateam.ntgl.Ntgl.MOD_ID);
 
     public Ntgl() {
-        AzureLib.initialize();
+//        AzureLib.initialize();
 
         ModGuns.register(MOD_EVENT_BUS);
         ModBlocks.register(MOD_EVENT_BUS);

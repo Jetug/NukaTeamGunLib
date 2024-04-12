@@ -1,4 +1,3 @@
-
 {
   "type": "ntgl:workbench",
   "materials": [
@@ -8,6 +7,6 @@
     }
   ],
   "result": {
-    "item": "nukacraft:pistol10mm"
+    "item": "ntgl:pistol10mm"
   }
 }

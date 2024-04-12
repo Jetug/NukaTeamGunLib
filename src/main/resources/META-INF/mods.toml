@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[40,)"
+loaderVersion="[46,)"
 license="LGPL 2.1"
 
 [[mods]]
@@ -31,7 +31,12 @@ mandatory=true
 versionRange="[0.6.16,)"
 ordering="NONE"
 side="BOTH"
-
+[[dependencies.ntgl]]
+modId="azurelib"
+mandatory=true
+versionRange="[2.0.20,)"
+ordering="AFTER"
+side="BOTH"
 [[dependencies.ntgl]]
 modId="controllable"
 mandatory=false
@@ -44,13 +49,6 @@ mandatory=false
 versionRange="[2.1.9,)"
 ordering="AFTER"
 side="BOTH"
-[[dependencies.ntgl]]
-modId="azurelib"
-mandatory=true
-versionRange="[2.0.20,)"
-ordering="AFTER"
-side="BOTH"
-
 [[dependencies.ntgl]]
 modId="jei"
 mandatory=false

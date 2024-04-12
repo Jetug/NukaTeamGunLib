@@ -8,10 +8,14 @@ import com.nukateam.ntgl.common.network.message.S2CMessageEntityData;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -21,11 +25,26 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import static net.minecraft.network.syncher.SynchedEntityData.*;
+
 public abstract class AbstractBeamProjectile extends ProjectileEntity {
-	public double distance = -1d;
-	public float laserPitch = 0.0f;
-	public float laserYaw = 0.0f;
-	public short maxTicks = 0;
+	protected float distance = -1f;
+	protected float laserPitch = 0.0f;
+	protected float laserYaw = 0.0f;
+	protected short maxTicks = 0;
+
+	protected Vec3 startVec = new Vec3(0 ,0 ,0);
+	protected Vec3 endVec   = new Vec3(0 ,0 ,0);
+
+	public static final EntityDataAccessor<Float> START_X = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
+	public static final EntityDataAccessor<Float> START_Y = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
+	public static final EntityDataAccessor<Float> START_Z = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
+
+	public static final EntityDataAccessor<Float> END_X = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
+	public static final EntityDataAccessor<Float> END_Y = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
+	public static final EntityDataAccessor<Float> END_Z = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
+
+	public static final EntityDataAccessor<Float> DISTANCE = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
 
 	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -39,6 +58,18 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	}
 
 	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		entityData.define(START_X, 0f);
+		entityData.define(START_Y, 0f);
+		entityData.define(START_Z, 0f);
+		entityData.define(END_X  , 0f);
+		entityData.define(END_Y  , 0f);
+		entityData.define(END_Z  , 0f);
+		entityData.define(DISTANCE  , 0f);
+	}
+
+	@Override
 	public void tick() {
 		if (this.tickCount >= this.life) {
 			if (this.isAlive()) {
@@ -47,12 +78,29 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 			this.remove(RemovalReason.KILLED);
 		}
 
+//		updateClient();
+
 //		super.tick();
 //		this.endVec = this.position().add(this.getDeltaMovement());
 	}
 
-	public Vec3 startVec = new Vec3(0 ,0 ,0);
-	public Vec3 endVec   = new Vec3(0 ,0 ,0);
+	public float getDistance() {
+		return getEntityData().get(DISTANCE);
+	}
+
+	public Vec3 getStartVec(){
+		var x = this.getEntityData().get(START_X);
+		var y = this.getEntityData().get(START_Y);
+		var z = this.getEntityData().get(START_Z);
+		return new Vec3(x, y, z);
+	}
+
+	public Vec3 getEndVec(){
+		var x= this.getEntityData().get(END_X);
+		var y= this.getEntityData().get(END_Y);
+		var z= this.getEntityData().get(END_Z);
+		return new Vec3(x, y, z);
+	}
 
 	public void trace() {
 		var startVec = new Vec3(this.getX(), this.getY(), this.getZ());
@@ -94,22 +142,27 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 
 			this.onHit(raytraceresult, startVec, endVec);
 			var hitVec = raytraceresult.getLocation();
-			distance = startVec.distanceTo(hitVec);
+			distance = (float) startVec.distanceTo(hitVec);
 		}
 
 		laserPitch = this.getXRot();
 		laserYaw = this.getYRot();
 		if (distance <= 0) {
-			distance = this.projectile.getSpeed();
+			distance = (float) this.projectile.getSpeed();
 		}
 
 		this.startVec  	= startVec;
 		this.endVec  	= endVec  ;
 
-		var tag = new CompoundTag();
-		addAdditionalSaveData(tag);
-		sendS2CData(tag);
+		this.entityData.set(START_X, (float)startVec.x);
+		this.entityData.set(START_Y, (float)startVec.y);
+		this.entityData.set(START_Z, (float)startVec.z);
 
+		this.entityData.set(END_X  , (float)endVec.x);
+		this.entityData.set(END_Y  , (float)endVec.y);
+		this.entityData.set(END_Z  , (float)endVec.z);
+
+		this.entityData.set(DISTANCE  , distance);
 //		this.setPos(endVec);
 	}
 
@@ -125,7 +178,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		startVec = readVec(start);
 
 		var end = compound.getCompound("EndVec");
-		startVec = readVec(end);
+		endVec = readVec(end);
 	}
 
 	@Override
@@ -149,7 +202,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		var end = saveVec(endVec);
 		buffer.writeNbt(end);
 
-		buffer.writeDouble(this.distance);
+		buffer.writeFloat(this.distance);
 		buffer.writeFloat(this.laserPitch);
 		buffer.writeFloat(this.laserYaw);
 		buffer.writeShort(this.maxTicks);
@@ -165,7 +218,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		var endPos = buffer.readNbt();
 		if(endPos != null) this.endVec = readVec(endPos);
 
-		this.distance = buffer.readDouble();
+		this.distance = buffer.readFloat();
 		this.laserPitch = buffer.readFloat();
 		this.laserYaw = buffer.readFloat();
 		this.maxTicks = buffer.readShort();
@@ -184,9 +237,5 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		var y = tag.getDouble("y");
 		var z = tag.getDouble("z");
 		return new Vec3(x, y, z);
-	}
-
-	private void sendS2CData(CompoundTag data){
-		PacketHandler.getPlayChannel().sendToAll(new S2CMessageEntityData(this.getId(), data));
 	}
 }

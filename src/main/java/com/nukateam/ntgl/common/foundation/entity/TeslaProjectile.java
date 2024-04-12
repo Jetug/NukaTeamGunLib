@@ -21,7 +21,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
     public static final float CHAIN_DAMAGE_FACTOR = 0.75f;
 //    private final float rotationPitch;
 //    private final float rotationYaw;
-    public long seed = 0;
+    protected long seed = 0;
 
     public float angle = getRandomAngle();
 
@@ -74,7 +74,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
         Vec3 tgt = new Vec3(target.getX(), target.getY() + target.getEyeHeight() * 0.5f, target.getZ());
         Vec3 dir = tgt.subtract(src).normalize();
 
-        this.distance = src.distanceTo(tgt);
+        this.distance = (float) src.distanceTo(tgt);
         this.laserPitch = (float) (Math.asin(-dir.y) * R2D);
         this.laserYaw = (float) (Math.atan2(dir.x, dir.z) * R2D);
 
@@ -91,7 +91,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
         trace();
 
         if (distance <= 0) {
-            distance = projectile.getSpeed();
+            distance = (float)projectile.getSpeed();
         }
 
 //        var raytraceresult = new EntityHitResult(target);

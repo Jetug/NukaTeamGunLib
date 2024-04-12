@@ -1,12 +1,12 @@
 {
-  "type": "nukacraft:workbench",
+  "type": "ntgl:workbench",
   "materials": [
     {
-      "item": "nukacraft:pipepistol",
+      "tag": "forge:ingots/iron",
       "count": 3
     }
   ],
   "result": {
-    "item": "nukacraft:pipepistol"
+    "item": "ntgl:pipepistol"
   }
 }

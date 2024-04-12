@@ -8,13 +8,13 @@ import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.base.utils.ShootTracker;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
 import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.data.util.StackUtils;
-import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
-import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.common.data.util.StackUtils;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
+import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
+import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
@@ -23,9 +23,9 @@ import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.IColored;
 import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
 import com.nukateam.ntgl.common.network.message.S2CMessageBulletTrail;
 import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
-import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -55,7 +55,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Predicate;
 
-import static com.nukateam.ntgl.client.data.handler.ShootingHandler.*;
+import static com.nukateam.ntgl.client.data.handler.ShootingHandler.COOLDOWN;
 //import static com.nukateam.guns.client.handler.ShootingHandler.gunCooldown;
 
 /**
@@ -86,7 +86,7 @@ public class ServerPlayHandler {
         if (heldItem.getItem() instanceof GunItem item
                 && (Gun.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
             var modifiedGun = item.getModifiedGun(heldItem);
-            var tag =  heldItem.getOrCreateTag();
+            var tag = heldItem.getOrCreateTag();
 
             if (modifiedGun != null) {
                 if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem)))
@@ -118,7 +118,7 @@ public class ServerPlayHandler {
                 var spawnedProjectiles = new ProjectileEntity[count];
 
                 for (int i = 0; i < count; i++) {
-                    var factory = ProjectileManager.getInstance().getFactory(projectileProps);
+                    var factory = ProjectileManager.getInstance().getFactory(projectileProps.getItem());
                     var projectileEntity = factory.create(world, shooter, heldItem, item, modifiedGun);
                     projectileEntity.setWeapon(heldItem);
                     projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
@@ -184,7 +184,7 @@ public class ServerPlayHandler {
                 rate = GunModifierHelper.getModifiedRate(heldItem, rate);
                 tag.putInt(COOLDOWN, rate);
 
-                if(shooter instanceof Player player)
+                if (shooter instanceof Player player)
                     player.awardStat(Stats.ITEM_USED.get(item));
             }
         } else {
@@ -257,7 +257,7 @@ public class ServerPlayHandler {
         var gunItem = (GunItem) stack.getItem();
         var gun = gunItem.getModifiedGun(stack);
 
-        if(gun.getProjectile().isMagazineMode())
+        if (gun.getProjectile().isMagazineMode())
             unloadMagazine(player, stack);
         else
             unloadAmmo(player, stack);
@@ -300,7 +300,7 @@ public class ServerPlayHandler {
             var tag = stack.getTag();
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
                 int count = tag.getInt(Tags.AMMO_COUNT);
-                if(count == 0) return;
+                if (count == 0) return;
 
                 tag.putInt(Tags.AMMO_COUNT, 0);
 
