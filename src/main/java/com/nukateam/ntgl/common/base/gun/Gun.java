@@ -44,7 +44,6 @@ import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.client.ClientHandler.*;
 
-
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected General general = new General();
     protected Projectile projectile = new Projectile();

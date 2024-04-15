@@ -46,17 +46,19 @@ public abstract class GunProvider implements DataProvider {
         this.registerGuns();
         this.gunMap.forEach((id, gun) ->
         {
-            Path path = this.generator.getOutputFolder().resolve("data/" + id.getNamespace() + "/guns/" + id.getPath() + ".json");
+            var path = this.generator.getOutputFolder().resolve("data/" + id.getNamespace() + "/guns/" + id.getPath() + ".json");
             try {
-                JsonObject object = gun.toJsonObject();
-                String rawJson = GSON.toJson(object);
-                String hash = SHA1.hashUnencodedChars(rawJson).toString();
+                var object = gun.toJsonObject();
+                var rawJson = GSON.toJson(object);
+                var hash = SHA1.hashUnencodedChars(rawJson).toString();
+
                 if (!Objects.equals(cache.getHash(path), hash) || !Files.exists(path)) {
                     Files.createDirectories(path.getParent());
-                    try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+                    try (var writer = Files.newBufferedWriter(path)) {
                         writer.write(rawJson);
                     }
                 }
+
                 cache.putNew(path, hash);
             } catch (IOException e) {
                 LOGGER.error("Couldn't save trades to {}", path, e);
