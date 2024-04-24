@@ -8,13 +8,15 @@
     "common.SittingPhaseMixin"
   ],
   "client": [
+    "client.GameRendererMixin",
     "client.ItemInHandLayerMixin",
     "client.ItemRendererMixin",
     "client.LevelRendererMixin",
     "client.LivingEntityModelMixin",
     "client.MinecraftMixin",
     "client.MinecraftStaticMixin",
-    "client.MouseHandlerMixin"
+    "client.MouseHandlerMixin",
+    "client.RenderTypeLookupMixin"
   ],
   "injectors": {
     "defaultRequire": 1
