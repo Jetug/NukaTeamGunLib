@@ -12,6 +12,7 @@
     "client.ItemRendererMixin",
     "client.LevelRendererMixin",
     "client.LivingEntityModelMixin",
+    "client.GameRendererMixin",
     "client.MinecraftMixin",
     "client.MinecraftStaticMixin",
     "client.MouseHandlerMixin",
