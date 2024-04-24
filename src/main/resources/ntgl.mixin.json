@@ -14,7 +14,8 @@
     "client.LivingEntityModelMixin",
     "client.MinecraftMixin",
     "client.MinecraftStaticMixin",
-    "client.MouseHandlerMixin"
+    "client.MouseHandlerMixin",
+    "client.RenderTypeLookupMixin"
   ],
   "injectors": {
     "defaultRequire": 1
