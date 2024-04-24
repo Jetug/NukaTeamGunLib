@@ -26,7 +26,7 @@ public class ProjectileRenderer extends EntityRenderer<ProjectileEntity> {
     public void render(ProjectileEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
                        MultiBufferSource renderTypeBuffer, int light) {
 
-        if (!entity.getProjectile().isVisible() || entity.tickCount <= 1)
+        if (!entity.isVisible() || entity.tickCount <= 1)
             return;
 
         poseStack.pushPose();

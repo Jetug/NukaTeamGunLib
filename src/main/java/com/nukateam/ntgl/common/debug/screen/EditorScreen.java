@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.debug.screen;
 
-import com.mrcrayfish.configured.Reference;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.util.ScreenUtil;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
@@ -29,7 +28,7 @@ import java.util.function.Supplier;
  * Author: MrCrayfish
  */
 public class EditorScreen extends Screen {
-    private static final ResourceLocation WINDOW_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/debug.png");
+    private static final ResourceLocation WINDOW_TEXTURE = new ResourceLocation(Ntgl.MOD_ID, "textures/gui/debug.png");
     private static final int WIDTH = 150;
 
     private final Screen parent;

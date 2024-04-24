@@ -19,8 +19,6 @@ public class TeslaProjectile extends AbstractBeamProjectile {
     public static final float CHAIN_RANGE = 8.0f;
     public static final int CHAIN_TARGETS = 4;
     public static final float CHAIN_DAMAGE_FACTOR = 0.75f;
-//    private final float rotationPitch;
-//    private final float rotationYaw;
     protected long seed = 0;
 
     public float angle = getRandomAngle();
@@ -46,11 +44,6 @@ public class TeslaProjectile extends AbstractBeamProjectile {
         this.chainTargets = chainTargets;
         this.entityType = entityType;
         trace();
-    }
-
-
-    public int getLife() {
-        return life;
     }
 
     public static final double D2R = Math.PI / 180.0;

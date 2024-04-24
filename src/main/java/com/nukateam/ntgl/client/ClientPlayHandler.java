@@ -138,12 +138,14 @@ public class ClientPlayHandler {
 
 
     public static void handleEntityData(S2CMessageEntityData message) {
-        Minecraft mc = Minecraft.getInstance();
-        Level level = mc.level;
+        var mc = Minecraft.getInstance();
+        var level = mc.level;
         if (level != null) {
             var entity = level.getEntity(message.getEntityId());
-            if(entity instanceof ProjectileEntity projectile)
+            if(entity instanceof ProjectileEntity projectile) {
                 projectile.readAdditionalSaveData(message.getData());
+                projectile.setClientUpdated();
+            }
         }
     }
 

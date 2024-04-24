@@ -34,6 +34,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -42,6 +43,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
@@ -75,6 +77,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     public static final EntityDataAccessor<Integer> SHOOTER = defineId(ProjectileEntity.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> LIFE    = defineId(ProjectileEntity.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Boolean> IS_RIGHT = defineId(ProjectileEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> IS_VISIBLE = defineId(ProjectileEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<String> ITEM = defineId(ProjectileEntity.class, EntityDataSerializers.STRING);
+
+    private boolean hasClientData = false;
 
     protected int shooterId;
     protected LivingEntity shooter;
@@ -91,6 +97,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn) {
         super(entityType, worldIn);
+//        requestServerData();
     }
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn, LivingEntity shooter,
@@ -110,18 +117,20 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         getEntityData().set(LIFE    , life);
         getEntityData().set(SHOOTER , shooterId);
         getEntityData().set(IS_RIGHT, isRightHand);
+        getEntityData().set(IS_VISIBLE, projectile.isVisible());
+        getEntityData().set(ITEM, projectile.getItem().toString());
 
         /* Get speed and set motion */
-        Vec3 dir = this.getDirection(shooter, weapon, item, modifiedGun);
-        double speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
-        double speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.getSpeed() * speedModifier);
+        var dir = this.getDirection(shooter, weapon, item, modifiedGun);
+        var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
+        var speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.getSpeed() * speedModifier);
         this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
 
         /* Spawn the projectile half way between the previous and current position */
-        double posX = shooter.xOld + (shooter.getX() - shooter.xOld) / 2.0;
-        double posY = shooter.yOld + (shooter.getY() - shooter.yOld) / 2.0 + shooter.getEyeHeight();
-        double posZ = shooter.zOld + (shooter.getZ() - shooter.zOld) / 2.0;
+        var posX = shooter.xOld + (shooter.getX() - shooter.xOld) / 2.0;
+        var posY = shooter.yOld + (shooter.getY() - shooter.yOld) / 2.0 + shooter.getEyeHeight();
+        var posZ = shooter.zOld + (shooter.getZ() - shooter.zOld) / 2.0;
         this.setPos(posX, posY, posZ);
 
         var ammo = ForgeRegistries.ITEMS.getValue(this.projectile.getItem());
@@ -130,13 +139,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             int customModelData = -1;
             if (weapon.getTag() != null) {
                 if (weapon.getTag().contains("Model", Tag.TAG_COMPOUND)) {
-                    ItemStack model = ItemStack.of(weapon.getTag().getCompound("Model"));
+                    var model = ItemStack.of(weapon.getTag().getCompound("Model"));
                     if (model.getTag() != null && model.getTag().contains("CustomModelData")) {
                         customModelData = model.getTag().getInt("CustomModelData");
                     }
                 }
             }
-            ItemStack ammoStack = new ItemStack(ammo);
+            var ammoStack = new ItemStack(ammo);
             if (customModelData != -1) {
                 ammoStack.getOrCreateTag().putInt("CustomModelData", customModelData);
             }
@@ -149,6 +158,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         entityData.define(SHOOTER, -1);
         entityData.define(LIFE, 0);
         entityData.define(IS_RIGHT, true);
+        entityData.define(IS_VISIBLE, false);
+        entityData.define(ITEM, "");
     }
 
     @Override
@@ -168,8 +179,22 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.ammoStack = item;
     }
 
-    public ItemStack getItem() {
-        return this.ammoStack;
+    public ItemStack getItem(){
+        if (!ammoStack.isEmpty())
+            return ammoStack;
+
+        var name = getEntityData().get(ITEM);
+        var item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(name));
+        return new ItemStack(item);
+    }
+
+    public boolean isRightHand() {
+        isRightHand = getEntityData().get(IS_RIGHT);
+        return isRightHand;
+    }
+
+    public boolean isVisible() {
+        return getEntityData().get(IS_VISIBLE);
     }
 
     public void setAdditionalDamage(float additionalDamage) {
@@ -185,6 +210,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         super.tick();
         this.updateHeading();
         this.onProjectileTick();
+
         if (shooter == null) {
             return;
         }
@@ -245,10 +271,21 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
+//    private void requestServerData(){
+//        if (level().isClientSide)
+//            PacketHandler.getPlayChannel().sendToServer(new C2SRequestEntityData(this.getId()));
+//    }
+
     public void updateClient() {
-        var tag = new CompoundTag();
-        addAdditionalSaveData(tag);
-        sendS2CData(tag);
+        if(!level().isClientSide) {
+            var tag = new CompoundTag();
+            addAdditionalSaveData(tag);
+            sendS2CData(tag);
+        }
+        else{
+            var i = 0;
+            var t = i;
+        }
     }
 
     @Override
@@ -333,11 +370,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return shooterId;
     }
 
-    public boolean isRightHand() {
-        isRightHand = getEntityData().get(IS_RIGHT);
-        return isRightHand;
-    }
-
     public float getDamage() {
         float initialDamage = (this.projectile.getDamage() + this.additionalDamage);
 
@@ -351,6 +383,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         damage = GunEnchantmentHelper.getAcceleratorDamage(this.weapon, damage);
 
         return Math.max(0F, damage);
+    }
+
+    public int getLife(){
+        return entityData.get(LIFE);
     }
 
     /**
@@ -769,6 +805,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             return p_217300_2_.apply(context);
         }
+    }
+
+    public boolean isClientUpdated() {
+        return hasClientData;
+    }
+
+    public void setClientUpdated() {
+        this.hasClientData = true;
     }
 
     /**

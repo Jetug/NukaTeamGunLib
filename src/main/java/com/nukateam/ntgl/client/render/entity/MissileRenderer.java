@@ -29,7 +29,7 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
 
     @Override
     public void render(MissileEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light) {
-        if (!entity.getProjectile().isVisible() || entity.tickCount <= 1) {
+        if (!entity.isVisible() || entity.tickCount <= 1) {
             return;
         }
 

@@ -41,7 +41,6 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     @Override
     public void render(LaserProjectile projectile, float entityYaw, float partialTicks,
                         PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-//        PacketHandler.getPlayChannel().sendToServer(new C2SRequestEntityData(laserProjectile.getId()));
         var eyeHeight = projectile.getEyeHeight();
         var shooterId = projectile.getShooterId();
         var shooter = Minecraft.getInstance().level.getEntity(shooterId);

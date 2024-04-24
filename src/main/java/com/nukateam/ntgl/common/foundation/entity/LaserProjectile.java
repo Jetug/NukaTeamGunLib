@@ -30,23 +30,6 @@ public class LaserProjectile extends AbstractBeamProjectile {
         trace();
     }
 
-    public int getLife(){
-        return life;
-    }
-
-    //    @Override
-//    protected void onProjectileTick() {
-//        if (this.level().isClientSide) {
-//            for (int i = 5; i > 0; i--) {
-//                this.level().addParticle(ParticleTypes.CLOUD, true, this.getX() - (this.getDeltaMovement().x() / i), this.getY() - (this.getDeltaMovement().y() / i), this.getZ() - (this.getDeltaMovement().z() / i), 0, 0, 0);
-//            }
-//            if (this.level().random.nextInt(2) == 0) {
-//                this.level().addParticle(ParticleTypes.SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-//                this.level().addParticle(ParticleTypes.FLAME, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-//            }
-//        }
-//    }
-
     public float getBlockFireChance(){
         return GROUND_FIRE_CHANCE;
     }
@@ -63,20 +46,20 @@ public class LaserProjectile extends AbstractBeamProjectile {
     }
 
     @Override
-    protected void onHitBlock(BlockState blockstate, BlockPos blockpos, Direction face, double x, double y, double z) {
-        super.onHitBlock(blockstate, blockpos, face, x, y, z);
+    protected void onHitBlock(BlockState blockState, BlockPos blockPos, Direction face, double x, double y, double z) {
+        super.onHitBlock(blockState, blockPos, face, x, y, z);
 
         if(random.nextFloat() <= getBlockFireChance()) {
-            if (!CampfireBlock.canLight(blockstate) && !CandleBlock.canLight(blockstate) && !CandleCakeBlock.canLight(blockstate)) {
-                var blockpos1 = blockpos.relative(face);
+            if (!CampfireBlock.canLight(blockState) && !CandleBlock.canLight(blockState) && !CandleCakeBlock.canLight(blockState)) {
+                var relativeBlockPos = blockPos.relative(face);
 
-                if (BaseFireBlock.canBePlacedAt(level(), blockpos1, face)) {
-                    var blockstate1 = BaseFireBlock.getState(level(), blockpos1);
-                    level().setBlock(blockpos1, blockstate1, 11);
+                if (BaseFireBlock.canBePlacedAt(level(), relativeBlockPos, face)) {
+                    var fireBlockState = BaseFireBlock.getState(level(), relativeBlockPos);
+                    level().setBlock(relativeBlockPos, fireBlockState, 11);
 
                 }
             } else {
-                level().setBlock(blockpos, blockstate.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)), 11);
+                level().setBlock(blockPos, blockState.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)), 11);
             }
         }
     }

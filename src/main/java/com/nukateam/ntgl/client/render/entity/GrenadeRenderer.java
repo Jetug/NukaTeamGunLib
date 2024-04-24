@@ -34,7 +34,7 @@ public class GrenadeRenderer extends EntityRenderer<GrenadeEntity> {
 
     @Override
     public void render(GrenadeEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light) {
-        if (!entity.getProjectile().isVisible() || entity.tickCount <= 1) return;
+        if (!entity.isVisible() || entity.tickCount <= 1) return;
 
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180F));
