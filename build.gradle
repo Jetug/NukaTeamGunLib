@@ -21,7 +21,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.18.2-1.0.2'
+version = '1.18.2-1.0.3'
 group = 'com.nukateam.ntgl' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'ntgl'
 
