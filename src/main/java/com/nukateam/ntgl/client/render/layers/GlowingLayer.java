@@ -41,9 +41,14 @@ public class GlowingLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {
         int overlay = OverlayTexture.NO_OVERLAY;
         RenderType renderTypeNew = RenderType.eyes(texture);
         poseStack.pushPose();
-        poseStack.scale(1.0F, 1.0F, 1.0F);
-        poseStack.translate(0.0, 0.0, 0.0);
-        this.getRenderer().reRender(bakedModel, poseStack, bufferSource, entity, renderTypeNew, bufferSource.getBuffer(renderTypeNew), partialTick, packedLight, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
+        {
+            poseStack.scale(1.0F, 1.0F, 1.0F);
+            poseStack.translate(0.0, 0.0, 0.0);
+            this.getRenderer().reRender(bakedModel, poseStack, bufferSource, entity,
+                    renderTypeNew, bufferSource.getBuffer(renderTypeNew),
+                    partialTick, packedLight, overlay,
+                    1.0F, 1.0F, 1.0F, 1.0F);
+        }
         poseStack.popPose();
     }
 }
