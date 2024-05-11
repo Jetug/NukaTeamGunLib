@@ -1,8 +1,8 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench",
 	"textures": {
-		"1": "ntgl:items/grenade",
-		"particle": "ntgl:items/grenade"
+		"1": "ntgl:item/grenade",
+		"particle": "ntgl:item/grenade"
 	},
 	"elements": [
 		{

@@ -1,8 +1,8 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
 	"textures": {
-		"1": "ntgl:items/silencer",
-		"particle": "ntgl:items/silencer"
+		"1": "ntgl:item/silencer",
+		"particle": "ntgl:item/silencer"
 	},
 	"elements": [
 		{

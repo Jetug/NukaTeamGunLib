@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"1": "ntgl:items/baseballgrenade",
-		"particle": "ntgl:items/baseballgrenade"
+		"1": "ntgl:item/baseballgrenade",
+		"particle": "ntgl:item/baseballgrenade"
 	},
 	"elements": [
 		{

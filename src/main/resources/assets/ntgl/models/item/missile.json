@@ -2,8 +2,8 @@
 	"credit": "Model by Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "ntgl:items/missile",
-		"particle": "ntgl:items/missile"
+		"0": "ntgl:item/missile",
+		"particle": "ntgl:item/missile"
 	},
 	"elements": [
 		{

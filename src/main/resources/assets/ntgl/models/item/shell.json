@@ -1,8 +1,8 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCraayfish) using Blockbench",
 	"textures": {
-		"1": "ntgl:items/shell",
-		"particle": "ntgl:items/shell"
+		"1": "ntgl:item/shell",
+		"particle": "ntgl:item/shell"
 	},
 	"elements": [
 		{
