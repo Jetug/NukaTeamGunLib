@@ -26,17 +26,14 @@ public class GlowingLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {
     public void render(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, RenderType renderType,
                        MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         if(size == null) this.size = getTextureSize(getRenderer().getTextureLocation(animatable));
-//        poseStack.translate(-0.5, -0.5, -0.5);
-
-        var model = getRenderer().getGeoModel();
-        var texture = appendToPath(model.getTextureResource(animatable), "_glowmask");
-        renderLayer(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, texture);
-
-//        if(model instanceof IGlowingModel glowingModel) {
-//            var TESLA_TEXTURE = glowingModel.getGlowingTextureResource(animatable);
-//            if (TESLA_TEXTURE != null)
-//                renderLayer(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, TESLA_TEXTURE);
-//        }
+        poseStack.pushPose();
+        {
+            poseStack.translate(-0.5, -0.5, -0.5);
+            var model = getRenderer().getGeoModel();
+            var texture = appendToPath(model.getTextureResource(animatable), "_glowmask");
+            renderLayer(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, texture);
+        }
+        poseStack.popPose();
     }
 
     protected void renderLayer(PoseStack poseStack, T entity, BakedGeoModel bakedModel, MultiBufferSource bufferSource,

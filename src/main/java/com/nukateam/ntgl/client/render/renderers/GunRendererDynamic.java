@@ -37,7 +37,7 @@ public class GunRendererDynamic extends GeoDynamicItemRenderer<GunItemAnimator> 
 
     public GunRendererDynamic() {
         super(new GeoGunModel<>(), GunItemAnimator::new);
-        addRenderLayer(new LocalPlayerSkinLayer<>(this));
+//        addRenderLayer(new LocalPlayerSkinLayer<>(this));
         addRenderLayer(new GlowingLayer<>(this));
     }
 

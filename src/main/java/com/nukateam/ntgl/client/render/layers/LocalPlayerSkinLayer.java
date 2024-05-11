@@ -27,15 +27,19 @@ public class LocalPlayerSkinLayer<T extends GeoAnimatable> extends GeoRenderLaye
     public void render(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, RenderType renderType,
                        MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         if(size == null) this.size = getTextureSize(getRenderer().getTextureLocation(animatable));
-        poseStack.translate(-0.5, -0.5, -0.5);
-        var player = Minecraft.getInstance().player;
-        if(player == null) return;
+        poseStack.pushPose();
+        {
+            poseStack.translate(-0.5, -0.5, -0.5);
+            var player = Minecraft.getInstance().player;
+            if (player == null) return;
 
-        var texture = Ntgl.SKIN_STORAGE.getSkin(player, size);
+            var texture = Ntgl.SKIN_STORAGE.getSkin(player, size);
 
-        if (texture != null) {
-            renderLayer(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, texture);
+            if (texture != null) {
+                renderLayer(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, texture);
+            }
         }
+        poseStack.popPose();
     }
 
     protected void renderLayer(PoseStack poseStack, T entity, BakedGeoModel bakedModel, MultiBufferSource bufferSource, float partialTick, int packedLight, ResourceLocation texture) {
