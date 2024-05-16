@@ -16,17 +16,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
-    @Unique
-    private DamageSource cgm$source;
+    private DamageSource source;
 
     @Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"))
     private void capture(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        this.cgm$source = source;
+        this.source = source;
     }
 
     @ModifyArg(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;knockback(DDD)V"), index = 0)
     private double modifyApplyKnockbackArgs(double original) {
-        if (this.cgm$source.getDirectEntity() instanceof ProjectileEntity) {
+        if (this.source.getDirectEntity() instanceof ProjectileEntity) {
             if (!Config.COMMON.gameplay.enableKnockback.get()) {
                 return 0;
             }
