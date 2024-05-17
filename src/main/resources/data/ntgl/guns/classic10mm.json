@@ -2,6 +2,8 @@
   "general": {
     "rate": 5,
     "gripType": "ntgl:one_handed",
+    "fireMode": "ntgl:semi",
+    "fireTimer": 20,
     "loadingType": "magazine",
     "maxAmmo": 6,
     "reloadTime": 40,

@@ -31,6 +31,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.nukateam.ntgl.common.data.util.GunModifierHelper.canRenderInOffhand;
 import static net.minecraftforge.event.TickEvent.Type.RENDER;
@@ -45,7 +46,7 @@ public class ShootingHandler {
     public static float shootMsGap = 0F;
 
     private final HashMap<Pair<HumanoidArm, LivingEntity>, Float> entityShootGaps = new HashMap<>();
-    private int fireTimer;
+//    private int fireTimer;
 
     public static ShootingHandler get() {
         if (instance == null) {
@@ -89,6 +90,11 @@ public class ShootingHandler {
             var heldItem = player.getMainHandItem();
 
             if (heldItem.getItem() instanceof GunItem gunItem) {
+                var data = shootingData.get(HumanoidArm.RIGHT);
+                var gun = gunItem.getModifiedGun(heldItem);
+                data.fireTimer = gun.getGeneral().getFireTimer();
+                data.gun = gunItem;
+
                 handleGunInput(event, heldItem, gunItem);
             }
         } else if (event.isUseItem()) {
@@ -177,6 +183,11 @@ public class ShootingHandler {
         } );
     }
 
+    private final Map<HumanoidArm, ShootingData> shootingData = Map.of(
+            HumanoidArm.RIGHT, new ShootingData(0, null),
+            HumanoidArm.LEFT, new ShootingData(0, null)
+    );
+
     @SubscribeEvent
     public void onPostClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END)
@@ -192,54 +203,61 @@ public class ShootingHandler {
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
 
-        if (mainHandItem.getItem() instanceof GunItem gunItem &&
-                mc.options.keyAttack.isDown()) {
-            handleAutoFire(player, mainHandItem, gunItem, HumanoidArm.RIGHT);
+        if (mainHandItem.getItem() instanceof GunItem gunItem){
+           if(mc.options.keyAttack.isDown())
+               handleAutoFire(player, mainHandItem, gunItem, HumanoidArm.RIGHT);
+//           else setupShootingData(mainHandItem, gunItem, HumanoidArm.RIGHT);
         }
 
-        if (offhandItem.getItem() instanceof GunItem gunItem &&
-                canRenderInOffhand(player) &&
-                mc.options.keyUse.isDown()) {
-            handleAutoFire(player, offhandItem, gunItem, HumanoidArm.LEFT);
+        if (offhandItem.getItem() instanceof GunItem gunItem && canRenderInOffhand(player)){
+            if(mc.options.keyUse.isDown())
+                handleAutoFire(player, offhandItem, gunItem, HumanoidArm.LEFT);
+//            else setupShootingData(mainHandItem, gunItem, HumanoidArm.LEFT);
         }
+    }
+
+    private void setupShootingData(ItemStack stack, GunItem gunItem, HumanoidArm arm) {
+        var data = shootingData.get(arm);
+        var gun = gunItem.getModifiedGun(stack);
+
+        if(gun.getGeneral().getFireMode() == FireMode.AUTOMATIC && gunItem == data.gun)
+            return;
+
+        data.fireTimer = gun.getGeneral().getFireTimer();
+        data.gun = gunItem;
     }
 
     private void handleAutoFire(LocalPlayer player, ItemStack heldItem, GunItem gunItem, HumanoidArm arm) {
         var mc = Minecraft.getInstance();
         var gun = gunItem.getModifiedGun(heldItem);
         var key = arm == HumanoidArm.RIGHT ? mc.options.keyAttack : mc.options.keyUse;
+        var data = shootingData.get(arm);
 
-        if (!KeyBinds.getShootMapping().isDown() && gun.getGeneral().getFireTimer() != 0) {
-            fireTimer = gun.getGeneral().getFireTimer();
-        }
-        if (KeyBinds.getShootMapping().isDown()) {
-            if (gun.getGeneral().getFireTimer() != 0) {
-                var isOnCooldown = ShootingHandler.get().isOnCooldown(player, arm);
+//        if (data.fireTimer == 0 && gun.getGeneral().getFireTimer() != 0) {
+//            data.fireTimer = gun.getGeneral().getFireTimer();
+//        }
+        if (gun.getGeneral().getFireTimer() != 0) {
+            var isOnCooldown = ShootingHandler.get().isOnCooldown(player, arm);
 
-                if (fireTimer > 0 && !isOnCooldown) {
-                    if (fireTimer == gun.getGeneral().getFireTimer() - 2) {
-                        PacketHandler.getPlayChannel().sendToServer(new C2SMessagePreFireSound(player));
-                    }
-                    // If the player is in water, reduce the preFiring in half
-                    if (player.isUnderWater()) {
-                        fireTimer--;
-                    }
-                    fireTimer--;
-                } else {
-                    // Execute after preFire timer ends
-                    this.fire(player, heldItem);
-//                    if (gun.getGeneral().getFireMode() == FireMode.SEMI_AUTO || gun.getGeneral().getFireMode() == FireMode.PULSE) {
-                    if (gun.getGeneral().getFireTimer() > 0) {
-                        if(gun.getGeneral().getFireMode() != FireMode.AUTOMATIC)
-                            key.setDown(false);
-                        fireTimer = gun.getGeneral().getFireTimer();
-                    }
+            if (data.fireTimer > 0 && !isOnCooldown) {
+                if (data.fireTimer == gun.getGeneral().getFireTimer() - 2) {
+                    PacketHandler.getPlayChannel().sendToServer(new C2SMessagePreFireSound(player));
                 }
+                data.fireTimer--;
             } else {
+                // Execute after preFire timer ends
                 this.fire(player, heldItem);
-                if (gun.getGeneral().getFireMode() == FireMode.SEMI_AUTO) {
-                    key.setDown(false);
+//                    if (gun.getGeneral().getFireMode() == FireMode.SEMI_AUTO || gun.getGeneral().getFireMode() == FireMode.PULSE) {
+                if (gun.getGeneral().getFireTimer() > 0) {
+                    if(gun.getGeneral().getFireMode() != FireMode.AUTOMATIC)
+                        key.setDown(false);
+//                    data.fireTimer = gun.getGeneral().getFireTimer();
                 }
+            }
+        } else {
+            this.fire(player, heldItem);
+            if (gun.getGeneral().getFireMode() == FireMode.SEMI_AUTO) {
+                key.setDown(false);
             }
         }
 
