@@ -90,11 +90,7 @@ public class ShootingHandler {
             var heldItem = player.getMainHandItem();
 
             if (heldItem.getItem() instanceof GunItem gunItem) {
-                var data = shootingData.get(HumanoidArm.RIGHT);
-                var gun = gunItem.getModifiedGun(heldItem);
-                data.fireTimer = gun.getGeneral().getFireTimer();
-                data.gun = gunItem;
-
+                setupShootingData(heldItem, gunItem, HumanoidArm.RIGHT);
                 handleGunInput(event, heldItem, gunItem);
             }
         } else if (event.isUseItem()) {
@@ -102,6 +98,7 @@ public class ShootingHandler {
             var offhandItem = player.getOffhandItem();
 
             if (offhandItem.getItem() instanceof GunItem gunItem && canRenderInOffhand(player)) {
+                setupShootingData(offhandItem, gunItem, HumanoidArm.LEFT);
                 handleGunInput(event, offhandItem, gunItem);
                 return;
             }
@@ -125,6 +122,13 @@ public class ShootingHandler {
                 }
             }
         }
+    }
+
+    private void setupShootingData(ItemStack stack, GunItem gunItem, HumanoidArm arm) {
+        var data = shootingData.get(arm);
+        var gun = gunItem.getModifiedGun(stack);
+        data.fireTimer = gun.getGeneral().getFireTimer();
+        data.gun = gunItem;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -214,17 +218,6 @@ public class ShootingHandler {
                 handleAutoFire(player, offhandItem, gunItem, HumanoidArm.LEFT);
 //            else setupShootingData(mainHandItem, gunItem, HumanoidArm.LEFT);
         }
-    }
-
-    private void setupShootingData(ItemStack stack, GunItem gunItem, HumanoidArm arm) {
-        var data = shootingData.get(arm);
-        var gun = gunItem.getModifiedGun(stack);
-
-        if(gun.getGeneral().getFireMode() == FireMode.AUTOMATIC && gunItem == data.gun)
-            return;
-
-        data.fireTimer = gun.getGeneral().getFireTimer();
-        data.gun = gunItem;
     }
 
     private void handleAutoFire(LocalPlayer player, ItemStack heldItem, GunItem gunItem, HumanoidArm arm) {
