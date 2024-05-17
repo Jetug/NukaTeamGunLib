@@ -76,6 +76,27 @@ public class ShootingHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onMouseClick(InputEvent.MouseButton event) {
+        var mc = Minecraft.getInstance();
+        var player = mc.player;
+        if (player == null)
+            return;
+
+        if(event.getAction() == mc.options.keyAttack.getKey().getValue()){
+            var heldItem = player.getMainHandItem();
+            if (heldItem.getItem() instanceof GunItem gunItem) {
+                setupShootingData(heldItem, gunItem, HumanoidArm.RIGHT);
+            }
+        }
+        if(event.getAction() == mc.options.keyUse.getKey().getValue()){
+            var heldItem = player.getOffhandItem();
+            if (heldItem.getItem() instanceof GunItem gunItem) {
+                setupShootingData(heldItem, gunItem, HumanoidArm.LEFT);
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onMouseClick(InputEvent.InteractionKeyMappingTriggered event) {
         if (event.isCanceled())
             return;
@@ -90,7 +111,7 @@ public class ShootingHandler {
             var heldItem = player.getMainHandItem();
 
             if (heldItem.getItem() instanceof GunItem gunItem) {
-                setupShootingData(heldItem, gunItem, HumanoidArm.RIGHT);
+//                setupShootingData(heldItem, gunItem, HumanoidArm.RIGHT);
                 handleGunInput(event, heldItem, gunItem);
             }
         } else if (event.isUseItem()) {
@@ -98,7 +119,7 @@ public class ShootingHandler {
             var offhandItem = player.getOffhandItem();
 
             if (offhandItem.getItem() instanceof GunItem gunItem && canRenderInOffhand(player)) {
-                setupShootingData(offhandItem, gunItem, HumanoidArm.LEFT);
+//                setupShootingData(offhandItem, gunItem, HumanoidArm.LEFT);
                 handleGunInput(event, offhandItem, gunItem);
                 return;
             }
@@ -188,8 +209,8 @@ public class ShootingHandler {
     }
 
     private final Map<HumanoidArm, ShootingData> shootingData = Map.of(
-            HumanoidArm.RIGHT, new ShootingData(0, null),
-            HumanoidArm.LEFT, new ShootingData(0, null)
+            HumanoidArm.RIGHT, new ShootingData(20, null),
+            HumanoidArm.LEFT, new ShootingData(20, null)
     );
 
     @SubscribeEvent
@@ -229,6 +250,7 @@ public class ShootingHandler {
 //        if (data.fireTimer == 0 && gun.getGeneral().getFireTimer() != 0) {
 //            data.fireTimer = gun.getGeneral().getFireTimer();
 //        }
+
         if (gun.getGeneral().getFireTimer() != 0) {
             var isOnCooldown = ShootingHandler.get().isOnCooldown(player, arm);
 
@@ -238,7 +260,6 @@ public class ShootingHandler {
                 }
                 data.fireTimer--;
             } else {
-                // Execute after preFire timer ends
                 this.fire(player, heldItem);
 //                    if (gun.getGeneral().getFireMode() == FireMode.SEMI_AUTO || gun.getGeneral().getFireMode() == FireMode.PULSE) {
                 if (gun.getGeneral().getFireTimer() > 0) {
@@ -249,12 +270,12 @@ public class ShootingHandler {
             }
         } else {
             this.fire(player, heldItem);
-            if (gun.getGeneral().getFireMode() == FireMode.SEMI_AUTO) {
+            if (gun.getGeneral().getFireMode() != FireMode.AUTOMATIC) {
                 key.setDown(false);
             }
         }
-
-//        if (gun.getGeneral().isAuto()) {
+//
+//        if (data.fireTimer == 0 && gun.getGeneral().isAuto()) {
 //            this.fire(player, heldItem);
 //        }
     }
@@ -400,6 +421,7 @@ public class ShootingHandler {
         var isMainHand = shooter.getMainHandItem() == heldItem;
         var hand = isMainHand ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
         var shootGap = entityShootGaps.getOrDefault(Pair.of(hand, shooter), 0f);
+        var data = shootingData.get(hand);
 
         if (shootGap <= 0F) {
             var gunItem = (GunItem) heldItem.getItem();

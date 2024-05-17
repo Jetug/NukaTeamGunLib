@@ -22,6 +22,7 @@
   },
   "sounds": {
     "fire": "ntgl:item.minigun.fire",
+    "preFire": "ntgl:item.pistol10mm.fire",
     "reload": "ntgl:item.pistol.reload",
     "enchantedFire": "ntgl:item.minigun.fire"
   }
