@@ -47,7 +47,7 @@ import static com.nukateam.ntgl.client.ClientHandler.*;
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected General general = new General();
     protected Projectile projectile = new Projectile();
-//    private Reloads reloads = new Reloads();
+    //    private Reloads reloads = new Reloads();
     protected Sounds sounds = new Sounds();
     protected Display display = new Display();
     protected Modules modules = new Modules();
@@ -141,25 +141,28 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         private boolean alwaysSpread;
         @Optional
         private float spread;
+        @Optional
+        private int fireTimer;
 
         @Override
         public CompoundTag serializeNBT() {
             CompoundTag tag = new CompoundTag();
-            tag.putBoolean  (AUTO, this.auto);
-            tag.putInt      (RATE, this.rate);
-            tag.putString   (GRIP_TYPE, this.gripType.getId().toString());
-            tag.putInt      (MAX_AMMO, this.maxAmmo);
-            tag.putInt      (RELOAD_SPEED, this.reloadAmount);
-            tag.putInt      (RELOAD_TIME, this.reloadTime);
-            tag.putString   (LOADING_TYPE, this.loadingType);
-            tag.putString   (CATEGORY, this.category);
-            tag.putFloat    (RECOIL_ANGLE, this.recoilAngle);
-            tag.putFloat    (RECOIL_KICK, this.recoilKick);
-            tag.putFloat    (RECOIL_DURATION_OFFSET, this.recoilDurationOffset);
-            tag.putFloat    (RECOIL_ADS_REDUCTION, this.recoilAdsReduction);
-            tag.putInt      (PROJECTILE_AMOUNT, this.projectileAmount);
-            tag.putFloat    (SPREAD, this.spread);
-            tag.putBoolean  (ALWAYS_SPREAD, this.alwaysSpread);
+            tag.putBoolean(AUTO, this.auto);
+            tag.putInt(RATE, this.rate);
+            tag.putInt("FireTimer", this.fireTimer);
+            tag.putString(GRIP_TYPE, this.gripType.getId().toString());
+            tag.putInt(MAX_AMMO, this.maxAmmo);
+            tag.putInt(RELOAD_SPEED, this.reloadAmount);
+            tag.putInt(RELOAD_TIME, this.reloadTime);
+            tag.putString(LOADING_TYPE, this.loadingType);
+            tag.putString(CATEGORY, this.category);
+            tag.putFloat(RECOIL_ANGLE, this.recoilAngle);
+            tag.putFloat(RECOIL_KICK, this.recoilKick);
+            tag.putFloat(RECOIL_DURATION_OFFSET, this.recoilDurationOffset);
+            tag.putFloat(RECOIL_ADS_REDUCTION, this.recoilAdsReduction);
+            tag.putInt(PROJECTILE_AMOUNT, this.projectileAmount);
+            tag.putFloat(SPREAD, this.spread);
+            tag.putBoolean(ALWAYS_SPREAD, this.alwaysSpread);
             return tag;
         }
 
@@ -170,6 +173,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
             if (tag.contains(RATE, Tag.TAG_ANY_NUMERIC)) {
                 this.rate = tag.getInt(RATE);
+            }
+            if (tag.contains("FireTimer", Tag.TAG_ANY_NUMERIC)) {
+                this.fireTimer = tag.getInt("FireTimer");
             }
             if (tag.contains(GRIP_TYPE, Tag.TAG_STRING)) {
                 this.gripType = GripType.getType(ResourceLocation.tryParse(tag.getString(GRIP_TYPE)));
@@ -227,11 +233,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             JsonObject object = new JsonObject();
             if (this.auto) object.addProperty("auto", true);
             object.addProperty("rate", this.rate);
+            if (this.fireTimer != 0) object.addProperty("fireTimer", this.fireTimer);
             object.addProperty("gripType", this.gripType.getId().toString());
             object.addProperty("maxAmmo", this.maxAmmo);
             if (this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
             if (this.reloadTime != 1) object.addProperty("reloadTime", this.reloadTime);
-            if (this.loadingType.equals(MAGAZINE) || this.loadingType.equals(PER_CARTRIDGE)) object.addProperty("loadingType", this.loadingType);
+            if (this.loadingType.equals(MAGAZINE) || this.loadingType.equals(PER_CARTRIDGE))
+                object.addProperty("loadingType", this.loadingType);
             if (this.recoilAngle != 0.0F) object.addProperty("recoilAngle", this.recoilAngle);
             if (this.recoilKick != 0.0F) object.addProperty("recoilKick", this.recoilKick);
             if (this.recoilDurationOffset != 0.0F)
@@ -250,6 +258,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             General general = new General();
             general.auto = this.auto;
             general.rate = this.rate;
+            general.fireTimer = this.fireTimer;
             general.gripType = this.gripType;
             general.maxAmmo = this.maxAmmo;
             general.reloadAmount = this.reloadAmount;
@@ -281,6 +290,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
 
         /**
+         * @return The timer before firing
+         */
+        public int getFireTimer() {
+            return this.fireTimer;
+        }
+
+
+        /**
          * @return The type of grip this weapon uses
          */
         public GripType getGripType() {
@@ -291,10 +308,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
          * @return The maximum amount of ammo this weapon can hold
          */
         public int getMaxAmmo(@Nullable ItemStack gunStack) {
-            if(gunStack != null && gunStack.getItem() instanceof GunItem gunItem) {
+            if (gunStack != null && gunStack.getItem() instanceof GunItem gunItem) {
                 var gun = gunItem.getModifiedGun(gunStack);
 
-                if(gun.getProjectile().isMagazineMode()) {
+                if (gun.getProjectile().isMagazineMode()) {
                     var id = gun.getProjectile().getItem();
                     var item = ForgeRegistries.ITEMS.getValue(id);
 
@@ -304,6 +321,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
             return this.maxAmmo;
         }
+
         /**
          * @return The amount of ammo to add to the weapon each reload cycle
          */
@@ -382,6 +400,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public float getSpread() {
             return this.spread;
         }
+
+
     }
 
     public static class Projectile implements INBTSerializable<CompoundTag> {
@@ -1419,14 +1439,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         for (int i = 0; i < player.getInventory().getContainerSize(); ++i) {
             ItemStack stack = player.getInventory().getItem(i);
             if (isAmmo(stack, id)) {
-                if(stack.getDamageValue() == 0)
+                if (stack.getDamageValue() == 0)
                     return new AmmoContext(stack, player.getInventory());
                 if (ammo == null || (stack.getDamageValue() < ammo.getDamageValue() && ammo.getDamageValue() < ammo.getMaxDamage()))
                     ammo = stack;
             }
         }
 
-        if(ammo != null) return new AmmoContext(ammo, player.getInventory());
+        if (ammo != null) return new AmmoContext(ammo, player.getInventory());
 
         if (Ntgl.backpackedLoaded) {
             return BackpackHelper.findMagazine(player, id);
@@ -1445,7 +1465,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static void fillAmmo(ItemStack gunStack) {
-        if(gunStack.getItem() instanceof GunItem gunItem){
+        if (gunStack.getItem() instanceof GunItem gunItem) {
             var tag = gunStack.getOrCreateTag();
             var maxAmmo = gunItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo(gunStack);
             tag.putInt(Tags.AMMO_COUNT, maxAmmo);
@@ -1612,32 +1632,27 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this;
         }
 
-        public Builder setFireSound(SoundEvent sound)
-        {
+        public Builder setFireSound(SoundEvent sound) {
             this.gun.sounds.fire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 
-        public Builder setReloadSound(SoundEvent sound)
-        {
+        public Builder setReloadSound(SoundEvent sound) {
             this.gun.sounds.reload = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 
-        public Builder setCockSound(SoundEvent sound)
-        {
+        public Builder setCockSound(SoundEvent sound) {
             this.gun.sounds.cock = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 
-        public Builder setSilencedFireSound(SoundEvent sound)
-        {
+        public Builder setSilencedFireSound(SoundEvent sound) {
             this.gun.sounds.silencedFire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
 
-        public Builder setEnchantedFireSound(SoundEvent sound)
-        {
+        public Builder setEnchantedFireSound(SoundEvent sound) {
             this.gun.sounds.enchantedFire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
             return this;
         }
