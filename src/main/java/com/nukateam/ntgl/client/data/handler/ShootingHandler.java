@@ -230,7 +230,8 @@ public class ShootingHandler {
                     this.fire(player, heldItem);
 //                    if (gun.getGeneral().getFireMode() == FireMode.SEMI_AUTO || gun.getGeneral().getFireMode() == FireMode.PULSE) {
                     if (gun.getGeneral().getFireTimer() > 0) {
-                        key.setDown(false);
+                        if(gun.getGeneral().getFireMode() != FireMode.AUTOMATIC)
+                            key.setDown(false);
                         fireTimer = gun.getGeneral().getFireTimer();
                     }
                 }
