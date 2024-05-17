@@ -2,33 +2,32 @@ package com.nukateam.ntgl;
 
 import com.mojang.logging.LogUtils;
 import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
+import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.MetaLoader;
 import com.nukateam.ntgl.client.data.handler.CrosshairHandler;
-import com.nukateam.ntgl.client.data.util.skin.PlayerSkinStorage;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
-import com.nukateam.ntgl.common.data.datagen.*;
+import com.nukateam.ntgl.common.data.datagen.BlockTagGen;
+import com.nukateam.ntgl.common.data.datagen.ItemTagGen;
+import com.nukateam.ntgl.common.data.datagen.LootTableGen;
 import com.nukateam.ntgl.common.foundation.ModBlocks;
-import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
-import com.nukateam.ntgl.common.foundation.entity.*;
+import com.nukateam.ntgl.common.foundation.entity.FlameProjectile;
+import com.nukateam.ntgl.common.foundation.entity.GrenadeEntity;
+import com.nukateam.ntgl.common.foundation.entity.LaserProjectile;
+import com.nukateam.ntgl.common.foundation.entity.TeslaProjectile;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import mod.azure.azurelib.AzureLib;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -42,7 +41,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 import static com.nukateam.example.common.registery.ModGuns.*;
 
@@ -51,7 +49,6 @@ public class Ntgl {
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final String MOD_ID = "ntgl";
     public static final IEventBus MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
-    public static final PlayerSkinStorage SKIN_STORAGE = PlayerSkinStorage.INSTANCE;
 
 
 //    public Ntgl() {
@@ -139,15 +136,15 @@ public class Ntgl {
 
         ProjectileManager.getInstance().registerFactory(ROUND10MM.get(),
                 (worldIn, entity, weapon, item, modifiedGun) ->
-                      new LaserProjectile(Projectiles.LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
+                        new LaserProjectile(Projectiles.LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
 
         ProjectileManager.getInstance().registerFactory(ROUND45.get(),
                 (worldIn, entity, weapon, item, modifiedGun) ->
-                      new TeslaProjectile(Projectiles.TESLA_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
+                        new TeslaProjectile(Projectiles.TESLA_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
 
         ProjectileManager.getInstance().registerFactory(ROUND5MM.get(),
                 (worldIn, entity, weapon, item, modifiedGun) ->
-                      new FlameProjectile(Projectiles.FLAME_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
+                        new FlameProjectile(Projectiles.FLAME_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {

@@ -6,7 +6,6 @@ import com.mojang.math.Axis;
 import com.nukateam.ntgl.client.animators.GunItemAnimator;
 import com.nukateam.ntgl.client.model.GeoGunModel;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
-import com.nukateam.ntgl.client.render.layers.LocalPlayerSkinLayer;
 import com.nukateam.ntgl.Ntgl;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.util.ClientUtils;
