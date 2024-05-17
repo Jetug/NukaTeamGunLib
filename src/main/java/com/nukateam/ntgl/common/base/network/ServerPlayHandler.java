@@ -23,6 +23,7 @@ import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.IColored;
 import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.C2SMessagePreFireSound;
 import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
 import com.nukateam.ntgl.common.network.message.S2CMessageBulletTrail;
 import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
@@ -55,7 +56,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Predicate;
 
-import static com.nukateam.ntgl.client.data.handler.ShootingHandler.COOLDOWN;
+import static com.nukateam.ntgl.client.data.handler.ShootingHandler.*;
 //import static com.nukateam.guns.client.handler.ShootingHandler.gunCooldown;
 
 /**
@@ -192,6 +193,25 @@ public class ServerPlayHandler {
         }
     }
 
+    public static void handlePreFireSound(C2SMessagePreFireSound message, ServerPlayer player) {
+        Level world = player.level();
+        ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
+        if (heldItem.getItem() instanceof GunItem item && (Gun.hasAmmo(heldItem) || player.isCreative())) {
+            Gun modifiedGun = item.getModifiedGun(heldItem);
+            ResourceLocation fireSound = getPreFireSound(heldItem, modifiedGun);
+            if (fireSound != null) {
+                double posX = player.getX();
+                double posY = player.getY() + player.getEyeHeight();
+                double posZ = player.getZ();
+                float volume = GunModifierHelper.getFireSoundVolume(heldItem);
+                float pitch = 0.9F + world.random.nextFloat() * 0.2F;
+                double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.SERVER.gunShotMaxDistance.get());
+                S2CMessageGunSound messageSound = new S2CMessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getId(), false, false);
+                PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(player.level(), posX, posY, posZ, radius), messageSound);
+            }
+        }
+    }
+
     private static ResourceLocation getFireSound(ItemStack stack, Gun modifiedGun) {
         ResourceLocation fireSound = null;
         if (GunModifierHelper.isSilencedFire(stack)) {
@@ -203,6 +223,10 @@ public class ServerPlayHandler {
             return fireSound;
         }
         return modifiedGun.getSounds().getFire();
+    }
+
+    private static ResourceLocation getPreFireSound(ItemStack stack, Gun modifiedGun) {
+        return modifiedGun.getSounds().getPreFire();
     }
 
     /**

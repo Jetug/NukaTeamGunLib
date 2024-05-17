@@ -113,6 +113,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public static final String PER_CARTRIDGE = "per_cartridge";
         public static final String CATEGORY = "category";
 
+        @Ignored
+        private FireMode fireMode = FireMode.SEMI_AUTO;
         @Optional
         private boolean auto = false;
         private int rate;
@@ -150,6 +152,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             tag.putBoolean(AUTO, this.auto);
             tag.putInt(RATE, this.rate);
             tag.putInt("FireTimer", this.fireTimer);
+            tag.putString("FireMode", this.fireMode.getId().toString());
             tag.putString(GRIP_TYPE, this.gripType.getId().toString());
             tag.putInt(MAX_AMMO, this.maxAmmo);
             tag.putInt(RELOAD_SPEED, this.reloadAmount);
@@ -168,6 +171,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         @Override
         public void deserializeNBT(CompoundTag tag) {
+            if (tag.contains("FireMode", Tag.TAG_STRING)) {
+                this.fireMode = FireMode.getType(ResourceLocation.tryParse(tag.getString("FireMode")));
+            }
             if (tag.contains(AUTO, Tag.TAG_ANY_NUMERIC)) {
                 this.auto = tag.getBoolean(AUTO);
             }
@@ -234,6 +240,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (this.auto) object.addProperty("auto", true);
             object.addProperty("rate", this.rate);
             if (this.fireTimer != 0) object.addProperty("fireTimer", this.fireTimer);
+            object.addProperty("fireMode", this.fireMode.getId().toString());
             object.addProperty("gripType", this.gripType.getId().toString());
             object.addProperty("maxAmmo", this.maxAmmo);
             if (this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
@@ -256,6 +263,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
          */
         public General copy() {
             General general = new General();
+            general.fireMode = this.fireMode;
             general.auto = this.auto;
             general.rate = this.rate;
             general.fireTimer = this.fireTimer;
@@ -273,6 +281,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             general.alwaysSpread = this.alwaysSpread;
             general.spread = this.spread;
             return general;
+        }
+
+        /**
+         * @return The type of grip this weapon uses
+         */
+        public FireMode getFireMode() {
+            return this.fireMode;
         }
 
         /**
@@ -400,8 +415,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public float getSpread() {
             return this.spread;
         }
-
-
     }
 
     public static class Projectile implements INBTSerializable<CompoundTag> {
@@ -607,6 +620,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Optional
         @Nullable
         private ResourceLocation enchantedFire;
+        @Optional
+        @Nullable
+        private ResourceLocation preFire;
 
         @Override
         public CompoundTag serializeNBT() {
@@ -625,6 +641,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
             if (this.enchantedFire != null) {
                 tag.putString("EnchantedFire", this.enchantedFire.toString());
+            }
+            if (this.preFire != null) {
+                tag.putString("PreFire", this.preFire.toString());
             }
             return tag;
         }
@@ -646,6 +665,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (tag.contains("EnchantedFire", Tag.TAG_STRING)) {
                 this.enchantedFire = this.createSound(tag, "EnchantedFire");
             }
+            if (tag.contains("PreFire", Tag.TAG_STRING)) {
+                this.preFire = this.createSound(tag, "PreFire");
+            }
         }
 
         public JsonObject toJsonObject() {
@@ -665,6 +687,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (this.enchantedFire != null) {
                 object.addProperty("enchantedFire", this.enchantedFire.toString());
             }
+            if (this.preFire != null) {
+                object.addProperty("preFire", this.preFire.toString());
+            }
             return object;
         }
 
@@ -675,6 +700,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             sounds.cock = this.cock;
             sounds.silencedFire = this.silencedFire;
             sounds.enchantedFire = this.enchantedFire;
+            sounds.preFire = this.preFire;
             return sounds;
         }
 
@@ -722,6 +748,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Nullable
         public ResourceLocation getEnchantedFire() {
             return this.enchantedFire;
+        }
+        @Nullable
+        public ResourceLocation getPreFire() {
+            return this.preFire;
         }
     }
 

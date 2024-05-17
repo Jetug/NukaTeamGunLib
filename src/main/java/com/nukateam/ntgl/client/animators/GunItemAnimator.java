@@ -34,7 +34,6 @@ import static com.nukateam.ntgl.client.render.Render.*;
 import static mod.azure.azurelib.core.animation.AnimatableManager.*;
 import static mod.azure.azurelib.core.animation.Animation.LoopType.*;
 import static mod.azure.azurelib.core.animation.RawAnimation.*;
-import static net.minecraft.client.renderer.block.model.ItemTransforms.*;
 
 @OnlyIn(Dist.CLIENT)
 public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
@@ -167,7 +166,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
             if (!isHandTransform(transformType)) return PlayState.STOP;
 
             var arm = isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
-            var cooldown = ShootingHandler.get().getCooldownRight(entity, arm);
+            var cooldown = ShootingHandler.get().getCooldown(entity, arm);
             var isShooting = ShootingHandler.get().isShooting(entity, arm);
 
             RawAnimation animation = null;

@@ -3,6 +3,8 @@
     "auto": true,
     "rate": 2,
     "gripType": "ntgl:mini_gun",
+    "fireMode": "ntgl:auto",
+    "fireTimer": 20,
     "category": "heavy",
     "maxAmmo": 100,
     "reloadTime": 80,
