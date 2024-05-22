@@ -4,10 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.client.animators.GunItemAnimator;
+import com.nukateam.ntgl.client.animators.ItemAnimator;
 import com.nukateam.ntgl.client.model.GeoGunModel;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.Ntgl;
 import mod.azure.azurelib.cache.object.GeoBone;
+import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.util.ClientUtils;
 import mod.azure.azurelib.util.RenderUtils;
 import net.minecraft.client.Minecraft;
@@ -21,11 +23,12 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import static com.nukateam.ntgl.client.event.InputEvents.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import static net.minecraft.world.item.ItemDisplayContext.*;
 
-public class GunRendererDynamic extends GeoDynamicItemRenderer<GunItemAnimator> {
-    public static final int PACKED_OVERLAY = 15728880;
+public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRenderer<T> {
     public static final String RIGHT_ARM = "right_arm";
     public static final String LEFT_ARM = "left_arm";
     private ItemDisplayContext transformType;
@@ -34,9 +37,8 @@ public class GunRendererDynamic extends GeoDynamicItemRenderer<GunItemAnimator> 
     private boolean renderHands = false;
     protected LivingEntity buffEntity = null;
 
-    public GunRendererDynamic() {
-        super(new GeoGunModel<>(), GunItemAnimator::new);
-//        addRenderLayer(new LocalPlayerSkinLayer<>(this));
+    public DynamicGunRenderer(GeoModel<T> model, BiFunction<ItemDisplayContext, GeoDynamicItemRenderer<T>, T> animatorFactory) {
+        super(model, animatorFactory);
         addRenderLayer(new GlowingLayer<>(this));
     }
 
@@ -93,14 +95,14 @@ public class GunRendererDynamic extends GeoDynamicItemRenderer<GunItemAnimator> 
             }
         }
 
-        renderAttachments(stack, getRenderItem(entity, transformType));
+//        renderAttachments(stack, getRenderItem(entity, transformType));
 
         super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
 //        poseStack.popPose();
     }
 
     @Override
-    public void renderRecursively(PoseStack poseStack, GunItemAnimator animatable, GeoBone bone, RenderType renderType,
+    public void renderRecursively(PoseStack poseStack, T animatable, GeoBone bone, RenderType renderType,
                                   MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
                                   int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 //        if(bone.getName().equals(RIGHT_ARM) || bone.getName().equals(LEFT_ARM)){

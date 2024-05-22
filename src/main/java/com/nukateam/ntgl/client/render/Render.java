@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.render;
 
-import com.nukateam.ntgl.client.render.renderers.GunRendererDynamic;
+import com.nukateam.ntgl.client.render.renderers.*;
 
 public class Render {
-    public static final GunRendererDynamic GUN_RENDERER = new GunRendererDynamic();
+    public static final DefaultGunRenderer GUN_RENDERER = new DefaultGunRenderer();
 }

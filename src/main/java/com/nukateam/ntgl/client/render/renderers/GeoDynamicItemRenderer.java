@@ -22,17 +22,18 @@ import org.joml.Matrix4f;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 
 public class GeoDynamicItemRenderer<T extends ItemAnimator> extends GeoObjectRenderer<T> {
     private final Map<LivingEntity, Map<ItemDisplayContext, T>> animatorsByTransform = new HashMap<>();
-    private final Function<ItemDisplayContext, T> animatorFactory;
+    private final BiFunction<ItemDisplayContext, GeoDynamicItemRenderer<T>, T> animatorFactory;
     protected ItemStack currentItemStack;
     protected ItemDisplayContext currentTransform;
     protected LivingEntity currentEntity;
 
-    public GeoDynamicItemRenderer(GeoModel<T> model, Function<ItemDisplayContext, T> animatorFactory) {
+    public GeoDynamicItemRenderer(GeoModel<T> model, BiFunction<ItemDisplayContext, GeoDynamicItemRenderer<T>, T> animatorFactory) {
         super(model);
         this.animatorFactory = animatorFactory;
     }
@@ -85,7 +86,7 @@ public class GeoDynamicItemRenderer<T extends ItemAnimator> extends GeoObjectRen
     protected Map<ItemDisplayContext, T> createAnimators(){
         var result = new HashMap<ItemDisplayContext, T>();
         for (var transform: ItemDisplayContext.values())
-            result.put(transform, animatorFactory.apply(transform));
+            result.put(transform, animatorFactory.apply(transform, this));
         return result;
     }
 

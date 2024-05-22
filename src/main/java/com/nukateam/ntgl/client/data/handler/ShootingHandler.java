@@ -209,9 +209,13 @@ public class ShootingHandler {
     }
 
     private final Map<HumanoidArm, ShootingData> shootingData = Map.of(
-            HumanoidArm.RIGHT, new ShootingData(20, null),
-            HumanoidArm.LEFT, new ShootingData(20, null)
+            HumanoidArm.RIGHT, new ShootingData(0, null),
+            HumanoidArm.LEFT, new ShootingData(0, null)
     );
+
+    public ShootingData getShootingData(HumanoidArm arm){
+        return shootingData.get(arm);
+    }
 
     @SubscribeEvent
     public void onPostClientTick(TickEvent.ClientTickEvent event) {

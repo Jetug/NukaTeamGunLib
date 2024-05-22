@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.render.entity;
+package com.nukateam.ntgl.client.render.renderers.projectiles;
 
 import com.nukateam.ntgl.common.foundation.entity.FlameProjectile;
 import net.minecraft.client.renderer.entity.EntityRenderer;

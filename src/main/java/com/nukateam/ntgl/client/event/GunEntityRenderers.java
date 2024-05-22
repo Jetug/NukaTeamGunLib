@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.event;
 
-import com.nukateam.ntgl.client.render.entity.*;
+import com.nukateam.ntgl.client.render.renderers.projectiles.*;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraftforge.api.distmarker.Dist;

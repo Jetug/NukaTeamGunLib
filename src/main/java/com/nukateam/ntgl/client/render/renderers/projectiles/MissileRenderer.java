@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.render.entity;
+package com.nukateam.ntgl.client.render.renderers.projectiles;
 
 import com.nukateam.ntgl.client.data.enums.SpecialModels;
 import com.nukateam.ntgl.client.data.util.RenderUtil;
@@ -7,7 +7,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;

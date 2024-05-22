@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.render.entity;
+package com.nukateam.ntgl.client.render.renderers.projectiles;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

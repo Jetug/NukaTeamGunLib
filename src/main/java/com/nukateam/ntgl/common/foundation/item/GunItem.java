@@ -39,6 +39,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.nukateam.ntgl.client.render.Render.GUN_RENDERER;
 import static java.util.Objects.requireNonNull;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
@@ -84,7 +85,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (renderer == null)
-                    return new GunItemRenderer();
+                    return new GunItemRenderer(GUN_RENDERER);
                 return this.renderer;
             }
         });

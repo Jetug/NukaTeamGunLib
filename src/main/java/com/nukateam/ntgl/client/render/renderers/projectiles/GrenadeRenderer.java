@@ -1,23 +1,15 @@
-package com.nukateam.ntgl.client.render.entity;
+package com.nukateam.ntgl.client.render.renderers.projectiles;
 
-import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.entity.GrenadeEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.nukateam.ntgl.common.foundation.entity.StunGrenadeEntity;
-import com.nukateam.ntgl.common.foundation.entity.ThrowableGrenadeEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish

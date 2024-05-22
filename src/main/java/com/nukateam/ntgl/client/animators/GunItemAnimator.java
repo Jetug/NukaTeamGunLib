@@ -6,6 +6,8 @@ import com.nukateam.ntgl.client.data.handler.AimingHandler;
 import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.data.handler.ShootingHandler;
 import com.nukateam.ntgl.client.model.GeoGunModel;
+import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
+import com.nukateam.ntgl.client.render.renderers.GeoDynamicItemRenderer;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 
@@ -40,11 +42,14 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
     public static final String RELOAD_START = "reload_start";
     public static final String RELOAD_END = "reload_end";
     private final Minecraft minecraft = Minecraft.getInstance();
+    private final DynamicGunRenderer<GunItemAnimator> renderer;
     private int chamberId = 1;
     private GunItem currentGun = null;
 
-    public GunItemAnimator(ItemDisplayContext transformType) {
+
+    public GunItemAnimator(ItemDisplayContext transformType, GeoDynamicItemRenderer<GunItemAnimator> renderer) {
         super(transformType);
+        this.renderer = (DynamicGunRenderer<GunItemAnimator>) renderer;
     }
 
     @Override
@@ -58,20 +63,20 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
 
     @Override
     public String getName() {
-        return ((IResourceProvider) GUN_RENDERER.getRenderStack().getItem()).getName();
+        return ((IResourceProvider) renderer.getRenderStack().getItem()).getName();
     }
 
     @Override
     public String getNamespace() {
-        return ((IResourceProvider) GUN_RENDERER.getRenderStack().getItem()).getNamespace();
+        return ((IResourceProvider) renderer.getRenderStack().getItem()).getNamespace();
     }
 
     private ItemStack getStack() {
-        return GUN_RENDERER.getRenderStack();
+        return renderer.getRenderStack();
     }
 
     private LivingEntity getEntity() {
-        return GUN_RENDERER.getRenderEntity();
+        return renderer.getRenderEntity();
     }
 
     private GunItem getGunItem() {
@@ -106,11 +111,14 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                     return event.setAndContinue(begin().then(HOLD, LOOP));
 
                 var arm = isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
-                var isShooting = ShootingHandler.get().isShooting(entity, arm);
-
+                var shootingHandler = ShootingHandler.get();
+                var isShooting = shootingHandler.isShooting(entity, arm);
+                var data = shootingHandler.getShootingData(arm);
                 RawAnimation animation;
 
-                if (reloadHandler.isReloading(entity, arm)) {
+                if(data.fireTimer > 0){
+                    animation = begin().then("charge", LOOP);
+                } else if (reloadHandler.isReloading(entity, arm)) {
                     animation = getReloadAnimation(event, general);
                 } else if (isShooting) {
                     animation = begin().then(SHOT, LOOP);

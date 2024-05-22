@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import static com.nukateam.ntgl.client.render.entity.TeslaProjectileRenderer.getRandomAngle;
+import static com.nukateam.ntgl.client.render.renderers.projectiles.TeslaProjectileRenderer.getRandomAngle;
 import static com.nukateam.ntgl.common.foundation.init.Projectiles.*;
 
 public class TeslaProjectile extends AbstractBeamProjectile {

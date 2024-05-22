@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.render.entity;
+package com.nukateam.ntgl.client.render.renderers.projectiles;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -6,7 +6,6 @@ import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.TeslaProjectile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;

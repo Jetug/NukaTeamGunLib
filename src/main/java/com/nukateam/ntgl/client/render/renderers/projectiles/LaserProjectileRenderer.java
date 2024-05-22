@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.render.entity;
+package com.nukateam.ntgl.client.render.renderers.projectiles;
 
 import com.mojang.blaze3d.vertex.*;
 
@@ -6,8 +6,6 @@ import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.LaserProjectile;
-import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SRequestEntityData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -19,8 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-
-import static com.nukateam.ntgl.common.foundation.entity.AbstractBeamProjectile.*;
 
 public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
