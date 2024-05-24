@@ -5,6 +5,7 @@
     "gripType": "ntgl:mini_gun",
     "fireMode": "ntgl:auto",
     "fireTimer": 20,
+    "fullCharge": true,
     "category": "heavy",
     "maxAmmo": 100,
     "reloadTime": 80,

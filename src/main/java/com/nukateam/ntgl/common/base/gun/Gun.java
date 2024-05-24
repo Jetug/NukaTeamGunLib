@@ -117,6 +117,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         private FireMode fireMode = FireMode.SEMI_AUTO;
         @Optional
         private boolean auto = false;
+        @Optional
+        private boolean fullCharge = false;
         private int rate;
         @Ignored
         private GripType gripType = GripType.ONE_HANDED;
@@ -151,6 +153,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             CompoundTag tag = new CompoundTag();
             tag.putBoolean(AUTO, this.auto);
             tag.putInt(RATE, this.rate);
+            tag.putBoolean("FullCharge", this.fullCharge);
             tag.putInt("FireTimer", this.fireTimer);
             tag.putString("FireMode", this.fireMode.getId().toString());
             tag.putString(GRIP_TYPE, this.gripType.getId().toString());
@@ -176,6 +179,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
             if (tag.contains(AUTO, Tag.TAG_ANY_NUMERIC)) {
                 this.auto = tag.getBoolean(AUTO);
+            }
+            if (tag.contains("FullCharge", Tag.TAG_ANY_NUMERIC)) {
+                this.fullCharge = tag.getBoolean("FullCharge");
             }
             if (tag.contains(RATE, Tag.TAG_ANY_NUMERIC)) {
                 this.rate = tag.getInt(RATE);
@@ -238,6 +244,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             Preconditions.checkArgument(this.spread >= 0.0F, "Spread must be more than or equal to zero");
             JsonObject object = new JsonObject();
             if (this.auto) object.addProperty("auto", true);
+            if (this.fullCharge) object.addProperty("fullCharge", true);
             object.addProperty("rate", this.rate);
             if (this.fireTimer != 0) object.addProperty("fireTimer", this.fireTimer);
             object.addProperty("fireMode", this.fireMode.getId().toString());
@@ -265,6 +272,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             General general = new General();
             general.fireMode = this.fireMode;
             general.auto = this.auto;
+            general.fullCharge = this.fullCharge;
             general.rate = this.rate;
             general.fireTimer = this.fireTimer;
             general.gripType = this.gripType;
@@ -294,6 +302,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
          * @return If this gun is automatic or not
          */
         public boolean isAuto() {
+            return this.auto;
+        }
+
+        /**
+         * @return If this gun need a full charge to fire
+         */
+        public boolean isFullCharge() {
             return this.auto;
         }
 
