@@ -116,8 +116,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Ignored
         private FireMode fireMode = FireMode.SEMI_AUTO;
         @Optional
-        private boolean auto = false;
-        @Optional
         private boolean fullCharge = false;
         private int rate;
         @Ignored
@@ -151,7 +149,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Override
         public CompoundTag serializeNBT() {
             CompoundTag tag = new CompoundTag();
-            tag.putBoolean(AUTO, this.auto);
             tag.putInt(RATE, this.rate);
             tag.putBoolean("FullCharge", this.fullCharge);
             tag.putInt("FireTimer", this.fireTimer);
@@ -176,9 +173,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public void deserializeNBT(CompoundTag tag) {
             if (tag.contains("FireMode", Tag.TAG_STRING)) {
                 this.fireMode = FireMode.getType(ResourceLocation.tryParse(tag.getString("FireMode")));
-            }
-            if (tag.contains(AUTO, Tag.TAG_ANY_NUMERIC)) {
-                this.auto = tag.getBoolean(AUTO);
             }
             if (tag.contains("FullCharge", Tag.TAG_ANY_NUMERIC)) {
                 this.fullCharge = tag.getBoolean("FullCharge");
@@ -243,7 +237,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             Preconditions.checkArgument(this.projectileAmount >= 1, "Projectile amount must be more than or equal to one");
             Preconditions.checkArgument(this.spread >= 0.0F, "Spread must be more than or equal to zero");
             JsonObject object = new JsonObject();
-            if (this.auto) object.addProperty("auto", true);
             if (this.fullCharge) object.addProperty("fullCharge", true);
             object.addProperty("rate", this.rate);
             if (this.fireTimer != 0) object.addProperty("fireTimer", this.fireTimer);
@@ -271,7 +264,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public General copy() {
             General general = new General();
             general.fireMode = this.fireMode;
-            general.auto = this.auto;
             general.fullCharge = this.fullCharge;
             general.rate = this.rate;
             general.fireTimer = this.fireTimer;
@@ -302,14 +294,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
          * @return If this gun is automatic or not
          */
         public boolean isAuto() {
-            return this.auto;
+            return this.fireMode == FireMode.AUTO;
         }
 
         /**
          * @return If this gun need a full charge to fire
          */
         public boolean isFullCharge() {
-            return this.auto;
+            return this.fullCharge;
         }
 
         /**
@@ -1525,7 +1517,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 if (scope.getFovModifier() < 1.0F) {
                     return Mth.clamp(scope.getFovModifier(), 0.01F, 1.0F);
                 }
-                modifier -= scope.getAdditionalZoom();
+                modifier -= scope.getFovModifier();
             }
         }
         Modules.Zoom zoom = modifiedGun.getModules().getZoom();
@@ -1545,11 +1537,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         public Gun build() {
             return this.gun.copy(); //Copy since the builder could be used again
-        }
-
-        public Builder setAuto(boolean auto) {
-            this.gun.general.auto = auto;
-            return this;
         }
 
         public Builder setFireRate(int rate) {

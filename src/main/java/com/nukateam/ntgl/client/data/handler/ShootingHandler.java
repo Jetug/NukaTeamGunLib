@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.client.data.handler;
 
 import com.ibm.icu.impl.Pair;
-import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.gun.FireMode;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.base.gun.Gun;
@@ -11,14 +10,12 @@ import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.helpers.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
@@ -275,13 +272,13 @@ public class ShootingHandler {
                 this.fire(player, heldItem);
 //                    if (gun.getGeneral().getFireMode() == FireMode.SEMI_AUTO || gun.getGeneral().getFireMode() == FireMode.PULSE) {
                 if (gun.getGeneral().getFireTimer() > 0) {
-                    if(gun.getGeneral().getFireMode() != FireMode.AUTOMATIC)
+                    if(gun.getGeneral().getFireMode() != FireMode.AUTO)
                         key.setDown(false);
                 }
             }
         } else {
             this.fire(player, heldItem);
-            if (gun.getGeneral().getFireMode() != FireMode.AUTOMATIC) {
+            if (gun.getGeneral().getFireMode() != FireMode.AUTO) {
                 key.setDown(false);
             }
         }

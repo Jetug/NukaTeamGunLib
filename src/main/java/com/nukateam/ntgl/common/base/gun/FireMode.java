@@ -18,7 +18,7 @@ public class FireMode {
     /**
      * A fire mode that shoots as long as the trigger is held down
      */
-    public static final FireMode AUTOMATIC = new FireMode(new ResourceLocation(Ntgl.MOD_ID, "auto"));
+    public static final FireMode AUTO = new FireMode(new ResourceLocation(Ntgl.MOD_ID, "auto"));
 
     /**
      * A fire mode that shoots in bursts
@@ -38,7 +38,7 @@ public class FireMode {
     static {
         /* Registers the standard fire modes when the class is loaded */
         registerType(SEMI_AUTO);
-        registerType(AUTOMATIC);
+        registerType(AUTO);
         registerType(BURST);
         registerType(PULSE);
     }
