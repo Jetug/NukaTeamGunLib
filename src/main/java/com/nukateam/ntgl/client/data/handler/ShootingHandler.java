@@ -399,6 +399,11 @@ public class ShootingHandler {
         return getCooldown(entity, arm) > 0;
     }
 
+    public float getCooldown(LivingEntity entity, InteractionHand hand) {
+        var arm = hand == InteractionHand.MAIN_HAND ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
+        return getCooldown( entity, arm);
+    }
+
     public float getCooldown(LivingEntity entity, HumanoidArm arm) {
         return entityShootGaps.getOrDefault(Pair.of(arm, entity), 0f);
     }

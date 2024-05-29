@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RenderHandEvent;
@@ -94,17 +95,21 @@ public class RecoilHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onRenderOverlay(RenderHandEvent event) {
-        if (event.getHand() != InteractionHand.MAIN_HAND)
-            return;
+//        if (event.getHand() != InteractionHand.MAIN_HAND)
+//            return;
 
         ItemStack heldItem = event.getItemStack();
         if (!(heldItem.getItem() instanceof GunItem))
             return;
 
-        GunItem gunItem = (GunItem) heldItem.getItem();
-        Gun modifiedGun = gunItem.getModifiedGun(heldItem);
-        ItemCooldowns tracker = Minecraft.getInstance().player.getCooldowns();
-        float cooldown = tracker.getCooldownPercent(gunItem, Minecraft.getInstance().getFrameTime());
+        var gunItem = (GunItem) heldItem.getItem();
+        var modifiedGun = gunItem.getModifiedGun(heldItem);
+        var tracker = Minecraft.getInstance().player.getCooldowns();
+
+
+        var cooldown = ShootingHandler.get().getCooldown(Minecraft.getInstance().player, event.getHand());
+
+//        var cooldown = tracker.getCooldownPercent(gunItem, Minecraft.getInstance().getFrameTime());
         cooldown = cooldown >= modifiedGun.getGeneral().getRecoilDurationOffset() ? (cooldown - modifiedGun.getGeneral().getRecoilDurationOffset()) / (1.0F - modifiedGun.getGeneral().getRecoilDurationOffset()) : 0.0F;
         if (cooldown >= 0.8) {
             float amount = 1.0F * ((1.0F - cooldown) / 0.2F);
