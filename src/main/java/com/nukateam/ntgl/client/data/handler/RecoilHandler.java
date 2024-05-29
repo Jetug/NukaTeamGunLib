@@ -95,8 +95,8 @@ public class RecoilHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onRenderOverlay(RenderHandEvent event) {
-//        if (event.getHand() != InteractionHand.MAIN_HAND)
-//            return;
+        if (event.getHand() != InteractionHand.MAIN_HAND)
+            return;
 
         ItemStack heldItem = event.getItemStack();
         if (!(heldItem.getItem() instanceof GunItem))
@@ -110,9 +110,12 @@ public class RecoilHandler {
         var cooldown = ShootingHandler.get().getCooldown(Minecraft.getInstance().player, event.getHand());
 
 //        var cooldown = tracker.getCooldownPercent(gunItem, Minecraft.getInstance().getFrameTime());
-        cooldown = cooldown >= modifiedGun.getGeneral().getRecoilDurationOffset() ? (cooldown - modifiedGun.getGeneral().getRecoilDurationOffset()) / (1.0F - modifiedGun.getGeneral().getRecoilDurationOffset()) : 0.0F;
+
+        float recoilDurationOffset = modifiedGun.getGeneral().getRecoilDurationOffset();
+        cooldown = cooldown >= recoilDurationOffset ?
+                (cooldown - recoilDurationOffset) / (1.0F - recoilDurationOffset) : 0.0F;
         if (cooldown >= 0.8) {
-            float amount = 1.0F * ((1.0F - cooldown) / 0.2F);
+            float amount = (1.0F - cooldown) / 0.2F;
             this.gunRecoilNormal = 1 - (--amount) * amount * amount * amount;
         } else {
             float amount = (cooldown / 0.8F);
