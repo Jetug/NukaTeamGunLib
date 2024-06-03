@@ -116,7 +116,9 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                 var data = shootingHandler.getShootingData(arm);
                 RawAnimation animation;
 
-                if(data.fireTimer > 0){
+                if(general.getFireTimer() > 0 && data.fireTimer > 0 && general.getFireTimer() != data.fireTimer){
+                    var speed = 1 - ((float)data.fireTimer / (float)general.getFireTimer());
+                    controller.setAnimationSpeed(1 * speed);
                     animation = begin().then("charge", LOOP);
                 } else if (reloadHandler.isReloading(entity, arm)) {
                     animation = getReloadAnimation(event, general);

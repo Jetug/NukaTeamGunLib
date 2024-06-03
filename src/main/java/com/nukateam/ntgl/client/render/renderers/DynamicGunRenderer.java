@@ -132,6 +132,8 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
                 poseStack.translate(0.02, -0.44, -0.15);
 //                poseStack.translate(X, Y, Z);
 
+//                poseStack.mulPose(Axis.XP.rotationDegrees(180));
+
                 assert (client.player != null);
 
                 var playerSkin = ((LocalPlayer) ClientUtils.getClientPlayer()).getSkinTextureLocation();
