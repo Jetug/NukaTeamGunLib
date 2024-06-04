@@ -10,7 +10,7 @@ updateJSONURL=""
 displayURL=""
 logoFile="logo.png"
 authors="Dayton, Jetug"
-credits = "MrCrayfish, AzureDoom"
+credits = "MrCrayfish, AzureDoom, MigaMi"
 description="Core for gun mods"
 
 [[dependencies.ntgl]]

@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.nukateam.ntgl.common.data.util.GunModifierHelper.canRenderInOffhand;
+import static com.nukateam.ntgl.common.helpers.PlayerHelper.convertHand;
 import static net.minecraftforge.event.TickEvent.Type.RENDER;
 
 /**
@@ -397,6 +398,21 @@ public class ShootingHandler {
 
     public boolean isOnCooldown(LivingEntity entity, HumanoidArm arm){
         return getCooldown(entity, arm) > 0;
+    }
+
+    public float getCooldown(LivingEntity entity, InteractionHand hand) {
+        return getCooldown(entity, convertHand(hand));
+    }
+
+    public float getCooldownPercent(LivingEntity entity, InteractionHand hand) {
+        var heldItem = entity.getItemInHand(hand);
+        if (heldItem.getItem() instanceof GunItem gunItem) {
+            var modifiedGun = gunItem.getModifiedGun(heldItem);
+            var rate = modifiedGun.getGeneral().getRate();
+            var cooldown = getCooldown(entity, convertHand(hand));
+            return cooldown / rate;
+        }
+        return 0;
     }
 
     public float getCooldown(LivingEntity entity, HumanoidArm arm) {

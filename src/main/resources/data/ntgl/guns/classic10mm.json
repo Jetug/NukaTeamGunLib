@@ -8,8 +8,8 @@
     "maxAmmo": 6,
     "reloadTime": 40,
     "reloadAmount": 1,
-    "recoilAngle": 7.0,
-    "recoilKick": 0.4,
+    "recoilAngle": 3.0,
+    "recoilKick": 0.1,
     "recoilAdsReduction": 0.15,
     "alwaysSpread": true,
     "spread": 2.0

@@ -129,10 +129,10 @@ public class GunModifierHelper {
     }
 
     public static float getKickReduction(ItemStack weapon) {
-        float kickReduction = 1.0F;
+        var kickReduction = 1.0F;
         for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
-            for (IGunModifier modifier : modifiers) {
+            var modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+            for (var modifier : modifiers) {
                 kickReduction *= Mth.clamp(modifier.kickModifier(), 0.0F, 1.0F);
             }
         }
