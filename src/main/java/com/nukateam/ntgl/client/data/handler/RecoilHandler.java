@@ -99,18 +99,13 @@ public class RecoilHandler {
             return;
 
         var heldItem = event.getItemStack();
-        if (!(heldItem.getItem() instanceof GunItem))
+        if (!(heldItem.getItem() instanceof GunItem gunItem))
             return;
 
-        var gunItem = (GunItem) heldItem.getItem();
         var modifiedGun = gunItem.getModifiedGun(heldItem);
-        var tracker = Minecraft.getInstance().player.getCooldowns();
-
-
         var cooldown = ShootingHandler.get().getCooldownPercent(Minecraft.getInstance().player, event.getHand());
-//        var cooldown = tracker.getCooldownPercent(gunItem, Minecraft.getInstance().getFrameTime());
+        var recoilDurationOffset = modifiedGun.getGeneral().getRecoilDurationOffset();
 
-        float recoilDurationOffset = modifiedGun.getGeneral().getRecoilDurationOffset();
         cooldown = cooldown >= recoilDurationOffset ?
                 (cooldown - recoilDurationOffset) / (1.0F - recoilDurationOffset) : 0.0F;
         if (cooldown >= 0.8) {
