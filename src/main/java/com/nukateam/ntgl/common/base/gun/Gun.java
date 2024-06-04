@@ -1496,8 +1496,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return stack != null && Objects.equals(ForgeRegistries.ITEMS.getKey(stack.getItem()), id);
     }
 
+    public static int getAmmo(ItemStack gunStack) {
+        var tag = gunStack.getOrCreateTag();
+        return tag.getInt("AmmoCount");
+    }
+
     public static boolean hasAmmo(ItemStack gunStack) {
-        CompoundTag tag = gunStack.getOrCreateTag();
+        var tag = gunStack.getOrCreateTag();
         return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) > 0;
     }
 
@@ -1512,7 +1517,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static float getFovModifier(ItemStack stack, Gun modifiedGun) {
         float modifier = 0.0F;
         if (hasAttachmentEquipped(stack, modifiedGun, IAttachment.Type.SCOPE)) {
-            Scope scope = Gun.getScope(stack);
+            var scope = Gun.getScope(stack);
             if (scope != null) {
                 if (scope.getFovModifier() < 1.0F) {
                     return Mth.clamp(scope.getFovModifier(), 0.01F, 1.0F);
@@ -1520,7 +1525,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 modifier -= scope.getFovModifier();
             }
         }
-        Modules.Zoom zoom = modifiedGun.getModules().getZoom();
+        var zoom = modifiedGun.getModules().getZoom();
         return zoom != null ? modifier + zoom.getFovModifier() : 0F;
     }
 
