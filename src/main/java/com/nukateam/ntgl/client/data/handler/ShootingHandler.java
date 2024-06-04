@@ -407,13 +407,14 @@ public class ShootingHandler {
     public float getCooldownPercent(LivingEntity entity, InteractionHand hand) {
         var heldItem = entity.getItemInHand(hand);
 
-        if (!(heldItem.getItem() instanceof GunItem gunItem))
-            return 0;
+        if (heldItem.getItem() instanceof GunItem gunItem) {
+            var modifiedGun = gunItem.getModifiedGun(heldItem);
+            var rate = modifiedGun.getGeneral().getRate();
+            var cooldown = getCooldown(entity, convertHand(hand));
+            return cooldown / rate;
+        }
 
-        var modifiedGun = gunItem.getModifiedGun(heldItem);
-        var rate = modifiedGun.getGeneral().getRate();
-        var cooldown = getCooldown(entity, convertHand(hand));
-        return cooldown / rate;
+        return 0;
     }
 
     public float getCooldown(LivingEntity entity, HumanoidArm arm) {
