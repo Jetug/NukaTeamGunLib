@@ -13,7 +13,7 @@ public class ModGuns {
     ///GUNS
     public static final RegistryObject<GunItem> PISTOL = registerGun("pistol10mm");
     public static final RegistryObject<GunItem> PIPE_PISTOL = registerGun("pipepistol");
-    public static final RegistryObject<GunItem> CLASSIC10MM = registerGun("classic10mm");
+    public static final RegistryObject<GunItem> CLASSIC10MM = registerGun("classic10mm", 10);
     public static final RegistryObject<GunItem> SCOUT10MM = registerGun("scout10mm");
 //    public static final RegistryObject<GunItem> CLASSIC10MM_ZAP = registerGun("classic10mm_zapaway", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.NUKA_EQUIP)));
     public static final RegistryObject<GunItem> PIPEREVOLVER = registerGun("piperevolver");
@@ -52,6 +52,10 @@ public class ModGuns {
 
     public static RegistryObject<GunItem> registerGun(String name) {
         return ITEMS.register(name, () -> new GunItem(new Item.Properties()/*.tab(ModItemTabs.WEAPONS)*/));
+    }
+
+    public static RegistryObject<GunItem> registerGun(String name, int durability) {
+        return ITEMS.register(name, () -> new GunItem(new Item.Properties().durability(durability)));
     }
 
     public static RegistryObject<Item> registerAmmo(String name) {

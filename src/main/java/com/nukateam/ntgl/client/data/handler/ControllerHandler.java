@@ -94,19 +94,20 @@ public class ControllerHandler {
             return false;
         });
         ControllerEvents.GATHER_ACTIONS.register((actions, visibility) -> {
-            Minecraft mc = Minecraft.getInstance();
+            var mc = Minecraft.getInstance();
             if (mc.screen != null) return;
 
-            Player player = Minecraft.getInstance().player;
+            var player = Minecraft.getInstance().player;
             if (player != null) {
-                ItemStack heldItem = player.getMainHandItem();
+                var heldItem = player.getMainHandItem();
                 if (heldItem.getItem() instanceof GunItem gunItem) {
                     actions.put(GunButtonBindings.AIM, new Action(Component.translatable("ntgl.action.aim"), Action.Side.RIGHT));
                     actions.put(GunButtonBindings.SHOOT, new Action(Component.translatable("ntgl.action.shoot"), Action.Side.RIGHT));
 
-                    Gun modifiedGun = gunItem.getModifiedGun(heldItem);
-                    CompoundTag tag = heldItem.getTag();
-                    if (tag != null && tag.getInt("AmmoCount") < GunEnchantmentHelper.getAmmoCapacity(heldItem, modifiedGun)) {
+                    var modifiedGun = gunItem.getModifiedGun(heldItem);
+                    var tag = heldItem.getTag();
+
+                    if (tag != null && Gun.getAmmo(heldItem) < GunEnchantmentHelper.getAmmoCapacity(heldItem, modifiedGun)) {
                         actions.put(GunButtonBindings.RELOAD, new Action(Component.translatable("ntgl.action.reload"), Action.Side.LEFT));
                     }
 

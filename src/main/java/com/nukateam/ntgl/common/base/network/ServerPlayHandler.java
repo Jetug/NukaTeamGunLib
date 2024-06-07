@@ -22,6 +22,7 @@ import com.nukateam.ntgl.common.foundation.init.ModEnchantments;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.IColored;
+import com.nukateam.ntgl.common.helpers.PlayerHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessagePreFireSound;
 import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
@@ -90,7 +91,7 @@ public class ServerPlayHandler {
             var tag = heldItem.getOrCreateTag();
 
             if (modifiedGun != null) {
-                if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem)))
+                if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, PlayerHelper.convertHand(hand))))
                     return;
 
                 /* Updates the yaw and pitch with the clients current yaw and pitch */
@@ -114,7 +115,7 @@ public class ServerPlayHandler {
                     SpreadTracker.get(shooter).update(shooter, item);
                 }
 
-                int count = modifiedGun.getGeneral().getProjectileAmount();
+                var count = modifiedGun.getGeneral().getProjectileAmount();
                 var projectileProps = modifiedGun.getProjectile();
                 var spawnedProjectiles = new ProjectileEntity[count];
 
@@ -138,7 +139,7 @@ public class ServerPlayHandler {
                     PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(shooter.level(), spawnX, spawnY, spawnZ, radius), messageBulletTrail);
                 }
 
-                MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem));
+                MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, PlayerHelper.convertHand(hand)));
 
                 if (Config.COMMON.aggroMobs.enabled.get()) {
                     double radius = GunModifierHelper.getModifiedFireSoundRadius(heldItem, Config.COMMON.aggroMobs.unsilencedRange.get());

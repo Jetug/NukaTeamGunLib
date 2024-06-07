@@ -7,4 +7,8 @@ public class PlayerHelper {
     public static HumanoidArm convertHand(InteractionHand hand){
         return hand == InteractionHand.MAIN_HAND ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
     }
+
+    public static InteractionHand convertHand(HumanoidArm arm){
+        return arm == HumanoidArm.RIGHT ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+    }
 }

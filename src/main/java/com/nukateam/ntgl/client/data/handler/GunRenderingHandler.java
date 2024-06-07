@@ -20,7 +20,6 @@ import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -174,9 +173,9 @@ public class GunRenderingHandler {
         this.sprintTransition = 0;
         this.sprintCooldown = 20; //TODO make a config option
 
-        ItemStack heldItem = event.getStack();
-        GunItem gunItem = (GunItem) heldItem.getItem();
-        Gun modifiedGun = gunItem.getModifiedGun(heldItem);
+        var heldItem = event.getStack();
+        var gunItem = (GunItem) heldItem.getItem();
+        var modifiedGun = gunItem.getModifiedGun(heldItem);
         if (modifiedGun.getDisplay().getFlash() != null) {
             this.showMuzzleFlashForPlayer(Minecraft.getInstance().player.getId());
         }

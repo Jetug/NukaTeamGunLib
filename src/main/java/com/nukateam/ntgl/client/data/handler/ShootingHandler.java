@@ -44,7 +44,7 @@ public class ShootingHandler {
     public static final String COOLDOWN = "Cooldown";
     public static float shootMsGap = 0F;
 
-    private final HashMap<Pair<HumanoidArm, LivingEntity>, Float> entityShootGaps = new HashMap<>();
+    private final HashMap<Pair<HumanoidArm, LivingEntity>, Integer> entityShootGaps = new HashMap<>();
     private final Map<HumanoidArm, ShootingData> shootingData = Map.of(
             HumanoidArm.RIGHT, new ShootingData(0, null),
             HumanoidArm.LEFT, new ShootingData(0, null)
@@ -413,12 +413,17 @@ public class ShootingHandler {
             var cooldown = getCooldown(entity, convertHand(hand));
             return cooldown / rate;
         }
-
         return 0;
     }
 
+
+    public void setCooldown(LivingEntity entity, HumanoidArm arm, int cooldown) {
+        entityShootGaps.put(Pair.of(arm, entity), cooldown);
+    }
+
+
     public float getCooldown(LivingEntity entity, HumanoidArm arm) {
-        return entityShootGaps.getOrDefault(Pair.of(arm, entity), 0f);
+        return entityShootGaps.getOrDefault(Pair.of(arm, entity), 0);
     }
 
     public boolean isShooting(LivingEntity entity, HumanoidArm arm){
@@ -442,22 +447,22 @@ public class ShootingHandler {
 
         var isMainHand = shooter.getMainHandItem() == heldItem;
         var hand = isMainHand ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
-        var shootGap = entityShootGaps.getOrDefault(Pair.of(hand, shooter), 0f);
+        var shootGap = entityShootGaps.getOrDefault(Pair.of(hand, shooter), 0);
         var data = shootingData.get(hand);
 
-        if (shootGap <= 0F) {
+        if (shootGap <= 0) {
             var gunItem = (GunItem) heldItem.getItem();
             var modifiedGun = gunItem.getModifiedGun(heldItem);
 
-            if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem)))
+            if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand)))
                 return;
 
             // CHECK HERE: Change this to test different rpm settings.
             // TODO: Test serverside, possible issues 0.3.4-alpha
-            final float rpm = modifiedGun.getGeneral().getRate(); // Rounds per sec. Should come from gun properties in the end.
+            final int rpm = modifiedGun.getGeneral().getRate(); // Rounds per sec. Should come from gun properties in the end.
             shootGap += rpm;
             entityShootGaps.put(Pair.of(hand, shooter), shootGap);
-            shootMsGap = calcShootTickGap((int) rpm);
+            shootMsGap = calcShootTickGap(rpm);
             RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
             RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
@@ -466,7 +471,7 @@ public class ShootingHandler {
 
 //            if (Config.CLIENT.controls.burstPress.get()) this.burstTracker--;
 //            else this.burstTracker++;
-            MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem));
+            MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
         }
     }
 

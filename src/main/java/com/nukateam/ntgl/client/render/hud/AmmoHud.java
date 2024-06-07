@@ -13,24 +13,21 @@ import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 public class AmmoHud {
     private static final int BAR_OFFSET_X = 95;
-    private static final int BG_WIDTH = 44;
-    private static final int BG_HEIGHT = 50;
 
     public static final IGuiOverlay AMMO_HUD = ((gui, graphics, partialTick, width, height) -> {
         var minecraft = Minecraft.getInstance();
         if(minecraft.player == null) return;
         var mainHandItem = minecraft.player.getMainHandItem();
         var offhandItem  = minecraft.player.getOffhandItem();
-        var screenWidth = minecraft.getWindow().getGuiScaledWidth();
-        var screenHeight = minecraft.getWindow().getGuiScaledHeight();
         var y = height - 39;
+        var x = width / 2;
 
         if(mainHandItem.getItem() instanceof GunItem gunItem) {
-            var x = screenWidth / 2 + BAR_OFFSET_X;
+            x += BAR_OFFSET_X;
             renderAmmoCounter(graphics, gunItem, mainHandItem, x, y);
         }
         if(offhandItem.getItem() instanceof GunItem gunItem) {
-            var x = screenWidth / 2 - BAR_OFFSET_X - 26;
+            x -= BAR_OFFSET_X - 26;
             renderAmmoCounter(graphics, gunItem, offhandItem, x, y);
         }
     });
@@ -44,4 +41,3 @@ public class AmmoHud {
         graphics.drawString(Minecraft.getInstance().font, text, x, y, 0xFFFFFFFF, true);
     }
 }
-

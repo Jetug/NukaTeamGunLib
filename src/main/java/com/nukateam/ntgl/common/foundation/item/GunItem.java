@@ -69,7 +69,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         return getRegistryName().getNamespace();
     }
 
-    private ResourceLocation getRegistryName(){
+    private ResourceLocation getRegistryName() {
         return ForgeRegistries.ITEMS.getKey(this);
     }
 
@@ -149,12 +149,12 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt(Tags.AMMO_COUNT) != GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun);
     }
 
-    @Override
-    public int getBarWidth(ItemStack stack) {
-        CompoundTag tagCompound = stack.getOrCreateTag();
-        Gun modifiedGun = this.getModifiedGun(stack);
-        return (int) (13.0 * (tagCompound.getInt(Tags.AMMO_COUNT) / (double) GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)));
-    }
+//    @Override
+//    public int getBarWidth(ItemStack stack) {
+//        CompoundTag tagCompound = stack.getOrCreateTag();
+//        Gun modifiedGun = this.getModifiedGun(stack);
+//        return (int) (13.0 * (tagCompound.getInt(Tags.AMMO_COUNT) / (double) GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)));
+//    }
 
     public Gun getModifiedGun(ItemStack stack) {
         CompoundTag tagCompound = stack.getTag();
@@ -223,7 +223,8 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
 
 
     @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+    }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
