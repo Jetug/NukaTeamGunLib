@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.event;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.handler.ShootingHandler;
-import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.sounds.SoundEvents;
@@ -21,11 +20,10 @@ public class GunEventBus {
         var entity = event.getEntity();
         var level = event.getEntity().level();
         var heldItem = entity.getItemInHand(event.getHand());
-
         var tag = heldItem.getTag();
 
         if (heldItem.getItem() instanceof GunItem gunItem) {
-            Gun gun = gunItem.getModifiedGun(heldItem);
+            var gun = gunItem.getModifiedGun(heldItem);
 
 //            var tracker = ShootingHandler.get().getCooldownPercent();
 //            if (tracker.isOnCooldown(heldItem.getItem()) && gun.getGeneral().getFireMode() == FireMode.PULSE) {

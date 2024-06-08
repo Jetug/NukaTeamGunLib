@@ -51,7 +51,7 @@ public class ModGuns {
     public static final RegistryObject<Item> MININUKE = registerAmmo("mini_nuke");
 
     public static RegistryObject<GunItem> registerGun(String name) {
-        return ITEMS.register(name, () -> new GunItem(new Item.Properties()/*.tab(ModItemTabs.WEAPONS)*/));
+        return ITEMS.register(name, () -> new GunItem(new Item.Properties().stacksTo(1)));
     }
 
     public static RegistryObject<GunItem> registerGun(String name, int durability) {
@@ -59,7 +59,7 @@ public class ModGuns {
     }
 
     public static RegistryObject<Item> registerAmmo(String name) {
-        return ITEMS.register(name, () -> new AmmoItem(new Item.Properties()/*.tab(ModItemTabs.WEAPONS)*/));
+        return ITEMS.register(name, () -> new AmmoItem(new Item.Properties()));
     }
 
     public static void register(IEventBus eventBus) {

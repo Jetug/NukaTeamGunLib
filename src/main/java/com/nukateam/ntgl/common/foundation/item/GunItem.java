@@ -36,7 +36,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.client.render.Render.GUN_RENDERER;
-import static java.util.Objects.requireNonNull;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
 public class GunItem extends Item implements GeoItem, IColored, IMeta, IResourceProvider {
@@ -48,7 +47,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     private Gun gun = new Gun();
 
     public GunItem(Item.Properties properties) {
-        super(properties.stacksTo(1));
+        super(properties);
     }
 
     public void setGun(NetworkGunManager.Supplier supplier) {
@@ -142,12 +141,12 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
 //        }
 //    }
 
-    @Override
-    public boolean isBarVisible(ItemStack stack) {
-        CompoundTag tagCompound = stack.getOrCreateTag();
-        Gun modifiedGun = this.getModifiedGun(stack);
-        return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt(Tags.AMMO_COUNT) != GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun);
-    }
+//    @Override
+//    public boolean isBarVisible(ItemStack stack) {
+//        CompoundTag tagCompound = stack.getOrCreateTag();
+//        Gun modifiedGun = this.getModifiedGun(stack);
+//        return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt(Tags.AMMO_COUNT) != GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun);
+//    }
 
 //    @Override
 //    public int getBarWidth(ItemStack stack) {
@@ -164,7 +163,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
                 if (tagCompound.getBoolean("Custom")) {
                     return Gun.create(tagCompound.getCompound("Gun"));
                 } else {
-                    Gun gunCopy = this.gun.copy();
+                    var gunCopy = this.gun.copy();
                     gunCopy.deserializeNBT(tagCompound.getCompound("Gun"));
                     return gunCopy;
                 }
@@ -180,7 +179,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         if (enchantment.category == EnchantmentTypes.SEMI_AUTO_GUN) {
-            Gun modifiedGun = this.getModifiedGun(stack);
+            var modifiedGun = this.getModifiedGun(stack);
             return !modifiedGun.getGeneral().isAuto();
         }
         return super.canApplyAtEnchantingTable(stack, enchantment);
@@ -196,10 +195,10 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         return slotChanged;
     }
 
-    @Override
-    public int getBarColor(ItemStack stack) {
-        return requireNonNull(ChatFormatting.YELLOW.getColor());
-    }
+//    @Override
+//    public int getBarColor(ItemStack stack) {
+//        return requireNonNull(ChatFormatting.YELLOW.getColor());
+//    }
 
     @Override
     public boolean isEnchantable(ItemStack stack) {
