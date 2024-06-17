@@ -20,14 +20,14 @@ public class AmmoHud {
         var mainHandItem = minecraft.player.getMainHandItem();
         var offhandItem  = minecraft.player.getOffhandItem();
         var y = height - 39;
-        var x = width / 2;
+        var xCenter = width / 2;
 
         if(mainHandItem.getItem() instanceof GunItem gunItem) {
-            x += BAR_OFFSET_X;
+            var x = xCenter + BAR_OFFSET_X;
             renderAmmoCounter(graphics, gunItem, mainHandItem, x, y);
         }
         if(offhandItem.getItem() instanceof GunItem gunItem) {
-            x -= BAR_OFFSET_X - 26;
+            var x = xCenter - BAR_OFFSET_X - 26;
             renderAmmoCounter(graphics, gunItem, offhandItem, x, y);
         }
     });

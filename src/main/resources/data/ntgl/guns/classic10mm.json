@@ -29,6 +29,10 @@
     "enchantedFire": "ntgl:item.pistol10mm.enchanted_fire"
   },
   "modules": {
+    "mods":[
+      "ss",
+      "cc"
+    ],
     "zoom": {
       "yOffset": 4.6,
       "zOffset": 1.5,

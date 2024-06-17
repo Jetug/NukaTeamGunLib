@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.base.gun;
 
+import com.google.gson.JsonArray;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.data.annotation.Ignored;
@@ -255,6 +256,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
             if (this.alwaysSpread) object.addProperty("alwaysSpread", true);
             if (this.spread != 0.0F) object.addProperty("spread", this.spread);
+//            object.add("", new JsonArray());
             return object;
         }
 
