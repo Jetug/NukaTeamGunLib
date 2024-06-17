@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.base.gun;
 import com.google.gson.JsonArray;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
+import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.data.annotation.Ignored;
 import com.nukateam.ntgl.common.data.annotation.Optional;
 import com.nukateam.ntgl.common.data.constants.Tags;
@@ -38,6 +39,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -866,6 +868,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Nullable
         private Zoom zoom;
         private Attachments attachments = new Attachments();
+        @Optional
+        private ArrayList<String> mods;
 
         @Nullable
         public Zoom getZoom() {
@@ -1098,18 +1102,94 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
         }
 
+        public static class Attachment implements INBTSerializable<CompoundTag> {
+            @Optional
+            @Nullable
+            private ScaledPositioned scope;
+            @Optional
+            @Nullable
+            private ScaledPositioned barrel;
+
+            @Nullable
+            public ScaledPositioned getScope() {
+                return this.scope;
+            }
+
+            @Nullable
+            public ScaledPositioned getBarrel() {
+                return this.barrel;
+            }
+
+            @Override
+            public CompoundTag serializeNBT() {
+                CompoundTag tag = new CompoundTag();
+                if (this.scope != null) {
+                    tag.put("Scope", this.scope.serializeNBT());
+                }
+                if (this.barrel != null) {
+                    tag.put("Barrel", this.barrel.serializeNBT());
+                }
+                return tag;
+            }
+
+            @Override
+            public void deserializeNBT(CompoundTag tag) {
+                if (tag.contains("Scope", Tag.TAG_COMPOUND)) {
+                    this.scope = this.createScaledPositioned(tag, "Scope");
+                }
+                if (tag.contains("Barrel", Tag.TAG_COMPOUND)) {
+                    this.barrel = this.createScaledPositioned(tag, "Barrel");
+                }
+            }
+
+            public JsonObject toJsonObject() {
+                JsonObject object = new JsonObject();
+                if (this.scope != null) {
+                    object.add("scope", this.scope.toJsonObject());
+                }
+                if (this.barrel != null) {
+                    object.add("barrel", this.barrel.toJsonObject());
+                }
+                return object;
+            }
+
+            public Attachments copy() {
+                Attachments attachments = new Attachments();
+                if (this.scope != null) {
+                    attachments.scope = this.scope.copy();
+                }
+                if (this.barrel != null) {
+                    attachments.barrel = this.barrel.copy();
+                }
+                return attachments;
+            }
+
+            @Nullable
+            private ScaledPositioned createScaledPositioned(CompoundTag tag, String key) {
+                CompoundTag attachment = tag.getCompound(key);
+                return attachment.isEmpty() ? null : new ScaledPositioned(attachment);
+            }
+        }
+
         @Override
         public CompoundTag serializeNBT() {
             CompoundTag tag = new CompoundTag();
-            if (this.zoom != null) {
+            if (this.zoom != null)
                 tag.put("Zoom", this.zoom.serializeNBT());
-            }
+
+            if( mods != null && !mods.isEmpty())
+                tag.put("Mods", NbtUtils.serializeNbt(mods));
+
             tag.put("Attachments", this.attachments.serializeNBT());
             return tag;
         }
 
         @Override
         public void deserializeNBT(CompoundTag tag) {
+            if(tag.contains("Mods")){
+                var nbt = (CompoundTag)tag.get("Mods");
+                this.mods = NbtUtils.deserializeNbt(nbt);
+            }
             if (tag.contains("Zoom", Tag.TAG_COMPOUND)) {
                 Zoom zoom = new Zoom();
                 zoom.deserializeNBT(tag.getCompound("Zoom"));
@@ -1125,12 +1205,20 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (this.zoom != null) {
                 object.add("zoom", this.zoom.toJsonObject());
             }
+
+            var array = new JsonArray();
+            for (var mod: mods) {
+                array.add(mod);
+            }
+            object.add("mods", array);
+
             GunJsonUtil.addObjectIfNotEmpty(object, "attachments", this.attachments.toJsonObject());
             return object;
         }
 
         public Modules copy() {
             Modules modules = new Modules();
+            modules.mods = this.mods;
             if (this.zoom != null) {
                 modules.zoom = this.zoom.copy();
             }

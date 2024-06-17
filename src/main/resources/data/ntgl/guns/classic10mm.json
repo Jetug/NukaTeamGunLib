@@ -30,8 +30,8 @@
   },
   "modules": {
     "mods":[
-      "ss",
-      "cc"
+      "scope",
+      "barrel"
     ],
     "zoom": {
       "yOffset": 4.6,
