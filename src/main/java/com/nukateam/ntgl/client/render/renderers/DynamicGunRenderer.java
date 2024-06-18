@@ -77,24 +77,6 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
             Ntgl.LOGGER.debug("");
         }
 
-//        poseStack.pushPose();
-        switch (transformType) {
-//            case THIRD_PERSON_LEFT_HAND, THIRD_PERSON_RIGHT_HAND -> {
-//                if (entity instanceof PowerArmorFrame)
-//                    poseStack.translate(0, 0.07, -0.25);
-//            }
-            case FIRST_PERSON_LEFT_HAND, FIRST_PERSON_RIGHT_HAND -> {
-//                poseStack.translate(0, -1.3, -1.55);
-            }
-            case GUI -> {
-//                poseStack.translate(0.2, -0.55, -0.5);
-//                poseStack.translate(0.2, 0.1, -0.5);
-            }
-            case GROUND -> {
-//                poseStack.translate(-0.5, -0.5, -1);
-            }
-        }
-
 //        renderAttachments(stack, getRenderItem(entity, transformType));
 
         super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);

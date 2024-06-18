@@ -41,6 +41,7 @@ import static mod.azure.azurelib.core.animation.RawAnimation.*;
 public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
     public static final String RELOAD_START = "reload_start";
     public static final String RELOAD_END = "reload_end";
+    public static final String CHARGE = "charge";
     private final Minecraft minecraft = Minecraft.getInstance();
     private final DynamicGunRenderer<GunItemAnimator> renderer;
     private int chamberId = 1;
@@ -114,12 +115,13 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                 var shootingHandler = ShootingHandler.get();
                 var isShooting = shootingHandler.isShooting(entity, arm);
                 var data = shootingHandler.getShootingData(arm);
-                RawAnimation animation;
+                var animation = begin();
 
                 if(general.getFireTimer() > 0 && data.fireTimer > 0 && general.getFireTimer() != data.fireTimer){
                     var speed = 1 - ((float)data.fireTimer / (float)general.getFireTimer());
                     controller.setAnimationSpeed(1 * speed);
-                    animation = begin().then("charge", LOOP);
+                    if(hasAnimation(CHARGE))
+                        animation = begin().then(CHARGE, LOOP);
                 } else if (reloadHandler.isReloading(entity, arm)) {
                     animation = getReloadAnimation(event, general);
                 } else if (isShooting) {
@@ -187,13 +189,13 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                 else chamberId = 1;
             }
 
-            if (isShooting) {
-                var chamber = "chamber" + chamberId;
+            var chamber = "chamber" + chamberId;
+
+            if (isShooting && hasAnimation(chamber)) {
                 animation = begin().then(chamber, HOLD_ON_LAST_FRAME);
                 syncAnimation(event, chamber, general.getRate());
             }
             return event.setAndContinue(animation);
-
         };
     }
 
@@ -222,6 +224,10 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
         var animationResource = GeoGunModel.INSTANCE.getAnimationResource(this);
         var bakedAnimations = map.get(animationResource);
         return bakedAnimations.animations().get(animationName);
+    }
+
+    private boolean hasAnimation(String animationName){
+        return getAnimation(animationName) != null;
     }
 
     private void soundHandler(SoundKeyframeEvent<GunItemAnimator> event) {

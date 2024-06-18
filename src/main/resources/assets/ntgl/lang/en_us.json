@@ -172,5 +172,6 @@
   "ntgl.chat.install_configured": "Install %s to access config options",
   "key.open_map": "Open map",
   "item.ntgl.acid_bucket": "Acid Bucket",
-  "gui.ntgl.marker.tomb": "Here lies %s"
+  "gui.ntgl.marker.tomb": "Here lies %s",
+  "key.ntgl.inspect": "Inspect"
 }

@@ -66,7 +66,7 @@ public class ClientReloadHandler {
 
     @SubscribeEvent
     public void onKeyPressed(InputEvent.Key event) {
-        Player player = Minecraft.getInstance().player;
+        var player = Minecraft.getInstance().player;
         if (player == null)
             return;
 
@@ -79,6 +79,10 @@ public class ClientReloadHandler {
                 this.setReloading(false, HumanoidArm.RIGHT);
                 this.setReloading(false, HumanoidArm.LEFT );
                 PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload());
+            }
+            if (KeyBinds.KEY_INSPECT.consumeClick()){
+                var mainGun = player.getMainHandItem();
+                var offGun = player.getOffhandItem();
             }
         }
     }
