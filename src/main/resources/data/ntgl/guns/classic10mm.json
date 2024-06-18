@@ -30,8 +30,14 @@
   },
   "modules": {
     "mods":[
-      "scope",
-      "barrel"
+      {
+        "name": "short_scope",
+        "slot": "scope"
+      },
+      {
+        "name": "silencer",
+        "slot": "barrel"
+      }
     ],
     "zoom": {
       "yOffset": 4.6,

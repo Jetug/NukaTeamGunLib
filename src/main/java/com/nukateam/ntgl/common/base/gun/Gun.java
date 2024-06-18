@@ -869,7 +869,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         private Zoom zoom;
         private Attachments attachments = new Attachments();
         @Optional
-        private ArrayList<String> mods;
+        @Nullable
+        private ArrayList<Attachment> mods;
 
         @Nullable
         public Zoom getZoom() {
@@ -1105,69 +1106,63 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public static class Attachment implements INBTSerializable<CompoundTag> {
             @Optional
             @Nullable
-            private ScaledPositioned scope;
-            @Optional
+            private String name;
             @Nullable
-            private ScaledPositioned barrel;
+            @Optional
+            private String slot;
 
             @Nullable
-            public ScaledPositioned getScope() {
-                return this.scope;
+            public String getName() {
+                return this.name;
             }
 
             @Nullable
-            public ScaledPositioned getBarrel() {
-                return this.barrel;
+            public String getSlot() {
+                return this.slot;
             }
 
             @Override
             public CompoundTag serializeNBT() {
                 CompoundTag tag = new CompoundTag();
-                if (this.scope != null) {
-                    tag.put("Scope", this.scope.serializeNBT());
+                if (this.name != null) {
+                    tag.putString("Name", this.name);
                 }
-                if (this.barrel != null) {
-                    tag.put("Barrel", this.barrel.serializeNBT());
+                if (this.slot != null) {
+                    tag.putString("Slot", this.slot);
                 }
                 return tag;
             }
 
             @Override
             public void deserializeNBT(CompoundTag tag) {
-                if (tag.contains("Scope", Tag.TAG_COMPOUND)) {
-                    this.scope = this.createScaledPositioned(tag, "Scope");
+                if (tag.contains("Name", Tag.TAG_STRING)) {
+                    this.name = tag.getString("Name");
                 }
-                if (tag.contains("Barrel", Tag.TAG_COMPOUND)) {
-                    this.barrel = this.createScaledPositioned(tag, "Barrel");
+                if (tag.contains("Slot", Tag.TAG_STRING)) {
+                    this.slot = tag.getString("Slot");
                 }
             }
 
             public JsonObject toJsonObject() {
                 JsonObject object = new JsonObject();
-                if (this.scope != null) {
-                    object.add("scope", this.scope.toJsonObject());
+                if (this.name != null) {
+                    object.addProperty("Name", this.name);
                 }
-                if (this.barrel != null) {
-                    object.add("barrel", this.barrel.toJsonObject());
+                if (this.slot != null) {
+                    object.addProperty("Slot", this.slot);
                 }
                 return object;
             }
 
-            public Attachments copy() {
-                Attachments attachments = new Attachments();
-                if (this.scope != null) {
-                    attachments.scope = this.scope.copy();
+            public Attachment copy() {
+                var attachments = new Attachment();
+                if (this.name != null) {
+                    attachments.name = this.name;
                 }
-                if (this.barrel != null) {
-                    attachments.barrel = this.barrel.copy();
+                if (this.slot != null) {
+                    attachments.slot = this.slot;
                 }
                 return attachments;
-            }
-
-            @Nullable
-            private ScaledPositioned createScaledPositioned(CompoundTag tag, String key) {
-                CompoundTag attachment = tag.getCompound(key);
-                return attachment.isEmpty() ? null : new ScaledPositioned(attachment);
             }
         }
 
@@ -1206,11 +1201,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 object.add("zoom", this.zoom.toJsonObject());
             }
 
-            var array = new JsonArray();
-            for (var mod: mods) {
-                array.add(mod);
-            }
-            object.add("mods", array);
+//            var array = new JsonArray();
+//            for (var mod: mods) {
+//                array.add(mod.toJsonObject());
+//            }
+//            object.add("mods", array);
 
             GunJsonUtil.addObjectIfNotEmpty(object, "attachments", this.attachments.toJsonObject());
             return object;
