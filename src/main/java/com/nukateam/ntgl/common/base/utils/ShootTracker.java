@@ -6,12 +6,12 @@ import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.google.common.collect.Maps;
 import net.minecraft.Util;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -29,9 +29,9 @@ public class ShootTracker {
      * cooldown tracker quietly and not send cooldown packet back to client. The cooldown is still
      * applied on the client in {@link GunItem#onItemUseFirst(ItemStack, UseOnContext)} and {@link GunItem#onUsingTick}.
      */
-    private static final Map<LivingEntity, ShootTracker> SHOOT_TRACKER_MAP = new WeakHashMap<>();
+    private static final Map<Pair<LivingEntity, InteractionHand>, ShootTracker> SHOOT_TRACKER_MAP = new WeakHashMap<>();
 
-    private final Map<Item, Pair<Long, Integer>> cooldownMap = Maps.newHashMap();
+    private final Map<InteractionHand, Pair<Long, Integer>> cooldownMap = Maps.newHashMap();
 
     /**
      * Gets the cooldown tracker for the specified player UUID.
@@ -39,8 +39,8 @@ public class ShootTracker {
      * @param entity the player instance
      * @return a cooldown tracker get
      */
-    public static ShootTracker getShootTracker(LivingEntity entity) {
-        return SHOOT_TRACKER_MAP.computeIfAbsent(entity, entity1 -> new ShootTracker());
+    public static ShootTracker getShootTracker(LivingEntity entity, InteractionHand hand) {
+        return SHOOT_TRACKER_MAP.computeIfAbsent(Pair.of(entity, hand), key -> new ShootTracker());
     }
 
     /**
@@ -48,12 +48,13 @@ public class ShootTracker {
      * of the weapon to determine when it's allowed to fire again.
      *
      * @param item        a gun item
-     * @param modifiedGun the modified gun get of the specified gun
+     * @param hand the hand gun get of the specified gun
      */
-    public void putCooldown(ItemStack weapon, GunItem item, Gun modifiedGun) {
+    public void putCooldown(ItemStack weapon, GunItem item, InteractionHand hand) {
+        var modifiedGun = item.getModifiedGun(weapon);
         int rate = GunEnchantmentHelper.getRate(weapon, modifiedGun);
         rate = GunModifierHelper.getModifiedRate(weapon, rate);
-        this.cooldownMap.put(item, Pair.of(Util.getMillis(), rate * 50));
+        this.cooldownMap.put(hand, Pair.of(Util.getMillis(), rate * 50));
     }
 
     /**
@@ -65,8 +66,8 @@ public class ShootTracker {
      * @param item a gun item
      * @return if the specified gun item has an active cooldown
      */
-    public boolean hasCooldown(GunItem item) {
-        Pair<Long, Integer> pair = this.cooldownMap.get(item);
+    public boolean hasCooldown(InteractionHand hand) {
+        Pair<Long, Integer> pair = this.cooldownMap.get(hand);
         if (pair != null) {
             /* Give a 50 millisecond leeway as most of the time the cooldown has finished, just not exactly to the millisecond */
             return Util.getMillis() - pair.getLeft() < pair.getRight() - 50;
@@ -81,8 +82,8 @@ public class ShootTracker {
      * @param item a gun item
      * @return the remaining time in milliseconds
      */
-    public long getRemaining(GunItem item) {
-        Pair<Long, Integer> pair = this.cooldownMap.get(item);
+    public long getRemaining(InteractionHand hand) {
+        Pair<Long, Integer> pair = this.cooldownMap.get(hand);
         if (pair != null) {
             return pair.getRight() - (Util.getMillis() - pair.getLeft());
         }

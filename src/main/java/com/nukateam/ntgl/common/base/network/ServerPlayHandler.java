@@ -98,14 +98,16 @@ public class ServerPlayHandler {
                 shooter.setYRot(Mth.wrapDegrees(message.getRotationYaw()));
                 shooter.setXRot(Mth.clamp(message.getRotationPitch(), -90F, 90F));
 
-                ShootTracker tracker = ShootTracker.getShootTracker(shooter);
+                var tracker = ShootTracker.getShootTracker(shooter, hand);
 
-                if (tracker.hasCooldown(item) && tracker.getRemaining(item) > Config.SERVER.cooldownThreshold.get()) {
-                    Ntgl.LOGGER.warn(shooter.getName().getContents() + "(" + shooter.getUUID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: " + tracker.getRemaining(item));
+                if (tracker.hasCooldown(hand) && tracker.getRemaining(hand) > Config.SERVER.cooldownThreshold.get()) {
+                    Ntgl.LOGGER.warn(shooter.getName().getContents() +
+                            "(" + shooter.getUUID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: "
+                            + tracker.getRemaining(hand));
                     return;
                 }
 
-                tracker.putCooldown(heldItem, item, modifiedGun);
+                tracker.putCooldown(heldItem, item, hand);
 
                 if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(shooter)) {
                     ModSyncedDataKeys.RELOADING_RIGHT.setValue(shooter, false);
