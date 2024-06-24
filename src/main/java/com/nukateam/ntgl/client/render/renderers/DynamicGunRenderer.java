@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import static com.nukateam.ntgl.client.event.InputEvents.*;
 import static net.minecraft.world.item.ItemDisplayContext.*;
 
 public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRenderer<T> {
@@ -109,9 +110,9 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
             poseStack.pushPose();
             {
                 RenderUtils.prepMatrixForBone(poseStack, bone);
-                poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+//                poseStack.mulPose(Axis.XP.rotationDegrees(-90));
 //                poseStack.scale(bone.getScaleX(), bone.getScaleY(), bone.getScaleZ());
-                poseStack.translate(0.02, -0.44, -0.15);
+                poseStack.translate(0.01, -0.27, 0.05);
 //                poseStack.translate(X, Y, Z);
 
 //                poseStack.mulPose(Axis.XP.rotationDegrees(180));
