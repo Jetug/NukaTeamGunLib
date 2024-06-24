@@ -103,15 +103,16 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         }
 
         //after hiding the bones and checking of your display type to render them in, in this case first and third person
-        if (renderArms && this.transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND || this.transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND) {
+        if (renderArms && this.transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND ||
+                this.transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND) {
             var playerEntityRenderer = (PlayerRenderer) client.getEntityRenderDispatcher().getRenderer(client.player);
             var playerEntityModel = playerEntityRenderer.getModel();
             poseStack.pushPose();
             {
                 RenderUtils.prepMatrixForBone(poseStack, bone);
-                poseStack.mulPose(Axis.XP.rotationDegrees(-90));
+//                poseStack.mulPose(Axis.XP.rotationDegrees(-90));
 //                poseStack.scale(bone.getScaleX(), bone.getScaleY(), bone.getScaleZ());
-                poseStack.translate(0.02, -0.44, -0.15);
+//                poseStack.translate(0.02, -0.44, -0.15);
 //                poseStack.translate(X, Y, Z);
 
 //                poseStack.mulPose(Axis.XP.rotationDegrees(180));

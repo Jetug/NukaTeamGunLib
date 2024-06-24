@@ -1,16 +1,20 @@
 {
   "parent": "builtin/entity",
+  "texture_size": [
+    512,
+    512
+  ],
   "display": {
     "thirdperson_righthand": {
       "translation": [
-        0,
+        0.75,
         -2,
         -0.75
       ]
     },
     "thirdperson_lefthand": {
       "translation": [
-        0,
+        0.75,
         -2,
         -0.75
       ]
@@ -24,19 +28,19 @@
     },
     "gui": {
       "rotation": [
-        0,
-        90,
-        0
+        178,
+        43.25,
+        -180
       ],
       "translation": [
-        -0.25,
-        -4.5,
+        1.5,
+        -3.25,
         0
       ],
       "scale": [
-        1.8984375,
-        1.8984375,
-        1.8984375
+        1.4453125,
+        1.4453125,
+        1.4453125
       ]
     },
     "fixed": {
@@ -46,7 +50,7 @@
         0
       ],
       "translation": [
-        0,
+        2,
         -5,
         0
       ],
