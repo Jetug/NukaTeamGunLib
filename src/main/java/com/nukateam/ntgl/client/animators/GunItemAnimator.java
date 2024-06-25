@@ -124,9 +124,6 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                     return event.setAndContinue(holdAnimation);
 
                 var arm = isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
-                var oppositeItem = entity.getItemInHand(PlayerHelper.convertHand(arm.getOpposite()));
-                var isOneHanded = general.getGripType() == GripType.ONE_HANDED && isOneHanded(oppositeItem);
-
                 var shootingHandler = ShootingHandler.get();
                 var isShooting = shootingHandler.isShooting(entity, arm);
                 var data = shootingHandler.getShootingData(arm);
@@ -173,11 +170,12 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
     }
 
     private RawAnimation playGunAnim(String name, Animation.LoopType loopType){
-        var general = getGunItem().getModifiedGun(getStack()).getGeneral();
-        var entity = getEntity();
         var arm = isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
+        var entity = getEntity();
+        var currentItem = entity.getItemInHand(PlayerHelper.convertHand(arm));
         var oppositeItem = entity.getItemInHand(PlayerHelper.convertHand(arm.getOpposite()));
-        var isOneHanded = general.getGripType() == GripType.ONE_HANDED && isOneHanded(oppositeItem);
+
+        var isOneHanded = isOneHanded(currentItem) && isOneHanded(oppositeItem) || arm == HumanoidArm.LEFT;
 
         if(isOneHanded && hasAnimation(name + ONE_HAND_SUFFIX))
             return begin().then(name + ONE_HAND_SUFFIX, loopType);

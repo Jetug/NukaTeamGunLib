@@ -33,7 +33,7 @@
 			}
 		},
 		"slide_on": {
-			"animation_length": 0.04167,
+			"animation_length": 0.0417,
 			"bones": {
 				"slide": {
 					"position": {
@@ -255,7 +255,7 @@
 			}
 		},
 		"slide_off": {
-			"animation_length": 0.04167,
+			"animation_length": 0.0417,
 			"bones": {
 				"slide": {
 					"position": {
