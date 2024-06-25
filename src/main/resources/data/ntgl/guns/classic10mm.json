@@ -1,6 +1,6 @@
 {
   "general": {
-    "rate": 5,
+    "rate": 15,
     "gripType": "ntgl:one_handed",
     "fireMode": "ntgl:semi",
     "fireTimer": 20,

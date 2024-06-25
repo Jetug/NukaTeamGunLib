@@ -29,7 +29,7 @@
 					"name": "right_arm",
 					"parent": "right_arm_anim",
 					"pivot": [-8.2, 2.2, 0.9],
-					"rotation": [90, 0, 0],
+					"rotation": [90, 0, -180],
 					"cubes": [
 						{
 							"origin": [-10.2, -3.8, -1.1],
@@ -763,7 +763,7 @@
 					"name": "left_arm",
 					"parent": "left_arm_anim",
 					"pivot": [8.2, 2.2, 0.9],
-					"rotation": [90, 0, 0],
+					"rotation": [90, 0, -180],
 					"cubes": [
 						{
 							"origin": [6.2, -3.8, -1.1],
