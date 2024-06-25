@@ -8,9 +8,11 @@ import com.nukateam.ntgl.client.data.handler.ShootingHandler;
 import com.nukateam.ntgl.client.model.GeoGunModel;
 import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
 import com.nukateam.ntgl.client.render.renderers.GeoDynamicItemRenderer;
+import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 
+import com.nukateam.ntgl.common.helpers.PlayerHelper;
 import mod.azure.azurelib.cache.AzureLibCache;
 import mod.azure.azurelib.core.animation.Animation;
 import mod.azure.azurelib.core.animation.AnimationController;
@@ -42,6 +44,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
     public static final String RELOAD_START = "reload_start";
     public static final String RELOAD_END = "reload_end";
     public static final String CHARGE = "charge";
+    public static final String ONE_HAND_SUFFIX = "_one_hand";
     private final Minecraft minecraft = Minecraft.getInstance();
     private final DynamicGunRenderer<GunItemAnimator> renderer;
     private int chamberId = 1;
@@ -97,7 +100,12 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                 return PlayState.STOP;
             }
         };
-}
+    }
+
+    private boolean isOneHanded(ItemStack stack){
+        return stack.getItem() instanceof GunItem gunItem &&
+                gunItem.getModifiedGun(stack).getGeneral().getGripType() == GripType.ONE_HANDED;
+    }
 
     private AnimationController.AnimationStateHandler<GunItemAnimator> animate() {
         return event -> {
@@ -108,10 +116,15 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                 var entity = getEntity();
                 var reloadHandler = ClientReloadHandler.get();
 
+                var holdAnimation = playGunAnim(HOLD, LOOP);
+
                 if (!isHandTransform(transformType))
-                    return event.setAndContinue(begin().then(HOLD, LOOP));
+                    return event.setAndContinue(holdAnimation);
 
                 var arm = isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
+                var oppositeItem = entity.getItemInHand(PlayerHelper.convertHand(arm.getOpposite()));
+                var isOneHanded = general.getGripType() == GripType.ONE_HANDED && isOneHanded(oppositeItem);
+
                 var shootingHandler = ShootingHandler.get();
                 var isShooting = shootingHandler.isShooting(entity, arm);
                 var data = shootingHandler.getShootingData(arm);
@@ -125,16 +138,17 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                 } else if (reloadHandler.isReloading(entity, arm)) {
                     animation = getReloadAnimation(event, general);
                 } else if (isShooting) {
-                    animation = begin().then(SHOT, LOOP);
+                    animation = playGunAnim(SHOT, LOOP);
+//                    animation = begin().then(SHOT, LOOP);
                     syncAnimation(event, SHOT, general.getRate());
                 } else if (reloadHandler.isReloading(entity, arm.getOpposite())) {
                     animation = begin().then("hide", HOLD_ON_LAST_FRAME);
                 } else {
                     if (currentGun == getGunItem())
-                        animation = begin().then(HOLD, LOOP);
+                        animation = holdAnimation;
                     else {
                         currentGun = getGunItem();
-                        animation = begin().then(SHOT, LOOP);
+                        animation = playGunAnim(SHOT, LOOP);
                     }
                 }
 //                else if(!Gun.hasAmmo(stack)){
@@ -149,6 +163,18 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                 return PlayState.STOP;
             }
         };
+    }
+
+    private RawAnimation playGunAnim(String name, Animation.LoopType loopType){
+        var general = getGunItem().getModifiedGun(getStack()).getGeneral();
+        var entity = getEntity();
+        var arm = isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
+        var oppositeItem = entity.getItemInHand(PlayerHelper.convertHand(arm.getOpposite()));
+        var isOneHanded = general.getGripType() == GripType.ONE_HANDED && isOneHanded(oppositeItem);
+
+        if(isOneHanded && hasAnimation(name + ONE_HAND_SUFFIX))
+            return begin().then(name + ONE_HAND_SUFFIX, loopType);
+        return begin().then(name, loopType);
     }
 
     @NotNull

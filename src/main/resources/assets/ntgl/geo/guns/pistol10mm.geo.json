@@ -21,29 +21,6 @@
 					"pivot": [-8.1, 2, 3.9]
 				},
 				{
-					"name": "right_arm",
-					"parent": "gun_arm",
-					"pivot": [0.05, 1, 6.2],
-					"rotation": [90, 0, -180],
-					"cubes": [
-						{
-							"origin": [-1.95, -5, 4.2],
-							"size": [4, 12, 4],
-							"inflate": -0.5,
-							"pivot": [0.05, 1, 6.2],
-							"rotation": [0, 0, 180],
-							"uv": {
-								"north": {"uv": [44, 36], "uv_size": [4, 12]},
-								"east": {"uv": [40, 36], "uv_size": [4, 12]},
-								"south": {"uv": [52, 36], "uv_size": [4, 12]},
-								"west": {"uv": [48, 36], "uv_size": [4, 12]},
-								"up": {"uv": [44, 32], "uv_size": [4, 4]},
-								"down": {"uv": [48, 36], "uv_size": [4, -4]}
-							}
-						}
-					]
-				},
-				{
 					"name": "gun",
 					"parent": "gun_arm",
 					"pivot": [0, 0.9, 3.3]
@@ -563,17 +540,51 @@
 					]
 				},
 				{
-					"name": "left_arm",
-					"parent": "model",
-					"pivot": [8.2, 2.2, 9.15],
+					"name": "right_arm_anim",
+					"parent": "gun_arm",
+					"pivot": [-8.2, 2.2, 0.9]
+				},
+				{
+					"name": "right_arm",
+					"parent": "right_arm_anim",
+					"pivot": [0.05, 0.95, 6.15],
 					"rotation": [90, 0, -180],
 					"cubes": [
 						{
-							"origin": [11.7, -0.05, 8.9],
+							"origin": [-1.95, -5.05, 4.15],
 							"size": [4, 12, 4],
 							"inflate": -0.5,
-							"pivot": [13.7, 5.95, 10.9],
-							"rotation": [0, 0, -162.5],
+							"pivot": [0.05, 0.95, 6.15],
+							"rotation": [0, 0, 180],
+							"uv": {
+								"north": {"uv": [44, 36], "uv_size": [4, 12]},
+								"east": {"uv": [40, 36], "uv_size": [4, 12]},
+								"south": {"uv": [52, 36], "uv_size": [4, 12]},
+								"west": {"uv": [48, 36], "uv_size": [4, 12]},
+								"up": {"uv": [44, 32], "uv_size": [4, 4]},
+								"down": {"uv": [48, 36], "uv_size": [4, -4]}
+							}
+						}
+					]
+				},
+				{
+					"name": "left_arm_anim",
+					"parent": "model",
+					"pivot": [-1, -0.1, 1],
+					"rotation": [0, 17.5, 0]
+				},
+				{
+					"name": "left_arm",
+					"parent": "left_arm_anim",
+					"pivot": [1.45, 0.6, 6.65],
+					"rotation": [90, 0, -180],
+					"cubes": [
+						{
+							"origin": [-0.55, -5.4, 4.65],
+							"size": [4, 12, 4],
+							"inflate": -0.5,
+							"pivot": [1.45, 0.6, 6.65],
+							"rotation": [0, 0, 180],
 							"uv": {
 								"north": {"uv": [40, 52], "uv_size": [-4, 12]},
 								"east": {"uv": [44, 52], "uv_size": [-4, 12]},

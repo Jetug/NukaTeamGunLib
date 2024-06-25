@@ -870,7 +870,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         private Attachments attachments = new Attachments();
         @Optional
         @Nullable
-        private ArrayList<Attachment> mods;
+        private ArrayList<Attachment> mods = new ArrayList<>();
 
         @Nullable
         public Zoom getZoom() {
@@ -879,6 +879,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         public Attachments getAttachments() {
             return this.attachments;
+        }
+
+        public ArrayList<Attachment> getMods() {
+            return this.mods;
         }
 
         @Override

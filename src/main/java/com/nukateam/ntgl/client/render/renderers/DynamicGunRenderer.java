@@ -8,6 +8,7 @@ import com.nukateam.ntgl.client.animators.ItemAnimator;
 import com.nukateam.ntgl.client.model.GeoGunModel;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.foundation.item.GunItem;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.util.ClientUtils;
@@ -78,8 +79,6 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
             Ntgl.LOGGER.debug("");
         }
 
-//        renderAttachments(stack, getRenderItem(entity, transformType));
-
         super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
 //        poseStack.popPose();
     }
@@ -102,6 +101,8 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
                 renderArms = true;
             }
         }
+
+        renderAttachments(renderStack, bone);
 
         //after hiding the bones and checking of your display type to render them in, in this case first and third person
         if (renderArms && this.transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND || this.transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND) {
@@ -155,7 +156,12 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
 //        super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    protected void renderAttachments(ItemStack stack, GunItemAnimator item) {
+    protected void renderAttachments(ItemStack stack, GeoBone bone) {
+
+        var gun = ((GunItem)stack.getItem()).getModifiedGun(stack);
+        for(var att : gun.getModules().getMods()){
+            att.getName();
+        }
 //        var config = item.getConfig();
 //
 //        if (config != null) {
@@ -170,5 +176,7 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
 //            for (var name : names)
 //                getGeoModel().getBone(name).ifPresent((bone) -> bone.setHidden(false));
 //        }
+
+
     }
 }
