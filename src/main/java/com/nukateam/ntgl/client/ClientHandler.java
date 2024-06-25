@@ -44,6 +44,7 @@ import static com.nukateam.ntgl.client.data.handler.ShootingHandler.gunCooldown;
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientHandler {
+    public static final int INSPECTION_DURATION = 60;
     private static Field mouseOptionsField;
 
     public static void setup() {
@@ -123,7 +124,7 @@ public class ClientHandler {
     private static int inspectionTimer;
 
     public static void resetInspectionTimer(){
-        inspectionTimer = 30;
+        inspectionTimer = INSPECTION_DURATION;
     }
 
     public static int getInspectionTicks() {
@@ -131,7 +132,7 @@ public class ClientHandler {
     }
 
     public static int getMaxInspectionTicks() {
-        return 30;
+        return INSPECTION_DURATION;
     }
 
     @SubscribeEvent
