@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.data.handler;
 
+import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
@@ -83,6 +84,11 @@ public class ClientReloadHandler {
             if (KeyBinds.KEY_INSPECT.consumeClick()){
                 var mainGun = player.getMainHandItem();
                 var offGun = player.getOffhandItem();
+
+                if(mainGun.getItem() instanceof GunItem gunItem &&
+                        ClientHandler.getInspectionTicks() == 0){
+                    ClientHandler.resetInspectionTimer();
+                }
             }
         }
     }

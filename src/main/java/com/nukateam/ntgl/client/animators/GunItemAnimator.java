@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.animators;
 
 import com.nukateam.example.common.data.interfaces.IResourceProvider;
+import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.data.handler.AimingHandler;
 import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
@@ -45,6 +46,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
     public static final String RELOAD_END = "reload_end";
     public static final String CHARGE = "charge";
     public static final String ONE_HAND_SUFFIX = "_one_hand";
+    public static final String INSPECT = "inspect";
     private final Minecraft minecraft = Minecraft.getInstance();
     private final DynamicGunRenderer<GunItemAnimator> renderer;
     private int chamberId = 1;
@@ -143,7 +145,12 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                     syncAnimation(event, SHOT, general.getRate());
                 } else if (reloadHandler.isReloading(entity, arm.getOpposite())) {
                     animation = begin().then("hide", HOLD_ON_LAST_FRAME);
-                } else {
+                }
+                else if(ClientHandler.getInspectionTicks() > 0){
+                    syncAnimation(event, INSPECT, ClientHandler.getMaxInspectionTicks());
+                    animation = playGunAnim(INSPECT, PLAY_ONCE);
+                }
+                else {
                     if (currentGun == getGunItem())
                         animation = holdAnimation;
                     else {

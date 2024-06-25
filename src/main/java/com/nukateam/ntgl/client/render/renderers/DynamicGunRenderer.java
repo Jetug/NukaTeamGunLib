@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -160,7 +161,9 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
 
         var gun = ((GunItem)stack.getItem()).getModifiedGun(stack);
         for(var att : gun.getModules().getMods()){
-            att.getName();
+            if(Objects.equals(bone.getName(), att.getName())){
+                bone.setHidden(true);
+            }
         }
 //        var config = item.getConfig();
 //

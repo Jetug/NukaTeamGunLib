@@ -120,9 +120,25 @@ public class ClientHandler {
         MenuScreens.register(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
     }
 
+    private static int inspectionTimer;
+
+    public static void resetInspectionTimer(){
+        inspectionTimer = 30;
+    }
+
+    public static int getInspectionTicks() {
+        return inspectionTimer;
+    }
+
+    public static int getMaxInspectionTicks() {
+        return 30;
+    }
+
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
         var remove = new ArrayList<ItemStack>();
+
+        if(inspectionTimer > 0) inspectionTimer--;
 
         if(event.phase == TickEvent.Phase.START) {
             for (var item : gunCooldown) {
