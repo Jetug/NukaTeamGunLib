@@ -51,7 +51,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import static com.nukateam.ntgl.client.data.util.PropertyHelper.*;
-import static com.nukateam.ntgl.client.render.Render.GUN_RENDERER;
+import static com.nukateam.ntgl.client.render.Render.*;
 import static com.nukateam.ntgl.common.data.util.GunModifierHelper.canRenderInOffhand;
 
 public class GunRenderingHandler {
@@ -568,7 +568,7 @@ public class GunRenderingHandler {
     public void renderWeapon(@Nullable LivingEntity entity, ItemStack stack,
                              ItemDisplayContext transformType, PoseStack poseStack,
                              MultiBufferSource bufferSource, int packedLight) {
-        if (stack.getItem() instanceof GunItem) {
+        if (stack.getItem() instanceof GunItem gunItem) {
             poseStack.pushPose();
 
             ItemStack model = ItemStack.EMPTY;
@@ -582,7 +582,7 @@ public class GunRenderingHandler {
 
             this.renderingWeapon = stack;
 
-            GUN_RENDERER.render(
+            gunItem.GUN_RENDERER.render(
                     entity,
                     model.isEmpty() ? stack : model,
                     transformType,
