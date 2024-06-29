@@ -1,8 +1,7 @@
 package com.nukateam.ntgl.client.render.renderers;
 
 import com.nukateam.ntgl.client.animators.ItemAnimator;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.*;
 
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.constant.DataTickets;
@@ -10,12 +9,11 @@ import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.model.data.EntityModelData;
 import mod.azure.azurelib.renderer.GeoObjectRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.*;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
@@ -23,11 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 
 public class GeoDynamicItemRenderer<T extends ItemAnimator> extends GeoObjectRenderer<T> {
-    private final Map<LivingEntity, Map<ItemDisplayContext, T>> animatorsByTransform = new HashMap<>();
+    private final Map<Pair<LivingEntity, ItemDisplayContext>, T> animatorsByTransform = new HashMap<>();
     private final BiFunction<ItemDisplayContext, GeoDynamicItemRenderer<T>, T> animatorFactory;
     protected ItemStack currentItemStack;
     protected ItemDisplayContext currentTransform;
@@ -51,10 +48,12 @@ public class GeoDynamicItemRenderer<T extends ItemAnimator> extends GeoObjectRen
     }
 
     public T getRenderItem(LivingEntity entity, ItemDisplayContext transformType) {
-        if (!animatorsByTransform.containsKey(entity)) {
-            animatorsByTransform.put(entity, createAnimators());
-        }
-        return animatorsByTransform.get(entity).get(transformType);
+        var key = Pair.of(entity, transformType);
+
+        if (!animatorsByTransform.containsKey(key))
+            animatorsByTransform.put(key, animatorFactory.apply(transformType, this));
+
+        return animatorsByTransform.get(key);
     }
 
     @Override
@@ -81,13 +80,6 @@ public class GeoDynamicItemRenderer<T extends ItemAnimator> extends GeoObjectRen
             super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
         }
         poseStack.popPose();
-    }
-
-    protected Map<ItemDisplayContext, T> createAnimators(){
-        var result = new HashMap<ItemDisplayContext, T>();
-        for (var transform: ItemDisplayContext.values())
-            result.put(transform, animatorFactory.apply(transform, this));
-        return result;
     }
 
     private void setupRender(T animatable, boolean isReRender, float partialTick, boolean shouldSit, float netHeadYaw, float limbSwingAmount, float limbSwing) {

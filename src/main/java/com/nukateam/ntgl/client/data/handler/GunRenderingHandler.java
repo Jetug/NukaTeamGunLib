@@ -582,7 +582,7 @@ public class GunRenderingHandler {
 
             this.renderingWeapon = stack;
 
-            gunItem.GUN_RENDERER.render(
+            gunItem.getRenderer().render(
                     entity,
                     model.isEmpty() ? stack : model,
                     transformType,

@@ -25,7 +25,7 @@ public class ItemRendererMixin {
                              boolean pLeftHand, PoseStack pPoseStack, MultiBufferSource pBuffer, Level pLevel,
                              int pCombinedLight, int pCombinedOverlay, int pSeed, CallbackInfo ci) {
         if(pItemStack.getItem() instanceof GunItem gunItem){
-            gunItem.GUN_RENDERER.setEntity(pEntity);
+            gunItem.getRenderer().setEntity(pEntity);
         }
     }
 }

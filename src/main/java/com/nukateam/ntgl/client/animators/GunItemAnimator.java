@@ -35,7 +35,6 @@ import javax.annotation.Nullable;
 
 import static com.nukateam.example.common.data.constants.Animations.*;
 import static com.nukateam.ntgl.client.data.util.TransformUtils.*;
-import static com.nukateam.ntgl.client.render.Render.*;
 import static mod.azure.azurelib.core.animation.AnimatableManager.*;
 import static mod.azure.azurelib.core.animation.Animation.LoopType.*;
 import static mod.azure.azurelib.core.animation.RawAnimation.*;
@@ -63,7 +62,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
         var mainController = new AnimationController<>(this, "mainController", 0, animate())
                 .setSoundKeyframeHandler(this::soundHandler);
         controllerRegistrar.add(mainController);
-        controllerRegistrar.add(new AnimationController<>(this, "aimController", 0, holdAnimation()));
+        controllerRegistrar.add(new AnimationController<>(this, "aimController", 0, aimAnimation()));
         controllerRegistrar.add(new AnimationController<>(this, "revolverController", 0, animateRevolver()));
     }
 
@@ -89,7 +88,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
         return (GunItem) getStack().getItem();
     }
 
-    private AnimationController.AnimationStateHandler<GunItemAnimator> holdAnimation() {
+    private AnimationController.AnimationStateHandler<GunItemAnimator> aimAnimation() {
         return event -> {
             event.getController().setAnimationSpeed(1);
 //            var stack = GUN_RENDERER.getRenderStack();
@@ -99,7 +98,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                 var animation = begin().then("aim", HOLD_ON_LAST_FRAME);
                 return event.setAndContinue(animation);
             } else {
-                return PlayState.STOP;
+                return event.setAndContinue(begin().then(HOLD, PLAY_ONCE));
             }
         };
     }

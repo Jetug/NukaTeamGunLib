@@ -81,7 +81,6 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         }
 
         super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
-//        poseStack.popPose();
     }
 
     @Override

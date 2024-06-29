@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.foundation.item;
 import com.nukateam.example.common.data.interfaces.IResourceProvider;
 import com.nukateam.example.common.data.utils.ResourceUtils;
 import com.nukateam.ntgl.client.render.renderers.DefaultGunRenderer;
+import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
 import com.nukateam.ntgl.client.render.renderers.GunItemRenderer;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
@@ -42,12 +43,16 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
-    public final DefaultGunRenderer GUN_RENDERER = new DefaultGunRenderer();
+    private final DefaultGunRenderer GUN_RENDERER = new DefaultGunRenderer();
 
     private Gun gun = new Gun();
 
     public GunItem(Item.Properties properties) {
         super(properties);
+    }
+
+    public DynamicGunRenderer getRenderer(){
+        return GUN_RENDERER;
     }
 
     public void setGun(NetworkGunManager.Supplier supplier) {
@@ -80,7 +85,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (renderer == null)
-                    return new GunItemRenderer(GUN_RENDERER);
+                    return new GunItemRenderer(getRenderer());
                 return this.renderer;
             }
         });
