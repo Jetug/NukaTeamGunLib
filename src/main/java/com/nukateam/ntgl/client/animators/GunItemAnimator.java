@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.animators;
 
 import com.nukateam.example.common.data.interfaces.IResourceProvider;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.data.handler.AimingHandler;
@@ -14,6 +15,7 @@ import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 
 import com.nukateam.ntgl.common.helpers.PlayerHelper;
+import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.cache.AzureLibCache;
 import mod.azure.azurelib.core.animation.Animation;
 import mod.azure.azurelib.core.animation.AnimationController;
@@ -57,12 +59,17 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
         this.renderer = (DynamicGunRenderer<GunItemAnimator>) renderer;
     }
 
+//    AnimationController<GunItemAnimator> triggersController = new AnimationController<>(this, "aimController", aimAnimation())
+//            .triggerableAnim("aim", begin().then("aim", HOLD_ON_LAST_FRAME));
+
     @Override
     public void registerControllers(ControllerRegistrar controllerRegistrar) {
         var mainController = new AnimationController<>(this, "mainController", 0, animate())
                 .setSoundKeyframeHandler(this::soundHandler);
+
         controllerRegistrar.add(mainController);
-        controllerRegistrar.add(new AnimationController<>(this, "aimController", 0, aimAnimation()));
+//        controllerRegistrar.add(triggersController);
+        controllerRegistrar.add(new AnimationController<>(this, "aimController", aimAnimation()));
         controllerRegistrar.add(new AnimationController<>(this, "revolverController", 0, animateRevolver()));
     }
 
@@ -94,11 +101,33 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
 //            var stack = GUN_RENDERER.getRenderStack();
 //            if (stack == null || stack.isEmpty()) return PlayState.STOP;
 
-            if (isFirstPerson(transformType) && AimingHandler.get().isAiming()) {
+            if (isFirstPerson(transformType) && AimingHandler.get().isAiming()){
+//                    &&
+//                    (triggersController.getCurrentAnimation() == null ||
+//                    !triggersController.getCurrentAnimation().animation().name().equals("aim"))) {
+//                triggersController.tryTriggerAnimation("aim");
+
+//                event.getController()
                 var animation = begin().then("aim", HOLD_ON_LAST_FRAME);
                 return event.setAndContinue(animation);
             } else {
-                return event.setAndContinue(begin().then(HOLD, PLAY_ONCE));
+                return event.setAndContinue(begin().then("void", PLAY_ONCE));
+//                triggersController.stop();
+
+//                try {
+//                    var currentAnimation = AnimationController.class.getField("currentAnimation");
+//                    currentAnimation.setAccessible(true);
+//                    currentAnimation.set(event.getController(), null);
+//
+//                    currentAnimation = AnimationController.class.getField("currentRawAnimation");
+//                    currentAnimation.setAccessible(true);
+//                    currentAnimation.set(event.getController(), null);
+//                }
+//                catch (Exception ignored) {
+//                    Ntgl.LOGGER.error(ignored.getMessage(), ignored);
+//                }
+
+//                return PlayState.STOP;
             }
         };
     }
@@ -132,7 +161,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                     var speed = 1 - ((float)data.fireTimer / (float)general.getFireTimer());
                     controller.setAnimationSpeed(1 * speed);
                     if(hasAnimation(CHARGE))
-                        animation = begin().then(CHARGE, LOOP);
+                        animation = playGunAnim(CHARGE, LOOP);
                 } else if (reloadHandler.isReloading(entity, arm)) {
                     animation = getReloadAnimation(event, general);
                 } else if (isShooting) {
@@ -143,8 +172,8 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                     animation = begin().then("hide", HOLD_ON_LAST_FRAME);
                 }
                 else if(ClientHandler.getInspectionTicks() > 0){
-                    syncAnimation(event, INSPECT, ClientHandler.getMaxInspectionTicks());
                     animation = playGunAnim(INSPECT, PLAY_ONCE);
+                    syncAnimation(event, INSPECT, ClientHandler.getMaxInspectionTicks());
                 }
                 else {
                     if (currentGun == getGunItem())

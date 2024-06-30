@@ -23,6 +23,7 @@ public class KeyBinds {
         event.register(KEY_RELOAD);
         event.register(KEY_UNLOAD);
         event.register(KEY_ATTACHMENTS);
+        event.register(KEY_INSPECT);
     }
 
     public static KeyMapping getAimMapping() {

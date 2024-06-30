@@ -23,6 +23,8 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
 
+import static com.nukateam.ntgl.client.data.handler.ShootingHandler.isInGame;
+
 /**
  * Author: MrCrayfish
  */
@@ -67,8 +69,10 @@ public class ClientReloadHandler {
 
     @SubscribeEvent
     public void onKeyPressed(InputEvent.Key event) {
-        var player = Minecraft.getInstance().player;
-        if (player == null)
+        var minecraft = Minecraft.getInstance();
+        var player = minecraft.player;
+
+        if (player == null || !isInGame())
             return;
 
         if(event.getAction() == GLFW.GLFW_PRESS) {

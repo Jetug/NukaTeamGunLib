@@ -60,7 +60,7 @@
   "info.ntgl.ammo": "Ammo: %s",
   "info.ntgl.ammo_type": "Ammo Type: %s",
   "info.ntgl.attachment_help": "Press %s in-game for Attachments",
-  "key.categories.ntgl": "Guns Core",
+  "key.categories.ntgl": "NTGL",
   "key.ntgl.reload": "Reload",
   "key.ntgl.unload": "Unload",
   "key.ntgl.attachments": "Modify Attachments",

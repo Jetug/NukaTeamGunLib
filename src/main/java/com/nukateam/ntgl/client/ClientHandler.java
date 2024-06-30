@@ -137,19 +137,21 @@ public class ClientHandler {
 
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
-        var remove = new ArrayList<ItemStack>();
+        if(event.phase == TickEvent.Phase.END) {
+            var remove = new ArrayList<ItemStack>();
 
-        if(inspectionTimer > 0) inspectionTimer--;
+            if (inspectionTimer > 0) inspectionTimer--;
 
-        if(event.phase == TickEvent.Phase.START) {
-            for (var item : gunCooldown) {
-                var tag =  item.getOrCreateTag();
-                var cool = tag.getInt("Cooldown");
-                if(cool > 0)
-                    tag.putInt("Cooldown", --cool);
-                else remove.add(item);
+            if (event.phase == TickEvent.Phase.START) {
+                for (var item : gunCooldown) {
+                    var tag = item.getOrCreateTag();
+                    var cool = tag.getInt("Cooldown");
+                    if (cool > 0)
+                        tag.putInt("Cooldown", --cool);
+                    else remove.add(item);
+                }
+                gunCooldown.removeAll(remove);
             }
-            gunCooldown.removeAll(remove);
         }
     }
 

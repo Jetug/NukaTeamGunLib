@@ -23,7 +23,7 @@
 				{
 					"name": "right_arm_anim",
 					"parent": "gun_arm",
-					"pivot": [-8.2, 2.2, 0.9]
+					"pivot": [-8.2, 2.2, 4.9]
 				},
 				{
 					"name": "right_arm",
@@ -74,7 +74,7 @@
 					]
 				},
 				{
-					"name": "slide",
+					"name": "cock",
 					"parent": "gun",
 					"pivot": [0, 3.63942, 2.4567],
 					"cubes": [
@@ -739,7 +739,7 @@
 				{
 					"name": "left_arm_anim",
 					"parent": "model",
-					"pivot": [0, 0, 0]
+					"pivot": [9, 2.2, 4.5]
 				},
 				{
 					"name": "left_arm",

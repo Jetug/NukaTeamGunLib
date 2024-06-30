@@ -66,8 +66,8 @@ public class ShootingHandler {
     private ShootingHandler() {
     }
 
-    private boolean isInGame() {
-        Minecraft mc = Minecraft.getInstance();
+    public static boolean isInGame() {
+        var mc = Minecraft.getInstance();
         if (mc.getOverlay() != null)
             return false;
         if (mc.screen != null)
