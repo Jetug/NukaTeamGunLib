@@ -3,9 +3,7 @@ package com.nukateam.ntgl.client.render.renderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.nukateam.ntgl.client.animators.GunItemAnimator;
 import com.nukateam.ntgl.client.animators.ItemAnimator;
-import com.nukateam.ntgl.client.model.GeoGunModel;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -14,6 +12,8 @@ import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.util.ClientUtils;
 import mod.azure.azurelib.util.RenderUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -26,9 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
-import static com.nukateam.ntgl.client.event.InputEvents.*;
 import static net.minecraft.world.item.ItemDisplayContext.*;
 
 public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRenderer<T> {
@@ -58,7 +56,7 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
     }
 
 //    @Override
-//    public float getMotionAnimThreshold(GunItemAnimator animatable) {
+//    public float getMotionAnimThreshold(GunAnimator animatable) {
 //        return 0.005f;
 //    }
 
@@ -105,7 +103,10 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         renderAttachments(renderStack, bone);
 
         //after hiding the bones and checking of your display type to render them in, in this case first and third person
-        if (renderArms && this.transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND || this.transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND) {
+        var isRightHand = this.transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND;
+        var isLeftHand = this.transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
+
+        if (renderArms && isRightHand || isLeftHand) {
             var playerEntityRenderer = (PlayerRenderer) client.getEntityRenderDispatcher().getRenderer(client.player);
             var playerEntityModel = playerEntityRenderer.getModel();
             poseStack.pushPose();
@@ -124,26 +125,19 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
                 var arm = this.bufferSource.getBuffer(RenderType.entitySolid(playerSkin));
                 var sleeve = this.bufferSource.getBuffer(RenderType.entityTranslucent(playerSkin));
 
-                if (bone.getName().equals(LEFT_ARM)) {
-//                    poseStack.scale(0.67f, 1.33f, 0.67f);
-//                    poseStack.translate(-0.25, -0.43625, 0.1625);
-                    playerEntityModel.leftArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-                    playerEntityModel.leftArm.setRotation(0, 0, 0);
-                    playerEntityModel.leftArm.render(poseStack, arm, packedLight, packedOverlay, 1, 1, 1, 1);
-
-                    playerEntityModel.leftSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-                    playerEntityModel.leftSleeve.setRotation(0, 0, 0);
-                    playerEntityModel.leftSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);
-                } else if (bone.getName().equals(RIGHT_ARM)) {
-//                    poseStack.scale(0.67f, 1.33f, 0.67f);
-//                    poseStack.translate(0.25, -0.43625, 0.1625);
-                    playerEntityModel.rightArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-                    playerEntityModel.rightArm.setRotation(0, 0, 0);
-                    playerEntityModel.rightArm.render(poseStack, arm, packedLight, packedOverlay, 1, 1, 1, 1);
-
-                    playerEntityModel.rightSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-                    playerEntityModel.rightSleeve.setRotation(0, 0, 0);
-                    playerEntityModel.rightSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);
+                if(isRightHand) {
+                    if (bone.getName().equals(LEFT_ARM)) {
+                        renderLeftArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                    } else if (bone.getName().equals(RIGHT_ARM)) {
+                        renderRightArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                    }
+                }
+                else{
+                    if (bone.getName().equals(LEFT_ARM)) {
+                        renderRightArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                    } else if (bone.getName().equals(RIGHT_ARM)) {
+                        renderLeftArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                    }
                 }
             }
             poseStack.popPose();
@@ -154,6 +148,26 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
                 packedOverlay, red, green, blue, alpha);
 
 //        super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+    }
+
+    private static void renderRightArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay, PlayerModel<AbstractClientPlayer> playerEntityModel, VertexConsumer arm, VertexConsumer sleeve) {
+        playerEntityModel.rightArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
+        playerEntityModel.rightArm.setRotation(0, 0, 0);
+        playerEntityModel.rightArm.render(poseStack, arm, packedLight, packedOverlay, 1, 1, 1, 1);
+
+        playerEntityModel.rightSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
+        playerEntityModel.rightSleeve.setRotation(0, 0, 0);
+        playerEntityModel.rightSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);
+    }
+
+    private static void renderLeftArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay, PlayerModel<AbstractClientPlayer> playerEntityModel, VertexConsumer arm, VertexConsumer sleeve) {
+        playerEntityModel.leftArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
+        playerEntityModel.leftArm.setRotation(0, 0, 0);
+        playerEntityModel.leftArm.render(poseStack, arm, packedLight, packedOverlay, 1, 1, 1, 1);
+
+        playerEntityModel.leftSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
+        playerEntityModel.leftSleeve.setRotation(0, 0, 0);
+        playerEntityModel.leftSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);
     }
 
     protected void renderAttachments(ItemStack stack, GeoBone bone) {

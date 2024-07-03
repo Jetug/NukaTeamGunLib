@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.client.animators;
 
 import com.nukateam.example.common.data.interfaces.IResourceProvider;
-import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.data.handler.AimingHandler;
@@ -15,7 +14,6 @@ import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 
 import com.nukateam.ntgl.common.helpers.PlayerHelper;
-import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.cache.AzureLibCache;
 import mod.azure.azurelib.core.animation.Animation;
 import mod.azure.azurelib.core.animation.AnimationController;
@@ -42,24 +40,24 @@ import static mod.azure.azurelib.core.animation.Animation.LoopType.*;
 import static mod.azure.azurelib.core.animation.RawAnimation.*;
 
 @OnlyIn(Dist.CLIENT)
-public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
+public class GunAnimator extends ItemAnimator implements IResourceProvider {
     public static final String RELOAD_START = "reload_start";
     public static final String RELOAD_END = "reload_end";
     public static final String CHARGE = "charge";
     public static final String ONE_HAND_SUFFIX = "_one_hand";
     public static final String INSPECT = "inspect";
     private final Minecraft minecraft = Minecraft.getInstance();
-    private final DynamicGunRenderer<GunItemAnimator> renderer;
+    private final DynamicGunRenderer<GunAnimator> renderer;
     private int chamberId = 1;
     private GunItem currentGun = null;
 
 
-    public GunItemAnimator(ItemDisplayContext transformType, GeoDynamicItemRenderer<GunItemAnimator> renderer) {
+    public GunAnimator(ItemDisplayContext transformType, GeoDynamicItemRenderer<GunAnimator> renderer) {
         super(transformType);
-        this.renderer = (DynamicGunRenderer<GunItemAnimator>) renderer;
+        this.renderer = (DynamicGunRenderer<GunAnimator>) renderer;
     }
 
-//    AnimationController<GunItemAnimator> triggersController = new AnimationController<>(this, "aimController", aimAnimation())
+//    AnimationController<GunAnimator> triggersController = new AnimationController<>(this, "aimController", aimAnimation())
 //            .triggerableAnim("aim", begin().then("aim", HOLD_ON_LAST_FRAME));
 
     @Override
@@ -95,7 +93,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
         return (GunItem) getStack().getItem();
     }
 
-    private AnimationController.AnimationStateHandler<GunItemAnimator> aimAnimation() {
+    private AnimationController.AnimationStateHandler<GunAnimator> aimAnimation() {
         return event -> {
             event.getController().setAnimationSpeed(1);
 //            var stack = GUN_RENDERER.getRenderStack();
@@ -137,7 +135,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
                 gunItem.getModifiedGun(stack).getGeneral().getGripType() == GripType.ONE_HANDED;
     }
 
-    private AnimationController.AnimationStateHandler<GunItemAnimator> animate() {
+    private AnimationController.AnimationStateHandler<GunAnimator> animate() {
         return event -> {
             try {
                 var controller = event.getController();
@@ -211,7 +209,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
     }
 
     @NotNull
-    private RawAnimation getReloadAnimation(AnimationState<GunItemAnimator> event, Gun.General general) {
+    private RawAnimation getReloadAnimation(AnimationState<GunAnimator> event, Gun.General general) {
         RawAnimation animation;
         animation = begin();
 
@@ -228,7 +226,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
         return animation;
     }
 
-    private AnimationController.AnimationStateHandler<GunItemAnimator> animateRevolver() {
+    private AnimationController.AnimationStateHandler<GunAnimator> animateRevolver() {
         return event -> {
             event.getController().setAnimationSpeed(1);
             var general = getGunItem().getModifiedGun(getStack()).getGeneral();
@@ -258,7 +256,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
         };
     }
 
-    private void syncAnimation(AnimationState<GunItemAnimator> event, String animationName, int reloadDuration) {
+    private void syncAnimation(AnimationState<GunAnimator> event, String animationName, int reloadDuration) {
         var multiplier = (float) getSpeedMultiplier(animationName, reloadDuration);
         event.setControllerSpeed(multiplier);
     }
@@ -289,7 +287,7 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
         return getAnimation(animationName) != null;
     }
 
-    private void soundHandler(SoundKeyframeEvent<GunItemAnimator> event) {
+    private void soundHandler(SoundKeyframeEvent<GunAnimator> event) {
         var player = minecraft.player;
         if (player == null) return;
         var sound = event.getKeyframeData().getSound();
