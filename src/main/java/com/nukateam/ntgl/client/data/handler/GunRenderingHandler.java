@@ -287,7 +287,7 @@ public class GunRenderingHandler {
 //          this.applyAimingTransforms(poseStack, heldItem, modifiedGun, translateX, translateY, translateZ, offset);
             this.applySwayTransforms(poseStack, modifiedGun, player, rightHandTranslation, event.getPartialTick());
 //          this.applySprintingTransforms(modifiedGun, hand, poseStack, event.getPartialTick());
-            this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
+//            this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
 //          this.applyReloadTransforms(poseStack, event.getPartialTick());
             this.applyShieldTransforms(poseStack, player, modifiedGun, event.getPartialTick());
 
