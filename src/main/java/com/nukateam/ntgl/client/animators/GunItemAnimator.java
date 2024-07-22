@@ -48,6 +48,8 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
     public static final String CHARGE = "charge";
     public static final String ONE_HAND_SUFFIX = "_one_hand";
     public static final String INSPECT = "inspect";
+    private static final String SHOT_START = "shot_start";
+    private static final String SHOT_END = "shot_end";
     private final Minecraft minecraft = Minecraft.getInstance();
     private final DynamicGunRenderer<GunItemAnimator> renderer;
     private int chamberId = 1;
@@ -225,6 +227,24 @@ public class GunItemAnimator extends ItemAnimator implements IResourceProvider {
 
         if(event.getController().getCurrentAnimation().animation().name().equals(RELOAD))
             syncAnimation(event, RELOAD, general.getReloadTime());
+        return animation;
+    }
+
+    @NotNull
+    private RawAnimation getShotAnimation(AnimationState<GunItemAnimator> event, Gun.General general) {
+        RawAnimation animation;
+        animation = begin();
+
+        if(containsAnimation(SHOT_START))
+            animation.then(SHOT_START, PLAY_ONCE);
+
+        animation.then(SHOT, LOOP);
+
+        if(containsAnimation(SHOT_END))
+            animation.then(SHOT_END, PLAY_ONCE);
+
+        if(event.getController().getCurrentAnimation().animation().name().equals(RELOAD))
+            syncAnimation(event, SHOT, general.getReloadTime());
         return animation;
     }
 
