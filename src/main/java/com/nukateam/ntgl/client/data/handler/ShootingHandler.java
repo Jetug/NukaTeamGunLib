@@ -40,7 +40,6 @@ import static net.minecraftforge.event.TickEvent.Type.RENDER;
  */
 public class ShootingHandler {
     private static ShootingHandler instance;
-
     public static final String COOLDOWN = "Cooldown";
     public static float shootMsGap = 0F;
 
@@ -50,20 +49,13 @@ public class ShootingHandler {
             HumanoidArm.LEFT, new ShootingData(0, null)
     );
 
+    private ShootingHandler() {}
+
     public static ShootingHandler get() {
         if (instance == null) {
             instance = new ShootingHandler();
         }
         return instance;
-    }
-
-    private boolean shooting;
-
-    public boolean isShooting() {
-        return shooting;
-    }
-
-    private ShootingHandler() {
     }
 
     public static boolean isInGame() {
@@ -76,6 +68,14 @@ public class ShootingHandler {
             return false;
         return mc.isWindowActive();
     }
+
+    private boolean shooting;
+
+    public boolean isShooting() {
+        return shooting;
+    }
+
+
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onMouseClick(InputEvent.MouseButton event) {
@@ -160,6 +160,7 @@ public class ShootingHandler {
     }
 
     private void setupShootingData(ItemStack stack, GunItem gunItem, HumanoidArm arm) {
+        if(!Gun.hasAmmo(stack)) return;
         var data = shootingData.get(arm);
         var gun = gunItem.getModifiedGun(stack);
         data.fireTimer = gun.getGeneral().getFireTimer();
@@ -188,11 +189,12 @@ public class ShootingHandler {
         if (evt.phase != TickEvent.Phase.START)
             return;
 
-        if (!this.isInGame())
+        if (!isInGame())
             return;
 
-        Minecraft mc = Minecraft.getInstance();
-        Player player = mc.player;
+        var mc = Minecraft.getInstance();
+        var player = mc.player;
+
         if (player != null) {
             // CHECK HERE: Reduce by 1F in each tick until it is less than 0F
 //            shootTickGapLeft -= shootTickGapLeft > 0F ? 1F : 0F;
@@ -243,8 +245,8 @@ public class ShootingHandler {
         var offhandItem = player.getOffhandItem();
 
         if (mainHandItem.getItem() instanceof GunItem gunItem){
-           if(mc.options.keyAttack.isDown())
-               handleAutoFire(player, mainHandItem, gunItem, HumanoidArm.RIGHT);
+            if(mc.options.keyAttack.isDown())
+                handleAutoFire(player, mainHandItem, gunItem, HumanoidArm.RIGHT);
 //           else setupShootingData(mainHandItem, gunItem, HumanoidArm.RIGHT);
         }
 
@@ -285,58 +287,6 @@ public class ShootingHandler {
         }
     }
 
-//    @SubscribeEvent
-//    public void onPostClientTick2(TickEvent.ClientTickEvent event) {
-//        if (event.phase != TickEvent.Phase.END)
-//            return;
-//
-//        if (!isInGame())
-//            return;
-//
-//        var mc = Minecraft.getInstance();
-//        var player = mc.player;
-//
-//        if (player != null) {
-//            if (PlayerReviveHelper.isBleeding(player))
-//                return;
-//
-//            ItemStack heldItem = player.getMainHandItem();
-//            if (heldItem.getItem() instanceof GunItem) {
-//                Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-//                if (!KeyBinds.getShootMapping().isDown() && gun.getGeneral().getFireTimer() != 0) {
-//                    fireTimer = gun.getGeneral().getFireTimer();
-//                }
-//                if (KeyBinds.getShootMapping().isDown()) {
-//                    if (gun.getGeneral().getFireTimer() != 0) {
-//                        ItemCooldowns tracker = player.getCooldowns();
-//                        if (fireTimer > 0 && !tracker.isOnCooldown(heldItem.getItem())) {
-//                            if (fireTimer == gun.getGeneral().getFireTimer() - 2) {
-//                                PacketHandler.getPlayChannel().sendToServer(new C2SMessagePreFireSound(player));
-//                            }
-//                            // If the player is in water, reduce the preFiring in half
-//                            if (player.isUnderWater()) {
-//                                fireTimer--;
-//                            }
-//                            fireTimer--;
-//                        } else {
-//                            // Execute after preFire timer ends
-//                            this.fire(player, heldItem);
-//                            if (gun.getGeneral().getFireMode() == FireMode.SEMI_AUTO || gun.getGeneral().getFireMode() == FireMode.PULSE) {
-//                                mc.options.keyAttack.setDown(false);
-//                                fireTimer = gun.getGeneral().getFireTimer();
-//                            }
-//                        }
-//                    } else {
-//                        this.fire(player, heldItem);
-//                        if (gun.getGeneral().getFireMode() == FireMode.SEMI_AUTO) {
-//                            mc.options.keyAttack.setDown(false);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     public static ArrayList<ItemStack> gunCooldown = new ArrayList<>();
 
     public static int getCooldown(ItemStack itemStack) {
@@ -369,7 +319,7 @@ public class ShootingHandler {
     public void renderTickLow(TickEvent.RenderTickEvent evt) {
         if (!evt.type.equals(RENDER) || evt.phase.equals(TickEvent.Phase.START))
             return;
-        
+
         if (shootMsGap > 0F) {
             shootMsGap -= evt.renderTickTime * visualCooldownMultiplier();
         } else if (shootMsGap < -0.05F)
@@ -466,27 +416,12 @@ public class ShootingHandler {
             RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
             RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
-                            shooter.getViewXRot(1),
-                            RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, isMainHand));
+                    shooter.getViewXRot(1),
+                    RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, isMainHand));
 
 //            if (Config.CLIENT.controls.burstPress.get()) this.burstTracker--;
 //            else this.burstTracker++;
             MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
         }
     }
-
-//    private boolean magError(Player player, ItemStack heldItem) {
-//        int[] extraAmmo = ((GunItem) heldItem.getItem()).getGun().getReloads().getMaxAdditionalAmmoPerOC();
-//        int magMode = GunModifierHelper.getAmmoCapacity(heldItem);
-//        if (magMode < 0) {
-//            if (heldItem.getItem() instanceof GunItem && heldItem.getTag().getInt("AmmoCount") - 1 > ((GunItem) heldItem.getItem()).getGun().getReloads().getMaxAmmo()) {
-//                return true;
-//            }
-//        } else {
-//            if (heldItem.getItem() instanceof GunItem && heldItem.getTag().getInt("AmmoCount") - 1 > ((GunItem) heldItem.getItem()).getGun().getReloads().getMaxAmmo() + extraAmmo[magMode]) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 }
