@@ -16,7 +16,7 @@
     "damage": 6.0,
     "size": 0.2,
     "speed": 29.0,
-    "life": 16
+    "life": 100
   },
   "sounds": {
     "fire": "ntgl:item.pistol38mm.fire",

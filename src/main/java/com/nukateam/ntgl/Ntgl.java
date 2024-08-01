@@ -15,10 +15,7 @@ import com.nukateam.ntgl.common.data.datagen.LootTableGen;
 import com.nukateam.ntgl.common.foundation.ModBlocks;
 import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
-import com.nukateam.ntgl.common.foundation.entity.FlameProjectile;
-import com.nukateam.ntgl.common.foundation.entity.GrenadeEntity;
-import com.nukateam.ntgl.common.foundation.entity.LaserProjectile;
-import com.nukateam.ntgl.common.foundation.entity.TeslaProjectile;
+import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import net.minecraft.core.RegistrySetBuilder;
@@ -141,6 +138,10 @@ public class Ntgl {
         ProjectileManager.getInstance().registerFactory(ROUND45.get(),
                 (worldIn, entity, weapon, item, modifiedGun) ->
                         new TeslaProjectile(Projectiles.TESLA_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
+
+        ProjectileManager.getInstance().registerFactory(ROUND38.get(),
+                (worldIn, entity, weapon, item, modifiedGun) ->
+                        new ContinuousLaserProjectile(Projectiles.CONTINUOUS_LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
 
         ProjectileManager.getInstance().registerFactory(ROUND5MM.get(),
                 (worldIn, entity, weapon, item, modifiedGun) ->

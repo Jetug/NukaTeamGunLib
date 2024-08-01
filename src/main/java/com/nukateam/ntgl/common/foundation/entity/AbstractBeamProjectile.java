@@ -25,6 +25,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import static net.minecraft.network.syncher.EntityDataSerializers.*;
 import static net.minecraft.network.syncher.SynchedEntityData.*;
 
 public abstract class AbstractBeamProjectile extends ProjectileEntity {
@@ -36,15 +37,15 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	protected Vec3 startVec = new Vec3(0 ,0 ,0);
 	protected Vec3 endVec   = new Vec3(0 ,0 ,0);
 
-	public static final EntityDataAccessor<Float> START_X = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
-	public static final EntityDataAccessor<Float> START_Y = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
-	public static final EntityDataAccessor<Float> START_Z = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
+	public static final EntityDataAccessor<Float> START_X = defineId(AbstractBeamProjectile.class, FLOAT);
+	public static final EntityDataAccessor<Float> START_Y = defineId(AbstractBeamProjectile.class, FLOAT);
+	public static final EntityDataAccessor<Float> START_Z = defineId(AbstractBeamProjectile.class, FLOAT);
 
-	public static final EntityDataAccessor<Float> END_X = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
-	public static final EntityDataAccessor<Float> END_Y = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
-	public static final EntityDataAccessor<Float> END_Z = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
+	public static final EntityDataAccessor<Float> END_X = defineId(AbstractBeamProjectile.class, FLOAT);
+	public static final EntityDataAccessor<Float> END_Y = defineId(AbstractBeamProjectile.class, FLOAT);
+	public static final EntityDataAccessor<Float> END_Z = defineId(AbstractBeamProjectile.class, FLOAT);
 
-	public static final EntityDataAccessor<Float> DISTANCE = defineId(AbstractBeamProjectile.class, EntityDataSerializers.FLOAT);
+	public static final EntityDataAccessor<Float> DISTANCE = defineId(AbstractBeamProjectile.class, FLOAT);
 
 	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn) {
 		super(entityType, worldIn);
@@ -52,7 +53,8 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		maxTicks = (short) life;
 	}
 
-	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
+	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn,
+								  LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
 		super(entityType, worldIn, shooter, weapon, item, modifiedGun);
 		this.startVec = new Vec3(this.getX(), this.getY(), this.getZ());
 	}
@@ -103,6 +105,9 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	}
 
 	public void trace() {
+		if (shooter == null)
+			return;
+
 		var startVec = new Vec3(this.getX(), this.getY(), this.getZ());
 		var endVec = startVec.add(this.getDeltaMovement());
 
@@ -112,6 +117,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		if (raytraceresult.getType() != HitResult.Type.MISS) {
 			endVec = raytraceresult.getLocation();
 		}
+
 
 		var entityResult = this.findEntityOnPath(shooter, startVec, endVec);
 

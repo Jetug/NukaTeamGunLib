@@ -14,11 +14,14 @@ public class GunEntityRenderers {
     public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(Projectiles.PROJECTILE.get(), ProjectileRenderer::new);
         event.registerEntityRenderer(Projectiles.LASER_PROJECTILE.get(), LaserProjectileRenderer::new);
+        event.registerEntityRenderer(Projectiles.CONTINUOUS_LASER_PROJECTILE.get(), LaserProjectileRenderer::new);
         event.registerEntityRenderer(Projectiles.TESLA_PROJECTILE.get(), TeslaProjectileRenderer::new);
         event.registerEntityRenderer(Projectiles.FLAME_PROJECTILE.get(), FlameRenderer::new);
         event.registerEntityRenderer(Projectiles.GRENADE.get(), GrenadeRenderer::new);
         event.registerEntityRenderer(Projectiles.MISSILE.get(), MissileRenderer::new);
         event.registerEntityRenderer(Projectiles.THROWABLE_GRENADE.get(), ThrowableGrenadeRenderer::new);
         event.registerEntityRenderer(Projectiles.THROWABLE_STUN_GRENADE.get(), ThrowableGrenadeRenderer::new);
+
+
     }
 }

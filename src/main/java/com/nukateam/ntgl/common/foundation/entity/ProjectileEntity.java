@@ -97,7 +97,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn) {
         super(entityType, worldIn);
-//        requestServerData();
     }
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn, LivingEntity shooter,
@@ -121,11 +120,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         getEntityData().set(ITEM, projectile.getItem().toString());
 
         /* Get speed and set motion */
-        var dir = this.getDirection(shooter, weapon, item, modifiedGun);
-        var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
-        var speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.getSpeed() * speedModifier);
-        this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
-        this.updateHeading();
+        setupDirection(shooter, weapon, item, modifiedGun);
 
         /* Spawn the projectile half way between the previous and current position */
         var posX = shooter.xOld + (shooter.getX() - shooter.xOld) / 2.0;
@@ -151,6 +146,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
             this.ammoStack = ammoStack;
         }
+    }
+
+    protected void setupDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
+        var dir = this.getDirection(shooter, weapon, item, modifiedGun);
+        var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
+        var speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.getSpeed() * speedModifier);
+        this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
+        this.updateHeading();
     }
 
     @Override
