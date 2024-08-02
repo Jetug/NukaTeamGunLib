@@ -19,7 +19,7 @@
     "damage": 8.0,
     "size": 0.2,
     "speed": 26.0,
-    "life": 12
+    "life": 500
   },
   "sounds": {
     "fire": "ntgl:item.pistol10mm.fire",

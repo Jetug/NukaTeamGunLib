@@ -108,16 +108,16 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		if (shooter == null)
 			return;
 
+		setupDirection(shooter, weapon, (GunItem)weapon.getItem(), modifiedGun);
+
 		var startVec = new Vec3(this.getX(), this.getY(), this.getZ());
 		var endVec = startVec.add(this.getDeltaMovement());
 
 		HitResult raytraceresult = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER,
 				ClipContext.Fluid.NONE, this), IGNORE_LEAVES);
 
-		if (raytraceresult.getType() != HitResult.Type.MISS) {
+		if (raytraceresult.getType() != HitResult.Type.MISS)
 			endVec = raytraceresult.getLocation();
-		}
-
 
 		var entityResult = this.findEntityOnPath(shooter, startVec, endVec);
 

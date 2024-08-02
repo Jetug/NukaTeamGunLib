@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.render.renderers.projectiles;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.nukateam.ntgl.client.data.util.RenderUtil;
+import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -31,7 +31,7 @@ public class ProjectileRenderer extends EntityRenderer<ProjectileEntity> {
 
         poseStack.pushPose();
 
-        if (!RenderUtil.getModel(entity.getItem()).isGui3d()) {
+        if (!ModelRenderUtil.getModel(entity.getItem()).isGui3d()) {
             poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
             poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
             Minecraft.getInstance().getItemRenderer().renderStatic(entity.getItem(), ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, entity.level(), 0);

@@ -97,7 +97,7 @@ public class OneHandedPose implements IHeldAnimation {
 //        poseStack.translate(-0.75, 0, 0);
 //        RIGHT_HAND_RENDERER.renderHand(player, stack, poseStack, buffer, light);
 
-//        RenderUtil.renderFirstPersonArm((LocalPlayer) player, hand, poseStack, buffer, light);
+//        ModelRenderUtil.renderFirstPersonArm((LocalPlayer) player, hand, poseStack, buffer, light);
     }
 
     @Override

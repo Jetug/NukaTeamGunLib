@@ -4,20 +4,18 @@ package com.nukateam.ntgl.client.screen;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
+import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
 import com.nukateam.ntgl.client.screen.widget.MiniButton;
-import com.nukateam.ntgl.client.data.util.RenderUtil;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -34,7 +32,6 @@ import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.fml.ModList;
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,7 +114,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         int startY = (this.height - this.imageHeight) / 2;
 
         for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            if (RenderUtil.isMouseWithin(mouseX, mouseY, startX + 7, startY + 16 + i * 18, 18, 18)) {
+            if (ModelRenderUtil.isMouseWithin(mouseX, mouseY, startX + 7, startY + 16 + i * 18, 18, 18)) {
                 IAttachment.Type type = IAttachment.Type.values()[i];
                 if (!this.menu.getSlot(i).isActive()) {
                     graphics.renderComponentTooltip(this.font, Arrays.asList(Component.translatable("slot.ntgl.attachment." + type.getTranslationKey()), Component.translatable("slot.ntgl.attachment.not_applicable")), mouseX, mouseY);
@@ -221,7 +218,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
         int startX = (this.width - this.imageWidth) / 2;
         int startY = (this.height - this.imageHeight) / 2;
-        if (RenderUtil.isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70)) {
+        if (ModelRenderUtil.isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70)) {
             if (scroll < 0 && this.windowZoom > 0) {
                 this.showHelp = false;
                 this.windowZoom--;
@@ -238,7 +235,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         int startX = (this.width - this.imageWidth) / 2;
         int startY = (this.height - this.imageHeight) / 2;
 
-        if (RenderUtil.isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70)) {
+        if (ModelRenderUtil.isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70)) {
             if (!this.mouseGrabbed && (button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
                 this.mouseGrabbed = true;
                 this.mouseGrabbedButton = button == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? 1 : 0;

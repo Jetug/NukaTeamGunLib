@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.data.util.RenderUtils;
 import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.TeslaProjectile;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -24,8 +25,6 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
     public static ResourceLocation texture = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/tesla.png");
     private final float laserRadius = 0.05F / 5;
     private final float laserGlowRadius = 0.055F / 5;
-    private float laserWidth = 3.0f;
-
     private static final int MIN_ANGLE = -45;
     private static final int MAX_ANGLE = 45;
 
@@ -38,6 +37,11 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
     @Override
     public ResourceLocation getTextureLocation(TeslaProjectile entity) {
         return texture;
+    }
+
+    @Override
+    public boolean shouldRender(TeslaProjectile pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
+        return true;
     }
 
     public void render(TeslaProjectile projectile, float entityYaw, float partialTicks,
@@ -210,7 +214,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
         var vertexConsumer = pBufferSource
                 .getBuffer(RenderType.beaconBeam(pBeamLocation, false));
 
-        renderPart(pPoseStack, vertexConsumer, pColors.setAlpha(1.0F),
+        RenderUtils.renderPart(pPoseStack, vertexConsumer, pColors.setAlpha(1.0F),
                 pYOffset, maxY,
                 0.0F, pBeamRadius,
                 pBeamRadius, 0.0F,
@@ -224,63 +228,10 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
         v = -1.0F + f2;
         u = pHeight * pTextureScale + v;
 
-        renderPart(pPoseStack, pBufferSource.getBuffer(RenderType.beaconBeam(pBeamLocation, true)),
+        RenderUtils.renderPart(pPoseStack, pBufferSource.getBuffer(RenderType.beaconBeam(pBeamLocation, true)),
                 pColors.setAlpha(BEAM_ALPHA), pYOffset, maxY, minX, maxX, pGlowRadius, minZ, maxZ,
                 pGlowRadius, pGlowRadius, pGlowRadius, u, v);
 
         pPoseStack.popPose();
-    }
-
-    private static void renderPart(PoseStack pPoseStack, VertexConsumer pConsumer,
-                                   Rgba pColors,
-                                   float pMinY, float pMaxY,
-                                   float minX, float maxX,
-                                   float minZ, float maxZ,
-                                   float pX2, float pZ2,
-                                   float pX3, float pZ3,
-                                   float u, float v) {
-        var pose = pPoseStack.last();
-        var matrix4f = pose.pose();
-        var matrix3f = pose.normal();
-
-        float red = pColors.r();
-        float green = pColors.g();
-        float blue = pColors.b();
-        float alpha = pColors.a();
-
-        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, minX, maxX, minZ, maxZ, u, v);
-        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, pX3, pZ3, pX2, pZ2, u, v);
-        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, minZ, maxZ, pX3, pZ3, u, v);
-        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, pX2, pZ2, minX, maxX, u, v);
-    }
-
-    private static void renderQuad(Matrix4f pPose, Matrix3f pNormal, VertexConsumer pConsumer,
-                                   float pRed, float pGreen, float pBlue, float pAlpha,
-                                   float pMinY, float pMaxY,
-                                   float pMinX, float pMinZ,
-                                   float pMaxX, float pMaxZ,
-
-                                   float pMinV, float pMaxV) {
-        addVertex(pPose, pNormal, pConsumer, pRed, pGreen, pBlue, pAlpha, pMaxY, pMinX, pMinZ, 1, pMinV);
-        addVertex(pPose, pNormal, pConsumer, pRed, pGreen, pBlue, pAlpha, pMinY, pMinX, pMinZ, 1, pMaxV);
-        addVertex(pPose, pNormal, pConsumer, pRed, pGreen, pBlue, pAlpha, pMinY, pMaxX, pMaxZ, 0, pMaxV);
-        addVertex(pPose, pNormal, pConsumer, pRed, pGreen, pBlue, pAlpha, pMaxY, pMaxX, pMaxZ, 0, pMinV);
-    }
-
-    private static void addVertex(Matrix4f pPose, Matrix3f pNormal, VertexConsumer pConsumer,
-                                  float pRed, float pGreen, float pBlue, float pAlpha, float pY,
-                                  float pX, float pZ, float pU, float pV) {
-        pConsumer.vertex(pPose, pX, pY, pZ)
-                .color(pRed, pGreen, pBlue, pAlpha)
-                .uv(pU, pV)
-                .overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(15728880)
-                .normal(pNormal, 0.0F, 1.0F, 0.0F)
-                .endVertex();
-    }
-
-    @Override
-    public boolean shouldRender(TeslaProjectile pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
-        return true;
     }
 }

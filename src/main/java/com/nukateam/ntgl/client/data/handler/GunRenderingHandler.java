@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.data.util.PropertyHelper;
-import com.nukateam.ntgl.client.data.util.RenderUtil;
+import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.properties.SightAnimation;
@@ -51,7 +51,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import static com.nukateam.ntgl.client.data.util.PropertyHelper.*;
-import static com.nukateam.ntgl.client.render.Render.*;
 import static com.nukateam.ntgl.common.data.util.GunModifierHelper.canRenderInOffhand;
 
 public class GunRenderingHandler {
@@ -578,7 +577,7 @@ public class GunRenderingHandler {
                 }
             }
 
-            RenderUtil.applyTransformType(stack, poseStack, transformType, entity);
+            ModelRenderUtil.applyTransformType(stack, poseStack, transformType, entity);
 
             this.renderingWeapon = stack;
 

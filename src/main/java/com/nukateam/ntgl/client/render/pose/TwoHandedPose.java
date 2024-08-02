@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.render.pose;
 
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
-import com.nukateam.ntgl.client.data.util.RenderUtil;
+import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -145,7 +145,7 @@ public class TwoHandedPose extends WeaponPose {
             poseStack.mulPose(Axis.ZP.rotationDegrees(15F * -side));
             poseStack.mulPose(Axis.XP.rotationDegrees(-35F));
 
-            RenderUtil.renderFirstPersonArm((LocalPlayer) player, hand.getOpposite(), poseStack, buffer, light);
+            ModelRenderUtil.renderFirstPersonArm((LocalPlayer) player, hand.getOpposite(), poseStack, buffer, light);
 
 //            LEFT_HAND_RENDERER.renderHand(player, stack, poseStack, buffer, light);
         }
@@ -161,7 +161,7 @@ public class TwoHandedPose extends WeaponPose {
 //            poseStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
             poseStack.mulPose(Axis.XP.rotationDegrees(80F));
 
-            RenderUtil.renderFirstPersonArm((LocalPlayer) player, hand, poseStack, buffer, light);
+            ModelRenderUtil.renderFirstPersonArm((LocalPlayer) player, hand, poseStack, buffer, light);
 
 //            RIGHT_HAND_RENDERER.renderHand(player, stack, poseStack, buffer, light);
         }

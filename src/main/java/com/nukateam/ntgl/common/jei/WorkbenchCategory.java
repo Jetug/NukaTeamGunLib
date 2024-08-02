@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.jei;
 
-import com.nukateam.ntgl.client.data.util.RenderUtil;
+import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
 import com.nukateam.ntgl.common.foundation.item.IColored;
 import com.nukateam.ntgl.Ntgl;
@@ -24,7 +24,6 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.client.resources.model.BakedModel;
@@ -127,7 +126,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
             stack.scale(-1, -1, -1);
             RenderSystem.applyModelViewMatrix();
 
-            BakedModel model = RenderUtil.getModel(output);
+            BakedModel model = ModelRenderUtil.getModel(output);
             Lighting.setupFor3DItems();
 
             MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();

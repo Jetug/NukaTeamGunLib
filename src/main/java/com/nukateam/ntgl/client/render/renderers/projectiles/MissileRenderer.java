@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.render.renderers.projectiles;
 
 import com.nukateam.ntgl.client.data.enums.SpecialModels;
-import com.nukateam.ntgl.client.data.util.RenderUtil;
+import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.foundation.entity.MissileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -41,7 +41,7 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
                 15728880, poseStack, renderTypeBuffer, entity.level(), 0);
 
         poseStack.translate(0, -1, 0);
-        RenderUtil.renderModel(SpecialModels.FLAME.getModel(), entity.getItem(), poseStack, renderTypeBuffer, 15728880, OverlayTexture.NO_OVERLAY);
+        ModelRenderUtil.renderModel(SpecialModels.FLAME.getModel(), entity.getItem(), poseStack, renderTypeBuffer, 15728880, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
     }
 }

@@ -3,7 +3,6 @@ package com.nukateam.ntgl.client.data.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import com.mojang.math.MatrixUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -11,7 +10,6 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -35,12 +33,11 @@ import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
 import static net.minecraft.client.renderer.ItemBlockRenderTypes.getRenderType;
-import static net.minecraft.client.renderer.block.model.ItemTransforms.*;
+import static net.minecraft.world.item.ItemDisplayContext.*;
 
-public class RenderUtil {
+public class ModelRenderUtil {
     private static final ModelResourceLocation TRIDENT_MODEL = ModelResourceLocation.vanilla("trident", "inventory");
     private static final ModelResourceLocation SPYGLASS_MODEL = ModelResourceLocation.vanilla("spyglass", "inventory");
 
@@ -61,33 +58,23 @@ public class RenderUtil {
         return Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(item);
     }
 
-    public static void rotateZ(PoseStack poseStack, float xOffset, float yOffset, float rotation) {
-        poseStack.translate(xOffset, yOffset, 0);
-        poseStack.mulPose(Axis.ZN.rotationDegrees(rotation));
-        poseStack.translate(-xOffset, -yOffset, 0);
-    }
-
     public static void renderModel(ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack,
                                    MultiBufferSource buffer, int light, int overlay,
                                    @Nullable Level world, @Nullable LivingEntity entity) {
-        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, world, entity, 0);
+        var model = Minecraft.getInstance().getItemRenderer().getModel(stack, world, entity, 0);
         renderModel(model, transformType, stack, poseStack, buffer, light, overlay);
     }
 
     public static void renderModel(BakedModel model, ItemStack stack, PoseStack poseStack,
                                    MultiBufferSource buffer, int light, int overlay) {
-        renderModel(model, ItemDisplayContext.NONE, stack, poseStack, buffer, light, overlay);
+        renderModel(model, NONE, stack, poseStack, buffer, light, overlay);
     }
 
     public static void renderModel(BakedModel model, ItemDisplayContext transformType, ItemStack stack,
                                    PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
-        renderModel(model, transformType, null, stack, ItemStack.EMPTY, poseStack, buffer, light, overlay);
-    }
-
-    public static void renderModel(BakedModel model, ItemDisplayContext display, @Nullable Runnable transform, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
         if (!stack.isEmpty()) {
             poseStack.pushPose();
-            boolean flag = display == ItemDisplayContext.GUI || display == ItemDisplayContext.GROUND || display == ItemDisplayContext.FIXED;
+            boolean flag = transformType == GUI || transformType == GROUND || transformType == FIXED;
             if (flag) {
                 if (stack.is(Items.TRIDENT)) {
                     model = Minecraft.getInstance().getModelManager().getModel(TRIDENT_MODEL);
@@ -96,23 +83,23 @@ public class RenderUtil {
                 }
             }
 
-            model = model.applyTransform(display, poseStack, false);
+            model = model.applyTransform(transformType, poseStack, false);
             poseStack.translate(-0.5D, -0.5D, -0.5D);
             if (!model.isCustomRenderer() && (stack.getItem() != Items.TRIDENT || flag)) {
                 boolean entity = true;
-                if (display != ItemDisplayContext.GUI && !display.firstPerson() && stack.getItem() instanceof BlockItem) {
+                if (transformType != GUI && !transformType.firstPerson() && stack.getItem() instanceof BlockItem) {
                     Block block = ((BlockItem) stack.getItem()).getBlock();
                     entity = !(block instanceof HalfTransparentBlock) && !(block instanceof StainedGlassPaneBlock);
                 }
 
-                RenderType renderType = getRenderType(stack, entity);
+                var renderType = getRenderType(stack, entity);
                 VertexConsumer builder;
                 if (stack.getItem() == Items.COMPASS && stack.hasFoil()) {
                     poseStack.pushPose();
                     PoseStack.Pose entry = poseStack.last();
-                    if (display == ItemDisplayContext.GUI) {
+                    if (transformType == GUI) {
                         MatrixUtil.mulComponentWise(entry.pose(), 0.5F);
-                    } else if (display.firstPerson()) {
+                    } else if (transformType.firstPerson()) {
                         MatrixUtil.mulComponentWise(entry.pose(), 0.75F);
                     }
 
@@ -124,46 +111,22 @@ public class RenderUtil {
 
                     poseStack.popPose();
                 } else if (entity) {
-                    builder = ItemRenderer.getFoilBufferDirect(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
+                    builder = ItemRenderer.getFoilBufferDirect(buffer, renderType, true, stack.hasFoil() || ItemStack.EMPTY.hasFoil());
                 } else {
-                    builder = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
+                    builder = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil() || ItemStack.EMPTY.hasFoil());
                 }
 
-                renderModel(model, stack, parent, null, poseStack, builder, light, overlay);
+                renderModel(model, stack, ItemStack.EMPTY, poseStack, builder, light, overlay);
             } else {
-                IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, display, poseStack, buffer, light, overlay);
+                IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, transformType, poseStack, buffer, light, overlay);
             }
 
             poseStack.popPose();
         }
     }
 
-    public static void renderModelWithTransforms(ItemStack child, ItemStack parent, ItemDisplayContext transformType, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
-        poseStack.pushPose();
-        BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(child);
-        model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(poseStack, model, transformType, false);
-        poseStack.translate(-0.5D, -0.5D, -0.5D);
-        renderItemWithoutTransforms(model, child, parent, poseStack, buffer, light, overlay);
-        poseStack.popPose();
-    }
-
-    public static void renderItemWithoutTransforms(BakedModel model, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay) {
-        RenderType renderType = getRenderType(stack, false);
-        VertexConsumer builder = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
-        renderModel(model, stack, parent, null, poseStack, builder, light, overlay);
-    }
-
-    public static void renderItemWithoutTransforms(BakedModel model, ItemStack stack, ItemStack parent, PoseStack poseStack, MultiBufferSource buffer, int light, int overlay, @Nullable Transform transform) {
-        RenderType renderType = getRenderType(stack, false);
-        VertexConsumer builder = ItemRenderer.getFoilBuffer(buffer, renderType, true, stack.hasFoil() || parent.hasFoil());
-        renderModel(model, stack, parent, transform, poseStack, builder, light, overlay);
-    }
-
-    public static void renderModel(BakedModel model, ItemStack stack, ItemStack parent, @Nullable Transform transform, PoseStack poseStack, VertexConsumer buffer, int light, int overlay) {
-        if (transform != null) {
-            transform.apply();
-        }
-        RandomSource random = RandomSource.create();
+    public static void renderModel(BakedModel model, ItemStack stack, ItemStack parent, PoseStack poseStack, VertexConsumer buffer, int light, int overlay) {
+        var random = RandomSource.create();
         for (Direction direction : Direction.values()) {
             random.setSeed(42L);
             renderQuads(poseStack, buffer, model.getQuads(null, direction, random), stack, parent, light, overlay);
@@ -198,7 +161,7 @@ public class RenderUtil {
 
     public static void applyTransformType(ItemStack stack, PoseStack poseStack, ItemDisplayContext transformType, @Nullable LivingEntity entity) {
         BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, entity != null ? entity.level() : null, entity, 0);
-        boolean leftHanded = transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || transformType == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
+        boolean leftHanded = transformType == FIRST_PERSON_LEFT_HAND || transformType == THIRD_PERSON_LEFT_HAND;
         ForgeHooksClient.handleCameraTransforms(poseStack, model, transformType, leftHanded);
 
         /* Flips the model and normals if left handed. */
@@ -208,10 +171,6 @@ public class RenderUtil {
             poseStack.last().pose().mul(scale);
             poseStack.last().normal().mul(normal);
         }
-    }
-
-    public interface Transform {
-        void apply();
     }
 
     public static boolean isMouseWithin(int mouseX, int mouseY, int x, int y, int width, int height) {

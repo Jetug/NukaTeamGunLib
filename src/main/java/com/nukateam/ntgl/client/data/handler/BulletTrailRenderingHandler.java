@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.client.data.BulletTrail;
-import com.nukateam.ntgl.client.data.util.RenderUtil;
+import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
 import com.nukateam.ntgl.client.render.GunRenderType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -148,7 +148,7 @@ public class BulletTrailRenderingHandler {
 
             int combinedLight = LevelRenderer.getLightColor(entity.level(), BlockPos.containing(entity.position()));
             ItemStack stack = trail.getItem();
-            RenderUtil.renderModel(stack, ItemDisplayContext.NONE, poseStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY, null, null);
+            ModelRenderUtil.renderModel(stack, ItemDisplayContext.NONE, poseStack, renderTypeBuffer, combinedLight, OverlayTexture.NO_OVERLAY, null, null);
         }
 
         poseStack.popPose();
