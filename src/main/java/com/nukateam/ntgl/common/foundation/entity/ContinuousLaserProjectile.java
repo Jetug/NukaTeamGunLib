@@ -22,7 +22,7 @@ public class ContinuousLaserProjectile extends LaserProjectile {
     @Override
     public void tick() {
         super.tick();
-        if (!isRemoved() && !this.level().isClientSide()) {
+        if (!isRemoved() && isServerSide) {
             trace();
         }
     }

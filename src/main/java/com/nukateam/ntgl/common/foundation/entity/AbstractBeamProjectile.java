@@ -62,28 +62,23 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		entityData.define(START_X, 0f);
-		entityData.define(START_Y, 0f);
-		entityData.define(START_Z, 0f);
-		entityData.define(END_X  , 0f);
-		entityData.define(END_Y  , 0f);
-		entityData.define(END_Z  , 0f);
+		entityData.define(START_X	, 0f);
+		entityData.define(START_Y	, 0f);
+		entityData.define(START_Z	, 0f);
+		entityData.define(END_X  	, 0f);
+		entityData.define(END_Y  	, 0f);
+		entityData.define(END_Z  	, 0f);
 		entityData.define(DISTANCE  , 0f);
 	}
 
 	@Override
 	public void tick() {
-		if (this.tickCount >= this.life) {
-			if (this.isAlive()) {
+		if (isServerSide && this.tickCount >= this.life) {
+			if (this.isAlive())
 				this.onExpired();
-			}
 			this.remove(RemovalReason.KILLED);
 		}
-
 //		updateClient();
-
-//		super.tick();
-//		this.endVec = this.position().add(this.getDeltaMovement());
 	}
 
 	public float getDistance() {
@@ -110,7 +105,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 
 		setupDirection(shooter, weapon, (GunItem)weapon.getItem(), modifiedGun);
 
-		var startVec = new Vec3(this.getX(), this.getY(), this.getZ());
+ 		var startVec = new Vec3(shooter.getX(), shooter.getY(), shooter.getZ());
 		var endVec = startVec.add(this.getDeltaMovement());
 
 		HitResult raytraceresult = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER,

@@ -81,7 +81,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     public static final EntityDataAccessor<String> ITEM = defineId(ProjectileEntity.class, EntityDataSerializers.STRING);
 
     private boolean hasClientData = false;
-
+    protected boolean isServerSide = !level().isClientSide();
     protected int shooterId;
     protected LivingEntity shooter;
     protected Gun modifiedGun;
@@ -218,7 +218,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             return;
         }
 
-        if (!this.level().isClientSide()) {
+        if (isServerSide) {
             Vec3 startVec = this.position();
             Vec3 endVec = startVec.add(this.getDeltaMovement());
             HitResult result = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this), getBlockFilter());
@@ -280,14 +280,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 //    }
 
     public void updateClient() {
-        if(!level().isClientSide) {
+        if(isServerSide) {
             var tag = new CompoundTag();
             addAdditionalSaveData(tag);
             sendS2CData(tag);
-        }
-        else{
-            var i = 0;
-            var t = i;
         }
     }
 
@@ -298,7 +294,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     @Override
     public void onRemovedFromWorld() {
-        if (!this.level().isClientSide) {
+        if (isServerSide) {
             PacketHandler.getPlayChannel().sendToNearbyPlayers(this::getDeathTargetPoint, new S2CMessageRemoveProjectile(this.getId()));
         }
     }

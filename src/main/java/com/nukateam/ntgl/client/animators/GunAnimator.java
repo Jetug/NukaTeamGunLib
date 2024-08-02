@@ -113,23 +113,8 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
                 var animation = begin().then("aim", HOLD_ON_LAST_FRAME);
                 return event.setAndContinue(animation);
             } else {
-                return event.setAndContinue(begin().then("void", PLAY_ONCE));
-//                triggersController.stop();
-
-//                try {
-//                    var currentAnimation = AnimationController.class.getField("currentAnimation");
-//                    currentAnimation.setAccessible(true);
-//                    currentAnimation.set(event.getController(), null);
-//
-//                    currentAnimation = AnimationController.class.getField("currentRawAnimation");
-//                    currentAnimation.setAccessible(true);
-//                    currentAnimation.set(event.getController(), null);
-//                }
-//                catch (Exception ignored) {
-//                    Ntgl.LOGGER.error(ignored.getMessage(), ignored);
-//                }
-
-//                return PlayState.STOP;
+//                return event.setAndContinue(begin().then("void", PLAY_ONCE));
+                return PlayState.STOP;
             }
         };
     }
