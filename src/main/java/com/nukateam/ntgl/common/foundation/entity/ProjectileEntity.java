@@ -7,19 +7,12 @@ import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.gun.Gun.Projectile;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
-import com.nukateam.ntgl.common.data.interfaces.IDamageable;
-import com.nukateam.ntgl.common.data.interfaces.IExplosionDamageable;
-import com.nukateam.ntgl.common.data.interfaces.IHeadshotBox;
-import com.nukateam.ntgl.common.data.util.BufferUtil;
-import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
-import com.nukateam.ntgl.common.data.util.ReflectionUtil;
+import com.nukateam.ntgl.common.data.interfaces.*;
+import com.nukateam.ntgl.common.data.util.*;
 import com.nukateam.ntgl.common.data.util.math.ExtendedEntityRayTraceResult;
 import com.nukateam.ntgl.common.event.GunProjectileHitEvent;
 import com.nukateam.ntgl.common.foundation.ModTags;
-import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
-import com.nukateam.ntgl.common.foundation.init.ModEnchantments;
-import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
+import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.world.ProjectileExplosion;
 import com.nukateam.ntgl.common.network.PacketHandler;
@@ -43,12 +36,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -511,21 +501,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 return;
             }
 
-            Vec3 hitVec = result.getLocation();
-            BlockPos pos = blockHitResult.getBlockPos();
-            BlockState state = this.level().getBlockState(pos);
-            Block block = state.getBlock();
-            FluidState fluid = state.getFluidState();
+            var hitVec = result.getLocation();
+            var pos = blockHitResult.getBlockPos();
+            var state = this.level().getBlockState(pos);
+            var block = state.getBlock();
 
-            if (Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && state.is(ModTags.Blocks.FRAGILE)) {
-                float destroySpeed = state.getDestroySpeed(this.level(), pos);
-                if (destroySpeed >= 0) {
-                    float chance = Config.COMMON.gameplay.griefing.fragileBaseBreakChance.get().floatValue() / (destroySpeed + 1);
-                    if (this.random.nextFloat() < chance) {
-                        this.level().destroyBlock(pos, Config.COMMON.gameplay.griefing.fragileBlockDrops.get());
-                    }
-                }
-            }
+            handleBlockBreaking(pos, state);
 
             if (!state.canBeReplaced() && removeOnHit()) {
                 this.remove(RemovalReason.KILLED);
@@ -598,6 +579,18 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
 
             entity.invulnerableTime = 0;
+        }
+    }
+
+    protected void handleBlockBreaking(BlockPos pos, BlockState state) {
+        if (Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && state.is(ModTags.Blocks.FRAGILE)) {
+            float destroySpeed = state.getDestroySpeed(this.level(), pos);
+            if (destroySpeed >= 0) {
+                float chance = Config.COMMON.gameplay.griefing.fragileBaseBreakChance.get().floatValue() / (destroySpeed + 1);
+                if (this.random.nextFloat() < chance) {
+                    this.level().destroyBlock(pos, Config.COMMON.gameplay.griefing.fragileBlockDrops.get());
+                }
+            }
         }
     }
 
