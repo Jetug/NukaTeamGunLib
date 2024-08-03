@@ -99,15 +99,16 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		return new Vec3(x, y, z);
 	}
 
+
 	public void trace() {
 		if (shooter == null || level().isClientSide)
 			return;
-		setupDirection(shooter, weapon, (GunItem)weapon.getItem(), modifiedGun);
+//		setupDirection(shooter, weapon, (GunItem)weapon.getItem(), modifiedGun);
 
-		var startVec = shooter.getEyePosition(); //new Vec3(shooter.getX(), shooter.getY(), shooter.getZ());
+		var startVec = new Vec3(this.getX(), this.getY(), this.getZ());
 		var endVec = startVec.add(this.getDeltaMovement());
 
-		setPos(shooter.getEyePosition());
+//		setPos(shooter.getEyePosition());
 
 		HitResult raytraceresult = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER,
 				ClipContext.Fluid.NONE, this), IGNORE_LEAVES);

@@ -111,16 +111,15 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
         var glowRadius = (float) (laserGlowRadius * fadingValue * 2);
         var distance = projectile.getDistance();
         var count = (int) Math.round(distance / offset);
-        var playerPos = projectile.getStartVec();
-        var laserPos = projectile.getEndVec();
+        var playerPos = projectile.getEndVec();
+        var laserPos = projectile.getStartVec();
         var pos = playerPos.subtract(laserPos);
 
         poseStack.pushPose();
         {
             pos = pos.normalize();
-            float yPos = (float) Math.acos(pos.y);
-            float xzPos = (float) Math.atan2(pos.z, pos.x);
-
+            var yPos = (float) Math.acos(pos.y);
+            var xzPos = (float) Math.atan2(pos.z, pos.x);
             var side = projectile.isRightHand() ? -1 : 1;
 
             poseStack.mulPose(Axis.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));

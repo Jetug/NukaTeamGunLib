@@ -27,6 +27,15 @@ public class ContinuousLaserProjectile extends LaserProjectile {
         }
     }
 
+    @Override
+    public void trace() {
+        if(shooter != null && isServerSide) {
+            setupDirection(shooter, weapon, (GunItem) weapon.getItem(), modifiedGun);
+            setPos(shooter.getEyePosition());
+        }
+        super.trace();
+    }
+
     public float getBlockFireChance(){
         return GROUND_FIRE_CHANCE;
     }
