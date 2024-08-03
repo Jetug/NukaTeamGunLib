@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.data.handler;
 
 import com.ibm.icu.impl.Pair;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.FireMode;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.base.gun.Gun;
@@ -415,10 +416,14 @@ public class ShootingHandler {
             shootMsGap = calcShootTickGap(rpm);
             RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
             RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
-            PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
-                    shooter.getViewXRot(1),
-                    RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, isMainHand));
-
+            try{
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
+                        shooter.getViewXRot(1),
+                        RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, isMainHand));
+            }
+            catch (NullPointerException e){
+                Ntgl.LOGGER.error(e.getMessage(), e);
+            }
 //            if (Config.CLIENT.controls.burstPress.get()) this.burstTracker--;
 //            else this.burstTracker++;
             MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));

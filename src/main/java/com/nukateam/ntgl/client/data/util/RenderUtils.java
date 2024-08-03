@@ -3,11 +3,61 @@ package com.nukateam.ntgl.client.data.util;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.common.data.util.Rgba;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class RenderUtils {
+    public static final float BEAM_ALPHA = 0.7F;
+
+    public static void renderBeam(PoseStack pPoseStack, MultiBufferSource pBufferSource, ResourceLocation pBeamLocation,
+                                  float pPartialTick, float pTextureScale, long gameTime, float pYOffset, float pHeight,
+                                  Rgba pColors, float pBeamRadius, float pGlowRadius) {
+        var maxY = pYOffset + pHeight;
+        pPoseStack.pushPose();
+
+        float f = (float) Math.floorMod(gameTime, 40) + pPartialTick;
+        float f1 = pHeight < 0 ? f : -f;
+        float f2 = Mth.frac(f1 * 0.2F - (float) Mth.floor(f1 * 0.1F));
+        pPoseStack.pushPose();
+
+//        pPoseStack.mulPose(Axis.YP.rotationDegrees(f * 2.25F - 45.0F));
+        var minX = -pGlowRadius;
+        var maxX = -pGlowRadius;
+        var minZ = -pGlowRadius;
+        var maxZ = -pBeamRadius;
+        var f12 = -pBeamRadius;
+        var v = -1.0F + f2;
+        var u = pHeight * pTextureScale * (BEAM_ALPHA / pBeamRadius) + v;
+
+        var vertexConsumer = pBufferSource
+                .getBuffer(RenderType.beaconBeam(pBeamLocation, false));
+
+        RenderUtils.renderPart(pPoseStack, vertexConsumer, pColors.setAlpha(1.0F),
+                pYOffset, maxY,
+                0.0F, pBeamRadius,
+                pBeamRadius, 0.0F,
+                maxZ, 0.0F,
+                0.0F, f12,
+                u, v);
+
+        pPoseStack.popPose();
+
+        maxZ = -pGlowRadius;
+        v = -1.0F + f2;
+        u = pHeight * pTextureScale + v;
+
+        RenderUtils.renderPart(pPoseStack, pBufferSource.getBuffer(RenderType.beaconBeam(pBeamLocation, true)),
+                pColors.setAlpha(BEAM_ALPHA), pYOffset, maxY, minX, maxX, pGlowRadius, minZ, maxZ,
+                pGlowRadius, pGlowRadius, pGlowRadius, u, v);
+
+        pPoseStack.popPose();
+    }
+
     public static void renderPart(PoseStack pPoseStack, VertexConsumer pConsumer,
                                    Rgba pColors,
                                    float pMinY, float pMaxY,
