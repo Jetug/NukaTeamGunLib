@@ -19,7 +19,7 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
     public static ResourceLocation LASER_TEXTURE = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/laser.png");
     private static final float LASER_RADIUS = 0.05F / 4;
-    private static final float laserGlowRadius = 0.055F / 4;
+    private static final float LASER_GLOW_RADIUS = 0.055F / 4;
 
     public LaserProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -39,13 +39,21 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
         return new Vector3f(0.20f, 0.25f, 0.07f);
     }
 
+    protected float getLaserRadius(){
+        return LASER_RADIUS;
+    }
+
+    protected float getLaserGlowRadius(){
+        return LASER_GLOW_RADIUS;
+    }
+
     @Override
     public void render(LaserProjectile projectile, float entityYaw, float partialTicks,
                        PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int light) {
         var prog = ((float) projectile.tickCount) / ((float) projectile.getLife());
         var fadingValue = Math.sin(Math.sqrt(prog) * Math.PI);
-        var radius = (float) (LASER_RADIUS * fadingValue * 2);
-        var glowRadius = (float) (laserGlowRadius * fadingValue * 2);
+        var radius = (float) (getLaserRadius() * fadingValue * 2);
+        var glowRadius = (float) (getLaserGlowRadius() * fadingValue * 2);
         var shooterId = projectile.getShooterId();
         var shooter = Minecraft.getInstance().level.getEntity(shooterId);
 
