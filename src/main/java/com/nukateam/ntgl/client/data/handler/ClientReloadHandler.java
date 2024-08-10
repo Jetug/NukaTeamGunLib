@@ -9,6 +9,7 @@ import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.helpers.PlayerAnimationHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageReload;
 import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
@@ -139,6 +140,9 @@ public class ClientReloadHandler {
                         return;
                     if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))
                         return;
+
+                    //JET
+                    PlayerAnimationHelper.playAnim(player, "gun_reload");
 
                     dataKey.setValue(player, true);
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(true, arm));
