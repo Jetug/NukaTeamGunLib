@@ -35,7 +35,6 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
     private ItemDisplayContext transformType;
     private MultiBufferSource bufferSource;
     private ItemStack renderStack;
-    private boolean renderHands = false;
     protected LivingEntity buffEntity = null;
 
     public DynamicGunRenderer(GeoModel<T> model, BiFunction<ItemDisplayContext, GeoDynamicItemRenderer<T>, T> animatorFactory) {
@@ -67,7 +66,6 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         this.bufferSource = bufferSource;
         this.transformType = transformType;
         this.renderStack = stack;
-        this.renderHands = transformType == FIRST_PERSON_RIGHT_HAND || transformType == FIRST_PERSON_LEFT_HAND;
 
         if(buffEntity != null){
             entity = buffEntity;
