@@ -3,6 +3,7 @@ package com.nukateam.ntgl.client.data.handler;
 import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.gun.LoadingTypes;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
@@ -118,10 +119,13 @@ public class ClientReloadHandler {
         }
     }
 
+    private HumanoidArm reloadArm;
+
     public void setReloading(boolean reloading, HumanoidArm arm) {
         var player = Minecraft.getInstance().player;
         if (player == null) return;
 
+        this.reloadArm = arm;
         var dataKey = arm == HumanoidArm.RIGHT ?
                 ModSyncedDataKeys.RELOADING_RIGHT:
                 ModSyncedDataKeys.RELOADING_LEFT;
@@ -144,7 +148,7 @@ public class ClientReloadHandler {
                         return;
 
                     //JET
-                    playAnimation(player, gun, arm);
+                    playAnimation(player, stack, gun, arm);
 
                     dataKey.setValue(player, true);
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(true, arm));
@@ -160,22 +164,39 @@ public class ClientReloadHandler {
         }
     }
 
-    private static void playAnimation(LocalPlayer player, Gun gun, HumanoidArm arm) {
-        PlayerAnimationHelper.playAnim(player, gun.getGeneral().getReloadType(), arm == HumanoidArm.LEFT);
-    }
-
     private void stopReloading(HumanoidArm arm){
-        Player player = Minecraft.getInstance().player;
-        ModSyncedDataKeys.RELOADING_RIGHT.setValue(player, false);
+        var player = Minecraft.getInstance().player;
+
+        var dataKey = arm == HumanoidArm.RIGHT ?
+                ModSyncedDataKeys.RELOADING_RIGHT :
+                ModSyncedDataKeys.RELOADING_LEFT;
+
+        dataKey.setValue(player, false);
         PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(false, arm));
         this.reloadingSlot = -1;
         reloadTicks = -1;
+    }
+
+    private static void playAnimation(LocalPlayer player, ItemStack stack, Gun gun, HumanoidArm arm) {
+        var reloadDuration = 0;
+        var general = gun.getGeneral();
+
+        if(general.getLoadingType().equals(LoadingTypes.PER_CARTRIDGE)){
+            var ammoCount = general.getMaxAmmo(stack) - Gun.getAmmo(stack);
+
+            for (var i = 0; i < ammoCount; i++)
+                reloadDuration += general.getReloadTime();
+        }
+        else reloadDuration = general.getReloadTime();
+
+        PlayerAnimationHelper.playAnim(player, gun.getGeneral().getReloadType(), reloadDuration, arm == HumanoidArm.LEFT);
     }
 
     private void updateReloadTimer(Player player) {
         if(reloadTimer > 0){
             reloadTimer--;
         }
+//        else PlayerAnimationHelper.stopAnim(player, reloadArm == HumanoidArm.LEFT);
 
 //        if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(player)) {
 //            if (this.startReloadTick == -1) {

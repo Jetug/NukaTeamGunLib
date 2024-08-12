@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.base.utils;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.gun.LoadingTypes;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
@@ -240,7 +241,7 @@ public class ReloadTracker {
             reloadKey.setValue(player, false);
             return;
         }
-        else if(gun.getGeneral().getLoadingType().equals(Gun.General.MAGAZINE)){
+        else if(gun.getGeneral().getLoadingType().equals(LoadingTypes.MAGAZINE)){
             if(tracker.reloadTick > 0)
                 tracker.reloadTick--;
 
@@ -249,7 +250,7 @@ public class ReloadTracker {
                 stopReloading(player, gun, arm);
             }
         }
-        else if(gun.getGeneral().getLoadingType().equals(Gun.General.PER_CARTRIDGE)){
+        else if(gun.getGeneral().getLoadingType().equals(LoadingTypes.PER_CARTRIDGE)){
             if(tracker.reloadTick > 0)
                 tracker.reloadTick--;
 

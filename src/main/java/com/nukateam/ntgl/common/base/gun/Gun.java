@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.base.gun;
 
-import com.google.gson.JsonArray;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
@@ -113,8 +112,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public static final String PROJECTILE_AMOUNT = "ProjectileAmount";
         public static final String ALWAYS_SPREAD = "AlwaysSpread";
         public static final String SPREAD = "Spread";
-        public static final String MAGAZINE = "magazine";
-        public static final String PER_CARTRIDGE = "per_cartridge";
         public static final String CATEGORY = "category";
 
         @Ignored
@@ -130,7 +127,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Optional
         private int reloadTime = 1;
         @Optional
-        private String loadingType = MAGAZINE;
+        private String loadingType = LoadingTypes.MAGAZINE;
         @Optional
         private String category = "pistol";
         @Optional
@@ -239,7 +236,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             Preconditions.checkArgument(this.maxAmmo > 0, "Max ammo must be more than zero");
             Preconditions.checkArgument(this.reloadAmount >= 1, "Reload amount must be more than or equal to zero");
             Preconditions.checkArgument(this.reloadTime >= 1, "Reload time must be more than or equal to zero");
-            Preconditions.checkArgument(!this.loadingType.equals(MAGAZINE) && !this.loadingType.equals(PER_CARTRIDGE), "Loading type must be " + MAGAZINE + " or " + PER_CARTRIDGE);
+            Preconditions.checkArgument(!this.loadingType.equals(LoadingTypes.MAGAZINE) && !this.loadingType.equals(LoadingTypes.PER_CARTRIDGE), "Loading type must be " + LoadingTypes.MAGAZINE + " or " + LoadingTypes.PER_CARTRIDGE);
             Preconditions.checkArgument(this.recoilAngle >= 0.0F, "Recoil angle must be more than or equal to zero");
             Preconditions.checkArgument(this.recoilKick >= 0.0F, "Recoil kick must be more than or equal to zero");
             Preconditions.checkArgument(this.recoilDurationOffset >= 0.0F && this.recoilDurationOffset <= 1.0F, "Recoil duration offset must be between 0.0 and 1.0");
@@ -256,7 +253,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             object.addProperty("maxAmmo", this.maxAmmo);
             if (this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
             if (this.reloadTime != 1) object.addProperty("reloadTime", this.reloadTime);
-            if (this.loadingType.equals(MAGAZINE) || this.loadingType.equals(PER_CARTRIDGE))
+            if (this.loadingType.equals(LoadingTypes.MAGAZINE) || this.loadingType.equals(LoadingTypes.PER_CARTRIDGE))
                 object.addProperty("loadingType", this.loadingType);
             if (this.recoilAngle != 0.0F) object.addProperty("recoilAngle", this.recoilAngle);
             if (this.recoilKick != 0.0F) object.addProperty("recoilKick", this.recoilKick);

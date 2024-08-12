@@ -146,7 +146,7 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
 
                 if(general.getFireTimer() > 0 && data.fireTimer > 0 && general.getFireTimer() != data.fireTimer){
                     var speed = 1 - ((float)data.fireTimer / (float)general.getFireTimer());
-                    controller.setAnimationSpeed(1 * speed);
+                    controller.setAnimationSpeed(speed);
                     if(animationHelper.hasAnimation(CHARGE))
                         animation = playGunAnim(CHARGE, LOOP);
                 } else if (reloadHandler.isReloading(entity, arm)) {
