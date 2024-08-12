@@ -20,11 +20,13 @@ import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -39,6 +41,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
@@ -283,8 +286,11 @@ public class GunRenderingHandler {
             //poseStack.translate(0.56 * offset, -0.52, -0.72);
             poseStack.translate(0.15 * offset, -1.0, -1.3);//Jetug
 
+            float translateX = model.getTransforms().firstPersonRightHand.translation.x();
+            float translateY = model.getTransforms().firstPersonRightHand.translation.y();
+            float translateZ = model.getTransforms().firstPersonRightHand.translation.z();
             /* Applies recoil and reload rotations */
-//          this.applyAimingTransforms(poseStack, heldItem, modifiedGun, translateX, translateY, translateZ, offset);
+            this.applyAimingTransforms(poseStack, heldItem, modifiedGun, translateX, translateY, translateZ, offset);
             this.applySwayTransforms(poseStack, modifiedGun, player, rightHandTranslation, event.getPartialTick());
 //          this.applySprintingTransforms(modifiedGun, hand, poseStack, event.getPartialTick());
 //            this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
@@ -296,6 +302,18 @@ public class GunRenderingHandler {
             this.renderWeapon(player, heldItem, transformType, event.getPoseStack(), event.getMultiBufferSource(), getWeaponLghtning(event, player));
         }
         poseStack.popPose();
+    }
+
+    private Vec3 getArmTransforms(BakedModel model, InteractionHand hand){
+        ItemTransform handModel = hand == InteractionHand.MAIN_HAND ?
+                model.getTransforms().firstPersonRightHand :
+                model.getTransforms().firstPersonLeftHand;
+
+        float translateX = handModel.translation.x();
+        float translateY = handModel.translation.y();
+        float translateZ = handModel.translation.z();
+
+        return new Vec3(translateX, translateY, translateZ);
     }
 
     /* Determines the lighting for the weapon. Weapon will appear bright from muzzle flash or light sources */

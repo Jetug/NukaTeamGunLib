@@ -281,13 +281,12 @@ public class ServerPlayHandler {
     }
 
     private static void unloadArm(ServerPlayer player, ItemStack stack) {
-        var gunItem = (GunItem) stack.getItem();
+        if (!(stack.getItem() instanceof GunItem gunItem)) return;
         var gun = gunItem.getModifiedGun(stack);
 
         if (gun.getProjectile().isMagazineMode())
             unloadMagazine(player, stack);
-        else
-            unloadAmmo(player, stack);
+        else unloadAmmo(player, stack);
     }
 
     private static void unloadAmmo(ServerPlayer player, ItemStack stack) {

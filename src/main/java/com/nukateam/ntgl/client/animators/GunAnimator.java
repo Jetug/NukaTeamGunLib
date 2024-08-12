@@ -54,6 +54,7 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
     private int chamberId = 1;
     private GunItem currentGun = null;
     private AnimationHelper<GunAnimator> animationHelper = new AnimationHelper<>(this, GeoGunModel.INSTANCE);
+    private AnimationController<GunAnimator> triggerController = new AnimationController<>(this, "triggerController", event -> PlayState.CONTINUE);
 
 
     public GunAnimator(ItemDisplayContext transformType, GeoDynamicItemRenderer<GunAnimator> renderer) {
@@ -70,8 +71,8 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
                 .setSoundKeyframeHandler(this::soundHandler);
 
         controllerRegistrar.add(mainController);
-//        controllerRegistrar.add(triggersController);
-        controllerRegistrar.add(new AnimationController<>(this, "aimController", aimAnimation()));
+        controllerRegistrar.add(triggerController);
+//        controllerRegistrar.add(new AnimationController<>(this, "aimController", aimAnimation()));
         controllerRegistrar.add(new AnimationController<>(this, "revolverController", 0, animateRevolver()));
     }
 
@@ -132,10 +133,9 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
                 var general = getGunItem().getModifiedGun(getStack()).getGeneral();
                 var entity = getEntity();
                 var reloadHandler = ClientReloadHandler.get();
-
                 var holdAnimation = playGunAnim(HOLD, LOOP);
 
-                if (!isHandTransform(transformType))
+                if (!isFirstPerson(transformType))
                     return event.setAndContinue(holdAnimation);
 
                 var arm = isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
@@ -170,12 +170,9 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
                         animation = playGunAnim(SHOT, LOOP);
                     }
                 }
-//                else if(!Gun.hasAmmo(stack)){
-//                    animation = begin().then("slide_off", LOOP);
-//                }
 
-                if (controller.hasAnimationFinished())
-                    controller.forceAnimationReset();
+//                if (controller.hasAnimationFinished())
+//                    controller.forceAnimationReset();
 
                 return event.setAndContinue(animation);
             } catch (Exception e) {

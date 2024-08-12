@@ -101,6 +101,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public static final String LOADING_TYPE = "LoadingType";
         public static final String RATE = "Rate";
         public static final String GRIP_TYPE = "GripType";
+        public static final String RELOAD_TYPE = "ReloadType";
         public static final String AUTO = "Auto";
         public static final String MAX_AMMO = "MaxAmmo";
         public static final String RELOAD_SPEED = "ReloadSpeed";
@@ -123,6 +124,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         private int rate;
         @Ignored
         private GripType gripType = GripType.ONE_HANDED;
+        @Ignored
+        private ResourceLocation reloadType = new ResourceLocation(Ntgl.MOD_ID,"gun_reload");
         private int maxAmmo;
         @Optional
         private int reloadTime = 1;
@@ -157,6 +160,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             tag.putInt("FireTimer", this.fireTimer);
             tag.putString("FireMode", this.fireMode.getId().toString());
             tag.putString(GRIP_TYPE, this.gripType.getId().toString());
+            tag.putString(RELOAD_TYPE, this.reloadType.toString());
             tag.putInt(MAX_AMMO, this.maxAmmo);
             tag.putInt(RELOAD_SPEED, this.reloadAmount);
             tag.putInt(RELOAD_TIME, this.reloadTime);
@@ -188,6 +192,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
             if (tag.contains(GRIP_TYPE, Tag.TAG_STRING)) {
                 this.gripType = GripType.getType(ResourceLocation.tryParse(tag.getString(GRIP_TYPE)));
+            }
+            if (tag.contains(RELOAD_TYPE, Tag.TAG_STRING)) {
+                this.reloadType = ResourceLocation.tryParse(tag.getString(RELOAD_TYPE));
             }
             if (tag.contains(MAX_AMMO, Tag.TAG_ANY_NUMERIC)) {
                 this.maxAmmo = tag.getInt(MAX_AMMO);
@@ -245,6 +252,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (this.fireTimer != 0) object.addProperty("fireTimer", this.fireTimer);
             object.addProperty("fireMode", this.fireMode.getId().toString());
             object.addProperty("gripType", this.gripType.getId().toString());
+            object.addProperty("reloadType", this.reloadType.toString());
             object.addProperty("maxAmmo", this.maxAmmo);
             if (this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
             if (this.reloadTime != 1) object.addProperty("reloadTime", this.reloadTime);
@@ -272,6 +280,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             general.rate = this.rate;
             general.fireTimer = this.fireTimer;
             general.gripType = this.gripType;
+            general.reloadType = this.reloadType;
             general.maxAmmo = this.maxAmmo;
             general.reloadAmount = this.reloadAmount;
             general.reloadTime = this.reloadTime;
@@ -328,6 +337,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
          */
         public GripType getGripType() {
             return this.gripType;
+        }
+
+        public ResourceLocation getReloadType() {
+            return this.reloadType;
         }
 
         /**
@@ -1640,6 +1653,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         public Builder setGripType(GripType gripType) {
             this.gun.general.gripType = gripType;
+            return this;
+        }
+
+        public Builder setReloadType(ResourceLocation reloadType) {
+            this.gun.general.reloadType = reloadType;
             return this;
         }
 

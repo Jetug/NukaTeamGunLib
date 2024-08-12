@@ -29,6 +29,7 @@
 		},
 		"gun_reload": {
 			"animation_length": 1.4167,
+			"loop": true,
 			"bones": {
 				"body": {
 					"rotation": {
