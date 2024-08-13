@@ -113,6 +113,10 @@ public class ServerPlayHandler {
                     ModSyncedDataKeys.RELOADING_RIGHT.setValue(shooter, false);
                 }
 
+                if (ModSyncedDataKeys.RELOADING_LEFT.getValue(shooter)) {
+                    ModSyncedDataKeys.RELOADING_LEFT.setValue(shooter, false);
+                }
+
                 if (!modifiedGun.getGeneral().isAlwaysSpread() && modifiedGun.getGeneral().getSpread() > 0.0F) {
                     SpreadTracker.get(shooter).update(shooter, item);
                 }

@@ -28,6 +28,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,6 +37,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -1545,11 +1547,23 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return tag.getFloat("AdditionalDamage");
     }
 
-    public static AmmoContext findAmmo(Player player, ResourceLocation id) {
+    public static AmmoContext findAmmo(LivingEntity entity, ResourceLocation id) {
+        if (entity instanceof Player player) {
+            return findPlayerAmmo(player, id);
+        }
+        return getCreativeAmmoContext(id);
+    }
+
+    public static AmmoContext findMagazine(LivingEntity entity, ResourceLocation id) {
+        if (entity instanceof Player player) {
+            return findPlayerMagazine(player, id);
+        }
+        return getCreativeAmmoContext(id);
+    }
+
+    public static AmmoContext findPlayerAmmo(Player player, ResourceLocation id) {
         if (player.isCreative()) {
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            ItemStack ammo = item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
-            return new AmmoContext(ammo, null);
+            return getCreativeAmmoContext(id);
         }
         for (int i = 0; i < player.getInventory().getContainerSize(); ++i) {
             ItemStack stack = player.getInventory().getItem(i);
@@ -1563,11 +1577,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return AmmoContext.NONE;
     }
 
-    public static AmmoContext findMagazine(Player player, ResourceLocation id) {
+    public static AmmoContext findPlayerMagazine(Player player, ResourceLocation id) {
         if (player.isCreative()) {
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            ItemStack ammo = item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
-            return new AmmoContext(ammo, null);
+            return getCreativeAmmoContext(id);
         }
 
         ItemStack ammo = null;
@@ -1589,6 +1601,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
 
         return AmmoContext.NONE;
+    }
+
+    @NotNull
+    private static AmmoContext getCreativeAmmoContext(ResourceLocation id) {
+        var item = ForgeRegistries.ITEMS.getValue(id);
+        var ammo = item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
+        return new AmmoContext(ammo, null);
     }
 
     public static boolean isAmmo(ItemStack stack, ResourceLocation id) {

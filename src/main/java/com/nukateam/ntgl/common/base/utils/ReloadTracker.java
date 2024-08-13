@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -36,10 +37,10 @@ import static com.nukateam.ntgl.common.data.util.LivingEntityUtils.getInteractio
 @SuppressWarnings("unused")
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class ReloadTracker {
-    private static final Map<Player, ReloadTracker> RELOAD_TRACKER_MAP = new WeakHashMap<>();
+    private static final Map<LivingEntity, ReloadTracker> RELOAD_TRACKER_MAP = new WeakHashMap<>();
 
     private final int startTick;
-    private final int slot;
+    private int slot = 0;
     private final HumanoidArm arm;
     private final ItemStack stack;
     private final GunItem gunItem;
@@ -47,19 +48,19 @@ public class ReloadTracker {
 
     public int reloadTick = 0;
 
-    private ReloadTracker(Player player, HumanoidArm arm) {
-        this.startTick = player.tickCount;
+    private ReloadTracker(LivingEntity entity, HumanoidArm arm) {
+        this.startTick = entity.tickCount;
         this.arm = arm;
-        this.slot = arm == HumanoidArm.RIGHT ?
-                player.getInventory().selected :
-                Inventory.SLOT_OFFHAND;
-        this.stack = player.getItemInHand(getInteractionHand(arm));
+        if(entity instanceof Player player) {
+            this.slot = arm == HumanoidArm.RIGHT ? player.getInventory().selected : Inventory.SLOT_OFFHAND;
+        }
+        this.stack = entity.getItemInHand(getInteractionHand(arm));
         this.gunItem = ((GunItem) stack.getItem());
         this.gun = gunItem.getModifiedGun(stack);
 
         reloadTick = gun.getGeneral().getReloadTime();
 
-//        playReloadSound(player);
+//        playReloadSound(entity);
     }
 
     @SubscribeEvent
@@ -67,20 +68,39 @@ public class ReloadTracker {
         try {
             if (event.phase == TickEvent.Phase.START && !event.player.level().isClientSide) {
                 var player = event.player;
+                handTick(player);
+            }
+        }
+        catch (Exception e){
+            Ntgl.LOGGER.error(e.getMessage(), e);
+        }
+    }
 
-                if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(player)) {
-                    handTick(player, HumanoidArm.RIGHT);
-                }
-                else if (ModSyncedDataKeys.RELOADING_LEFT.getValue(player)) {
-                    handTick(player, HumanoidArm.LEFT);
-                }
-                else if (RELOAD_TRACKER_MAP.containsKey(player)) {
-                    RELOAD_TRACKER_MAP.remove(player);
+
+    @SubscribeEvent
+    public static void onServerTick(TickEvent.ServerTickEvent event) {
+        try {
+            if (event.phase == TickEvent.Phase.START) {
+                for (var entity: RELOAD_TRACKER_MAP.keySet()) {
+                    if(entity instanceof Player) continue;
+                    handTick(entity);
                 }
             }
         }
         catch (Exception e){
             Ntgl.LOGGER.error(e.getMessage(), e);
+        }
+    }
+
+    private static void handTick(LivingEntity entity) {
+        if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(entity)) {
+            handTick(entity, HumanoidArm.RIGHT);
+        }
+        else if (ModSyncedDataKeys.RELOADING_LEFT.getValue(entity)) {
+            handTick(entity, HumanoidArm.LEFT);
+        }
+        else if (RELOAD_TRACKER_MAP.containsKey(entity)) {
+            RELOAD_TRACKER_MAP.remove(entity);
         }
     }
 
@@ -95,13 +115,13 @@ public class ReloadTracker {
     /**
      * Tests if the current item the player is holding is the same as the one being reloaded
      *
-     * @param player the player to check
+     * @param entity the entity to check
      * @return True if it's the same weapon and slot
      */
-    private boolean isSameWeapon(Player player) {
+    private boolean isSameWeapon(LivingEntity entity) {
         if(arm == HumanoidArm.RIGHT)
-            return !this.stack.isEmpty() && player.getInventory().selected == this.slot && player.getInventory().getSelected() == this.stack;
-        else return !this.stack.isEmpty() && player.getOffhandItem() == this.stack;
+            return !this.stack.isEmpty() && entity.getMainHandItem() == this.stack;
+        else return !this.stack.isEmpty() && entity.getOffhandItem() == this.stack;
     }
 
     private boolean isWeaponFull() {
@@ -109,7 +129,7 @@ public class ReloadTracker {
         return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(this.stack, this.gun);
     }
 
-    private boolean hasNoAmmo(Player player) {
+    private boolean hasNoAmmo(LivingEntity player) {
         return Gun.findAmmo(player, this.gun.getProjectile().getItem()).stack().isEmpty();
     }
 
@@ -119,7 +139,7 @@ public class ReloadTracker {
         return deltaTicks > 0 && deltaTicks % interval == 0;
     }
 
-    private void reloadMagazine(Player player) {
+    private void reloadMagazine(LivingEntity player) {
         if(this.gun.getProjectile().isMagazineMode()){
             addMagazine(player);
         }
@@ -129,20 +149,20 @@ public class ReloadTracker {
         }
     }
 
-    private void addCartridge(Player player) {
-        addAmmo(player, gun.getGeneral().getReloadAmount());
+    private void addCartridge(LivingEntity entity) {
+        addAmmo(entity, gun.getGeneral().getReloadAmount());
     }
 
-    private void addAmmo(Player player) {
+    private void addAmmo(LivingEntity entity) {
         var amount = this.gun.getGeneral().getMaxAmmo(stack);
 
-        while (isNotReloaded(player)){
-            addAmmo(player, amount);
+        while (isNotReloaded(entity)){
+            addAmmo(entity, amount);
         }
     }
 
-    private void addAmmo(Player player, int amount) {
-        var context = Gun.findAmmo(player, this.gun.getProjectile().getItem());
+    private void addAmmo(LivingEntity entity, int amount) {
+        var context = Gun.findAmmo(entity, this.gun.getProjectile().getItem());
         var ammo = context.stack();
 
         if (!ammo.isEmpty()) {
@@ -165,7 +185,7 @@ public class ReloadTracker {
 //        playReloadSound(player);
     }
 
-    private boolean isNotReloaded(Player player) {
+    private boolean isNotReloaded(LivingEntity player) {
         var ammoItem = this.gun.getProjectile().getItem();
         var tag = this.stack.getTag();
 
@@ -173,9 +193,9 @@ public class ReloadTracker {
                 tag.getInt(Tags.AMMO_COUNT) < GunEnchantmentHelper.getAmmoCapacity(this.stack, this.gun);
     }
 
-    private void addMagazine(Player player) {
+    private void addMagazine(LivingEntity entity) {
         var ammoId = this.gun.getProjectile().getItem();
-        var context = Gun.findMagazine(player, ammoId);
+        var context = Gun.findMagazine(entity, ammoId);
         var ammo = context.stack();
 
         if (!ammo.isEmpty()) {
@@ -191,7 +211,8 @@ public class ReloadTracker {
                     var usedMagazine = new ItemStack(ForgeRegistries.ITEMS.getValue(ammoId));
                     StackUtils.setDurability(usedMagazine, currentAmmo);
 
-                    addOrDropStack(player, usedMagazine);
+                    if(entity instanceof Player player)
+                        addOrDropStack(player, usedMagazine);
                 }
 //                amount = Math.min(amount, maxAmmo - currentAmmo);
                 tag.putInt(Tags.AMMO_COUNT, amount);
@@ -227,19 +248,19 @@ public class ReloadTracker {
 //        }
 //    }
 
-    private static void handTick(Player player, HumanoidArm arm) {
-        var reloadKey = arm == HumanoidArm.RIGHT ?
-                ModSyncedDataKeys.RELOADING_RIGHT: ModSyncedDataKeys.RELOADING_LEFT;
+    private static void handTick(LivingEntity player, HumanoidArm arm) {
+
 
         if (addTracker(player, arm)) return;
-
         var tracker = RELOAD_TRACKER_MAP.get(player);
         final var gun = tracker.gun;
 
         if (!tracker.isSameWeapon(player) || tracker.isWeaponFull() || tracker.hasNoAmmo(player)) {
             RELOAD_TRACKER_MAP.remove(player);
+            var reloadKey = arm == HumanoidArm.RIGHT ?
+                    ModSyncedDataKeys.RELOADING_RIGHT :
+                    ModSyncedDataKeys.RELOADING_LEFT;
             reloadKey.setValue(player, false);
-            return;
         }
         else if(gun.getGeneral().getLoadingType().equals(LoadingTypes.MAGAZINE)){
             if(tracker.reloadTick > 0)
@@ -263,39 +284,38 @@ public class ReloadTracker {
         }
     }
 
-    private static boolean addTracker(Player player, HumanoidArm arm) {
+    public static boolean addTracker(LivingEntity entity, HumanoidArm arm) {
         var reloadKey = arm == HumanoidArm.RIGHT ?
                 ModSyncedDataKeys.RELOADING_RIGHT: ModSyncedDataKeys.RELOADING_LEFT;
 
         var gunItem = arm == HumanoidArm.RIGHT ?
-                player.getInventory().getSelected().getItem():
-                player.getOffhandItem().getItem();
+                entity.getMainHandItem().getItem():
+                entity.getOffhandItem().getItem();
 
-        if (!RELOAD_TRACKER_MAP.containsKey(player)) {
+        if (!RELOAD_TRACKER_MAP.containsKey(entity)) {
             if (!(gunItem instanceof GunItem)) {
-                reloadKey.setValue(player, false);
+                reloadKey.setValue(entity, false);
                 return true;
             }
-            RELOAD_TRACKER_MAP.put(player, new ReloadTracker(player, arm));
+            RELOAD_TRACKER_MAP.put(entity, new ReloadTracker(entity, arm));
         }
         return false;
     }
 
-    private static void stopReloading(Player player, Gun gun, HumanoidArm arm) {
+    private static void stopReloading(LivingEntity entity, Gun gun, HumanoidArm arm) {
         var reloadKey = arm == HumanoidArm.RIGHT ?
                 ModSyncedDataKeys.RELOADING_RIGHT: ModSyncedDataKeys.RELOADING_LEFT;
 
-        RELOAD_TRACKER_MAP.remove(player);
-        reloadKey.setValue(player, false);
-        final var finalPlayer = player;
-
+        RELOAD_TRACKER_MAP.remove(entity);
+        reloadKey.setValue(entity, false);
+//        final var finalPlayer = entity;
 //        DelayedTask.runAfter(4, () -> {
 //            playCockSound(gun, finalPlayer);
 //        });
 
-        var oppositeStack = LivingEntityUtils.getItemInHand(player, arm.getOpposite());
+        var oppositeStack = LivingEntityUtils.getItemInHand(entity, arm.getOpposite());
         if (arm == HumanoidArm.RIGHT && oppositeStack.getItem() instanceof GunItem && !GunModifierHelper.isWeaponFull(oppositeStack)) {
-            PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) player, new S2CMessageReload(true, arm.getOpposite()));
+            PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) entity, new S2CMessageReload(true, arm.getOpposite()));
         }
     }
 
