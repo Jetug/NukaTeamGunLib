@@ -26,11 +26,6 @@ public class PlayerAnimationHelper {
     public static ModifierLayer<IAnimation> normalLayer;
     public static ModifierLayer<IAnimation> mirrorLayer;
 
-//    @OnlyIn(Dist.CLIENT)
-//    public static void playAnim(Player player, int length, ResourceLocation name) {
-//        playAnim(player, name, false);
-//    }
-
     @OnlyIn(Dist.CLIENT)
     public static void playAnim(Player player, ResourceLocation name, int length, boolean mirror) {
         if (player == null) return;

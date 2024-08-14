@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.base.utils;
 
+import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.gun.LoadingTypes;
@@ -105,7 +106,7 @@ public class ReloadTracker {
     }
 
     @SubscribeEvent
-    public static void onPlayerTick(PlayerEvent.PlayerLoggedOutEvent event) {
+    public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         MinecraftServer server = event.getEntity().getServer();
         if (server != null) {
             server.execute(() -> RELOAD_TRACKER_MAP.remove(event.getEntity()));
@@ -249,17 +250,13 @@ public class ReloadTracker {
 //    }
 
     private static void handTick(LivingEntity player, HumanoidArm arm) {
-
-
         if (addTracker(player, arm)) return;
         var tracker = RELOAD_TRACKER_MAP.get(player);
         final var gun = tracker.gun;
 
         if (!tracker.isSameWeapon(player) || tracker.isWeaponFull() || tracker.hasNoAmmo(player)) {
             RELOAD_TRACKER_MAP.remove(player);
-            var reloadKey = arm == HumanoidArm.RIGHT ?
-                    ModSyncedDataKeys.RELOADING_RIGHT :
-                    ModSyncedDataKeys.RELOADING_LEFT;
+            var reloadKey = getReloadKey(arm);
             reloadKey.setValue(player, false);
         }
         else if(gun.getGeneral().getLoadingType().equals(LoadingTypes.MAGAZINE)){
@@ -284,9 +281,19 @@ public class ReloadTracker {
         }
     }
 
-    public static boolean addTracker(LivingEntity entity, HumanoidArm arm) {
+    public static void startReloading(LivingEntity entity, HumanoidArm arm){
+        var reloadKey = getReloadKey(arm);
+        reloadKey.setValue(entity, true);
+    }
+
+    private static SyncedDataKey<LivingEntity, Boolean> getReloadKey(HumanoidArm arm) {
         var reloadKey = arm == HumanoidArm.RIGHT ?
                 ModSyncedDataKeys.RELOADING_RIGHT: ModSyncedDataKeys.RELOADING_LEFT;
+        return reloadKey;
+    }
+
+    private static boolean addTracker(LivingEntity entity, HumanoidArm arm) {
+        var reloadKey = getReloadKey(arm);
 
         var gunItem = arm == HumanoidArm.RIGHT ?
                 entity.getMainHandItem().getItem():
@@ -303,8 +310,7 @@ public class ReloadTracker {
     }
 
     private static void stopReloading(LivingEntity entity, Gun gun, HumanoidArm arm) {
-        var reloadKey = arm == HumanoidArm.RIGHT ?
-                ModSyncedDataKeys.RELOADING_RIGHT: ModSyncedDataKeys.RELOADING_LEFT;
+        var reloadKey = getReloadKey(arm);
 
         RELOAD_TRACKER_MAP.remove(entity);
         reloadKey.setValue(entity, false);
