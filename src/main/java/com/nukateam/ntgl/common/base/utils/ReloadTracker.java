@@ -284,6 +284,7 @@ public class ReloadTracker {
     public static void startReloading(LivingEntity entity, HumanoidArm arm){
         var reloadKey = getReloadKey(arm);
         reloadKey.setValue(entity, true);
+        addTracker(entity, arm);
     }
 
     private static SyncedDataKey<LivingEntity, Boolean> getReloadKey(HumanoidArm arm) {
