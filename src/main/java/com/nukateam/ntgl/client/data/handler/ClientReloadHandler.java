@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.data.handler;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.gun.Gun;
@@ -189,7 +190,8 @@ public class ClientReloadHandler {
         }
         else reloadDuration = general.getReloadTime();
 
-        PlayerAnimationHelper.playAnim(player, gun.getGeneral().getReloadType(), reloadDuration, arm == HumanoidArm.LEFT);
+        if (Ntgl.playerAnimatorLoaded)
+            PlayerAnimationHelper.playAnim(player, gun.getGeneral().getReloadType(), reloadDuration, arm == HumanoidArm.LEFT);
     }
 
     private void updateReloadTimer(Player player) {

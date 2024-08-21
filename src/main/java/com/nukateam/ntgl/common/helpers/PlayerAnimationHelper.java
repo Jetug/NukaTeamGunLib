@@ -6,6 +6,7 @@ import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.api.layered.modifier.MirrorModifier;
 import dev.kosmx.playerAnim.api.layered.modifier.SpeedModifier;
+import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +30,6 @@ public class PlayerAnimationHelper {
     @OnlyIn(Dist.CLIENT)
     public static void playAnim(Player player, ResourceLocation name, int length, boolean mirror) {
         if (player == null) return;
-
         if(mirrorLayer == null){
             mirrorLayer = getAnimationLayer((AbstractClientPlayer)player, MIRROR_ANIMATION);
             mirrorLayer.addModifier(SPEED_MIRROR, 0);

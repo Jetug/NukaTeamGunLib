@@ -47,26 +47,10 @@ public class Ntgl {
     public static final String MOD_ID = "ntgl";
     public static final IEventBus MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
 
-
-//    public Ntgl() {
-//        AzureLib.initialize();
-//        new com.nukateam.guns.Ntgl().initGunMod(MOD_EVENT_BUS);
-//
-//        ModGuns.register(MOD_EVENT_BUS);
-//        ModBlocks.register(MOD_EVENT_BUS);
-////        ModTileEntities.REGISTER.register(MOD_EVENT_BUS);
-//
-////        MOD_EVENT_BUS.addListener(this::clientSetup);
-//
-//        MinecraftForge.EVENT_BUS.register(this);
-//
-//    }
-
-    public static boolean debugging = false;
     public static boolean controllableLoaded = false;
     public static boolean backpackedLoaded = false;
     public static boolean playerReviveLoaded = false;
-//    public static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(com.nukateam.ntgl.Ntgl.MOD_ID);
+    public static boolean playerAnimatorLoaded = false;
 
     public Ntgl() {
 //        AzureLib.initialize();
@@ -101,6 +85,7 @@ public class Ntgl {
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
+        playerAnimatorLoaded = ModList.get().isLoaded("playeranimator");
 
         MinecraftForge.EVENT_BUS.register(this);
     }
