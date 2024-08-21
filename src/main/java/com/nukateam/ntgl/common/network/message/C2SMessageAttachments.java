@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.base.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
@@ -29,7 +30,7 @@ public class C2SMessageAttachments extends PlayMessage<C2SMessageAttachments> {
         supplier.execute((() -> {
             ServerPlayer player = supplier.getPlayer();
             if (player != null) {
-//                ServerPlayHandler.handleAttachments(player);
+                ServerPlayHandler.handleAttachments(player);
             }
         }));
         supplier.setHandled(true);

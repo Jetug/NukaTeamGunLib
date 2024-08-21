@@ -13,6 +13,8 @@ import com.nukateam.ntgl.common.foundation.item.IColored;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.ModBlocks;
+import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.components.OptionsList;
@@ -25,6 +27,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,6 +36,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -172,19 +176,19 @@ public class ClientHandler {
         }
     }
 
-//    @SubscribeEvent
-//    public static void onKeyPressed(InputEvent.Key event) {
-//        Minecraft mc = Minecraft.getInstance();
-//        if (mc.player != null && mc.screen == null && event.getAction() == GLFW.GLFW_PRESS) {
-//            if (KeyBinds.KEY_ATTACHMENTS.isDown()) {
-//                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
-//            }
-//            /*else if(event.getKey() == GLFW.GLFW_KEY_KP_9)
-//            {
-//                mc.setScreen(new EditorScreen(null, new Debug.Menu()));
-//            }*/
-//        }
-//    }
+    @SubscribeEvent
+    public static void onKeyPressed(InputEvent.Key event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null && mc.screen == null && event.getAction() == GLFW.GLFW_PRESS) {
+            if (KeyBinds.KEY_ATTACHMENTS.isDown()) {
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
+            }
+            /*else if(event.getKey() == GLFW.GLFW_KEY_KP_9)
+            {
+                mc.setScreen(new EditorScreen(null, new Debug.Menu()));
+            }*/
+        }
+    }
 
     public static void onRegisterReloadListener(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener((ResourceManagerReloadListener) manager -> {

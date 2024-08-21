@@ -50,6 +50,12 @@ public class ModGuns {
     public static final RegistryObject<Item> ROUND22 = registerAmmo("round22");
     public static final RegistryObject<Item> MININUKE = registerAmmo("mini_nuke");
 
+    public static final RegistryObject<Item> HOLOGRAPHIC_SIGHT = ITEMS.register("holographic_sight",
+            () -> new ScopeItem(Attachments.SHORT_SCOPE, new Item.Properties()
+                    .stacksTo(1)
+                    .durability(800)
+            ));
+
     public static RegistryObject<GunItem> registerGun(String name) {
         return ITEMS.register(name, () -> new GunItem(new Item.Properties().stacksTo(1)));
     }

@@ -19,7 +19,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.*;
@@ -37,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static com.nukateam.ntgl.client.event.InputEvents.*;
 
 /**
  * Author: MrCrayfish
@@ -135,6 +136,9 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 
         int left = (this.width - this.imageWidth) / 2;
         int top = (this.height - this.imageHeight) / 2;
+        int startX = this.leftPos;
+        int startY = this.topPos;
+
         graphics.enableScissor(left + 26, top + 17, left + 26 + 142, top + 17 + 70);
         graphics.pose().pushPose();
         graphics.pose().translate(96, 50, 150);
@@ -148,15 +152,20 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         graphics.pose().mulPose(Axis.YP.rotationDegrees(90F));
         graphics.pose().mulPoseMatrix((new Matrix4f()).scaling(1.0F, -1.0F, 1.0F));
         graphics.pose().scale(90.0F, 90.0F, 90.0F);
-        PoseStack modelStack = RenderSystem.getModelViewStack();
-        modelStack.pushPose();
-        modelStack.mulPoseMatrix(graphics.pose().last().pose());
-        RenderSystem.applyModelViewMatrix();
-        MultiBufferSource.BufferSource buffer = this.minecraft.renderBuffers().bufferSource();
-        GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getMainHandItem(), ItemDisplayContext.GROUND, new PoseStack(), buffer, 15728880);
-        buffer.endBatch();
-        graphics.pose().popPose();
-        modelStack.popPose();
+
+        var poseStack = RenderSystem.getModelViewStack();
+
+        poseStack.pushPose();
+        {
+            poseStack.mulPoseMatrix(graphics.pose().last().pose());
+            poseStack.translate(startX + -178, startY + -39, Z);
+            RenderSystem.applyModelViewMatrix();
+            var buffer = this.minecraft.renderBuffers().bufferSource();
+            GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getMainHandItem(), ItemDisplayContext.GROUND, new PoseStack(), buffer, 15728880);
+            buffer.endBatch();
+            graphics.pose().popPose();
+        }
+        poseStack.popPose();
         RenderSystem.applyModelViewMatrix();
         graphics.disableScissor();
 

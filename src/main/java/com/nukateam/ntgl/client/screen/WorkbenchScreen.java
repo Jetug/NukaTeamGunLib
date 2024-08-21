@@ -382,19 +382,19 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             ModelRenderUtil.scissor(startX + 8, startY + 17, 160, 70);
 
-            PoseStack modelViewStack = RenderSystem.getModelViewStack();
-            modelViewStack.pushPose();
+            var poseStack = RenderSystem.getModelViewStack();
+            poseStack.pushPose();
             {
-                modelViewStack.translate(startX + 88, startY + 60, 100);
-                modelViewStack.scale(50F, -50F, 50F);
-                modelViewStack.mulPose(Axis.XP.rotationDegrees(5F));
-                modelViewStack.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
+                poseStack.translate(startX + 88, startY + 60, 100);
+                poseStack.scale(50F, -50F, 50F);
+                poseStack.mulPose(Axis.XP.rotationDegrees(5F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
                 RenderSystem.applyModelViewMatrix();
                 MultiBufferSource.BufferSource buffer = this.minecraft.renderBuffers().bufferSource();
                 Minecraft.getInstance().getItemRenderer().render(currentItem, ItemDisplayContext.FIXED, false, graphics.pose(), buffer, 15728880, OverlayTexture.NO_OVERLAY, ModelRenderUtil.getModel(currentItem));
                 buffer.endBatch();
             }
-            modelViewStack.popPose();
+            poseStack.popPose();
             RenderSystem.applyModelViewMatrix();
 
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
