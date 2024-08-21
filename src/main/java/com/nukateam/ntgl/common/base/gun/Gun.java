@@ -1123,6 +1123,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             @Optional
             @Nullable
             private String name;
+            @Optional
+            @Nullable
+            private ResourceLocation item;
             @Nullable
             @Optional
             private String slot;
@@ -1130,6 +1133,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             @Nullable
             public String getName() {
                 return this.name;
+            }
+
+            @Nullable
+            public ResourceLocation getItem() {
+                return this.item;
             }
 
             @Nullable
@@ -1143,6 +1151,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 if (this.name != null) {
                     tag.putString("Name", this.name);
                 }
+                if (this.item != null) {
+                    tag.putString("Item", this.item.toString());
+                }
                 if (this.slot != null) {
                     tag.putString("Slot", this.slot);
                 }
@@ -1154,6 +1165,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 if (tag.contains("Name", Tag.TAG_STRING)) {
                     this.name = tag.getString("Name");
                 }
+                if (tag.contains("Item", Tag.TAG_STRING)) {
+                    this.item = ResourceLocation.tryParse(tag.getString("Item"));
+                }
                 if (tag.contains("Slot", Tag.TAG_STRING)) {
                     this.slot = tag.getString("Slot");
                 }
@@ -1163,6 +1177,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 JsonObject object = new JsonObject();
                 if (this.name != null) {
                     object.addProperty("Name", this.name);
+                }
+                if (this.item != null) {
+                    object.addProperty("Item", this.item.toString());
                 }
                 if (this.slot != null) {
                     object.addProperty("Slot", this.slot);
@@ -1174,6 +1191,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 var attachments = new Attachment();
                 if (this.name != null) {
                     attachments.name = this.name;
+                }
+                if (this.item != null) {
+                    attachments.item = this.item;
                 }
                 if (this.slot != null) {
                     attachments.slot = this.slot;
@@ -1216,12 +1236,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (this.zoom != null) {
                 object.add("zoom", this.zoom.toJsonObject());
             }
-
-//            var array = new JsonArray();
-//            for (var mod: mods) {
-//                array.add(mod.toJsonObject());
-//            }
-//            object.add("mods", array);
 
             GunJsonUtil.addObjectIfNotEmpty(object, "attachments", this.attachments.toJsonObject());
             return object;
