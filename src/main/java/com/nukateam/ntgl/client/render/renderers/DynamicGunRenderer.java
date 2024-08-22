@@ -169,11 +169,16 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
     }
 
     protected void renderAttachments(ItemStack stack, GeoBone bone) {
-
         var gun = ((GunItem)stack.getItem()).getModifiedGun(stack);
-        for(var att : gun.getModules().getMods()){
-            if(Objects.equals(bone.getName(), att.getName())){
-                bone.setHidden(true);
+        var gunAttachments = gun.getModules().getMods();
+
+        if(gunAttachments != null) {
+            for (var list : gun.getModules().getMods().values()) {
+                for (var att: list) {
+                    if (Objects.equals(bone.getName(), att.getName())) {
+                        bone.setHidden(true);
+                    }
+                }
             }
         }
 //        var config = item.getConfig();
@@ -190,7 +195,5 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
 //            for (var name : names)
 //                getGeoModel().getBone(name).ifPresent((bone) -> bone.setHidden(false));
 //        }
-
-
     }
 }
