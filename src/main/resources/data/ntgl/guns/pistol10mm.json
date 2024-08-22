@@ -31,15 +31,91 @@
   },
   "modules": {
     "mods": {
-      "scope":[
+      "scope": [
         {
           "name": "scope_1",
           "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "scope_2",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "scope_3",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "scope_4",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "scope_5",
+          "item": "ntgl:holographic_sight"
         }
       ],
-      "barrel":[
+      "barrel": [
         {
           "name": "barrel_1",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "barrel_2",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "barrel_3",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "barrel_4",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "barrel_5",
+          "item": "ntgl:holographic_sight"
+        }
+      ],
+      "grip": [
+        {
+          "name": "grip_1",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "grip_2",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "grip_3",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "grip_4",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "grip_5",
+          "item": "ntgl:holographic_sight"
+        }
+      ],
+      "magazine":[
+        {
+          "name": "magazine_1",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "magazine_2",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "magazine_3",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "magazine_4",
+          "item": "ntgl:holographic_sight"
+        },
+        {
+          "name": "magazine_5",
           "item": "ntgl:holographic_sight"
         }
       ]
