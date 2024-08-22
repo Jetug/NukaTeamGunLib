@@ -180,7 +180,7 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
             if(Objects.equals(bone.getName(), att.getName())){
                 bone.setHidden(true);
 
-                Gun.hasAttachmentEquipped();
+//                Gun.hasAttachmentEquipped();
             }
         }
 //        var config = item.getConfig();

@@ -31,7 +31,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
 
     public AttachmentContainer(int windowId, Inventory playerInventory, ItemStack stack) {
         this(windowId, playerInventory);
-        ItemStack[] attachments = new ItemStack[IAttachment.Type.values().length];
+        var attachments = new ItemStack[IAttachment.Type.values().length];
         for (int i = 0; i < attachments.length; i++) {
             attachments[i] = Gun.getAttachment(IAttachment.Type.values()[i], stack);
         }
@@ -87,8 +87,8 @@ public class AttachmentContainer extends AbstractContainerMenu {
             var itemStack = this.getSlot(i).getItem();
             if (itemStack.getItem() instanceof IAttachment attachment
                     && itemStack.getItem() instanceof AttachmentItem) {
-                var tagKey = attachment.getType().getTagKey();
-                attachments.put(tagKey, itemStack.save(new CompoundTag()));
+                var tagKey = attachment.getType();
+                attachments.put(tagKey.toString(), itemStack.save(new CompoundTag()));
 //                //Jetug
 //                StackUtils.setAttachment(itemStack, tagKey, attachmentItem.getName());
             }

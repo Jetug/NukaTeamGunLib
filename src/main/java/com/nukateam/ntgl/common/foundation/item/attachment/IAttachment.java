@@ -59,14 +59,14 @@ public interface IAttachment<T extends Attachment> {
             return this.serializeKey;
         }
 
-        @Nullable
-        public static Type byTagKey(String s) {
-            for (Type type : values()) {
-                if (type.tagKey.equalsIgnoreCase(s)) {
-                    return type;
-                }
-            }
-            return null;
-        }
+//        @Nullable
+//        public static Type byTagKey(String s) {
+//            for (Type type : values()) {
+//                if (type.tagKey.equalsIgnoreCase(s)) {
+//                    return type;
+//                }
+//            }
+//            return null;
+//        }
     }
 }
