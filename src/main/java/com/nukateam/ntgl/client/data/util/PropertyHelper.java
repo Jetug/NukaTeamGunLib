@@ -16,6 +16,7 @@ import com.mrcrayfish.framework.api.serialize.DataObject;
 import com.mrcrayfish.framework.api.serialize.DataType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -107,8 +108,8 @@ public final class PropertyHelper {
         return defaultOrigin;
     }
 
-    public static Vec3 getAttachmentPosition(ItemStack stack, Gun modifiedGun, IAttachment.Type type) {
-        var scopeObject = getObjectByPath(stack, WEAPON_KEY, "attachments", type.getSerializeKey());
+    public static Vec3 getAttachmentPosition(ItemStack stack, Gun modifiedGun, ResourceLocation type) {
+        var scopeObject = getObjectByPath(stack, WEAPON_KEY, "attachments", type.toString());
         if (scopeObject.has("translation", DataType.ARRAY)) {
             DataArray translationArray = scopeObject.getDataArray("translation");
             return arrayToVec3(translationArray, Vec3.ZERO);
@@ -123,8 +124,8 @@ public final class PropertyHelper {
         return Vec3.ZERO;
     }
 
-    public static Vec3 getAttachmentScale(ItemStack weapon, Gun modifiedGun, IAttachment.Type type) {
-        DataObject scopeObject = getObjectByPath(weapon, WEAPON_KEY, "attachments", type.getSerializeKey());
+    public static Vec3 getAttachmentScale(ItemStack weapon, Gun modifiedGun, ResourceLocation type) {
+        DataObject scopeObject = getObjectByPath(weapon, WEAPON_KEY, "attachments", type.toString());
         if (scopeObject.has("scale", DataType.ARRAY)) {
             DataArray scaleArray = scopeObject.getDataArray("scale");
             return arrayToVec3(scaleArray, DEFAULT_SCALE);

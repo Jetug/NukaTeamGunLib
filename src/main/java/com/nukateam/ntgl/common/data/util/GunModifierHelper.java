@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +43,7 @@ public class GunModifierHelper {
         return true;
     }
 
-    private static IGunModifier[] getModifiers(ItemStack weapon, IAttachment.Type type) {
+    private static IGunModifier[] getModifiers(ItemStack weapon, ResourceLocation type) {
         ItemStack stack = Gun.getAttachment(type, weapon);
         if (!stack.isEmpty() && stack.getItem() instanceof IAttachment<?> attachment) {
             return attachment.getProperties().getModifiers();
@@ -51,8 +52,11 @@ public class GunModifierHelper {
     }
 
     public static int getModifiedProjectileLife(ItemStack weapon, int life) {
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 life = modifier.modifyProjectileLife(life);
             }
@@ -60,15 +64,23 @@ public class GunModifierHelper {
         return life;
     }
 
+    public static Gun getGun(ItemStack weapon) {
+        var gunItem = (GunItem) weapon.getItem();
+        return gunItem.getModifiedGun(weapon);
+    }
+
     public static double getModifiedProjectileGravity(ItemStack weapon, double gravity) {
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 gravity = modifier.modifyProjectileGravity(gravity);
             }
         }
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 gravity += modifier.additionalProjectileGravity();
             }
@@ -77,8 +89,11 @@ public class GunModifierHelper {
     }
 
     public static float getModifiedSpread(ItemStack weapon, float spread) {
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 spread = modifier.modifyProjectileSpread(spread);
             }
@@ -87,8 +102,11 @@ public class GunModifierHelper {
     }
 
     public static double getModifiedProjectileSpeed(ItemStack weapon, double speed) {
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 speed = modifier.modifyProjectileSpeed(speed);
             }
@@ -97,9 +115,12 @@ public class GunModifierHelper {
     }
 
     public static float getFireSoundVolume(ItemStack weapon) {
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
         float volume = 1.0F;
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 volume = modifier.modifyFireSoundVolume(volume);
             }
@@ -109,9 +130,13 @@ public class GunModifierHelper {
 
     @Deprecated(since = "1.3.0", forRemoval = true)
     public static double getMuzzleFlashSize(ItemStack weapon, double size) {
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
+
                 size = modifier.modifyMuzzleFlashSize(size);
             }
         }
@@ -119,8 +144,11 @@ public class GunModifierHelper {
     }
 
     public static double getMuzzleFlashScale(ItemStack weapon, double scale) {
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 scale = modifier.modifyMuzzleFlashScale(scale);
             }
@@ -129,9 +157,12 @@ public class GunModifierHelper {
     }
 
     public static float getKickReduction(ItemStack weapon) {
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
         var kickReduction = 1.0F;
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            var modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        for (var att : attachments.keySet()) {
+            var modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (var modifier : modifiers) {
                 kickReduction *= Mth.clamp(modifier.kickModifier(), 0.0F, 1.0F);
             }
@@ -140,9 +171,12 @@ public class GunModifierHelper {
     }
 
     public static float getRecoilModifier(ItemStack weapon) {
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
         float recoilReduction = 1.0F;
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 recoilReduction *= Mth.clamp(modifier.recoilModifier(), 0.0F, 1.0F);
             }
@@ -151,8 +185,11 @@ public class GunModifierHelper {
     }
 
     public static boolean isSilencedFire(ItemStack weapon) {
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 if (modifier.silencedFire()) {
                     return true;
@@ -163,9 +200,12 @@ public class GunModifierHelper {
     }
 
     public static double getModifiedFireSoundRadius(ItemStack weapon, double radius) {
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
         double minRadius = radius;
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 double newRadius = modifier.modifyFireSoundRadius(radius);
                 if (newRadius < minRadius) {
@@ -177,9 +217,12 @@ public class GunModifierHelper {
     }
 
     public static float getAdditionalDamage(ItemStack weapon) {
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
         float additionalDamage = 0.0F;
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 additionalDamage += modifier.additionalDamage();
             }
@@ -188,9 +231,12 @@ public class GunModifierHelper {
     }
 
     public static float getModifiedProjectileDamage(ItemStack weapon, float damage) {
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
         float finalDamage = damage;
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 finalDamage = modifier.modifyProjectileDamage(finalDamage);
             }
@@ -199,15 +245,18 @@ public class GunModifierHelper {
     }
 
     public static float getModifiedDamage(ItemStack weapon, Gun modifiedGun, float damage) {
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
         float finalDamage = damage;
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 finalDamage = modifier.modifyProjectileDamage(finalDamage);
             }
         }
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 finalDamage += modifier.additionalDamage();
             }
@@ -216,8 +265,11 @@ public class GunModifierHelper {
     }
 
     public static double getModifiedAimDownSightSpeed(ItemStack weapon, double speed) {
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 speed = modifier.modifyAimDownSightSpeed(speed);
             }
@@ -226,8 +278,11 @@ public class GunModifierHelper {
     }
 
     public static int getModifiedRate(ItemStack weapon, int rate) {
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 rate = modifier.modifyFireRate(rate);
             }
@@ -236,9 +291,12 @@ public class GunModifierHelper {
     }
 
     public static float getCriticalChance(ItemStack weapon) {
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
+
         float chance = 0F;
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            IGunModifier[] modifiers = getModifiers(weapon, IAttachment.Type.values()[i]);
+        for (var att : attachments.keySet()) {
+            IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
             for (IGunModifier modifier : modifiers) {
                 chance += modifier.criticalChance();
             }

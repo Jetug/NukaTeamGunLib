@@ -114,18 +114,18 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         int startX = (this.width - this.imageWidth) / 2;
         int startY = (this.height - this.imageHeight) / 2;
 
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            if (ModelRenderUtil.isMouseWithin(mouseX, mouseY, startX + 7, startY + 16 + i * 18, 18, 18)) {
-                IAttachment.Type type = IAttachment.Type.values()[i];
-                if (!this.menu.getSlot(i).isActive()) {
-                    graphics.renderComponentTooltip(this.font, Arrays.asList(Component.translatable("slot.ntgl.attachment." + type.getTranslationKey()), Component.translatable("slot.ntgl.attachment.not_applicable")), mouseX, mouseY);
-                } else if (this.menu.getSlot(i) instanceof AttachmentSlot slot && slot.getItem().isEmpty() && !this.isCompatible(this.menu.getCarried(), slot)) {
-                    graphics.renderComponentTooltip(this.font, Arrays.asList(Component.translatable("slot.ntgl.attachment.incompatible").withStyle(ChatFormatting.YELLOW)), mouseX, mouseY);
-                } else if (this.weaponInventory.getItem(i).isEmpty()) {
-                    graphics.renderComponentTooltip(this.font, Collections.singletonList(Component.translatable("slot.ntgl.attachment." + type.getTranslationKey())), mouseX, mouseY);
-                }
-            }
-        }
+//        for (int i = 0; i < IAttachment.Type.values().length; i++) {
+//            if (ModelRenderUtil.isMouseWithin(mouseX, mouseY, startX + 7, startY + 16 + i * 18, 18, 18)) {
+//                IAttachment.Type type = IAttachment.Type.values()[i];
+//                if (!this.menu.getSlot(i).isActive()) {
+//                    graphics.renderComponentTooltip(this.font, Arrays.asList(Component.translatable("slot.ntgl.attachment." + type.getTranslationKey()), Component.translatable("slot.ntgl.attachment.not_applicable")), mouseX, mouseY);
+//                } else if (this.menu.getSlot(i) instanceof AttachmentSlot slot && slot.getItem().isEmpty() && !this.isCompatible(this.menu.getCarried(), slot)) {
+//                    graphics.renderComponentTooltip(this.font, Arrays.asList(Component.translatable("slot.ntgl.attachment.incompatible").withStyle(ChatFormatting.YELLOW)), mouseX, mouseY);
+//                } else if (this.weaponInventory.getItem(i).isEmpty()) {
+//                    graphics.renderComponentTooltip(this.font, Collections.singletonList(Component.translatable("slot.ntgl.attachment." + type.getTranslationKey())), mouseX, mouseY);
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -186,13 +186,13 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 
         /* Draws the icons for each attachment slot. If not applicable
          * for the weapon, it will draw a cross instead. */
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            if (!this.canPlaceAttachmentInSlot(this.menu.getCarried(), this.menu.getSlot(i))) {
-                graphics.blit(GUI_TEXTURES, left + 8, top + 17 + i * 18, 176, 0, 16, 16);
-            } else if (this.weaponInventory.getItem(i).isEmpty()) {
-                graphics.blit(GUI_TEXTURES, left + 8, top + 17 + i * 18, 176, 16 + i * 16, 16, 16);
-            }
-        }
+//        for (int i = 0; i < IAttachment.Type.values().length; i++) {
+//            if (!this.canPlaceAttachmentInSlot(this.menu.getCarried(), this.menu.getSlot(i))) {
+//                graphics.blit(GUI_TEXTURES, left + 8, top + 17 + i * 18, 176, 0, 16, 16);
+//            } else if (this.weaponInventory.getItem(i).isEmpty()) {
+//                graphics.blit(GUI_TEXTURES, left + 8, top + 17 + i * 18, 176, 16 + i * 16, 16, 16);
+//            }
+//        }
     }
 
     private boolean canPlaceAttachmentInSlot(ItemStack stack, Slot slot) {

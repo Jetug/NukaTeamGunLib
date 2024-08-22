@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.foundation.init.ModContainers;
 import com.nukateam.ntgl.common.foundation.item.AttachmentItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -13,6 +14,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import static com.nukateam.ntgl.common.data.util.GunModifierHelper.getGun;
 
 /**
  * Author: MrCrayfish
@@ -45,9 +48,15 @@ public class AttachmentContainer extends AbstractContainerMenu {
         super(ModContainers.ATTACHMENTS.get(), windowId);
         this.weapon = playerInventory.getSelected();
         this.playerInventory = playerInventory;
+        var gun = getGun(weapon);
+        var attachments = gun.getModules().getMods();
 
-        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-            this.addSlot(new AttachmentSlot(this, this.weaponInventory, this.weapon, IAttachment.Type.values()[i], playerInventory.player, i, 8, 17 + i * 18));
+        weaponInventory = new SimpleContainer(attachments.size());
+
+        var id = 0;
+        for (var att : attachments.keySet()) {
+            this.addSlot(new AttachmentSlot(this, this.weaponInventory, this.weapon, ResourceLocation.tryParse(att), playerInventory.player, id, 8, 17 + id * 18));
+            id++;
         }
 
         for (int i = 0; i < 3; i++) {

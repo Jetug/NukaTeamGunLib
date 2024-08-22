@@ -41,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.client.ClientHandler.*;
@@ -898,7 +899,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Nullable
         public Attachment getAttachmentByBone(String name) {
             AtomicReference<Attachment> result = new AtomicReference<>();
-            getMods().stream().filter((s) -> s.name.equals(name)).findFirst().ifPresent(result::set);
+//            getMods().stream().filter((s) -> s.name.equals(name)).findFirst().ifPresent(result::set);
 
             return result.get();
         }
@@ -1453,32 +1454,30 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public boolean canAttachType(@Nullable ResourceLocation type) {
         if (this.modules.attachments != null && type != null) {
-            switch (type) {
-                case SCOPE:
-                    return this.modules.attachments.scope != null;
-                case BARREL:
-                    return this.modules.attachments.barrel != null;
-                case STOCK:
-                    return this.modules.attachments.stock != null;
-                case UNDER_BARREL:
-                    return this.modules.attachments.underBarrel != null;
+            if (type.equals(SCOPE)) {
+                return this.modules.attachments.scope != null;
+            } else if (type.equals(BARREL)) {
+                return this.modules.attachments.barrel != null;
+            } else if (type.equals(STOCK)) {
+                return this.modules.attachments.stock != null;
+            } else if (type.equals(UNDER_BARREL)) {
+                return this.modules.attachments.underBarrel != null;
             }
         }
         return false;
     }
 
     @Nullable
-    public ScaledPositioned getAttachmentPosition(IAttachment.Type type) {
+    public ScaledPositioned getAttachmentPosition(ResourceLocation type) {
         if (this.modules.attachments != null) {
-            switch (type) {
-                case SCOPE:
-                    return this.modules.attachments.scope;
-                case BARREL:
-                    return this.modules.attachments.barrel;
-                case STOCK:
-                    return this.modules.attachments.stock;
-                case UNDER_BARREL:
-                    return this.modules.attachments.underBarrel;
+            if (type.equals(SCOPE)) {
+                return this.modules.attachments.scope;
+            } else if (type.equals(BARREL)) {
+                return this.modules.attachments.barrel;
+            } else if (type.equals(STOCK)) {
+                return this.modules.attachments.stock;
+            } else if (type.equals(UNDER_BARREL)) {
+                return this.modules.attachments.underBarrel;
             }
         }
         return null;
