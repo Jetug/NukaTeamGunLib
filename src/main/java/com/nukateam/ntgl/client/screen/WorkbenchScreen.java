@@ -299,6 +299,8 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             }
         }
 
+        if(filteredMaterials == null) return;
+
         for (int i = 0; i < this.filteredMaterials.size(); i++) {
             int itemX = startX + 172;
             int itemY = startY + i * 19 + 63;
@@ -400,6 +402,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
             this.filteredMaterials = this.getMaterials();
+
             for (int i = 0; i < this.filteredMaterials.size(); i++) {
                 graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
 

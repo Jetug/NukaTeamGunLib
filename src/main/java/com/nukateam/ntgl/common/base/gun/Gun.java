@@ -40,15 +40,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.client.ClientHandler.*;
 import static com.nukateam.ntgl.common.foundation.item.attachment.IAttachment.Type.*;
-
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected General general = new General();
@@ -884,7 +880,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         private Attachments attachments = new Attachments();
         @Optional
         @Nullable
-        private ArrayList<Attachment> mods = new ArrayList<>();
+        private Map<String, ArrayList<Attachment>> mods = new HashMap<>();
 
         @Nullable
         public Zoom getZoom() {
@@ -895,7 +891,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this.attachments;
         }
 
-        public ArrayList<Attachment> getMods() {
+        public Map<String, ArrayList<Attachment>> getMods() {
             return this.mods;
         }
 
@@ -1136,9 +1132,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             @Optional
             @Nullable
             private ResourceLocation item;
-            @Nullable
-            @Optional
-            private String slot;
 
             @Nullable
             public String getName() {
@@ -1150,11 +1143,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 return this.item;
             }
 
-            @Nullable
-            public String getSlot() {
-                return this.slot;
-            }
-
             @Override
             public CompoundTag serializeNBT() {
                 CompoundTag tag = new CompoundTag();
@@ -1163,9 +1151,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 }
                 if (this.item != null) {
                     tag.putString("Item", this.item.toString());
-                }
-                if (this.slot != null) {
-                    tag.putString("Slot", this.slot);
                 }
                 return tag;
             }
@@ -1178,9 +1163,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 if (tag.contains("Item", Tag.TAG_STRING)) {
                     this.item = ResourceLocation.tryParse(tag.getString("Item"));
                 }
-                if (tag.contains("Slot", Tag.TAG_STRING)) {
-                    this.slot = tag.getString("Slot");
-                }
             }
 
             public JsonObject toJsonObject() {
@@ -1190,9 +1172,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 }
                 if (this.item != null) {
                     object.addProperty("Item", this.item.toString());
-                }
-                if (this.slot != null) {
-                    object.addProperty("Slot", this.slot);
                 }
                 return object;
             }
@@ -1205,9 +1184,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 if (this.item != null) {
                     attachments.item = this.item;
                 }
-                if (this.slot != null) {
-                    attachments.slot = this.slot;
-                }
                 return attachments;
             }
         }
@@ -1219,7 +1195,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 tag.put("Zoom", this.zoom.serializeNBT());
 
             if( mods != null && !mods.isEmpty())
-                tag.put("Mods", NbtUtils.serializeNbt(mods));
+                tag.put("Mods", NbtUtils.serializeMap(mods));
 
             tag.put("Attachments", this.attachments.serializeNBT());
             return tag;
@@ -1229,7 +1205,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public void deserializeNBT(CompoundTag tag) {
             if(tag.contains("Mods")){
                 var nbt = (CompoundTag)tag.get("Mods");
-                this.mods = NbtUtils.deserializeNbt(nbt);
+                this.mods = NbtUtils.deserializeAttachmentMap(nbt);
             }
             if (tag.contains("Zoom", Tag.TAG_COMPOUND)) {
                 Zoom zoom = new Zoom();
