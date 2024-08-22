@@ -1,6 +1,8 @@
 package com.nukateam.ntgl.common.foundation.item.attachment;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Attachment;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -14,7 +16,7 @@ public interface IAttachment<T extends Attachment> {
     /**
      * @return The type of this attachment
      */
-    Type getType();
+    ResourceLocation getType();
 
     /**
      * @return The additional properties about this attachment
@@ -29,11 +31,11 @@ public interface IAttachment<T extends Attachment> {
         return true;
     }
 
-    enum Type {
-        SCOPE("scope", "Scope", "scope"),
-        BARREL("barrel", "Barrel", "barrel"),
-        STOCK("stock", "Stock", "stock"),
-        UNDER_BARREL("under_barrel", "Under_Barrel", "underBarrel");
+    class Type {
+        public static ResourceLocation SCOPE        = new ResourceLocation (Ntgl.MOD_ID, "scope");
+        public static ResourceLocation BARREL       = new ResourceLocation (Ntgl.MOD_ID, "barrel");
+        public static ResourceLocation STOCK        = new ResourceLocation (Ntgl.MOD_ID, "stock");
+        public static ResourceLocation UNDER_BARREL = new ResourceLocation (Ntgl.MOD_ID, "under_barrel");
 
         private final String translationKey;
         private final String tagKey;

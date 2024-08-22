@@ -663,7 +663,7 @@ public class GunRenderingHandler {
         var result = new ArrayList<ItemStack>();
 
         for (var tagKey : attachments.getAllKeys()) {
-            var type = IAttachment.Type.byTagKey(tagKey);
+            var type = ResourceLocation.tryParse(tagKey);
             if (type != null && modifiedGun.canAttachType(type)) {
                 var attachmentStack = Gun.getAttachment(type, stack);
                 result.add(attachmentStack);

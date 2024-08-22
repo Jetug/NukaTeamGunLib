@@ -6,6 +6,7 @@ import com.mojang.math.Axis;
 import com.nukateam.ntgl.client.animators.ItemAnimator;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
@@ -169,11 +170,17 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
     }
 
     protected void renderAttachments(ItemStack stack, GeoBone bone) {
+        var gunItem = (GunItem) stack.getItem();
+        var gun = gunItem.getModifiedGun(stack);
 
-        var gun = ((GunItem)stack.getItem()).getModifiedGun(stack);
         for(var att : gun.getModules().getMods()){
+
+            var attachment = gun.getModules().getAttachmentByBone(bone.getName());
+
             if(Objects.equals(bone.getName(), att.getName())){
                 bone.setHidden(true);
+
+                Gun.hasAttachmentEquipped();
             }
         }
 //        var config = item.getConfig();

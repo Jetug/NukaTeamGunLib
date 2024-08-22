@@ -43,9 +43,11 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.client.ClientHandler.*;
+import static com.nukateam.ntgl.common.foundation.item.attachment.IAttachment.Type.*;
 
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
@@ -897,6 +899,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this.mods;
         }
 
+        @Nullable
+        public Attachment getAttachmentByBone(String name) {
+            AtomicReference<Attachment> result = new AtomicReference<>();
+            getMods().stream().filter((s) -> s.name.equals(name)).findFirst().ifPresent(result::set);
+
+            return result.get();
+        }
+
         @Override
         public Component getEditorLabel() {
             return Component.literal("Modules");
@@ -1465,7 +1475,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return gun;
     }
 
-    public boolean canAttachType(@Nullable IAttachment.Type type) {
+    public boolean canAttachType(@Nullable ResourceLocation type) {
         if (this.modules.attachments != null && type != null) {
             switch (type) {
                 case SCOPE:
@@ -1499,7 +1509,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public boolean canAimDownSight() {
-        return this.canAttachType(IAttachment.Type.SCOPE) || this.modules.zoom != null;
+        return this.canAttachType(SCOPE) || this.modules.zoom != null;
     }
 
     public static ItemStack getScopeStack(ItemStack gun) {
@@ -1513,14 +1523,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return ItemStack.EMPTY;
     }
 
-    public static boolean hasAttachmentEquipped(ItemStack stack, Gun gun, IAttachment.Type type) {
+    public static boolean hasAttachmentEquipped(ItemStack stack, Gun gun, ResourceLocation type) {
         if (!gun.canAttachType(type))
             return false;
 
         CompoundTag compound = stack.getTag();
         if (compound != null && compound.contains("Attachments", Tag.TAG_COMPOUND)) {
             CompoundTag attachment = compound.getCompound("Attachments");
-            return attachment.contains(type.getTagKey(), Tag.TAG_COMPOUND);
+            return attachment.contains(type.toString(), Tag.TAG_COMPOUND);
         }
         return false;
     }
@@ -1545,12 +1555,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return null;
     }
 
-    public static ItemStack getAttachment(IAttachment.Type type, ItemStack gun) {
+    public static ItemStack getAttachment(ResourceLocation type, ItemStack gun) {
         CompoundTag compound = gun.getTag();
         if (compound != null && compound.contains("Attachments", Tag.TAG_COMPOUND)) {
             CompoundTag attachment = compound.getCompound("Attachments");
-            if (attachment.contains(type.getTagKey(), Tag.TAG_COMPOUND)) {
-                return ItemStack.of(attachment.getCompound(type.getTagKey()));
+            if (attachment.contains(type.toString(), Tag.TAG_COMPOUND)) {
+                return ItemStack.of(attachment.getCompound(type.toString()));
             }
         }
         return ItemStack.EMPTY;
@@ -1648,7 +1658,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public static float getFovModifier(ItemStack stack, Gun modifiedGun) {
         float modifier = 0.0F;
-        if (hasAttachmentEquipped(stack, modifiedGun, IAttachment.Type.SCOPE)) {
+        if (hasAttachmentEquipped(stack, modifiedGun, SCOPE)) {
             var scope = Gun.getScope(stack);
             if (scope != null) {
                 if (scope.getFovModifier() < 1.0F) {

@@ -141,40 +141,40 @@ public final class PropertyHelper {
         return weaponObject.has("muzzleFlash", DataType.OBJECT) || modifiedGun.getDisplay().getFlash() != null;
     }
 
-    public static Vec3 getMuzzleFlashPosition(ItemStack weapon, Gun modifiedGun) {
-        // Try and get the animations from the scope
-        if (Gun.hasAttachmentEquipped(weapon, modifiedGun, IAttachment.Type.BARREL)) {
-            ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);
-            if (barrelStack.getItem() instanceof IBarrel) {
-                DataObject barrelObject = getObjectByPath(barrelStack, BARREL_KEY);
-                if (barrelObject.has("muzzleFlash", DataType.OBJECT)) {
-                    DataObject muzzleObject = barrelObject.getDataObject("muzzleFlash");
-                    DataArray translationArray = muzzleObject.getDataArray("translation");
-                    Vec3 muzzlePosition = arrayToVec3(translationArray, Vec3.ZERO);
-                    Vec3 barrelOrigin = PropertyHelper.getModelOrigin(barrelStack, ATTACHMENT_DEFAULT_ORIGIN);
-                    Vec3 barrelPosition = PropertyHelper.getAttachmentPosition(weapon, modifiedGun, IAttachment.Type.BARREL);
-                    Vec3 barrelScale = PropertyHelper.getAttachmentScale(weapon, modifiedGun, IAttachment.Type.BARREL);
-                    return muzzlePosition.subtract(barrelOrigin).multiply(barrelScale).add(barrelPosition);
-                }
-            }
-        }
-
-        DataObject weaponObject = getObjectByPath(weapon, WEAPON_KEY);
-        if (weaponObject.has("muzzleFlash", DataType.OBJECT)) {
-            DataObject muzzleObject = weaponObject.getDataObject("muzzleFlash");
-            DataArray translationArray = muzzleObject.getDataArray("translation");
-            return arrayToVec3(translationArray, Vec3.ZERO);
-        }
-
-        Gun.Positioned muzzleFlash = modifiedGun.getDisplay().getFlash();
-        if (muzzleFlash != null) {
-            double displayX = muzzleFlash.getXOffset();
-            double displayY = muzzleFlash.getYOffset();
-            double displayZ = muzzleFlash.getZOffset();
-            return new Vec3(displayX, displayY, displayZ).add(GUN_DEFAULT_ORIGIN);
-        }
-        return Vec3.ZERO;
-    }
+//    public static Vec3 getMuzzleFlashPosition(ItemStack weapon, Gun modifiedGun) {
+//        // Try and get the animations from the scope
+//        if (Gun.hasAttachmentEquipped(weapon, modifiedGun, IAttachment.Type.BARREL)) {
+//            ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);
+//            if (barrelStack.getItem() instanceof IBarrel) {
+//                DataObject barrelObject = getObjectByPath(barrelStack, BARREL_KEY);
+//                if (barrelObject.has("muzzleFlash", DataType.OBJECT)) {
+//                    DataObject muzzleObject = barrelObject.getDataObject("muzzleFlash");
+//                    DataArray translationArray = muzzleObject.getDataArray("translation");
+//                    Vec3 muzzlePosition = arrayToVec3(translationArray, Vec3.ZERO);
+//                    Vec3 barrelOrigin = PropertyHelper.getModelOrigin(barrelStack, ATTACHMENT_DEFAULT_ORIGIN);
+//                    Vec3 barrelPosition = PropertyHelper.getAttachmentPosition(weapon, modifiedGun, IAttachment.Type.BARREL);
+//                    Vec3 barrelScale = PropertyHelper.getAttachmentScale(weapon, modifiedGun, IAttachment.Type.BARREL);
+//                    return muzzlePosition.subtract(barrelOrigin).multiply(barrelScale).add(barrelPosition);
+//                }
+//            }
+//        }
+//
+//        DataObject weaponObject = getObjectByPath(weapon, WEAPON_KEY);
+//        if (weaponObject.has("muzzleFlash", DataType.OBJECT)) {
+//            DataObject muzzleObject = weaponObject.getDataObject("muzzleFlash");
+//            DataArray translationArray = muzzleObject.getDataArray("translation");
+//            return arrayToVec3(translationArray, Vec3.ZERO);
+//        }
+//
+//        Gun.Positioned muzzleFlash = modifiedGun.getDisplay().getFlash();
+//        if (muzzleFlash != null) {
+//            double displayX = muzzleFlash.getXOffset();
+//            double displayY = muzzleFlash.getYOffset();
+//            double displayZ = muzzleFlash.getZOffset();
+//            return new Vec3(displayX, displayY, displayZ).add(GUN_DEFAULT_ORIGIN);
+//        }
+//        return Vec3.ZERO;
+//    }
 
     public static Vec3 getMuzzleFlashScale(ItemStack weapon, Gun modifiedGun) {
         DataObject weaponObject = getObjectByPath(weapon, WEAPON_KEY);
