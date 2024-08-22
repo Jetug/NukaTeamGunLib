@@ -157,8 +157,8 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 
         poseStack.pushPose();
         {
-            poseStack.mulPoseMatrix(graphics.pose().last().pose());
-            poseStack.translate(startX + -178, startY + -39, Z);
+            poseStack.translate(startX + -178, startY + -39, 0);
+//            poseStack.mulPoseMatrix(graphics.pose().last().pose());
             RenderSystem.applyModelViewMatrix();
             var buffer = this.minecraft.renderBuffers().bufferSource();
             GunRenderingHandler.get().renderWeapon(this.minecraft.player, this.minecraft.player.getMainHandItem(), ItemDisplayContext.GROUND, new PoseStack(), buffer, 15728880);
