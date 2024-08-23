@@ -31,92 +31,92 @@
   },
   "modules": {
     "mods": {
-      "scope": [
+      "ntgl:scope": [
         {
           "name": "scope_1",
           "item": "ntgl:holographic_sight"
         },
         {
           "name": "scope_2",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "scope_3",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "scope_4",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "scope_5",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         }
       ],
-      "barrel": [
+      "ntgl:barrel": [
         {
           "name": "barrel_1",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "barrel_2",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "barrel_3",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "barrel_4",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "barrel_5",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         }
       ],
-      "grip": [
+      "ntgl:grip": [
         {
           "name": "grip_1",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "grip_2",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "grip_3",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "grip_4",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "grip_5",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         }
       ],
-      "magazine":[
+      "ntgl:magazine":[
         {
           "name": "magazine_1",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "magazine_2",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "magazine_3",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "magazine_4",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         },
         {
           "name": "magazine_5",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:placeholder"
         }
       ]
     },

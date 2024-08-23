@@ -2,7 +2,6 @@ package com.nukateam.ntgl.client.render.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import com.nukateam.ntgl.client.animators.ItemAnimator;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.Ntgl;
@@ -19,16 +18,17 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
-
-import static net.minecraft.world.item.ItemDisplayContext.*;
 
 public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRenderer<T> {
     public static final String RIGHT_ARM = "right_arm";
@@ -171,15 +171,19 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
 
     protected void renderAttachments(ItemStack stack, GeoBone bone) {
         var gun = ((GunItem)stack.getItem()).getModifiedGun(stack);
-        var gunAttachments = gun.getModules().getMods();
+        var configAttachments = gun.getModules().getAttachments();
 
-        if(gunAttachments != null) {
-            for (var list : gun.getModules().getMods().values()) {
-                for (var att: list) {
-                    if (Objects.equals(bone.getName(), att.getName())) {
-                        bone.setHidden(true);
-                    }
+        if(configAttachments != null) {
+            var attachment = gun.getModules().getAttachmentByBone(bone.getName());
+
+            if(attachment != null){
+                var gunAttachments = Gun.getAttachments(stack);
+                for (var att: gunAttachments) {
+                    var registryName = ForgeRegistries.ITEMS.getKey(att.getItem());
+                    if(registryName.equals(attachment.getItem()))
+                        return;
                 }
+                bone.setHidden(true);
             }
         }
 //        var config = item.getConfig();

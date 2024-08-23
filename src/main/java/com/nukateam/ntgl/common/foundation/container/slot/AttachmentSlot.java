@@ -53,14 +53,14 @@ public class AttachmentSlot extends Slot {
         if (!(this.weapon.getItem() instanceof GunItem)) {
             return false;
         }
-        GunItem item = (GunItem) this.weapon.getItem();
-        Gun modifiedGun = item.getModifiedGun(this.weapon);
-        if (!(stack.getItem() instanceof IAttachment attachment)) {
+        var item = (GunItem) this.weapon.getItem();
+        var modifiedGun = item.getModifiedGun(this.weapon);
+
+        if (!(stack.getItem() instanceof IAttachment attachment))
             return false;
-        }
 
         var gun = getGun(weapon);
-        return attachment.getType() == this.type && modifiedGun.canAttachType(this.type, gun) && attachment.canAttachTo(this.weapon);
+        return attachment.getType().equals(this.type) && modifiedGun.canAttachType(this.type, gun) && attachment.canAttachTo(this.weapon);
     }
 
     @Override

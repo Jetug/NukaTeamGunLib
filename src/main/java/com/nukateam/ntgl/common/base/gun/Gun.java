@@ -47,6 +47,7 @@ import static com.nukateam.ntgl.client.ClientHandler.*;
 import static com.nukateam.ntgl.common.foundation.item.attachment.IAttachment.Type.*;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
+    public static final String ATTACHMENTS = "Attachments";
     protected General general = new General();
     protected Projectile projectile = new Projectile();
     //    private Reloads reloads = new Reloads();
@@ -887,18 +888,18 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this.zoom;
         }
 
-        public Attachments getAttachments() {
-            return this.attachments;
-        }
-
-        public Map<String, ArrayList<Attachment>> getMods() {
+        public Map<String, ArrayList<Attachment>> getAttachments() {
             return this.mods;
         }
 
         @Nullable
         public Attachment getAttachmentByBone(String name) {
+            if(getAttachments() == null) return null;
             AtomicReference<Attachment> result = new AtomicReference<>();
-//            getMods().stream().filter((s) -> s.name.equals(name)).findFirst().ifPresent(result::set);
+            getAttachments().forEach((k, v) -> {
+                var att = v.stream().filter((s) -> s.name.equals(name)).findFirst();
+                att.ifPresent(result::set);
+            });
 
             return result.get();
         }
@@ -1197,7 +1198,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if( mods != null && !mods.isEmpty())
                 tag.put("Mods", NbtUtils.serializeMap(mods));
 
-            tag.put("Attachments", this.attachments.serializeNBT());
+            tag.put(ATTACHMENTS, this.attachments.serializeNBT());
             return tag;
         }
 
@@ -1212,8 +1213,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 zoom.deserializeNBT(tag.getCompound("Zoom"));
                 this.zoom = zoom;
             }
-            if (tag.contains("Attachments", Tag.TAG_COMPOUND)) {
-                this.attachments.deserializeNBT(tag.getCompound("Attachments"));
+            if (tag.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
+                this.attachments.deserializeNBT(tag.getCompound(ATTACHMENTS));
             }
         }
 
@@ -1452,19 +1453,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public boolean canAttachType(@Nullable ResourceLocation type, Gun gun) {
-        return gun.getModules().getMods().containsKey(type);
-//        if (this.modules.attachments != null && type != null) {
-//            if (type.equals(SCOPE)) {
-//                return this.modules.attachments.scope != null;
-//            } else if (type.equals(BARREL)) {
-//                return this.modules.attachments.barrel != null;
-//            } else if (type.equals(STOCK)) {
-//                return this.modules.attachments.stock != null;
-//            } else if (type.equals(UNDER_BARREL)) {
-//                return this.modules.attachments.underBarrel != null;
-//            }
-//        }
-//        return false;
+        var attachments = gun.getModules().getAttachments();
+        if(attachments == null)
+            return false;
+        return attachments.containsKey(type.toString());
     }
 
     @Nullable
@@ -1489,8 +1481,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public static ItemStack getScopeStack(ItemStack gun) {
         CompoundTag compound = gun.getTag();
-        if (compound != null && compound.contains("Attachments", Tag.TAG_COMPOUND)) {
-            CompoundTag attachment = compound.getCompound("Attachments");
+        if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
+            CompoundTag attachment = compound.getCompound(ATTACHMENTS);
             if (attachment.contains("Scope", Tag.TAG_COMPOUND)) {
                 return ItemStack.of(attachment.getCompound("Scope"));
             }
@@ -1503,8 +1495,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return false;
 
         CompoundTag compound = stack.getTag();
-        if (compound != null && compound.contains("Attachments", Tag.TAG_COMPOUND)) {
-            CompoundTag attachment = compound.getCompound("Attachments");
+        if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
+            CompoundTag attachment = compound.getCompound(ATTACHMENTS);
             return attachment.contains(type.toString(), Tag.TAG_COMPOUND);
         }
         return false;
@@ -1513,8 +1505,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Nullable
     public static Scope getScope(ItemStack gun) {
         CompoundTag compound = gun.getTag();
-        if (compound != null && compound.contains("Attachments", Tag.TAG_COMPOUND)) {
-            CompoundTag attachment = compound.getCompound("Attachments");
+        if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
+            CompoundTag attachment = compound.getCompound(ATTACHMENTS);
             if (attachment.contains("Scope", Tag.TAG_COMPOUND)) {
                 ItemStack scopeStack = ItemStack.of(attachment.getCompound("Scope"));
                 Scope scope = null;
@@ -1530,12 +1522,25 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return null;
     }
 
+    public static ArrayList<ItemStack> getAttachments(ItemStack gun) {
+        var compound = gun.getTag();
+        var result = new ArrayList<ItemStack>();
+
+        if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
+            var attachment = compound.getCompound(ATTACHMENTS);
+            for (var slot: attachment.getAllKeys()){
+                if (attachment.contains(slot, Tag.TAG_COMPOUND))
+                    result.add(ItemStack.of(attachment.getCompound(slot)));
+            }
+        }
+        return result;
+    }
+
     public static ItemStack getAttachment(ResourceLocation type, ItemStack gun) {
-        CompoundTag compound = gun.getTag();
-        if (compound != null && compound.contains("Attachments", Tag.TAG_COMPOUND)) {
-            CompoundTag attachment = compound.getCompound("Attachments");
+        var compound = gun.getTag();
+        if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
+            var attachment = compound.getCompound(ATTACHMENTS);
             if (attachment.contains(type.toString(), Tag.TAG_COMPOUND)) {
-//                new ItemStack(ForgeRegistries.ITEMS.getValue(type));
                 return ItemStack.of(attachment.getCompound(type.toString()));
             }
         }
@@ -1543,7 +1548,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static float getAdditionalDamage(ItemStack gunStack) {
-        CompoundTag tag = gunStack.getOrCreateTag();
+        var tag = gunStack.getOrCreateTag();
         return tag.getFloat("AdditionalDamage");
     }
 
