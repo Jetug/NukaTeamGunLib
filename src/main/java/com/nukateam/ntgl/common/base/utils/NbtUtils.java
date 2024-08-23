@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.base.utils;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.checkerframework.checker.units.qual.K;
 
@@ -43,11 +44,11 @@ public class NbtUtils {
         return tag;
     }
 
-    public static Map<String, ArrayList<Gun.Modules.Attachment>> deserializeAttachmentMap(CompoundTag tag){
-        var array = new HashMap<String, ArrayList<Gun.Modules.Attachment>>();
+    public static Map<ResourceLocation, ArrayList<Gun.Modules.Attachment>> deserializeAttachmentMap(CompoundTag tag){
+        var array = new HashMap<ResourceLocation, ArrayList<Gun.Modules.Attachment>>();
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {
-                array.put(key, deserializeArray(tag.getCompound(key)));
+                array.put(ResourceLocation.tryParse(key), deserializeArray(tag.getCompound(key)));
             }
         }
 

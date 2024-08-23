@@ -881,14 +881,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         private Attachments attachments = new Attachments();
         @Optional
         @Nullable
-        private Map<String, ArrayList<Attachment>> mods = new HashMap<>();
+        private Map<ResourceLocation, ArrayList<Attachment>> mods = new HashMap<>();
 
         @Nullable
         public Zoom getZoom() {
             return this.zoom;
         }
 
-        public Map<String, ArrayList<Attachment>> getAttachments() {
+        public Map<ResourceLocation, ArrayList<Attachment>> getAttachments() {
             return this.mods;
         }
 
@@ -1456,7 +1456,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         var attachments = gun.getModules().getAttachments();
         if(attachments == null)
             return false;
-        return attachments.containsKey(type.toString());
+        return attachments.containsKey(type);
     }
 
     @Nullable

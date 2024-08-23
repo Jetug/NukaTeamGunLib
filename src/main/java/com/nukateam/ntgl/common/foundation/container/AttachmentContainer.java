@@ -35,7 +35,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
         var attachmentItems = new ArrayList<ItemStack>();
 
         for (var att : attachments.keySet()) {
-            attachmentItems.add(Gun.getAttachment(ResourceLocation.tryParse(att), stack));
+            attachmentItems.add(Gun.getAttachment(att, stack));
         }
         for (int i = 0; i < attachmentItems.size(); i++) {
             this.weaponInventory.setItem(i, attachmentItems.get(i));
@@ -59,7 +59,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
 
         var id = 0;
         for (var att : attachments.keySet()) {
-            this.addSlot(new AttachmentSlot(this, this.weaponInventory, this.weapon, ResourceLocation.tryParse(att), playerInventory.player, id, 8, 17 + id * 18));
+            this.addSlot(new AttachmentSlot(this, this.weaponInventory, this.weapon, att, playerInventory.player, id, 8, 17 + id * 18));
             id++;
         }
 
