@@ -16,7 +16,6 @@ import com.nukateam.ntgl.common.debug.screen.widget.DebugSlider;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugToggle;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.ScopeItem;
-import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
 import com.nukateam.ntgl.common.helpers.BackpackHelper;
 import com.google.common.base.Preconditions;
@@ -1452,19 +1451,20 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return gun;
     }
 
-    public boolean canAttachType(@Nullable ResourceLocation type) {
-        if (this.modules.attachments != null && type != null) {
-            if (type.equals(SCOPE)) {
-                return this.modules.attachments.scope != null;
-            } else if (type.equals(BARREL)) {
-                return this.modules.attachments.barrel != null;
-            } else if (type.equals(STOCK)) {
-                return this.modules.attachments.stock != null;
-            } else if (type.equals(UNDER_BARREL)) {
-                return this.modules.attachments.underBarrel != null;
-            }
-        }
-        return false;
+    public boolean canAttachType(@Nullable ResourceLocation type, Gun gun) {
+        return gun.getModules().getMods().containsKey(type);
+//        if (this.modules.attachments != null && type != null) {
+//            if (type.equals(SCOPE)) {
+//                return this.modules.attachments.scope != null;
+//            } else if (type.equals(BARREL)) {
+//                return this.modules.attachments.barrel != null;
+//            } else if (type.equals(STOCK)) {
+//                return this.modules.attachments.stock != null;
+//            } else if (type.equals(UNDER_BARREL)) {
+//                return this.modules.attachments.underBarrel != null;
+//            }
+//        }
+//        return false;
     }
 
     @Nullable
@@ -1484,7 +1484,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public boolean canAimDownSight() {
-        return this.canAttachType(SCOPE) || this.modules.zoom != null;
+        return /*this.canAttachType(SCOPE, ) || */this.modules.zoom != null;
     }
 
     public static ItemStack getScopeStack(ItemStack gun) {
@@ -1499,7 +1499,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static boolean hasAttachmentEquipped(ItemStack stack, Gun gun, ResourceLocation type) {
-        if (!gun.canAttachType(type))
+        if (!gun.canAttachType(type, gun))
             return false;
 
         CompoundTag compound = stack.getTag();
@@ -1535,6 +1535,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (compound != null && compound.contains("Attachments", Tag.TAG_COMPOUND)) {
             CompoundTag attachment = compound.getCompound("Attachments");
             if (attachment.contains(type.toString(), Tag.TAG_COMPOUND)) {
+//                new ItemStack(ForgeRegistries.ITEMS.getValue(type));
                 return ItemStack.of(attachment.getCompound(type.toString()));
             }
         }

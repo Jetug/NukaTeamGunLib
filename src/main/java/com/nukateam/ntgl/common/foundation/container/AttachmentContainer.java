@@ -15,7 +15,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import static com.nukateam.ntgl.common.data.util.GunModifierHelper.getGun;
+import java.util.ArrayList;
+
+import static com.nukateam.ntgl.client.data.handler.GunRenderingHandler.getAttachments;
+import static com.nukateam.ntgl.common.data.util.GunModifierHelper.getGunAttachments;
 
 /**
  * Author: MrCrayfish
@@ -23,23 +26,19 @@ import static com.nukateam.ntgl.common.data.util.GunModifierHelper.getGun;
 public class AttachmentContainer extends AbstractContainerMenu {
     private ItemStack weapon;
     private Container playerInventory;
-    private Container weaponInventory = new SimpleContainer(IAttachment.Type.values().length) {
-        @Override
-        public void setChanged() {
-            super.setChanged();
-            AttachmentContainer.this.slotsChanged(this);
-        }
-    };
+    private Container weaponInventory;
     private boolean loaded = false;
 
     public AttachmentContainer(int windowId, Inventory playerInventory, ItemStack stack) {
         this(windowId, playerInventory);
-        var attachments = new ItemStack[IAttachment.Type.values().length];
-        for (int i = 0; i < attachments.length; i++) {
-            attachments[i] = Gun.getAttachment(IAttachment.Type.values()[i], stack);
+        var attachments = getGunAttachments(stack);
+        var attachmentItems = new ArrayList<ItemStack>();
+
+        for (var att : attachments.keySet()) {
+            attachmentItems.add(Gun.getAttachment(ResourceLocation.tryParse(att), stack));
         }
-        for (int i = 0; i < attachments.length; i++) {
-            this.weaponInventory.setItem(i, attachments[i]);
+        for (int i = 0; i < attachmentItems.size(); i++) {
+            this.weaponInventory.setItem(i, attachmentItems.get(i));
         }
         this.loaded = true;
     }
@@ -48,10 +47,15 @@ public class AttachmentContainer extends AbstractContainerMenu {
         super(ModContainers.ATTACHMENTS.get(), windowId);
         this.weapon = playerInventory.getSelected();
         this.playerInventory = playerInventory;
-        var gun = getGun(weapon);
-        var attachments = gun.getModules().getMods();
+        var attachments = getGunAttachments(weapon);
 
-        weaponInventory = new SimpleContainer(attachments.size());
+        weaponInventory = new SimpleContainer(attachments.size()){
+            @Override
+            public void setChanged() {
+                super.setChanged();
+                AttachmentContainer.this.slotsChanged(this);
+            }
+        };
 
         var id = 0;
         for (var att : attachments.keySet()) {
@@ -90,21 +94,19 @@ public class AttachmentContainer extends AbstractContainerMenu {
 
     @Override
     public void slotsChanged(Container inventoryIn) {
-        var attachments = new CompoundTag();
+        var attachmentsTag = new CompoundTag();
 
         for (int i = 0; i < this.getWeaponInventory().getContainerSize(); i++) {
             var itemStack = this.getSlot(i).getItem();
             if (itemStack.getItem() instanceof IAttachment attachment
                     && itemStack.getItem() instanceof AttachmentItem) {
                 var tagKey = attachment.getType();
-                attachments.put(tagKey.toString(), itemStack.save(new CompoundTag()));
-//                //Jetug
-//                StackUtils.setAttachment(itemStack, tagKey, attachmentItem.getName());
+                attachmentsTag.put(tagKey.toString(), itemStack.save(new CompoundTag()));
             }
         }
 
         var tag = this.weapon.getOrCreateTag();
-        tag.put("Attachments", attachments);
+        tag.put("Attachments", attachmentsTag);
         super.broadcastChanges();
     }
 

@@ -5,6 +5,7 @@ import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -12,16 +13,18 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
+import static com.nukateam.ntgl.common.data.util.GunModifierHelper.getGun;
+
 /**
  * Author: MrCrayfish
  */
 public class AttachmentSlot extends Slot {
     private AttachmentContainer container;
     private ItemStack weapon;
-    private IAttachment.Type type;
+    private ResourceLocation type;
     private Player player;
 
-    public AttachmentSlot(AttachmentContainer container, Container weaponInventory, ItemStack weapon, IAttachment.Type type, Player player, int index, int x, int y) {
+    public AttachmentSlot(AttachmentContainer container, Container weaponInventory, ItemStack weapon, ResourceLocation type, Player player, int index, int x, int y) {
         super(weaponInventory, index, x, y);
         this.container = container;
         this.weapon = weapon;
@@ -29,7 +32,7 @@ public class AttachmentSlot extends Slot {
         this.player = player;
     }
 
-    public IAttachment.Type getType() {
+    public ResourceLocation getType() {
         return this.type;
     }
 
@@ -38,9 +41,11 @@ public class AttachmentSlot extends Slot {
         if (!(this.weapon.getItem() instanceof GunItem)) {
             return false;
         }
-        GunItem item = (GunItem) this.weapon.getItem();
-        Gun modifiedGun = item.getModifiedGun(this.weapon);
-        return modifiedGun.canAttachType(this.type);
+
+        var gun = getGun(weapon);
+        var item = (GunItem) this.weapon.getItem();
+        var modifiedGun = item.getModifiedGun(this.weapon);
+        return modifiedGun.canAttachType(this.type, gun);
     }
 
     @Override
@@ -53,7 +58,9 @@ public class AttachmentSlot extends Slot {
         if (!(stack.getItem() instanceof IAttachment attachment)) {
             return false;
         }
-        return attachment.getType() == this.type && modifiedGun.canAttachType(this.type) && attachment.canAttachTo(this.weapon);
+
+        var gun = getGun(weapon);
+        return attachment.getType() == this.type && modifiedGun.canAttachType(this.type, gun) && attachment.canAttachTo(this.weapon);
     }
 
     @Override

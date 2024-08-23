@@ -20,7 +20,6 @@ import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -369,7 +368,7 @@ public class GunRenderingHandler {
 
                 /* Creates the required offsets to position the scope into the middle of the screen. */
                 Scope scope = Gun.getScope(heldItem);
-                if (modifiedGun.canAttachType(IAttachment.Type.SCOPE) && scope != null) {
+                if (modifiedGun.canAttachType(IAttachment.Type.SCOPE, modifiedGun) && scope != null) {
                     /* Translate to the mounting position of scopes */
 //                    Vec3 scopePosition = PropertyHelper.getAttachmentPosition(heldItem, modifiedGun, IAttachment.Type.SCOPE).subtract(gunOrigin);
 //                    xOffset += scopePosition.x * 0.0625 * scaleX;
@@ -664,7 +663,7 @@ public class GunRenderingHandler {
 
         for (var tagKey : attachments.getAllKeys()) {
             var type = ResourceLocation.tryParse(tagKey);
-            if (type != null && modifiedGun.canAttachType(type)) {
+            if (type != null && modifiedGun.canAttachType(type, modifiedGun)) {
                 var attachmentStack = Gun.getAttachment(type, stack);
                 result.add(attachmentStack);
             }

@@ -11,6 +11,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 /**
  * Author: MrCrayfish
  */
@@ -69,9 +72,13 @@ public class GunModifierHelper {
         return gunItem.getModifiedGun(weapon);
     }
 
-    public static double getModifiedProjectileGravity(ItemStack weapon, double gravity) {
+    public static Map<String, ArrayList<Gun.Modules.Attachment>> getGunAttachments(ItemStack weapon) {
         var gun = getGun(weapon);
-        var attachments = gun.getModules().getMods();
+        return gun.getModules().getMods();
+    }
+
+    public static double getModifiedProjectileGravity(ItemStack weapon, double gravity) {
+        var attachments = getGunAttachments(weapon);
 
         for (var att : attachments.keySet()) {
             IGunModifier[] modifiers = getModifiers(weapon, ResourceLocation.tryParse(att));
