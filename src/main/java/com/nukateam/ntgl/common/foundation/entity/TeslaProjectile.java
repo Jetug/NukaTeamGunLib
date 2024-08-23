@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -21,6 +22,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
     public static final float CHAIN_RANGE = 8.0f;
     public static final int CHAIN_TARGETS = 4;
     public static final float CHAIN_DAMAGE_FACTOR = 0.75f;
+    private static final float CREEPER_POWER_CHANCE = 0.3f;
     protected long seed = 0;
 
     public float angle = getRandomAngle();
@@ -88,13 +90,6 @@ public class TeslaProjectile extends AbstractBeamProjectile {
         if (distance <= 0) {
             distance = (float)projectile.getSpeed();
         }
-
-//        var raytraceresult = new EntityHitResult(target);
-//
-//        if (raytraceresult != null) {
-//            this.onHit(raytraceresult);
-//            this.isDead = false;
-//        }
     }
 
     @Override
@@ -105,6 +100,9 @@ public class TeslaProjectile extends AbstractBeamProjectile {
         super.onHitEntity(entity, hitVec, startVec, endVec, headshot);
 
         if (!level().isClientSide) {
+            if(entity instanceof Creeper creeper)
+                powerCreeper(creeper);
+
             if (this.chainTargets > 0) {
                 var nextTarget = findNextTarget(entity);
                 if (nextTarget != null) {
@@ -114,6 +112,18 @@ public class TeslaProjectile extends AbstractBeamProjectile {
                     level().addFreshEntity(projectile);
                 }
             }
+        }
+    }
+
+    public float getCreeperPowerChance(){
+        return CREEPER_POWER_CHANCE;
+    }
+
+    private void powerCreeper(Creeper creeper) {
+        if(random.nextFloat() <= getCreeperPowerChance()){
+            var nbt = creeper.serializeNBT();
+            nbt.putBoolean("powered", true);
+            creeper.deserializeNBT(nbt);
         }
     }
 
