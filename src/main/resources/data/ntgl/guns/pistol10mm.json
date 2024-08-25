@@ -77,10 +77,6 @@
       ],
       "ntgl:stock": [
         {
-          "name": "grip_1",
-          "item": "ntgl:light_stock"
-        },
-        {
           "name": "grip_2",
           "item": "ntgl:tactical_stock",
           "hide": ["grip_1"]

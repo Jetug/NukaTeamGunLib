@@ -16,6 +16,7 @@ import com.nukateam.ntgl.common.debug.screen.widget.DebugSlider;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugToggle;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.ScopeItem;
+import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
 import com.nukateam.ntgl.common.helpers.BackpackHelper;
 import com.google.common.base.Preconditions;
@@ -892,6 +893,36 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this.mods;
         }
 
+        public ArrayList<Attachment> getAttachments(ArrayList<ItemStack> itemStacks) {
+            var result = new ArrayList<Attachment>();
+
+            for (var stack : itemStacks) {
+                var item = stack.getItem();
+                var itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
+                var attachment = findAttachment(item, itemRegistryName);
+
+                if(attachment != null)
+                    result.add(attachment);
+            }
+            return result;
+        }
+
+        private Attachment findAttachment(Item item, ResourceLocation itemRegistryName) {
+            Attachment ss = null;
+            if(item instanceof IAttachment attachmentItem){
+                var attachmentType = attachmentItem.getType();
+                if(!getAttachments().containsKey(attachmentType)) return ss;
+                var attachments = getAttachments().get(attachmentType);
+
+                for (var attachment : attachments) {
+                    if(attachment.item != null && attachment.item.equals(itemRegistryName)){
+                        ss = attachment;
+                    }
+                }
+            }
+            return ss;
+        }
+
         @Nullable
         public Attachment getAttachmentByBone(String name) {
             if(getAttachments() == null) return null;
@@ -1025,8 +1056,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             @Nullable
             private ResourceLocation item;
             @Optional
-            @Nullable
-            private ArrayList<String> hide;
+            private ArrayList<String> hide = new ArrayList<>();
 
             @Nullable
             public String getName() {
@@ -1036,6 +1066,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             @Nullable
             public ResourceLocation getItem() {
                 return this.item;
+            }
+
+            public ArrayList<String> getHidden() {
+                return this.hide;
             }
 
             @Override

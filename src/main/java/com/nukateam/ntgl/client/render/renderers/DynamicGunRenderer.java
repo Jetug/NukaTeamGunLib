@@ -6,6 +6,7 @@ import com.nukateam.ntgl.client.animators.ItemAnimator;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
@@ -39,6 +40,10 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
     private ItemStack renderStack;
     protected LivingEntity buffEntity = null;
     protected ArrayList<ItemStack> gunAttachments;
+    protected ArrayList<Gun.Modules.Attachment> configAttachments;
+    protected ArrayList<String> hiddenBones = new ArrayList<>();
+    protected Gun gun;
+
 
     public DynamicGunRenderer(GeoModel<T> model, BiFunction<ItemDisplayContext, GeoDynamicItemRenderer<T>, T> animatorFactory) {
         super(model, animatorFactory);
@@ -53,6 +58,13 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         this.transformType = transformType;
         this.renderStack = stack;
         this.gunAttachments = Gun.getAttachments(stack);
+        this.gun = GunModifierHelper.getGun(stack);
+        this.configAttachments = gun.getModules().getAttachments(gunAttachments);
+        hiddenBones.clear();
+
+        for (var attachment : configAttachments) {
+            hiddenBones.addAll(attachment.getHidden());
+        }
 
         if(buffEntity != null){
             entity = buffEntity;
@@ -157,11 +169,17 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
     }
 
     protected void renderAttachments(ItemStack stack, GeoBone bone) {
-        var gun = ((GunItem)stack.getItem()).getModifiedGun(stack);
+//        var gun = ((GunItem)stack.getItem()).getModifiedGun(stack);
         var configAttachments = gun.getModules().getAttachments();
+        var boneName = bone.getName();
+
+        if(hiddenBones.stream().anyMatch((s) -> s.equals(boneName))) {
+            bone.setHidden(true);
+            return;
+        }
 
         if(configAttachments != null) {
-            var attachment = gun.getModules().getAttachmentByBone(bone.getName());
+            var attachment = gun.getModules().getAttachmentByBone(boneName);
 
             if(attachment != null){
                 for (var att: this.gunAttachments) {
