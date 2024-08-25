@@ -878,7 +878,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Optional
         @Nullable
         private Zoom zoom;
-        private Attachments attachments = new Attachments();
+//        private Attachments attachments = new Attachments();
         @Optional
         @Nullable
         private Map<ResourceLocation, ArrayList<Attachment>> mods = new HashMap<>();
@@ -1017,115 +1017,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
         }
 
-        public static class Attachments implements INBTSerializable<CompoundTag> {
-            @Optional
-            @Nullable
-            private ScaledPositioned scope;
-            @Optional
-            @Nullable
-            private ScaledPositioned barrel;
-            @Optional
-            @Nullable
-            private ScaledPositioned stock;
-            @Optional
-            @Nullable
-            private ScaledPositioned underBarrel;
-
-            @Nullable
-            public ScaledPositioned getScope() {
-                return this.scope;
-            }
-
-            @Nullable
-            public ScaledPositioned getBarrel() {
-                return this.barrel;
-            }
-
-            @Nullable
-            public ScaledPositioned getStock() {
-                return this.stock;
-            }
-
-            @Nullable
-            public ScaledPositioned getUnderBarrel() {
-                return this.underBarrel;
-            }
-
-            @Override
-            public CompoundTag serializeNBT() {
-                CompoundTag tag = new CompoundTag();
-                if (this.scope != null) {
-                    tag.put("Scope", this.scope.serializeNBT());
-                }
-                if (this.barrel != null) {
-                    tag.put("Barrel", this.barrel.serializeNBT());
-                }
-                if (this.stock != null) {
-                    tag.put("Stock", this.stock.serializeNBT());
-                }
-                if (this.underBarrel != null) {
-                    tag.put("UnderBarrel", this.underBarrel.serializeNBT());
-                }
-                return tag;
-            }
-
-            @Override
-            public void deserializeNBT(CompoundTag tag) {
-                if (tag.contains("Scope", Tag.TAG_COMPOUND)) {
-                    this.scope = this.createScaledPositioned(tag, "Scope");
-                }
-                if (tag.contains("Barrel", Tag.TAG_COMPOUND)) {
-                    this.barrel = this.createScaledPositioned(tag, "Barrel");
-                }
-                if (tag.contains("Stock", Tag.TAG_COMPOUND)) {
-                    this.stock = this.createScaledPositioned(tag, "Stock");
-                }
-                if (tag.contains("UnderBarrel", Tag.TAG_COMPOUND)) {
-                    this.underBarrel = this.createScaledPositioned(tag, "UnderBarrel");
-                }
-            }
-
-            public JsonObject toJsonObject() {
-                JsonObject object = new JsonObject();
-                if (this.scope != null) {
-                    object.add("scope", this.scope.toJsonObject());
-                }
-                if (this.barrel != null) {
-                    object.add("barrel", this.barrel.toJsonObject());
-                }
-                if (this.stock != null) {
-                    object.add("stock", this.stock.toJsonObject());
-                }
-                if (this.underBarrel != null) {
-                    object.add("underBarrel", this.underBarrel.toJsonObject());
-                }
-                return object;
-            }
-
-            public Attachments copy() {
-                Attachments attachments = new Attachments();
-                if (this.scope != null) {
-                    attachments.scope = this.scope.copy();
-                }
-                if (this.barrel != null) {
-                    attachments.barrel = this.barrel.copy();
-                }
-                if (this.stock != null) {
-                    attachments.stock = this.stock.copy();
-                }
-                if (this.underBarrel != null) {
-                    attachments.underBarrel = this.underBarrel.copy();
-                }
-                return attachments;
-            }
-
-            @Nullable
-            private ScaledPositioned createScaledPositioned(CompoundTag tag, String key) {
-                CompoundTag attachment = tag.getCompound(key);
-                return attachment.isEmpty() ? null : new ScaledPositioned(attachment);
-            }
-        }
-
         public static class Attachment implements INBTSerializable<CompoundTag> {
             @Optional
             @Nullable
@@ -1133,6 +1024,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             @Optional
             @Nullable
             private ResourceLocation item;
+            @Optional
+            @Nullable
+            private ArrayList<String> hide;
 
             @Nullable
             public String getName() {
@@ -1153,6 +1047,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 if (this.item != null) {
                     tag.putString("Item", this.item.toString());
                 }
+                if (this.hide != null) {
+                    tag.put("Hide", NbtUtils.serializeStringArray(this.hide));
+                }
                 return tag;
             }
 
@@ -1163,6 +1060,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 }
                 if (tag.contains("Item", Tag.TAG_STRING)) {
                     this.item = ResourceLocation.tryParse(tag.getString("Item"));
+                }
+                if (tag.contains("Hide", Tag.TAG_COMPOUND)) {
+                    this.hide = NbtUtils.deserializeStringArray(tag.getCompound("Hide"));
                 }
             }
 
@@ -1185,6 +1085,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 if (this.item != null) {
                     attachments.item = this.item;
                 }
+                if (this.hide != null) {
+                    attachments.hide = this.hide;
+                }
                 return attachments;
             }
         }
@@ -1198,7 +1101,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if( mods != null && !mods.isEmpty())
                 tag.put("Mods", NbtUtils.serializeMap(mods));
 
-            tag.put(ATTACHMENTS, this.attachments.serializeNBT());
             return tag;
         }
 
@@ -1213,9 +1115,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 zoom.deserializeNBT(tag.getCompound("Zoom"));
                 this.zoom = zoom;
             }
-            if (tag.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
-                this.attachments.deserializeNBT(tag.getCompound(ATTACHMENTS));
-            }
         }
 
         public JsonObject toJsonObject() {
@@ -1224,7 +1123,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 object.add("zoom", this.zoom.toJsonObject());
             }
 
-            GunJsonUtil.addObjectIfNotEmpty(object, "attachments", this.attachments.toJsonObject());
             return object;
         }
 
@@ -1234,7 +1132,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (this.zoom != null) {
                 modules.zoom = this.zoom.copy();
             }
-            modules.attachments = this.attachments.copy();
             return modules;
         }
     }
@@ -1459,21 +1356,21 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return attachments.containsKey(type);
     }
 
-    @Nullable
-    public ScaledPositioned getAttachmentPosition(ResourceLocation type) {
-        if (this.modules.attachments != null) {
-            if (type.equals(SCOPE)) {
-                return this.modules.attachments.scope;
-            } else if (type.equals(BARREL)) {
-                return this.modules.attachments.barrel;
-            } else if (type.equals(STOCK)) {
-                return this.modules.attachments.stock;
-            } else if (type.equals(UNDER_BARREL)) {
-                return this.modules.attachments.underBarrel;
-            }
-        }
-        return null;
-    }
+//    @Nullable
+//    public ScaledPositioned getAttachmentPosition(ResourceLocation type) {
+//        if (this.modules.attachments != null) {
+//            if (type.equals(SCOPE)) {
+//                return this.modules.attachments.scope;
+//            } else if (type.equals(BARREL)) {
+//                return this.modules.attachments.barrel;
+//            } else if (type.equals(STOCK)) {
+//                return this.modules.attachments.stock;
+//            } else if (type.equals(UNDER_BARREL)) {
+//                return this.modules.attachments.underBarrel;
+//            }
+//        }
+//        return null;
+//    }
 
     public boolean canAimDownSight() {
         return /*this.canAttachType(SCOPE, ) || */this.modules.zoom != null;
@@ -1846,50 +1743,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder setZoom(Modules.Zoom.Builder builder) {
             this.gun.modules.zoom = builder.build();
-            return this;
-        }
-
-        @Deprecated(since = "1.3.0", forRemoval = true)
-        public Builder setScope(float scale, double xOffset, double yOffset, double zOffset) {
-            ScaledPositioned positioned = new ScaledPositioned();
-            positioned.scale = scale;
-            positioned.xOffset = xOffset;
-            positioned.yOffset = yOffset;
-            positioned.zOffset = zOffset;
-            this.gun.modules.attachments.scope = positioned;
-            return this;
-        }
-
-        @Deprecated(since = "1.3.0", forRemoval = true)
-        public Builder setBarrel(float scale, double xOffset, double yOffset, double zOffset) {
-            ScaledPositioned positioned = new ScaledPositioned();
-            positioned.scale = scale;
-            positioned.xOffset = xOffset;
-            positioned.yOffset = yOffset;
-            positioned.zOffset = zOffset;
-            this.gun.modules.attachments.barrel = positioned;
-            return this;
-        }
-
-        @Deprecated(since = "1.3.0", forRemoval = true)
-        public Builder setStock(float scale, double xOffset, double yOffset, double zOffset) {
-            ScaledPositioned positioned = new ScaledPositioned();
-            positioned.scale = scale;
-            positioned.xOffset = xOffset;
-            positioned.yOffset = yOffset;
-            positioned.zOffset = zOffset;
-            this.gun.modules.attachments.stock = positioned;
-            return this;
-        }
-
-        @Deprecated(since = "1.3.0", forRemoval = true)
-        public Builder setUnderBarrel(float scale, double xOffset, double yOffset, double zOffset) {
-            ScaledPositioned positioned = new ScaledPositioned();
-            positioned.scale = scale;
-            positioned.xOffset = xOffset;
-            positioned.yOffset = yOffset;
-            positioned.zOffset = zOffset;
-            this.gun.modules.attachments.underBarrel = positioned;
             return this;
         }
     }

@@ -1,42 +1,39 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.common.foundation.item.attachment.IBarrel;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
+import com.nukateam.ntgl.common.foundation.item.attachment.IMagazine;
+import com.nukateam.ntgl.common.foundation.item.attachment.impl.Magazine;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 /**
- * A basic barrel attachment item implementation with color support
+ * A basic magazine attachment item implementation
  * <p>
- * Author: MrCrayfish
+ * Author: Jetug
  */
-public class BarrelItem extends AttachmentItem implements IBarrel, IColored {
-    private final Barrel barrel;
-    private final boolean colored;
+public class MagazineItem extends AttachmentItem implements IMagazine, IColored {
+    private final Magazine magazine;
 
-    public BarrelItem(Barrel barrel, Item.Properties properties) {
+    public MagazineItem(Magazine barrel, Properties properties) {
         super(properties);
-        this.barrel = barrel;
-        this.colored = true;
+        this.magazine = barrel;
     }
 
-    public BarrelItem(Barrel barrel, Item.Properties properties, boolean colored) {
+    public MagazineItem(Magazine barrel, Properties properties, boolean colored) {
         super(properties);
-        this.barrel = barrel;
-        this.colored = colored;
+        this.magazine = barrel;
     }
 
     @Override
-    public Barrel getProperties() {
-        return this.barrel;
+    public Magazine getProperties() {
+        return this.magazine;
     }
 
     @Override
     public boolean canColor(ItemStack stack) {
-        return this.colored;
+        return false;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.foundation.item;
 import com.nukateam.example.common.data.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
 
+import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;

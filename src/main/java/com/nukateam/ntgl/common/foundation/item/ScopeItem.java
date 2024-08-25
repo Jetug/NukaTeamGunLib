@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.common.foundation.item.attachment.IScope;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;

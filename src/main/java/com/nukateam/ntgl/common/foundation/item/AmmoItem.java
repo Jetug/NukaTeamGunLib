@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
+import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;

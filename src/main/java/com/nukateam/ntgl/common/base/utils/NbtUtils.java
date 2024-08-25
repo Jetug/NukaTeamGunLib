@@ -12,6 +12,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NbtUtils {
+    public static CompoundTag serializeStringArray(ArrayList<String> array){
+        var tag = new CompoundTag();
+        for (var i = 0; i < array.size(); i++)
+            tag.putString(String.valueOf(i), array.get(i));
+        return tag;
+    }
+
+    public static ArrayList<String> deserializeStringArray(CompoundTag tag){
+        var array = new ArrayList<String>();
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_STRING))
+                array.add(tag.getString(key));
+        }
+
+        return array;
+    }
+
+
     public static <T extends INBTSerializable> CompoundTag serializeArray(ArrayList<T> array){
         var tag = new CompoundTag();
         for (var i = 0; i < array.size(); i++){

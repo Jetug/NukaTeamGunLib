@@ -3,6 +3,7 @@ package com.nukateam.ntgl;
 import com.mojang.logging.LogUtils;
 import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.nukateam.example.common.registery.ModGuns;
+import com.nukateam.example.common.registery.ModItemTabs;
 import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.MetaLoader;
 import com.nukateam.ntgl.client.data.handler.CrosshairHandler;
@@ -35,6 +36,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.slf4j.Logger;
 
 import java.util.Set;
@@ -66,7 +68,7 @@ public class Ntgl {
         ModEffects.REGISTER.register(MOD_EVENT_BUS);
         ModEnchantments.REGISTER.register(MOD_EVENT_BUS);
         Projectiles.REGISTER.register(MOD_EVENT_BUS);
-//        ModItems.REGISTER.register(MOD_EVENT_BUS);
+        ModItemTabs.register(MOD_EVENT_BUS);
         ModRecipeType.REGISTER.register(MOD_EVENT_BUS);
         ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
         ModRecipeSerializers.REGISTER.register(MOD_EVENT_BUS);
@@ -91,7 +93,7 @@ public class Ntgl {
     }
 
     public static boolean isDebugging() {
-        return false; //!FMLEnvironment.production;
+        return !FMLEnvironment.production;
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {

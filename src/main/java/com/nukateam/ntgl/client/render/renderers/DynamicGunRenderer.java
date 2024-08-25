@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
@@ -37,28 +38,12 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
     private MultiBufferSource bufferSource;
     private ItemStack renderStack;
     protected LivingEntity buffEntity = null;
+    protected ArrayList<ItemStack> gunAttachments;
 
     public DynamicGunRenderer(GeoModel<T> model, BiFunction<ItemDisplayContext, GeoDynamicItemRenderer<T>, T> animatorFactory) {
         super(model, animatorFactory);
         addRenderLayer(new GlowingLayer<>(this));
     }
-
-    public ItemStack getRenderStack() {
-        return renderStack;
-    }
-
-    public LivingEntity getRenderEntity() {
-        return currentEntity;
-    }
-
-    public void setEntity(LivingEntity entity) {
-        this.buffEntity = entity;
-    }
-
-//    @Override
-//    public float getMotionAnimThreshold(GunAnimator animatable) {
-//        return 0.005f;
-//    }
 
     @Override
     public void render(LivingEntity entity, ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack,
@@ -67,14 +52,11 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         this.bufferSource = bufferSource;
         this.transformType = transformType;
         this.renderStack = stack;
+        this.gunAttachments = Gun.getAttachments(stack);
 
         if(buffEntity != null){
             entity = buffEntity;
             buffEntity = null;
-        }
-
-        if(entity instanceof Raider){
-            Ntgl.LOGGER.debug("");
         }
 
         super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
@@ -84,11 +66,10 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
     public void renderRecursively(PoseStack poseStack, T animatable, GeoBone bone, RenderType renderType,
                                   MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
                                   int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-//        if(bone.getName().equals(RIGHT_ARM) || bone.getName().equals(LEFT_ARM)){
-//            bone.setHidden(!renderHands);
-//        }
         var client = Minecraft.getInstance();
         var renderArms = false;
+
+        if(client.player == null) return;
 
         //hiding the arm bones so they can get redone below
         switch (bone.getName()) {
@@ -111,14 +92,8 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
             poseStack.pushPose();
             {
                 RenderUtils.prepMatrixForBone(poseStack, bone);
-//                poseStack.mulPose(Axis.XP.rotationDegrees(-90));
-//                poseStack.scale(bone.getScaleX(), bone.getScaleY(), bone.getScaleZ());
                 poseStack.translate(0.01, -0.27, 0.05);
-//                poseStack.translate(X, Y, Z);
 
-//                poseStack.mulPose(Axis.XP.rotationDegrees(180));
-
-                assert (client.player != null);
 
                 var playerSkin = ((LocalPlayer) ClientUtils.getClientPlayer()).getSkinTextureLocation();
                 var arm = this.bufferSource.getBuffer(RenderType.entitySolid(playerSkin));
@@ -145,11 +120,22 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         super.renderRecursively(poseStack, animatable, bone, renderType,
                 bufferSource, this.bufferSource.getBuffer(renderType), isReRender, partialTick, packedLight,
                 packedOverlay, red, green, blue, alpha);
-
-//        super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    private static void renderRightArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay, PlayerModel<AbstractClientPlayer> playerEntityModel, VertexConsumer arm, VertexConsumer sleeve) {
+    public ItemStack getRenderStack() {
+        return renderStack;
+    }
+
+    public LivingEntity getRenderEntity() {
+        return currentEntity;
+    }
+
+    public void setEntity(LivingEntity entity) {
+        this.buffEntity = entity;
+    }
+
+    private static void renderRightArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay,
+                                       PlayerModel<AbstractClientPlayer> playerEntityModel, VertexConsumer arm, VertexConsumer sleeve) {
         playerEntityModel.rightArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         playerEntityModel.rightArm.setRotation(0, 0, 0);
         playerEntityModel.rightArm.render(poseStack, arm, packedLight, packedOverlay, 1, 1, 1, 1);
@@ -159,7 +145,8 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         playerEntityModel.rightSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);
     }
 
-    private static void renderLeftArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay, PlayerModel<AbstractClientPlayer> playerEntityModel, VertexConsumer arm, VertexConsumer sleeve) {
+    private static void renderLeftArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay,
+                                      PlayerModel<AbstractClientPlayer> playerEntityModel, VertexConsumer arm, VertexConsumer sleeve) {
         playerEntityModel.leftArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         playerEntityModel.leftArm.setRotation(0, 0, 0);
         playerEntityModel.leftArm.render(poseStack, arm, packedLight, packedOverlay, 1, 1, 1, 1);
@@ -177,8 +164,7 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
             var attachment = gun.getModules().getAttachmentByBone(bone.getName());
 
             if(attachment != null){
-                var gunAttachments = Gun.getAttachments(stack);
-                for (var att: gunAttachments) {
+                for (var att: this.gunAttachments) {
                     var registryName = ForgeRegistries.ITEMS.getKey(att.getItem());
                     if(registryName != null && registryName.equals(attachment.getItem())) {
                         bone.setHidden(false);
@@ -188,19 +174,5 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
                 bone.setHidden(true);
             }
         }
-//        var config = item.getConfig();
-//
-//        if (config != null) {
-//            var allMods = config.mods;
-////            var visibleMods = StackUtils.getAttachments(stack);
-//            var names = getAttachmentNames(stack);
-//
-//            for (var name : allMods)
-//                getGeoModel().getBone(name).ifPresent((bone) -> bone.setHidden(true));
-////            for (var name : visibleMods)
-////                getGeoModel().getBone(name).ifPresent((bone) -> bone.setHidden(false));
-//            for (var name : names)
-//                getGeoModel().getBone(name).ifPresent((bone) -> bone.setHidden(false));
-//        }
     }
 }

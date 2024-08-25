@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client;
 
 import com.mrcrayfish.framework.client.resources.IDataLoader;
 import com.mrcrayfish.framework.client.resources.IResourceSupplier;
-import com.nukateam.ntgl.common.foundation.item.IMeta;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
 import com.mrcrayfish.framework.api.serialize.DataObject;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;

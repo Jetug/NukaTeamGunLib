@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.jei;
 
 import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
-import com.nukateam.ntgl.common.foundation.item.IColored;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.ModBlocks;
 import com.mojang.blaze3d.platform.Lighting;

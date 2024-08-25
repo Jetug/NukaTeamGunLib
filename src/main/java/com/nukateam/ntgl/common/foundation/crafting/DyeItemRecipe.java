@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.crafting;
 
 import com.nukateam.ntgl.common.foundation.init.ModRecipeSerializers;
-import com.nukateam.ntgl.common.foundation.item.IColored;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;

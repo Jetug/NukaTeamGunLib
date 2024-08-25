@@ -9,7 +9,7 @@ import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
  * Author: MrCrayfish
  */
 public class Barrel extends Attachment {
-    private float length;
+    private final float length;
 
     private Barrel(float length, IGunModifier... modifier) {
         super(modifier);

@@ -13,6 +13,8 @@ import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.enchantment.EnchantmentTypes;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;

@@ -1,7 +1,12 @@
 package com.nukateam.example.common.registery;
 
+import com.nukateam.ntgl.common.base.GunModifiers;
 import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
+import com.nukateam.ntgl.common.foundation.item.attachment.impl.Magazine;
+import com.nukateam.ntgl.common.foundation.item.attachment.impl.Stock;
+import com.nukateam.ntgl.common.foundation.item.attachment.impl.UnderBarrel;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -50,11 +55,38 @@ public class ModGuns {
     public static final RegistryObject<Item> ROUND22 = registerAmmo("round22");
     public static final RegistryObject<Item> MININUKE = registerAmmo("mini_nuke");
 
+    /* Scope Attachments */
     public static final RegistryObject<Item> HOLOGRAPHIC_SIGHT = ITEMS.register("holographic_sight",
-            () -> new ScopeItem(Attachments.SHORT_SCOPE, new Item.Properties()
-                    .stacksTo(1)
-                    .durability(800)
-            ));
+            () -> new ScopeItem(Attachments.SHORT_SCOPE, new Item.Properties().stacksTo(1)));
+
+    public static final RegistryObject<Item> COLLIMATOR_SIGHT = ITEMS.register("collimator_sight",
+            () -> new ScopeItem(Attachments.SHORT_SCOPE, new Item.Properties().stacksTo(1)));
+
+    /* Barrel Attachments */
+    public static final RegistryObject<Item> SILENCER = ITEMS.register("silencer",
+            () -> new BarrelItem(Barrel.create(8.0F, GunModifiers.SILENCED, GunModifiers.REDUCED_DAMAGE), new Item.Properties().stacksTo(1)));
+
+    /* Stock Attachments */
+    public static final RegistryObject<Item> LIGHT_STOCK = ITEMS.register("light_stock",
+            () -> new StockItem(Stock.create(GunModifiers.BETTER_CONTROL), new Item.Properties().stacksTo(1), false));
+    public static final RegistryObject<Item> TACTICAL_STOCK = ITEMS.register("tactical_stock",
+            () -> new StockItem(Stock.create(GunModifiers.STABILISED), new Item.Properties().stacksTo(1), false));
+    public static final RegistryObject<Item> WEIGHTED_STOCK = ITEMS.register("weighted_stock",
+            () -> new StockItem(Stock.create(GunModifiers.SUPER_STABILISED), new Item.Properties().stacksTo(1)));
+
+    /* Under Barrel Attachments */
+    public static final RegistryObject<Item> LIGHT_GRIP = ITEMS.register("light_grip",
+            () -> new UnderBarrelItem(UnderBarrel.create(GunModifiers.LIGHT_RECOIL), new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> SPECIALISED_GRIP = ITEMS.register("specialised_grip",
+            () -> new UnderBarrelItem(UnderBarrel.create(GunModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
+
+    /* Magazine Attachments*/
+    public static final RegistryObject<Item> EXTENDED_MAGAZINE = ITEMS.register("extended_magazine",
+            () -> new MagazineItem(Magazine.create(30, GunModifiers.SLOW_ADS), new Item.Properties().stacksTo(1)));
+
+    public static final RegistryObject<Item> DRUM_MAGAZINE = ITEMS.register("drum_magazine",
+            () -> new MagazineItem(Magazine.create(60, GunModifiers.SLOWER_ADS), new Item.Properties().stacksTo(1)));
+
 
     public static RegistryObject<GunItem> registerGun(String name) {
         return ITEMS.register(name, () -> new GunItem(new Item.Properties().stacksTo(1)));

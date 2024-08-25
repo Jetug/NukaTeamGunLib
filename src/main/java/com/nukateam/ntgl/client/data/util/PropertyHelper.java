@@ -4,9 +4,8 @@ import com.nukateam.ntgl.client.MetaLoader;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.properties.SightAnimation;
 import com.nukateam.ntgl.common.cache.ObjectCache;
-import com.nukateam.ntgl.common.foundation.item.IMeta;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
-import com.nukateam.ntgl.common.foundation.item.attachment.IBarrel;
 import com.nukateam.ntgl.common.foundation.item.attachment.IScope;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
 import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
@@ -108,34 +107,34 @@ public final class PropertyHelper {
         return defaultOrigin;
     }
 
-    public static Vec3 getAttachmentPosition(ItemStack stack, Gun modifiedGun, ResourceLocation type) {
-        var scopeObject = getObjectByPath(stack, WEAPON_KEY, "attachments", type.toString());
-        if (scopeObject.has("translation", DataType.ARRAY)) {
-            DataArray translationArray = scopeObject.getDataArray("translation");
-            return arrayToVec3(translationArray, Vec3.ZERO);
-        }
-        Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(type);
-        if (positioned != null) {
-            double displayX = positioned.getXOffset();
-            double displayY = positioned.getYOffset();
-            double displayZ = positioned.getZOffset();
-            return new Vec3(displayX, displayY, displayZ).add(GUN_DEFAULT_ORIGIN);
-        }
-        return Vec3.ZERO;
-    }
+//    public static Vec3 getAttachmentPosition(ItemStack stack, Gun modifiedGun, ResourceLocation type) {
+//        var scopeObject = getObjectByPath(stack, WEAPON_KEY, "attachments", type.toString());
+//        if (scopeObject.has("translation", DataType.ARRAY)) {
+//            DataArray translationArray = scopeObject.getDataArray("translation");
+//            return arrayToVec3(translationArray, Vec3.ZERO);
+//        }
+//        Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(type);
+//        if (positioned != null) {
+//            double displayX = positioned.getXOffset();
+//            double displayY = positioned.getYOffset();
+//            double displayZ = positioned.getZOffset();
+//            return new Vec3(displayX, displayY, displayZ).add(GUN_DEFAULT_ORIGIN);
+//        }
+//        return Vec3.ZERO;
+//    }
 
-    public static Vec3 getAttachmentScale(ItemStack weapon, Gun modifiedGun, ResourceLocation type) {
-        DataObject scopeObject = getObjectByPath(weapon, WEAPON_KEY, "attachments", type.toString());
-        if (scopeObject.has("scale", DataType.ARRAY)) {
-            DataArray scaleArray = scopeObject.getDataArray("scale");
-            return arrayToVec3(scaleArray, DEFAULT_SCALE);
-        }
-        Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(type);
-        if (positioned != null) {
-            return new Vec3(positioned.getScale(), positioned.getScale(), positioned.getScale());
-        }
-        return DEFAULT_SCALE;
-    }
+//    public static Vec3 getAttachmentScale(ItemStack weapon, Gun modifiedGun, ResourceLocation type) {
+//        DataObject scopeObject = getObjectByPath(weapon, WEAPON_KEY, "attachments", type.toString());
+//        if (scopeObject.has("scale", DataType.ARRAY)) {
+//            DataArray scaleArray = scopeObject.getDataArray("scale");
+//            return arrayToVec3(scaleArray, DEFAULT_SCALE);
+//        }
+//        Gun.ScaledPositioned positioned = modifiedGun.getAttachmentPosition(type);
+//        if (positioned != null) {
+//            return new Vec3(positioned.getScale(), positioned.getScale(), positioned.getScale());
+//        }
+//        return DEFAULT_SCALE;
+//    }
 
     public static boolean hasMuzzleFlash(ItemStack weapon, Gun modifiedGun) {
         DataObject weaponObject = getObjectByPath(weapon, WEAPON_KEY);

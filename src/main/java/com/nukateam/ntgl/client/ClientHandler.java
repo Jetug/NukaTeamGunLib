@@ -9,7 +9,7 @@ import com.nukateam.ntgl.client.data.util.PropertyHelper;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.debug.screen.*;
 import com.nukateam.ntgl.common.foundation.init.ModContainers;
-import com.nukateam.ntgl.common.foundation.item.IColored;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.ModBlocks;

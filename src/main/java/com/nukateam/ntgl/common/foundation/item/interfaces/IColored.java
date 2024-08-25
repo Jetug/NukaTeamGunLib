@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.item;
+package com.nukateam.ntgl.common.foundation.item.interfaces;
 
 import com.nukateam.ntgl.Config;
 import net.minecraft.client.color.item.ItemColor;

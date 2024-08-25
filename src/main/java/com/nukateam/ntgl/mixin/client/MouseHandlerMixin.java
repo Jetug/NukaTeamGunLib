@@ -22,13 +22,14 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class MouseHandlerMixin {
     @ModifyVariable(method = "turnPlayer()V", at = @At(value = "STORE", opcode = Opcodes.DSTORE), ordinal = 2)
     private double sensitivity(double original) {
-        float additionalAdsSensitivity = 1.0F;
-        Minecraft mc = Minecraft.getInstance();
+        var additionalAdsSensitivity = 1.0F;
+        var mc = Minecraft.getInstance();
+
         if (mc.player != null && !mc.player.getMainHandItem().isEmpty() && mc.options.getCameraType() == CameraType.FIRST_PERSON) {
-            ItemStack heldItem = mc.player.getMainHandItem();
+            var heldItem = mc.player.getMainHandItem();
             if (heldItem.getItem() instanceof GunItem gunItem) {
                 if (AimingHandler.get().isAiming() && !ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player)) {
-                    Gun modifiedGun = gunItem.getModifiedGun(heldItem);
+                    var modifiedGun = gunItem.getModifiedGun(heldItem);
                     if (modifiedGun.getModules().getZoom() != null) {
                         float modifier = Gun.getFovModifier(heldItem, modifiedGun);
                         additionalAdsSensitivity = Mth.clamp(1.0F - (1.0F / modifier) / 10F, 0.0F, 1.0F);
@@ -36,7 +37,8 @@ public class MouseHandlerMixin {
                 }
             }
         }
-        double adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
+
+        var adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
         return original * (1.0 - (1.0 - adsSensitivity) * AimingHandler.get().getNormalisedAdsProgress()) * additionalAdsSensitivity;
     }
 }

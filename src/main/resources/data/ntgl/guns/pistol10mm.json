@@ -3,7 +3,7 @@
     "rate": 4,
     "gripType": "ntgl:one_handed",
     "loadingType": "magazine",
-    "maxAmmo": 10,
+    "maxAmmo": 20,
     "reloadTime": 30,
     "reloadAmount": 2,
     "recoilAngle": 5.0,
@@ -38,7 +38,7 @@
         },
         {
           "name": "scope_2",
-          "item": "ntgl:placeholder"
+          "item": "ntgl:collimator_sight"
         },
         {
           "name": "scope_3",
@@ -72,17 +72,18 @@
         },
         {
           "name": "barrel_5",
-          "item": "ntgl:placeholder"
+          "item": "ntgl:silencer"
         }
       ],
-      "ntgl:grip": [
+      "ntgl:stock": [
         {
           "name": "grip_1",
-          "item": "ntgl:placeholder"
+          "item": "ntgl:light_stock"
         },
         {
           "name": "grip_2",
-          "item": "ntgl:placeholder"
+          "item": "ntgl:tactical_stock",
+          "hide": ["grip_1"]
         },
         {
           "name": "grip_3",
@@ -90,11 +91,7 @@
         },
         {
           "name": "grip_4",
-          "item": "ntgl:placeholder"
-        },
-        {
-          "name": "grip_5",
-          "item": "ntgl:placeholder"
+          "item": "ntgl:weighted_stock"
         }
       ],
       "ntgl:magazine":[
@@ -104,7 +101,7 @@
         },
         {
           "name": "magazine_2",
-          "item": "ntgl:placeholder"
+          "item": "ntgl:extended_magazine"
         },
         {
           "name": "magazine_3",
@@ -112,11 +109,7 @@
         },
         {
           "name": "magazine_4",
-          "item": "ntgl:placeholder"
-        },
-        {
-          "name": "magazine_5",
-          "item": "ntgl:placeholder"
+          "item": "ntgl:drum_magazine"
         }
       ]
     },
