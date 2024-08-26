@@ -272,7 +272,7 @@ public class GunRenderingHandler {
         poseStack.pushPose();
         {
             var modifiedGun = gunItem.getModifiedGun(heldItem);
-//        this.applyIronSightTransforms(event, poseStack, model, isRight, heldItem, modifiedGun);
+            this.applyIronSightTransforms(event, poseStack, model, isRight, heldItem, modifiedGun);
             this.applyBobbingTransforms(poseStack, event.getPartialTick());
 
             /* Applies equip progress animation translations */
