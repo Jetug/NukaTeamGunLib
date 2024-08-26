@@ -17,6 +17,7 @@ import com.nukateam.ntgl.common.debug.screen.widget.DebugToggle;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.ScopeItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
+import com.nukateam.ntgl.common.foundation.item.attachment.impl.Attachment;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
 import com.nukateam.ntgl.common.helpers.BackpackHelper;
 import com.google.common.base.Preconditions;
@@ -879,10 +880,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Optional
         @Nullable
         private Zoom zoom;
-        //        private Attachments attachments = new Attachments();
         @Optional
-        @Nullable
-        private Map<ResourceLocation, ArrayList<Attachment>> mods = new HashMap<>();
+        private Map<ResourceLocation, ArrayList<Attachment>> attachments = new HashMap<>();
 
         @Nullable
         public Zoom getZoom() {
@@ -890,7 +889,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
 
         public Map<ResourceLocation, ArrayList<Attachment>> getAttachments() {
-            return this.mods;
+            return this.attachments;
         }
 
         @Nullable
@@ -933,6 +932,50 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                     }
                 }, () -> this.zoom != null)));
             });
+        }
+
+
+        @Override
+        public CompoundTag serializeNBT() {
+            CompoundTag tag = new CompoundTag();
+            if (this.zoom != null)
+                tag.put("Zoom", this.zoom.serializeNBT());
+
+            if( attachments != null && !attachments.isEmpty())
+                tag.put("Attachments", NbtUtils.serializeMap(attachments));
+
+            return tag;
+        }
+
+        @Override
+        public void deserializeNBT(CompoundTag tag) {
+            if (tag.contains("Zoom", Tag.TAG_COMPOUND)) {
+                var zoom = new Zoom();
+                zoom.deserializeNBT(tag.getCompound("Zoom"));
+                this.zoom = zoom;
+            }
+            if(tag.contains("Attachments", Tag.TAG_COMPOUND)){
+                var nbt = tag.getCompound("Attachments");
+                this.attachments = NbtUtils.deserializeAttachmentMap(nbt);
+            }
+        }
+
+        public JsonObject toJsonObject() {
+            JsonObject object = new JsonObject();
+            if (this.zoom != null) {
+                object.add("zoom", this.zoom.toJsonObject());
+            }
+
+            return object;
+        }
+
+        public Modules copy() {
+            Modules modules = new Modules();
+            modules.attachments = this.attachments;
+            if (this.zoom != null) {
+                modules.zoom = this.zoom.copy();
+            }
+            return modules;
         }
 
         public static class Zoom extends Positioned implements IEditorMenu {
@@ -1094,49 +1137,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 }
                 return attachments;
             }
-        }
-
-        @Override
-        public CompoundTag serializeNBT() {
-            CompoundTag tag = new CompoundTag();
-            if (this.zoom != null)
-                tag.put("Zoom", this.zoom.serializeNBT());
-
-            if( mods != null && !mods.isEmpty())
-                tag.put("Mods", NbtUtils.serializeMap(mods));
-
-            return tag;
-        }
-
-        @Override
-        public void deserializeNBT(CompoundTag tag) {
-            if(tag.contains("Mods")){
-                var nbt = (CompoundTag)tag.get("Mods");
-                this.mods = NbtUtils.deserializeAttachmentMap(nbt);
-            }
-            if (tag.contains("Zoom", Tag.TAG_COMPOUND)) {
-                Zoom zoom = new Zoom();
-                zoom.deserializeNBT(tag.getCompound("Zoom"));
-                this.zoom = zoom;
-            }
-        }
-
-        public JsonObject toJsonObject() {
-            JsonObject object = new JsonObject();
-            if (this.zoom != null) {
-                object.add("zoom", this.zoom.toJsonObject());
-            }
-
-            return object;
-        }
-
-        public Modules copy() {
-            Modules modules = new Modules();
-            modules.mods = this.mods;
-            if (this.zoom != null) {
-                modules.zoom = this.zoom.copy();
-            }
-            return modules;
         }
     }
 

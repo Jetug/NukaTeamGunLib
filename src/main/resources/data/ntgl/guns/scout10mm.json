@@ -30,27 +30,6 @@
       "yOffset": 4.6,
       "zOffset": 1.5,
       "fovModifier": 0.7
-    },
-    "attachments": {
-      "scope": {
-        "yOffset": 4.2,
-        "zOffset": 4.7,
-        "scale": 0.59
-      },
-      "barrel": {
-        "yOffset": 3.3,
-        "zOffset": 3.75,
-        "scale": 0.5
-      },
-      "stock": {
-        "yOffset": 3.6,
-        "zOffset": 8.2
-      },
-      "underBarrel": {
-        "yOffset": 2.499,
-        "zOffset": -1.0,
-        "scale": 0.0
-      }
     }
   }
 }
