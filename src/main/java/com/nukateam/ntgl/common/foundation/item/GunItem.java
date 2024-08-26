@@ -31,6 +31,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
@@ -45,7 +47,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
-    private final DefaultGunRenderer GUN_RENDERER = new DefaultGunRenderer();
+    private final Lazy<DefaultGunRenderer> GUN_RENDERER = Lazy.of(() -> new DefaultGunRenderer());
 
     private Gun gun = new Gun();
 
@@ -53,8 +55,9 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         super(properties);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public DynamicGunRenderer getRenderer(){
-        return GUN_RENDERER;
+        return GUN_RENDERER.get();
     }
 
     public void setGun(NetworkGunManager.Supplier supplier) {

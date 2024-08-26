@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import static com.nukateam.ntgl.client.render.renderers.projectiles.TeslaProjectileRenderer.getRandomAngle;
+//import static com.nukateam.ntgl.client.render.renderers.projectiles.TeslaProjectileRenderer.getRandomAngle;
 import static com.nukateam.ntgl.common.foundation.init.Projectiles.*;
 
 public class TeslaProjectile extends AbstractBeamProjectile {
@@ -25,7 +25,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
     private static final float CREEPER_POWER_CHANCE = 0.3f;
     protected long seed = 0;
 
-    public float angle = getRandomAngle();
+    public float angle = 0; //getRandomAngle();
 
     protected int chainTargets = CHAIN_TARGETS;
     protected Entity prevTarget = null;
