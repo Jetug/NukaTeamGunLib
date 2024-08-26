@@ -4,33 +4,28 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.client.animators.ItemAnimator;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
-import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.util.ClientUtils;
 import mod.azure.azurelib.util.RenderUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.function.BiFunction;
+
+import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
+import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderRightArm;
 
 public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRenderer<T> {
     public static final String RIGHT_ARM = "right_arm";
@@ -44,7 +39,6 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
     protected ArrayList<String> hiddenBones = new ArrayList<>();
     protected Gun gun;
 
-
     public DynamicGunRenderer(GeoModel<T> model, BiFunction<ItemDisplayContext, GeoDynamicItemRenderer<T>, T> animatorFactory) {
         super(model, animatorFactory);
         addRenderLayer(new GlowingLayer<>(this));
@@ -57,9 +51,9 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         this.bufferSource = bufferSource;
         this.transformType = transformType;
         this.renderStack = stack;
-        this.gunAttachments = Gun.getAttachments(stack);
         this.gun = GunModifierHelper.getGun(stack);
-        this.configAttachments = gun.getModules().getAttachments(gunAttachments);
+        this.gunAttachments = Gun.getAttachmentItems(stack);
+        this.configAttachments = gun.getAttachments(gunAttachments);
         hiddenBones.clear();
 
         for (var attachment : configAttachments) {
@@ -92,7 +86,7 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
             }
         }
 
-        renderAttachments(renderStack, bone);
+        renderAttachments(bone);
 
         //after hiding the bones and checking of your display type to render them in, in this case first and third person
         var isRightHand = this.transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND;
@@ -146,51 +140,32 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         this.buffEntity = entity;
     }
 
-    private static void renderRightArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay,
-                                       PlayerModel<AbstractClientPlayer> playerEntityModel, VertexConsumer arm, VertexConsumer sleeve) {
-        playerEntityModel.rightArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-        playerEntityModel.rightArm.setRotation(0, 0, 0);
-        playerEntityModel.rightArm.render(poseStack, arm, packedLight, packedOverlay, 1, 1, 1, 1);
-
-        playerEntityModel.rightSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-        playerEntityModel.rightSleeve.setRotation(0, 0, 0);
-        playerEntityModel.rightSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);
-    }
-
-    private static void renderLeftArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay,
-                                      PlayerModel<AbstractClientPlayer> playerEntityModel, VertexConsumer arm, VertexConsumer sleeve) {
-        playerEntityModel.leftArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-        playerEntityModel.leftArm.setRotation(0, 0, 0);
-        playerEntityModel.leftArm.render(poseStack, arm, packedLight, packedOverlay, 1, 1, 1, 1);
-
-        playerEntityModel.leftSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-        playerEntityModel.leftSleeve.setRotation(0, 0, 0);
-        playerEntityModel.leftSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);
-    }
-
-    protected void renderAttachments(ItemStack stack, GeoBone bone) {
-//        var gun = ((GunItem)stack.getItem()).getModifiedGun(stack);
-        var configAttachments = gun.getModules().getAttachments();
+    protected void renderAttachments(GeoBone bone) {
         var boneName = bone.getName();
-
         if(hiddenBones.stream().anyMatch((s) -> s.equals(boneName))) {
             bone.setHidden(true);
             return;
         }
 
-        if(configAttachments != null) {
-            var attachment = gun.getModules().getAttachmentByBone(boneName);
-
-            if(attachment != null){
-                for (var att: this.gunAttachments) {
-                    var registryName = ForgeRegistries.ITEMS.getKey(att.getItem());
-                    if(registryName != null && registryName.equals(attachment.getItem())) {
-                        bone.setHidden(false);
-                        return;
-                    }
-                }
-                bone.setHidden(true);
-            }
+        var configAttachments = gun.getModules().getAttachments();
+        if (configAttachments == null) {
+            bone.setHidden(false);
+            return;
         }
+
+        var attachment = gun.getModules().getAttachmentByBone(boneName);
+        if (attachment != null) {
+            for (var att : this.gunAttachments) {
+                var registryName = ForgeRegistries.ITEMS.getKey(att.getItem());
+                if (registryName != null && registryName.equals(attachment.getItem())) {
+                    bone.setHidden(false);
+                    return;
+                }
+            }
+            bone.setHidden(true);
+            return;
+        }
+        
+        bone.setHidden(false);
     }
 }

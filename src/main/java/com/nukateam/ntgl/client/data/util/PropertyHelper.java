@@ -144,7 +144,7 @@ public final class PropertyHelper {
 //    public static Vec3 getMuzzleFlashPosition(ItemStack weapon, Gun modifiedGun) {
 //        // Try and get the animations from the scope
 //        if (Gun.hasAttachmentEquipped(weapon, modifiedGun, IAttachment.Type.BARREL)) {
-//            ItemStack barrelStack = Gun.getAttachment(IAttachment.Type.BARREL, weapon);
+//            ItemStack barrelStack = Gun.getAttachmentItem(IAttachment.Type.BARREL, weapon);
 //            if (barrelStack.getItem() instanceof IBarrel) {
 //                DataObject barrelObject = getObjectByPath(barrelStack, BARREL_KEY);
 //                if (barrelObject.has("muzzleFlash", DataType.OBJECT)) {

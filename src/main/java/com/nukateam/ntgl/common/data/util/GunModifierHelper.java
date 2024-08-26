@@ -47,7 +47,7 @@ public class GunModifierHelper {
     }
 
     private static IGunModifier[] getModifiers(ItemStack weapon, ResourceLocation type) {
-        ItemStack stack = Gun.getAttachment(type, weapon);
+        ItemStack stack = Gun.getAttachmentItem(type, weapon);
         if (!stack.isEmpty() && stack.getItem() instanceof IAttachment<?> attachment) {
             return attachment.getProperties().getModifiers();
         }

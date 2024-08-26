@@ -879,7 +879,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Optional
         @Nullable
         private Zoom zoom;
-//        private Attachments attachments = new Attachments();
+        //        private Attachments attachments = new Attachments();
         @Optional
         @Nullable
         private Map<ResourceLocation, ArrayList<Attachment>> mods = new HashMap<>();
@@ -891,36 +891,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         public Map<ResourceLocation, ArrayList<Attachment>> getAttachments() {
             return this.mods;
-        }
-
-        public ArrayList<Attachment> getAttachments(ArrayList<ItemStack> itemStacks) {
-            var result = new ArrayList<Attachment>();
-
-            for (var stack : itemStacks) {
-                var item = stack.getItem();
-                var itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
-                var attachment = findAttachment(item, itemRegistryName);
-
-                if(attachment != null)
-                    result.add(attachment);
-            }
-            return result;
-        }
-
-        private Attachment findAttachment(Item item, ResourceLocation itemRegistryName) {
-            Attachment ss = null;
-            if(item instanceof IAttachment attachmentItem){
-                var attachmentType = attachmentItem.getType();
-                if(!getAttachments().containsKey(attachmentType)) return ss;
-                var attachments = getAttachments().get(attachmentType);
-
-                for (var attachment : attachments) {
-                    if(attachment.item != null && attachment.item.equals(itemRegistryName)){
-                        ss = attachment;
-                    }
-                }
-            }
-            return ss;
         }
 
         @Nullable
@@ -1453,7 +1423,37 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return null;
     }
 
-    public static ArrayList<ItemStack> getAttachments(ItemStack gun) {
+    public ArrayList<Modules.Attachment> getAttachments(ArrayList<ItemStack> itemStacks) {
+        var result = new ArrayList<Modules.Attachment>();
+
+        for (var stack : itemStacks) {
+            var item = stack.getItem();
+            var itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
+            var attachment = findAttachment(item, itemRegistryName);
+
+            if(attachment != null)
+                result.add(attachment);
+        }
+        return result;
+    }
+
+    private Modules.Attachment findAttachment(Item item, ResourceLocation itemRegistryName) {
+        Modules.Attachment ss = null;
+        if(item instanceof IAttachment attachmentItem){
+            var attachmentType = attachmentItem.getType();
+            if(!getModules().getAttachments().containsKey(attachmentType)) return ss;
+            var attachments = getModules().getAttachments().get(attachmentType);
+
+            for (var attachment : attachments) {
+                if(attachment.item != null && attachment.item.equals(itemRegistryName)){
+                    ss = attachment;
+                }
+            }
+        }
+        return ss;
+    }
+
+    public static ArrayList<ItemStack> getAttachmentItems(ItemStack gun) {
         var compound = gun.getTag();
         var result = new ArrayList<ItemStack>();
 
@@ -1467,7 +1467,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return result;
     }
 
-    public static ItemStack getAttachment(ResourceLocation type, ItemStack gun) {
+    public static ItemStack getAttachmentItem(ResourceLocation type, ItemStack gun) {
         var compound = gun.getTag();
         if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
             var attachment = compound.getCompound(ATTACHMENTS);

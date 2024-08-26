@@ -664,7 +664,7 @@ public class GunRenderingHandler {
         for (var tagKey : attachments.getAllKeys()) {
             var type = ResourceLocation.tryParse(tagKey);
             if (type != null && modifiedGun.canAttachType(type, modifiedGun)) {
-                var attachmentStack = Gun.getAttachment(type, stack);
+                var attachmentStack = Gun.getAttachmentItem(type, stack);
                 result.add(attachmentStack);
             }
         }

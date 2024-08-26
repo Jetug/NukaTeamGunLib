@@ -6,7 +6,6 @@ import com.nukateam.ntgl.common.foundation.init.ModContainers;
 import com.nukateam.ntgl.common.foundation.item.AttachmentItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 
-import static com.nukateam.ntgl.client.data.handler.GunRenderingHandler.getAttachments;
 import static com.nukateam.ntgl.common.data.util.GunModifierHelper.getGunAttachments;
 
 /**
@@ -35,7 +33,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
         var attachmentItems = new ArrayList<ItemStack>();
 
         for (var att : attachments.keySet()) {
-            attachmentItems.add(Gun.getAttachment(att, stack));
+            attachmentItems.add(Gun.getAttachmentItem(att, stack));
         }
         for (int i = 0; i < attachmentItems.size(); i++) {
             this.weaponInventory.setItem(i, attachmentItems.get(i));
