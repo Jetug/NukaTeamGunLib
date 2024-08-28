@@ -46,7 +46,7 @@
 					"pivot": [0, -6.54289, 0.38102]
 				},
 				{
-					"name": "slide",
+					"name": "barrel",
 					"parent": "gun",
 					"pivot": [0, 0.972, -5.07344],
 					"cubes": [
@@ -677,20 +677,20 @@
 				{
 					"name": "muzzle_flash",
 					"parent": "body",
-					"pivot": [0.03749, 2.37171, -10.03703],
+					"pivot": [0.03749, 2.37171, -9.78703],
 					"cubes": [
 						{
-							"origin": [-0.5593, 1.75653, -9.99708],
-							"size": [1.1985, 1.1985, 0],
+							"origin": [-1.0593, 1.25653, -9.74708],
+							"size": [2.1985, 2.1985, 0],
 							"uv": {
 								"north": {"uv": [70, 1], "uv_size": [28, 28]},
 								"south": {"uv": [98, 1], "uv_size": [-28, 28]}
 							}
 						},
 						{
-							"origin": [-0.799, 1.59673, -10.07698],
-							"size": [1.598, 1.598, 0],
-							"pivot": [0, 2.31583, -9.91718],
+							"origin": [-1.549, 0.84673, -9.82698],
+							"size": [3.098, 3.098, 0],
+							"pivot": [0, 2.31583, -9.66718],
 							"rotation": [0, 0, 26],
 							"uv": {
 								"north": {"uv": [30, 70], "uv_size": [28, 28]},
@@ -698,37 +698,6 @@
 							}
 						}
 					]
-				},
-				{
-					"name": "barrel",
-					"parent": "gun",
-					"pivot": [0, -8.512, -2.397]
-				},
-				{
-					"name": "barrel2",
-					"parent": "barrel",
-					"pivot": [-1.61868, -6.89332, -1.41568]
-				},
-				{
-					"name": "barrel5",
-					"parent": "barrel",
-					"pivot": [1.41, -8.606, -6.157]
-				},
-				{
-					"name": "barrel3",
-					"parent": "barrel",
-					"pivot": [1.41, -8.606, -7.849]
-				},
-				{
-					"name": "barrel1",
-					"parent": "barrel",
-					"pivot": [0.00112, -6.961, -1.87451],
-					"rotation": [0, 0, 22]
-				},
-				{
-					"name": "barrel4",
-					"parent": "barrel",
-					"pivot": [1.41, -8.606, -6.157]
 				},
 				{
 					"name": "stock",
@@ -780,31 +749,22 @@
 					]
 				},
 				{
-					"name": "right_arm",
+					"name": "right_arm_anim",
 					"parent": "model",
-					"pivot": [-8.1, 2, 3.9],
+					"pivot": [-8.2, 2.2, 4.9]
+				},
+				{
+					"name": "right_arm",
+					"parent": "right_arm_anim",
+					"pivot": [-8.2, 2.2, 0.9],
+					"rotation": [90, 0, -180],
 					"cubes": [
 						{
-							"origin": [-10, -7, 2.1],
+							"origin": [-10.2, -3.8, -1.1],
 							"size": [4, 12, 4],
 							"inflate": -0.5,
-							"pivot": [-8.1, 2, 3.9],
-							"rotation": [-90, 0, 0],
-							"uv": {
-								"north": {"uv": [44, 20], "uv_size": [4, 12]},
-								"east": {"uv": [40, 20], "uv_size": [4, 12]},
-								"south": {"uv": [52, 20], "uv_size": [4, 12]},
-								"west": {"uv": [48, 20], "uv_size": [4, 12]},
-								"up": {"uv": [44, 16], "uv_size": [4, 4]},
-								"down": {"uv": [48, 20], "uv_size": [4, -4]}
-							}
-						},
-						{
-							"origin": [-10, -7, 2.1],
-							"size": [4, 12, 4],
-							"inflate": -0.25,
-							"pivot": [-8.1, 2, 3.9],
-							"rotation": [-90, 0, 0],
+							"pivot": [-8.2, 2.2, 0.9],
+							"rotation": [0, 0, 180],
 							"uv": {
 								"north": {"uv": [44, 36], "uv_size": [4, 12]},
 								"east": {"uv": [40, 36], "uv_size": [4, 12]},
@@ -817,31 +777,22 @@
 					]
 				},
 				{
-					"name": "left_arm",
+					"name": "left_arm_anim",
 					"parent": "model",
-					"pivot": [7.9, 1.62983, 4.7883],
+					"pivot": [9, 2.2, 4.5]
+				},
+				{
+					"name": "left_arm",
+					"parent": "left_arm_anim",
+					"pivot": [8.2, 2.2, 0.9],
+					"rotation": [90, 0, -180],
 					"cubes": [
 						{
-							"origin": [6, -7, 2.1],
-							"size": [4, 12, 4],
-							"inflate": -0.25,
-							"pivot": [8.1, 2, 3.9],
-							"rotation": [-90, 0, 0],
-							"uv": {
-								"north": {"uv": [56, 52], "uv_size": [-4, 12]},
-								"east": {"uv": [60, 52], "uv_size": [-4, 12]},
-								"south": {"uv": [64, 52], "uv_size": [-4, 12]},
-								"west": {"uv": [52, 52], "uv_size": [-4, 12]},
-								"up": {"uv": [56, 48], "uv_size": [-4, 4]},
-								"down": {"uv": [60, 52], "uv_size": [-4, -4]}
-							}
-						},
-						{
-							"origin": [6, -7, 2.1],
+							"origin": [6.2, -3.8, -1.1],
 							"size": [4, 12, 4],
 							"inflate": -0.5,
-							"pivot": [8.1, 2, 3.9],
-							"rotation": [-90, 0, 0],
+							"pivot": [8.2, 2.2, 0.9],
+							"rotation": [0, 0, 180],
 							"uv": {
 								"north": {"uv": [40, 52], "uv_size": [-4, 12]},
 								"east": {"uv": [44, 52], "uv_size": [-4, 12]},

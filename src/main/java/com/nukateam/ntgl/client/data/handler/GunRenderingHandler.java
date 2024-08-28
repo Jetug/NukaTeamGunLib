@@ -53,6 +53,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import static com.nukateam.ntgl.client.data.util.PropertyHelper.*;
+import static com.nukateam.ntgl.client.event.InputEvents.*;
 import static com.nukateam.ntgl.common.data.util.GunModifierHelper.canRenderInOffhand;
 
 public class GunRenderingHandler {
@@ -367,7 +368,7 @@ public class GunRenderingHandler {
 //                zOffset += gunOrigin.z * 0.0625 * scaleZ;
 
                 /* Creates the required offsets to position the scope into the middle of the screen. */
-                Scope scope = Gun.getScope(heldItem);
+                var scope = Gun.getScope(heldItem);
                 if (modifiedGun.canAttachType(IAttachment.Type.SCOPE, modifiedGun) && scope != null) {
                     /* Translate to the mounting position of scopes */
 //                    Vec3 scopePosition = PropertyHelper.getAttachmentPosition(heldItem, modifiedGun, IAttachment.Type.SCOPE).subtract(gunOrigin);
@@ -406,6 +407,8 @@ public class GunRenderingHandler {
 
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
                 poseStack.translate(-xOffset * side * transition, -yOffset * transition, -zOffset * transition);
+
+                poseStack.translate((-1.6 + X) / 16D, (-1.3 + Y) / 16D, (1.2 + Z) / 16D);
             }
         }
     }

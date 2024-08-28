@@ -238,6 +238,8 @@ public class AimingHandler {
         private double previousAim;
 
         private void handleAiming(Player player, ItemStack heldItem) {
+            if(!(heldItem.getItem() instanceof GunItem))
+                return;
             this.previousAim = this.currentAim;
             if (ModSyncedDataKeys.AIMING.getValue(player) || (player.isLocalPlayer() && AimingHandler.this.isAiming())) {
                 if (this.currentAim < MAX_AIM_PROGRESS) {
