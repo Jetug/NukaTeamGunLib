@@ -110,9 +110,10 @@
       ]
     },
     "zoom": {
-      "yOffset": 4.6,
+      "xOffset": -0.6,
+      "yOffset": 4.3,
       "zOffset": 1.5,
-      "fovModifier": 0.7
+      "fovModifier": 0.9
     }
   }
 }

@@ -24,5 +24,12 @@
     "cock": "ntgl:item.pistol38mm.cock",
     "silencedFire": "ntgl:item.pistol38mm.silenced_fire",
     "enchantedFire": "ntgl:item.pistol38mm.fire"
+  },
+  "modules": {
+    "zoom": {
+      "yOffset": 4.6,
+      "zOffset": 1.5,
+      "fovModifier": 0.7
+    }
   }
 }
