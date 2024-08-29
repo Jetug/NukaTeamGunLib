@@ -1061,7 +1061,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
         }
 
-        public static class Attachment implements INBTSerializable<CompoundTag> {
+        public static class Attachment extends Positioned{
             @Optional
             @Nullable
             private String name;
