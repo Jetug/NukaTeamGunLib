@@ -4,6 +4,7 @@ import com.nukateam.ntgl.client.MetaLoader;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.properties.SightAnimation;
 import com.nukateam.ntgl.common.cache.ObjectCache;
+import com.nukateam.ntgl.common.foundation.item.attachment.IBarrel;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.item.attachment.IScope;

@@ -1366,7 +1366,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 //            if (type.equals(SCOPE)) {
 //                return this.modules.attachments.scope;
 //            } else if (type.equals(BARREL)) {
-//                return this.modules.attachments.barrel;
+//                return this.modules.attachments.barrelItem;
 //            } else if (type.equals(STOCK)) {
 //                return this.modules.attachments.stock;
 //            } else if (type.equals(UNDER_BARREL)) {

@@ -19,12 +19,12 @@ public class InputEvents {
     public static void onKeyInput(InputEvent.Key event) {
         if(event.getAction() == GLFW.GLFW_PRESS){
             switch (event.getKey()) {
-                case GLFW.GLFW_KEY_X -> X += 0.1f;
-                case GLFW.GLFW_KEY_Y -> Y += 0.1f;
-                case GLFW.GLFW_KEY_Z -> Z += 0.1f;
-                case GLFW.GLFW_KEY_C -> X -= 0.1f;
-                case GLFW.GLFW_KEY_H -> Y -= 0.1f;
-                case GLFW.GLFW_KEY_V -> Z -= 0.1f;
+                case GLFW.GLFW_KEY_KP_1 -> X += 0.1f;
+                case GLFW.GLFW_KEY_KP_2 -> Y += 0.1f;
+                case GLFW.GLFW_KEY_KP_3 -> Z += 0.1f;
+                case GLFW.GLFW_KEY_KP_4 -> X -= 0.1f;
+                case GLFW.GLFW_KEY_KP_5 -> Y -= 0.1f;
+                case GLFW.GLFW_KEY_KP_6 -> Z -= 0.1f;
             }
         }
     }

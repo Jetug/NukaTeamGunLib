@@ -538,8 +538,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 //                mine.explodeRand(this.level(), blockHitResult.getBlockPos());
 //            }
 //
-//            if (block instanceof ExplosiveBarrel barrel) {
-//                barrel.explosive(this.level(), pos);
+//            if (block instanceof ExplosiveBarrel barrelItem) {
+//                barrelItem.explosive(this.level(), pos);
 //            }
 
             int fireStarterLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);

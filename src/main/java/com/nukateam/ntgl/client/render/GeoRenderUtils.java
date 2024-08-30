@@ -23,9 +23,9 @@ public class GeoRenderUtils {
         playerEntityModel.leftArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         playerEntityModel.leftArm.setRotation(0, 0, 0);
         playerEntityModel.leftArm.render(poseStack, arm, packedLight, packedOverlay, 1, 1, 1, 1);
-
-        playerEntityModel.leftSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-        playerEntityModel.leftSleeve.setRotation(0, 0, 0);
-        playerEntityModel.leftSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);
+//
+//        playerEntityModel.leftSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
+//        playerEntityModel.leftSleeve.setRotation(0, 0, 0);
+//        playerEntityModel.leftSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);
     }
 }
