@@ -72,7 +72,8 @@
         },
         {
           "name": "barrel_5",
-          "item": "ntgl:silencer"
+          "item": "ntgl:silencer",
+          "hide": ["muzzle_flash"]
         }
       ],
       "ntgl:stock": [
@@ -110,9 +111,9 @@
       ]
     },
     "zoom": {
-      "xOffset": -0.5,
-      "yOffset": 3.8,
-      "zOffset": 1.5,
+      "xOffset": 0,
+      "yOffset": 3.7,
+      "zOffset": 0,
       "fovModifier": 0.9
     }
   }

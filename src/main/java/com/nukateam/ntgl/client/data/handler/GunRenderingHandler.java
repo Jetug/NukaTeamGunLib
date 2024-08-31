@@ -357,15 +357,15 @@ public class GunRenderingHandler {
                 double zOffset = translateZ;
 
                 /* Offset since rendering translates to the center of the model */
-//                xOffset -= 0.5 * scaleX;
-//                yOffset -= 0.5 * scaleY;
-//                zOffset -= 0.5 * scaleZ;
+                xOffset -= 0.5 * scaleX;
+                yOffset -= 0.5 * scaleY;
+                zOffset -= 0.5 * scaleZ;
 
                 /* Translate to the origin of the weapon */
                 var gunOrigin = getModelOrigin(heldItem, GUN_DEFAULT_ORIGIN);
-//                xOffset += gunOrigin.x * 0.0625 * scaleX;
-//                yOffset += gunOrigin.y * 0.0625 * scaleY;
-//                zOffset += gunOrigin.z * 0.0625 * scaleZ;
+                xOffset += gunOrigin.x * 0.0625 * scaleX;
+                yOffset += gunOrigin.y * 0.0625 * scaleY;
+                zOffset += gunOrigin.z * 0.0625 * scaleZ;
 
                 /* Creates the required offsets to position the scope into the middle of the screen. */
                 var scope = Gun.getScope(heldItem);
@@ -408,7 +408,7 @@ public class GunRenderingHandler {
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
                 poseStack.translate(-xOffset * side * transition, -yOffset * transition, -zOffset * transition);
 
-                poseStack.translate((-1) / 16D, (-1) / 16D, (1) / 16D);
+                poseStack.translate((-1.5) / 16D, (-10) / 16D, (2.5) / 16D);
 
                 if(Ntgl.isDebugging())
                     poseStack.translate(X / 16D, Y / 16D, Z / 16D);

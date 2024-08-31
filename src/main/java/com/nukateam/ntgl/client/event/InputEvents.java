@@ -17,7 +17,7 @@ public class InputEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
     public static void onKeyInput(InputEvent.Key event) {
-        if(event.getAction() == GLFW.GLFW_PRESS){
+        if(event.getAction() == GLFW.GLFW_PRESS || event.getAction() == GLFW.GLFW_REPEAT){
             switch (event.getKey()) {
                 case GLFW.GLFW_KEY_KP_1 -> X += 0.1f;
                 case GLFW.GLFW_KEY_KP_2 -> Y += 0.1f;

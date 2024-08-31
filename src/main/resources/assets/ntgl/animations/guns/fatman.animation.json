@@ -4,7 +4,7 @@
 		"hold": {
 			"loop": true,
 			"bones": {
-				"left_arm": {
+				"left_arm_anim": {
 					"rotation": {
 						"vector": [-0.29494, 47.33577, 6.61145]
 					},
@@ -12,7 +12,7 @@
 						"vector": [-0.45, -3.5, -1.35]
 					}
 				},
-				"right_arm": {
+				"right_arm_anim": {
 					"rotation": {
 						"vector": [-7, -14, 0]
 					},
@@ -31,7 +31,7 @@
 			"loop": "hold_on_last_frame",
 			"animation_length": 2,
 			"bones": {
-				"left_arm": {
+				"left_arm_anim": {
 					"rotation": {
 						"0.0": {
 							"vector": [-0.29494, 47.33577, 6.61145]
@@ -61,7 +61,7 @@
 						}
 					}
 				},
-				"right_arm": {
+				"right_arm_anim": {
 					"rotation": {
 						"0.0": {
 							"vector": [-7, -14, 0]
@@ -158,9 +158,9 @@
 		},
 		"reload": {
 			"loop": "hold_on_last_frame",
-			"animation_length": 1.04167,
+			"animation_length": 1.0417,
 			"bones": {
-				"left_arm": {
+				"left_arm_anim": {
 					"rotation": {
 						"0.0": {
 							"vector": [-0.29494, 47.33577, 6.61145]
@@ -184,7 +184,7 @@
 						}
 					}
 				},
-				"right_arm": {
+				"right_arm_anim": {
 					"rotation": {
 						"0.0": {
 							"vector": [-7, -14, 0]
@@ -354,6 +354,11 @@
 						}
 					}
 				}
+			},
+			"sound_effects": {
+				"0.0": {
+					"effect": "reload"
+				}
 			}
 		},
 		"shot": {
@@ -400,7 +405,7 @@
 						"vector": [0, 0, 0]
 					}
 				},
-				"right_arm": {
+				"right_arm_anim": {
 					"rotation": {
 						"vector": [-7, -14, 0]
 					},
@@ -408,7 +413,7 @@
 						"vector": [6.05, -3.45, 6.55]
 					}
 				},
-				"left_arm": {
+				"left_arm_anim": {
 					"rotation": {
 						"vector": [-0.29494, 47.33577, 6.61145]
 					},
@@ -418,24 +423,8 @@
 				}
 			}
 		},
-		"slide_on": {
-			"animation_length": 0.04167
-		},
-		"slide_off": {
-			"loop": true,
-			"bones": {
-				"slide": {
-					"position": {
-						"vector": [0, 0, -9.68],
-						"easing": "linear"
-					}
-				},
-				"bullet": {
-					"scale": {
-						"vector": [0, 0, 0]
-					}
-				}
-			}
+		"void": {
+			"loop": true
 		}
 	},
 	"azurelib_format_version": 2

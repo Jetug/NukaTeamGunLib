@@ -1362,9 +1362,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
 //    @Nullable
 //    public ScaledPositioned getAttachmentPosition(ResourceLocation type) {
-//        if (this.modules.attachments != null) {
+//        if (this.modules.attachments != null && this.modules.attachments.containsKey(type)) {
 //            if (type.equals(SCOPE)) {
-//                return this.modules.attachments.scope;
+//                return this.modules.attachments.get(type);
 //            } else if (type.equals(BARREL)) {
 //                return this.modules.attachments.barrelItem;
 //            } else if (type.equals(STOCK)) {

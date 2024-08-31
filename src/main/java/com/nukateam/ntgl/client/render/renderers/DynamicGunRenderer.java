@@ -87,6 +87,9 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
                                   boolean isReRender, float partialTick, int packedLight, int packedOverlay,
                                   float red, float green, float blue, float alpha) {
         //hiding the arm bones so they can get redone below
+
+        renderAttachments(bone);
+
         switch (bone.getName()) {
             case LEFT_ARM, RIGHT_ARM -> {
                 bone.setHidden(true);
@@ -115,9 +118,6 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
             }
         }
 
-        if(TransformUtils.isFirstPerson(this.transformType))
-            renderAttachments(bone);
-
         super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource,
                 buffer, isReRender, partialTick, packedLight, packedOverlay,
                 red, green, blue, alpha);
@@ -140,7 +140,6 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
             {
                 RenderUtils.prepMatrixForBone(poseStack, bone);
                 poseStack.translate(0.01, -0.27, 0.05);
-
 
                 var playerSkin = ((LocalPlayer) ClientUtils.getClientPlayer()).getSkinTextureLocation();
                 var arm = this.bufferSource.getBuffer(RenderType.entitySolid(playerSkin));
@@ -196,6 +195,11 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
 
         var attachment = gun.getModules().getAttachmentByBone(boneName);
         if (attachment != null) {
+            if(transformType == ItemDisplayContext.GUI){
+                bone.setHidden(true);
+                return;
+            }
+
             for (var att : this.gunAttachments) {
                 var registryName = ForgeRegistries.ITEMS.getKey(att.getItem());
                 if (registryName != null && registryName.equals(attachment.getItem())) {
