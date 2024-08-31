@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.helpers;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.handlers.PlayerAnimatorEvents;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
@@ -16,6 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import static dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess.getPlayerAssociatedData;
+import static dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory.ANIMATION_DATA_FACTORY;
 
 @OnlyIn(Dist.CLIENT)
 public class PlayerAnimationHelper {
@@ -90,5 +92,21 @@ public class PlayerAnimationHelper {
     @OnlyIn(Dist.CLIENT)
     private static @Nullable ModifierLayer<IAnimation> getAnimationLayer(AbstractClientPlayer player, ResourceLocation resourceLocation) {
         return (ModifierLayer<IAnimation>) getPlayerAssociatedData(player).get(resourceLocation);
+    }
+
+    public static void register(){
+        ANIMATION_DATA_FACTORY.registerFactory(
+                PlayerAnimationHelper.ANIMATION,
+                42,
+                PlayerAnimationHelper::registerPlayerAnimation);
+
+        ANIMATION_DATA_FACTORY.registerFactory(
+                PlayerAnimationHelper.MIRROR_ANIMATION,
+                43,
+                PlayerAnimationHelper::registerPlayerAnimation);
+    }
+
+    private static IAnimation registerPlayerAnimation(AbstractClientPlayer player) {
+        return new ModifierLayer<>();
     }
 }
