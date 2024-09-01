@@ -82,9 +82,9 @@ public final class PropertyHelper {
         }
         var zoom = modifiedGun.getModules().getZoom();
         if (zoom != null) {
-            double cameraX = 8 - modifiedGun.getModules().getZoom().getXOffset();
+            double cameraX = modifiedGun.getModules().getZoom().getXOffset();
             double cameraY = modifiedGun.getModules().getZoom().getYOffset();
-            double cameraZ = 8 - modifiedGun.getModules().getZoom().getZOffset();
+            double cameraZ = modifiedGun.getModules().getZoom().getZOffset();
             return new Vec3(cameraX, cameraY, cameraZ);
         }
         return Vec3.ZERO;

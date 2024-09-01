@@ -35,6 +35,14 @@
       "yOffset": 0,
       "zOffset": 0,
       "fovModifier": 0.7
+    },
+    "attachments": {
+      "ntgl:scope": [
+        {
+          "name": "short_scope",
+          "item": "ntgl:holographic_sight"
+        }
+      ]
     }
   }
 }

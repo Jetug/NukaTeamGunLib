@@ -405,13 +405,25 @@ public class GunRenderingHandler {
                 /* Reverses the original first person translations */
                 poseStack.translate(-0.56 * side * transition, 0.52 * transition, 0.72 * transition);
 
+                xOffset += 1.5 * 0.0625;
+                yOffset += 10 * 0.0625;
+                zOffset += -2.5 * 0.0625;
+
+                xOffset += 8 * 0.0625;
+                zOffset += 8 * 0.0625;
+
+                if(Ntgl.isDebugging()) {
+                    xOffset += X * 0.0625;
+                    yOffset += Y * 0.0625;
+                    zOffset += Z * 0.0625;
+                }
+
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
                 poseStack.translate(-xOffset * side * transition, -yOffset * transition, -zOffset * transition);
 
-                poseStack.translate((-1.5) / 16D, (-10) / 16D, (2.5) / 16D);
-
-                if(Ntgl.isDebugging())
-                    poseStack.translate(X / 16D, Y / 16D, Z / 16D);
+//                poseStack.translate((-1.5) / 16D, (-10) / 16D, (2.5) / 16D);
+//                if(Ntgl.isDebugging())
+//                    poseStack.translate(X / 16D, Y / 16D, Z / 16D);
             }
         }
     }

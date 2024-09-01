@@ -25,6 +25,11 @@ public class InputEvents {
                 case GLFW.GLFW_KEY_KP_4 -> X -= 0.1f;
                 case GLFW.GLFW_KEY_KP_5 -> Y -= 0.1f;
                 case GLFW.GLFW_KEY_KP_6 -> Z -= 0.1f;
+                case GLFW.GLFW_KEY_KP_ENTER -> {
+                    X = 0;
+                    Y = 0;
+                    Z = 0;
+                }
             }
         }
     }
