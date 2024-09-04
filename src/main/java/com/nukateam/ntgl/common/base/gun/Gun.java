@@ -1590,8 +1590,16 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             this.gun = new Gun();
         }
 
+        private Builder(Gun gun) {
+            this.gun = gun.copy();
+        }
+
         public static Builder create() {
             return new Builder();
+        }
+
+        public static Builder create(Gun gun) {
+            return new Builder(gun);
         }
 
         public Gun build() {

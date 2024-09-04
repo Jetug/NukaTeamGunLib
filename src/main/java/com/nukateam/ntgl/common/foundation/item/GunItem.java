@@ -166,7 +166,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
 //    }
 
     public Gun getModifiedGun(ItemStack stack) {
-        CompoundTag tagCompound = stack.getTag();
+        var tagCompound = stack.getTag();
         if (tagCompound != null && tagCompound.contains("Gun", Tag.TAG_COMPOUND)) {
             return this.modifiedGunCache.computeIfAbsent(tagCompound, item ->
             {

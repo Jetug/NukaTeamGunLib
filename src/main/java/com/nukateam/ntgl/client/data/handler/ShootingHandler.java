@@ -416,6 +416,7 @@ public class ShootingHandler {
             shootMsGap = calcShootTickGap(rpm);
             RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
             RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
+
             try{
                 PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
                         shooter.getViewXRot(1),
