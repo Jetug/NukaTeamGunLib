@@ -368,7 +368,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
 
         var damage = initialDamage / this.general.getProjectileAmount();
-        damage = GunModifierHelper.getModifiedDamage(this.weapon, this.modifiedGun, damage);
+        damage = GunModifierHelper.getModifiedDamage(this.weapon, damage);
         damage = GunEnchantmentHelper.getAcceleratorDamage(this.weapon, damage);
 
         return Math.max(0F, damage);
