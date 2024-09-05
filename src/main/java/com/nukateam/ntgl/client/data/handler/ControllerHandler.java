@@ -17,7 +17,6 @@ import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
 import com.mrcrayfish.controllable.client.gui.navigation.BasicNavigationPoint;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
@@ -107,7 +106,7 @@ public class ControllerHandler {
                     var modifiedGun = gunItem.getModifiedGun(heldItem);
                     var tag = heldItem.getTag();
 
-                    if (tag != null && Gun.getAmmo(heldItem) < GunEnchantmentHelper.getAmmoCapacity(heldItem, modifiedGun)) {
+                    if (tag != null && Gun.getAmmo(heldItem) < GunEnchantmentHelper.getAmmoCapacity(heldItem)) {
                         actions.put(GunButtonBindings.RELOAD, new Action(Component.translatable("ntgl.action.reload"), Action.Side.LEFT));
                     }
 

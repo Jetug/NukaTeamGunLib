@@ -31,13 +31,12 @@ public class GunModifierHelper {
     public static boolean isWeaponFull(ItemStack stack) {
         var tag = stack.getOrCreateTag();
         var gun = ((GunItem)stack.getItem()).getModifiedGun(stack);
-        return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(stack, gun);
+        return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(stack);
     }
 
     public static boolean canRenderInOffhand(Player player){
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
-
         return canRenderInOffhand(mainHandItem) && canRenderInOffhand(offhandItem);
     }
 
@@ -65,6 +64,12 @@ public class GunModifierHelper {
     public static Map<ResourceLocation, ArrayList<Gun.Modules.Attachment>> getGunAttachments(ItemStack weapon) {
         var gun = getGun(weapon);
         return gun.getModules().getAttachments();
+    }
+
+    public static int getMaxAmmo(ItemStack weapon, int maxAmmo) {
+        var finalMaxAmmo = new AtomicInteger(maxAmmo);
+        forEachAttachment(weapon, (modifier -> finalMaxAmmo.set(modifier.modifyMaxAmmo(finalMaxAmmo.get()))));
+        return finalMaxAmmo.get();
     }
 
     public static int getModifiedProjectileLife(ItemStack weapon, int life) {

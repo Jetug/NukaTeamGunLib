@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.foundation.container.slot;
 
 import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.data.util.ModifiedGunProperties;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -8,10 +9,12 @@ import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.nukateam.ntgl.common.data.util.GunModifierHelper.getGun;
 
@@ -64,9 +67,39 @@ public class AttachmentSlot extends Slot {
     }
 
     @Override
+    public void set(ItemStack pStack) {
+        super.set(pStack);
+        checkAmmoCount(weapon, player);
+    }
+
+    public static void checkAmmoCount(ItemStack stack, Entity entity) {
+        var maxAmmo = ModifiedGunProperties.getMaxAmmo(stack);
+        var ammoCount = Gun.getAmmo(stack);
+        var gun = getGun(stack);
+        var diff = ammoCount - maxAmmo;
+
+        if(diff > 0){
+            Gun.setAmmo(stack, maxAmmo);
+
+            var ammoItem = ForgeRegistries.ITEMS.getValue(gun.getProjectile().getItem());
+            var dropStack = new ItemStack(ammoItem, diff);
+
+            if (entity instanceof Player player && !player.addItem(dropStack)) {
+                player.drop(dropStack, false);
+            }
+        }
+    }
+
+    @Override
     public void setChanged() {
         if (this.container.isLoaded()) {
-            this.player.level().playSound(null, this.player.getX(), this.player.getY() + 1.0, this.player.getZ(), ModSounds.UI_WEAPON_ATTACH.get(), SoundSource.PLAYERS, 0.5F, this.hasItem() ? 1.0F : 0.75F);
+            this.player.level().playSound(null,
+                    this.player.getX(),
+                    this.player.getY() + 1.0,
+                    this.player.getZ(),
+                    ModSounds.UI_WEAPON_ATTACH.get(),
+                    SoundSource.PLAYERS, 0.5F,
+                    this.hasItem() ? 1.0F : 0.75F);
         }
     }
 

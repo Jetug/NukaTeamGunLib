@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.data.annotation.Ignored;
 import com.nukateam.ntgl.common.data.annotation.Optional;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.util.GunJsonUtil;
+import com.nukateam.ntgl.common.data.util.ModifiedGunProperties;
 import com.nukateam.ntgl.common.data.util.SuperBuilder;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
@@ -1555,6 +1556,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return tag.getInt("AmmoCount");
     }
 
+    public static void setAmmo(ItemStack gunStack, int amount) {
+        var tag = gunStack.getOrCreateTag();
+        tag.putInt(Tags.AMMO_COUNT, amount);
+    }
+
     public static boolean hasAmmo(ItemStack gunStack) {
         var tag = gunStack.getOrCreateTag();
         return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) > 0;
@@ -1563,7 +1569,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static void fillAmmo(ItemStack gunStack) {
         if (gunStack.getItem() instanceof GunItem gunItem) {
             var tag = gunStack.getOrCreateTag();
-            var maxAmmo = gunItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo(gunStack);
+//            var maxAmmo = gunItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo(gunStack);
+            var maxAmmo = ModifiedGunProperties.getMaxAmmo(gunStack);
+
             tag.putInt(Tags.AMMO_COUNT, maxAmmo);
         }
     }

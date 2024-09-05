@@ -1,14 +1,11 @@
 package com.nukateam.ntgl.client.render.hud;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 public class AmmoHud {
@@ -35,7 +32,7 @@ public class AmmoHud {
     private static void renderAmmoCounter(GuiGraphics graphics, GunItem gunItem, ItemStack heldStack, int x, int y) {
         var gun = gunItem.getModifiedGun(heldStack);
         var currentAmmo = Gun.getAmmo(heldStack);
-        var maxAmmo = GunEnchantmentHelper.getAmmoCapacity(heldStack, gun);
+        var maxAmmo = GunEnchantmentHelper.getAmmoCapacity(heldStack);
         var text = currentAmmo + "/" + maxAmmo;
 
         graphics.drawString(Minecraft.getInstance().font, text, x, y, 0xFFFFFFFF, true);
