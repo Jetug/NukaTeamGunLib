@@ -192,4 +192,8 @@ public interface IGunModifier {
     default float criticalChance() {
         return 0F;
     }
+
+    default int modifyMaxAmmo(int maxAmmo) {
+        return maxAmmo;
+    }
 }
