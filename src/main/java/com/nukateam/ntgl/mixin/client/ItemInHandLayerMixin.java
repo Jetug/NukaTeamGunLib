@@ -2,6 +2,7 @@ package com.nukateam.ntgl.mixin.client;
 
 import com.nukateam.ntgl.client.data.handler.AimingHandler;
 import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -65,7 +66,7 @@ public class ItemInHandLayerMixin {
             GunRenderingHandler.get().applyWeaponScale(stack, poseStack);
 
             var gun = item.getModifiedGun(stack);
-            var heldAnimation = gun.getGeneral().getGripType().getHeldAnimation();
+            var heldAnimation = GunModifierHelper.getGripType(stack).getHeldAnimation();
 
             heldAnimation.applyHeldItemTransforms(entity, hand, AimingHandler.get().getAimProgress(entity, deltaTicks), poseStack, source);
             GunRenderingHandler.get().renderWeapon(entity, stack, transformType, poseStack, source, light);

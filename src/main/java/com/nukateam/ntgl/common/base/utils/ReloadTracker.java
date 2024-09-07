@@ -128,7 +128,7 @@ public class ReloadTracker {
     }
 
     private boolean hasNoAmmo(LivingEntity player) {
-        return Gun.findAmmo(player, this.gun.getProjectile().getItem()).stack().isEmpty();
+        return Gun.findAmmo(player, GunModifierHelper.getAmmoItem(stack)).stack().isEmpty();
     }
 
     private boolean canReload(Player player) {
@@ -153,7 +153,7 @@ public class ReloadTracker {
 
     private void addAmmo(LivingEntity entity) {
 //        var amount = this.gun.getGeneral().getMaxAmmo(stack);
-        var amount = ModifiedGunProperties.getMaxAmmo(stack);
+        var amount = GunModifierHelper.getMaxAmmo(stack);
 
         while (isNotReloaded(entity)){
             addAmmo(entity, amount);
@@ -161,7 +161,7 @@ public class ReloadTracker {
     }
 
     private void addAmmo(LivingEntity entity, int amount) {
-        var context = Gun.findAmmo(entity, this.gun.getProjectile().getItem());
+        var context = Gun.findAmmo(entity, GunModifierHelper.getAmmoItem(stack));
         var ammo = context.stack();
 
         if (!ammo.isEmpty()) {
@@ -185,7 +185,7 @@ public class ReloadTracker {
     }
 
     private boolean isNotReloaded(LivingEntity player) {
-        var ammoItem = this.gun.getProjectile().getItem();
+        var ammoItem = GunModifierHelper.getAmmoItem(stack);
         var tag = this.stack.getTag();
 
         return !Gun.findAmmo(player, ammoItem).stack().isEmpty() &&
@@ -193,7 +193,7 @@ public class ReloadTracker {
     }
 
     private void addMagazine(LivingEntity entity) {
-        var ammoId = this.gun.getProjectile().getItem();
+        var ammoId = GunModifierHelper.getAmmoItem(stack);
         var context = Gun.findMagazine(entity, ammoId);
         var ammo = context.stack();
 
@@ -201,7 +201,7 @@ public class ReloadTracker {
             var amount = StackUtils.getDurability(ammo);
             var tag = this.stack.getTag();
 //            amount = Math.min(this.gun.getGeneral().getMaxAmmo(stack), amount);
-            amount = Math.min(ModifiedGunProperties.getMaxAmmo(stack), amount);
+            amount = Math.min(GunModifierHelper.getMaxAmmo(stack), amount);
 
             if (tag != null) {
                 var maxAmmo = GunEnchantmentHelper.getAmmoCapacity(this.stack);

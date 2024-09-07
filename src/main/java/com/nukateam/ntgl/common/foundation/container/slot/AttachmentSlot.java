@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.container.slot;
 
 import com.nukateam.ntgl.common.base.gun.Gun;
-import com.nukateam.ntgl.common.data.util.ModifiedGunProperties;
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -73,15 +73,14 @@ public class AttachmentSlot extends Slot {
     }
 
     public static void checkAmmoCount(ItemStack stack, Entity entity) {
-        var maxAmmo = ModifiedGunProperties.getMaxAmmo(stack);
+        var maxAmmo = GunModifierHelper.getMaxAmmo(stack);
         var ammoCount = Gun.getAmmo(stack);
-        var gun = getGun(stack);
         var diff = ammoCount - maxAmmo;
 
         if(diff > 0){
             Gun.setAmmo(stack, maxAmmo);
 
-            var ammoItem = ForgeRegistries.ITEMS.getValue(gun.getProjectile().getItem());
+            var ammoItem = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getAmmoItem(stack));
             var dropStack = new ItemStack(ammoItem, diff);
 
             if (entity instanceof Player player && !player.addItem(dropStack)) {

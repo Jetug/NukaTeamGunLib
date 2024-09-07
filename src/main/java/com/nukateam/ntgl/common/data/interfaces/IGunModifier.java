@@ -1,7 +1,11 @@
 package com.nukateam.ntgl.common.data.interfaces;
 
 import com.nukateam.ntgl.common.base.GunModifiers;
+import com.nukateam.ntgl.common.base.gun.FireMode;
+import com.nukateam.ntgl.common.base.gun.GripType;
+import com.nukateam.ntgl.common.foundation.item.AmmoItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * An interface that allows control over the behaviour of weapons through attachments.
@@ -195,5 +199,17 @@ public interface IGunModifier {
 
     default int modifyMaxAmmo(int maxAmmo) {
         return maxAmmo;
+    }
+
+    default FireMode modifyFireMod(FireMode fireMode) {
+        return fireMode;
+    }
+
+    default GripType modifyGripType(GripType gripType) {
+        return gripType;
+    }
+
+    default ResourceLocation modifyAmmoItem(ResourceLocation item) {
+        return item;
     }
 }

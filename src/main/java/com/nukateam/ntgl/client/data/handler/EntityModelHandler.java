@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.data.handler;
 
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -38,9 +39,8 @@ public class EntityModelHandler {
         var heldItem = entity.getMainHandItem();
         var isHumanoidModel = true;//event.getRenderer().getModel() instanceof HumanoidModel<LivingEntity>;
 
-        if (heldItem.getItem() instanceof GunItem gunItem) {
-            var gun = gunItem.getModifiedGun(heldItem);
-            var heldAnimation = gun.getGeneral().getGripType().getHeldAnimation();
+        if (heldItem.getItem() instanceof GunItem) {
+            var heldAnimation = GunModifierHelper.getGripType(heldItem).getHeldAnimation();
             var aimProgress = AimingHandler.get().getAimProgress(event.getEntity(), event.getPartialTick());
 
             heldAnimation.applyEntityPreRender(

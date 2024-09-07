@@ -1,15 +1,18 @@
 package com.nukateam.ntgl.common.data.util;
 
+import com.nukateam.ntgl.common.base.gun.FireMode;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.foundation.item.AmmoItem;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -25,7 +28,7 @@ public class GunModifierHelper {
 
     public static boolean isOneHanded(ItemStack itemStack){
         var gunItem = (GunItem)itemStack.getItem();
-        return gunItem.getModifiedGun(itemStack).getGeneral().getGripType() != GripType.ONE_HANDED;
+        return GunModifierHelper.getGripType(itemStack) != GripType.ONE_HANDED;
     }
 
     public static boolean isWeaponFull(ItemStack stack) {
@@ -41,15 +44,15 @@ public class GunModifierHelper {
     }
 
     public static boolean canRenderInOffhand(ItemStack stack){
-        if(stack.getItem() instanceof GunItem gunItem){
-            var animation = gunItem.getModifiedGun(stack).getGeneral().getGripType().getHeldAnimation();
+        if(stack.getItem() instanceof GunItem){
+            var animation = GunModifierHelper.getGripType(stack).getHeldAnimation();
             return animation.canRenderOffhandItem();
         }
         return true;
     }
 
     private static IGunModifier[] getModifiers(ItemStack weapon, ResourceLocation type) {
-        ItemStack stack = Gun.getAttachmentItem(type, weapon);
+        var stack = Gun.getAttachmentItem(type, weapon);
         if (!stack.isEmpty() && stack.getItem() instanceof IAttachment<?> attachment) {
             return attachment.getProperties().getModifiers();
         }
@@ -66,10 +69,31 @@ public class GunModifierHelper {
         return gun.getModules().getAttachments();
     }
 
-    public static int getMaxAmmo(ItemStack weapon, int maxAmmo) {
-        var finalMaxAmmo = new AtomicInteger(maxAmmo);
+    public static int getMaxAmmo(ItemStack weapon) {
+        var finalMaxAmmo = new AtomicInteger(getGun(weapon).getGeneral().getMaxAmmo(weapon));
         forEachAttachment(weapon, (modifier -> finalMaxAmmo.set(modifier.modifyMaxAmmo(finalMaxAmmo.get()))));
         return finalMaxAmmo.get();
+    }
+
+    public static FireMode getFireMode(ItemStack weapon) {
+        var fireMod = getGun(weapon).getGeneral().getFireMode();
+        var finalFireMode = new AtomicReference<>(fireMod);
+        forEachAttachment(weapon, (modifier -> finalFireMode.set(modifier.modifyFireMod(finalFireMode.get()))));
+        return finalFireMode.get();
+    }
+
+    public static GripType getGripType(ItemStack weapon) {
+        var gripType = getGun(weapon).getGeneral().getGripType();
+        var finalGripType = new AtomicReference<>(gripType);
+        forEachAttachment(weapon, (modifier -> finalGripType.set(modifier.modifyGripType(finalGripType.get()))));
+        return finalGripType.get();
+    }
+
+    public static ResourceLocation getAmmoItem(ItemStack weapon) {
+        var id = getGun(weapon).getProjectile().getItem();
+        var ammoItem = new AtomicReference<>(id);
+        forEachAttachment(weapon, (modifier -> ammoItem.set(modifier.modifyAmmoItem(ammoItem.get()))));
+        return ammoItem.get();
     }
 
     public static int getModifiedProjectileLife(ItemStack weapon, int life) {

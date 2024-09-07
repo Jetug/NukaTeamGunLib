@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.data.annotation.Ignored;
 import com.nukateam.ntgl.common.data.annotation.Optional;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.util.GunJsonUtil;
-import com.nukateam.ntgl.common.data.util.ModifiedGunProperties;
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.data.util.SuperBuilder;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
@@ -18,7 +18,6 @@ import com.nukateam.ntgl.common.debug.screen.widget.DebugToggle;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.ScopeItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Attachment;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
 import com.nukateam.ntgl.common.helpers.BackpackHelper;
 import com.google.common.base.Preconditions;
@@ -332,7 +331,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this.fireTimer;
         }
 
-
         /**
          * @return The type of grip this weapon uses
          */
@@ -352,7 +350,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 var gun = gunItem.getModifiedGun(gunStack);
 
                 if (gun.getProjectile().isMagazineMode()) {
-                    var id = gun.getProjectile().getItem();
+                    var id = GunModifierHelper.getAmmoItem(gunStack);
                     var item = ForgeRegistries.ITEMS.getValue(id);
 
                     return item.getMaxDamage(new ItemStack(item));
@@ -1570,7 +1568,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (gunStack.getItem() instanceof GunItem gunItem) {
             var tag = gunStack.getOrCreateTag();
 //            var maxAmmo = gunItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo(gunStack);
-            var maxAmmo = ModifiedGunProperties.getMaxAmmo(gunStack);
+            var maxAmmo = GunModifierHelper.getMaxAmmo(gunStack);
 
             tag.putInt(Tags.AMMO_COUNT, maxAmmo);
         }

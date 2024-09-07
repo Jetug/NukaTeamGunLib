@@ -47,6 +47,13 @@ public class GunModifiers {
         }
     };
 
+    public static final IGunModifier DRUM_MAG = new IGunModifier() {
+        @Override
+        public int modifyMaxAmmo(int maxAmmo) {
+            return maxAmmo * 4;
+        }
+    };
+
     public static final IGunModifier BETTER_CONTROL = new IGunModifier() {
         @Override
         public float recoilModifier() {

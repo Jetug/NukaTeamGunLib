@@ -15,7 +15,6 @@ import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.common.foundation.item.attachment.*;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -159,8 +158,7 @@ public class GunRenderingHandler {
         boolean down = false;
         ItemStack heldItem = mc.player.getMainHandItem();
         if (heldItem.getItem() instanceof GunItem) {
-            Gun modifiedGun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-            down = !modifiedGun.getGeneral().getGripType().getHeldAnimation().canRenderOffhandItem();
+            down = GunModifierHelper.getGripType(heldItem).getHeldAnimation().canRenderOffhandItem();
         }
 
         float direction = down ? -0.3F : 0.3F;
@@ -291,11 +289,11 @@ public class GunRenderingHandler {
             float translateZ = model.getTransforms().firstPersonRightHand.translation.z();
             /* Applies recoil and reload rotations */
             this.applyAimingTransforms(poseStack, heldItem, modifiedGun, translateX, translateY, translateZ, offset);
-            this.applySwayTransforms(poseStack, modifiedGun, player, rightHandTranslation, event.getPartialTick());
-//          this.applySprintingTransforms(modifiedGun, hand, poseStack, event.getPartialTick());
+            this.applySwayTransforms(poseStack, heldItem, player, rightHandTranslation, event.getPartialTick());
+//          this.applySprintingTransforms(heldItem, hand, poseStack, event.getPartialTick());
 //            this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
 //          this.applyReloadTransforms(poseStack, event.getPartialTick());
-            this.applyShieldTransforms(poseStack, player, modifiedGun, event.getPartialTick());
+            this.applyShieldTransforms(poseStack, player, heldItem, event.getPartialTick());
 
 
 //        this.renderFirstPersonArms(event, poseStack, hand, heldItem, modifiedGun, packedLight);
@@ -326,20 +324,14 @@ public class GunRenderingHandler {
         return packedLight;
     }
 
-    private void renderFirstPersonArms(RenderHandEvent event, PoseStack poseStack, HumanoidArm hand, ItemStack heldItem, Gun modifiedGun, int packedLight) {
-        poseStack.pushPose();
-        modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(
-                Minecraft.getInstance().player, hand,
-                heldItem, poseStack, event.getMultiBufferSource(),
-                packedLight, event.getPartialTick());
-        poseStack.popPose();
-    }
-
-    private void renderFirstPersonArmsGecko(RenderHandEvent event, PoseStack poseStack, HumanoidArm hand, ItemStack heldItem, Gun modifiedGun, int packedLight) {
-        poseStack.pushPose();
-
-        poseStack.popPose();
-    }
+//    private void renderFirstPersonArms(RenderHandEvent event, PoseStack poseStack, HumanoidArm hand, ItemStack heldItem, Gun modifiedGun, int packedLight) {
+//        poseStack.pushPose();
+//        modifiedGun.getGeneral().getGripType().getHeldAnimation().renderFirstPersonArms(
+//                Minecraft.getInstance().player, hand,
+//                heldItem, poseStack, event.getMultiBufferSource(),
+//                packedLight, event.getPartialTick());
+//        poseStack.popPose();
+//    }
 
     private void applyIronSightTransforms(RenderHandEvent event, PoseStack poseStack, BakedModel model,
                                           boolean isRight, ItemStack heldItem, Gun modifiedGun) {
@@ -467,11 +459,11 @@ public class GunRenderingHandler {
         }
     }
 
-    private void applySwayTransforms(PoseStack poseStack, Gun modifiedGun, LocalPlayer player, Vector3f translation, float partialTicks) {
+    private void applySwayTransforms(PoseStack poseStack, ItemStack heldItem, LocalPlayer player, Vector3f translation, float partialTicks) {
         if (Config.CLIENT.display.weaponSway.get() && player != null) {
             poseStack.translate(translation.x(), translation.y(), translation.z());
 
-            double zOffset = modifiedGun.getGeneral().getGripType().getHeldAnimation().getFallSwayZOffset();
+            double zOffset = GunModifierHelper.getGripType(heldItem).getHeldAnimation().getFallSwayZOffset();
             poseStack.translate(0, -0.25, zOffset);
             poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, this.prevFallSway, this.fallSway)));
             poseStack.translate(0, 0.25, -zOffset);
@@ -492,8 +484,8 @@ public class GunRenderingHandler {
         }
     }
 
-    private void applySprintingTransforms(Gun modifiedGun, HumanoidArm hand, PoseStack poseStack, float partialTicks) {
-        if (Config.CLIENT.display.sprintAnimation.get() && modifiedGun.getGeneral().getGripType().getHeldAnimation().canApplySprintingAnimation()) {
+    private void applySprintingTransforms(ItemStack stack, HumanoidArm hand, PoseStack poseStack, float partialTicks) {
+        if (Config.CLIENT.display.sprintAnimation.get() && GunModifierHelper.getGripType(stack).getHeldAnimation().canApplySprintingAnimation()) {
             float leftHanded = hand == HumanoidArm.LEFT ? -1 : 1;
             float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
             transition = (float) Math.sin((transition * Math.PI) / 2);
@@ -529,8 +521,8 @@ public class GunRenderingHandler {
         poseStack.translate(0, 0, -0.15);
     }
 
-    private void applyShieldTransforms(PoseStack poseStack, LocalPlayer player, Gun modifiedGun, float partialTick) {
-        if (player.isUsingItem() && player.getOffhandItem().getItem() == Items.SHIELD && modifiedGun.getGeneral().getGripType() == GripType.ONE_HANDED) {
+    private void applyShieldTransforms(PoseStack poseStack, LocalPlayer player, ItemStack stack, float partialTick) {
+        if (player.isUsingItem() && player.getOffhandItem().getItem() == Items.SHIELD && GunModifierHelper.getGripType(stack) == GripType.ONE_HANDED) {
             double time = Mth.clamp((player.getTicksUsingItem() + partialTick), 0.0, 4.0) / 4.0;
             poseStack.translate(0, 0.35 * time, 0);
             poseStack.mulPose(Axis.XP.rotationDegrees(45F * (float) time));

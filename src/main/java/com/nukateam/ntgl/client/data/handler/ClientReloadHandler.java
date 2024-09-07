@@ -8,7 +8,6 @@ import com.nukateam.ntgl.common.base.gun.LoadingTypes;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
-import com.nukateam.ntgl.common.data.util.ModifiedGunProperties;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -185,7 +184,7 @@ public class ClientReloadHandler {
 
         if(general.getLoadingType().equals(LoadingTypes.PER_CARTRIDGE)){
 //            var ammoCount = general.getMaxAmmo(stack) - Gun.getAmmo(stack);
-            var ammoCount =  ModifiedGunProperties.getMaxAmmo(stack) - Gun.getAmmo(stack);
+            var ammoCount =  GunModifierHelper.getMaxAmmo(stack) - Gun.getAmmo(stack);
 
             for (var i = 0; i < ammoCount; i++)
                 reloadDuration += general.getReloadTime();

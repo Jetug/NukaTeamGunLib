@@ -10,7 +10,6 @@ import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
-import com.nukateam.ntgl.common.data.util.ModifiedGunProperties;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.enchantment.EnchantmentTypes;
 import com.nukateam.ntgl.Ntgl;
@@ -26,9 +25,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -114,7 +111,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
         var modifiedGun = this.getModifiedGun(stack);
-        var ammo = ForgeRegistries.ITEMS.getValue(modifiedGun.getProjectile().getItem());
+        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getAmmoItem(stack));
 
         if (ammo != null) {
             tooltip.add(Component.translatable("info.ntgl.ammo_type", Component.translatable(ammo.getDescriptionId()).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GRAY));
