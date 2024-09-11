@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.nukateam.ntgl.common.data.util.GunModifierHelper.getGun;
 
@@ -50,17 +51,31 @@ public class AttachmentSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        if (!(this.weapon.getItem() instanceof GunItem)) {
+        if (!(this.weapon.getItem() instanceof GunItem item)) {
             return false;
         }
-        var item = (GunItem) this.weapon.getItem();
+
         var modifiedGun = item.getModifiedGun(this.weapon);
 
-        if (!(stack.getItem() instanceof IAttachment attachment))
-            return false;
+        if (stack.getItem() instanceof IAttachment<?> attachment) {
+            var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
+            var attachments = modifiedGun.getModules().getAttachments().get(attachment.getType());
+            var canAttachType = modifiedGun.canAttachType(this.type, modifiedGun);
+            var isRightType = attachment.getType().equals(this.type);
+            var canAttach = attachment.canAttachTo(this.weapon);
+            var isItemAllowed = false;
 
-        var gun = getGun(weapon);
-        return attachment.getType().equals(this.type) && modifiedGun.canAttachType(this.type, gun) && attachment.canAttachTo(this.weapon);
+            for (var att : attachments){
+                if(att.getItem().equals(id)) {
+                    isItemAllowed = true;
+                    break;
+                }
+            }
+
+            return isRightType && canAttachType && canAttach && isItemAllowed;
+        }
+
+        return false;
     }
 
     @Override
