@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.base.gun.FireMode;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.interfaces.CurrentFpsGetter;
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.helpers.PlayerReviveHelper;
@@ -139,12 +140,11 @@ public class ShootingHandler {
                 return;
             }
 
-            if (mainHandItem.getItem() instanceof GunItem gunItem) {
+            if (mainHandItem.getItem() instanceof GunItem) {
                 if (event.getHand() == InteractionHand.OFF_HAND) {
                     // Allow shields to be used if weapon is one-handed
                     if (offhandItem.getItem() == Items.SHIELD) {
-                        var modifiedGun = gunItem.getModifiedGun(mainHandItem);
-                        if (modifiedGun.getGeneral().getGripType() == GripType.ONE_HANDED) {
+                        if (GunModifierHelper.getGripType(mainHandItem) == GripType.ONE_HANDED) {
                             return;
                         }
                     }
@@ -263,6 +263,7 @@ public class ShootingHandler {
         var gun = gunItem.getModifiedGun(heldItem);
         var key = arm == HumanoidArm.RIGHT ? mc.options.keyAttack : mc.options.keyUse;
         var data = shootingData.get(arm);
+        var fireMode =  GunModifierHelper.getFireMode(heldItem);
 
         if (gun.getGeneral().getFireTimer() != 0) {
             var isOnCooldown = ShootingHandler.get().isOnCooldown(player, arm);
@@ -276,13 +277,13 @@ public class ShootingHandler {
                 this.fire(player, heldItem);
 //                    if (gun.getGeneral().getFireMode() == FireMode.SEMI_AUTO || gun.getGeneral().getFireMode() == FireMode.PULSE) {
                 if (gun.getGeneral().getFireTimer() > 0) {
-                    if(gun.getGeneral().getFireMode() != FireMode.AUTO)
+                    if(fireMode != FireMode.AUTO)
                         key.setDown(false);
                 }
             }
         } else {
             this.fire(player, heldItem);
-            if (gun.getGeneral().getFireMode() != FireMode.AUTO) {
+            if (fireMode != FireMode.AUTO) {
                 key.setDown(false);
             }
         }
@@ -416,6 +417,7 @@ public class ShootingHandler {
             shootMsGap = calcShootTickGap(rpm);
             RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
             RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
+
             try{
                 PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
                         shooter.getViewXRot(1),

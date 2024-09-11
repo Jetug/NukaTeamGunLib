@@ -4,6 +4,7 @@ import com.nukateam.example.common.data.interfaces.IMeleeWeapon;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.data.util.InventoryUtil;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;

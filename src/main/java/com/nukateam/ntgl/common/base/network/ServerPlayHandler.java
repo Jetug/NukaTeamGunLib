@@ -126,7 +126,7 @@ public class ServerPlayHandler {
                 var spawnedProjectiles = new ProjectileEntity[count];
 
                 for (int i = 0; i < count; i++) {
-                    var factory = ProjectileManager.getInstance().getFactory(projectileProps.getItem());
+                    var factory = ProjectileManager.getInstance().getFactory(GunModifierHelper.getAmmoItem(heldItem));
                     var projectileEntity = factory.create(world, shooter, heldItem, item, modifiedGun);
                     projectileEntity.setWeapon(heldItem);
                     projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
@@ -300,10 +300,7 @@ public class ServerPlayHandler {
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
                 int count = tag.getInt(Tags.AMMO_COUNT);
                 tag.putInt(Tags.AMMO_COUNT, 0);
-
-                var gunItem = (GunItem) stack.getItem();
-                var gun = gunItem.getModifiedGun(stack);
-                var id = gun.getProjectile().getItem();
+                var id = GunModifierHelper.getAmmoItem(stack);
                 var item = ForgeRegistries.ITEMS.getValue(id);
 
                 if (item == null) {
@@ -334,9 +331,7 @@ public class ServerPlayHandler {
 
                 tag.putInt(Tags.AMMO_COUNT, 0);
 
-                var gunItem = (GunItem) stack.getItem();
-                var gun = gunItem.getModifiedGun(stack);
-                var id = gun.getProjectile().getItem();
+                var id = GunModifierHelper.getAmmoItem(stack);
                 var item = ForgeRegistries.ITEMS.getValue(id);
 
                 if (item == null) return;

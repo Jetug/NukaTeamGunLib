@@ -96,6 +96,13 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         });
     }
 
+//    @Override
+//    public void inventoryTick(ItemStack stack, Level pLevel, Entity entity, int pSlotId, boolean pIsSelected) {
+//        checkAmmoCount(stack, entity);
+//
+//        super.inventoryTick(stack, pLevel, entity, pSlotId, pIsSelected);
+//    }
+
     @Override
     public Supplier<Object> getRenderProvider() {
         return renderProvider;
@@ -104,7 +111,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
         var modifiedGun = this.getModifiedGun(stack);
-        var ammo = ForgeRegistries.ITEMS.getValue(modifiedGun.getProjectile().getItem());
+        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getAmmoItem(stack));
 
         if (ammo != null) {
             tooltip.add(Component.translatable("info.ntgl.ammo_type", Component.translatable(ammo.getDescriptionId()).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GRAY));
@@ -136,7 +143,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
                 tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
             } else {
                 int ammoCount = tagCompound.getInt(Tags.AMMO_COUNT);
-                tooltip.add(Component.translatable("info.ntgl.ammo", ChatFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)).withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("info.ntgl.ammo", ChatFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack)).withStyle(ChatFormatting.GRAY));
             }
         }
         //tooltip.add(Component.translatable("info.ntgl.attachment_help", new KeybindComponent("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH)).withStyle(ChatFormatting.YELLOW));
@@ -166,7 +173,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
 //    }
 
     public Gun getModifiedGun(ItemStack stack) {
-        CompoundTag tagCompound = stack.getTag();
+        var tagCompound = stack.getTag();
         if (tagCompound != null && tagCompound.contains("Gun", Tag.TAG_COMPOUND)) {
             return this.modifiedGunCache.computeIfAbsent(tagCompound, item ->
             {

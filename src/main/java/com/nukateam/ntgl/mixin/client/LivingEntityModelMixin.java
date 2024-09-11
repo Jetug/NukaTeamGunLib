@@ -2,6 +2,7 @@ package com.nukateam.ntgl.mixin.client;
 
 
 import com.nukateam.ntgl.client.data.handler.AimingHandler;
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -33,14 +34,16 @@ public class LivingEntityModelMixin<T extends LivingEntity> {
     @Unique
     private void setupForArm(T entity, float animationPos, HumanoidModel<T> model, InteractionHand interactionHand) {
         var heldItem = entity.getItemInHand(interactionHand);
-        if (heldItem.getItem() instanceof GunItem gunItem) {
+
+        if (heldItem.getItem() instanceof GunItem) {
             if (animationPos == 0.0F) {
                 model.rightArm.xRot = 0;
                 model.rightArm.yRot = 0;
                 model.rightArm.zRot = 0;
-                model.leftArm.xRot = 0;
-                model.leftArm.yRot = 0;
-                model.leftArm.zRot = 0;
+                model.leftArm.xRot  = 0;
+                model.leftArm.yRot  = 0;
+                model.leftArm.zRot  = 0;
+
                 if(model instanceof PlayerModel<T> playerModel) {
                     copyModelAngles(playerModel.rightArm, playerModel.rightSleeve);
                     copyModelAngles(playerModel.leftArm, playerModel.leftSleeve);
@@ -48,9 +51,7 @@ public class LivingEntityModelMixin<T extends LivingEntity> {
                 return;
             }
 
-            var gun = gunItem.getModifiedGun(heldItem);
-
-            gun.getGeneral().getGripType().getHeldAnimation().applyHumanoidModelRotation(entity, model.rightArm,
+            GunModifierHelper.getGripType(heldItem).getHeldAnimation().applyHumanoidModelRotation(entity, model.rightArm,
                     model.leftArm, model.head, interactionHand,
                     AimingHandler.get().getAimProgress(entity, Minecraft.getInstance().getFrameTime()));
 

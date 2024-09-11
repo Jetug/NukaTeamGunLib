@@ -15,7 +15,7 @@
   "projectile": {
     "item": "ntgl:round10mm",
     "visible": true,
-    "magazineMode" : true,
+    "magazineMode" : false,
     "damage": 9.0,
     "size": 0.2,
     "speed": 300,

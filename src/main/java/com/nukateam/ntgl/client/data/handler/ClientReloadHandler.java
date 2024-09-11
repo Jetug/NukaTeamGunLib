@@ -143,7 +143,7 @@ public class ClientReloadHandler {
                     var gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
                     reloadTicks = gun.getGeneral().getReloadTime();
 
-                    if (tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(stack, gun))
+                    if (tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(stack))
                         return;
                     if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))
                         return;
@@ -183,7 +183,8 @@ public class ClientReloadHandler {
         var general = gun.getGeneral();
 
         if(general.getLoadingType().equals(LoadingTypes.PER_CARTRIDGE)){
-            var ammoCount = general.getMaxAmmo(stack) - Gun.getAmmo(stack);
+//            var ammoCount = general.getMaxAmmo(stack) - Gun.getAmmo(stack);
+            var ammoCount =  GunModifierHelper.getMaxAmmo(stack) - Gun.getAmmo(stack);
 
             for (var i = 0; i < ammoCount; i++)
                 reloadDuration += general.getReloadTime();

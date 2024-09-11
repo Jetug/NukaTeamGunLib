@@ -5,10 +5,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.gun.LoadingTypes;
 import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
-import com.nukateam.ntgl.common.data.util.LivingEntityUtils;
-import com.nukateam.ntgl.common.data.util.StackUtils;
+import com.nukateam.ntgl.common.data.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
@@ -127,11 +124,11 @@ public class ReloadTracker {
 
     private boolean isWeaponFull() {
         CompoundTag tag = this.stack.getOrCreateTag();
-        return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(this.stack, this.gun);
+        return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(this.stack);
     }
 
     private boolean hasNoAmmo(LivingEntity player) {
-        return Gun.findAmmo(player, this.gun.getProjectile().getItem()).stack().isEmpty();
+        return Gun.findAmmo(player, GunModifierHelper.getAmmoItem(stack)).stack().isEmpty();
     }
 
     private boolean canReload(Player player) {
@@ -155,7 +152,8 @@ public class ReloadTracker {
     }
 
     private void addAmmo(LivingEntity entity) {
-        var amount = this.gun.getGeneral().getMaxAmmo(stack);
+//        var amount = this.gun.getGeneral().getMaxAmmo(stack);
+        var amount = GunModifierHelper.getMaxAmmo(stack);
 
         while (isNotReloaded(entity)){
             addAmmo(entity, amount);
@@ -163,7 +161,7 @@ public class ReloadTracker {
     }
 
     private void addAmmo(LivingEntity entity, int amount) {
-        var context = Gun.findAmmo(entity, this.gun.getProjectile().getItem());
+        var context = Gun.findAmmo(entity, GunModifierHelper.getAmmoItem(stack));
         var ammo = context.stack();
 
         if (!ammo.isEmpty()) {
@@ -171,7 +169,7 @@ public class ReloadTracker {
             amount = Math.min(ammo.getCount(), amount);
 
             if (tag != null) {
-                int maxAmmo = GunEnchantmentHelper.getAmmoCapacity(this.stack, this.gun);
+                int maxAmmo = GunEnchantmentHelper.getAmmoCapacity(this.stack);
                 amount = Math.min(amount, maxAmmo - tag.getInt(Tags.AMMO_COUNT));
                 tag.putInt(Tags.AMMO_COUNT, tag.getInt(Tags.AMMO_COUNT) + amount);
             }
@@ -187,25 +185,26 @@ public class ReloadTracker {
     }
 
     private boolean isNotReloaded(LivingEntity player) {
-        var ammoItem = this.gun.getProjectile().getItem();
+        var ammoItem = GunModifierHelper.getAmmoItem(stack);
         var tag = this.stack.getTag();
 
         return !Gun.findAmmo(player, ammoItem).stack().isEmpty() &&
-                tag.getInt(Tags.AMMO_COUNT) < GunEnchantmentHelper.getAmmoCapacity(this.stack, this.gun);
+                tag.getInt(Tags.AMMO_COUNT) < GunEnchantmentHelper.getAmmoCapacity(this.stack);
     }
 
     private void addMagazine(LivingEntity entity) {
-        var ammoId = this.gun.getProjectile().getItem();
+        var ammoId = GunModifierHelper.getAmmoItem(stack);
         var context = Gun.findMagazine(entity, ammoId);
         var ammo = context.stack();
 
         if (!ammo.isEmpty()) {
             var amount = StackUtils.getDurability(ammo);
             var tag = this.stack.getTag();
-            amount = Math.min(this.gun.getGeneral().getMaxAmmo(stack), amount);
+//            amount = Math.min(this.gun.getGeneral().getMaxAmmo(stack), amount);
+            amount = Math.min(GunModifierHelper.getMaxAmmo(stack), amount);
 
             if (tag != null) {
-                var maxAmmo = GunEnchantmentHelper.getAmmoCapacity(this.stack, this.gun);
+                var maxAmmo = GunEnchantmentHelper.getAmmoCapacity(this.stack);
                 var currentAmmo = tag.getInt(Tags.AMMO_COUNT);
 
                 if(currentAmmo > 0) {

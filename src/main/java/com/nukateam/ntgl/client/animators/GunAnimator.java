@@ -12,6 +12,7 @@ import com.nukateam.ntgl.client.render.renderers.GeoDynamicItemRenderer;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.util.AnimationHelper;
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 
 import com.nukateam.ntgl.common.helpers.PlayerHelper;
@@ -121,8 +122,7 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
     }
 
     private boolean isOneHanded(ItemStack stack){
-        return stack.getItem() instanceof GunItem gunItem &&
-                gunItem.getModifiedGun(stack).getGeneral().getGripType() == GripType.ONE_HANDED;
+        return stack.getItem() instanceof GunItem && GunModifierHelper.getGripType(stack) == GripType.ONE_HANDED;
     }
 
     private AnimationController.AnimationStateHandler<GunAnimator> animate() {

@@ -40,7 +40,7 @@ public class ModGuns {
 
     //Rounds
     public static final RegistryObject<Item> ROUND10MM = ITEMS.register("round10mm",
-            () -> new AmmoItem(new Item.Properties().durability(25)/*.tab(ModItemTabs.WEAPONS)*/));
+            () -> new AmmoItem(new Item.Properties().durability(100)/*.tab(ModItemTabs.WEAPONS)*/));
 
     public static final RegistryObject<Item> ROUND38 = registerAmmo("round38");
     public static final RegistryObject<Item> STEELBALLS = registerAmmo("steel_ball");
@@ -85,7 +85,7 @@ public class ModGuns {
             () -> new MagazineItem(Magazine.create(30, GunModifiers.SLOW_ADS), new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> DRUM_MAGAZINE = ITEMS.register("drum_magazine",
-            () -> new MagazineItem(Magazine.create(60, GunModifiers.SLOWER_ADS), new Item.Properties().stacksTo(1)));
+            () -> new MagazineItem(Magazine.create(60, GunModifiers.SLOWER_ADS, GunModifiers.EXTENDED_MAG), new Item.Properties().stacksTo(1)));
 
 
     public static RegistryObject<GunItem> registerGun(String name) {
