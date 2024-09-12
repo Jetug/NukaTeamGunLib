@@ -16,7 +16,7 @@ public class AttachmentType {
     public static AttachmentType MAGAZINE     = new AttachmentType("magazine");
 
     private static final Map<ResourceLocation, AttachmentType> typeMap = new HashMap<>();
-
+    
     static {
         registerType(SCOPE       );
         registerType(BARREL      );
@@ -24,6 +24,16 @@ public class AttachmentType {
         registerType(GRIP       );
         registerType(UNDER_BARREL);
         registerType(MAGAZINE    );
+    }
+
+    private final ResourceLocation id;
+
+    public AttachmentType(ResourceLocation id) {
+        this.id = id;
+    }
+
+    public AttachmentType(String name) {
+        this.id = new ResourceLocation(Ntgl.MOD_ID, name);
     }
 
     /**
@@ -39,18 +49,21 @@ public class AttachmentType {
         return typeMap.getOrDefault(id, SCOPE);
     }
 
-    private final ResourceLocation id;
-
-    public AttachmentType(ResourceLocation id) {
-        this.id = id;
-    }
-
-    public AttachmentType(String name) {
-        this.id = new ResourceLocation(Ntgl.MOD_ID, name);
+    public static AttachmentType getType(String path) {
+        var id = ResourceLocation.tryParse(path);
+        return getType(id);
     }
 
     public ResourceLocation getId() {
         return this.id;
     }
 
+    public boolean equals(ResourceLocation obj) {
+        return this == getType(obj);
+    }
+
+    @Override
+    public String toString() {
+        return id.toString();
+    }
 }

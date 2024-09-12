@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.foundation.goals;
 
 import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.example.common.data.interfaces.IGunUser;
 import net.minecraft.util.TimeUtil;
@@ -105,12 +106,10 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
 
         var gunStack = mob.getMainHandItem();
 
-        var gun = (GunItem) mob.getMainHandItem().getItem();
-
         if (Gun.hasAmmo(mob.getMainHandItem())) {
             mob.performRangedAttack(target, 1);
         } else if (reloadTimer == -1) {
-            reloadTimer = gun.getGun().getGeneral().getReloadTime();
+            reloadTimer = GunModifierHelper.getReloadTime(gunStack);
         } else if (reloadTimer > 0) {
             reloadTimer = Math.max(reloadTimer - 1, 0);
         } else if (reloadTimer == 0) {

@@ -212,4 +212,8 @@ public interface IGunModifier {
     default ResourceLocation modifyAmmoItem(ResourceLocation item) {
         return item;
     }
+
+    default int modifyReloadTime(int reloadTime) {
+        return reloadTime;
+    }
 }

@@ -108,6 +108,12 @@
           "name": "magazine_4",
           "item": "ntgl:drum_magazine"
         }
+      ],
+      "ntgl:grip": [
+        {
+          "name": "grip",
+          "item": "ntgl:light_grip"
+        }
       ]
     },
     "zoom": {

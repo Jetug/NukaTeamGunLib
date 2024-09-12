@@ -150,7 +150,7 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
                     if(animationHelper.hasAnimation(CHARGE))
                         animation = playGunAnim(CHARGE, LOOP);
                 } else if (reloadHandler.isReloading(entity, arm)) {
-                    animation = getReloadAnimation(event, general);
+                    animation = getReloadAnimation(event, getStack());
                 } else if (isShooting) {
                     animation = playGunAnim(SHOT, LOOP);
 //                    animation = begin().then(SHOT, LOOP);
@@ -195,7 +195,7 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
     }
 
     @NotNull
-    private RawAnimation getReloadAnimation(AnimationState<GunAnimator> event, Gun.General general) {
+    private RawAnimation getReloadAnimation(AnimationState<GunAnimator> event, ItemStack stack) {
         RawAnimation animation;
         animation = begin();
 
@@ -208,12 +208,12 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
             animation.then(RELOAD_END, PLAY_ONCE);
 
         if(event.getController().getCurrentAnimation().animation().name().equals(RELOAD))
-            animationHelper.syncAnimation(event, RELOAD, general.getReloadTime());
+            animationHelper.syncAnimation(event, RELOAD, GunModifierHelper.getReloadTime(stack));
         return animation;
     }
 
     @NotNull
-    private RawAnimation getShotAnimation(AnimationState<GunAnimator> event, Gun.General general) {
+    private RawAnimation getShotAnimation(AnimationState<GunAnimator> event, ItemStack stack) {
         RawAnimation animation;
         animation = begin();
 
@@ -226,7 +226,7 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
             animation.then(SHOT_END, PLAY_ONCE);
 
         if(event.getController().getCurrentAnimation().animation().name().equals(RELOAD))
-            animationHelper.syncAnimation(event, SHOT, general.getReloadTime());
+            animationHelper.syncAnimation(event, SHOT, GunModifierHelper.getReloadTime(stack));
         return animation;
     }
 

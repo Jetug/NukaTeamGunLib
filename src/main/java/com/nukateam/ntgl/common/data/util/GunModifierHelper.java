@@ -96,6 +96,14 @@ public class GunModifierHelper {
         return ammoItem.get();
     }
 
+
+    public static int getReloadTime(ItemStack weapon) {
+        var reloadTime = getGun(weapon).getGeneral().getReloadTime();
+        var finalReloadTime = new AtomicInteger(reloadTime);
+        forEachAttachment(weapon, (modifier -> finalReloadTime.set(modifier.modifyReloadTime(finalReloadTime.get()))));
+        return finalReloadTime.get();
+    }
+
     public static int getModifiedProjectileLife(ItemStack weapon, int life) {
         var finalLife = new AtomicInteger(life);
         forEachAttachment(weapon, (modifier -> finalLife.set(modifier.modifyProjectileLife(finalLife.get()))));

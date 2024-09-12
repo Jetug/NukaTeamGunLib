@@ -141,7 +141,7 @@ public class ClientReloadHandler {
 
                 if (tag != null && !tag.contains("IgnoreAmmo", Tag.TAG_BYTE)) {
                     var gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
-                    reloadTicks = gun.getGeneral().getReloadTime();
+                    reloadTicks = GunModifierHelper.getReloadTime(stack);
 
                     if (tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(stack))
                         return;
@@ -154,8 +154,7 @@ public class ClientReloadHandler {
                     dataKey.setValue(player, true);
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(true, arm));
                     this.reloadingSlot = player.getInventory().selected;
-                    var reloadTime = gun.getGeneral().getReloadTime();
-                    reloadTimer = reloadTime;
+                    reloadTimer = GunModifierHelper.getReloadTime(stack);
 
                     MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack));
                 }
@@ -181,15 +180,16 @@ public class ClientReloadHandler {
     private static void playAnimation(LocalPlayer player, ItemStack stack, Gun gun, HumanoidArm arm) {
         var reloadDuration = 0;
         var general = gun.getGeneral();
+        var reloadTime = GunModifierHelper.getReloadTime(stack);
 
         if(general.getLoadingType().equals(LoadingTypes.PER_CARTRIDGE)){
 //            var ammoCount = general.getMaxAmmo(stack) - Gun.getAmmo(stack);
             var ammoCount =  GunModifierHelper.getMaxAmmo(stack) - Gun.getAmmo(stack);
 
             for (var i = 0; i < ammoCount; i++)
-                reloadDuration += general.getReloadTime();
+                reloadDuration += reloadTime;
         }
-        else reloadDuration = general.getReloadTime();
+        else reloadDuration = reloadTime;
 
         if (Ntgl.playerAnimatorLoaded)
             PlayerAnimationHelper.playAnim(player, gun.getGeneral().getReloadType(), reloadDuration, arm == HumanoidArm.LEFT);

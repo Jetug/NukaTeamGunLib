@@ -35,6 +35,7 @@ public interface IAttachment<T extends Attachment> {
         public static ResourceLocation SCOPE        = new ResourceLocation (Ntgl.MOD_ID, "scope");
         public static ResourceLocation BARREL       = new ResourceLocation (Ntgl.MOD_ID, "barrel");
         public static ResourceLocation STOCK        = new ResourceLocation (Ntgl.MOD_ID, "stock");
+        public static ResourceLocation GRIP         = new ResourceLocation (Ntgl.MOD_ID, "grip");
         public static ResourceLocation UNDER_BARREL = new ResourceLocation (Ntgl.MOD_ID, "under_barrel");
         public static ResourceLocation MAGAZINE     = new ResourceLocation (Ntgl.MOD_ID, "magazine");
 

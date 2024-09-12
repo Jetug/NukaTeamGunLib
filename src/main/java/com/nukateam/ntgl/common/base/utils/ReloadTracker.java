@@ -56,7 +56,7 @@ public class ReloadTracker {
         this.gunItem = ((GunItem) stack.getItem());
         this.gun = gunItem.getModifiedGun(stack);
 
-        reloadTick = gun.getGeneral().getReloadTime();
+        reloadTick = GunModifierHelper.getReloadTime(stack);
 
 //        playReloadSound(entity);
     }
@@ -275,7 +275,7 @@ public class ReloadTracker {
                 tracker.addCartridge(player);
                 if (tracker.isWeaponFull() || tracker.hasNoAmmo(player))
                     stopReloading(player, gun, arm);
-                else tracker.reloadTick = gun.getGeneral().getReloadTime();
+                else tracker.reloadTick = GunModifierHelper.getReloadTime(tracker.stack);
             }
         }
     }
