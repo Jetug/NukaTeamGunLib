@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.data.util;
 
+import com.nukateam.ntgl.common.base.gun.AttachmentType;
 import com.nukateam.ntgl.common.base.gun.FireMode;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.base.gun.Gun;
@@ -51,7 +52,7 @@ public class GunModifierHelper {
         return true;
     }
 
-    private static IGunModifier[] getModifiers(ItemStack weapon, ResourceLocation type) {
+    private static IGunModifier[] getModifiers(ItemStack weapon, AttachmentType type) {
         var stack = Gun.getAttachmentItem(type, weapon);
         if (!stack.isEmpty() && stack.getItem() instanceof IAttachment<?> attachment) {
             return attachment.getProperties().getModifiers();
@@ -64,7 +65,7 @@ public class GunModifierHelper {
         return gunItem.getModifiedGun(weapon);
     }
 
-    public static Map<ResourceLocation, ArrayList<Gun.Modules.Attachment>> getGunAttachments(ItemStack weapon) {
+    public static Map<AttachmentType, ArrayList<Gun.Modules.Attachment>> getGunAttachments(ItemStack weapon) {
         var gun = getGun(weapon);
         return gun.getModules().getAttachments();
     }

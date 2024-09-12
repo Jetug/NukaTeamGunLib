@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.container.slot;
 
+import com.nukateam.ntgl.common.base.gun.AttachmentType;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
@@ -24,10 +25,10 @@ import static com.nukateam.ntgl.common.data.util.GunModifierHelper.getGun;
 public class AttachmentSlot extends Slot {
     private AttachmentContainer container;
     private ItemStack weapon;
-    private ResourceLocation type;
+    private AttachmentType type;
     private Player player;
 
-    public AttachmentSlot(AttachmentContainer container, Container weaponInventory, ItemStack weapon, ResourceLocation type, Player player, int index, int x, int y) {
+    public AttachmentSlot(AttachmentContainer container, Container weaponInventory, ItemStack weapon, AttachmentType type, Player player, int index, int x, int y) {
         super(weaponInventory, index, x, y);
         this.container = container;
         this.weapon = weapon;
@@ -35,7 +36,7 @@ public class AttachmentSlot extends Slot {
         this.player = player;
     }
 
-    public ResourceLocation getType() {
+    public AttachmentType getType() {
         return this.type;
     }
 

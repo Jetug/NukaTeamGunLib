@@ -7,6 +7,7 @@ import com.mojang.math.Axis;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.data.util.PropertyHelper;
 import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
+import com.nukateam.ntgl.common.base.gun.AttachmentType;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.properties.SightAnimation;
@@ -361,7 +362,7 @@ public class GunRenderingHandler {
 
                 /* Creates the required offsets to position the scope into the middle of the screen. */
                 var scope = Gun.getScope(heldItem);
-                if (modifiedGun.canAttachType(IAttachment.Type.SCOPE, modifiedGun) && scope != null) {
+                if (modifiedGun.canAttachType(AttachmentType.SCOPE, modifiedGun) && scope != null) {
                     /* Translate to the mounting position of scopes */
 //                    Vec3 scopePosition = PropertyHelper.getAttachmentPosition(heldItem, modifiedGun, IAttachment.Type.SCOPE).subtract(gunOrigin);
 //                    xOffset += scopePosition.x * 0.0625 * scaleX;
@@ -504,7 +505,7 @@ public class GunRenderingHandler {
 
     private void applyRecoilTransforms(PoseStack poseStack, ItemStack item, Gun gun) {
         double recoilNormal = RecoilHandler.get().getGunRecoilNormal();
-        if (Gun.hasAttachmentEquipped(item, gun, IAttachment.Type.SCOPE)) {
+        if (Gun.hasAttachmentEquipped(item, gun, AttachmentType.SCOPE)) {
             recoilNormal -= recoilNormal * (0.5 * AimingHandler.get().getNormalisedAdsProgress());
         }
         float kickReduction = 1.0F - GunModifierHelper.getKickReduction(item);
@@ -672,7 +673,7 @@ public class GunRenderingHandler {
         var result = new ArrayList<ItemStack>();
 
         for (var tagKey : attachments.getAllKeys()) {
-            var type = ResourceLocation.tryParse(tagKey);
+            var type = AttachmentType.getType(tagKey);
             if (type != null && modifiedGun.canAttachType(type, modifiedGun)) {
                 var attachmentStack = Gun.getAttachmentItem(type, stack);
                 result.add(attachmentStack);

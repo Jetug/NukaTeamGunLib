@@ -3,10 +3,7 @@ package com.nukateam.example.common.registery;
 import com.nukateam.ntgl.common.base.GunModifiers;
 import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Magazine;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Stock;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.UnderBarrel;
+import com.nukateam.ntgl.common.foundation.item.attachment.impl.*;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -76,9 +73,9 @@ public class ModGuns {
 
     /* Under Barrel Attachments */
     public static final RegistryObject<Item> LIGHT_GRIP = ITEMS.register("light_grip",
-            () -> new UnderBarrelItem(UnderBarrel.create(GunModifiers.LIGHT_RECOIL), new Item.Properties().stacksTo(1)));
+            () -> new GripItem(Grip.create(GunModifiers.LIGHT_RECOIL), new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> SPECIALISED_GRIP = ITEMS.register("specialised_grip",
-            () -> new UnderBarrelItem(UnderBarrel.create(GunModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
+            () -> new GripItem(Grip.create(GunModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
 
     /* Magazine Attachments*/
     public static final RegistryObject<Item> EXTENDED_MAGAZINE = ITEMS.register("extended_magazine",

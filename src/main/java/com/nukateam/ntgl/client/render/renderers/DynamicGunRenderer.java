@@ -6,6 +6,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.animators.ItemAnimator;
 import com.nukateam.ntgl.client.data.util.TransformUtils;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
+import com.nukateam.ntgl.common.base.gun.AttachmentType;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.data.util.Rgba;
@@ -62,7 +63,7 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         this.gun = GunModifierHelper.getGun(stack);
         this.gunAttachments = Gun.getAttachmentItems(stack);
         this.configAttachments = gun.getAttachments(gunAttachments);
-        var barrelStack = Gun.getAttachmentItem(IAttachment.Type.BARREL, renderStack);
+        var barrelStack = Gun.getAttachmentItem(AttachmentType.BARREL, renderStack);
         hiddenBones.clear();
 
         if(barrelStack.getItem() instanceof BarrelItem barrelItem)
@@ -104,7 +105,6 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
                     var length = barrelItem.getProperties().getLength();
                     poseStack.pushPose();
                     {
-
                         poseStack.translate(0, 0, -length / 16D);
                         if (Ntgl.isDebugging())
                             poseStack.translate(X / 16D, Y / 16D, Z / 16D);

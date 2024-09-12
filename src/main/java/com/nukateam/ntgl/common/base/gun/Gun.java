@@ -879,14 +879,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Nullable
         private Zoom zoom;
         @Optional
-        private Map<ResourceLocation, ArrayList<Attachment>> attachments = new HashMap<>();
+        private Map<AttachmentType, ArrayList<Attachment>> attachments = new HashMap<>();
 
         @Nullable
         public Zoom getZoom() {
             return this.zoom;
         }
 
-        public Map<ResourceLocation, ArrayList<Attachment>> getAttachments() {
+        public Map<AttachmentType, ArrayList<Attachment>> getAttachments() {
             return this.attachments;
         }
 
@@ -1351,7 +1351,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return gun;
     }
 
-    public boolean canAttachType(@Nullable ResourceLocation type, Gun gun) {
+    public boolean canAttachType(@Nullable AttachmentType type, Gun gun) {
         var attachments = gun.getModules().getAttachments();
         if(attachments == null)
             return false;
@@ -1389,7 +1389,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return ItemStack.EMPTY;
     }
 
-    public static boolean hasAttachmentEquipped(ItemStack stack, Gun gun, ResourceLocation type) {
+    public static boolean hasAttachmentEquipped(ItemStack stack, Gun gun, AttachmentType type) {
         if (!gun.canAttachType(type, gun))
             return false;
 
@@ -1465,7 +1465,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return result;
     }
 
-    public static ItemStack getAttachmentItem(ResourceLocation type, ItemStack gun) {
+    public static ItemStack getAttachmentItem(AttachmentType type, ItemStack gun) {
         var compound = gun.getTag();
         if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
             var attachment = compound.getCompound(ATTACHMENTS);
@@ -1575,7 +1575,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public static float getFovModifier(ItemStack stack, Gun modifiedGun) {
         float modifier = 0.0F;
-        if (hasAttachmentEquipped(stack, modifiedGun, SCOPE)) {
+        if (hasAttachmentEquipped(stack, modifiedGun, AttachmentType.SCOPE)) {
             var scope = Gun.getScope(stack);
             if (scope != null) {
                 if (scope.getFovModifier() < 1.0F) {

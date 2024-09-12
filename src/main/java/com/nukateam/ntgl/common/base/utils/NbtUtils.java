@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.base.utils;
 
+import com.nukateam.ntgl.common.base.gun.AttachmentType;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -56,17 +57,17 @@ public class NbtUtils {
         var tag = new CompoundTag();
 
         for (var key: map.keySet()) {
-            tag.put(String.valueOf(key), serializeArray(map.get(key)));
+            tag.put(key.toString(), serializeArray(map.get(key)));
         }
 
         return tag;
     }
 
-    public static Map<ResourceLocation, ArrayList<Gun.Modules.Attachment>> deserializeAttachmentMap(CompoundTag tag){
-        var array = new HashMap<ResourceLocation, ArrayList<Gun.Modules.Attachment>>();
+    public static Map<AttachmentType, ArrayList<Gun.Modules.Attachment>> deserializeAttachmentMap(CompoundTag tag){
+        var array = new HashMap<AttachmentType, ArrayList<Gun.Modules.Attachment>>();
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {
-                array.put(ResourceLocation.tryParse(key), deserializeArray(tag.getCompound(key)));
+                array.put(AttachmentType.getType(key), deserializeArray(tag.getCompound(key)));
             }
         }
 

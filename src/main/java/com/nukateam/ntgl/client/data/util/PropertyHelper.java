@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.data.util;
 
 import com.nukateam.ntgl.client.MetaLoader;
+import com.nukateam.ntgl.common.base.gun.AttachmentType;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.properties.SightAnimation;
 import com.nukateam.ntgl.common.cache.ObjectCache;
@@ -227,7 +228,7 @@ public final class PropertyHelper {
 
     public static SightAnimation getSightAnimations(ItemStack weapon, Gun modifiedGun) {
         // Try and get the animations from the scope
-        if (Gun.hasAttachmentEquipped(weapon, modifiedGun, IAttachment.Type.SCOPE)) {
+        if (Gun.hasAttachmentEquipped(weapon, modifiedGun, AttachmentType.SCOPE)) {
             ItemStack scopeStack = Gun.getScopeStack(weapon);
             if (scopeStack.getItem() instanceof IScope scope) {
                 DataObject scopeObject = getObjectByPath(scopeStack, SCOPE_KEY);
@@ -248,7 +249,7 @@ public final class PropertyHelper {
 
     public static double getViewportFov(ItemStack weapon, Gun modifiedGun) {
         // Get the viewport from the attached scope
-        if (Gun.hasAttachmentEquipped(weapon, modifiedGun, IAttachment.Type.SCOPE)) {
+        if (Gun.hasAttachmentEquipped(weapon, modifiedGun, AttachmentType.SCOPE)) {
             ItemStack scopeStack = Gun.getScopeStack(weapon);
             DataObject customObject = getObjectByPath(scopeStack, SCOPE_KEY);
             if (customObject.has("viewportFov", DataType.NUMBER)) {

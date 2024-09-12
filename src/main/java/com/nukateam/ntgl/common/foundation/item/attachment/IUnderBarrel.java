@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.foundation.item.attachment;
 
+import com.nukateam.ntgl.common.base.gun.AttachmentType;
 import com.nukateam.ntgl.common.foundation.item.UnderBarrelItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.UnderBarrel;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * An interface to turn an any item into a under barrel attachment. This is useful if your item
@@ -16,7 +16,7 @@ public interface IUnderBarrel extends IAttachment<UnderBarrel> {
      * @return The type of this attachment
      */
     @Override
-    default ResourceLocation getType() {
-        return Type.UNDER_BARREL;
+    default AttachmentType getType() {
+        return AttachmentType.UNDER_BARREL;
     }
 }
