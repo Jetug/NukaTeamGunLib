@@ -30,11 +30,20 @@
     "enchantedFire": "ntgl:item.pistol10mm.enchanted_fire"
   },
   "modules": {
+    "zoom": {
+      "xOffset": 0,
+      "yOffset": 3.7,
+      "zOffset": 0,
+      "fovModifier": 0.9
+    },
     "attachments": {
       "ntgl:scope": [
         {
           "name": "scope_1",
-          "item": "ntgl:holographic_sight"
+          "item": "ntgl:holographic_sight",
+          "xOffset": 0,
+          "yOffset": 10,
+          "zOffset": 0
         },
         {
           "name": "scope_2",
@@ -115,12 +124,6 @@
           "item": "ntgl:light_grip"
         }
       ]
-    },
-    "zoom": {
-      "xOffset": 0,
-      "yOffset": 3.7,
-      "zOffset": 0,
-      "fovModifier": 0.9
     }
   }
 }

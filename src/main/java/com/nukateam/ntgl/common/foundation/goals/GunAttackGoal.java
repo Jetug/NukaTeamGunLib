@@ -1,11 +1,16 @@
 package com.nukateam.ntgl.common.foundation.goals;
 
 import com.nukateam.ntgl.common.base.gun.Gun;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.common.base.network.ServerPlayHandler;
+import com.nukateam.ntgl.common.base.utils.EntityReloadTracker;
+import com.nukateam.ntgl.common.data.interfaces.IGunUser;
+import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.example.common.data.interfaces.IGunUser;
+import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.monster.RangedAttackMob;
@@ -15,19 +20,17 @@ import java.util.EnumSet;
 public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser> extends Goal {
     public static final UniformInt PATHFINDING_DELAY_RANGE = TimeUtil.rangeOfSeconds(1, 2);
     private final T mob;
-    //    private GunAttackGoal.CrossbowState crossbowState = GunAttackGoal.CrossbowState.UNCHARGED;
     private final double speedModifier;
     private final float attackRadiusSqr;
     private int seeTime;
     private int attackDelay;
     private int updatePathDelay;
-    private int reloadTimer = 0;
 
     public GunAttackGoal(T pMob, double pSpeedModifier, float pAttackRadius) {
         this.mob = pMob;
         this.speedModifier = pSpeedModifier;
         this.attackRadiusSqr = pAttackRadius * pAttackRadius;
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }
 
     /**
@@ -63,10 +66,12 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
         this.seeTime = 0;
         if (this.mob.isUsingItem()) {
             this.mob.stopUsingItem();
-//            this.mob.setChargingCrossbow(false);
-//            CrossbowItem.setCharged(this.mob.getUseItem(), false);
         }
+        setReloading(false);
+    }
 
+    private void setReloading(boolean value) {
+        ModSyncedDataKeys.RELOADING_RIGHT.setValue(mob, value);
     }
 
     public boolean requiresUpdateEveryTick() {
@@ -104,28 +109,46 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
 
         this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
 
-        var gunStack = mob.getMainHandItem();
-
-        if (Gun.hasAmmo(mob.getMainHandItem())) {
+        if (Gun.hasAmmo(mob.getGun())) {
             mob.performRangedAttack(target, 1);
-        } else if (reloadTimer == -1) {
-            reloadTimer = GunModifierHelper.getReloadTime(gunStack);
-        } else if (reloadTimer > 0) {
-            reloadTimer = Math.max(reloadTimer - 1, 0);
-        } else if (reloadTimer == 0) {
-            Gun.fillAmmo(gunStack);
-            reloadTimer = -1;
         }
+        else if(!EntityReloadTracker.isReloading(mob)) {
+            EntityReloadTracker.addTracker(mob, HumanoidArm.RIGHT);
+        }
+//
+//        else if (reloadTimer == -1) {
+//            setReloading(true);
+//            reloadTimer = gun.getGun().getGeneral().getReloadTime();
+//        }
+//        else if (reloadTimer > 0) {
+//            reloadTimer = Math.max(reloadTimer - 1, 0);
+//        }
+//        else if (reloadTimer == 0) {
+//            Gun.fillAmmo(gunStack);
+//            setReloading(false);
+//            reloadTimer = -1;
+//        }
     }
 
     private boolean canRun() {
-        return true; //this.crossbowState == GunAttackGoal.CrossbowState.UNCHARGED;
+        return !EntityReloadTracker.isReloading(mob);
     }
 
-//    enum CrossbowState {
-//        UNCHARGED,
-//        CHARGING,
-//        CHARGED,
-//        READY_TO_ATTACK;
-//    }
+    public void performRangedAttack() {
+        var msg = new C2SMessageShoot(mob.getId(),
+                mob.getViewYRot(1),
+                mob.getViewXRot(1),
+                0, 0, true);
+
+        ServerPlayHandler.handleShoot(msg, mob);
+    }
+
+    public static void shoot(LivingEntity shooter, boolean isRightHand){
+        var msg = new C2SMessageShoot(shooter.getId(),
+                shooter.getViewYRot(1),
+                shooter.getViewXRot(1),
+                0, 0, isRightHand);
+
+        ServerPlayHandler.handleShoot(msg, shooter);
+    }
 }

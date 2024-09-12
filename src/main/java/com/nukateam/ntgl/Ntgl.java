@@ -2,6 +2,7 @@ package com.nukateam.ntgl;
 
 import com.mojang.logging.LogUtils;
 import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
+import com.nukateam.example.common.registery.EntityTypes;
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.example.common.registery.ModItemTabs;
 import com.nukateam.ntgl.client.ClientHandler;
@@ -74,6 +75,7 @@ public class Ntgl {
         ModRecipeSerializers.REGISTER.register(MOD_EVENT_BUS);
         ModSounds.REGISTER.register(MOD_EVENT_BUS);
         ModTileEntities.REGISTER.register(MOD_EVENT_BUS);
+        EntityTypes.register(MOD_EVENT_BUS);
         MOD_EVENT_BUS.addListener(this::onCommonSetup);
         MOD_EVENT_BUS.addListener(this::onClientSetup);
         MOD_EVENT_BUS.addListener(this::onGatherData);

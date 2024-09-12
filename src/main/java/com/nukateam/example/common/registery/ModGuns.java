@@ -16,12 +16,12 @@ import net.minecraftforge.registries.RegistryObject;
 public class ModGuns {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Ntgl.MOD_ID);
     ///GUNS
-    public static final RegistryObject<GunItem> PISTOL = registerGun("pistol10mm");
+    public static final RegistryObject<GunItem> PISTOL10MM = registerGun("pistol10mm");
     public static final RegistryObject<GunItem> PIPE_PISTOL = registerGun("pipepistol");
     public static final RegistryObject<GunItem> CLASSIC10MM = registerGun("classic10mm", 10);
     public static final RegistryObject<GunItem> SCOUT10MM = registerGun("scout10mm");
 //    public static final RegistryObject<GunItem> CLASSIC10MM_ZAP = registerGun("classic10mm_zapaway", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.NUKA_EQUIP)));
-    public static final RegistryObject<GunItem> PIPEREVOLVER = registerGun("piperevolver");
+    public static final RegistryObject<GunItem> PIPE_REVOLVER = registerGun("piperevolver");
     public static final RegistryObject<GunItem> FATMAN = registerGun("fatman");
     public static final RegistryObject<GunItem> MINIGUN = registerGun("minigun");
 

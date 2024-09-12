@@ -1065,7 +1065,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             private String name;
             @Optional
             @Nullable
-            private AttachmentType item;
+            private ResourceLocation item;
             @Optional
             private ArrayList<String> hide = new ArrayList<>();
 
@@ -1075,7 +1075,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
 
             @Nullable
-            public AttachmentType getItem() {
+            public ResourceLocation getItem() {
                 return this.item;
             }
 
@@ -1090,7 +1090,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                     tag.putString("Name", this.name);
                 }
                 if (this.item != null) {
-                    tag.putString("Item", this.item.getId().toString());
+                    tag.putString("Item", this.item.toString());
                 }
                 if (this.hide != null) {
                     tag.put("Hide", NbtUtils.serializeStringArray(this.hide));
@@ -1104,7 +1104,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                     this.name = tag.getString("Name");
                 }
                 if (tag.contains("Item", Tag.TAG_STRING)) {
-                    this.item = AttachmentType.getType(tag.getString("Item"));
+                    this.item = ResourceLocation.tryParse(tag.getString("Item"));
                 }
                 if (tag.contains("Hide", Tag.TAG_COMPOUND)) {
                     this.hide = NbtUtils.deserializeStringArray(tag.getCompound("Hide"));
@@ -1117,7 +1117,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                     object.addProperty("Name", this.name);
                 }
                 if (this.item != null) {
-                    object.addProperty("Item", this.item.getId().toString());
+                    object.addProperty("Item", this.item.toString());
                 }
                 return object;
             }
