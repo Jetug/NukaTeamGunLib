@@ -36,11 +36,6 @@ public class AttachmentType {
         this.id = new ResourceLocation(Ntgl.MOD_ID, name);
     }
 
-    /**
-     * Registers a new fire mode. If the id already exists, the fire mode will simply be ignored.
-     *
-     * @param mode the get of the fire mode
-     */
     public static void registerType(AttachmentType mode) {
         typeMap.putIfAbsent(mode.getId(), mode);
     }

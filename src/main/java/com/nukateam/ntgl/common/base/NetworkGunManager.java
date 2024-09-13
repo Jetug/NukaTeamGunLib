@@ -2,10 +2,7 @@ package com.nukateam.ntgl.common.base;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.util.Easings;
-import com.nukateam.ntgl.common.base.gun.AttachmentType;
-import com.nukateam.ntgl.common.base.gun.FireMode;
-import com.nukateam.ntgl.common.base.gun.GripType;
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.gun.*;
 import com.nukateam.ntgl.common.base.utils.JsonDeserializers;
 import com.nukateam.ntgl.common.data.annotation.Validator;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -51,6 +48,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
         builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
         builder.registerTypeAdapter(FireMode.class, JsonDeserializers.FIRE_MODE);
         builder.registerTypeAdapter(AttachmentType.class, JsonDeserializers.ATTACHMENT_TYPE);
+        builder.registerTypeAdapter(AmmoType.class, JsonDeserializers.AMMO_TYPE);
         builder.registerTypeAdapter(Easings.class, JsonDeserializers.EASING);
         builder.excludeFieldsWithModifiers(Modifier.TRANSIENT);
         return builder.create();

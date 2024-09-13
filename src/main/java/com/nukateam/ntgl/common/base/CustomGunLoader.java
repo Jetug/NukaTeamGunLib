@@ -1,10 +1,7 @@
 package com.nukateam.ntgl.common.base;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.gun.AttachmentType;
-import com.nukateam.ntgl.common.base.gun.CustomGun;
-import com.nukateam.ntgl.common.base.gun.FireMode;
-import com.nukateam.ntgl.common.base.gun.GripType;
+import com.nukateam.ntgl.common.base.gun.*;
 import com.nukateam.ntgl.common.base.utils.JsonDeserializers;
 import com.nukateam.ntgl.common.data.annotation.Validator;
 import com.google.common.collect.ImmutableMap;
@@ -39,6 +36,7 @@ public class CustomGunLoader extends SimpleJsonResourceReloadListener {
         builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
         builder.registerTypeAdapter(FireMode.class, JsonDeserializers.FIRE_MODE);
         builder.registerTypeAdapter(AttachmentType.class, JsonDeserializers.ATTACHMENT_TYPE);
+        builder.registerTypeAdapter(AmmoType.class, JsonDeserializers.AMMO_TYPE);
         return builder.create();
     });
 

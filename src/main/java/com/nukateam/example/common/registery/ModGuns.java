@@ -1,6 +1,7 @@
 package com.nukateam.example.common.registery;
 
 import com.nukateam.ntgl.common.base.GunModifiers;
+import com.nukateam.ntgl.common.base.gun.AmmoType;
 import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.*;
@@ -37,7 +38,7 @@ public class ModGuns {
 
     //Rounds
     public static final RegistryObject<Item> ROUND10MM = ITEMS.register("round10mm",
-            () -> new AmmoItem(new Item.Properties().durability(100)/*.tab(ModItemTabs.WEAPONS)*/));
+            () -> new AmmoItem(new Item.Properties().durability(100), AmmoType.ROUND_10MM));
 
     public static final RegistryObject<Item> ROUND38 = registerAmmo("round38");
     public static final RegistryObject<Item> STEELBALLS = registerAmmo("steel_ball");
@@ -94,7 +95,7 @@ public class ModGuns {
     }
 
     public static RegistryObject<Item> registerAmmo(String name) {
-        return ITEMS.register(name, () -> new AmmoItem(new Item.Properties()));
+        return ITEMS.register(name, () -> new AmmoItem(new Item.Properties(), AmmoType.ROUND_10MM));
     }
 
     public static void register(IEventBus eventBus) {

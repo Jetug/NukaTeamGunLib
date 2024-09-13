@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
+import com.nukateam.ntgl.common.base.gun.AmmoType;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -17,15 +18,16 @@ import java.util.List;
  * Author: MrCrayfish
  */
 public class AmmoItem extends Item implements IAmmo {
-    public AmmoItem(Properties properties) {
+    public final AmmoType ammoType;
+
+    public AmmoItem(Properties properties, AmmoType ammoType) {
         super(properties);
+        this.ammoType = ammoType;
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level pLevel, List<Component> tooltip, TooltipFlag pIsAdvanced) {
         var maxDamage = getMaxDamage(stack);
-
-
 
         if(maxDamage > 0){
             int ammoCount = maxDamage - getDamage(stack);
