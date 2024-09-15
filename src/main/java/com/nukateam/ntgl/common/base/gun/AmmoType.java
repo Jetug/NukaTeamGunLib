@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class AmmoType extends BaseType {
     public static AmmoType ROUND_10MM   = new AmmoType("10mm");
+    public static AmmoType GRENADE   = new AmmoType("10mm");
     public static AmmoType CAL45        = new AmmoType("45cal");
 
     private static final Map<ResourceLocation, AmmoType> typeMap = new HashMap<>();

@@ -86,6 +86,10 @@ public class ModGuns {
             () -> new MagazineItem(Magazine.create(60, GunModifiers.SLOWER_ADS, GunModifiers.EXTENDED_MAG), new Item.Properties().stacksTo(1)));
 
 
+    public static final RegistryObject<Item> AMMO_BOX = ITEMS.register("ammo_box", () ->
+            new AmmoBoxItem(new Item.Properties().stacksTo(1), 100));
+
+
     public static RegistryObject<GunItem> registerGun(String name) {
         return ITEMS.register(name, () -> new GunItem(new Item.Properties().stacksTo(1)));
     }

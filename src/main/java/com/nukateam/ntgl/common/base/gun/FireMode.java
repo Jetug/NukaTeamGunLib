@@ -26,11 +26,6 @@ public class FireMode {
     public static final FireMode BURST = new FireMode(new ResourceLocation(Ntgl.MOD_ID, "burst"));
 
     /**
-     * A fire mode that shoots once per cooldown
-     */
-    public static final FireMode PULSE = new FireMode(new ResourceLocation(Ntgl.MOD_ID, "pulse"));
-
-    /**
      * The fire mode map.
      */
     private static final Map<ResourceLocation, FireMode> fireModeMap = new HashMap<>();
@@ -40,7 +35,6 @@ public class FireMode {
         registerType(SEMI_AUTO);
         registerType(AUTO);
         registerType(BURST);
-        registerType(PULSE);
     }
 
     /**

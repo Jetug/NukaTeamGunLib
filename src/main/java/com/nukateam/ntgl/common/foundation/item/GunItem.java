@@ -26,6 +26,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -86,7 +87,6 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     public void createRenderer(Consumer<Object> consumer) {
         consumer.accept(new RenderProvider() {
             private GunItemRenderer renderer = null;
-
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (renderer == null)

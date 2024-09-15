@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
+import com.nukateam.ntgl.common.base.gun.AmmoType;
 import com.nukateam.ntgl.common.foundation.entity.ThrowableGrenadeEntity;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import net.minecraft.sounds.SoundSource;
@@ -19,7 +20,7 @@ public class GrenadeItem extends AmmoItem {
 
 
     public GrenadeItem(Item.Properties properties, int maxCookTime) {
-        super(properties);
+        super(properties, AmmoType.GRENADE);
         this.maxCookTime = maxCookTime;
     }
 
