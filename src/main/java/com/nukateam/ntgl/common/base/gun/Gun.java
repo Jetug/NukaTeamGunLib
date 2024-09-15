@@ -46,7 +46,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.client.ClientHandler.*;
-import static com.nukateam.ntgl.common.foundation.item.attachment.IAttachment.Type.*;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
@@ -118,7 +117,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public static final String CATEGORY = "category";
 
         @Ignored
-        private FireMode fireMode = FireMode.SEMI_AUTO;
+        private ArrayList<FireMode> fireMode = new ArrayList(Arrays.asList(FireMode.SEMI_AUTO));
         @Optional
         private boolean fullCharge = false;
         private int rate;
@@ -158,7 +157,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             tag.putInt(RATE, this.rate);
             tag.putBoolean("FullCharge", this.fullCharge);
             tag.putInt("FireTimer", this.fireTimer);
-            tag.putString("FireMode", this.fireMode.getId().toString());
+            tag.put("FireMode", NbtUtils.serializeFireMode(this.fireMode));
             tag.putString(GRIP_TYPE, this.gripType.getId().toString());
             tag.putString(RELOAD_TYPE, this.reloadType.toString());
             tag.putInt(MAX_AMMO, this.maxAmmo);
@@ -178,8 +177,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         @Override
         public void deserializeNBT(CompoundTag tag) {
-            if (tag.contains("FireMode", Tag.TAG_STRING)) {
-                this.fireMode = FireMode.getType(ResourceLocation.tryParse(tag.getString("FireMode")));
+            if (tag.contains("FireMode", Tag.TAG_COMPOUND)) {
+                this.fireMode = NbtUtils.deserializeFireMode(tag.getCompound("FireMode"));
             }
             if (tag.contains("FullCharge", Tag.TAG_ANY_NUMERIC)) {
                 this.fullCharge = tag.getBoolean("FullCharge");
@@ -250,7 +249,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (this.fullCharge) object.addProperty("fullCharge", true);
             object.addProperty("rate", this.rate);
             if (this.fireTimer != 0) object.addProperty("fireTimer", this.fireTimer);
-            object.addProperty("fireMode", this.fireMode.getId().toString());
+//            object.addProperty("fireMode", this.fireMode.getId().toString());
             object.addProperty("gripType", this.gripType.getId().toString());
             object.addProperty("reloadType", this.reloadType.toString());
             object.addProperty("maxAmmo", this.maxAmmo);
@@ -299,7 +298,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         /**
          * @return The type of grip this weapon uses
          */
-        public FireMode getFireMode() {
+        public ArrayList<FireMode> getFireModes() {
             return this.fireMode;
         }
 

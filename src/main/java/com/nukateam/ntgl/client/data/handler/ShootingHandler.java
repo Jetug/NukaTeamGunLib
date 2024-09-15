@@ -263,7 +263,7 @@ public class ShootingHandler {
         var gun = gunItem.getModifiedGun(heldItem);
         var key = arm == HumanoidArm.RIGHT ? mc.options.keyAttack : mc.options.keyUse;
         var data = shootingData.get(arm);
-        var fireMode =  GunModifierHelper.getFireMode(heldItem);
+        var fireMode =  GunModifierHelper.getFireModes(heldItem);
 
         if (gun.getGeneral().getFireTimer() != 0) {
             var isOnCooldown = ShootingHandler.get().isOnCooldown(player, arm);
@@ -275,7 +275,7 @@ public class ShootingHandler {
                 data.fireTimer--;
             } else {
                 this.fire(player, heldItem);
-//                    if (gun.getGeneral().getFireMode() == FireMode.SEMI_AUTO || gun.getGeneral().getFireMode() == FireMode.PULSE) {
+//                    if (gun.getGeneral().getFireModes() == FireMode.SEMI_AUTO || gun.getGeneral().getFireModes() == FireMode.PULSE) {
                 if (gun.getGeneral().getFireTimer() > 0) {
                     if(fireMode != FireMode.AUTO)
                         key.setDown(false);

@@ -88,7 +88,7 @@ public class ClientHandler {
                 return stack.getTag().getInt("Color");
             }
             if (index == 0 && stack.getItem() instanceof IAttachment) {
-                ItemStack renderingWeapon = GunRenderingHandler.get().getRenderingWeapon();
+                var renderingWeapon = GunRenderingHandler.get().getRenderingWeapon();
                 if (renderingWeapon != null) {
                     return Minecraft.getInstance().getItemColors().getColor(renderingWeapon, index);
                 }

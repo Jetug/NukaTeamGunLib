@@ -26,7 +26,7 @@ public class GunEventBus {
             var gun = gunItem.getModifiedGun(heldItem);
 
 //            var tracker = ShootingHandler.get().getCooldownPercent();
-//            if (tracker.isOnCooldown(heldItem.getItem()) && gun.getGeneral().getFireMode() == FireMode.PULSE) {
+//            if (tracker.isOnCooldown(heldItem.getItem()) && gun.getGeneral().getFireModes() == FireMode.PULSE) {
 //                event.setCanceled(true);
 //            }
 

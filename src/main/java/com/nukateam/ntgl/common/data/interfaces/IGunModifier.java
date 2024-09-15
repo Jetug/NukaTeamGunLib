@@ -3,9 +3,10 @@ package com.nukateam.ntgl.common.data.interfaces;
 import com.nukateam.ntgl.common.base.GunModifiers;
 import com.nukateam.ntgl.common.base.gun.FireMode;
 import com.nukateam.ntgl.common.base.gun.GripType;
-import com.nukateam.ntgl.common.foundation.item.AmmoItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.ArrayList;
 
 /**
  * An interface that allows control over the behaviour of weapons through attachments.
@@ -201,7 +202,7 @@ public interface IGunModifier {
         return maxAmmo;
     }
 
-    default FireMode modifyFireMod(FireMode fireMode) {
+    default ArrayList<FireMode> modifyFireModes(ArrayList<FireMode> fireMode) {
         return fireMode;
     }
 

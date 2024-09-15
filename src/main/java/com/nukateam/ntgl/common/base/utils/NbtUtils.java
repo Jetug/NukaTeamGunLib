@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.base.utils;
 
 import com.nukateam.ntgl.common.base.gun.AttachmentType;
+import com.nukateam.ntgl.common.base.gun.FireMode;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -30,6 +31,24 @@ public class NbtUtils {
         return array;
     }
 
+    public static CompoundTag serializeFireMode(ArrayList<FireMode> array){
+        var tag = new CompoundTag();
+        for (var i = 0; i < array.size(); i++){
+            tag.putString(String.valueOf(i), array.get(i).getId().toString());
+        }
+        return tag;
+    }
+
+    public static ArrayList<FireMode> deserializeFireMode(CompoundTag tag){
+        var array = new ArrayList<FireMode>();
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_COMPOUND)) {
+                array.add(FireMode.getType(ResourceLocation.tryParse(tag.getString(key))));
+            }
+        }
+
+        return array;
+    }
 
     public static <T extends INBTSerializable> CompoundTag serializeArray(ArrayList<T> array){
         var tag = new CompoundTag();

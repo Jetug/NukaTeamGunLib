@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -75,10 +74,15 @@ public class GunModifierHelper {
         return finalMaxAmmo.get();
     }
 
-    public static FireMode getFireMode(ItemStack weapon) {
-        var fireMod = getGun(weapon).getGeneral().getFireMode();
+    public static FireMode getCurrentFireMode(ItemStack weapon) {
+
+    }
+
+
+    public static ArrayList<FireMode> getFireModes(ItemStack weapon) {
+        var fireMod = getGun(weapon).getGeneral().getFireModes();
         var finalFireMode = new AtomicReference<>(fireMod);
-        forEachAttachment(weapon, (modifier -> finalFireMode.set(modifier.modifyFireMod(finalFireMode.get()))));
+        forEachAttachment(weapon, (modifier -> finalFireMode.set(modifier.modifyFireModes(finalFireMode.get()))));
         return finalFireMode.get();
     }
 
