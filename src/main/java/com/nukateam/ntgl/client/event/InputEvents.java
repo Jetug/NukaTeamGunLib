@@ -30,16 +30,7 @@ public class InputEvents {
         if(event.getAction() == GLFW.GLFW_RELEASE){
             if(event.getKey() == KEY_FIRE_SELECT.getKey().getValue()){
                 PacketHandler.getPlayChannel().sendToServer(new S2CMessageSwitchFireMode(true));
-                var player = Minecraft.getInstance().player;
-                player.level().playSound(null,
-                        player.getX(),
-                        player.getY() + 1.0,
-                        player.getZ(),
-                        ModSounds.UI_WEAPON_ATTACH.get(),
-                        SoundSource.PLAYERS, 0.5F,
-                        0.75F);
             }
-
         }
 
         if(event.getAction() == GLFW.GLFW_PRESS || event.getAction() == GLFW.GLFW_REPEAT){
