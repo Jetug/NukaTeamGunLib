@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
  */
 public class GunModifierHelper {
     private static final IGunModifier[] EMPTY = {};
+    public static final String FIRE_MODE = "FireMode";
 
     public static boolean isOneHanded(ItemStack itemStack){
         var gunItem = (GunItem)itemStack.getItem();
@@ -74,10 +76,35 @@ public class GunModifierHelper {
         return finalMaxAmmo.get();
     }
 
-    public static FireMode getCurrentFireMode(ItemStack weapon) {
+    public static void switchFireMode(ItemStack weapon){
+        var fireModes = getFireModes(weapon);
+        var current = getCurrentFireMode(weapon);
 
+        fireModes.indexOf(current);
+
+//        for (var i = 0; i < fireModes.size(); i++){
+//            fireModes.get(i) == current;
+//        }
     }
 
+    public static void setCurrentFireMode(ItemStack weapon, FireMode fireMode) {
+        var tag = weapon.getOrCreateTag();
+        tag.putString(FIRE_MODE, fireMode.toString());
+    }
+
+    public static FireMode getCurrentFireMode(ItemStack weapon) {
+        var tag = weapon.getOrCreateTag();
+        if (!tag.contains(FIRE_MODE, Tag.TAG_STRING)) {
+            var fireMode = getFireModes(weapon).get(0);
+            setCurrentFireMode(weapon, fireMode);
+            return fireMode;
+        }
+        return FireMode.getType(tag.getString(FIRE_MODE));
+    }
+
+    public static boolean isAuto(ItemStack itemStack) {
+        return getCurrentFireMode(itemStack) == FireMode.AUTO;
+    }
 
     public static ArrayList<FireMode> getFireModes(ItemStack weapon) {
         var fireMod = getGun(weapon).getGeneral().getFireModes();

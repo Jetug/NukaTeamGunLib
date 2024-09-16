@@ -303,13 +303,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
 
         /**
-         * @return If this gun is automatic or not
-         */
-        public boolean isAuto() {
-            return this.fireMode == FireMode.AUTO;
-        }
-
-        /**
          * @return If this gun need a full charge to fire
          */
         public boolean isFullCharge() {

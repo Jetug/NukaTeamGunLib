@@ -9,25 +9,17 @@ import java.util.Map;
 /**
  * Author: MigaMi
  */
-public class FireMode {
-    /**
-     * A fire mode that shoots once per trigger press
-     */
+public class FireMode extends BaseType {
+    /** A fire mode that shoots once per trigger press*/
     public static final FireMode SEMI_AUTO = new FireMode(new ResourceLocation(Ntgl.MOD_ID, "semi"));
 
-    /**
-     * A fire mode that shoots as long as the trigger is held down
-     */
+    /** A fire mode that shoots as long as the trigger is held down*/
     public static final FireMode AUTO = new FireMode(new ResourceLocation(Ntgl.MOD_ID, "auto"));
 
-    /**
-     * A fire mode that shoots in bursts
-     */
+    /** A fire mode that shoots in bursts*/
     public static final FireMode BURST = new FireMode(new ResourceLocation(Ntgl.MOD_ID, "burst"));
 
-    /**
-     * The fire mode map.
-     */
+    /** The fire mode map.*/
     private static final Map<ResourceLocation, FireMode> fireModeMap = new HashMap<>();
 
     static {
@@ -35,6 +27,15 @@ public class FireMode {
         registerType(SEMI_AUTO);
         registerType(AUTO);
         registerType(BURST);
+    }
+
+    /**
+     * Creates a new fire mode.
+     *
+     * @param id the id of the fire mode
+     */
+    public FireMode(ResourceLocation id) {
+        super(id);
     }
 
     /**
@@ -57,22 +58,7 @@ public class FireMode {
         return fireModeMap.getOrDefault(id, SEMI_AUTO);
     }
 
-    private final ResourceLocation id;
-
-    /**
-     * Creates a new fire mode.
-     *
-     * @param id the id of the fire mode
-     */
-    public FireMode(ResourceLocation id) {
-        this.id = id;
+    public static FireMode getType(String id) {
+        return getType(ResourceLocation.tryParse(id));
     }
-
-    /**
-     * Gets the id of the fire mode
-     */
-    public ResourceLocation getId() {
-        return this.id;
-    }
-
 }

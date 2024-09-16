@@ -196,8 +196,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         if (enchantment.category == EnchantmentTypes.SEMI_AUTO_GUN) {
-            var modifiedGun = this.getModifiedGun(stack);
-            return !modifiedGun.getGeneral().isAuto();
+            return GunModifierHelper.isAuto(stack);
         }
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }

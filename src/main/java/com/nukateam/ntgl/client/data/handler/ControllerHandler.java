@@ -7,6 +7,7 @@ import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.screen.WorkbenchScreen;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
@@ -156,8 +157,7 @@ public class ControllerHandler {
         if (controller.isButtonPressed(GunButtonBindings.SHOOT.getButton()) && Minecraft.getInstance().screen == null) {
             ItemStack heldItem = player.getMainHandItem();
             if (heldItem.getItem() instanceof GunItem) {
-                Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
-                if (gun.getGeneral().isAuto()) {
+                if (GunModifierHelper.isAuto(heldItem)) {
                     ShootingHandler.get().fire(player, heldItem);
                 }
             }

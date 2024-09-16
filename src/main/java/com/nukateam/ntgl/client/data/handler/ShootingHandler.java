@@ -263,7 +263,7 @@ public class ShootingHandler {
         var gun = gunItem.getModifiedGun(heldItem);
         var key = arm == HumanoidArm.RIGHT ? mc.options.keyAttack : mc.options.keyUse;
         var data = shootingData.get(arm);
-        var fireMode =  GunModifierHelper.getFireModes(heldItem);
+        var fireMode =  GunModifierHelper.getCurrentFireMode(heldItem);
 
         if (gun.getGeneral().getFireTimer() != 0) {
             var isOnCooldown = ShootingHandler.get().isOnCooldown(player, arm);
