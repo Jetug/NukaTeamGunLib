@@ -18,12 +18,14 @@ public class KeyBinds {
     public static final KeyMapping KEY_UNLOAD = new KeyMapping("key.ntgl.unload", GLFW.GLFW_KEY_U, "key.categories.ntgl");
     public static final KeyMapping KEY_ATTACHMENTS = new KeyMapping("key.ntgl.attachments", GLFW.GLFW_KEY_Z, "key.categories.ntgl");
     public static final KeyMapping KEY_INSPECT = new KeyMapping("key.ntgl.inspect", GLFW.GLFW_KEY_I, "key.categories.ntgl");
+    public static final KeyMapping KEY_FIRE_SELECT = new KeyMapping("key.ntgl.fire_select", GLFW.GLFW_KEY_B, "key.categories.ntgl");
 
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(KEY_RELOAD);
         event.register(KEY_UNLOAD);
         event.register(KEY_ATTACHMENTS);
         event.register(KEY_INSPECT);
+        event.register(KEY_FIRE_SELECT);
     }
 
     public static KeyMapping getAimMapping() {

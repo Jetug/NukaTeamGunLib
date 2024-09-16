@@ -116,8 +116,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public static final String SPREAD = "Spread";
         public static final String CATEGORY = "category";
 
-        @Ignored
-        private ArrayList<FireMode> fireMode = new ArrayList(Arrays.asList(FireMode.SEMI_AUTO));
+        @Optional
+        private ArrayList<FireMode> fireMode = new ArrayList<>(List.of(FireMode.SEMI_AUTO));
         @Optional
         private boolean fullCharge = false;
         private int rate;
@@ -299,6 +299,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
          * @return The type of grip this weapon uses
          */
         public ArrayList<FireMode> getFireModes() {
+//            if(fireMode == null || fireMode.isEmpty())
+//                fireMode = new ArrayList<>(List.of(FireMode.SEMI_AUTO));
             return this.fireMode;
         }
 
@@ -432,7 +434,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static class Projectile implements INBTSerializable<CompoundTag> {
-        private ResourceLocation item = new ResourceLocation(Ntgl.MOD_ID, "basic_ammo");
+        private ResourceLocation item = new ResourceLocation(Ntgl.MOD_ID, "round10mm");
         @Optional
         private boolean visible;
         private float damage;

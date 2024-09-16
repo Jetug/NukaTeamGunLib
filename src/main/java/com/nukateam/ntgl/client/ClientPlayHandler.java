@@ -7,9 +7,12 @@ import com.nukateam.ntgl.client.data.handler.BulletTrailRenderingHandler;
 import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.ModParticleTypes;
+import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
+import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.particles.BulletHoleData;
 import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
@@ -26,6 +29,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -200,6 +204,19 @@ public class ClientPlayHandler {
                     ModSyncedDataKeys.RELOADING_RIGHT : ModSyncedDataKeys.RELOADING_LEFT;
 
             ClientReloadHandler.get().setReloading(!dataKey.getValue(player), arm);
+        }
+    }
+
+    public static void handleFireModeSwitch(S2CMessageSwitchFireMode message) {
+        var player = Minecraft.getInstance().player;
+        if (player != null && !player.isSpectator()) {
+            var arm = message.isRightHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+            var stack = player.getItemInHand(arm);
+            if(stack.getItem() instanceof GunItem){
+                GunModifierHelper.switchFireMode(stack);
+            }
+
+            player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
         }
     }
 }

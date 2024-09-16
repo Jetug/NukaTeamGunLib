@@ -1,6 +1,5 @@
 {
   "general": {
-    "auto": true,
     "rate": 1,
     "gripType": "ntgl:mini_gun",
     "category": "heavy",

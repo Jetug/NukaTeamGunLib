@@ -13,8 +13,7 @@
     "alwaysSpread": true,
     "spread": 1.0
   },
-  "projectile": [
-    {
+  "projectile": {
     "item": "ntgl:round10mm",
     "visible": true,
     "magazineMode" : false,
@@ -23,8 +22,7 @@
     "speed": 300,
     "life": 7,
     "type": "ballistic"
-  }
-  ],
+  },
   "sounds": {
     "fire": "ntgl:item.pistol10mm.fire",
     "reload": "ntgl:item.pistol10mm.reload",

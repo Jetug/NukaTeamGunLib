@@ -173,5 +173,6 @@
   "key.open_map": "Open map",
   "item.ntgl.acid_bucket": "Acid Bucket",
   "gui.ntgl.marker.tomb": "Here lies %s",
-  "key.ntgl.inspect": "Inspect"
+  "key.ntgl.inspect": "Inspect",
+  "key.ntgl.fire_select": "Fire Select"
 }

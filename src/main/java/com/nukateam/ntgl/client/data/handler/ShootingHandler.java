@@ -42,7 +42,6 @@ import static net.minecraftforge.event.TickEvent.Type.RENDER;
  */
 public class ShootingHandler {
     private static ShootingHandler instance;
-    public static final String COOLDOWN = "Cooldown";
     public static float shootMsGap = 0F;
 
     private final HashMap<Pair<HumanoidArm, LivingEntity>, Integer> entityShootGaps = new HashMap<>();
@@ -287,13 +286,6 @@ public class ShootingHandler {
                 key.setDown(false);
             }
         }
-    }
-
-    public static ArrayList<ItemStack> gunCooldown = new ArrayList<>();
-
-    public static int getCooldown(ItemStack itemStack) {
-        var tag =  itemStack.getOrCreateTag();
-        return tag.getInt(COOLDOWN);
     }
 
     private static float visualCooldownMultiplier() {

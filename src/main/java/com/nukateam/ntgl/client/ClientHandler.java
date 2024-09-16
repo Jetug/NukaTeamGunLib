@@ -39,9 +39,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-
-import static com.nukateam.ntgl.client.data.handler.ShootingHandler.gunCooldown;
 
 /**
  * Author: MrCrayfish
@@ -142,20 +139,8 @@ public class ClientHandler {
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
         if(event.phase == TickEvent.Phase.END) {
-            var remove = new ArrayList<ItemStack>();
-
-            if (inspectionTimer > 0) inspectionTimer--;
-
-            if (event.phase == TickEvent.Phase.START) {
-                for (var item : gunCooldown) {
-                    var tag = item.getOrCreateTag();
-                    var cool = tag.getInt("Cooldown");
-                    if (cool > 0)
-                        tag.putInt("Cooldown", --cool);
-                    else remove.add(item);
-                }
-                gunCooldown.removeAll(remove);
-            }
+            if (inspectionTimer > 0)
+                inspectionTimer--;
         }
     }
 

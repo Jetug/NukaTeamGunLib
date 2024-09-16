@@ -29,13 +29,12 @@ public class FireMode extends BaseType {
         registerType(BURST);
     }
 
-    /**
-     * Creates a new fire mode.
-     *
-     * @param id the id of the fire mode
-     */
     public FireMode(ResourceLocation id) {
         super(id);
+    }
+
+    public ResourceLocation getIcon() {
+        return new ResourceLocation(id.getNamespace(), "textures/gui/" + id.getPath());
     }
 
     /**
@@ -58,6 +57,13 @@ public class FireMode extends BaseType {
         return fireModeMap.getOrDefault(id, SEMI_AUTO);
     }
 
+    /**
+     * Gets the fire mode associated the the id. If the fire mode does not exist, it will default to
+     * one handed.
+     *
+     * @param id the id of the fire mode
+     * @return returns an get of the fire mode or SEMI_AUTO if it doesn't exist
+     */
     public static FireMode getType(String id) {
         return getType(ResourceLocation.tryParse(id));
     }

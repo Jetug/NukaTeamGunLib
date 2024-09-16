@@ -42,7 +42,7 @@ public class NbtUtils {
     public static ArrayList<FireMode> deserializeFireMode(CompoundTag tag){
         var array = new ArrayList<FireMode>();
         for (var key: tag.getAllKeys()) {
-            if(tag.contains(key, Tag.TAG_COMPOUND)) {
+            if(tag.contains(key, Tag.TAG_STRING)) {
                 array.add(FireMode.getType(ResourceLocation.tryParse(tag.getString(key))));
             }
         }

@@ -3,7 +3,6 @@
     "rate": 15,
     "gripType": "ntgl:one_handed",
     "reloadType": "ntgl:gun_reload",
-    "fireMode": "ntgl:semi",
     "fireTimer": 20,
     "loadingType": "magazine",
     "maxAmmo": 6,

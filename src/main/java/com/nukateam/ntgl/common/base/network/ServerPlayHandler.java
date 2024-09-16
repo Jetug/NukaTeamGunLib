@@ -27,7 +27,7 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessagePreFireSound;
 import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
 import com.nukateam.ntgl.common.network.message.S2CMessageBulletTrail;
-import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
+import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -187,10 +187,6 @@ public class ServerPlayHandler {
                         }
                     }
                 }
-
-                int rate = GunEnchantmentHelper.getRate(heldItem, modifiedGun);
-                rate = GunModifierHelper.getModifiedRate(heldItem, rate);
-                tag.putInt(COOLDOWN, rate);
 
                 if (shooter instanceof Player player)
                     player.awardStat(Stats.ITEM_USED.get(item));

@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -79,12 +80,13 @@ public class GunModifierHelper {
     public static void switchFireMode(ItemStack weapon){
         var fireModes = getFireModes(weapon);
         var current = getCurrentFireMode(weapon);
+        var i = fireModes.indexOf(current);
 
-        fireModes.indexOf(current);
+        if(i == fireModes.size() - 1)
+            i = 0;
+        else i++;
 
-//        for (var i = 0; i < fireModes.size(); i++){
-//            fireModes.get(i) == current;
-//        }
+        setCurrentFireMode(weapon, fireModes.get(i));
     }
 
     public static void setCurrentFireMode(ItemStack weapon, FireMode fireMode) {
@@ -107,8 +109,8 @@ public class GunModifierHelper {
     }
 
     public static ArrayList<FireMode> getFireModes(ItemStack weapon) {
-        var fireMod = getGun(weapon).getGeneral().getFireModes();
-        var finalFireMode = new AtomicReference<>(fireMod);
+        var fireMode = getGun(weapon).getGeneral().getFireModes();
+        var finalFireMode = new AtomicReference<>(fireMode);
         forEachAttachment(weapon, (modifier -> finalFireMode.set(modifier.modifyFireModes(finalFireMode.get()))));
         return finalFireMode.get();
     }
@@ -126,7 +128,6 @@ public class GunModifierHelper {
         forEachAttachment(weapon, (modifier -> ammoItem.set(modifier.modifyAmmoItem(ammoItem.get()))));
         return ammoItem.get();
     }
-
 
     public static int getReloadTime(ItemStack weapon) {
         var reloadTime = getGun(weapon).getGeneral().getReloadTime();

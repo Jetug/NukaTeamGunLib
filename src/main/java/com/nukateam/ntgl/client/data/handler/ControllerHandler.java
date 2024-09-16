@@ -155,7 +155,7 @@ public class ControllerHandler {
             return;
 
         if (controller.isButtonPressed(GunButtonBindings.SHOOT.getButton()) && Minecraft.getInstance().screen == null) {
-            ItemStack heldItem = player.getMainHandItem();
+            var heldItem = player.getMainHandItem();
             if (heldItem.getItem() instanceof GunItem) {
                 if (GunModifierHelper.isAuto(heldItem)) {
                     ShootingHandler.get().fire(player, heldItem);

@@ -27,6 +27,7 @@ public class PacketHandler {
                 .registerPlayMessage(C2SMessageShooting.class, MessageDirection.PLAY_SERVER_BOUND)
                 .registerPlayMessage(C2SRequestEntityData.class, MessageDirection.PLAY_SERVER_BOUND)
                 .registerPlayMessage(C2SMessagePreFireSound.class, MessageDirection.PLAY_SERVER_BOUND)
+                .registerPlayMessage(S2CMessageSwitchFireMode.class, MessageDirection.PLAY_SERVER_BOUND)
 
                 .registerPlayMessage(S2CMessageEntityData.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageReload.class, MessageDirection.PLAY_CLIENT_BOUND)
