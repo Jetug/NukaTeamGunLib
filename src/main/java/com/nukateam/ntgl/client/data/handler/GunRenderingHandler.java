@@ -406,9 +406,9 @@ public class GunRenderingHandler {
                 zOffset += 8 * 0.0625;
 
                 if(Ntgl.isDebugging()) {
-                    xOffset += X * 0.0625;
-                    yOffset += Y * 0.0625;
-                    zOffset += Z * 0.0625;
+                    xOffset += (double) X / 10 * 0.0625;
+                    yOffset += (double) Y / 10 * 0.0625;
+                    zOffset += (double) Z / 10 * 0.0625;
                 }
 
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */

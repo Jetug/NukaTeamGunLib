@@ -20,9 +20,9 @@ import static com.nukateam.ntgl.client.input.KeyBinds.KEY_FIRE_SELECT;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class InputEvents {
-    public static float X = 0;
-    public static float Y = 0;
-    public static float Z = 0;
+    public static int X = 0;
+    public static int Y = 0;
+    public static int Z = 0;
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
@@ -36,12 +36,12 @@ public class InputEvents {
         if(event.getAction() == GLFW.GLFW_PRESS || event.getAction() == GLFW.GLFW_REPEAT){
             if(Ntgl.isDebugging()) {
                 switch (event.getKey()) {
-                    case GLFW.GLFW_KEY_KP_1 -> X += 0.1f;
-                    case GLFW.GLFW_KEY_KP_2 -> Y += 0.1f;
-                    case GLFW.GLFW_KEY_KP_3 -> Z += 0.1f;
-                    case GLFW.GLFW_KEY_KP_4 -> X -= 0.1f;
-                    case GLFW.GLFW_KEY_KP_5 -> Y -= 0.1f;
-                    case GLFW.GLFW_KEY_KP_6 -> Z -= 0.1f;
+                    case GLFW.GLFW_KEY_KP_1 -> X += 1;
+                    case GLFW.GLFW_KEY_KP_2 -> Y += 1;
+                    case GLFW.GLFW_KEY_KP_3 -> Z += 1;
+                    case GLFW.GLFW_KEY_KP_4 -> X -= 1;
+                    case GLFW.GLFW_KEY_KP_5 -> Y -= 1;
+                    case GLFW.GLFW_KEY_KP_6 -> Z -= 1;
                     case GLFW.GLFW_KEY_KP_ENTER -> {
                         X = 0;
                         Y = 0;

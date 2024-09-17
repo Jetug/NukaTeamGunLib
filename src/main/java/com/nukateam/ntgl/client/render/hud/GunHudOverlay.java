@@ -30,11 +30,15 @@ public class GunHudOverlay implements IGuiOverlay {
 
     @Override
     public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
+        renderAmmoCounter(graphics, width, height);
+    }
+
+    private static void renderAmmoCounter(GuiGraphics graphics, int width, int height) {
         var mc = Minecraft.getInstance();
         var player = mc.player;
 
-        ItemStack stack = player.getMainHandItem();
-        if (!(stack.getItem() instanceof GunItem iGun)) {
+        var stack = player.getMainHandItem();
+        if (!(stack.getItem() instanceof GunItem)) {
             return;
         }
 
@@ -90,8 +94,8 @@ public class GunHudOverlay implements IGuiOverlay {
                 (int)(width - 68.5 + mc.font.width(currentAmmoCountText) * 1.5),
                 height - 38,
                 0, 0,
-                10, 10,
-                10, 10);
+                16, 16,
+                16, 16);
     }
 
     private static void handleCacheCount(LocalPlayer player, ItemStack stack) {

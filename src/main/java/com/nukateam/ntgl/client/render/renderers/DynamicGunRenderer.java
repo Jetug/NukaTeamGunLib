@@ -107,7 +107,7 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
                     {
                         poseStack.translate(0, 0, -length / 16D);
                         if (Ntgl.isDebugging())
-                            poseStack.translate(X / 16D, Y / 16D, Z / 16D);
+                            poseStack.translate((double) X / 10 / 16D, (double) Y / 10 / 16D, (double) Z / 10 / 16D);
                         super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource,
                                 buffer, isReRender, partialTick, packedLight, packedOverlay,
                                 red, green, blue, alpha);

@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.base.gun;
 
 import com.nukateam.ntgl.Ntgl;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class FireMode extends BaseType {
     }
 
     public ResourceLocation getIcon() {
-        return new ResourceLocation(id.getNamespace(), "textures/gui/" + id.getPath());
+        return new ResourceLocation(id.getNamespace(), "textures/hud/" + id.getPath());
     }
 
     /**
