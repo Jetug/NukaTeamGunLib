@@ -1544,7 +1544,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public static int getAmmo(ItemStack gunStack) {
         var tag = gunStack.getOrCreateTag();
-        return tag.getInt("AmmoCount");
+        return tag.getInt(Tags.AMMO_COUNT);
     }
 
     public static void setAmmo(ItemStack gunStack, int amount) {

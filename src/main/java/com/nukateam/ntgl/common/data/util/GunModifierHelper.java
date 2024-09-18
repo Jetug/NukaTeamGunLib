@@ -98,7 +98,7 @@ public class GunModifierHelper {
         var tag = weapon.getOrCreateTag();
         if (!tag.contains(FIRE_MODE, Tag.TAG_STRING)) {
             var fireMode = getFireModes(weapon).get(0);
-            setCurrentFireMode(weapon, fireMode);
+//            setCurrentFireMode(weapon, fireMode);
             return fireMode;
         }
         return FireMode.getType(tag.getString(FIRE_MODE));

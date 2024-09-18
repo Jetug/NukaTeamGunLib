@@ -20,14 +20,18 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.text.DecimalFormat;
 
-public class GunHudOverlay implements IGuiOverlay {
+public class GunHud implements IGuiOverlay {
     private static final DecimalFormat CURRENT_AMMO_FORMAT = new DecimalFormat("000");
-    private static final DecimalFormat CURRENT_AMMO_FORMAT_PERCENT = new DecimalFormat("000%");
     private static final DecimalFormat INVENTORY_AMMO_FORMAT = new DecimalFormat("0000");
     public static final float COUNTER_SCALE = 0.9f;
+    public static final int LOW_AMMO_COLOR = 0xFF5555;
     private static long checkAmmoTimestamp = -1L;
     private static int cacheMaxAmmoCount = 0;
     private static int cacheInventoryAmmoCount = 0;
+
+    public static final IGuiOverlay AMMO_HUD = new GunHud();
+    public static int hudColor = 0xFFFFFF;
+
 
     @Override
     public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
@@ -45,7 +49,10 @@ public class GunHudOverlay implements IGuiOverlay {
             var x = 110;
             renderAmmoCounter(graphics, offhandItem, x, height);
         }
-//        renderAmmoCounter(graphics, offhandItem, width, height);
+    }
+
+    public static void setHudColor(int hudColor) {
+        GunHud.hudColor = hudColor;
     }
 
     private static void renderAmmoCounter(GuiGraphics graphics, ItemStack stack, int width, int height) {
@@ -55,8 +62,8 @@ public class GunHudOverlay implements IGuiOverlay {
         int ammoCountColor;
 
         if (ammoCount < (cacheMaxAmmoCount * 0.25))
-            ammoCountColor = 0xFF5555;
-        else ammoCountColor = 0xFFFFFF;
+            ammoCountColor = LOW_AMMO_COLOR;
+        else ammoCountColor = hudColor;
 
         var currentAmmoCountText = CURRENT_AMMO_FORMAT.format(ammoCount);
         handleCacheCount(player, stack);
@@ -112,7 +119,7 @@ public class GunHudOverlay implements IGuiOverlay {
 
         RenderSystem.setShaderColor(1, 1, 1, 1);
         graphics.blit(fireModeTexture,
-                (int)(width - 68.5 - 45  + font.width(currentAmmoCountText) * 1.5),
+                (int)(width - 113.5  + font.width(currentAmmoCountText) * 1.5),
                 height - 38,
                 0, 0,
                 16, 16,
