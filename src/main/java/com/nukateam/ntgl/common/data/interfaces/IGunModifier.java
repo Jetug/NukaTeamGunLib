@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * An interface that allows control over the behaviour of weapons through attachments.
@@ -202,7 +203,7 @@ public interface IGunModifier {
         return maxAmmo;
     }
 
-    default ArrayList<FireMode> modifyFireModes(ArrayList<FireMode> fireMode) {
+    default Set<FireMode> modifyFireModes(Set<FireMode> fireMode) {
         return fireMode;
     }
 

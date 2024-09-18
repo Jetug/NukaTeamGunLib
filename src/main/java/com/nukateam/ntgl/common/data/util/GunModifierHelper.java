@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -80,13 +81,14 @@ public class GunModifierHelper {
     public static void switchFireMode(ItemStack weapon){
         var fireModes = getFireModes(weapon);
         var current = getCurrentFireMode(weapon);
-        var i = fireModes.indexOf(current);
+        var buff = new ArrayList<>(fireModes.stream().toList());
+        var i = buff.indexOf(current);
 
-        if(i == fireModes.size() - 1)
+        if(i == buff.size() - 1)
             i = 0;
         else i++;
 
-        setCurrentFireMode(weapon, fireModes.get(i));
+        setCurrentFireMode(weapon, (FireMode)buff.get(i));
     }
 
     public static void setCurrentFireMode(ItemStack weapon, FireMode fireMode) {
@@ -97,7 +99,9 @@ public class GunModifierHelper {
     public static FireMode getCurrentFireMode(ItemStack weapon) {
         var tag = weapon.getOrCreateTag();
         if (!tag.contains(FIRE_MODE, Tag.TAG_STRING)) {
-            var fireMode = getFireModes(weapon).get(0);
+            var buff = new ArrayList<>(getFireModes(weapon).stream().toList());
+            var fireMode = (FireMode) buff.get(0);
+
 //            setCurrentFireMode(weapon, fireMode);
             return fireMode;
         }
@@ -108,7 +112,7 @@ public class GunModifierHelper {
         return getCurrentFireMode(itemStack) == FireMode.AUTO;
     }
 
-    public static ArrayList<FireMode> getFireModes(ItemStack weapon) {
+    public static Set<FireMode> getFireModes(ItemStack weapon) {
         var fireMode = getGun(weapon).getGeneral().getFireModes();
         var finalFireMode = new AtomicReference<>(fireMode);
         forEachAttachment(weapon, (modifier -> finalFireMode.set(modifier.modifyFireModes(finalFireMode.get()))));

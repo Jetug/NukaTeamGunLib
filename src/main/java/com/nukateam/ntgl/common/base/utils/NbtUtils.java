@@ -9,9 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.checkerframework.checker.units.qual.K;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class NbtUtils {
     public static CompoundTag serializeStringArray(ArrayList<String> array){
@@ -31,16 +29,21 @@ public class NbtUtils {
         return array;
     }
 
-    public static CompoundTag serializeFireMode(ArrayList<FireMode> array){
+    public static CompoundTag serializeFireMode(Set<FireMode> array){
         var tag = new CompoundTag();
-        for (var i = 0; i < array.size(); i++){
-            tag.putString(String.valueOf(i), array.get(i).getId().toString());
+        var iterator = array.iterator();
+        var i = 0;
+
+        while (iterator.hasNext()){
+            tag.putString(String.valueOf(i), iterator.next().getId().toString());
+            i++;
         }
+
         return tag;
     }
 
-    public static ArrayList<FireMode> deserializeFireMode(CompoundTag tag){
-        var array = new ArrayList<FireMode>();
+    public static Set<FireMode> deserializeFireMode(CompoundTag tag){
+        var array = new HashSet<FireMode>();
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_STRING)) {
                 array.add(FireMode.getType(ResourceLocation.tryParse(tag.getString(key))));

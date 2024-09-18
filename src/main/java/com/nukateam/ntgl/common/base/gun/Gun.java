@@ -117,7 +117,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public static final String CATEGORY = "category";
 
         @Optional
-        private ArrayList<FireMode> fireMode = new ArrayList<>(List.of(FireMode.SEMI_AUTO));
+        private Set<FireMode> fireMode = new HashSet<>(List.of(FireMode.SEMI_AUTO));
         @Optional
         private boolean fullCharge = false;
         private int rate;
@@ -298,7 +298,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         /**
          * @return The type of grip this weapon uses
          */
-        public ArrayList<FireMode> getFireModes() {
+        public Set<FireMode> getFireModes() {
 //            if(fireMode == null || fireMode.isEmpty())
 //                fireMode = new ArrayList<>(List.of(FireMode.SEMI_AUTO));
             return this.fireMode;
