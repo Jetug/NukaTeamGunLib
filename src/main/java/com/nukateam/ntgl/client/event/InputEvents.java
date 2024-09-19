@@ -1,13 +1,11 @@
 package com.nukateam.ntgl.client.event;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.foundation.init.ModSounds;
+import com.nukateam.ntgl.common.foundation.item.MagazineItem;
+import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SMessageAim;
-import com.nukateam.ntgl.common.network.message.S2CMessageSwitchFireMode;
-import mod.azure.azurelib.core.math.functions.limit.Min;
+import com.nukateam.ntgl.common.network.message.S2CMessageHandAction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -16,7 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import static com.nukateam.ntgl.client.input.KeyBinds.KEY_FIRE_SELECT;
+import static com.nukateam.ntgl.client.input.KeyBinds.*;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class InputEvents {
@@ -27,9 +25,14 @@ public class InputEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
     public static void onKeyInput(InputEvent.@NotNull Key event) {
+        var minecraft = Minecraft.getInstance();
+        var shiftDown = minecraft.options.keyShift.isDown();
         if(event.getAction() == GLFW.GLFW_RELEASE){
             if(event.getKey() == KEY_FIRE_SELECT.getKey().getValue()){
-                PacketHandler.getPlayChannel().sendToServer(new S2CMessageSwitchFireMode(true));
+                PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(!shiftDown, HandAction.SWITCH_FIRE_MODE));
+            }
+            else if(event.getKey() == KEY_AMMO_SELECT.getKey().getValue()){
+                PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(!shiftDown, HandAction.SWITCH_AMMO));
             }
         }
 

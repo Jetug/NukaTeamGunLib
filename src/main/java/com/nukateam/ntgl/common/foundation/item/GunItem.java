@@ -132,7 +132,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
             }
         }
 
-        float damage = modifiedGun.getProjectile().getDamage();
+        float damage = GunModifierHelper.getCurrentProjectile(stack).getDamage();
         damage = GunModifierHelper.getModifiedProjectileDamage(stack, damage);
         damage = GunEnchantmentHelper.getAcceleratorDamage(stack, damage);
         tooltip.add(Component.translatable("info.ntgl.damage",

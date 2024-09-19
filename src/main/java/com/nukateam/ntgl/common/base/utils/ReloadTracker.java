@@ -138,7 +138,7 @@ public class ReloadTracker {
     }
 
     private void reloadMagazine(LivingEntity player) {
-        if(this.gun.getProjectile().isMagazineMode()){
+        if(GunModifierHelper.getCurrentProjectile(stack).isMagazineMode()){
             addMagazine(player);
         }
         else{

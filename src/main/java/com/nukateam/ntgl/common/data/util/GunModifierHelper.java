@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.foundation.item.AmmoItem;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import net.minecraft.nbt.Tag;
@@ -15,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -81,14 +81,8 @@ public class GunModifierHelper {
     public static void switchFireMode(ItemStack weapon){
         var fireModes = getFireModes(weapon);
         var current = getCurrentFireMode(weapon);
-        var buff = new ArrayList<>(fireModes.stream().toList());
-        var i = buff.indexOf(current);
-
-        if(i == buff.size() - 1)
-            i = 0;
-        else i++;
-
-        setCurrentFireMode(weapon, (FireMode)buff.get(i));
+        var newFireMode = cycleSet(fireModes, current);
+        setCurrentFireMode(weapon, newFireMode);
     }
 
     public static void setCurrentFireMode(ItemStack weapon, FireMode fireMode) {
@@ -126,11 +120,47 @@ public class GunModifierHelper {
         return finalGripType.get();
     }
 
+    public static void switchAmmo(ItemStack weapon){
+        var ammoItems = getAmmoItems(weapon);
+        var current = getAmmoItem(weapon);
+        var newAmmo = cycleSet(ammoItems, current);
+
+        setCurrentAmmo(weapon, newAmmo);
+    }
+
+    public static void setCurrentAmmo(ItemStack weapon, ResourceLocation ammo) {
+        var tag = weapon.getOrCreateTag();
+        tag.putString("Ammo", ammo.toString());
+
+    }
+
     public static ResourceLocation getAmmoItem(ItemStack weapon) {
-        var id = getGun(weapon).getProjectile().getItem();
-        var ammoItem = new AtomicReference<>(id);
-        forEachAttachment(weapon, (modifier -> ammoItem.set(modifier.modifyAmmoItem(ammoItem.get()))));
+        var tag = weapon.getOrCreateTag();
+        if (tag.contains("Ammo", Tag.TAG_STRING)) {
+            return ResourceLocation.tryParse(tag.getString("Ammo"));
+        }
+        return getFirstAmmoItem(weapon);
+    }
+
+    public static Gun.Projectile getCurrentProjectile(ItemStack weapon) {
+        var gun = getGun(weapon);
+        var item = getAmmoItem(weapon);
+        return gun.getProjectile().get(item);
+    }
+
+    public static Set<ResourceLocation> getAmmoItems(ItemStack weapon) {
+        var items = getGun(weapon).getProjectile().keySet();
+        var ammoItem = new AtomicReference<>(items);
+        forEachAttachment(weapon, (modifier -> ammoItem.set(modifier.modifyAmmoItems(ammoItem.get()))));
         return ammoItem.get();
+    }
+
+    public static ResourceLocation getFirstAmmoItem(ItemStack weapon) {
+        var items = getAmmoItems(weapon);
+        return items.iterator().next();
+//        var ammoItem = new AtomicReference<>(id);
+//        forEachAttachment(weapon, (modifier -> ammoItem.set(modifier.modifyAmmoItem(ammoItem.get()))));
+//        return ammoItem.get();
     }
 
     public static int getReloadTime(ItemStack weapon) {
@@ -277,5 +307,16 @@ public class GunModifierHelper {
                 consumer.accept(modifier);
             }
         }
+    }
+
+    private static <T> T cycleSet(Set<T> set, T value) {
+        var buff = new ArrayList<>(set.stream().toList());
+        var i = buff.indexOf(value);
+
+        if(i == set.size() - 1)
+            i = 0;
+        else i++;
+
+        return buff.get(i);
     }
 }

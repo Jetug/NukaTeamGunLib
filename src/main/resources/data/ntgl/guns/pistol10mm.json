@@ -14,14 +14,26 @@
     "spread": 1.0
   },
   "projectile": {
-    "item": "ntgl:round10mm",
-    "visible": true,
-    "magazineMode" : false,
-    "damage": 9.0,
-    "size": 0.2,
-    "speed": 300,
-    "life": 7,
-    "type": "ballistic"
+    "ntgl:round10mm": {
+      "item": "ntgl:round10mm",
+      "visible": true,
+      "magazineMode": false,
+      "damage": 9.0,
+      "size": 0.2,
+      "speed": 300,
+      "life": 7,
+      "type": "ballistic"
+    },
+    "ntgl:round45": {
+      "item": "ntgl:round10mm",
+      "visible": true,
+      "magazineMode": false,
+      "damage": 9.0,
+      "size": 0.2,
+      "speed": 300,
+      "life": 7,
+      "type": "ballistic"
+    }
   },
   "sounds": {
     "fire": "ntgl:item.pistol10mm.fire",

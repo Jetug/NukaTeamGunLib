@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
-import org.checkerframework.checker.units.qual.K;
 
 import java.util.*;
 
@@ -75,7 +74,34 @@ public class NbtUtils {
     }
 
 
-    public static <K, R extends INBTSerializable, T extends ArrayList<R>> CompoundTag serializeMap(Map<K, T> map){
+    public static <K, R extends INBTSerializable> CompoundTag serializeMap(Map<K, R> map){
+        var tag = new CompoundTag();
+
+        for (var key: map.keySet()) {
+            tag.put(key.toString(), map.get(key).serializeNBT());
+        }
+
+        return tag;
+    }
+
+    public static Map<ResourceLocation, Gun.Projectile> deserializeProjectileMap(CompoundTag tag){
+        var map = new HashMap<ResourceLocation, Gun.Projectile>();
+
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_COMPOUND)) {
+                var projectile = new Gun.Projectile();
+                var resource = ResourceLocation.tryParse(key);
+
+                projectile.deserializeNBT(tag.getCompound(key));
+                map.put(resource, projectile);
+            }
+        }
+
+        return map;
+    }
+
+
+    public static <K, R extends INBTSerializable, T extends ArrayList<R>> CompoundTag serializeArrayMap(Map<K, T> map){
         var tag = new CompoundTag();
 
         for (var key: map.keySet()) {
@@ -87,6 +113,7 @@ public class NbtUtils {
 
     public static Map<AttachmentType, ArrayList<Gun.Modules.Attachment>> deserializeAttachmentMap(CompoundTag tag){
         var array = new HashMap<AttachmentType, ArrayList<Gun.Modules.Attachment>>();
+
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {
                 array.put(AttachmentType.getType(key), deserializeArray(tag.getCompound(key)));

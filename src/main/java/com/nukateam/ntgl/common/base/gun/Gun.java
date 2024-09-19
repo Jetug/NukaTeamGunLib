@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.base.gun;
 
+import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
@@ -46,12 +47,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.client.ClientHandler.*;
+import static com.nukateam.ntgl.common.base.utils.NbtUtils.deserializeProjectileMap;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
     protected General general = new General();
-    protected Projectile projectile = new Projectile();
-    //    private Reloads reloads = new Reloads();
+    protected Map<ResourceLocation, Projectile> projectile = new HashMap<>(){{
+        put(new ResourceLocation("ntgl:round10mm"), new Projectile());
+    }};
     protected Sounds sounds = new Sounds();
     protected Display display = new Display();
     protected Modules modules = new Modules();
@@ -60,7 +63,18 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.general;
     }
 
-    public Projectile getProjectile() {
+//    public Projectile getProjectile() {
+//        return this.projectile;
+//    }
+
+    public static Map.Entry<ResourceLocation, Projectile> getFirst(Map<ResourceLocation, Projectile> map){
+        for (var v: map.entrySet()) {
+            return v;
+        }
+        return null;
+    }
+
+    public Map<ResourceLocation, Projectile> getProjectile() {
         return this.projectile;
     }
 
@@ -343,7 +357,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (gunStack != null && gunStack.getItem() instanceof GunItem gunItem) {
                 var gun = gunItem.getModifiedGun(gunStack);
 
-                if (gun.getProjectile().isMagazineMode()) {
+                if (GunModifierHelper.getCurrentProjectile(gunStack).isMagazineMode()) {
                     var id = GunModifierHelper.getAmmoItem(gunStack);
                     var item = ForgeRegistries.ITEMS.getValue(id);
 
@@ -934,7 +948,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 tag.put("Zoom", this.zoom.serializeNBT());
 
             if( attachments != null && !attachments.isEmpty())
-                tag.put("Attachments", NbtUtils.serializeMap(attachments));
+                tag.put("Attachments", NbtUtils.serializeArrayMap(attachments));
 
             return tag;
         }
@@ -963,7 +977,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         public Modules copy() {
             Modules modules = new Modules();
-            modules.attachments = this.attachments;
+            modules.attachments = new HashMap<>(this.attachments);
             if (this.zoom != null) {
                 modules.zoom = this.zoom.copy();
             }
@@ -1293,7 +1307,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.put("General", this.general.serializeNBT());
-        tag.put("Projectile", this.projectile.serializeNBT());
+        tag.put("Projectile", NbtUtils.serializeMap(projectile));
         tag.put("Sounds", this.sounds.serializeNBT());
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
@@ -1306,7 +1320,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             this.general.deserializeNBT(tag.getCompound("General"));
         }
         if (tag.contains("Projectile", Tag.TAG_COMPOUND)) {
-            this.projectile.deserializeNBT(tag.getCompound("Projectile"));
+            deserializeProjectileMap(tag.getCompound("Projectile"));
         }
         if (tag.contains("Sounds", Tag.TAG_COMPOUND)) {
             this.sounds.deserializeNBT(tag.getCompound("Sounds"));
@@ -1322,7 +1336,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public JsonObject toJsonObject() {
         JsonObject object = new JsonObject();
         object.add("general", this.general.toJsonObject());
-        object.add("projectile", this.projectile.toJsonObject());
+//        object.add("projectile", this.projectile.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "sounds", this.sounds.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modules", this.modules.toJsonObject());
@@ -1338,7 +1352,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public Gun copy() {
         Gun gun = new Gun();
         gun.general = this.general.copy();
-        gun.projectile = this.projectile.copy();
+        gun.projectile = new HashMap<>(this.projectile);
         gun.sounds = this.sounds.copy();
         gun.display = this.display.copy();
         gun.modules = this.modules.copy();
@@ -1680,58 +1694,63 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this;
         }
 
-        public Builder setAmmo(Item item) {
-            this.gun.projectile.item = ForgeRegistries.ITEMS.getKey(item);
+        public Builder addProjectile(ResourceLocation id){
+            this.gun.projectile.put(id, new Projectile());
             return this;
         }
 
-        public Builder setProjectileVisible(boolean visible) {
-            this.gun.projectile.visible = visible;
+        public Builder setAmmo(ResourceLocation id, Item item) {
+            this.gun.projectile.get(id).item = ForgeRegistries.ITEMS.getKey(item);
             return this;
         }
 
-        public Builder setProjectileSize(float size) {
-            this.gun.projectile.size = size;
+        public Builder setProjectileVisible(ResourceLocation id, boolean visible) {
+            this.gun.projectile.get(id).visible = visible;
             return this;
         }
 
-        public Builder setProjectileSpeed(double speed) {
-            this.gun.projectile.speed = speed;
+        public Builder setProjectileSize(ResourceLocation id, float size) {
+            this.gun.projectile.get(id).size = size;
             return this;
         }
 
-        public Builder setProjectileLife(int life) {
-            this.gun.projectile.life = life;
+        public Builder setProjectileSpeed(ResourceLocation id, double speed) {
+            this.gun.projectile.get(id).speed = speed;
             return this;
         }
 
-        public Builder setProjectileAffectedByGravity(boolean gravity) {
-            this.gun.projectile.gravity = gravity;
+        public Builder setProjectileLife(ResourceLocation id, int life) {
+            this.gun.projectile.get(id).life = life;
             return this;
         }
 
-        public Builder setProjectileTrailColor(int trailColor) {
-            this.gun.projectile.trailColor = trailColor;
+        public Builder setProjectileAffectedByGravity(ResourceLocation id, boolean gravity) {
+            this.gun.projectile.get(id).gravity = gravity;
             return this;
         }
 
-        public Builder setProjectileTrailLengthMultiplier(int trailLengthMultiplier) {
-            this.gun.projectile.trailLengthMultiplier = trailLengthMultiplier;
+        public Builder setProjectileTrailColor(ResourceLocation id, int trailColor) {
+            this.gun.projectile.get(id).trailColor = trailColor;
             return this;
         }
 
-        public Builder setDamage(float damage) {
-            this.gun.projectile.damage = damage;
+        public Builder setProjectileTrailLengthMultiplier(ResourceLocation id, int trailLengthMultiplier) {
+            this.gun.projectile.get(id).trailLengthMultiplier = trailLengthMultiplier;
             return this;
         }
 
-        public Builder setReduceDamageOverLife(boolean damageReduceOverLife) {
-            this.gun.projectile.damageReduceOverLife = damageReduceOverLife;
+        public Builder setDamage(ResourceLocation id, float damage) {
+            this.gun.projectile.get(id).damage = damage;
             return this;
         }
 
-        public Builder setMagazineMode(boolean magazineMode) {
-            this.gun.projectile.magazineMode = magazineMode;
+        public Builder setReduceDamageOverLife(ResourceLocation id, boolean damageReduceOverLife) {
+            this.gun.projectile.get(id).damageReduceOverLife = damageReduceOverLife;
+            return this;
+        }
+
+        public Builder setMagazineMode(ResourceLocation id, boolean magazineMode) {
+            this.gun.projectile.get(id).magazineMode = magazineMode;
             return this;
         }
 

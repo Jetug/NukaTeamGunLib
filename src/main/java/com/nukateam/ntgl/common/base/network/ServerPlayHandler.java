@@ -122,7 +122,7 @@ public class ServerPlayHandler {
                 }
 
                 var count = modifiedGun.getGeneral().getProjectileAmount();
-                var projectileProps = modifiedGun.getProjectile();
+                var projectileProps = GunModifierHelper.getCurrentProjectile(heldItem);
                 var spawnedProjectiles = new ProjectileEntity[count];
 
                 for (int i = 0; i < count; i++) {
@@ -284,7 +284,7 @@ public class ServerPlayHandler {
         if (!(stack.getItem() instanceof GunItem gunItem)) return;
         var gun = gunItem.getModifiedGun(stack);
 
-        if (gun.getProjectile().isMagazineMode())
+        if (GunModifierHelper.getCurrentProjectile(stack).isMagazineMode())
             unloadMagazine(player, stack);
         else unloadAmmo(player, stack);
     }

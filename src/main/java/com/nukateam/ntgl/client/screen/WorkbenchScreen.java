@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.world.item.ItemDisplayContext;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
@@ -158,13 +159,14 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
     }
 
     private boolean isAmmo(ItemStack stack) {
-        if (stack.getItem() instanceof IAmmo) {
+        if (stack.getItem() instanceof IAmmo)
             return true;
-        }
-        ResourceLocation id = ForgeRegistries.ITEMS.getKey(stack.getItem());
+
+        var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
         Objects.requireNonNull(id);
-        for (GunItem gunItem : NetworkGunManager.getClientRegisteredGuns()) {
-            if (id.equals(gunItem.getModifiedGun(stack).getProjectile().getItem())) {
+
+        for (var gunItem : NetworkGunManager.getClientRegisteredGuns()) {
+            if (id.equals(GunModifierHelper.getFirstAmmoItem(stack))) {
                 return true;
             }
         }

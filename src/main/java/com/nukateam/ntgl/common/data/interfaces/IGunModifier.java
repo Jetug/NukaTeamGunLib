@@ -211,7 +211,7 @@ public interface IGunModifier {
         return gripType;
     }
 
-    default ResourceLocation modifyAmmoItem(ResourceLocation item) {
+    default Set<ResourceLocation> modifyAmmoItems(Set<ResourceLocation> item) {
         return item;
     }
 
