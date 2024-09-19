@@ -225,6 +225,7 @@ public class ClientPlayHandler {
         if (player != null && !player.isSpectator()) {
             var arm = message.isRightHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
             var stack = player.getItemInHand(arm);
+
             if(stack.getItem() instanceof GunItem){
                 GunModifierHelper.switchAmmo(stack);
             }

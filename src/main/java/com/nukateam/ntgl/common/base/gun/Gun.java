@@ -1508,7 +1508,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return getCreativeAmmoContext(id);
         }
         for (int i = 0; i < player.getInventory().getContainerSize(); ++i) {
-            ItemStack stack = player.getInventory().getItem(i);
+            var stack = player.getInventory().getItem(i);
             if (isAmmo(stack, id)) {
                 return new AmmoContext(stack, player.getInventory());
             }
