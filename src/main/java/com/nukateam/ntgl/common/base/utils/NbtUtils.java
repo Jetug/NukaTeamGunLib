@@ -77,8 +77,8 @@ public class NbtUtils {
     public static <K, R extends INBTSerializable> CompoundTag serializeMap(Map<K, R> map){
         var tag = new CompoundTag();
 
-        for (var key: map.keySet()) {
-            tag.put(key.toString(), map.get(key).serializeNBT());
+        for (var entry : map.entrySet()) {
+            tag.put(entry.getKey().toString(), entry.getValue().serializeNBT());
         }
 
         return tag;
@@ -99,7 +99,6 @@ public class NbtUtils {
 
         return map;
     }
-
 
     public static <K, R extends INBTSerializable, T extends ArrayList<R>> CompoundTag serializeArrayMap(Map<K, T> map){
         var tag = new CompoundTag();
