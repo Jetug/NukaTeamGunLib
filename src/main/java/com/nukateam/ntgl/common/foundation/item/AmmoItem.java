@@ -18,11 +18,8 @@ import java.util.List;
  * Author: MrCrayfish
  */
 public class AmmoItem extends Item implements IAmmo {
-    public final AmmoType ammoType;
-
-    public AmmoItem(Properties properties, AmmoType ammoType) {
+    public AmmoItem(Properties properties) {
         super(properties);
-        this.ammoType = ammoType;
     }
 
     @Override

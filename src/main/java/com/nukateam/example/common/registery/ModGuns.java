@@ -38,7 +38,7 @@ public class ModGuns {
 
     //Rounds
     public static final RegistryObject<Item> ROUND10MM = ITEMS.register("round10mm",
-            () -> new AmmoItem(new Item.Properties().durability(100), AmmoType.ROUND_10MM));
+            () -> new AmmoItem(new Item.Properties().durability(100)));
 
     public static final RegistryObject<Item> ROUND38 = registerAmmo("round38");
     public static final RegistryObject<Item> STEELBALLS = registerAmmo("steel_ball");
@@ -99,7 +99,7 @@ public class ModGuns {
     }
 
     public static RegistryObject<Item> registerAmmo(String name) {
-        return ITEMS.register(name, () -> new AmmoItem(new Item.Properties(), AmmoType.ROUND_10MM));
+        return ITEMS.register(name, () -> new AmmoItem(new Item.Properties()));
     }
 
     public static void register(IEventBus eventBus) {
