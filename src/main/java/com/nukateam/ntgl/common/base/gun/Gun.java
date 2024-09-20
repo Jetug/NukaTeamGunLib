@@ -1307,7 +1307,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.put("General", this.general.serializeNBT());
-        tag.put("Projectile", NbtUtils.serializeMap(projectile));
+        tag.put("Projectile", NbtUtils.serializeMap(this.projectile));
         tag.put("Sounds", this.sounds.serializeNBT());
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
@@ -1320,7 +1320,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             this.general.deserializeNBT(tag.getCompound("General"));
         }
         if (tag.contains("Projectile", Tag.TAG_COMPOUND)) {
-            deserializeProjectileMap(tag.getCompound("Projectile"));
+            this.projectile = deserializeProjectileMap(tag.getCompound("Projectile"));
         }
         if (tag.contains("Sounds", Tag.TAG_COMPOUND)) {
             this.sounds.deserializeNBT(tag.getCompound("Sounds"));

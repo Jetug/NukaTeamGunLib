@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.event;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
 import com.nukateam.ntgl.common.foundation.item.MagazineItem;
 import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
@@ -30,6 +31,7 @@ public class InputEvents {
         if(event.getAction() == GLFW.GLFW_RELEASE){
             if(event.getKey() == KEY_FIRE_SELECT.getKey().getValue()){
                 PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(!shiftDown, HandAction.SWITCH_FIRE_MODE));
+                ClientReloadHandler.get().unloadAmmo();
             }
             else if(event.getKey() == KEY_AMMO_SELECT.getKey().getValue()){
                 PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(!shiftDown, HandAction.SWITCH_AMMO));

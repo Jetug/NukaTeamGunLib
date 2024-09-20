@@ -86,9 +86,7 @@ public class ClientReloadHandler {
                 startReloading();
             }
             if (KeyBinds.KEY_UNLOAD.consumeClick()) {
-                this.setReloading(false, HumanoidArm.RIGHT);
-                this.setReloading(false, HumanoidArm.LEFT );
-                PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload());
+                unloadAmmo();
             }
             if (KeyBinds.KEY_INSPECT.consumeClick()){
                 var mainGun = player.getMainHandItem();
@@ -100,6 +98,12 @@ public class ClientReloadHandler {
                 }
             }
         }
+    }
+
+    public void unloadAmmo() {
+        this.setReloading(false, HumanoidArm.RIGHT);
+        this.setReloading(false, HumanoidArm.LEFT );
+        PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload());
     }
 
     public void startReloading(){

@@ -25,7 +25,7 @@
       "type": "ballistic"
     },
     "ntgl:round45": {
-      "item": "ntgl:round10mm",
+      "item": "ntgl:round45",
       "visible": true,
       "magazineMode": false,
       "damage": 9.0,
