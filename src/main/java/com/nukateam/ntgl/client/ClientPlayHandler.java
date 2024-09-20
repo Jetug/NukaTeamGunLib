@@ -206,31 +206,4 @@ public class ClientPlayHandler {
             ClientReloadHandler.get().setReloading(!dataKey.getValue(player), arm);
         }
     }
-
-    public static void handleFireModeSwitch(S2CMessageHandAction message) {
-        var player = Minecraft.getInstance().player;
-        if (player != null && !player.isSpectator()) {
-            var arm = message.isRightHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-            var stack = player.getItemInHand(arm);
-            if(stack.getItem() instanceof GunItem){
-                GunModifierHelper.switchFireMode(stack);
-            }
-
-            player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
-        }
-    }
-
-    public static void handleAmmoModeSwitch(S2CMessageHandAction message) {
-        var player = Minecraft.getInstance().player;
-        if (player != null && !player.isSpectator()) {
-            var arm = message.isRightHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-            var stack = player.getItemInHand(arm);
-
-            if(stack.getItem() instanceof GunItem){
-                GunModifierHelper.switchAmmo(stack);
-            }
-
-            player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
-        }
-    }
 }

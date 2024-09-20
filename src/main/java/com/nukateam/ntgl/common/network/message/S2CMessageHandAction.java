@@ -2,50 +2,50 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
-import com.nukateam.ntgl.client.ClientPlayHandler;
+import com.nukateam.ntgl.common.base.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.network.HandAction;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 
 public class S2CMessageHandAction extends PlayMessage<S2CMessageHandAction> {
-    private boolean isRightHand = true;
+    private InteractionHand hand = InteractionHand.MAIN_HAND;
     private HandAction handAction;
 
     public S2CMessageHandAction() {}
 
-    public S2CMessageHandAction(HumanoidArm arm, HandAction handAction) {
-        this(arm == HumanoidArm.RIGHT, handAction);
-    }
-
-    public S2CMessageHandAction(boolean isRightHand, HandAction handAction) {
-        this.isRightHand = isRightHand;
+    public S2CMessageHandAction(InteractionHand hand, HandAction handAction) {
+        this.hand = hand;
         this.handAction = handAction;
     }
 
     @Override
     public void encode(S2CMessageHandAction message, FriendlyByteBuf buffer) {
-        buffer.writeBoolean(message.isRightHand);
+        buffer.writeEnum(message.hand);
         buffer.writeEnum(message.handAction);
     }
 
     @Override
     public S2CMessageHandAction decode(FriendlyByteBuf buffer) {
-        return new S2CMessageHandAction(buffer.readBoolean(), buffer.readEnum(HandAction.class));
+        return new S2CMessageHandAction(buffer.readEnum(InteractionHand.class), buffer.readEnum(HandAction.class));
     }
 
     @Override
-    public void handle(S2CMessageHandAction message, MessageContext supplier) {
-        supplier.execute((() -> {
-            switch (message.handAction){
-                case SWITCH_FIRE_MODE -> ClientPlayHandler.handleFireModeSwitch(message);
-                case SWITCH_AMMO -> ClientPlayHandler.handleAmmoModeSwitch(message);
+    public void handle(S2CMessageHandAction message, MessageContext context) {
+        context.execute(() -> {
+            var player = context.getPlayer();
+            if (player != null) {
+                ServerPlayHandler.handleHandAction(message, player);
             }
-
-        }));
-        supplier.setHandled(true);
+        });
+        context.setHandled(true);
     }
 
-    public boolean isRightHand() {
-        return isRightHand;
+    public InteractionHand getHand() {
+        return hand;
+    }
+
+    public HandAction getHandAction() {
+        return handAction;
     }
 }

@@ -88,6 +88,7 @@ public class GunModifierHelper {
     public static void setCurrentFireMode(ItemStack weapon, FireMode fireMode) {
         var tag = weapon.getOrCreateTag();
         tag.putString(FIRE_MODE, fireMode.toString());
+        weapon.setTag(tag);
     }
 
     public static FireMode getCurrentFireMode(ItemStack weapon) {
@@ -131,7 +132,7 @@ public class GunModifierHelper {
     public static void setCurrentAmmo(ItemStack weapon, ResourceLocation ammo) {
         var tag = weapon.getOrCreateTag();
         tag.putString("Ammo", ammo.toString());
-
+        weapon.setTag(tag);
     }
 
     public static ResourceLocation getAmmoItem(ItemStack weapon) {

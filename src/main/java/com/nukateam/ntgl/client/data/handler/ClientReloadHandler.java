@@ -12,12 +12,13 @@ import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.helpers.PlayerAnimationHelper;
+import com.nukateam.ntgl.common.helpers.PlayerHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SMessageReload;
-import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
+import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -86,7 +87,8 @@ public class ClientReloadHandler {
                 startReloading();
             }
             if (KeyBinds.KEY_UNLOAD.consumeClick()) {
-                unloadAmmo();
+                unloadAmmo(InteractionHand.MAIN_HAND);
+                unloadAmmo(InteractionHand.OFF_HAND);
             }
             if (KeyBinds.KEY_INSPECT.consumeClick()){
                 var mainGun = player.getMainHandItem();
@@ -100,10 +102,9 @@ public class ClientReloadHandler {
         }
     }
 
-    public void unloadAmmo() {
-        this.setReloading(false, HumanoidArm.RIGHT);
-        this.setReloading(false, HumanoidArm.LEFT );
-        PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload());
+    public void unloadAmmo(InteractionHand hand) {
+        this.setReloading(false, PlayerHelper.convertHand(hand));
+        PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload(hand));
     }
 
     public void startReloading(){
@@ -124,13 +125,10 @@ public class ClientReloadHandler {
         }
     }
 
-    private HumanoidArm reloadArm;
-
     public void setReloading(boolean reloading, HumanoidArm arm) {
         var player = Minecraft.getInstance().player;
         if (player == null) return;
 
-        this.reloadArm = arm;
         var dataKey = arm == HumanoidArm.RIGHT ?
                 ModSyncedDataKeys.RELOADING_RIGHT:
                 ModSyncedDataKeys.RELOADING_LEFT;

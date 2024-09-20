@@ -19,6 +19,7 @@ import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.ModEnchantments;
+import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
@@ -56,8 +57,6 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Predicate;
-
-import static com.nukateam.ntgl.client.data.handler.ShootingHandler.*;
 //import static com.nukateam.guns.client.handler.ShootingHandler.gunCooldown;
 
 /**
@@ -272,17 +271,13 @@ public class ServerPlayHandler {
         }
     }
 
-    /**
-     * @param player
-     */
-    public static void handleUnload(ServerPlayer player) {
-        unloadArm(player, player.getMainHandItem());
-        unloadArm(player, player.getOffhandItem());
+    public static void handleUnload(ServerPlayer player, InteractionHand hand) {
+        var stack = player.getItemInHand(hand);
+        unloadArm(player, stack);
     }
 
     private static void unloadArm(ServerPlayer player, ItemStack stack) {
-        if (!(stack.getItem() instanceof GunItem gunItem)) return;
-        var gun = gunItem.getModifiedGun(stack);
+        if (!(stack.getItem() instanceof GunItem)) return;
 
         if (GunModifierHelper.getCurrentProjectile(stack).isMagazineMode())
             unloadMagazine(player, stack);
@@ -351,14 +346,33 @@ public class ServerPlayHandler {
         }
     }
 
-    /**
-     * @param player
-     */
     public static void handleAttachments(ServerPlayer player) {
         ItemStack heldItem = player.getMainHandItem();
         if (heldItem.getItem() instanceof GunItem) {
             NetworkHooks.openScreen(player, new SimpleMenuProvider((windowId, playerInventory, player1) ->
                     new AttachmentContainer(windowId, playerInventory, heldItem), Component.translatable("container.ntgl.attachments")));
         }
+    }
+
+    public static void handleHandAction(S2CMessageHandAction message, ServerPlayer player) {
+        var stack = player.getItemInHand(message.getHand());
+
+        if(stack.getItem() instanceof GunItem) {
+            switch (message.getHandAction()) {
+                case SWITCH_FIRE_MODE -> handleFireModeSwitch(player, stack);
+                case SWITCH_AMMO -> handleAmmoModeSwitch(message.getHand(), player, stack);
+            }
+        }
+    }
+
+    public static void handleFireModeSwitch(ServerPlayer player, ItemStack stack) {
+        GunModifierHelper.switchFireMode(stack);
+        player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
+    }
+
+    public static void handleAmmoModeSwitch(InteractionHand hand, ServerPlayer player, ItemStack stack) {
+        handleUnload(player, hand);
+        GunModifierHelper.switchAmmo(stack);
+        player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
     }
 }

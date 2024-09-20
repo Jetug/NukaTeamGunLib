@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageHandAction;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.InteractionHand;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -28,13 +29,14 @@ public class InputEvents {
     public static void onKeyInput(InputEvent.@NotNull Key event) {
         var minecraft = Minecraft.getInstance();
         var shiftDown = minecraft.options.keyShift.isDown();
+        var hand = shiftDown ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+
         if(event.getAction() == GLFW.GLFW_RELEASE){
             if(event.getKey() == KEY_FIRE_SELECT.getKey().getValue()){
-                PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(!shiftDown, HandAction.SWITCH_FIRE_MODE));
-                ClientReloadHandler.get().unloadAmmo();
+                PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_FIRE_MODE));
             }
             else if(event.getKey() == KEY_AMMO_SELECT.getKey().getValue()){
-                PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(!shiftDown, HandAction.SWITCH_AMMO));
+                PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_AMMO));
             }
         }
 
