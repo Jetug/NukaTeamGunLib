@@ -65,7 +65,7 @@ public class ClientReloadHandler {
         if (player != null) {
             if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(player)) {
                 if (this.reloadingSlot != player.getInventory().selected) {
-                    this.setReloading(false, HumanoidArm.RIGHT);
+                    this.setReloading(false, InteractionHand.MAIN_HAND);
                 }
             }
 
@@ -103,7 +103,7 @@ public class ClientReloadHandler {
     }
 
     public void unloadAmmo(InteractionHand hand) {
-        this.setReloading(false, PlayerHelper.convertHand(hand));
+        this.setReloading(false, hand);
         PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload(hand));
     }
 
@@ -116,24 +116,24 @@ public class ClientReloadHandler {
 
         if (mainHandItem.getItem() instanceof GunItem
                 && !GunModifierHelper.isWeaponFull(mainHandItem)){
-            setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), HumanoidArm.RIGHT);
+            setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
         }
         else if (offhandItem.getItem() instanceof GunItem
                 && GunModifierHelper.canRenderInOffhand(player)
                 && !GunModifierHelper.isWeaponFull(offhandItem)){
-            setReloading(!ModSyncedDataKeys.RELOADING_LEFT.getValue(player), HumanoidArm.LEFT);
+            setReloading(!ModSyncedDataKeys.RELOADING_LEFT.getValue(player), InteractionHand.OFF_HAND);
         }
     }
 
-    public void setReloading(boolean reloading, HumanoidArm arm) {
+    public void setReloading(boolean reloading, InteractionHand arm) {
         var player = Minecraft.getInstance().player;
         if (player == null) return;
 
-        var dataKey = arm == HumanoidArm.RIGHT ?
+        var dataKey = arm == InteractionHand.MAIN_HAND ?
                 ModSyncedDataKeys.RELOADING_RIGHT:
                 ModSyncedDataKeys.RELOADING_LEFT;
 
-        var stack = arm == HumanoidArm.RIGHT ?
+        var stack = arm == InteractionHand.MAIN_HAND ?
                 player.getMainHandItem():
                 player.getOffhandItem();
 
@@ -166,10 +166,10 @@ public class ClientReloadHandler {
         }
     }
 
-    private void stopReloading(HumanoidArm arm){
+    private void stopReloading(InteractionHand arm){
         var player = Minecraft.getInstance().player;
 
-        var dataKey = arm == HumanoidArm.RIGHT ?
+        var dataKey = arm == InteractionHand.MAIN_HAND ?
                 ModSyncedDataKeys.RELOADING_RIGHT :
                 ModSyncedDataKeys.RELOADING_LEFT;
 
@@ -179,7 +179,7 @@ public class ClientReloadHandler {
         reloadTicks = -1;
     }
 
-    private static void playAnimation(LocalPlayer player, ItemStack stack, Gun gun, HumanoidArm arm) {
+    private static void playAnimation(LocalPlayer player, ItemStack stack, Gun gun, InteractionHand arm) {
         var reloadDuration = 0;
         var general = gun.getGeneral();
         var reloadTime = GunModifierHelper.getReloadTime(stack);
@@ -194,7 +194,7 @@ public class ClientReloadHandler {
         else reloadDuration = reloadTime;
 
         if (Ntgl.playerAnimatorLoaded)
-            PlayerAnimationHelper.playAnim(player, gun.getGeneral().getReloadType(), reloadDuration, arm == HumanoidArm.LEFT);
+            PlayerAnimationHelper.playAnim(player, gun.getGeneral().getReloadType(), reloadDuration, arm == InteractionHand.OFF_HAND);
     }
 
     private void updateReloadTimer(Player player) {

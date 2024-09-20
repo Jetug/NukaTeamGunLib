@@ -8,6 +8,7 @@ import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.ModParticleTypes;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
@@ -25,6 +26,7 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -35,6 +37,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -186,7 +189,6 @@ public class ClientPlayHandler {
         return null;
     }
 
-
     public static void handleRemoveProjectile(S2CMessageRemoveProjectile message) {
         BulletTrailRenderingHandler.get().remove(message.getEntityId());
     }
@@ -199,7 +201,7 @@ public class ClientPlayHandler {
     public static void handleReload(S2CMessageReload message) {
         var player = Minecraft.getInstance().player;
         if (player != null && !player.isSpectator()) {
-            var arm = message.isRightHand() ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
+            var arm = message.isRightHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
             var dataKey = message.isRightHand() ?
                     ModSyncedDataKeys.RELOADING_RIGHT : ModSyncedDataKeys.RELOADING_LEFT;
 

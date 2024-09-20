@@ -5,6 +5,7 @@
   "mixins": [
     "common.EndPortalBlockMixin",
     "common.LivingEntityMixin",
+    "common.NarratorMixin",
     "common.SittingPhaseMixin"
   ],
   "client": [

@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.event;
 
+import com.mojang.text2speech.Narrator;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
 import com.nukateam.ntgl.common.foundation.item.MagazineItem;

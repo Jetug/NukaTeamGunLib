@@ -19,6 +19,7 @@ import com.mrcrayfish.controllable.client.Action;
 import com.mrcrayfish.controllable.client.gui.navigation.BasicNavigationPoint;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -170,11 +171,11 @@ public class ControllerHandler {
         }
 
         if (reloadCounter > 40) {
-            ClientReloadHandler.get().setReloading(false, HumanoidArm.RIGHT);
+            ClientReloadHandler.get().setReloading(false, InteractionHand.MAIN_HAND);
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload());
             reloadCounter = -1;
         } else if (reloadCounter > 0 && !controller.isButtonPressed(GunButtonBindings.RELOAD.getButton())) {
-            ClientReloadHandler.get().setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), HumanoidArm.RIGHT);
+            ClientReloadHandler.get().setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
             reloadCounter = -1;
         }
     }

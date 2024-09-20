@@ -12,6 +12,7 @@ import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.data.util.StackUtils;
 import com.nukateam.ntgl.common.event.GunFireEvent;
+import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
@@ -354,6 +355,24 @@ public class ServerPlayHandler {
         }
     }
 
+    public static void handleReload(C2SMessageReload message, ServerPlayer player) {
+        var dataKey = message.getHand() == InteractionHand.MAIN_HAND ?
+                ModSyncedDataKeys.RELOADING_RIGHT:
+                ModSyncedDataKeys.RELOADING_LEFT;
+
+        dataKey.setValue(player, message.isReload()); // This has to be set in order to verify the packet is sent if the event is cancelled
+        if (!message.isReload())
+            return;
+
+        var gun = player.getItemInHand(message.getHand());
+
+        if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, gun))) {
+            dataKey.setValue(player, false);
+            return;
+        }
+        MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, gun));
+    }
+
     public static void handleHandAction(S2CMessageHandAction message, ServerPlayer player) {
         var stack = player.getItemInHand(message.getHand());
 
@@ -372,6 +391,7 @@ public class ServerPlayHandler {
 
     public static void handleAmmoModeSwitch(InteractionHand hand, ServerPlayer player, ItemStack stack) {
         handleUnload(player, hand);
+        handleReload(new C2SMessageReload(true, hand), player);
         GunModifierHelper.switchAmmo(stack);
         player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
     }
