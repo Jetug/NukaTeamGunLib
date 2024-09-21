@@ -18,8 +18,11 @@ import java.util.List;
  * Author: MrCrayfish
  */
 public class AmmoItem extends Item implements IAmmo {
-    public AmmoItem(Properties properties) {
+    private final AmmoType type;
+
+    public AmmoItem(Properties properties, AmmoType type) {
         super(properties);
+        this.type = type;
     }
 
     @Override
@@ -30,5 +33,10 @@ public class AmmoItem extends Item implements IAmmo {
             int ammoCount = maxDamage - getDamage(stack);
             tooltip.add(Component.translatable("info.ntgl.ammo", ChatFormatting.WHITE.toString() + ammoCount + "/" + maxDamage).withStyle(ChatFormatting.GRAY));
         }
+    }
+
+    @Override
+    public AmmoType getType() {
+        return type;
     }
 }

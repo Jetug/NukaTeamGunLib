@@ -35,7 +35,7 @@ public class FireMode extends BaseType {
     }
 
     public ResourceLocation getIcon() {
-        return new ResourceLocation(id.getNamespace(), "textures/hud/" + id.getPath() + ".png");
+        return new ResourceLocation(id.getNamespace(), "textures/hud/fire_mode/" + id.getPath() + ".png");
     }
 
     /**

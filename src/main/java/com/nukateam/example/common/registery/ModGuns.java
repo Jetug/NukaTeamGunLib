@@ -38,20 +38,20 @@ public class ModGuns {
 
     //Rounds
     public static final RegistryObject<Item> ROUND10MM = ITEMS.register("round10mm",
-            () -> new AmmoItem(new Item.Properties().durability(100)));
+            () -> new AmmoItem(new Item.Properties().durability(100), AmmoType.STANDARD));
 
-    public static final RegistryObject<Item> ROUND38 = registerAmmo("round38");
-    public static final RegistryObject<Item> STEELBALLS = registerAmmo("steel_ball");
-    public static final RegistryObject<Item> ROUND45 = registerAmmo("round45");
-    public static final RegistryObject<Item> ROUND5MM = registerAmmo("round5mm");
-    public static final RegistryObject<Item> ROUND44 = registerAmmo("round44");
-    public static final RegistryObject<Item> ROUND50 = registerAmmo("round50");
-    public static final RegistryObject<Item> ROUND380 = registerAmmo("round380");
-    public static final RegistryObject<Item> ROUND556 = registerAmmo("round556");
-    public static final RegistryObject<Item> SHOTSHELL = registerAmmo("shotshell");
-    public static final RegistryObject<Item> ROUND127 = registerAmmo("round127");
-    public static final RegistryObject<Item> ROUND22 = registerAmmo("round22");
-    public static final RegistryObject<Item> MININUKE = registerAmmo("mini_nuke");
+    public static final RegistryObject<Item> ROUND38    = registerAmmo("round38"    , AmmoType.STANDARD);
+    public static final RegistryObject<Item> STEELBALLS = registerAmmo("steel_ball" , AmmoType.STANDARD);
+    public static final RegistryObject<Item> ROUND45    = registerAmmo("round45"    , AmmoType.PIERCING);
+    public static final RegistryObject<Item> ROUND5MM   = registerAmmo("round5mm"   , AmmoType.STANDARD);
+    public static final RegistryObject<Item> ROUND44    = registerAmmo("round44"    , AmmoType.STANDARD);
+    public static final RegistryObject<Item> ROUND50    = registerAmmo("round50"    , AmmoType.STANDARD);
+    public static final RegistryObject<Item> ROUND380   = registerAmmo("round380"   , AmmoType.STANDARD);
+    public static final RegistryObject<Item> ROUND556   = registerAmmo("round556"   , AmmoType.STANDARD);
+    public static final RegistryObject<Item> SHOTSHELL  = registerAmmo("shotshell"  , AmmoType.STANDARD);
+    public static final RegistryObject<Item> ROUND127   = registerAmmo("round127"   , AmmoType.STANDARD);
+    public static final RegistryObject<Item> ROUND22    = registerAmmo("round22"    , AmmoType.STANDARD);
+    public static final RegistryObject<Item> MININUKE   = registerAmmo("mini_nuke"  , AmmoType.STANDARD);
 
     /* Scope Attachments */
     public static final RegistryObject<Item> HOLOGRAPHIC_SIGHT = ITEMS.register("holographic_sight",
@@ -98,8 +98,8 @@ public class ModGuns {
         return ITEMS.register(name, () -> new GunItem(new Item.Properties().durability(durability)));
     }
 
-    public static RegistryObject<Item> registerAmmo(String name) {
-        return ITEMS.register(name, () -> new AmmoItem(new Item.Properties()));
+    public static RegistryObject<Item> registerAmmo(String name, AmmoType type) {
+        return ITEMS.register(name, () -> new AmmoItem(new Item.Properties(), type));
     }
 
     public static void register(IEventBus eventBus) {

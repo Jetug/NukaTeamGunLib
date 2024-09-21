@@ -1,19 +1,18 @@
 package com.nukateam.ntgl.common.data.util;
 
-import com.nukateam.ntgl.common.base.gun.AttachmentType;
-import com.nukateam.ntgl.common.base.gun.FireMode;
-import com.nukateam.ntgl.common.base.gun.GripType;
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.gun.*;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.AmmoItem;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -141,6 +140,16 @@ public class GunModifierHelper {
             return ResourceLocation.tryParse(tag.getString("Ammo"));
         }
         return getFirstAmmoItem(weapon);
+    }
+
+    public static AmmoType getCurrentAmmoType(ItemStack weapon) {
+        var item = ForgeRegistries.ITEMS.getValue(getAmmoItem(weapon));
+
+        if(item instanceof IAmmo ammo){
+            return ammo.getType();
+        }
+
+        return AmmoType.STANDARD;
     }
 
     public static Gun.Projectile getCurrentProjectile(ItemStack weapon) {

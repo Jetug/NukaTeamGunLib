@@ -25,6 +25,7 @@ public class GunHud implements IGuiOverlay {
     private static final DecimalFormat INVENTORY_AMMO_FORMAT = new DecimalFormat("0000");
     public static final float COUNTER_SCALE = 0.9f;
     public static final int LOW_AMMO_COLOR = 0xFF5555;
+    public static final int ICON_X = 115;
     private static long checkAmmoTimestamp = -1L;
     private static int cacheMaxAmmoCount = 0;
     private static int cacheInventoryAmmoCount = 0;
@@ -82,7 +83,7 @@ public class GunHud implements IGuiOverlay {
         RenderSystem.defaultBlendFunc();
 
         renderFireModeIcon(graphics, width, height, stack, font, currentAmmoCountText);
-
+        renderAmmoTypeIcon(graphics, width, height, stack, font, currentAmmoCountText);
     }
 
     private static void renderCurrentAmmo(GuiGraphics graphics, int width, int height, PoseStack poseStack, Font font, String currentAmmoCountText, int ammoCountColor) {
@@ -106,8 +107,8 @@ public class GunHud implements IGuiOverlay {
             int inventoryAmmoCountColor = 0xAAAAAA;
 
             graphics.drawString(font, inventoryAmmoCountText,
-                    (width  - 67 + InputEvents.X) / COUNTER_SCALE,
-                    (height - 26 + InputEvents.Y) / COUNTER_SCALE,
+                    (width  - 67) / COUNTER_SCALE,
+                    (height - 26 ) / COUNTER_SCALE,
                     inventoryAmmoCountColor, true);
         }
         poseStack.popPose();
@@ -115,12 +116,30 @@ public class GunHud implements IGuiOverlay {
 
     private static void renderFireModeIcon(GuiGraphics graphics, int width, int height, ItemStack stack, Font font, String currentAmmoCountText) {
         var fireMode = GunModifierHelper.getCurrentFireMode(stack);
-        var fireModeTexture = fireMode.getIcon();
+        var icon = fireMode.getIcon();
+
+        var x = (int)(width - ICON_X + font.width(currentAmmoCountText) * 1.5);
 
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        graphics.blit(fireModeTexture,
-                (int)(width - 113.5  + font.width(currentAmmoCountText) * 1.5),
-                height - 38,
+        graphics.blit(icon,
+                x           + InputEvents.X,
+                height - 46 + InputEvents.Y,
+                0, 0,
+                16, 16,
+                16, 16);
+    }
+
+
+    private static void renderAmmoTypeIcon(GuiGraphics graphics, int width, int height, ItemStack stack, Font font, String currentAmmoCountText) {
+        var ammoType = GunModifierHelper.getCurrentAmmoType(stack);
+        var icon = ammoType.getIcon();
+
+        var x = (int)(width - ICON_X + font.width(currentAmmoCountText) * 1.5);
+
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+        graphics.blit(icon,
+                x           + InputEvents.X,
+                height - 32 + InputEvents.Z,
                 0, 0,
                 16, 16,
                 16, 16);

@@ -20,7 +20,7 @@ public class GrenadeItem extends AmmoItem {
 
 
     public GrenadeItem(Item.Properties properties, int maxCookTime) {
-        super(properties);
+        super(properties, AmmoType.EXPLOSIVE);
         this.maxCookTime = maxCookTime;
     }
 
