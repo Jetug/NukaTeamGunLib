@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.base.gun;
 
-import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
@@ -30,6 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -1489,60 +1489,125 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return tag.getFloat("AdditionalDamage");
     }
 
-    public static AmmoContext findAmmo(LivingEntity entity, ResourceLocation id) {
+    public static AmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
+        var id = GunModifierHelper.getAmmoItem(weapon);
+
         if (entity instanceof Player player) {
-            return findPlayerAmmo(player, id);
+            var context = findPlayerAmmo(player, id);
+
+            if(context == AmmoContext.NONE){
+                var set = GunModifierHelper.getAmmoItems(weapon);
+                for (var value: set) {
+                    if(!value.equals(id)){
+                        context = findPlayerAmmo(player, value);
+                        if(context != AmmoContext.NONE) {
+                            GunModifierHelper.setCurrentAmmo(weapon, value);
+                            return context;
+                        }
+                    }
+                }
+            }
+
+            return context;
         }
         return getCreativeAmmoContext(id);
     }
 
-    public static AmmoContext findMagazine(LivingEntity entity, ResourceLocation id) {
+    public static AmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {
+        var id = GunModifierHelper.getAmmoItem(weapon);
+
         if (entity instanceof Player player) {
-            return findPlayerMagazine(player, id);
+            var context = findPlayerMagazine(player, id);
+
+            if(context == AmmoContext.NONE){
+                var set = GunModifierHelper.getAmmoItems(weapon);
+                for (var value: set) {
+                    if(!value.equals(id)){
+                        context = findPlayerMagazine(player, value);
+                        if(context != AmmoContext.NONE) {
+                            GunModifierHelper.setCurrentAmmo(weapon, value);
+                            return context;
+                        }
+                    }
+                }
+            }
+
+            return context;
         }
+
         return getCreativeAmmoContext(id);
     }
 
     public static AmmoContext findPlayerAmmo(Player player, ResourceLocation id) {
-        if (player.isCreative()) {
+        if (player.isCreative())
             return getCreativeAmmoContext(id);
-        }
-        for (int i = 0; i < player.getInventory().getContainerSize(); ++i) {
-            var stack = player.getInventory().getItem(i);
-            if (isAmmo(stack, id)) {
-                return new AmmoContext(stack, player.getInventory());
-            }
-        }
+
+        var context = findAmmo(player.getInventory(), id);
+        if (!context.equals(AmmoContext.NONE))
+            return context;
+
         if (Ntgl.backpackedLoaded) {
             return BackpackHelper.findAmmo(player, id);
         }
         return AmmoContext.NONE;
     }
 
+    public static AmmoContext findAmmo(Container inventory, ResourceLocation id){
+        for (int i = 0; i < inventory.getContainerSize(); ++i) {
+            var stack = inventory.getItem(i);
+            if (isAmmo(stack, id)) {
+                return new AmmoContext(stack, inventory);
+            }
+        }
+
+        return AmmoContext.NONE;
+    }
     public static AmmoContext findPlayerMagazine(Player player, ResourceLocation id) {
         if (player.isCreative()) {
             return getCreativeAmmoContext(id);
         }
 
-        ItemStack ammo = null;
-
-        for (int i = 0; i < player.getInventory().getContainerSize(); ++i) {
-            ItemStack stack = player.getInventory().getItem(i);
-            if (isAmmo(stack, id)) {
-                if (stack.getDamageValue() == 0)
-                    return new AmmoContext(stack, player.getInventory());
-                if (ammo == null || (stack.getDamageValue() < ammo.getDamageValue() && ammo.getDamageValue() < ammo.getMaxDamage()))
-                    ammo = stack;
-            }
-        }
-
-        if (ammo != null) return new AmmoContext(ammo, player.getInventory());
+        var context = findMagazine(player.getInventory(), id);
+        if (!context.equals(AmmoContext.NONE))
+            return context;
 
         if (Ntgl.backpackedLoaded) {
             return BackpackHelper.findMagazine(player, id);
         }
 
         return AmmoContext.NONE;
+    }
+
+    public static AmmoContext findMagazine(Container inventory, ResourceLocation id){
+        ItemStack ammoStack = null;
+
+        for (int i = 0; i < inventory.getContainerSize(); ++i) {
+            var foundStack = inventory.getItem(i);
+
+            if (isAmmo(foundStack, id)) {
+                if (foundStack.getDamageValue() == 0)
+                    return new AmmoContext(foundStack, inventory);
+
+                if (ammoStack == null || hasMoreAmmo(ammoStack, foundStack))
+                    ammoStack = foundStack;
+            }
+        }
+
+        if (ammoStack != null)
+            return new AmmoContext(ammoStack, inventory);
+
+        return AmmoContext.NONE;
+    }
+
+    private static ResourceLocation getKey(ItemStack stack){
+        return ForgeRegistries.ITEMS.getKey(stack.getItem());
+    }
+
+    /**
+     * @return True if the second stack contains more ammo then the first
+     */
+    private static boolean hasMoreAmmo(ItemStack first, ItemStack second) {
+        return second.getDamageValue() < first.getDamageValue() && first.getDamageValue() < first.getMaxDamage();
     }
 
     @NotNull
