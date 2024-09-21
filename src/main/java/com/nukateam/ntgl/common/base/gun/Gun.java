@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.base.gun;
 
-import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
@@ -30,6 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -1489,64 +1489,114 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return tag.getFloat("AdditionalDamage");
     }
 
-    public static AmmoContext findAmmo(LivingEntity entity, ResourceLocation id) {
+    public static AmmoContext findAmmo(LivingEntity entity, ItemStack stack) {
         if (entity instanceof Player player) {
-            return findPlayerAmmo(player, id);
+            return findPlayerAmmo(player, stack);
         }
-        return getCreativeAmmoContext(id);
+        return getCreativeAmmoContext(stack);
     }
 
-    public static AmmoContext findMagazine(LivingEntity entity, ResourceLocation id) {
+    public static AmmoContext findMagazine(LivingEntity entity, ItemStack stack) {
         if (entity instanceof Player player) {
-            return findPlayerMagazine(player, id);
+            return findPlayerMagazine(player, stack);
         }
-        return getCreativeAmmoContext(id);
+        return getCreativeAmmoContext(stack);
     }
 
-    public static AmmoContext findPlayerAmmo(Player player, ResourceLocation id) {
+    public static AmmoContext findPlayerAmmo(Player player, ItemStack weapon) {
         if (player.isCreative()) {
-            return getCreativeAmmoContext(id);
+            return getCreativeAmmoContext(weapon);
         }
-        for (int i = 0; i < player.getInventory().getContainerSize(); ++i) {
-            var stack = player.getInventory().getItem(i);
-            if (isAmmo(stack, id)) {
-                return new AmmoContext(stack, player.getInventory());
-            }
-        }
+
+        var context = findAmmo(player.getInventory(), weapon);
+        if (!context.equals(AmmoContext.NONE))
+            return context;
+
         if (Ntgl.backpackedLoaded) {
-            return BackpackHelper.findAmmo(player, id);
+            return BackpackHelper.findAmmo(player, weapon);
         }
         return AmmoContext.NONE;
     }
 
-    public static AmmoContext findPlayerMagazine(Player player, ResourceLocation id) {
-        if (player.isCreative()) {
-            return getCreativeAmmoContext(id);
-        }
+    public static AmmoContext findAmmo(Container inventory, ItemStack weapon){
+        var id = GunModifierHelper.getAmmoItem(weapon);
+        var allAmmo = GunModifierHelper.getAmmoItems(weapon);
+        var ammo = AmmoContext.NONE;
 
-        ItemStack ammo = null;
-
-        for (int i = 0; i < player.getInventory().getContainerSize(); ++i) {
-            ItemStack stack = player.getInventory().getItem(i);
+        for (int i = 0; i < inventory.getContainerSize(); ++i) {
+            var stack = inventory.getItem(i);
             if (isAmmo(stack, id)) {
-                if (stack.getDamageValue() == 0)
-                    return new AmmoContext(stack, player.getInventory());
-                if (ammo == null || (stack.getDamageValue() < ammo.getDamageValue() && ammo.getDamageValue() < ammo.getMaxDamage()))
-                    ammo = stack;
+                return new AmmoContext(stack, inventory);
+            }
+            else if(allAmmo.contains(getKey(stack)) && ammo.equals(AmmoContext.NONE)){
+                ammo = new AmmoContext(stack, inventory);
             }
         }
 
-        if (ammo != null) return new AmmoContext(ammo, player.getInventory());
+        return ammo;
+    }
+
+    private static ResourceLocation getKey(ItemStack stack){
+        return ForgeRegistries.ITEMS.getKey(stack.getItem());
+    }
+
+    public static AmmoContext findPlayerMagazine(Player player, ItemStack weapon) {
+        var id = GunModifierHelper.getAmmoItem(weapon);
+        var allAmmo = GunModifierHelper.getAmmoItems(weapon);
+
+        if (player.isCreative()) {
+            return getCreativeAmmoContext(weapon);
+        }
+
+        var context = findMagazine(player.getInventory(), weapon);
+        if (!context.equals(AmmoContext.NONE))
+            return context;
 
         if (Ntgl.backpackedLoaded) {
-            return BackpackHelper.findMagazine(player, id);
+            return BackpackHelper.findMagazine(player, weapon);
         }
 
         return AmmoContext.NONE;
+    }
+
+    public static AmmoContext findMagazine(Container inventory, ItemStack weapon){
+        var id = GunModifierHelper.getAmmoItem(weapon);
+        var allAmmo = GunModifierHelper.getAmmoItems(weapon);
+        var ammoContext = AmmoContext.NONE;
+
+        ItemStack ammoStack = null;
+
+        for (int i = 0; i < inventory.getContainerSize(); ++i) {
+            var foundStack = inventory.getItem(i);
+
+            if (isAmmo(foundStack, id)) {
+                if (foundStack.getDamageValue() == 0)
+                    return new AmmoContext(foundStack, inventory);
+
+                if (ammoStack == null || hasMoreAmmo(ammoStack, foundStack))
+                    ammoStack = foundStack;
+            }
+            else if(allAmmo.contains(getKey(foundStack)) && (ammoStack == null || hasMoreAmmo(ammoStack, foundStack))){
+                ammoContext = new AmmoContext(foundStack, inventory);
+            }
+        }
+
+        if (ammoStack != null)
+            return new AmmoContext(ammoStack, inventory);
+
+        return ammoContext;
+    }
+
+    /**
+     * @return True if the second stack contains more ammo then the first
+     */
+    private static boolean hasMoreAmmo(ItemStack first, ItemStack second) {
+        return second.getDamageValue() < first.getDamageValue() && first.getDamageValue() < first.getMaxDamage();
     }
 
     @NotNull
-    private static AmmoContext getCreativeAmmoContext(ResourceLocation id) {
+    private static AmmoContext getCreativeAmmoContext(ItemStack weapon) {
+        var id = GunModifierHelper.getAmmoItem(weapon);
         var item = ForgeRegistries.ITEMS.getValue(id);
         var ammo = item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
         return new AmmoContext(ammo, null);

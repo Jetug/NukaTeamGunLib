@@ -128,7 +128,7 @@ public class ReloadTracker {
     }
 
     private boolean hasNoAmmo(LivingEntity player) {
-        return Gun.findAmmo(player, GunModifierHelper.getAmmoItem(stack)).stack().isEmpty();
+        return Gun.findAmmo(player, stack).stack().isEmpty();
     }
 
     private boolean canReload(Player player) {
@@ -139,7 +139,7 @@ public class ReloadTracker {
 
     private void reloadMagazine(LivingEntity player) {
         if(GunModifierHelper.getCurrentProjectile(stack).isMagazineMode()){
-            addMagazine(player);
+            addMagazine(player, stack);
         }
         else{
 //            var amount = this.gun.getGeneral().getMaxAmmo(stack);
@@ -148,20 +148,20 @@ public class ReloadTracker {
     }
 
     private void addCartridge(LivingEntity entity) {
-        addAmmo(entity, gun.getGeneral().getReloadAmount());
+        addAmmo(entity, stack, gun.getGeneral().getReloadAmount());
     }
 
     private void addAmmo(LivingEntity entity) {
 //        var amount = this.gun.getGeneral().getMaxAmmo(stack);
         var amount = GunModifierHelper.getMaxAmmo(stack);
 
-        while (isNotReloaded(entity)){
-            addAmmo(entity, amount);
+        while (isNotReloaded(entity, stack)){
+            addAmmo(entity, stack, amount);
         }
     }
 
-    private void addAmmo(LivingEntity entity, int amount) {
-        var context = Gun.findAmmo(entity, GunModifierHelper.getAmmoItem(stack));
+    private void addAmmo(LivingEntity entity, ItemStack weapon, int amount) {
+        var context = Gun.findAmmo(entity, stack);
         var ammo = context.stack();
 
         if (!ammo.isEmpty()) {
@@ -184,17 +184,17 @@ public class ReloadTracker {
 //        playReloadSound(player);
     }
 
-    private boolean isNotReloaded(LivingEntity player) {
+    private boolean isNotReloaded(LivingEntity player, ItemStack weapon) {
         var ammoItem = GunModifierHelper.getAmmoItem(stack);
         var tag = this.stack.getTag();
 
-        return !Gun.findAmmo(player, ammoItem).stack().isEmpty() &&
+        return !Gun.findAmmo(player, weapon).stack().isEmpty() &&
                 tag.getInt(Tags.AMMO_COUNT) < GunEnchantmentHelper.getAmmoCapacity(this.stack);
     }
 
-    private void addMagazine(LivingEntity entity) {
+    private void addMagazine(LivingEntity entity, ItemStack weapon) {
         var ammoId = GunModifierHelper.getAmmoItem(stack);
-        var context = Gun.findMagazine(entity, ammoId);
+        var context = Gun.findMagazine(entity, weapon);
         var ammo = context.stack();
 
         if (!ammo.isEmpty()) {
