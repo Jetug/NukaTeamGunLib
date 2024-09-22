@@ -94,8 +94,8 @@ public class CustomGunLoader extends SimpleJsonResourceReloadListener {
         if (size > 0) {
             ImmutableMap.Builder<ResourceLocation, CustomGun> builder = ImmutableMap.builder();
             for (int i = 0; i < size; i++) {
-                ResourceLocation id = buffer.readResourceLocation();
-                CustomGun customGun = new CustomGun();
+                var id = buffer.readResourceLocation();
+                var customGun = new CustomGun();
                 customGun.deserializeNBT(buffer.readNbt());
                 builder.put(id, customGun);
             }

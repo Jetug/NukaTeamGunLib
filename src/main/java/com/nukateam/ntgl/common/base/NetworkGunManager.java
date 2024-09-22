@@ -16,6 +16,7 @@ import com.mrcrayfish.framework.api.data.login.ILoginData;
 import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
@@ -29,12 +30,17 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Function;
+
+import static net.minecraftforge.registries.ForgeRegistries.*;
 
 /**
  * Author: MrCrayfish
@@ -61,20 +67,29 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
 
     @Override
     protected Map<GunItem, Gun> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        Map<GunItem, Gun> map = new HashMap<>();
-        ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof GunItem).forEach(item ->
+        return getConfigMap(manager, (v) -> v instanceof GunItem, Gun.class, "guns");
+    }
+
+    @NotNull
+    private static<T extends Item, Y> Map<T, Y> getConfigMap(ResourceManager manager, Function<Item, Boolean> tClass, Class<Y> yClass, String resourcePath) {
+        Map<T, Y> map = new HashMap<>();
+
+        ITEMS.getValues().stream().filter(tClass::apply).forEach(item ->
         {
-            ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
+            var id = ITEMS.getKey(item);
+
             if (id != null) {
-                List<ResourceLocation> resources = new ArrayList<>(manager.listResources("guns", (fileName) -> fileName.getPath().endsWith(id.getPath() + ".json")).keySet());
+                var resources = new ArrayList<>(getJsonResources(manager, resourcePath, id).keySet());
+
                 resources.sort((r1, r2) -> {
                     if (r1.getNamespace().equals(r2.getNamespace())) return 0;
                     return r2.getNamespace().equals(Ntgl.MOD_ID) ? 1 : -1;
                 });
+
                 resources.forEach(resourceLocation ->
                 {
-                    String path = resourceLocation.getPath().substring(0, resourceLocation.getPath().length() - FILE_TYPE_LENGTH_VALUE);
-                    String[] splitPath = path.split("/");
+                    var path = resourceLocation.getPath().substring(0, resourceLocation.getPath().length() - FILE_TYPE_LENGTH_VALUE);
+                    var splitPath = path.split("/");
 
                     // Makes sure the file name matches exactly with the id of the gun
                     if (!id.getPath().equals(splitPath[splitPath.length - 1]))
@@ -86,20 +101,25 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
 
                     manager.getResource(resourceLocation).ifPresent(resource ->
                     {
-                        try (Reader reader = new BufferedReader(new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
-                            Gun gun = GsonHelper.fromJson(GSON_INSTANCE, reader, Gun.class);
-                            if (gun != null && Validator.isValidObject(gun)) {
-                                map.put((GunItem) item, gun);
-                            } else {
-                                Ntgl.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using default gun data", resourceLocation);
-                                map.putIfAbsent((GunItem) item, new Gun());
+                        try (var reader = new BufferedReader(new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
+                            var gun = GsonHelper.fromJson(GSON_INSTANCE, reader, yClass);
+
+                            if (Validator.isValidObject(gun)) {
+                                map.put((T) item, gun);
                             }
-                        } catch (InvalidObjectException e) {
+                            else {
+                                Ntgl.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using default gun data", resourceLocation);
+                                map.putIfAbsent((T) item, yClass.getDeclaredConstructor().newInstance());
+                            }
+                        }
+                        catch (InvalidObjectException e) {
                             Ntgl.LOGGER.error("Missing required properties for {}", resourceLocation);
                             e.printStackTrace();
-                        } catch (IOException e) {
+                        }
+                        catch (IOException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
                             Ntgl.LOGGER.error("Couldn't parse data file {}", resourceLocation);
-                        } catch (IllegalAccessException e) {
+                        }
+                        catch (IllegalAccessException e) {
                             e.printStackTrace();
                         }
                     });
@@ -108,14 +128,22 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
         });
         return map;
     }
+
+    @NotNull
+    private static Map<ResourceLocation, Resource> getJsonResources(ResourceManager manager, String path, ResourceLocation id) {
+        return manager.listResources(path, (fileName) -> fileName.getPath().endsWith(id.getPath() + ".json"));
+    }
+
     @Override
     protected void apply(Map<GunItem, Gun> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
         ImmutableMap.Builder<ResourceLocation, Gun> builder = ImmutableMap.builder();
+
         objects.forEach((item, gun) -> {
-            Validate.notNull(ForgeRegistries.ITEMS.getKey(item));
-            builder.put(ForgeRegistries.ITEMS.getKey(item), gun);
+            Validate.notNull(ITEMS.getKey(item));
+            builder.put(ITEMS.getKey(item), gun);
             item.setGun(new Supplier(gun));
         });
+
         this.registeredGuns = builder.build();
     }
 
@@ -139,11 +167,13 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
      * @return a map of registered guns from the server
      */
     public static ImmutableMap<ResourceLocation, Gun> readRegisteredGuns(FriendlyByteBuf buffer) {
-        int size = buffer.readVarInt();
+        var size = buffer.readVarInt();
+
         if (size > 0) {
             ImmutableMap.Builder<ResourceLocation, Gun> builder = ImmutableMap.builder();
+
             for (int i = 0; i < size; i++) {
-                ResourceLocation id = buffer.readResourceLocation();
+                var id = buffer.readResourceLocation();
                 Gun gun = Gun.create(buffer.readNbt());
                 builder.put(id, gun);
             }
@@ -165,7 +195,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
         clientRegisteredGuns.clear();
         if (registeredGuns != null) {
             for (Map.Entry<ResourceLocation, Gun> entry : registeredGuns.entrySet()) {
-                Item item = ForgeRegistries.ITEMS.getValue(entry.getKey());
+                Item item = ITEMS.getValue(entry.getKey());
                 if (!(item instanceof GunItem)) {
                     return false;
                 }
