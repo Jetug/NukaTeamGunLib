@@ -47,19 +47,6 @@ import static net.minecraftforge.registries.ForgeRegistries.*;
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunItem, Gun>> {
-    private static final int FILE_TYPE_LENGTH_VALUE = ".json".length();
-    private static final Gson GSON_INSTANCE = Util.make(() -> {
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(ResourceLocation.class, JsonDeserializers.RESOURCE_LOCATION);
-        builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
-        builder.registerTypeAdapter(FireMode.class, JsonDeserializers.FIRE_MODE);
-        builder.registerTypeAdapter(AttachmentType.class, JsonDeserializers.ATTACHMENT_TYPE);
-        builder.registerTypeAdapter(AmmoType.class, JsonDeserializers.AMMO_TYPE);
-        builder.registerTypeAdapter(Easings.class, JsonDeserializers.EASING);
-        builder.excludeFieldsWithModifiers(Modifier.TRANSIENT);
-        return builder.create();
-    });
-
     private static List<GunItem> clientRegisteredGuns = new ArrayList<>();
     private static NetworkGunManager instance;
 
@@ -67,71 +54,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
 
     @Override
     protected Map<GunItem, Gun> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return getConfigMap(manager, (v) -> v instanceof GunItem, Gun.class, "guns");
-    }
-
-    @NotNull
-    private static<T extends Item, Y> Map<T, Y> getConfigMap(ResourceManager manager, Function<Item, Boolean> tClass, Class<Y> yClass, String resourcePath) {
-        Map<T, Y> map = new HashMap<>();
-
-        ITEMS.getValues().stream().filter(tClass::apply).forEach(item ->
-        {
-            var id = ITEMS.getKey(item);
-
-            if (id != null) {
-                var resources = new ArrayList<>(getJsonResources(manager, resourcePath, id).keySet());
-
-                resources.sort((r1, r2) -> {
-                    if (r1.getNamespace().equals(r2.getNamespace())) return 0;
-                    return r2.getNamespace().equals(Ntgl.MOD_ID) ? 1 : -1;
-                });
-
-                resources.forEach(resourceLocation ->
-                {
-                    var path = resourceLocation.getPath().substring(0, resourceLocation.getPath().length() - FILE_TYPE_LENGTH_VALUE);
-                    var splitPath = path.split("/");
-
-                    // Makes sure the file name matches exactly with the id of the gun
-                    if (!id.getPath().equals(splitPath[splitPath.length - 1]))
-                        return;
-
-                    // Also check if the mod id matches with the gun's registered namespace
-                    if (!id.getNamespace().equals(resourceLocation.getNamespace()))
-                        return;
-
-                    manager.getResource(resourceLocation).ifPresent(resource ->
-                    {
-                        try (var reader = new BufferedReader(new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
-                            var gun = GsonHelper.fromJson(GSON_INSTANCE, reader, yClass);
-
-                            if (Validator.isValidObject(gun)) {
-                                map.put((T) item, gun);
-                            }
-                            else {
-                                Ntgl.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using default gun data", resourceLocation);
-                                map.putIfAbsent((T) item, yClass.getDeclaredConstructor().newInstance());
-                            }
-                        }
-                        catch (InvalidObjectException e) {
-                            Ntgl.LOGGER.error("Missing required properties for {}", resourceLocation);
-                            e.printStackTrace();
-                        }
-                        catch (IOException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
-                            Ntgl.LOGGER.error("Couldn't parse data file {}", resourceLocation);
-                        }
-                        catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                });
-            }
-        });
-        return map;
-    }
-
-    @NotNull
-    private static Map<ResourceLocation, Resource> getJsonResources(ResourceManager manager, String path, ResourceLocation id) {
-        return manager.listResources(path, (fileName) -> fileName.getPath().endsWith(id.getPath() + ".json"));
+        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof GunItem, Gun.class, "guns");
     }
 
     @Override
