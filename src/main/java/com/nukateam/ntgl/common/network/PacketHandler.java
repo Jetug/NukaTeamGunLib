@@ -3,7 +3,9 @@ package com.nukateam.ntgl.common.network;
 import com.mrcrayfish.framework.api.network.FrameworkNetwork;
 import com.mrcrayfish.framework.api.network.MessageDirection;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.CustomAmmoManager;
 import com.nukateam.ntgl.client.CustomGunManager;
+import com.nukateam.ntgl.common.base.NetworkAmmoManager;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.nukateam.ntgl.common.network.message.*;
 import com.mrcrayfish.framework.api.FrameworkAPI;
@@ -34,6 +36,7 @@ public class PacketHandler {
                 .registerPlayMessage(S2CMessageStunGrenade.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageBulletTrail.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageUpdateGuns.class, MessageDirection.PLAY_CLIENT_BOUND)
+                .registerPlayMessage(S2CMessageUpdateAmmo.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageBlood.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageGunSound.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageProjectileHitBlock.class, MessageDirection.PLAY_CLIENT_BOUND)
@@ -43,5 +46,8 @@ public class PacketHandler {
 
         FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
         FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
+
+        FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "network_ammo_manager"), NetworkAmmoManager.LoginData::new);
+        FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "custom_ammo_manager"), CustomAmmoManager.LoginData::new);
     }
 }

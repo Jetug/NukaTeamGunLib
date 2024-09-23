@@ -6,6 +6,7 @@ import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.data.handler.BulletTrailRenderingHandler;
 import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
+import com.nukateam.ntgl.common.base.NetworkAmmoManager;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunReloadEvent;
@@ -196,6 +197,11 @@ public class ClientPlayHandler {
     public static void handleUpdateGuns(S2CMessageUpdateGuns message) {
         NetworkGunManager.updateRegisteredGuns(message);
         CustomGunManager.updateCustomGuns(message);
+    }
+
+    public static void handleUpdateAmmo(S2CMessageUpdateAmmo message) {
+        NetworkAmmoManager.updateRegisteredAmmo(message);
+        CustomAmmoManager.updateCustomAmmo(message);
     }
 
     public static void handleReload(S2CMessageReload message) {

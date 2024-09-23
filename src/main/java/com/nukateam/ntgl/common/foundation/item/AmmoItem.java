@@ -1,6 +1,10 @@
 package com.nukateam.ntgl.common.foundation.item;
 
+import com.nukateam.ntgl.common.base.NetworkAmmoManager;
+import com.nukateam.ntgl.common.base.NetworkGunManager;
+import com.nukateam.ntgl.common.base.gun.Ammo;
 import com.nukateam.ntgl.common.base.gun.AmmoType;
+import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -19,10 +23,19 @@ import java.util.List;
  */
 public class AmmoItem extends Item implements IAmmo {
     private final AmmoType type;
+    private Ammo ammo;
 
     public AmmoItem(Properties properties, AmmoType type) {
         super(properties);
         this.type = type;
+    }
+
+    public void setAmmo(NetworkAmmoManager.Supplier supplier) {
+        this.ammo = supplier.getAmmo();
+    }
+
+    public Ammo getAmmo() {
+        return this.ammo;
     }
 
     @Override

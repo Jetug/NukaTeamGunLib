@@ -204,7 +204,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
 
         @Override
         public Optional<String> readData(FriendlyByteBuf buffer) {
-            Map<ResourceLocation, Gun> registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
+            var registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
             NetworkGunManager.updateRegisteredGuns(registeredGuns);
             return Optional.empty();
         }
