@@ -116,6 +116,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public static final String RELOAD_SPEED = "ReloadSpeed";
         public static final String RELOAD_TIME = "ReloadTime";
         public static final String RECOIL_ANGLE = "RecoilAngle";
+        public static final String DAMAGE = "Damage";
         public static final String RECOIL_KICK = "RecoilKick";
         public static final String RECOIL_DURATION_OFFSET = "RecoilDurationOffset";
         public static final String RECOIL_ADS_REDUCTION = "RecoilAdsReduction";
@@ -129,6 +130,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Optional
         private boolean fullCharge = false;
         private int rate;
+        @Optional
+        private float damage;
         @Ignored
         private GripType gripType = GripType.ONE_HANDED;
         @Ignored
@@ -174,6 +177,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             tag.putString(LOADING_TYPE, this.loadingType);
             tag.putString(CATEGORY, this.category);
             tag.putFloat(RECOIL_ANGLE, this.recoilAngle);
+            tag.putFloat(DAMAGE, this.damage);
             tag.putFloat(RECOIL_KICK, this.recoilKick);
             tag.putFloat(RECOIL_DURATION_OFFSET, this.recoilDurationOffset);
             tag.putFloat(RECOIL_ADS_REDUCTION, this.recoilAdsReduction);
@@ -221,6 +225,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (tag.contains(RECOIL_ANGLE, Tag.TAG_ANY_NUMERIC)) {
                 this.recoilAngle = tag.getFloat(RECOIL_ANGLE);
             }
+            if (tag.contains(DAMAGE, Tag.TAG_ANY_NUMERIC)) {
+                this.damage = tag.getFloat(DAMAGE);
+            }
             if (tag.contains(RECOIL_KICK, Tag.TAG_ANY_NUMERIC)) {
                 this.recoilKick = tag.getFloat(RECOIL_KICK);
             }
@@ -248,6 +255,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             Preconditions.checkArgument(this.reloadTime >= 1, "Reload time must be more than or equal to zero");
             Preconditions.checkArgument(!this.loadingType.equals(LoadingTypes.MAGAZINE) && !this.loadingType.equals(LoadingTypes.PER_CARTRIDGE), "Loading type must be " + LoadingTypes.MAGAZINE + " or " + LoadingTypes.PER_CARTRIDGE);
             Preconditions.checkArgument(this.recoilAngle >= 0.0F, "Recoil angle must be more than or equal to zero");
+            Preconditions.checkArgument(this.damage >= 0.0F, "Damage angle must be more than or equal to zero");
             Preconditions.checkArgument(this.recoilKick >= 0.0F, "Recoil kick must be more than or equal to zero");
             Preconditions.checkArgument(this.recoilDurationOffset >= 0.0F && this.recoilDurationOffset <= 1.0F, "Recoil duration offset must be between 0.0 and 1.0");
             Preconditions.checkArgument(this.recoilAdsReduction >= 0.0F && this.recoilAdsReduction <= 1.0F, "Recoil ads reduction must be between 0.0 and 1.0");
@@ -266,6 +274,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (this.loadingType.equals(LoadingTypes.MAGAZINE) || this.loadingType.equals(LoadingTypes.PER_CARTRIDGE))
                 object.addProperty("loadingType", this.loadingType);
             if (this.recoilAngle != 0.0F) object.addProperty("recoilAngle", this.recoilAngle);
+            if (this.damage != 0.0F) object.addProperty("damage", this.damage);
             if (this.recoilKick != 0.0F) object.addProperty("recoilKick", this.recoilKick);
             if (this.recoilDurationOffset != 0.0F)
                 object.addProperty("recoilDurationOffset", this.recoilDurationOffset);
@@ -294,6 +303,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             general.loadingType = this.loadingType;
             general.category = this.category;
             general.recoilAngle = this.recoilAngle;
+            general.damage = this.damage;
             general.recoilKick = this.recoilKick;
             general.recoilDurationOffset = this.recoilDurationOffset;
             general.recoilAdsReduction = this.recoilAdsReduction;
@@ -352,7 +362,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 var gun = gunItem.getModifiedGun(gunStack);
 
                 if (GunModifierHelper.getCurrentProjectile(gunStack).isMagazineMode()) {
-                    var id = GunModifierHelper.getAmmoItem(gunStack);
+                    var id = GunModifierHelper.getCurrentAmmo(gunStack);
                     var item = ForgeRegistries.ITEMS.getValue(id);
 
                     return item.getMaxDamage(new ItemStack(item));
@@ -395,6 +405,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
          */
         public float getRecoilAngle() {
             return this.recoilAngle;
+        }
+
+        /**
+         * @return The damage caused by this ammo
+         */
+        public float getDamage() {
+            return this.damage;
         }
 
         /**
@@ -1297,7 +1314,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static AmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
-        var id = GunModifierHelper.getAmmoItem(weapon);
+        var id = GunModifierHelper.getCurrentAmmo(weapon);
 
         if (entity instanceof Player player) {
             var context = findPlayerAmmo(player, id);
@@ -1321,7 +1338,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static AmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {
-        var id = GunModifierHelper.getAmmoItem(weapon);
+        var id = GunModifierHelper.getCurrentAmmo(weapon);
 
         if (entity instanceof Player player) {
             var context = findPlayerMagazine(player, id);

@@ -108,7 +108,7 @@ public abstract class Attachment {
             float inputDamage = 10.0F;
             float outputDamage = inputDamage;
             for (IGunModifier modifier : modifiers) {
-                outputDamage = modifier.modifyProjectileDamage(outputDamage);
+                outputDamage = modifier.modifyDamage(outputDamage);
             }
             if (outputDamage > inputDamage) {
                 addPerk(positivePerks, true, "perk.ntgl.modified_damage.positive");

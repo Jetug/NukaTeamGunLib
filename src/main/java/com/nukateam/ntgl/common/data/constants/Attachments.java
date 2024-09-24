@@ -27,7 +27,7 @@ public class Attachments {
 
     public static final IGunModifier REDUCED_DAMAGE = new IGunModifier() {
         @Override
-        public float modifyProjectileDamage(float damage) {
+        public float modifyDamage(float damage) {
             return damage * 0.75F;
         }
     };

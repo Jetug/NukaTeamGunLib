@@ -107,7 +107,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         getEntityData().set(SHOOTER , shooterId);
         getEntityData().set(IS_RIGHT, isRightHand);
         getEntityData().set(IS_VISIBLE, projectile.isVisible());
-        getEntityData().set(ITEM, GunModifierHelper.getAmmoItem(weapon).toString());
+        getEntityData().set(ITEM, GunModifierHelper.getCurrentAmmo(weapon).toString());
 
         /* Get speed and set motion */
         setupDirection(shooter, weapon, item, modifiedGun);
@@ -118,7 +118,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         var posZ = shooter.zOld + (shooter.getZ() - shooter.zOld) / 2.0;
         this.setPos(posX, posY, posZ);
 
-        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getAmmoItem(weapon));
+        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmo(weapon));
 
         if (ammo != null) {
             int customModelData = -1;

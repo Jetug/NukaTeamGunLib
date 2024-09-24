@@ -124,7 +124,7 @@ public class GunModifierHelper {
 
     public static void switchAmmo(ItemStack weapon){
         var ammoItems = getAmmoItems(weapon);
-        var current = getAmmoItem(weapon);
+        var current = getCurrentAmmo(weapon);
         var newAmmo = cycleSet(ammoItems, current);
 
         setCurrentAmmo(weapon, newAmmo);
@@ -136,7 +136,7 @@ public class GunModifierHelper {
         weapon.setTag(tag);
     }
 
-    public static ResourceLocation getAmmoItem(ItemStack weapon) {
+    public static ResourceLocation getCurrentAmmo(ItemStack weapon) {
         var tag = weapon.getOrCreateTag();
         if (tag.contains("Ammo", Tag.TAG_STRING)) {
             return ResourceLocation.tryParse(tag.getString("Ammo"));
@@ -144,8 +144,12 @@ public class GunModifierHelper {
         return getFirstAmmoItem(weapon);
     }
 
+    public static AmmoItem getCurrentAmmoItem(ItemStack weapon) {
+        return (AmmoItem)ForgeRegistries.ITEMS.getValue(getCurrentAmmo(weapon));
+    }
+
     public static AmmoType getCurrentAmmoType(ItemStack weapon) {
-        var item = ForgeRegistries.ITEMS.getValue(getAmmoItem(weapon));
+        var item = ForgeRegistries.ITEMS.getValue(getCurrentAmmo(weapon));
 
         if(item instanceof IAmmo ammo){
             return ammo.getType();
@@ -156,7 +160,7 @@ public class GunModifierHelper {
 
     public static Ammo getCurrentProjectile(ItemStack weapon) {
         var gun = getGun(weapon);
-        var item = getAmmoItem(weapon);
+        var item = getCurrentAmmo(weapon);
         var ammoItem = (AmmoItem)ForgeRegistries.ITEMS.getValue(item);
         return ammoItem.getAmmo();
     }
@@ -272,13 +276,13 @@ public class GunModifierHelper {
 
     public static float getModifiedProjectileDamage(ItemStack weapon, float damage) {
         var finalDamage = new AtomicReference<>(damage);
-        forEachAttachment(weapon, (modifier -> finalDamage.set(modifier.modifyProjectileDamage(finalDamage.get()))));
+        forEachAttachment(weapon, (modifier -> finalDamage.set(modifier.modifyDamage(finalDamage.get()))));
         return finalDamage.get();
     }
 
     public static float getModifiedDamage(ItemStack weapon, float damage) {
         var finalDamage = new AtomicReference<>(damage);
-        forEachAttachment(weapon, (modifier -> finalDamage.set(modifier.modifyProjectileDamage(finalDamage.get()))));
+        forEachAttachment(weapon, (modifier -> finalDamage.set(modifier.modifyDamage(finalDamage.get()))));
         forEachAttachment(weapon, (modifier -> finalDamage.updateAndGet(v -> v + modifier.additionalDamage())));
 
         return finalDamage.get();
@@ -313,9 +317,15 @@ public class GunModifierHelper {
 
         for (var att : attachments.keySet()) {
             var modifiers = getModifiers(weapon, att);
-            for (var modifier : modifiers) {
-                consumer.accept(modifier);
-            }
+            applyModifiers(consumer, modifiers);
+        }
+
+        applyModifiers(consumer, getCurrentAmmoItem(weapon).getModifiers());
+    }
+
+    private static void applyModifiers(Consumer<IGunModifier> consumer, IGunModifier[] ammoModifiers) {
+        for (var modifier : ammoModifiers) {
+            consumer.accept(modifier);
         }
     }
 

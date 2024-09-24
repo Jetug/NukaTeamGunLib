@@ -185,7 +185,7 @@ public class ReloadTracker {
     }
 
     private boolean isNotReloaded(LivingEntity player) {
-        var ammoItem = GunModifierHelper.getAmmoItem(stack);
+        var ammoItem = GunModifierHelper.getCurrentAmmo(stack);
         var tag = this.stack.getTag();
 
         return !Gun.findAmmo(player, stack).stack().isEmpty() &&
@@ -193,7 +193,7 @@ public class ReloadTracker {
     }
 
     private void addMagazine(LivingEntity entity) {
-        var ammoId = GunModifierHelper.getAmmoItem(stack);
+        var ammoId = GunModifierHelper.getCurrentAmmo(stack);
         var context = Gun.findMagazine(entity, stack);
         var ammo = context.stack();
 

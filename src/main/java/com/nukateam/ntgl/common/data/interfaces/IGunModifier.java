@@ -6,7 +6,6 @@ import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -66,7 +65,7 @@ public interface IGunModifier {
      * @param damage the current ammo damage
      * @return a new damage for the ammo
      */
-    default float modifyProjectileDamage(float damage) {
+    default float modifyDamage(float damage) {
         return damage;
     }
 

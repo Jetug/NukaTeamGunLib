@@ -94,7 +94,7 @@ public class AttachmentSlot extends Slot {
         if(diff > 0){
             Gun.setAmmo(stack, maxAmmo);
 
-            var ammoItem = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getAmmoItem(stack));
+            var ammoItem = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmo(stack));
             var dropStack = new ItemStack(ammoItem, diff);
 
             if (entity instanceof Player player && !player.addItem(dropStack)) {

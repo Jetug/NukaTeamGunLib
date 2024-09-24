@@ -163,7 +163,7 @@ public class GunHud implements IGuiOverlay {
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             var inventoryItem = inventory.getItem(i);
             if (inventoryItem.getItem() instanceof AmmoItem iAmmo &&
-                    GunModifierHelper.getAmmoItem(stack).equals(ForgeRegistries.ITEMS.getKey(iAmmo))) {
+                    GunModifierHelper.getCurrentAmmo(stack).equals(ForgeRegistries.ITEMS.getKey(iAmmo))) {
                 cacheInventoryAmmoCount += inventoryItem.getCount();
             }
 //            if (inventoryItem.getItem() instanceof AmmoBoxItem iAmmoBox && iAmmoBox.isAmmoBoxOfGun(stack, inventoryItem)) {
