@@ -1,7 +1,7 @@
 {
   "visible": true,
   "magazineMode": false,
-  "damage": 9.0,
+  "damage": 1,
   "size": 0.2,
   "speed": 300,
   "life": 7,

@@ -109,7 +109,6 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
-        var modifiedGun = this.getModifiedGun(stack);
         var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmo(stack));
 
         if (ammo != null) {
@@ -131,7 +130,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
             }
         }
 
-        float damage = GunModifierHelper.getCurrentProjectile(stack).getDamage();
+        float damage = GunModifierHelper.getModifiedDamage(stack);
         damage = GunModifierHelper.getModifiedProjectileDamage(stack, damage);
         damage = GunEnchantmentHelper.getAcceleratorDamage(stack, damage);
         tooltip.add(Component.translatable("info.ntgl.damage",

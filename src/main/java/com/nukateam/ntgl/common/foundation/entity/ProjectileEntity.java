@@ -360,7 +360,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     public float getDamage() {
-        float initialDamage = (this.projectile.getDamage() + this.additionalDamage);
+        float initialDamage = GunModifierHelper.getModifiedDamage(this.weapon)  + this.additionalDamage;
 
         if (this.projectile.isDamageReduceOverLife()) {
             float modifier = ((float) this.projectile.getLife() - (float) (this.tickCount - 1)) / (float) this.projectile.getLife();
@@ -368,7 +368,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
 
         var damage = initialDamage / this.general.getProjectileAmount();
-        damage = GunModifierHelper.getModifiedDamage(this.weapon, damage);
+//        damage = GunModifierHelper.getModifiedDamage(this.weapon);
         damage = GunEnchantmentHelper.getAcceleratorDamage(this.weapon, damage);
 
         return Math.max(0F, damage);

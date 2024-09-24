@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Optional
     private boolean visible;
-    private float damage;
+    private float damage = 1;
     private float size;
     private double speed;
     private int life;

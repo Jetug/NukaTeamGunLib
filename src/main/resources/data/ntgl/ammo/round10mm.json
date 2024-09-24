@@ -2,7 +2,7 @@
   "item": "ntgl:round10mm",
   "visible": true,
   "magazineMode": true,
-  "damage": 9.0,
+  "damage": 2.0,
   "size": 0.2,
   "speed": 300,
   "life": 7,

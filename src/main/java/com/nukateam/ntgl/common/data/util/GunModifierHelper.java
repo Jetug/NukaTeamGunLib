@@ -159,7 +159,6 @@ public class GunModifierHelper {
     }
 
     public static Ammo getCurrentProjectile(ItemStack weapon) {
-        var gun = getGun(weapon);
         var item = getCurrentAmmo(weapon);
         var ammoItem = (AmmoItem)ForgeRegistries.ITEMS.getValue(item);
         return ammoItem.getAmmo();
@@ -280,12 +279,19 @@ public class GunModifierHelper {
         return finalDamage.get();
     }
 
-    public static float getModifiedDamage(ItemStack weapon, float damage) {
+    public static float getModifiedDamage(ItemStack weapon) {
+        var gun = getGun(weapon);
+        var damage = gun.getGeneral().getDamage();
+        damage *= getAmmoDamageMultiplier(weapon);
         var finalDamage = new AtomicReference<>(damage);
         forEachAttachment(weapon, (modifier -> finalDamage.set(modifier.modifyDamage(finalDamage.get()))));
         forEachAttachment(weapon, (modifier -> finalDamage.updateAndGet(v -> v + modifier.additionalDamage())));
 
         return finalDamage.get();
+    }
+
+    public static float getAmmoDamageMultiplier(ItemStack weapon){
+        return getCurrentAmmoItem(weapon).getAmmo().getDamage();
     }
 
     public static double getModifiedAimDownSightSpeed(ItemStack weapon, double speed) {
