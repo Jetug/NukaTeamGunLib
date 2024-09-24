@@ -11,6 +11,7 @@ import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.nukateam.ntgl.common.base.gun.Ammo;
 import com.nukateam.ntgl.common.base.gun.CustomAmmo;
 import com.nukateam.ntgl.common.base.gun.CustomGun;
+import com.nukateam.ntgl.common.base.gun.Ammo;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

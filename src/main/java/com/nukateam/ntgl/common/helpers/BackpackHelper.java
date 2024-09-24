@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.helpers;
 
 import com.nukateam.ntgl.common.base.AmmoContext;
+import com.nukateam.ntgl.common.base.gun.Ammo;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.mrcrayfish.backpacked.Backpacked;
 import com.mrcrayfish.backpacked.core.ModEnchantments;

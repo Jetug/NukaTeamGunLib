@@ -152,14 +152,15 @@ public class GunModifierHelper {
         return AmmoType.STANDARD;
     }
 
-    public static Gun.Projectile getCurrentProjectile(ItemStack weapon) {
+    public static Ammo getCurrentProjectile(ItemStack weapon) {
         var gun = getGun(weapon);
         var item = getAmmoItem(weapon);
-        return gun.getProjectile().get(item);
+        var ammoItem = (AmmoItem)ForgeRegistries.ITEMS.getValue(item);
+        return ammoItem.getAmmo();
     }
 
     public static Set<ResourceLocation> getAmmoItems(ItemStack weapon) {
-        var items = getGun(weapon).getProjectile().keySet();
+        var items = getGun(weapon).getProjectile();
         var ammoItem = new AtomicReference<>(items);
         forEachAttachment(weapon, (modifier -> ammoItem.set(modifier.modifyAmmoItems(ammoItem.get()))));
         return ammoItem.get();
@@ -168,9 +169,6 @@ public class GunModifierHelper {
     public static ResourceLocation getFirstAmmoItem(ItemStack weapon) {
         var items = getAmmoItems(weapon);
         return items.iterator().next();
-//        var ammoItem = new AtomicReference<>(id);
-//        forEachAttachment(weapon, (modifier -> ammoItem.set(modifier.modifyAmmoItem(ammoItem.get()))));
-//        return ammoItem.get();
     }
 
     public static int getReloadTime(ItemStack weapon) {

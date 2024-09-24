@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.nukateam.ntgl.common.base.gun.Ammo;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.util.math.ExtendedEntityRayTraceResult;
 import com.nukateam.ntgl.common.foundation.item.GunItem;

@@ -1,0 +1,9 @@
+{
+  "visible": true,
+  "magazineMode": false,
+  "damage": 9.0,
+  "size": 0.2,
+  "speed": 300,
+  "life": 7,
+  "type": "ballistic"
+}

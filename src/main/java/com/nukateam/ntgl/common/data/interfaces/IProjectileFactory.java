@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.data.interfaces;
 
+import com.nukateam.ntgl.common.base.gun.Ammo;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;

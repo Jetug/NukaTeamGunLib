@@ -3,6 +3,7 @@ package com.nukateam.ntgl.client.data.handler;
 
 import com.nukateam.ntgl.client.data.util.PropertyHelper;
 import com.nukateam.ntgl.common.base.gun.GripType;
+import com.nukateam.ntgl.common.base.gun.Ammo;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
@@ -150,7 +151,8 @@ public class AimingHandler {
         if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player))
             return;
 
-        Gun modifiedGun = gunItem.getModifiedGun(heldItem);
+        var modifiedGun = gunItem.getModifiedGun(heldItem);
+
         if (modifiedGun.getModules().getZoom() == null)
             return;
 

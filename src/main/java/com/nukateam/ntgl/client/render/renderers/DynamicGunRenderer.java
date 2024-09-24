@@ -7,6 +7,7 @@ import com.nukateam.ntgl.client.animators.ItemAnimator;
 import com.nukateam.ntgl.client.data.util.TransformUtils;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.common.base.gun.AttachmentType;
+import com.nukateam.ntgl.common.base.gun.Ammo;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.data.util.Rgba;

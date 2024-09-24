@@ -31,7 +31,7 @@ public class Raider extends PathfinderMob implements IGunUser {
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT =
             SynchedEntityData.defineId(Raider.class, EntityDataSerializers.INT);
 
-    private GunItem[] guns = new GunItem[]{
+    private final GunItem[] guns = new GunItem[]{
             ModGuns.PISTOL10MM.get(),
             ModGuns.PIPE_REVOLVER.get(),
             ModGuns.PIPE_PISTOL.get(),

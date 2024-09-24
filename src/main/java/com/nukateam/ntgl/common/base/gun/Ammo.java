@@ -4,27 +4,21 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.annotation.Optional;
-import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
-import com.nukateam.ntgl.common.debug.screen.widget.DebugButton;
-import com.nukateam.ntgl.common.foundation.item.ScopeItem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
-
-import static com.nukateam.ntgl.client.ClientHandler.createEditorScreen;
 
 public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     private ResourceLocation item = new ResourceLocation(Ntgl.MOD_ID, "round10mm");
@@ -238,5 +232,84 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
 //                Minecraft.getInstance().setScreen(createEditorScreen(this.modules));
 //            })));
         });
+    }
+
+    public static class Builder {
+        private final Ammo ammo;
+
+        private Builder() {
+            this.ammo = new Ammo();
+        }
+
+        private Builder(Ammo gun) {
+            this.ammo = gun.copy();
+        }
+
+        public static Ammo.Builder create() {
+            return new Ammo.Builder();
+        }
+
+        public static Ammo.Builder create(Ammo gun) {
+            return new Ammo.Builder(gun);
+        }
+
+        public Ammo build() {
+            return this.ammo.copy(); //Copy since the builder could be used again
+        }
+
+        public Ammo.Builder setAmmo(ResourceLocation id, Item item) {
+            this.ammo.item = ForgeRegistries.ITEMS.getKey(item);
+            return this;
+        }
+
+        public Ammo.Builder setProjectileVisible(ResourceLocation id, boolean visible) {
+            this.ammo.visible = visible;
+            return this;
+        }
+
+        public Ammo.Builder setProjectileSize(ResourceLocation id, float size) {
+            this.ammo.size = size;
+            return this;
+        }
+
+        public Ammo.Builder setProjectileSpeed(ResourceLocation id, double speed) {
+            this.ammo.speed = speed;
+            return this;
+        }
+
+        public Ammo.Builder setProjectileLife(ResourceLocation id, int life) {
+            this.ammo.life = life;
+            return this;
+        }
+
+        public Ammo.Builder setProjectileAffectedByGravity(ResourceLocation id, boolean gravity) {
+            this.ammo.gravity = gravity;
+            return this;
+        }
+
+        public Ammo.Builder setProjectileTrailColor(ResourceLocation id, int trailColor) {
+            this.ammo.trailColor = trailColor;
+            return this;
+        }
+
+        public Ammo.Builder setProjectileTrailLengthMultiplier(ResourceLocation id, int trailLengthMultiplier) {
+            this.ammo.trailLengthMultiplier = trailLengthMultiplier;
+            return this;
+        }
+
+        public Ammo.Builder setDamage(ResourceLocation id, float damage) {
+            this.ammo.damage = damage;
+            return this;
+        }
+
+        public Ammo.Builder setReduceDamageOverLife(ResourceLocation id, boolean damageReduceOverLife) {
+            this.ammo.damageReduceOverLife = damageReduceOverLife;
+            return this;
+        }
+
+        public Ammo.Builder setMagazineMode(ResourceLocation id, boolean magazineMode) {
+            this.ammo.magazineMode = magazineMode;
+            return this;
+        }
     }
 }

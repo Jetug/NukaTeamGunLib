@@ -3,8 +3,9 @@ package com.nukateam.ntgl.common.foundation.entity;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.example.common.data.interfaces.IExplosiveOnHit;
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.common.base.gun.Ammo;
 import com.nukateam.ntgl.common.base.gun.Gun;
-import com.nukateam.ntgl.common.base.gun.Gun.Projectile;
+import com.nukateam.ntgl.common.base.gun.Ammo;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
 import com.nukateam.ntgl.common.data.interfaces.*;
@@ -36,6 +37,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.*;
@@ -76,7 +78,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected LivingEntity shooter;
     protected Gun modifiedGun;
     protected Gun.General general;
-    protected Gun.Projectile projectile;
+    protected Ammo projectile;
     protected ItemStack weapon = ItemStack.EMPTY;
     protected ItemStack ammoStack = ItemStack.EMPTY;
     protected float additionalDamage = 0.0F;
@@ -291,7 +293,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
-        this.projectile = new Gun.Projectile();
+        this.projectile = new Ammo();
         this.projectile.deserializeNBT(compound.getCompound("Projectile"));
         this.general = new Gun.General();
         this.general.deserializeNBT(compound.getCompound("General"));
@@ -320,7 +322,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     @Override
     public void readSpawnData(FriendlyByteBuf buffer) {
-        this.projectile = new Gun.Projectile();
+        this.projectile = new Ammo();
         this.projectile.deserializeNBT(buffer.readNbt());
         this.general = new Gun.General();
         this.general.deserializeNBT(buffer.readNbt());
@@ -340,7 +342,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.xRotO = this.getXRot();
     }
 
-    public Projectile getProjectile() {
+    public Ammo getProjectile() {
         return this.projectile;
     }
 

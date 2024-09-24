@@ -3,6 +3,7 @@ package com.nukateam.ntgl.client.data.handler;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
+import com.nukateam.ntgl.common.base.gun.Ammo;
 import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.base.gun.LoadingTypes;
 import com.nukateam.ntgl.common.data.constants.Tags;
