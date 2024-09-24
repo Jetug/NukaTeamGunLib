@@ -55,7 +55,6 @@ import static com.nukateam.ntgl.client.ClientHandler.*;
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
     protected General general = new General();
-    protected Set<ResourceLocation> ammo = new HashSet<>(List.of(new ResourceLocation("ntgl:round10mm")));
     protected Sounds sounds = new Sounds();
     protected Display display = new Display();
     protected Modules modules = new Modules();
@@ -67,10 +66,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 //    public Projectile getAmmo() {
 //        return this.ammo;
 //    }
-
-    public Set<ResourceLocation> getAmmo() {
-        return this.ammo;
-    }
 
     public Sounds getSounds() {
         return this.sounds;
@@ -161,6 +156,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         private float spread;
         @Optional
         private int fireTimer;
+        @Optional
+        protected Set<ResourceLocation> ammo = new HashSet<>(List.of(new ResourceLocation("ntgl:round10mm")));
 
         @Override
         public CompoundTag serializeNBT() {
@@ -184,6 +181,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             tag.putInt(PROJECTILE_AMOUNT, this.projectileAmount);
             tag.putFloat(SPREAD, this.spread);
             tag.putBoolean(ALWAYS_SPREAD, this.alwaysSpread);
+            tag.put("Ammo", NbtUtils.serializeSet(this.ammo));
             return tag;
         }
 
@@ -245,6 +243,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
             if (tag.contains(SPREAD, Tag.TAG_ANY_NUMERIC)) {
                 this.spread = tag.getFloat(SPREAD);
+            }
+            if (tag.contains("Ammo", Tag.TAG_COMPOUND)) {
+                this.ammo = NbtUtils.deserializeAmmoSet(tag.getCompound("Ammo"));
             }
         }
 
@@ -310,7 +311,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             general.projectileAmount = this.projectileAmount;
             general.alwaysSpread = this.alwaysSpread;
             general.spread = this.spread;
+            general.ammo = new HashSet<>(this.ammo);
             return general;
+        }
+
+        public Set<ResourceLocation> getAmmo() {
+            return this.ammo;
         }
 
         /**
@@ -1131,7 +1137,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.put("General", this.general.serializeNBT());
-        tag.put("Ammo", NbtUtils.serializeSet(this.ammo));
         tag.put("Sounds", this.sounds.serializeNBT());
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
@@ -1142,9 +1147,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public void deserializeNBT(CompoundTag tag) {
         if (tag.contains("General", Tag.TAG_COMPOUND)) {
             this.general.deserializeNBT(tag.getCompound("General"));
-        }
-        if (tag.contains("Ammo", Tag.TAG_COMPOUND)) {
-            this.ammo = NbtUtils.deserializeAmmoSet(tag.getCompound("Ammo"));
         }
         if (tag.contains("Sounds", Tag.TAG_COMPOUND)) {
             this.sounds.deserializeNBT(tag.getCompound("Sounds"));
@@ -1160,7 +1162,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public JsonObject toJsonObject() {
         JsonObject object = new JsonObject();
         object.add("general", this.general.toJsonObject());
-//        object.add("ammo", this.ammo.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "sounds", this.sounds.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modules", this.modules.toJsonObject());
@@ -1176,7 +1177,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public Gun copy() {
         Gun gun = new Gun();
         gun.general = this.general.copy();
-        gun.ammo = new HashSet<>(this.ammo);
         gun.sounds = this.sounds.copy();
         gun.display = this.display.copy();
         gun.modules = this.modules.copy();
@@ -1509,7 +1509,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
 
         public Gun.Builder addAmmo(ResourceLocation id) {
-            this.gun.ammo.add(id);
+            this.gun.general.ammo.add(id);
             return this;
         }
 

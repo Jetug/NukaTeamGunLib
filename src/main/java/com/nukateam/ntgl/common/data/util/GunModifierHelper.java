@@ -161,7 +161,7 @@ public class GunModifierHelper {
     }
 
     public static Set<ResourceLocation> getAmmoItems(ItemStack weapon) {
-        var items = getGun(weapon).getAmmo();
+        var items = getGun(weapon).getGeneral().getAmmo();
         var ammoItem = new AtomicReference<>(items);
         forEachAttachment(weapon, (modifier -> ammoItem.set(modifier.modifyAmmoItems(ammoItem.get()))));
         return ammoItem.get();

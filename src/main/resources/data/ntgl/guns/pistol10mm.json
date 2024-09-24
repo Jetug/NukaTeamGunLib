@@ -12,12 +12,12 @@
 	"recoilKick": 0.3,
     "recoilAdsReduction": 0.25,
     "alwaysSpread": true,
-    "spread": 1.0
+    "spread": 1.0,
+    "ammo": [
+      "ntgl:round10mm",
+      "ntgl:round45"
+    ]
   },
-  "ammo": [
-    "ntgl:round10mm",
-    "ntgl:round45"
-  ],
   "sounds": {
     "fire": "ntgl:item.pistol10mm.fire",
     "reload": "ntgl:item.pistol10mm.reload",
