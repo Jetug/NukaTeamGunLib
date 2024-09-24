@@ -1,12 +1,9 @@
 package com.nukateam.ntgl.common.base.utils;
 
-import com.nukateam.ntgl.common.base.gun.Ammo;
-import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.interfaces.IProjectileFactory;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -14,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A class to manage custom projectile factories
+ * A class to manage custom ammo factories
  * <p>
  * Author: MrCrayfish
  */

@@ -10,13 +10,11 @@ import com.nukateam.ntgl.client.model.GeoGunModel;
 import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
 import com.nukateam.ntgl.client.render.renderers.GeoDynamicItemRenderer;
 import com.nukateam.ntgl.common.base.gun.GripType;
-import com.nukateam.ntgl.common.base.gun.Ammo;
 import com.nukateam.ntgl.common.data.util.AnimationHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 
 import com.nukateam.ntgl.common.helpers.PlayerHelper;
-import mod.azure.azurelib.cache.AzureLibCache;
 import mod.azure.azurelib.core.animation.Animation;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.AnimationState;
@@ -32,8 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
 
 import static com.nukateam.example.common.data.constants.Animations.*;
 import static com.nukateam.ntgl.client.data.util.TransformUtils.*;

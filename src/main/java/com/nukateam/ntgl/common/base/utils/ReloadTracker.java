@@ -2,8 +2,7 @@ package com.nukateam.ntgl.common.base.utils;
 
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.gun.Ammo;
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.base.gun.LoadingTypes;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.util.*;

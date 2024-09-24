@@ -95,7 +95,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
                 }
 
                 var gameTime = projectile.level().getGameTime();
-                var yOffset = 0; //(int) projectile.position().y;
+                var yOffset = 0; //(int) ammo.position().y;
                 var color = new Rgba(1, 1, 1, 1);
 
                 RenderUtils.renderBeam(poseStack, bufferSource, texture, partialTicks, 1.0F,

@@ -1,7 +1,5 @@
 package com.nukateam.ntgl.common.base.utils;
 
-import com.nukateam.ntgl.common.base.gun.Ammo;
-import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -9,7 +7,6 @@ import com.google.common.collect.Maps;
 import net.minecraft.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import org.apache.commons.lang3.tuple.Pair;

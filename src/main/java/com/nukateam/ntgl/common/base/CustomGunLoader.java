@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.base;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.base.config.CustomGun;
 import com.nukateam.ntgl.common.base.gun.*;
 import com.nukateam.ntgl.common.base.utils.JsonDeserializers;
 import com.nukateam.ntgl.common.data.annotation.Validator;

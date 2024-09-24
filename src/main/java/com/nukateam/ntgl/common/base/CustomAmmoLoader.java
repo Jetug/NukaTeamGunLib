@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.base.config.CustomAmmo;
 import com.nukateam.ntgl.common.base.gun.*;
 import com.nukateam.ntgl.common.base.utils.JsonDeserializers;
 import com.nukateam.ntgl.common.data.annotation.Validator;

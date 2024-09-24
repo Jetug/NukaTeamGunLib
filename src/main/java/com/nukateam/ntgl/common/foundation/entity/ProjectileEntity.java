@@ -3,9 +3,8 @@ package com.nukateam.ntgl.common.foundation.entity;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.example.common.data.interfaces.IExplosiveOnHit;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.base.gun.Ammo;
-import com.nukateam.ntgl.common.base.gun.Gun;
-import com.nukateam.ntgl.common.base.gun.Ammo;
+import com.nukateam.ntgl.common.base.config.Ammo;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
 import com.nukateam.ntgl.common.data.interfaces.*;
@@ -37,7 +36,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.*;
@@ -114,7 +112,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         /* Get speed and set motion */
         setupDirection(shooter, weapon, item, modifiedGun);
 
-        /* Spawn the projectile half way between the previous and current position */
+        /* Spawn the ammo half way between the previous and current position */
         var posX = shooter.xOld + (shooter.getX() - shooter.xOld) / 2.0;
         var posY = shooter.yOld + (shooter.getY() - shooter.yOld) / 2.0 + shooter.getEyeHeight();
         var posZ = shooter.zOld + (shooter.getZ() - shooter.zOld) / 2.0;
@@ -347,14 +345,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     /**
-     * Gets the entity who spawned the projectile
+     * Gets the entity who spawned the ammo
      */
     public LivingEntity getShooter() {
         return this.shooter;
     }
 
     /**
-     * Gets the id of the entity who spawned the projectile
+     * Gets the id of the entity who spawned the ammo
      */
     public int getShooterId() {
         shooterId = getEntityData().get(SHOOTER);
@@ -381,7 +379,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     /**
-     * Creates a projectile explosion for the specified entity.
+     * Creates a ammo explosion for the specified entity.
      *
      * @param entity    The entity to explodeOnHit
      * @param radius    The amount of radius the entity should deal
@@ -424,14 +422,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     /**
-     * A simple method to perform logic on each tick of the projectile. This method is appropriate
+     * A simple method to perform logic on each tick of the ammo. This method is appropriate
      * for spawning particles. Override {@link #tick()} to make changes to physics
      */
     protected void onProjectileTick() {
     }
 
     /**
-     * Called when the projectile has run out of it's life. In other words, the projectile managed
+     * Called when the ammo has run out of it's life. In other words, the ammo managed
      * to not hit any blocks and instead aged. The grenade uses this to explodeOnHit in the air.
      */
     protected void onExpired() {
@@ -824,14 +822,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
 
         /**
-         * Gets the entity that was hit by the projectile
+         * Gets the entity that was hit by the ammo
          */
         public Entity getEntity() {
             return this.entity;
         }
 
         /**
-         * Gets the position the projectile hit
+         * Gets the position the ammo hit
          */
         public Vec3 getHitPos() {
             return this.hitVec;

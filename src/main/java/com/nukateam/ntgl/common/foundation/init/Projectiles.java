@@ -19,7 +19,7 @@ public class Projectiles {
     public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Ntgl.MOD_ID);
 
 
-    public static final RegistryObject<EntityType<ProjectileEntity>> PROJECTILE = registerProjectile("projectile", ProjectileEntity::new);
+    public static final RegistryObject<EntityType<ProjectileEntity>> PROJECTILE = registerProjectile("ammo", ProjectileEntity::new);
     public static final RegistryObject<EntityType<LaserProjectile>> LASER_PROJECTILE = registerBasic("laser_projectile", LaserProjectile::new);
     public static final RegistryObject<EntityType<ContinuousLaserProjectile>> CONTINUOUS_LASER_PROJECTILE = registerBasic("continuous_laser_projectile", ContinuousLaserProjectile::new);
     public static final RegistryObject<EntityType<TeslaProjectile>> TESLA_PROJECTILE = registerBasic("tesla_projectile", TeslaProjectile::new);
@@ -46,9 +46,9 @@ public class Projectiles {
      * in the world and are spawned many times a tick. There is no reason to send unnecessary packets
      * when it can be avoided to drastically improve the performance of the game.
      *
-     * @param id       the id of the projectile
-     * @param function the factory to spawn the projectile for the server
-     * @param <T>      an entity that is a projectile entity
+     * @param id       the id of the ammo
+     * @param function the factory to spawn the ammo for the server
+     * @param <T>      an entity that is a ammo entity
      * @return A registry object containing the new entity type
      */
     private static <T extends ProjectileEntity> RegistryObject<EntityType<T>> registerProjectile(String id, BiFunction<EntityType<T>, Level, T> function) {

@@ -2,9 +2,7 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.client.ClientPlayHandler;
-import com.nukateam.ntgl.common.base.gun.Ammo;
-import com.nukateam.ntgl.common.base.gun.Ammo;
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.config.Ammo;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.network.BufferUtil;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;

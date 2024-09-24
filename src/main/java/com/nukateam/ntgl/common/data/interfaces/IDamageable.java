@@ -6,7 +6,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * An interface for notifying a block it has been hit by a projectile.
+ * An interface for notifying a block it has been hit by a ammo.
  * <p>
  * Author: MrCrayfish
  */

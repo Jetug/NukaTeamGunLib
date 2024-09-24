@@ -13,7 +13,7 @@
     "alwaysSpread": true,
     "spread": 1.0
   },
-  "projectile": [
+  "ammo": [
     "ntgl:round10mm",
     "ntgl:round45"
   ],

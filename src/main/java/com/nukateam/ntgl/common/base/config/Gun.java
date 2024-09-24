@@ -1,7 +1,11 @@
-package com.nukateam.ntgl.common.base.gun;
+package com.nukateam.ntgl.common.base.config;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
+import com.nukateam.ntgl.common.base.gun.AttachmentType;
+import com.nukateam.ntgl.common.base.gun.FireMode;
+import com.nukateam.ntgl.common.base.gun.GripType;
+import com.nukateam.ntgl.common.base.gun.LoadingTypes;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.data.annotation.Ignored;
 import com.nukateam.ntgl.common.data.annotation.Optional;
@@ -32,7 +36,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -48,12 +51,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.client.ClientHandler.*;
-import static com.nukateam.ntgl.common.base.utils.NbtUtils.deserializeProjectileMap;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
     protected General general = new General();
-    protected Set<ResourceLocation> projectile = new HashSet<>(List.of(new ResourceLocation("ntgl:round10mm")));
+    protected Set<ResourceLocation> ammo = new HashSet<>(List.of(new ResourceLocation("ntgl:round10mm")));
     protected Sounds sounds = new Sounds();
     protected Display display = new Display();
     protected Modules modules = new Modules();
@@ -62,12 +64,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.general;
     }
 
-//    public Projectile getProjectile() {
-//        return this.projectile;
+//    public Projectile getAmmo() {
+//        return this.ammo;
 //    }
 
-    public Set<ResourceLocation> getProjectile() {
-        return this.projectile;
+    public Set<ResourceLocation> getAmmo() {
+        return this.ammo;
     }
 
     public Sounds getSounds() {
@@ -432,7 +434,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         /**
          * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
-         * the fired projectile.
+         * the fired ammo.
          */
         public float getSpread() {
             return this.spread;
@@ -1112,7 +1114,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.put("General", this.general.serializeNBT());
-        tag.put("Projectile", NbtUtils.serializeSet(this.projectile));
+        tag.put("Ammo", NbtUtils.serializeSet(this.ammo));
         tag.put("Sounds", this.sounds.serializeNBT());
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
@@ -1124,8 +1126,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains("General", Tag.TAG_COMPOUND)) {
             this.general.deserializeNBT(tag.getCompound("General"));
         }
-        if (tag.contains("Projectile", Tag.TAG_COMPOUND)) {
-            this.projectile = NbtUtils.deserializeAmmoSet(tag.getCompound("Projectile"));
+        if (tag.contains("Ammo", Tag.TAG_COMPOUND)) {
+            this.ammo = NbtUtils.deserializeAmmoSet(tag.getCompound("Ammo"));
         }
         if (tag.contains("Sounds", Tag.TAG_COMPOUND)) {
             this.sounds.deserializeNBT(tag.getCompound("Sounds"));
@@ -1141,7 +1143,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public JsonObject toJsonObject() {
         JsonObject object = new JsonObject();
         object.add("general", this.general.toJsonObject());
-//        object.add("projectile", this.projectile.toJsonObject());
+//        object.add("ammo", this.ammo.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "sounds", this.sounds.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modules", this.modules.toJsonObject());
@@ -1157,7 +1159,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public Gun copy() {
         Gun gun = new Gun();
         gun.general = this.general.copy();
-        gun.projectile = new HashSet<>(this.projectile);
+        gun.ammo = new HashSet<>(this.ammo);
         gun.sounds = this.sounds.copy();
         gun.display = this.display.copy();
         gun.modules = this.modules.copy();
@@ -1489,8 +1491,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this.gun.copy(); //Copy since the builder could be used again
         }
 
-        public Gun.Builder addProjectile(ResourceLocation id) {
-            this.gun.projectile.add(id);
+        public Gun.Builder addAmmo(ResourceLocation id) {
+            this.gun.ammo.add(id);
             return this;
         }
 

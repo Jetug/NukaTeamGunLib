@@ -1,8 +1,7 @@
-package com.nukateam.ntgl.common.base.gun;
+package com.nukateam.ntgl.common.base.config;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.annotation.Optional;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -10,18 +9,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.function.Supplier;
 
 public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
-    private ResourceLocation item = new ResourceLocation(Ntgl.MOD_ID, "round10mm");
     @Optional
     private boolean visible;
     private float damage;
@@ -42,7 +38,6 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.putString("Item", this.item.toString());
         tag.putBoolean("Visible", this.visible);
         tag.putFloat("Damage", this.damage);
         tag.putFloat("Size", this.size);
@@ -58,9 +53,6 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        if (tag.contains("Item", Tag.TAG_STRING)) {
-            this.item = new ResourceLocation(tag.getString("Item"));
-        }
         if (tag.contains("Visible", Tag.TAG_ANY_NUMERIC)) {
             this.visible = tag.getBoolean("Visible");
         }
@@ -95,7 +87,6 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public Ammo copy() {
         var projectile = new Ammo();
-        projectile.item = this.item;
         projectile.visible = this.visible;
         projectile.damage = this.damage;
         projectile.size = this.size;
@@ -116,7 +107,6 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         Preconditions.checkArgument(this.life > 0, "Projectile life must be more than zero");
         Preconditions.checkArgument(this.trailLengthMultiplier >= 0.0, "Projectile trail length multiplier must be more than or equal to zero");
         JsonObject object = new JsonObject();
-        object.addProperty("item", this.item.toString());
         if (this.visible) object.addProperty("visible", true);
         object.addProperty("damage", this.damage);
         object.addProperty("size", this.size);
@@ -132,56 +122,49 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     /**
-     * @return The registry id of the ammo item
-     */
-    public ResourceLocation getItem() {
-        return this.item;
-    }
-
-    /**
-     * @return If this projectile should be visible when rendering
+     * @return If this ammo should be visible when rendering
      */
     public boolean isVisible() {
         return this.visible;
     }
 
     /**
-     * @return The damage caused by this projectile
+     * @return The damage caused by this ammo
      */
     public float getDamage() {
         return this.damage;
     }
 
     /**
-     * @return The size of the projectile entity bounding box
+     * @return The size of the ammo entity bounding box
      */
     public float getSize() {
         return this.size;
     }
 
     /**
-     * @return The speed the projectile moves every tick
+     * @return The speed the ammo moves every tick
      */
     public double getSpeed() {
         return this.speed;
     }
 
     /**
-     * @return The amount of ticks before this projectile is removed
+     * @return The amount of ticks before this ammo is removed
      */
     public int getLife() {
         return this.life;
     }
 
     /**
-     * @return If gravity should be applied to the projectile
+     * @return If gravity should be applied to the ammo
      */
     public boolean isGravity() {
         return this.gravity;
     }
 
     /**
-     * @return If the damage should reduce the further the projectile travels
+     * @return If the damage should reduce the further the ammo travels
      */
     public boolean isDamageReduceOverLife() {
         return this.damageReduceOverLife;
@@ -193,23 +176,23 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     /**
-     * @return The color of the projectile trail in rgba integer format
+     * @return The color of the ammo trail in rgba integer format
      */
     public int getTrailColor() {
         return this.trailColor;
     }
 
     /**
-     * @return The multiplier to change the length of the projectile trail
+     * @return The multiplier to change the length of the ammo trail
      */
     public double getTrailLengthMultiplier() {
         return this.trailLengthMultiplier;
     }
 
     public static Ammo create(CompoundTag tag) {
-        var gun = new Ammo();
-        gun.deserializeNBT(tag);
-        return gun;
+        var ammo = new Ammo();
+        ammo.deserializeNBT(tag);
+        return ammo;
     }
 
     @Override
@@ -241,25 +224,20 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
             this.ammo = new Ammo();
         }
 
-        private Builder(Ammo gun) {
-            this.ammo = gun.copy();
+        private Builder(Ammo ammo) {
+            this.ammo = ammo.copy();
         }
 
         public static Ammo.Builder create() {
             return new Ammo.Builder();
         }
 
-        public static Ammo.Builder create(Ammo gun) {
-            return new Ammo.Builder(gun);
+        public static Ammo.Builder create(Ammo ammo) {
+            return new Ammo.Builder(ammo);
         }
 
         public Ammo build() {
             return this.ammo.copy(); //Copy since the builder could be used again
-        }
-
-        public Ammo.Builder setAmmo(ResourceLocation id, Item item) {
-            this.ammo.item = ForgeRegistries.ITEMS.getKey(item);
-            return this;
         }
 
         public Ammo.Builder setProjectileVisible(ResourceLocation id, boolean visible) {

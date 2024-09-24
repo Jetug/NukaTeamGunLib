@@ -1,5 +1,7 @@
 package com.nukateam.ntgl.common.data.util;
 
+import com.nukateam.ntgl.common.base.config.Ammo;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.base.gun.*;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
@@ -160,7 +162,7 @@ public class GunModifierHelper {
     }
 
     public static Set<ResourceLocation> getAmmoItems(ItemStack weapon) {
-        var items = getGun(weapon).getProjectile();
+        var items = getGun(weapon).getAmmo();
         var ammoItem = new AtomicReference<>(items);
         forEachAttachment(weapon, (modifier -> ammoItem.set(modifier.modifyAmmoItems(ammoItem.get()))));
         return ammoItem.get();

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.gun.Ammo;
+import com.nukateam.ntgl.common.base.config.Ammo;
 import com.nukateam.ntgl.common.foundation.item.AmmoItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAmmo;
