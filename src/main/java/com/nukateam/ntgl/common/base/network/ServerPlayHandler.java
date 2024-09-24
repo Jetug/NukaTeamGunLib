@@ -58,6 +58,8 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Predicate;
+
+import static com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys.getReloadKey;
 //import static com.nukateam.guns.client.handler.ShootingHandler.gunCooldown;
 
 /**
@@ -107,7 +109,7 @@ public class ServerPlayHandler {
                     return;
                 }
 
-                tracker.putCooldown(heldItem, item, hand);
+                tracker.putCooldown(heldItem, hand);
 
                 if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(shooter)) {
                     ModSyncedDataKeys.RELOADING_RIGHT.setValue(shooter, false);
@@ -390,6 +392,9 @@ public class ServerPlayHandler {
     }
 
     public static void handleAmmoModeSwitch(InteractionHand hand, ServerPlayer player, ItemStack stack) {
+        var isReloading = getReloadKey(hand);
+        if(isReloading.getValue(player))
+            return;
         handleUnload(player, hand);
         handleReload(new C2SMessageReload(true, hand), player);
         GunModifierHelper.switchAmmo(stack);

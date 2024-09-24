@@ -1,0 +1,72 @@
+{
+  "general": {
+    "rate": 5,
+    "gripType": "ntgl:two_handed",
+    "maxAmmo": 20,
+    "reloadTime": 65,
+    "reloadAmount": 1,
+    "recoilAngle": 10.0,
+    "recoilKick": 0.5,
+    "recoilAdsReduction": 0.6,
+    "projectileAmount": 1,
+    "alwaysSpread": false,
+    "damage": 10.0,
+    "spread": 2.0,
+    "ammo": [
+      "ntgl:fusion_cell"
+    ]
+  },
+  "sounds": {
+    "fire": "ntgl:item.tesla_carbine.fire",
+    "reload": "ntgl:item.tesla_carbine.reload",
+    "cock": "ntgl:item.tesla_carbine.cock",
+    "silencedFire": "ntgl:item.tesla_carbine.silenced_fire",
+    "enchantedFire": "ntgl:item.tesla_carbine.enchanted_fire"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 3.6505,
+      "zOffset": -3.81
+    }
+  },
+  "modules": {
+    "zoom": {
+      "xOffset": 0.0,
+      "yOffset": 4.8,
+      "zOffset": 0.0,
+      "fovModifier": 0.7
+    },
+    "attachments": {
+      "ntgl:scope": [
+        {
+          "name": "scope_1",
+          "item": "ntgl:tesla_iron_sight"
+        }
+      ],
+      "ntgl:barrel": [
+        {
+          "name": "barrel_1",
+          "item": "ntgl:tesla_charging_barrel"
+        },
+        {
+          "name": "barrel_2",
+          "item": "ntgl:tesla_auto_barrel"
+        },
+        {
+          "name": "barrel_3",
+          "item": "ntgl:tesla_rail_barrel"
+        },
+        {
+          "name": "barrel_4",
+          "item": "ntgl:tesla_overheat_barrel"
+        }
+      ],
+      "ntgl:stock": [
+        {
+          "name": "grip_1",
+          "item": "ntgl:tesla_tactical_grip"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "general": {
+    "auto": false,
+    "rate": 10,
+    "gripType": "ntgl:two_handed",
+    "maxAmmo": 40,
+    "reloadTime": 40,
+    "reloadAmount": 10,
+    "recoilAngle": 3.0,
+    "recoilKick": 0.25,
+    "spread": 4.0,
+    "damage": 10.0,
+    "ammo": [
+      "ntgl:fusion_cell"
+    ]
+  },
+  "projectile": {
+    "item": "ntgl:fusion_cell",
+    "damage": 6.5,
+    "size": 0.2,
+    "speed": 150,
+    "life": 6
+  },
+  "sounds": {
+    "fire": "ntgl:item.laser_rifle.fire",
+    "reload": "ntgl:item.laser_rifle.reload",
+    "cock": "ntgl:item.laser_rifle.cock",
+    "silencedFire": "ntgl:item.laser_rifle.silenced_fire",
+    "enchantedFire": "ntgl:item.laser_rifle.enchanted_fire"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 3.6,
+      "zOffset": -6.41
+    }
+  },
+  "modules": {
+    "zoom": {
+      "xOffset": -0.6,
+      "yOffset": 4.1,
+      "zOffset": -12.1,
+      "fovModifier": 0.6
+    },
+    "attachments": {
+      "ntgl:scope": [
+        {
+          "name": "scope_5",
+          "item": "ntgl:pistol_collimator_sight"
+        },
+        {
+          "name": "scope_1",
+          "item": "ntgl:pistol_holographic_sight"
+        },
+        {
+          "name": "scope_6",
+          "item": "ntgl:pistol_hunting_optics"
+        },
+        {
+          "name": "scope_3",
+          "item": "ntgl:pistol_iron_sight"
+        },
+        {
+          "name": "scope_2",
+          "item": "ntgl:pistol_scout_sight"
+        },
+        {
+          "name": "scope_4",
+          "item": "ntgl:laser_all_vision"
+        }
+      ],
+      "ntgl:barrel": [
+        {
+          "name": "barrel_1",
+          "item": "ntgl:laser_sniper_barrel",
+          "hide": [
+            "barrel_default"
+          ]
+        },
+        {
+          "name": "barrel_2",
+          "item": "ntgl:laser_auto_barrel",
+          "hide": [
+            "barrel_default"
+          ]
+        },
+        {
+          "name": "barrel_3",
+          "item": "ntgl:laser_protectron_barrel",
+          "hide": [
+            "barrel_default"
+          ]
+        }
+      ],
+      "ntgl:stock": [
+        {
+          "name": "grip_1",
+          "item": "ntgl:laser_tactical_grip"
+        },
+        {
+          "name": "grip_2",
+          "item": "ntgl:laser_long_grip"
+        },
+        {
+          "name": "grip_3",
+          "item": "ntgl:laser_weighted_grip"
+        }
+      ]
+    }
+  }
+}

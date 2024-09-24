@@ -6,6 +6,7 @@ import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -39,6 +40,13 @@ public class ModSyncedDataKeys {
     public static final SyncedDataKey<LivingEntity, Boolean> RELOADING_LEFT  = registerBooleanKey("reloading_left" );
     public static final SyncedDataKey<LivingEntity, Boolean> CHARGING_RIGHT  = registerBooleanKey("charging_right" );
     public static final SyncedDataKey<LivingEntity, Boolean> CHARGING_LEFT   = registerBooleanKey("charging_left"  );
+
+    public static SyncedDataKey<LivingEntity, Boolean> getReloadKey(InteractionHand hand){
+        return switch (hand){
+            case MAIN_HAND -> RELOADING_RIGHT;
+            case OFF_HAND -> RELOADING_LEFT;
+        };
+    }
 
     public static void register() {
         FrameworkAPI.registerSyncedDataKey(AIMING);

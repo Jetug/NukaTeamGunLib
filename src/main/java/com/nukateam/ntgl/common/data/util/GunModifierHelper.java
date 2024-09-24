@@ -5,7 +5,6 @@ import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.base.gun.*;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
-import com.nukateam.ntgl.common.foundation.item.AmmoItem;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
@@ -144,8 +143,8 @@ public class GunModifierHelper {
         return getFirstAmmoItem(weapon);
     }
 
-    public static AmmoItem getCurrentAmmoItem(ItemStack weapon) {
-        return (AmmoItem)ForgeRegistries.ITEMS.getValue(getCurrentAmmo(weapon));
+    public static IAmmo getCurrentAmmoItem(ItemStack weapon) {
+        return (IAmmo)ForgeRegistries.ITEMS.getValue(getCurrentAmmo(weapon));
     }
 
     public static AmmoType getCurrentAmmoType(ItemStack weapon) {
@@ -156,7 +155,7 @@ public class GunModifierHelper {
 
     public static Ammo getCurrentProjectile(ItemStack weapon) {
         var item = getCurrentAmmo(weapon);
-        var ammoItem = (AmmoItem)ForgeRegistries.ITEMS.getValue(item);
+        var ammoItem = (IAmmo)ForgeRegistries.ITEMS.getValue(item);
         return ammoItem.getAmmo();
     }
 
@@ -298,7 +297,9 @@ public class GunModifierHelper {
         return Mth.clamp(speed, 0.01, Double.MAX_VALUE);
     }
 
-    public static int getModifiedRate(ItemStack weapon, int rate) {
+    public static int getModifiedRate(ItemStack weapon) {
+        var gun = getGun(weapon);
+        var rate = GunEnchantmentHelper.getRate(weapon, gun);
         var buffRate = new AtomicInteger(rate);
         forEachAttachment(weapon, (modifier -> buffRate.set(modifier.modifyFireRate(buffRate.get()))));
         return Mth.clamp(rate, 0, Integer.MAX_VALUE);

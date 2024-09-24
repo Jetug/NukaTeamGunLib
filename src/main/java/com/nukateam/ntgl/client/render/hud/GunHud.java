@@ -4,9 +4,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.client.event.InputEvents;
 import com.nukateam.ntgl.common.base.config.*;
+import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
-import com.nukateam.ntgl.common.foundation.item.AmmoItem;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -24,15 +25,16 @@ public class GunHud implements IGuiOverlay {
     private static final DecimalFormat CURRENT_AMMO_FORMAT = new DecimalFormat("000");
     private static final DecimalFormat INVENTORY_AMMO_FORMAT = new DecimalFormat("0000");
     public static final float COUNTER_SCALE = 0.9f;
+    public static final int DEFAULT_AMMO_COLOR = 0xFFFFFF;
     public static final int LOW_AMMO_COLOR = 0xFF5555;
     public static final int ICON_X = 115;
     private static long checkAmmoTimestamp = -1L;
+    //TODO: make left and right hand cache
     private static int cacheMaxAmmoCount = 0;
     private static int cacheInventoryAmmoCount = 0;
 
     public static final IGuiOverlay AMMO_HUD = new GunHud();
-    public static int hudColor = 0xFFFFFF;
-
+    public static int hudColor = DEFAULT_AMMO_COLOR;
 
     @Override
     public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
@@ -48,7 +50,10 @@ public class GunHud implements IGuiOverlay {
         }
         if(offhandItem.getItem() instanceof GunItem) {
             var x = 110;
-            renderAmmoCounter(graphics, offhandItem, x, height);
+            if(GunModifierHelper.getGripType(offhandItem) == GripType.ONE_HANDED &&
+                    !(mainHandItem.getItem() instanceof GunItem &&
+                    GunModifierHelper.getGripType(mainHandItem) != GripType.ONE_HANDED))
+                renderAmmoCounter(graphics, offhandItem, x, height);
         }
     }
 
@@ -161,17 +166,19 @@ public class GunHud implements IGuiOverlay {
     private static void handleInventoryAmmo(ItemStack stack, Inventory inventory) {
         cacheInventoryAmmoCount = 0;
         for (int i = 0; i < inventory.getContainerSize(); i++) {
-            var inventoryItem = inventory.getItem(i);
-            if (inventoryItem.getItem() instanceof AmmoItem iAmmo &&
-                    GunModifierHelper.getCurrentAmmo(stack).equals(ForgeRegistries.ITEMS.getKey(iAmmo))) {
-                cacheInventoryAmmoCount += inventoryItem.getCount();
+            var inventoryStack = inventory.getItem(i);
+            var inventoryItem = inventoryStack.getItem();
+
+            if (inventoryStack.getItem() instanceof IAmmo &&
+                    GunModifierHelper.getCurrentAmmo(stack).equals(ForgeRegistries.ITEMS.getKey(inventoryItem))) {
+                cacheInventoryAmmoCount += inventoryStack.getCount();
             }
-//            if (inventoryItem.getItem() instanceof AmmoBoxItem iAmmoBox && iAmmoBox.isAmmoBoxOfGun(stack, inventoryItem)) {
-//                if (iAmmoBox.isAllTypeCreative(inventoryItem) || iAmmoBox.isCreative(inventoryItem)) {
+//            if (inventoryStack.getItem() instanceof AmmoBoxItem iAmmoBox && iAmmoBox.isAmmoBoxOfGun(stack, inventoryStack)) {
+//                if (iAmmoBox.isAllTypeCreative(inventoryStack) || iAmmoBox.isCreative(inventoryStack)) {
 //                    cacheInventoryAmmoCount = 9999;
 //                    return;
 //                }
-//                cacheInventoryAmmoCount += iAmmoBox.getAmmoCount(inventoryItem);
+//                cacheInventoryAmmoCount += iAmmoBox.getAmmoCount(inventoryStack);
 //            }
         }
     }

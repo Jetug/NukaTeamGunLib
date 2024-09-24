@@ -1,0 +1,61 @@
+{
+  "general": {
+    "fireMode": ["ntgl:auto"],
+    "rate": 1,
+    "gripType": "ntgl:mini_gun",
+    "category": "heavy",
+    "damage": 5.0,
+    "maxAmmo": 1000,
+    "reloadTime": 40,
+    "recoilAngle": 0.0,
+    "alwaysSpread": true,
+    "spread": 6.0,
+    "ammo": [
+      "ntgl:round5mm"
+    ]
+  },
+  "sounds": {
+    "fire": "ntgl:item.flamer.fire",
+    "reload": "ntgl:item.military_flamer.reload",
+    "cock": "ntgl:item.flamer.cock"
+  },
+  "modules": {
+    "attachments": {
+      "ntgl:barrel": [
+        {
+          "name": "barrel_1",
+          "item": "ntgl:flamer_long_barrel",
+          "hide": [
+            "barrel_default"
+          ]
+        },
+        {
+          "name": "barrel_2",
+          "item": "ntgl:flamer_compress_barrel",
+          "hide": [
+            "barrel_default"
+          ]
+        },
+        {
+          "name": "barrel_3",
+          "item": "ntgl:flamer_evaporative_barrel",
+          "hide": [
+            "barrel_default"
+          ]
+        },
+        {
+          "name": "barrel_4",
+          "item": "ntgl:flamer_heavy_barrel",
+          "hide": [
+            "barrel_default"
+          ]
+        }
+      ],
+      "ntgl:stock": [
+        {
+          "name": "grip_1",
+          "item": "ntgl:stock_shield"
+        }
+      ]
+    }
+  }}

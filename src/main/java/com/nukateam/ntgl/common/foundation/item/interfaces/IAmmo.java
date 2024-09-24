@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.interfaces;
 
+import com.nukateam.ntgl.common.base.NetworkAmmoManager;
 import com.nukateam.ntgl.common.base.config.Ammo;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
 
@@ -15,4 +16,6 @@ public interface IAmmo {
     default IGunModifier[] getModifiers() {
         return new IGunModifier[0];
     }
+
+    void setAmmo(NetworkAmmoManager.Supplier supplier);
 }
