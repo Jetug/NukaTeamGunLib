@@ -52,9 +52,7 @@ import static com.nukateam.ntgl.common.base.utils.NbtUtils.deserializeProjectile
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
     protected General general = new General();
-    protected Map<ResourceLocation, Projectile> projectile = new HashMap<>(){{
-        put(new ResourceLocation("ntgl:round10mm"), new Projectile());
-    }};
+    protected Set<ResourceLocation> projectile = new HashSet<>(List.of(new ResourceLocation("ntgl:round10mm")));
     protected Sounds sounds = new Sounds();
     protected Display display = new Display();
     protected Modules modules = new Modules();
@@ -74,7 +72,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return null;
     }
 
-    public Map<ResourceLocation, Projectile> getProjectile() {
+    public Set<ResourceLocation> getProjectile() {
         return this.projectile;
     }
 

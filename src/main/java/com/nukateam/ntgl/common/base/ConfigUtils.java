@@ -53,7 +53,7 @@ public class ConfigUtils {
 
     @NotNull
     public static<T extends Item, Y> Map<T, Y> getConfigMap(ResourceManager manager, Function<Item, Boolean> tClass, Class<Y> yClass, String resourcePath) {
-        Map<T, Y> map = new HashMap<>();
+        var map = new HashMap<T, Y>();
 
         ITEMS.getValues().stream().filter(tClass::apply).forEach(item ->
         {
