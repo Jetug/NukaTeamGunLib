@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.base.config;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+import com.nukateam.ntgl.common.base.gun.AmmoType;
 import com.nukateam.ntgl.common.data.annotation.Optional;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
+    public static final String TYPE = "Type";
     @Optional
     private boolean visible;
     private float damage = 1;
@@ -34,6 +36,8 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     private int trailColor = 0xFFD289;
     @Optional
     private double trailLengthMultiplier = 1.0;
+    @Optional
+    private AmmoType type = AmmoType.STANDARD;
 
     @Override
     public CompoundTag serializeNBT() {
@@ -48,6 +52,7 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.putBoolean("MagazineMode", this.magazineMode);
         tag.putInt("TrailColor", this.trailColor);
         tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
+        tag.putString(TYPE, this.type.toString());
         return tag;
     }
 
@@ -83,6 +88,9 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains("TrailLengthMultiplier", Tag.TAG_ANY_NUMERIC)) {
             this.trailLengthMultiplier = tag.getDouble("TrailLengthMultiplier");
         }
+        if (tag.contains(TYPE, Tag.TAG_STRING)) {
+            this.type = AmmoType.getType(ResourceLocation.tryParse(tag.getString(TYPE)));
+        }
     }
 
     public Ammo copy() {
@@ -97,6 +105,7 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         projectile.magazineMode = this.magazineMode;
         projectile.trailColor = this.trailColor;
         projectile.trailLengthMultiplier = this.trailLengthMultiplier;
+        projectile.type = this.type;
         return projectile;
     }
 
@@ -112,6 +121,8 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         object.addProperty("size", this.size);
         object.addProperty("speed", this.speed);
         object.addProperty("life", this.life);
+        object.addProperty("type", this.type.toString());
+
         if (this.gravity) object.addProperty("gravity", true);
         if (this.damageReduceOverLife) object.addProperty("damageReduceOverLife", this.damageReduceOverLife);
         if (this.magazineMode) object.addProperty("magazineMode", this.magazineMode);
@@ -187,6 +198,10 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
      */
     public double getTrailLengthMultiplier() {
         return this.trailLengthMultiplier;
+    }
+
+    public AmmoType getType() {
+        return this.type;
     }
 
     public static Ammo create(CompoundTag tag) {

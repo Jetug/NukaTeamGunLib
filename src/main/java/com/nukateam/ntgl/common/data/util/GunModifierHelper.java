@@ -149,13 +149,9 @@ public class GunModifierHelper {
     }
 
     public static AmmoType getCurrentAmmoType(ItemStack weapon) {
-        var item = ForgeRegistries.ITEMS.getValue(getCurrentAmmo(weapon));
-
-        if(item instanceof IAmmo ammo){
-            return ammo.getType();
-        }
-
-        return AmmoType.STANDARD;
+        var ammo = (IAmmo)ForgeRegistries.ITEMS.getValue(getCurrentAmmo(weapon));
+        assert ammo != null;
+        return ammo.getAmmo().getType();
     }
 
     public static Ammo getCurrentProjectile(ItemStack weapon) {
@@ -326,7 +322,7 @@ public class GunModifierHelper {
             applyModifiers(consumer, modifiers);
         }
 
-        applyModifiers(consumer, getCurrentAmmoItem(weapon).getModifiers());
+//        applyModifiers(consumer, getCurrentAmmoItem(weapon).getModifiers());
     }
 
     private static void applyModifiers(Consumer<IGunModifier> consumer, IGunModifier[] ammoModifiers) {

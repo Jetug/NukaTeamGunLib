@@ -18,9 +18,8 @@ import net.minecraft.world.level.Level;
 public class GrenadeItem extends AmmoItem {
     protected int maxCookTime;
 
-
     public GrenadeItem(Item.Properties properties, int maxCookTime) {
-        super(properties, AmmoType.EXPLOSIVE);
+        super(properties);
         this.maxCookTime = maxCookTime;
     }
 

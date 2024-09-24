@@ -4,6 +4,7 @@
     "fireMode": ["ntgl:auto", "ntgl:semi"],
     "gripType": "ntgl:one_handed",
     "loadingType": "magazine",
+    "damage" : 10,
     "maxAmmo": 20,
     "reloadTime": 30,
     "reloadAmount": 2,

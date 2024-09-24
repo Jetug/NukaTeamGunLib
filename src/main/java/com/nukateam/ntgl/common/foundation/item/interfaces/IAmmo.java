@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item.interfaces;
 
-import com.nukateam.ntgl.common.base.gun.AmmoType;
+import com.nukateam.ntgl.common.base.config.Ammo;
+import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
 
 /**
  * A simple interface to indicate that this item is ammo. This will make sure that it's put into the
@@ -9,7 +10,9 @@ import com.nukateam.ntgl.common.base.gun.AmmoType;
  * Author: MrCrayfish
  */
 public interface IAmmo {
-    default AmmoType getType(){
-        return AmmoType.STANDARD;
+    Ammo getAmmo();
+
+    default IGunModifier[] getModifiers() {
+        return new IGunModifier[0];
     }
 }

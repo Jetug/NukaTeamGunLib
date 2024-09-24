@@ -1,10 +1,9 @@
 {
-  "item": "ntgl:round10mm",
   "visible": true,
   "magazineMode": true,
   "damage": 2.0,
   "size": 0.2,
   "speed": 300,
   "life": 7,
-  "type": "ballistic"
+  "type": "ntgl:standard"
 }
