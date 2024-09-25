@@ -1322,10 +1322,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if(context == AmmoContext.NONE){
                 var set = GunModifierHelper.getAmmoItems(weapon);
                 for (var value: set) {
-                    if(!value.equals(id)){
-                        context = findPlayerAmmo(player, value);
+                    if(!value.equals(id) && Gun.getAmmo(weapon) == 0){
+                        id = value;
+                        context = findPlayerAmmo(player, id);
                         if(context != AmmoContext.NONE) {
-                            GunModifierHelper.setCurrentAmmo(weapon, value);
+                            GunModifierHelper.setCurrentAmmo(weapon, id);
                             return context;
                         }
                     }
@@ -1346,10 +1347,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if(context == AmmoContext.NONE){
                 var set = GunModifierHelper.getAmmoItems(weapon);
                 for (var value: set) {
-                    if(!value.equals(id)){
-                        context = findPlayerMagazine(player, value);
+                    if(!value.equals(id) && Gun.getAmmo(weapon) == 0){
+                        id = value;
+                        context = findPlayerMagazine(player, id);
                         if(context != AmmoContext.NONE) {
-                            GunModifierHelper.setCurrentAmmo(weapon, value);
+                            GunModifierHelper.setCurrentAmmo(weapon, id);
                             return context;
                         }
                     }
