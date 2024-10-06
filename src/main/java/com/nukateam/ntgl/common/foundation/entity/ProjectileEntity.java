@@ -392,7 +392,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         var source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
         var mode = forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
-        Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
+        var explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
 
         if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
             return;

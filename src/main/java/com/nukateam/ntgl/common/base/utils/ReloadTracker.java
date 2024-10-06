@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.base.utils;
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.config.Gun;
-import com.nukateam.ntgl.common.base.gun.LoadingTypes;
+import com.nukateam.ntgl.common.base.gun.LoadingType;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -258,7 +258,7 @@ public class ReloadTracker {
             var reloadKey = getReloadKey(arm);
             reloadKey.setValue(player, false);
         }
-        else if(gun.getGeneral().getLoadingType().equals(LoadingTypes.MAGAZINE)){
+        else if(gun.getGeneral().getLoadingType() == LoadingType.MAGAZINE){
             if(tracker.reloadTick > 0)
                 tracker.reloadTick--;
 
@@ -267,7 +267,7 @@ public class ReloadTracker {
                 stopReloading(player, gun, arm);
             }
         }
-        else if(gun.getGeneral().getLoadingType().equals(LoadingTypes.PER_CARTRIDGE)){
+        else if(gun.getGeneral().getLoadingType() == LoadingType.PER_CARTRIDGE){
             if(tracker.reloadTick > 0)
                 tracker.reloadTick--;
 

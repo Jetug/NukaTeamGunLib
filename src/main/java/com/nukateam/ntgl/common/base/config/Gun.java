@@ -2,10 +2,7 @@ package com.nukateam.ntgl.common.base.config;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
-import com.nukateam.ntgl.common.base.gun.AttachmentType;
-import com.nukateam.ntgl.common.base.gun.FireMode;
-import com.nukateam.ntgl.common.base.gun.GripType;
-import com.nukateam.ntgl.common.base.gun.LoadingTypes;
+import com.nukateam.ntgl.common.base.gun.*;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.data.annotation.Ignored;
 import com.nukateam.ntgl.common.data.annotation.Optional;
@@ -135,7 +132,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Optional
         private int reloadTime = 1;
         @Optional
-        private String loadingType = LoadingTypes.MAGAZINE;
+        private LoadingType loadingType = LoadingType.MAGAZINE;
         @Optional
         private String category = "pistol";
         @Optional
@@ -171,7 +168,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             tag.putInt(MAX_AMMO, this.maxAmmo);
             tag.putInt(RELOAD_SPEED, this.reloadAmount);
             tag.putInt(RELOAD_TIME, this.reloadTime);
-            tag.putString(LOADING_TYPE, this.loadingType);
+            tag.putString(LOADING_TYPE, this.loadingType.toString());
             tag.putString(CATEGORY, this.category);
             tag.putFloat(RECOIL_ANGLE, this.recoilAngle);
             tag.putFloat(DAMAGE, this.damage);
@@ -215,7 +212,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 this.reloadTime = tag.getInt(RELOAD_TIME);
             }
             if (tag.contains(LOADING_TYPE, Tag.TAG_STRING)) {
-                this.loadingType = tag.getString(LOADING_TYPE);
+                this.loadingType = LoadingType.getType(tag.getString(LOADING_TYPE));
             }
             if (tag.contains(CATEGORY, Tag.TAG_STRING)) {
                 this.category = tag.getString(CATEGORY);
@@ -254,7 +251,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             Preconditions.checkArgument(this.maxAmmo > 0, "Max ammo must be more than zero");
             Preconditions.checkArgument(this.reloadAmount >= 1, "Reload amount must be more than or equal to zero");
             Preconditions.checkArgument(this.reloadTime >= 1, "Reload time must be more than or equal to zero");
-            Preconditions.checkArgument(!this.loadingType.equals(LoadingTypes.MAGAZINE) && !this.loadingType.equals(LoadingTypes.PER_CARTRIDGE), "Loading type must be " + LoadingTypes.MAGAZINE + " or " + LoadingTypes.PER_CARTRIDGE);
             Preconditions.checkArgument(this.recoilAngle >= 0.0F, "Recoil angle must be more than or equal to zero");
             Preconditions.checkArgument(this.damage >= 0.0F, "Damage angle must be more than or equal to zero");
             Preconditions.checkArgument(this.recoilKick >= 0.0F, "Recoil kick must be more than or equal to zero");
@@ -267,13 +263,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             object.addProperty("rate", this.rate);
             if (this.fireTimer != 0) object.addProperty("fireTimer", this.fireTimer);
 //            object.addProperty("fireMode", this.fireMode.getId().toString());
-            object.addProperty("gripType", this.gripType.getId().toString());
+            object.addProperty("gripType", this.gripType.toString());
+            object.addProperty("loadingType", this.loadingType.toString());
             object.addProperty("reloadType", this.reloadType.toString());
             object.addProperty("maxAmmo", this.maxAmmo);
             if (this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
             if (this.reloadTime != 1) object.addProperty("reloadTime", this.reloadTime);
-            if (this.loadingType.equals(LoadingTypes.MAGAZINE) || this.loadingType.equals(LoadingTypes.PER_CARTRIDGE))
-                object.addProperty("loadingType", this.loadingType);
             if (this.recoilAngle != 0.0F) object.addProperty("recoilAngle", this.recoilAngle);
             if (this.damage != 0.0F) object.addProperty("damage", this.damage);
             if (this.recoilKick != 0.0F) object.addProperty("recoilKick", this.recoilKick);
@@ -395,7 +390,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         /**
          * @return Type of loading
          */
-        public String getLoadingType() {
+        public LoadingType getLoadingType() {
             return this.loadingType;
         }
 
@@ -1545,7 +1540,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this;
         }
 
-        public Builder setLoadingType(String loadingType) {
+        public Builder setLoadingType(LoadingType loadingType) {
             this.gun.general.loadingType = loadingType;
             return this;
         }

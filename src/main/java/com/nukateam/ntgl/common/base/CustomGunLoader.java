@@ -1,21 +1,15 @@
 package com.nukateam.ntgl.common.base;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonElement;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.config.CustomGun;
-import com.nukateam.ntgl.common.base.gun.*;
-import com.nukateam.ntgl.common.base.utils.JsonDeserializers;
 import com.nukateam.ntgl.common.data.annotation.Validator;
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,22 +19,13 @@ import java.io.InvalidObjectException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.nukateam.ntgl.common.base.ConfigUtils.GSON_INSTANCE;
+
 /**
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class CustomGunLoader extends SimpleJsonResourceReloadListener {
-    private static final Gson GSON_INSTANCE = Util.make(() -> {
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(ResourceLocation.class, JsonDeserializers.RESOURCE_LOCATION);
-        builder.registerTypeAdapter(ItemStack.class, JsonDeserializers.ITEM_STACK);
-        builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
-        builder.registerTypeAdapter(FireMode.class, JsonDeserializers.FIRE_MODE);
-        builder.registerTypeAdapter(AttachmentType.class, JsonDeserializers.ATTACHMENT_TYPE);
-        builder.registerTypeAdapter(AmmoType.class, JsonDeserializers.AMMO_TYPE);
-        return builder.create();
-    });
-
     private static CustomGunLoader instance;
 
     private Map<ResourceLocation, CustomGun> customGunMap = new HashMap<>();
@@ -51,16 +36,15 @@ public class CustomGunLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> objects, ResourceManager manager, ProfilerFiller profiler) {
-        ImmutableMap.Builder<ResourceLocation, CustomGun> builder = ImmutableMap.builder();
-        objects.forEach((resourceLocation, object) ->
-        {
+        var builder = ImmutableMap.<ResourceLocation, CustomGun>builder();
+
+        objects.forEach((resourceLocation, object) -> {
             try {
-                CustomGun customGun = GSON_INSTANCE.fromJson(object, CustomGun.class);
-                if (customGun != null && Validator.isValidObject(customGun)) {
+                var customGun = GSON_INSTANCE.fromJson(object, CustomGun.class);
+                if (customGun != null && Validator.isValidObject(customGun))
                     builder.put(resourceLocation, customGun);
-                } else {
+                else
                     Ntgl.LOGGER.error("Couldn't load data file {} as it is missing or malformed", resourceLocation);
-                }
             } catch (InvalidObjectException e) {
                 Ntgl.LOGGER.error("Missing required properties for {}", resourceLocation);
                 e.printStackTrace();
@@ -68,6 +52,7 @@ public class CustomGunLoader extends SimpleJsonResourceReloadListener {
                 e.printStackTrace();
             }
         });
+
         this.customGunMap = builder.build();
     }
 
@@ -92,6 +77,7 @@ public class CustomGunLoader extends SimpleJsonResourceReloadListener {
      */
     public static ImmutableMap<ResourceLocation, CustomGun> readCustomGuns(FriendlyByteBuf buffer) {
         int size = buffer.readVarInt();
+
         if (size > 0) {
             ImmutableMap.Builder<ResourceLocation, CustomGun> builder = ImmutableMap.builder();
             for (int i = 0; i < size; i++) {
@@ -102,12 +88,13 @@ public class CustomGunLoader extends SimpleJsonResourceReloadListener {
             }
             return builder.build();
         }
+
         return ImmutableMap.of();
     }
 
     @SubscribeEvent
     public static void addReloadListenerEvent(AddReloadListenerEvent event) {
-        CustomGunLoader customGunLoader = new CustomGunLoader();
+        var customGunLoader = new CustomGunLoader();
         event.addListener(customGunLoader);
         CustomGunLoader.instance = customGunLoader;
     }

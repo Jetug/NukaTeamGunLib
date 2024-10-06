@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.base.network;
+package com.nukateam.ntgl.common.network;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;

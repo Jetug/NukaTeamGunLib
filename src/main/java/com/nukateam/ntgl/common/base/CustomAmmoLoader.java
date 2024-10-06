@@ -25,22 +25,13 @@ import java.io.InvalidObjectException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.nukateam.ntgl.common.base.ConfigUtils.GSON_INSTANCE;
+
 /**
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class CustomAmmoLoader extends SimpleJsonResourceReloadListener {
-    private static final Gson GSON_INSTANCE = Util.make(() -> {
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(ResourceLocation.class, JsonDeserializers.RESOURCE_LOCATION);
-        builder.registerTypeAdapter(ItemStack.class, JsonDeserializers.ITEM_STACK);
-        builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
-        builder.registerTypeAdapter(FireMode.class, JsonDeserializers.FIRE_MODE);
-        builder.registerTypeAdapter(AttachmentType.class, JsonDeserializers.ATTACHMENT_TYPE);
-        builder.registerTypeAdapter(AmmoType.class, JsonDeserializers.AMMO_TYPE);
-        return builder.create();
-    });
-
     private static CustomAmmoLoader instance;
 
     private Map<ResourceLocation, CustomAmmo> customAmmoMap = new HashMap<>();

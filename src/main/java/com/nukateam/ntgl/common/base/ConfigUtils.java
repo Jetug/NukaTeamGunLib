@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.util.Easings;
-import com.nukateam.ntgl.common.base.gun.AmmoType;
-import com.nukateam.ntgl.common.base.gun.AttachmentType;
-import com.nukateam.ntgl.common.base.gun.FireMode;
-import com.nukateam.ntgl.common.base.gun.GripType;
+import com.nukateam.ntgl.common.base.gun.*;
 import com.nukateam.ntgl.common.base.utils.JsonDeserializers;
 import com.nukateam.ntgl.common.data.annotation.Validator;
 import net.minecraft.Util;
@@ -34,10 +31,12 @@ import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
 public class ConfigUtils {
     private static final int FILE_TYPE_LENGTH_VALUE = ".json".length();
-    private static final Gson GSON_INSTANCE = Util.make(() -> {
+
+    public static final Gson GSON_INSTANCE = Util.make(() -> {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(ResourceLocation.class, JsonDeserializers.RESOURCE_LOCATION);
         builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
+        builder.registerTypeAdapter(LoadingType.class, JsonDeserializers.LOADING_TYPE);
         builder.registerTypeAdapter(FireMode.class, JsonDeserializers.FIRE_MODE);
         builder.registerTypeAdapter(AttachmentType.class, JsonDeserializers.ATTACHMENT_TYPE);
         builder.registerTypeAdapter(AmmoType.class, JsonDeserializers.AMMO_TYPE);

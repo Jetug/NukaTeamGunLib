@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemDisplayContext;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -25,7 +26,7 @@ public class ThrowableGrenadeRenderer extends EntityRenderer<ThrowableGrenadeEnt
 
     @Nullable
     @Override
-    public ResourceLocation getTextureLocation(ThrowableGrenadeEntity entity) {
+    public ResourceLocation getTextureLocation(@NotNull ThrowableGrenadeEntity entity) {
         return null;
     }
 
@@ -38,7 +39,7 @@ public class ThrowableGrenadeRenderer extends EntityRenderer<ThrowableGrenadeEnt
         poseStack.mulPose(Axis.YP.rotationDegrees(entityYaw));
 
         /* Offsets to the center of the grenade before applying rotation */
-        float rotation = entity.prevRotation + (entity.rotation - entity.prevRotation) * partialTicks;
+        var rotation = entity.prevRotation + (entity.rotation - entity.prevRotation) * partialTicks;
         poseStack.translate(0, 0.15, 0);
         poseStack.mulPose(Axis.XP.rotationDegrees(-rotation));
         poseStack.translate(0, -0.15, 0);

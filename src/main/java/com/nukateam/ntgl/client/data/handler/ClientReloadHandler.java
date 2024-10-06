@@ -4,7 +4,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.config.Gun;
-import com.nukateam.ntgl.common.base.gun.LoadingTypes;
+import com.nukateam.ntgl.common.base.gun.LoadingType;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
@@ -183,7 +183,7 @@ public class ClientReloadHandler {
         var general = gun.getGeneral();
         var reloadTime = GunModifierHelper.getReloadTime(stack);
 
-        if(general.getLoadingType().equals(LoadingTypes.PER_CARTRIDGE)){
+        if(general.getLoadingType().equals(LoadingType.PER_CARTRIDGE)){
 //            var ammoCount = general.getMaxAmmo(stack) - Gun.getAmmo(stack);
             var ammoCount =  GunModifierHelper.getMaxAmmo(stack) - Gun.getAmmo(stack);
 
