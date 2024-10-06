@@ -1,21 +1,25 @@
 package com.nukateam.ntgl.client.model.gibs;
 
+import com.nukateam.ntgl.ClientProxy;
 import dev.kosmx.playerAnim.mixin.BipedEntityModelMixin;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.world.entity.Entity;
+
+import static com.nukateam.ntgl.ClientProxy.*;
 
 public class ModelGibsBiped extends ModelGibs
 {
 	public HumanoidModel model;
     
-    public ModelGibsBiped(HumanoidModel model)
-    {
-    	this.model = model;
-    	this.model.bipedHead.setRotationPoint(0.0f,0.0f,0.0f);
-    	this.model.bipedBody.setRotationPoint(0.0f,0.0f,0.0f);
-    	this.model.bipedRightArm.setRotationPoint(0.0f,0.0f,0.0f);
-    	this.model.bipedLeftArm.setRotationPoint(0.0f,0.0f,0.0f);
-    	this.model.bipedRightLeg.setRotationPoint(0.0f,0.0f,0.0f);
-    	this.model.bipedLeftLeg.setRotationPoint(0.0f,0.0f,0.0f);   	
+    public ModelGibsBiped(HumanoidModel model) {
+		super();
+		this.model = model;
+    	this.model.head.setRotation(0.0f,0.0f,0.0f);
+    	this.model.body.setRotation(0.0f,0.0f,0.0f);
+    	this.model.rightArm.setRotation(0.0f,0.0f,0.0f);
+    	this.model.leftArm.setRotation(0.0f,0.0f,0.0f);
+    	this.model.rightLeg.setRotation(0.0f,0.0f,0.0f);
+    	this.model.leftLeg.setRotation(0.0f,0.0f,0.0f);
     }
 
     /**
@@ -23,25 +27,26 @@ public class ModelGibsBiped extends ModelGibs
      */
     public void render(Entity entityIn, float scale, int part)
     {
-
+		var s = (HumanoidModel)(Object)getEntityRenderer(entityIn);
+		
         switch(part) {
 	        case 0:
-	        	this.model.bipedHead.render(scale);
+	        	this.model.head.render(scale);
 	        	break;
 	        case 1:
-	        	this.model.bipedBody.render(scale);
+	        	this.model.body.render(scale);
 	        	break;
 	        case 2:
-	        	this.model.bipedRightArm.render(scale);
+	        	this.model.rightArm.render(scale);
 	        	break;
 	        case 3:
-	        	this.model.bipedLeftArm.render(scale);
+	        	this.model.leftArm.render(scale);
 	        	break;
 	        case 4:
-	        	this.model.bipedRightLeg.render(scale);
+	        	this.model.rightLeg.render(scale);
 	        	break;
 	        case 5:
-	        	this.model.bipedLeftLeg.render(scale);
+	        	this.model.leftLeg.render(scale);
 	        	break;
         }
     }
