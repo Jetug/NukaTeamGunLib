@@ -9,6 +9,7 @@ import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.MetaLoader;
 import com.nukateam.ntgl.client.data.handler.CrosshairHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
+import com.nukateam.ntgl.client.particle.TGParticleManager;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.data.datagen.BlockTagGen;

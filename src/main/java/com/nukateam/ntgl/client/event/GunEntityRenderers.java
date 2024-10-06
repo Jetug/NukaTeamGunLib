@@ -21,7 +21,5 @@ public class GunEntityRenderers {
         event.registerEntityRenderer(Projectiles.MISSILE.get(), MissileRenderer::new);
         event.registerEntityRenderer(Projectiles.THROWABLE_GRENADE.get(), ThrowableGrenadeRenderer::new);
         event.registerEntityRenderer(Projectiles.THROWABLE_STUN_GRENADE.get(), ThrowableGrenadeRenderer::new);
-
-
     }
 }

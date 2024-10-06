@@ -197,6 +197,7 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
                 bone.setHidden(true);
                 return;
             }
+            Gun.getAttachmentItems()
 
             for (var att : this.gunAttachments) {
                 var registryName = ForgeRegistries.ITEMS.getKey(att.getItem());

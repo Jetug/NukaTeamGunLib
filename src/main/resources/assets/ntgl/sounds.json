@@ -52,5 +52,14 @@
    "item.grenade.pin":                  { "subtitle": "subtitle.ntgl.grenade.pin",    "sounds": [{ "name": "ntgl:item/grenade/pin" }]},
    "entity.stun_grenade.explosion":     { "subtitle": "subtitle.ntgl.stun.explosion", "sounds": [{ "name": "ntgl:entity/stun_grenade/explosion" }]},
    "entity.stun_grenade.ring":          { "subtitle": "subtitle.ntgl.stun.ring",      "sounds": [{ "name": "ntgl:entity/stun_grenade/ring", "stream": true }]},
-   "ui.weapon.attach":                  { "subtitle": "subtitle.ntgl.attach",         "sounds": [{ "name": "ntgl:ui/weapon/attach" }]}
+   "ui.weapon.attach":                  { "subtitle": "subtitle.ntgl.attach",         "sounds": [{ "name": "ntgl:ui/weapon/attach" }]},
+
+   "effects.gore": {
+      "category": "hostile",
+      "sounds": [
+         "ntgl:effects/gore_a",
+         "ntgl:effects/gore_b",
+         "ntgl:effects/gore_c"
+      ]
+   }
 }
