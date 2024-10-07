@@ -18,13 +18,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EndPortalBlock.class)
 public class EndPortalBlockMixin {
     @Inject(method = "entityInside", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;changeDimension(Lnet/minecraft/server/level/ServerLevel;)Lnet/minecraft/world/entity/Entity;"))
-    private void beforeChangeDimension(BlockState state, Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci) {
-        if (worldIn.dimension() == Level.END && entityIn instanceof ItemEntity) {
-            var stack = ((ItemEntity) entityIn).getItem();
+    private void beforeChangeDimension(BlockState state, Level worldIn, BlockPos pos, Entity entity, CallbackInfo ci) {
+        if (worldIn.dimension() == Level.END && entity instanceof ItemEntity) {
+            var stack = ((ItemEntity) entity).getItem();
             if (stack.getItem() instanceof GunItem) {
                 var gun = stack.copy();
                 gun.getOrCreateTag().putFloat("Scale", 2.0F);
-                ((ItemEntity) entityIn).setItem(gun);
+                ((ItemEntity) entity).setItem(gun);
             }
         }
     }

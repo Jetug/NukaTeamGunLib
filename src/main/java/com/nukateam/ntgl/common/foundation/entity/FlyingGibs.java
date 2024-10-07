@@ -2,15 +2,9 @@ package com.nukateam.ntgl.common.foundation.entity;
 
 
 import com.nukateam.ntgl.ClientProxy;
-import com.nukateam.ntgl.client.particle.TGParticleSystem;
 import com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import dev.kosmx.playerAnim.core.util.Vec3d;
-import mod.azure.azurelib.core.math.functions.limit.Min;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -39,7 +33,7 @@ public class FlyingGibs extends Entity {
 
     public DeathEffect.GoreData data;
 
-    public TGParticleSystem trail_system;
+//    public TGParticleSystem trail_system;
 
     //public EntityDT entityDT;
 
@@ -57,7 +51,6 @@ public class FlyingGibs extends Entity {
         this.yo = yo;
         this.zo = zo;
 
-        var rand = this.level().getRandom();
         this.size = size;
         this.maxTimeToLive = 75 + rand.nextInt(50);
         this.timeToLive = maxTimeToLive;
@@ -67,13 +60,14 @@ public class FlyingGibs extends Entity {
         this.rotationAxis = new Vec3d(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
         this.data = data;
 
-        trail_system = new TGParticleSystem(this, data.type_trail);
-        ClientProxy.particleManager.addEffect(trail_system);
+//        trail_system = new TGParticleSystem(this, data.type_trail);
+//        ClientProxy.particleManager.addEffect(trail_system);
     }
 
     @Override
     public void tick() {
         super.tick();
+        var rand = this.level().getRandom();
 
         if (this.timeToLive > 0) {
             --timeToLive;
@@ -88,10 +82,10 @@ public class FlyingGibs extends Entity {
 
         if (this.level().getBlockState(ClientProxy.getEntityBlockPos(this)).getFluidState().is(LAVA)) {
             this.xo = 0.20000000298023224D;
-            this.yo = (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-            this.zo = (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+            this.yo = (rand.nextFloat() - rand.nextFloat()) * 0.2F;
+            this.zo = (rand.nextFloat() - rand.nextFloat()) * 0.2F;
 
-            this.playSound(SoundEvents.GENERIC_BURN, 0.4F, 2.0F + this.rand.nextFloat() * 0.4F);
+            this.playSound(SoundEvents.GENERIC_BURN, 0.4F, 2.0F + rand.nextFloat() * 0.4F);
         }
 
 
@@ -102,7 +96,7 @@ public class FlyingGibs extends Entity {
             //System.out.println("onGround.");
             if (hitGroundTTL == 0) {
                 hitGroundTTL = timeToLive;
-                trail_system.setExpired();
+//                trail_system.setExpired();
             }
 
             f = (float) (this.level().getBlockState(getEntityBlockPos(this))

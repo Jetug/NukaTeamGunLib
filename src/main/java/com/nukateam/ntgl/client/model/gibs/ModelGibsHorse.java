@@ -83,7 +83,7 @@
 //    }
 //
 //	@Override
-//	public void render(Entity entityIn, float scale, int part) {
+//	public void render(Entity entity, float scale, int part) {
 //		this.gibs[part].render(scale);
 //	}
 //

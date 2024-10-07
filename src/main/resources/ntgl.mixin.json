@@ -18,7 +18,8 @@
     "client.MinecraftStaticMixin",
     "client.MouseHandlerMixin",
     "client.RenderTypeLookupMixin",
-    "common.QuadrupedModelAccessor"
+    "common.QuadrupedModelAccessor",
+    "common.VillagerModelAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

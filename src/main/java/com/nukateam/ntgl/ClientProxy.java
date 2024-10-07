@@ -1,6 +1,5 @@
 package com.nukateam.ntgl;
 
-import com.nukateam.ntgl.client.particle.TGParticleManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.*;
@@ -12,7 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class ClientProxy {
-    public static TGParticleManager particleManager = new TGParticleManager();
+//    public static TGParticleManager particleManager = new TGParticleManager();
 
     @NotNull
     public static BlockPos getEntityBlockPos(Entity entity) {

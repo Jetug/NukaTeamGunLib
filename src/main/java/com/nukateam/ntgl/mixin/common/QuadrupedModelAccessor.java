@@ -20,7 +20,6 @@ public class QuadrupedModelAccessor implements IModelAccessor {
     @Shadow protected ModelPart rightFrontLeg;
     @Shadow protected ModelPart leftFrontLeg;
 
-
     public List<ModelPart> getModelParts(){
         return List.of(head, body, rightHindLeg, leftHindLeg, rightFrontLeg, leftFrontLeg);
     }

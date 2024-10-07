@@ -4,34 +4,22 @@ package com.nukateam.ntgl.common.foundation.entity.projectile;
 import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.model.gibs.*;
-import com.nukateam.ntgl.client.particle.TGFX;
-import com.nukateam.ntgl.client.particle.TGFXType;
-import com.nukateam.ntgl.client.particle.TGParticleSystem;
-import com.nukateam.ntgl.client.particle.TGParticleSystemType;
-import com.nukateam.ntgl.client.render.Render;
-import com.nukateam.ntgl.common.base.utils.EntityDeathUtils;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGibs;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.*;
-import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.QuadrupedModel;
+import net.minecraft.client.model.VillagerModel;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.Chicken;
-import net.minecraft.world.entity.animal.Cow;
-import net.minecraft.world.entity.animal.Pig;
-import net.minecraft.world.entity.animal.Sheep;
-import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.npc.Villager;
 
 import java.util.HashMap;
 
-import static com.nukateam.ntgl.common.base.utils.EntityDeathUtils.*;
+import static com.nukateam.ntgl.common.base.utils.EntityDeathUtils.DeathType;
 
 public class DeathEffect {
 
@@ -40,14 +28,11 @@ public class DeathEffect {
     private static GoreData genericGore;
 
     static {
-        ModelGibs modelBiped = new ModelGibsBiped(new HumanoidModel(0.0f, 0.0f, 64, 64));
-        ModelGibs modelBipedPlayer = new ModelGibsBiped(new HumanoidModel(0.0f, 0.0f, 64, 32));
-
-
-
-        goreStats.put(EntityType.PLAYER, (new GoreData(modelBipedPlayer, 160, 21, 31)));
-        goreStats.put(EntityType.ZOMBIE, (new GoreData(modelBiped, 110, 21, 41)));
-
+//        ModelGibs modelBiped = new ModelGibsBiped(new HumanoidModel(0.0f, 0.0f, 64, 64));
+//        ModelGibs modelBipedPlayer = new ModelGibsBiped(new HumanoidModel(0.0f, 0.0f, 64, 32));
+//        goreStats.put(EntityType.PLAYER, (new GoreData(modelBipedPlayer, 160, 21, 31)));
+//        goreStats.put(EntityType.ZOMBIE, (new GoreData(modelBiped, 110, 21, 41)));
+//
 
         var render = (SkeletonRenderer)ClientProxy.getEntityRenderer(EntityType.SKELETON);
 
@@ -108,7 +93,7 @@ public class DeathEffect {
 //        goreStats.put(EntityDonkey.class, (new GoreData(new ModelGibsHorse(), 170, 26, 37)).setFXscale(1.0f));
 //        goreStats.put(EntityMule.class, (new GoreData(new ModelGibsHorse(), 170, 26, 37)).setFXscale(1.0f));
 
-        genericGore = (new GoreData(modelBiped, 160, 21, 31)).setTexture(new ResourceLocation(Ntgl.MOD_ID, "textures/entity/gore.png"));
+        genericGore = (new GoreData(null, 160, 21, 31)).setTexture(new ResourceLocation(Ntgl.MOD_ID, "textures/entity/gore.png"));
         genericGore.setRandomScale(0.5f, 0.8f);
         //ModelHorse horse = new ModelHorse();
         //goreStats.put(EntityHorse.class, new GoreData(new ModelGibsHorse(horse), horse.boxList.size(), new ResourceLocation("textures/entity/horse/horse_brown.png"), 0.66f, 150,21,51));
@@ -133,21 +118,19 @@ public class DeathEffect {
     }
 
     public static GoreData getGoreData(LivingEntity entityClass) {
-        GoreData data = DeathEffect.goreStats.get(entityClass);
-        if (data != null) {
-            return data;
-        } else {
+        var data = DeathEffect.goreStats.get(entityClass.getType());
+        if (data == null) {
             data = new GoreData();
             data.bloodColorR = genericGore.bloodColorR;
             data.bloodColorG = genericGore.bloodColorG;
             data.bloodColorB = genericGore.bloodColorB;
-            data.type_main = genericGore.type_main;
-            data.type_trail = genericGore.type_trail;
+//            data.type_main = genericGore.type_main;
+//            data.type_trail = genericGore.type_trail;
             data.sound = genericGore.sound;
             data.numGibs = -1; //TODO
             goreStats.put(entityClass.getType(), data);
-            return data;
         }
+        return data;
     }
 
     public static void createDeathEffect(LivingEntity entity, DeathType deathtype, float xo, float yo, float zo) {
@@ -159,7 +142,6 @@ public class DeathEffect {
         double z = entity.getZ();
 
         if (deathtype == DeathType.GORE) {
-
             var data = DeathEffect.getGoreData(entity);
             var render = ClientProxy.getLivingEntityRenderer(entity);
 
@@ -167,30 +149,31 @@ public class DeathEffect {
                 if (data.model == null && render != null) {
                     var mainModel = render.getModel();//(Model) DeathEffectEntityRenderer.RLB_mainModel.get((LivingEntityRenderer) render);
 
-                    if (mainModel instanceof HumanoidModel) {
-                        data.model = new ModelGibsBiped((HumanoidModel) mainModel);
+                    if (mainModel instanceof HumanoidModel <? extends Entity> model) {
+                        data.model = new ModelGibsBiped(model);
                     }
-                    else if (mainModel instanceof QuadrupedModel<? extends LivingEntity>) {
-                        data.model = new ModelGibsQuadruped((QuadrupedModel) mainModel);
+                    else if (mainModel instanceof QuadrupedModel<? extends LivingEntity> model) {
+                        data.model = new ModelGibsQuadruped(model);
                     }
-                    else if (mainModel instanceof VillagerModel<? extends LivingEntity>) {
-                        data.model = new ModelGibsVillager((VillagerModel)mainModel);
+                    else if (mainModel instanceof VillagerModel<? extends LivingEntity> model) {
+                        data.model = new ModelGibsVillager(model);
+                    }
+                    else if(mainModel instanceof HierarchicalModel<? extends Entity> model){
+                        data.model = new ModelGibsGeneric(model);
                     }
                     else {
-                        data.model = genericGore.model; //new ModelGibsGeneric(mainModel.getClass().newInstance());
+                        data.model = genericGore.model;
                         data.texture = genericGore.texture;
                     }
                 }
-            } catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
+            } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
-
-
 //            ClientProxy.get().playSoundOnPosition(data.sound, (float) x, (float) y, (float) z, 1.0f, 1.0f, false, TGSoundCategory.DEATHEFFECT);
 
             //Spawn MainFX
-            TGParticleSystem sys = new TGParticleSystem(entity.level(), data.type_main, x, entity.getY(), z, entity.xo, entity.yo, entity.zo);
-            ClientProxy.particleManager.addEffect(sys);
+//            TGParticleSystem sys = new TGParticleSystem(entity.level(), data.type_main, x, entity.getY(), z, entity.xo, entity.yo, entity.zo);
+//            ClientProxy.particleManager.addEffect(sys);
 
             int count;
             if (data.numGibs >= 0) {
@@ -248,8 +231,8 @@ public class DeathEffect {
         String fx_trail = "GoreTrailFX_Blood";
         public SoundEvent sound = ModSounds.DEATH_GORE.get();
 
-        public TGParticleSystemType type_main;
-        public TGParticleSystemType type_trail;
+//        public TGParticleSystemType type_main;
+//        public TGParticleSystemType type_trail;
 
         public float minPartScale = 1.0f;
         public float maxPartScale = 1.0f;
@@ -292,31 +275,31 @@ public class DeathEffect {
         }
 
         public void init() {
-            type_main = new TGParticleSystemType();
-
-            if (TGFX.FXList.containsKey(fx_main.toLowerCase())) {
-                TGFXType fxtype_main = TGFX.FXList.get(fx_main.toLowerCase());
-                if (fxtype_main instanceof TGParticleSystemType) {
-                    this.type_main = getExtendedType((TGParticleSystemType) fxtype_main);
-                } else {
-                    this.type_main = null;
-                }
-            } else {
-                this.type_main = null;
-            }
-
-            type_trail = new TGParticleSystemType();
-
-            if (TGFX.FXList.containsKey(fx_trail.toLowerCase())) {
-                TGFXType fxtype_trail = TGFX.FXList.get(fx_trail.toLowerCase());
-                if (fxtype_trail instanceof TGParticleSystemType) {
-                    this.type_trail = getExtendedType((TGParticleSystemType) fxtype_trail);
-                } else {
-                    this.type_trail = null;
-                }
-            } else {
-                this.type_trail = null;
-            }
+//            type_main = new TGParticleSystemType();
+//
+//            if (TGFX.FXList.containsKey(fx_main.toLowerCase())) {
+//                TGFXType fxtype_main = TGFX.FXList.get(fx_main.toLowerCase());
+//                if (fxtype_main instanceof TGParticleSystemType) {
+//                    this.type_main = getExtendedType((TGParticleSystemType) fxtype_main);
+//                } else {
+//                    this.type_main = null;
+//                }
+//            } else {
+//                this.type_main = null;
+//            }
+//
+//            type_trail = new TGParticleSystemType();
+//
+//            if (TGFX.FXList.containsKey(fx_trail.toLowerCase())) {
+//                TGFXType fxtype_trail = TGFX.FXList.get(fx_trail.toLowerCase());
+//                if (fxtype_trail instanceof TGParticleSystemType) {
+//                    this.type_trail = getExtendedType((TGParticleSystemType) fxtype_trail);
+//                } else {
+//                    this.type_trail = null;
+//                }
+//            } else {
+//                this.type_trail = null;
+//            }
         }
 
         /**
@@ -328,30 +311,29 @@ public class DeathEffect {
         }
 
 
-        private TGParticleSystemType getExtendedType(TGParticleSystemType supertype) {
-            var type = new TGParticleSystemType();
+//        private TGParticleSystemType getExtendedType(TGParticleSystemType supertype) {
+//            var type = new TGParticleSystemType();
+//
+//            type.extend(supertype);
+//
+//            if (type.colorEntries.size() >= 1) {
+//                type.colorEntries.get(0).r = (float) this.bloodColorR / 255.0f;
+//                type.colorEntries.get(0).g = (float) this.bloodColorG / 255.0f;
+//                type.colorEntries.get(0).b = (float) this.bloodColorB / 255.0f;
+//            }
+//
+//            type.sizeMin *= particleScale;
+//            type.sizeMax *= particleScale;
+//            type.sizeRateMin *= particleScale;
+//            type.sizeRateMax *= particleScale;
+//            type.startSizeRateDampingMin *= particleScale;
+//            type.startSizeRateMin *= particleScale;
+//            type.startSizeRateMax *= particleScale;
+//            for (int i = 0; i < type.volumeData.length; i++) {
+//                type.volumeData[i] *= particleScale;
+//            }
+//            return type;
+//        }
 
-            type.extend(supertype);
-
-            if (type.colorEntries.size() >= 1) {
-                type.colorEntries.get(0).r = (float) this.bloodColorR / 255.0f;
-                type.colorEntries.get(0).g = (float) this.bloodColorG / 255.0f;
-                type.colorEntries.get(0).b = (float) this.bloodColorB / 255.0f;
-            }
-
-            type.sizeMin *= particleScale;
-            type.sizeMax *= particleScale;
-            type.sizeRateMin *= particleScale;
-            type.sizeRateMax *= particleScale;
-            type.startSizeRateDampingMin *= particleScale;
-            type.startSizeRateMin *= particleScale;
-            type.startSizeRateMax *= particleScale;
-            for (int i = 0; i < type.volumeData.length; i++) {
-                type.volumeData[i] *= particleScale;
-            }
-            return type;
-        }
     }
-
-
 }

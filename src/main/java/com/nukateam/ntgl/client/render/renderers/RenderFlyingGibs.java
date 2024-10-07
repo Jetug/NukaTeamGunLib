@@ -1,0 +1,93 @@
+package com.nukateam.ntgl.client.render.renderers;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import com.nukateam.ntgl.ClientProxy;
+import com.nukateam.ntgl.common.foundation.entity.FlyingGibs;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.resources.ResourceLocation;
+
+import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.getGoreData;
+
+public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
+    public RenderFlyingGibs(EntityRendererProvider.Context pContext) {
+        super(pContext);
+    }
+
+    @Override
+    public void render(FlyingGibs pEntity, float pEntityYaw, float pPartialTick, PoseStack poseStack, MultiBufferSource pBuffer, int pPackedLight) {
+        var entity = pEntity.entity;
+        if(entity == null) return;
+        var data = getGoreData(entity);
+
+        if (data.model != null) {
+            poseStack.pushPose();
+            {
+                var render = ClientProxy.getEntityRenderer(pEntity.entity);
+                if (render instanceof LivingEntityRenderer<?, ?>) {
+                    try {
+                        if (data.texture == null) {
+//							DeathEffectEntityRenderer.bindEntityTexture(render, pEntity.entity);
+                        } else {
+//							Minecraft.getInstance().getRenderManager().renderEngine.bindTexture(data.texture);
+                        }
+//						DeathEffectEntityRenderer.preRenderCallback((RenderLivingBase) render, pEntity.entity,
+//								partialTickTime);
+
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+//				GlStateManager.translate(x, y, z);
+
+                var partialTickTime = Minecraft.getInstance().getFrameTime();
+
+                float angle;
+                float rot_angle = 90.0f;
+
+                if (pEntity.onGround()) {
+                    angle = 5 + ((float) pEntity.hitGroundTTL / (float) pEntity.maxTimeToLive) * 15.0f;
+                    rot_angle += ((float) (pEntity.maxTimeToLive - pEntity.hitGroundTTL) * angle);
+
+                    if (pEntity.timeToLive <= 20) {
+                        float offsetY = ((20 - pEntity.timeToLive) + partialTickTime) * -0.05f;
+                        poseStack.translate(0.0f, offsetY, 0.0f);
+                    }
+
+                } else {
+                    angle = 5 + ((float) pEntity.timeToLive / (float) pEntity.maxTimeToLive) * 15.0f;
+//                    rot_angle += ((float) pEntity.ticksExisted + partialTickTime) * angle;
+                }
+
+//                poseStack.rotate(rot_angle, (float) pEntity.rotationAxis.x, (float) pEntity.rotationAxis.y,
+//                        (float) pEntity.rotationAxis.z);
+
+//                poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+
+
+//                GlStateManager.disableCull();
+
+                var rendertype = RenderType.itemEntityTranslucentCull(data.texture);
+                var vertexConsumer = pBuffer.getBuffer(rendertype);
+                data.model.render(pEntity, pEntity.bodypart, poseStack, vertexConsumer, pPackedLight, 0xFFFFFF);
+
+//				GlStateManager.enableCull();
+            }
+            poseStack.popPose();
+        }
+
+
+        super.render(pEntity, pEntityYaw, pPartialTick, poseStack, pBuffer, pPackedLight);
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(FlyingGibs entity) {
+        return getGoreData(entity.entity).texture;
+    }
+}

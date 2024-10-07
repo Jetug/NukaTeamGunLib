@@ -25,7 +25,7 @@ public class ModelGibsVillager extends ModelGibs {
 
 
     @Override
-    public void render(Entity entityIn, int part, PoseStack pPoseStack, VertexConsumer pVertexConsumer, int pPackedLight, int pPackedOverlay) {
+    public void render(Entity entity, int part, PoseStack pPoseStack, VertexConsumer pVertexConsumer, int pPackedLight, int pPackedOverlay) {
         var accessor = (IModelAccessor)model;
         accessor.getModelParts().get(part).render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
 

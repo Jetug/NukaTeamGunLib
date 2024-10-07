@@ -23,8 +23,8 @@ public class ModelGibsBiped extends ModelGibs {
     /**
      * Sets the models various rotation angles then renders the model.
      */
-    public void render(Entity entityIn, int part, PoseStack pPoseStack, VertexConsumer pVertexConsumer, int pPackedLight, int pPackedOverlay) {
-        var s = (HumanoidModel) (Object) getEntityRenderer(entityIn);
+    public void render(Entity entity, int part, PoseStack pPoseStack, VertexConsumer pVertexConsumer, int pPackedLight, int pPackedOverlay) {
+        var s = (HumanoidModel) (Object) getEntityRenderer(entity);
 
         switch (part) {
             case 0:
