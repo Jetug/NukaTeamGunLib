@@ -69,7 +69,9 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         else this.barrelItem = null;
 
         for (var attachment : configAttachments) {
-            hiddenBones.addAll(attachment.getHidden());
+            if(transformType != ItemDisplayContext.GUI) {
+                hiddenBones.addAll(attachment.getHidden());
+            }
         }
 
         if(buffEntity != null){
