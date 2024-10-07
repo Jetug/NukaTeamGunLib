@@ -1,0 +1,40 @@
+{
+  "general": {
+    "rate": 5,
+    "gripType": "ntgl:two_handed",
+    "maxAmmo": 1,
+    "reloadTime": 80,
+    "reloadAmount": 1,
+    "recoilAngle": 15.0,
+    "recoilKick": 1,
+    "recoilAdsReduction": 0.6,
+    "projectileAmount": 6,
+    "alwaysSpread": true,
+    "damage": 10.0,
+    "spread": 20.0,
+    "ammo": [
+      "ntgl:steel_ball"
+    ]
+  },
+  "sounds": {
+    "fire": "ntgl:item.powdergun.fire",
+    "reload": "ntgl:item.powdergun.reload",
+    "cock": "ntgl:item.powdergun.cock",
+    "silencedFire": "ntgl:item.shotgun.silenced_fire",
+    "enchantedFire": "ntgl:item.shotgun.enchanted_fire"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 3.6505,
+      "zOffset": -3.81
+    }
+  },
+  "modules": {
+    "zoom": {
+      "xOffset": 0.0,
+      "yOffset": 4.6,
+      "zOffset": 3.5,
+      "fovModifier": 0.7
+    }
+  }
+}

@@ -3,18 +3,15 @@ package com.nukateam.ntgl.common.base.gun;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.HashMap;
-import java.util.Map;
 
-
-public class BaseType {
+public class ResourceHolder {
     protected final ResourceLocation id;
 
-    public BaseType(ResourceLocation id) {
+    public ResourceHolder(ResourceLocation id) {
         this.id = id;
     }
 
-    public BaseType(String name) {
+    public ResourceHolder(String name) {
         this.id = new ResourceLocation(Ntgl.MOD_ID, name);
     }
 

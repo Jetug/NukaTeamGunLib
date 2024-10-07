@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.data.handler;
 
 import com.nukateam.ntgl.client.data.util.PropertyHelper;
 import com.nukateam.ntgl.common.base.gun.GripType;
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
@@ -19,7 +19,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
@@ -150,7 +149,8 @@ public class AimingHandler {
         if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player))
             return;
 
-        Gun modifiedGun = gunItem.getModifiedGun(heldItem);
+        var modifiedGun = gunItem.getModifiedGun(heldItem);
+
         if (modifiedGun.getModules().getZoom() == null)
             return;
 

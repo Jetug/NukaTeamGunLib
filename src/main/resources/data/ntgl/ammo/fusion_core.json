@@ -1,0 +1,8 @@
+{
+  "magazineMode" : true,
+  "damage": 1.0,
+  "size": 0.2,
+  "speed": 150,
+  "life": 8,
+  "type": "ntgl:energetic"
+}

@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.client.ClientPlayHandler;
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.config.Ammo;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.network.BufferUtil;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
@@ -33,7 +33,7 @@ public class S2CMessageBulletTrail extends PlayMessage<S2CMessageBulletTrail> {
     public S2CMessageBulletTrail() {
     }
 
-    public S2CMessageBulletTrail(ProjectileEntity[] spawnedProjectiles, Gun.Projectile projectileProps, int shooterId, ParticleOptions particleData) {
+    public S2CMessageBulletTrail(ProjectileEntity[] spawnedProjectiles, Ammo projectileProps, int shooterId, ParticleOptions particleData) {
         this.positions = new Vec3[spawnedProjectiles.length];
         this.motions = new Vec3[spawnedProjectiles.length];
         this.entityIds = new int[spawnedProjectiles.length];

@@ -6,7 +6,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * An interface for notifying a block it has been destroyed by a projectile explosion.
+ * An interface for notifying a block it has been destroyed by a ammo explosion.
  * <p>
  * Author: Ocelot
  */

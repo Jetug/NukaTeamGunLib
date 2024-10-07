@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.data.interfaces;
 
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -17,14 +17,14 @@ import net.minecraft.world.level.Level;
  */
 public interface IProjectileFactory {
     /**
-     * Creates a new projectile entity.
+     * Creates a new ammo entity.
      *
-     * @param worldIn     the world the projectile is going to be spawned into
+     * @param worldIn     the world the ammo is going to be spawned into
      * @param entity      the entity who fired the weapon
      * @param weapon      the item stack of the weapon
      * @param item        the gun item
      * @param modifiedGun the properties of the gun
-     * @return a projectile entity
+     * @return a ammo entity
      */
     ProjectileEntity create(Level worldIn, LivingEntity entity, ItemStack weapon, GunItem item, Gun modifiedGun);
 }

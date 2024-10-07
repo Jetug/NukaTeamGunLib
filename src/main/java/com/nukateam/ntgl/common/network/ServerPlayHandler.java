@@ -1,9 +1,9 @@
-package com.nukateam.ntgl.common.base.network;
+package com.nukateam.ntgl.common.network;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.base.utils.ShootTracker;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
@@ -58,6 +58,8 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Predicate;
+
+import static com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys.getReloadKey;
 //import static com.nukateam.guns.client.handler.ShootingHandler.gunCooldown;
 
 /**
@@ -107,7 +109,7 @@ public class ServerPlayHandler {
                     return;
                 }
 
-                tracker.putCooldown(heldItem, item, hand);
+                tracker.putCooldown(heldItem, hand);
 
                 if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(shooter)) {
                     ModSyncedDataKeys.RELOADING_RIGHT.setValue(shooter, false);
@@ -126,7 +128,7 @@ public class ServerPlayHandler {
                 var spawnedProjectiles = new ProjectileEntity[count];
 
                 for (int i = 0; i < count; i++) {
-                    var factory = ProjectileManager.getInstance().getFactory(GunModifierHelper.getAmmoItem(heldItem));
+                    var factory = ProjectileManager.getInstance().getFactory(GunModifierHelper.getCurrentAmmo(heldItem));
                     var projectileEntity = factory.create(world, shooter, heldItem, item, modifiedGun);
                     projectileEntity.setWeapon(heldItem);
                     projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
@@ -292,7 +294,7 @@ public class ServerPlayHandler {
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
                 int count = tag.getInt(Tags.AMMO_COUNT);
                 tag.putInt(Tags.AMMO_COUNT, 0);
-                var id = GunModifierHelper.getAmmoItem(stack);
+                var id = GunModifierHelper.getCurrentAmmo(stack);
                 var item = ForgeRegistries.ITEMS.getValue(id);
 
                 if (item == null) {
@@ -323,7 +325,7 @@ public class ServerPlayHandler {
 
                 tag.putInt(Tags.AMMO_COUNT, 0);
 
-                var id = GunModifierHelper.getAmmoItem(stack);
+                var id = GunModifierHelper.getCurrentAmmo(stack);
                 var item = ForgeRegistries.ITEMS.getValue(id);
 
                 if (item == null) return;
@@ -390,6 +392,9 @@ public class ServerPlayHandler {
     }
 
     public static void handleAmmoModeSwitch(InteractionHand hand, ServerPlayer player, ItemStack stack) {
+        var isReloading = getReloadKey(hand);
+        if(isReloading.getValue(player))
+            return;
         handleUnload(player, hand);
         handleReload(new C2SMessageReload(true, hand), player);
         GunModifierHelper.switchAmmo(stack);

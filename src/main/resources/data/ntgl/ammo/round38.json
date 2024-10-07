@@ -1,0 +1,7 @@
+{
+  "damage": 1.0,
+  "size": 0.2,
+  "speed": 30.0,
+  "life": 30,
+  "type": "ntgl:standard"
+}

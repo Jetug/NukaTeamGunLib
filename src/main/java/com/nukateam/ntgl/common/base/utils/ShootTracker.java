@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.base.utils;
 
-import com.nukateam.ntgl.common.base.gun.Gun;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -8,7 +7,6 @@ import com.google.common.collect.Maps;
 import net.minecraft.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import org.apache.commons.lang3.tuple.Pair;
@@ -47,13 +45,12 @@ public class ShootTracker {
      * Puts a cooldown for the specified gun item. This stores the time it was fired and the rate
      * of the weapon to determine when it's allowed to fire again.
      *
-     * @param item        a gun item
      * @param hand the hand gun get of the specified gun
      */
-    public void putCooldown(ItemStack weapon, GunItem item, InteractionHand hand) {
-        var modifiedGun = item.getModifiedGun(weapon);
-        int rate = GunEnchantmentHelper.getRate(weapon, modifiedGun);
-        rate = GunModifierHelper.getModifiedRate(weapon, rate);
+    public void putCooldown(ItemStack weapon, InteractionHand hand) {
+//        var modifiedGun = item.getModifiedGun(weapon);
+//        int rate = GunEnchantmentHelper.getRate(weapon, modifiedGun);
+        var rate = GunModifierHelper.getModifiedRate(weapon);
         this.cooldownMap.put(hand, Pair.of(Util.getMillis(), rate * 50));
     }
 
@@ -63,11 +60,10 @@ public class ShootTracker {
      * weapon is ready to fire but the cooldown is not completely finished, rather it's in the last
      * 50 milliseconds or 1 game tick.
      *
-     * @param item a gun item
      * @return if the specified gun item has an active cooldown
      */
     public boolean hasCooldown(InteractionHand hand) {
-        Pair<Long, Integer> pair = this.cooldownMap.get(hand);
+        var pair = this.cooldownMap.get(hand);
         if (pair != null) {
             /* Give a 50 millisecond leeway as most of the time the cooldown has finished, just not exactly to the millisecond */
             return Util.getMillis() - pair.getLeft() < pair.getRight() - 50;
@@ -77,9 +73,8 @@ public class ShootTracker {
 
     /**
      * Gets the remaining milliseconds before the weapon is allowed to shoot again. This doesn't
-     * take into account the leeway given in {@link #hasCooldown(GunItem)}.
+     * take into account the leeway given in {@link #hasCooldown(InteractionHand)}.
      *
-     * @param item a gun item
      * @return the remaining time in milliseconds
      */
     public long getRemaining(InteractionHand hand) {

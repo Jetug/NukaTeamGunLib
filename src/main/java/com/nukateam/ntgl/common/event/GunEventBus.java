@@ -70,7 +70,7 @@ public class GunEventBus {
 
         if (heldItem.getItem() instanceof GunItem gunItem) {
 //            Gun gun = gunItem.getModifiedGun(heldItem);
-//            if (gun.getProjectile().ejectsCasing() && tag != null) {
+//            if (gun.getAmmo().ejectsCasing() && tag != null) {
 //                if (tag.getInt("AmmoCount") >= 1 || entity.getAbilities().instabuild) {
 //                    //event.getEntity().level.playSound(entity, entity.blockPosition(), SoundInit.GARAND_PING.get(), SoundSource.MASTER, 3.0F, 1.0F);
 //                    ejectCasing(level, entity);
@@ -131,7 +131,7 @@ public class GunEventBus {
 //        var rifleAmmoLocation = ModItems.RIFLE_AMMO.getId();
 //        var shotgunShellLocation = ModItems.SHOTGUN_SHELL.getId();
 //        var spectreAmmoLocation = ModItems.SPECTRE_AMMO.getId();
-//        var projectileLocation = gun.getProjectile().getItem();
+//        var projectileLocation = gun.getAmmo().getItem();
 //
 //        SimpleParticleType casingType = ModParticleTypes.CASING_PARTICLE.get();
 //

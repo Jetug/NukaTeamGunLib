@@ -1,0 +1,90 @@
+{
+  "general": {
+    "rate": 4,
+    "gripType": "ntgl:one_handed",
+    "loadingType": "magazine",
+    "maxAmmo": 10,
+    "reloadTime": 30,
+    "reloadAmount": 2,
+    "recoilAngle": 5.0,
+	"recoilKick": 0.3,
+    "recoilAdsReduction": 0.25,
+    "alwaysSpread": true,
+    "damage": 6.5,
+    "spread": 1.0,
+    "ammo": [
+      "ntgl:fusion_cell"
+    ]
+  },
+  "sounds": {
+    "fire": "ntgl:item.laser_pistol.fire",
+    "reload": "ntgl:item.laser_pistol.reload",
+    "cock": "ntgl:item.laser_pistol.cock",
+    "silencedFire": "ntgl:item.laser_pistol.silenced_fire",
+    "enchantedFire": "ntgl:item.laser_pistol.enchanted_fire"
+  },
+  "modules": {
+    "zoom": {
+      "xOffset": 3.9,
+      "yOffset": 7.8,
+      "zOffset": -0.4,
+      "fovModifier": 0.7
+    },
+    "attachments": {
+      "ntgl:scope": [
+        {
+          "name": "scope_5",
+          "item": "ntgl:pistol_collimator_sight"
+        },
+        {
+          "name": "scope_1",
+          "item": "ntgl:pistol_holographic_sight"
+        },
+        {
+          "name": "scope_6",
+          "item": "ntgl:pistol_hunting_optics"
+        },
+        {
+          "name": "scope_3",
+          "item": "ntgl:pistol_iron_sight"
+        },
+        {
+          "name": "scope_2",
+          "item": "ntgl:pistol_scout_sight"
+        },
+        {
+          "name": "scope_4",
+          "item": "ntgl:laser_all_vision"
+        }
+      ],
+      "ntgl:barrel": [
+        {
+          "name": "barrel_1",
+          "item": "ntgl:laser_sniper_barrel"
+        },
+        {
+          "name": "barrel_2",
+          "item": "ntgl:laser_auto_barrel"
+        },
+        {
+          "name": "barrel_3",
+          "item": "ntgl:laser_protectron_barrel"
+        }
+      ],
+      "ntgl:stock": [
+        {
+          "name": "grip_1",
+          "item": "ntgl:laser_tactical_grip"
+        },
+        {
+          "name": "grip_2",
+          "item": "ntgl:laser_long_grip"
+        },
+        {
+          "name": "grip_3",
+          "item": "ntgl:laser_weighted_grip"
+        }
+      ]
+    }
+  }
+}

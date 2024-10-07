@@ -108,7 +108,7 @@ public abstract class Attachment {
             float inputDamage = 10.0F;
             float outputDamage = inputDamage;
             for (IGunModifier modifier : modifiers) {
-                outputDamage = modifier.modifyProjectileDamage(outputDamage);
+                outputDamage = modifier.modifyDamage(outputDamage);
             }
             if (outputDamage > inputDamage) {
                 addPerk(positivePerks, true, "perk.ntgl.modified_damage.positive");
@@ -128,7 +128,7 @@ public abstract class Attachment {
                 addPerk(negativePerks, false, "perk.ntgl.projectile_speed.negative");
             }
 
-            /* Test for modified projectile spread */
+            /* Test for modified ammo spread */
             float inputSpread = 10.0F;
             float outputSpread = inputSpread;
             for (IGunModifier modifier : modifiers) {
@@ -140,7 +140,7 @@ public abstract class Attachment {
                 addPerk(positivePerks, true, "perk.ntgl.projectile_spread.positive");
             }
 
-            /* Test for modified projectile life */
+            /* Test for modified ammo life */
             int inputLife = 100;
             int outputLife = inputLife;
             for (IGunModifier modifier : modifiers) {

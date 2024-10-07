@@ -6,7 +6,7 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 /**
- * <p>Fired when a projectile hits a block or entity.</p>
+ * <p>Fired when a ammo hits a block or entity.</p>
  *
  * @author Ocelot
  */
@@ -28,7 +28,7 @@ public class GunProjectileHitEvent extends Event {
     }
 
     /**
-     * @return The projectile that hit
+     * @return The ammo that hit
      */
     public ProjectileEntity getProjectile() {
         return projectile;

@@ -21,11 +21,16 @@ public class GunModifiers {
         public double modifyFireSoundRadius(double radius) {
             return radius * 0.25;
         }
+
+        @Override
+        public int modifyFireRate(int rate) {
+            return 1;
+        }
     };
 
     public static final IGunModifier REDUCED_DAMAGE = new IGunModifier() {
         @Override
-        public float modifyProjectileDamage(float damage) {
+        public float modifyDamage(float damage) {
             return damage * 0.75F;
         }
     };

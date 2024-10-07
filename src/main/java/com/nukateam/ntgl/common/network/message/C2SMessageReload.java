@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.nukateam.ntgl.common.base.network.ServerPlayHandler;
+import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

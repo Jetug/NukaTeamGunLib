@@ -4,6 +4,7 @@
     "fireMode": ["ntgl:auto", "ntgl:semi"],
     "gripType": "ntgl:one_handed",
     "loadingType": "magazine",
+    "damage" : 10,
     "maxAmmo": 20,
     "reloadTime": 30,
     "reloadAmount": 2,
@@ -11,27 +12,11 @@
 	"recoilKick": 0.3,
     "recoilAdsReduction": 0.25,
     "alwaysSpread": true,
-    "spread": 1.0
-  },
-  "projectile": {
-    "ntgl:round10mm": {
-      "visible": true,
-      "magazineMode": true,
-      "damage": 9.0,
-      "size": 0.2,
-      "speed": 300,
-      "life": 7,
-      "type": "ballistic"
-    },
-    "ntgl:round45": {
-      "visible": true,
-      "magazineMode": false,
-      "damage": 9.0,
-      "size": 0.2,
-      "speed": 300,
-      "life": 7,
-      "type": "ballistic"
-    }
+    "spread": 1.0,
+    "ammo": [
+      "ntgl:round10mm",
+      "ntgl:round45"
+    ]
   },
   "sounds": {
     "fire": "ntgl:item.pistol10mm.fire",

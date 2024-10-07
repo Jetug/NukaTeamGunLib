@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AmmoType extends BaseType {
+public class AmmoType extends ResourceHolder {
     public static AmmoType STANDARD             = new AmmoType("standard"             );
     public static AmmoType PIERCING             = new AmmoType("piercing"             );
     public static AmmoType INCENDIARY           = new AmmoType("incendiary"           );

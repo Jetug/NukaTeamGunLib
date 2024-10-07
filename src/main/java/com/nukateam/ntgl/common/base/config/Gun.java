@@ -1,7 +1,8 @@
-package com.nukateam.ntgl.common.base.gun;
+package com.nukateam.ntgl.common.base.config;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
+import com.nukateam.ntgl.common.base.gun.*;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.data.annotation.Ignored;
 import com.nukateam.ntgl.common.data.annotation.Optional;
@@ -47,14 +48,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.client.ClientHandler.*;
-import static com.nukateam.ntgl.common.base.utils.NbtUtils.deserializeProjectileMap;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
     protected General general = new General();
-    protected Map<ResourceLocation, Projectile> projectile = new HashMap<>(){{
-        put(new ResourceLocation("ntgl:round10mm"), new Projectile());
-    }};
     protected Sounds sounds = new Sounds();
     protected Display display = new Display();
     protected Modules modules = new Modules();
@@ -63,20 +60,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.general;
     }
 
-//    public Projectile getProjectile() {
-//        return this.projectile;
+//    public Projectile getAmmo() {
+//        return this.ammo;
 //    }
-
-    public static Map.Entry<ResourceLocation, Projectile> getFirst(Map<ResourceLocation, Projectile> map){
-        for (var v: map.entrySet()) {
-            return v;
-        }
-        return null;
-    }
-
-    public Map<ResourceLocation, Projectile> getProjectile() {
-        return this.projectile;
-    }
 
     public Sounds getSounds() {
         return this.sounds;
@@ -122,6 +108,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         public static final String RELOAD_SPEED = "ReloadSpeed";
         public static final String RELOAD_TIME = "ReloadTime";
         public static final String RECOIL_ANGLE = "RecoilAngle";
+        public static final String DAMAGE = "Damage";
         public static final String RECOIL_KICK = "RecoilKick";
         public static final String RECOIL_DURATION_OFFSET = "RecoilDurationOffset";
         public static final String RECOIL_ADS_REDUCTION = "RecoilAdsReduction";
@@ -135,6 +122,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Optional
         private boolean fullCharge = false;
         private int rate;
+        @Optional
+        private float damage;
         @Ignored
         private GripType gripType = GripType.ONE_HANDED;
         @Ignored
@@ -143,7 +132,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Optional
         private int reloadTime = 1;
         @Optional
-        private String loadingType = LoadingTypes.MAGAZINE;
+        private LoadingType loadingType = LoadingType.MAGAZINE;
         @Optional
         private String category = "pistol";
         @Optional
@@ -164,6 +153,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         private float spread;
         @Optional
         private int fireTimer;
+        @Optional
+        protected Set<ResourceLocation> ammo = new HashSet<>(List.of(new ResourceLocation("ntgl:round10mm")));
 
         @Override
         public CompoundTag serializeNBT() {
@@ -171,21 +162,23 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             tag.putInt(RATE, this.rate);
             tag.putBoolean("FullCharge", this.fullCharge);
             tag.putInt("FireTimer", this.fireTimer);
-            tag.put("FireMode", NbtUtils.serializeFireMode(this.fireMode));
+            tag.put("FireMode", NbtUtils.serializeSet(this.fireMode));
             tag.putString(GRIP_TYPE, this.gripType.getId().toString());
             tag.putString(RELOAD_TYPE, this.reloadType.toString());
             tag.putInt(MAX_AMMO, this.maxAmmo);
             tag.putInt(RELOAD_SPEED, this.reloadAmount);
             tag.putInt(RELOAD_TIME, this.reloadTime);
-            tag.putString(LOADING_TYPE, this.loadingType);
+            tag.putString(LOADING_TYPE, this.loadingType.toString());
             tag.putString(CATEGORY, this.category);
             tag.putFloat(RECOIL_ANGLE, this.recoilAngle);
+            tag.putFloat(DAMAGE, this.damage);
             tag.putFloat(RECOIL_KICK, this.recoilKick);
             tag.putFloat(RECOIL_DURATION_OFFSET, this.recoilDurationOffset);
             tag.putFloat(RECOIL_ADS_REDUCTION, this.recoilAdsReduction);
             tag.putInt(PROJECTILE_AMOUNT, this.projectileAmount);
             tag.putFloat(SPREAD, this.spread);
             tag.putBoolean(ALWAYS_SPREAD, this.alwaysSpread);
+            tag.put("Ammo", NbtUtils.serializeSet(this.ammo));
             return tag;
         }
 
@@ -219,13 +212,16 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 this.reloadTime = tag.getInt(RELOAD_TIME);
             }
             if (tag.contains(LOADING_TYPE, Tag.TAG_STRING)) {
-                this.loadingType = tag.getString(LOADING_TYPE);
+                this.loadingType = LoadingType.getType(tag.getString(LOADING_TYPE));
             }
             if (tag.contains(CATEGORY, Tag.TAG_STRING)) {
                 this.category = tag.getString(CATEGORY);
             }
             if (tag.contains(RECOIL_ANGLE, Tag.TAG_ANY_NUMERIC)) {
                 this.recoilAngle = tag.getFloat(RECOIL_ANGLE);
+            }
+            if (tag.contains(DAMAGE, Tag.TAG_ANY_NUMERIC)) {
+                this.damage = tag.getFloat(DAMAGE);
             }
             if (tag.contains(RECOIL_KICK, Tag.TAG_ANY_NUMERIC)) {
                 this.recoilKick = tag.getFloat(RECOIL_KICK);
@@ -245,6 +241,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (tag.contains(SPREAD, Tag.TAG_ANY_NUMERIC)) {
                 this.spread = tag.getFloat(SPREAD);
             }
+            if (tag.contains("Ammo", Tag.TAG_COMPOUND)) {
+                this.ammo = NbtUtils.deserializeAmmoSet(tag.getCompound("Ammo"));
+            }
         }
 
         public JsonObject toJsonObject() {
@@ -252,8 +251,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             Preconditions.checkArgument(this.maxAmmo > 0, "Max ammo must be more than zero");
             Preconditions.checkArgument(this.reloadAmount >= 1, "Reload amount must be more than or equal to zero");
             Preconditions.checkArgument(this.reloadTime >= 1, "Reload time must be more than or equal to zero");
-            Preconditions.checkArgument(!this.loadingType.equals(LoadingTypes.MAGAZINE) && !this.loadingType.equals(LoadingTypes.PER_CARTRIDGE), "Loading type must be " + LoadingTypes.MAGAZINE + " or " + LoadingTypes.PER_CARTRIDGE);
             Preconditions.checkArgument(this.recoilAngle >= 0.0F, "Recoil angle must be more than or equal to zero");
+            Preconditions.checkArgument(this.damage >= 0.0F, "Damage angle must be more than or equal to zero");
             Preconditions.checkArgument(this.recoilKick >= 0.0F, "Recoil kick must be more than or equal to zero");
             Preconditions.checkArgument(this.recoilDurationOffset >= 0.0F && this.recoilDurationOffset <= 1.0F, "Recoil duration offset must be between 0.0 and 1.0");
             Preconditions.checkArgument(this.recoilAdsReduction >= 0.0F && this.recoilAdsReduction <= 1.0F, "Recoil ads reduction must be between 0.0 and 1.0");
@@ -264,14 +263,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             object.addProperty("rate", this.rate);
             if (this.fireTimer != 0) object.addProperty("fireTimer", this.fireTimer);
 //            object.addProperty("fireMode", this.fireMode.getId().toString());
-            object.addProperty("gripType", this.gripType.getId().toString());
+            object.addProperty("gripType", this.gripType.toString());
+            object.addProperty("loadingType", this.loadingType.toString());
             object.addProperty("reloadType", this.reloadType.toString());
             object.addProperty("maxAmmo", this.maxAmmo);
             if (this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
             if (this.reloadTime != 1) object.addProperty("reloadTime", this.reloadTime);
-            if (this.loadingType.equals(LoadingTypes.MAGAZINE) || this.loadingType.equals(LoadingTypes.PER_CARTRIDGE))
-                object.addProperty("loadingType", this.loadingType);
             if (this.recoilAngle != 0.0F) object.addProperty("recoilAngle", this.recoilAngle);
+            if (this.damage != 0.0F) object.addProperty("damage", this.damage);
             if (this.recoilKick != 0.0F) object.addProperty("recoilKick", this.recoilKick);
             if (this.recoilDurationOffset != 0.0F)
                 object.addProperty("recoilDurationOffset", this.recoilDurationOffset);
@@ -300,13 +299,19 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             general.loadingType = this.loadingType;
             general.category = this.category;
             general.recoilAngle = this.recoilAngle;
+            general.damage = this.damage;
             general.recoilKick = this.recoilKick;
             general.recoilDurationOffset = this.recoilDurationOffset;
             general.recoilAdsReduction = this.recoilAdsReduction;
             general.projectileAmount = this.projectileAmount;
             general.alwaysSpread = this.alwaysSpread;
             general.spread = this.spread;
+            general.ammo = new HashSet<>(this.ammo);
             return general;
+        }
+
+        public Set<ResourceLocation> getAmmo() {
+            return this.ammo;
         }
 
         /**
@@ -358,7 +363,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 var gun = gunItem.getModifiedGun(gunStack);
 
                 if (GunModifierHelper.getCurrentProjectile(gunStack).isMagazineMode()) {
-                    var id = GunModifierHelper.getAmmoItem(gunStack);
+                    var id = GunModifierHelper.getCurrentAmmo(gunStack);
                     var item = ForgeRegistries.ITEMS.getValue(id);
 
                     return item.getMaxDamage(new ItemStack(item));
@@ -385,7 +390,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         /**
          * @return Type of loading
          */
-        public String getLoadingType() {
+        public LoadingType getLoadingType() {
             return this.loadingType;
         }
 
@@ -401,6 +406,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
          */
         public float getRecoilAngle() {
             return this.recoilAngle;
+        }
+
+        /**
+         * @return The damage caused by this ammo
+         */
+        public float getDamage() {
+            return this.damage;
         }
 
         /**
@@ -440,197 +452,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         /**
          * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
-         * the fired projectile.
+         * the fired ammo.
          */
         public float getSpread() {
             return this.spread;
-        }
-    }
-
-    public static class Projectile implements INBTSerializable<CompoundTag> {
-        private ResourceLocation item = new ResourceLocation(Ntgl.MOD_ID, "round10mm");
-        @Optional
-        private boolean visible;
-        private float damage;
-        private float size;
-        private double speed;
-        private int life;
-        @Optional
-        private boolean gravity;
-        @Optional
-        private boolean damageReduceOverLife;
-        @Optional
-        private boolean magazineMode;
-        @Optional
-        private int trailColor = 0xFFD289;
-        @Optional
-        private double trailLengthMultiplier = 1.0;
-
-        @Override
-        public CompoundTag serializeNBT() {
-            CompoundTag tag = new CompoundTag();
-            tag.putString("Item", this.item.toString());
-            tag.putBoolean("Visible", this.visible);
-            tag.putFloat("Damage", this.damage);
-            tag.putFloat("Size", this.size);
-            tag.putDouble("Speed", this.speed);
-            tag.putInt("Life", this.life);
-            tag.putBoolean("Gravity", this.gravity);
-            tag.putBoolean("DamageReduceOverLife", this.damageReduceOverLife);
-            tag.putBoolean("MagazineMode", this.magazineMode);
-            tag.putInt("TrailColor", this.trailColor);
-            tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
-            return tag;
-        }
-
-        @Override
-        public void deserializeNBT(CompoundTag tag) {
-            if (tag.contains("Item", Tag.TAG_STRING)) {
-                this.item = new ResourceLocation(tag.getString("Item"));
-            }
-            if (tag.contains("Visible", Tag.TAG_ANY_NUMERIC)) {
-                this.visible = tag.getBoolean("Visible");
-            }
-            if (tag.contains("Damage", Tag.TAG_ANY_NUMERIC)) {
-                this.damage = tag.getFloat("Damage");
-            }
-            if (tag.contains("Size", Tag.TAG_ANY_NUMERIC)) {
-                this.size = tag.getFloat("Size");
-            }
-            if (tag.contains("Speed", Tag.TAG_ANY_NUMERIC)) {
-                this.speed = tag.getDouble("Speed");
-            }
-            if (tag.contains("Life", Tag.TAG_ANY_NUMERIC)) {
-                this.life = tag.getInt("Life");
-            }
-            if (tag.contains("Gravity", Tag.TAG_ANY_NUMERIC)) {
-                this.gravity = tag.getBoolean("Gravity");
-            }
-            if (tag.contains("DamageReduceOverLife", Tag.TAG_ANY_NUMERIC)) {
-                this.damageReduceOverLife = tag.getBoolean("DamageReduceOverLife");
-            }
-            if (tag.contains("MagazineMode", Tag.TAG_ANY_NUMERIC)) {
-                this.magazineMode = tag.getBoolean("MagazineMode");
-            }
-            if (tag.contains("TrailColor", Tag.TAG_ANY_NUMERIC)) {
-                this.trailColor = tag.getInt("TrailColor");
-            }
-            if (tag.contains("TrailLengthMultiplier", Tag.TAG_ANY_NUMERIC)) {
-                this.trailLengthMultiplier = tag.getDouble("TrailLengthMultiplier");
-            }
-        }
-
-        public JsonObject toJsonObject() {
-            Preconditions.checkArgument(this.damage >= 0.0F, "Damage must be more than or equal to zero");
-            Preconditions.checkArgument(this.size >= 0.0F, "Projectile size must be more than or equal to zero");
-            Preconditions.checkArgument(this.speed >= 0.0, "Projectile speed must be more than or equal to zero");
-            Preconditions.checkArgument(this.life > 0, "Projectile life must be more than zero");
-            Preconditions.checkArgument(this.trailLengthMultiplier >= 0.0, "Projectile trail length multiplier must be more than or equal to zero");
-            JsonObject object = new JsonObject();
-            object.addProperty("item", this.item.toString());
-            if (this.visible) object.addProperty("visible", true);
-            object.addProperty("damage", this.damage);
-            object.addProperty("size", this.size);
-            object.addProperty("speed", this.speed);
-            object.addProperty("life", this.life);
-            if (this.gravity) object.addProperty("gravity", true);
-            if (this.damageReduceOverLife) object.addProperty("damageReduceOverLife", this.damageReduceOverLife);
-            if (this.magazineMode) object.addProperty("magazineMode", this.magazineMode);
-            if (this.trailColor != 0xFFD289) object.addProperty("trailColor", this.trailColor);
-            if (this.trailLengthMultiplier != 1.0)
-                object.addProperty("trailLengthMultiplier", this.trailLengthMultiplier);
-            return object;
-        }
-
-        public Projectile copy() {
-            Projectile projectile = new Projectile();
-            projectile.item = this.item;
-            projectile.visible = this.visible;
-            projectile.damage = this.damage;
-            projectile.size = this.size;
-            projectile.speed = this.speed;
-            projectile.life = this.life;
-            projectile.gravity = this.gravity;
-            projectile.damageReduceOverLife = this.damageReduceOverLife;
-            projectile.magazineMode = this.magazineMode;
-            projectile.trailColor = this.trailColor;
-            projectile.trailLengthMultiplier = this.trailLengthMultiplier;
-            return projectile;
-        }
-
-        /**
-         * @return The registry id of the ammo item
-         */
-        public ResourceLocation getItem() {
-            return this.item;
-        }
-
-        /**
-         * @return If this projectile should be visible when rendering
-         */
-        public boolean isVisible() {
-            return this.visible;
-        }
-
-        /**
-         * @return The damage caused by this projectile
-         */
-        public float getDamage() {
-            return this.damage;
-        }
-
-        /**
-         * @return The size of the projectile entity bounding box
-         */
-        public float getSize() {
-            return this.size;
-        }
-
-        /**
-         * @return The speed the projectile moves every tick
-         */
-        public double getSpeed() {
-            return this.speed;
-        }
-
-        /**
-         * @return The amount of ticks before this projectile is removed
-         */
-        public int getLife() {
-            return this.life;
-        }
-
-        /**
-         * @return If gravity should be applied to the projectile
-         */
-        public boolean isGravity() {
-            return this.gravity;
-        }
-
-        /**
-         * @return If the damage should reduce the further the projectile travels
-         */
-        public boolean isDamageReduceOverLife() {
-            return this.damageReduceOverLife;
-        }
-
-
-        public boolean isMagazineMode() {
-            return this.magazineMode;
-        }
-
-        /**
-         * @return The color of the projectile trail in rgba integer format
-         */
-        public int getTrailColor() {
-            return this.trailColor;
-        }
-
-        /**
-         * @return The multiplier to change the length of the projectile trail
-         */
-        public double getTrailLengthMultiplier() {
-            return this.trailLengthMultiplier;
         }
     }
 
@@ -1307,7 +1132,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.put("General", this.general.serializeNBT());
-        tag.put("Projectile", NbtUtils.serializeMap(this.projectile));
         tag.put("Sounds", this.sounds.serializeNBT());
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
@@ -1318,9 +1142,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public void deserializeNBT(CompoundTag tag) {
         if (tag.contains("General", Tag.TAG_COMPOUND)) {
             this.general.deserializeNBT(tag.getCompound("General"));
-        }
-        if (tag.contains("Projectile", Tag.TAG_COMPOUND)) {
-            this.projectile = deserializeProjectileMap(tag.getCompound("Projectile"));
         }
         if (tag.contains("Sounds", Tag.TAG_COMPOUND)) {
             this.sounds.deserializeNBT(tag.getCompound("Sounds"));
@@ -1336,7 +1157,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public JsonObject toJsonObject() {
         JsonObject object = new JsonObject();
         object.add("general", this.general.toJsonObject());
-//        object.add("projectile", this.projectile.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "sounds", this.sounds.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modules", this.modules.toJsonObject());
@@ -1352,7 +1172,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public Gun copy() {
         Gun gun = new Gun();
         gun.general = this.general.copy();
-        gun.projectile = new HashMap<>(this.projectile);
         gun.sounds = this.sounds.copy();
         gun.display = this.display.copy();
         gun.modules = this.modules.copy();
@@ -1490,7 +1309,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static AmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
-        var id = GunModifierHelper.getAmmoItem(weapon);
+        var id = GunModifierHelper.getCurrentAmmo(weapon);
 
         if (entity instanceof Player player) {
             var context = findPlayerAmmo(player, id);
@@ -1498,10 +1317,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if(context == AmmoContext.NONE){
                 var set = GunModifierHelper.getAmmoItems(weapon);
                 for (var value: set) {
-                    if(!value.equals(id)){
-                        context = findPlayerAmmo(player, value);
+                    if(!value.equals(id) && Gun.getAmmo(weapon) == 0){
+                        id = value;
+                        context = findPlayerAmmo(player, id);
                         if(context != AmmoContext.NONE) {
-                            GunModifierHelper.setCurrentAmmo(weapon, value);
+                            GunModifierHelper.setCurrentAmmo(weapon, id);
                             return context;
                         }
                     }
@@ -1514,7 +1334,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static AmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {
-        var id = GunModifierHelper.getAmmoItem(weapon);
+        var id = GunModifierHelper.getCurrentAmmo(weapon);
 
         if (entity instanceof Player player) {
             var context = findPlayerMagazine(player, id);
@@ -1522,10 +1342,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             if(context == AmmoContext.NONE){
                 var set = GunModifierHelper.getAmmoItems(weapon);
                 for (var value: set) {
-                    if(!value.equals(id)){
-                        context = findPlayerMagazine(player, value);
+                    if(!value.equals(id) && Gun.getAmmo(weapon) == 0){
+                        id = value;
+                        context = findPlayerMagazine(player, id);
                         if(context != AmmoContext.NONE) {
-                            GunModifierHelper.setCurrentAmmo(weapon, value);
+                            GunModifierHelper.setCurrentAmmo(weapon, id);
                             return context;
                         }
                     }
@@ -1684,6 +1505,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this.gun.copy(); //Copy since the builder could be used again
         }
 
+        public Gun.Builder addAmmo(ResourceLocation id) {
+            this.gun.general.ammo.add(id);
+            return this;
+        }
+
         public Builder setFireRate(int rate) {
             this.gun.general.rate = rate;
             return this;
@@ -1714,7 +1540,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this;
         }
 
-        public Builder setLoadingType(String loadingType) {
+        public Builder setLoadingType(LoadingType loadingType) {
             this.gun.general.loadingType = loadingType;
             return this;
         }
@@ -1756,66 +1582,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         public Builder setSpread(float spread) {
             this.gun.general.spread = spread;
-            return this;
-        }
-
-        public Builder addProjectile(ResourceLocation id){
-            this.gun.projectile.put(id, new Projectile());
-            return this;
-        }
-
-        public Builder setAmmo(ResourceLocation id, Item item) {
-            this.gun.projectile.get(id).item = ForgeRegistries.ITEMS.getKey(item);
-            return this;
-        }
-
-        public Builder setProjectileVisible(ResourceLocation id, boolean visible) {
-            this.gun.projectile.get(id).visible = visible;
-            return this;
-        }
-
-        public Builder setProjectileSize(ResourceLocation id, float size) {
-            this.gun.projectile.get(id).size = size;
-            return this;
-        }
-
-        public Builder setProjectileSpeed(ResourceLocation id, double speed) {
-            this.gun.projectile.get(id).speed = speed;
-            return this;
-        }
-
-        public Builder setProjectileLife(ResourceLocation id, int life) {
-            this.gun.projectile.get(id).life = life;
-            return this;
-        }
-
-        public Builder setProjectileAffectedByGravity(ResourceLocation id, boolean gravity) {
-            this.gun.projectile.get(id).gravity = gravity;
-            return this;
-        }
-
-        public Builder setProjectileTrailColor(ResourceLocation id, int trailColor) {
-            this.gun.projectile.get(id).trailColor = trailColor;
-            return this;
-        }
-
-        public Builder setProjectileTrailLengthMultiplier(ResourceLocation id, int trailLengthMultiplier) {
-            this.gun.projectile.get(id).trailLengthMultiplier = trailLengthMultiplier;
-            return this;
-        }
-
-        public Builder setDamage(ResourceLocation id, float damage) {
-            this.gun.projectile.get(id).damage = damage;
-            return this;
-        }
-
-        public Builder setReduceDamageOverLife(ResourceLocation id, boolean damageReduceOverLife) {
-            this.gun.projectile.get(id).damageReduceOverLife = damageReduceOverLife;
-            return this;
-        }
-
-        public Builder setMagazineMode(ResourceLocation id, boolean magazineMode) {
-            this.gun.projectile.get(id).magazineMode = magazineMode;
             return this;
         }
 

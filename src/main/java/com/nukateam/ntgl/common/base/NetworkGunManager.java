@@ -1,24 +1,17 @@
 package com.nukateam.ntgl.common.base;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.data.util.Easings;
-import com.nukateam.ntgl.common.base.gun.*;
-import com.nukateam.ntgl.common.base.utils.JsonDeserializers;
-import com.nukateam.ntgl.common.data.annotation.Validator;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
-import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -26,34 +19,18 @@ import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
-import java.io.*;
-import java.lang.reflect.Modifier;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static net.minecraftforge.registries.ForgeRegistries.*;
 
 /**
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunItem, Gun>> {
-    private static final int FILE_TYPE_LENGTH_VALUE = ".json".length();
-    private static final Gson GSON_INSTANCE = Util.make(() -> {
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(ResourceLocation.class, JsonDeserializers.RESOURCE_LOCATION);
-        builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
-        builder.registerTypeAdapter(FireMode.class, JsonDeserializers.FIRE_MODE);
-        builder.registerTypeAdapter(AttachmentType.class, JsonDeserializers.ATTACHMENT_TYPE);
-        builder.registerTypeAdapter(AmmoType.class, JsonDeserializers.AMMO_TYPE);
-        builder.registerTypeAdapter(Easings.class, JsonDeserializers.EASING);
-        builder.excludeFieldsWithModifiers(Modifier.TRANSIENT);
-        return builder.create();
-    });
-
     private static List<GunItem> clientRegisteredGuns = new ArrayList<>();
     private static NetworkGunManager instance;
 
@@ -61,61 +38,19 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
 
     @Override
     protected Map<GunItem, Gun> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        Map<GunItem, Gun> map = new HashMap<>();
-        ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof GunItem).forEach(item ->
-        {
-            ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
-            if (id != null) {
-                List<ResourceLocation> resources = new ArrayList<>(manager.listResources("guns", (fileName) -> fileName.getPath().endsWith(id.getPath() + ".json")).keySet());
-                resources.sort((r1, r2) -> {
-                    if (r1.getNamespace().equals(r2.getNamespace())) return 0;
-                    return r2.getNamespace().equals(Ntgl.MOD_ID) ? 1 : -1;
-                });
-                resources.forEach(resourceLocation ->
-                {
-                    String path = resourceLocation.getPath().substring(0, resourceLocation.getPath().length() - FILE_TYPE_LENGTH_VALUE);
-                    String[] splitPath = path.split("/");
-
-                    // Makes sure the file name matches exactly with the id of the gun
-                    if (!id.getPath().equals(splitPath[splitPath.length - 1]))
-                        return;
-
-                    // Also check if the mod id matches with the gun's registered namespace
-                    if (!id.getNamespace().equals(resourceLocation.getNamespace()))
-                        return;
-
-                    manager.getResource(resourceLocation).ifPresent(resource ->
-                    {
-                        try (Reader reader = new BufferedReader(new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
-                            Gun gun = GsonHelper.fromJson(GSON_INSTANCE, reader, Gun.class);
-                            if (gun != null && Validator.isValidObject(gun)) {
-                                map.put((GunItem) item, gun);
-                            } else {
-                                Ntgl.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using default gun data", resourceLocation);
-                                map.putIfAbsent((GunItem) item, new Gun());
-                            }
-                        } catch (InvalidObjectException e) {
-                            Ntgl.LOGGER.error("Missing required properties for {}", resourceLocation);
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            Ntgl.LOGGER.error("Couldn't parse data file {}", resourceLocation);
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                });
-            }
-        });
-        return map;
+        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof GunItem, Gun.class, "guns");
     }
+
     @Override
     protected void apply(Map<GunItem, Gun> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
         ImmutableMap.Builder<ResourceLocation, Gun> builder = ImmutableMap.builder();
+
         objects.forEach((item, gun) -> {
-            Validate.notNull(ForgeRegistries.ITEMS.getKey(item));
-            builder.put(ForgeRegistries.ITEMS.getKey(item), gun);
+            Validate.notNull(ITEMS.getKey(item));
+            builder.put(ITEMS.getKey(item), gun);
             item.setGun(new Supplier(gun));
         });
+
         this.registeredGuns = builder.build();
     }
 
@@ -139,11 +74,13 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
      * @return a map of registered guns from the server
      */
     public static ImmutableMap<ResourceLocation, Gun> readRegisteredGuns(FriendlyByteBuf buffer) {
-        int size = buffer.readVarInt();
+        var size = buffer.readVarInt();
+
         if (size > 0) {
             ImmutableMap.Builder<ResourceLocation, Gun> builder = ImmutableMap.builder();
+
             for (int i = 0; i < size; i++) {
-                ResourceLocation id = buffer.readResourceLocation();
+                var id = buffer.readResourceLocation();
                 Gun gun = Gun.create(buffer.readNbt());
                 builder.put(id, gun);
             }
@@ -165,7 +102,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
         clientRegisteredGuns.clear();
         if (registeredGuns != null) {
             for (Map.Entry<ResourceLocation, Gun> entry : registeredGuns.entrySet()) {
-                Item item = ForgeRegistries.ITEMS.getValue(entry.getKey());
+                Item item = ITEMS.getValue(entry.getKey());
                 if (!(item instanceof GunItem)) {
                     return false;
                 }
@@ -251,7 +188,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
 
         @Override
         public Optional<String> readData(FriendlyByteBuf buffer) {
-            Map<ResourceLocation, Gun> registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
+            var registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
             NetworkGunManager.updateRegisteredGuns(registeredGuns);
             return Optional.empty();
         }

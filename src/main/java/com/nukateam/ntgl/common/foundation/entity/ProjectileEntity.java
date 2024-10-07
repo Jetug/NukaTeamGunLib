@@ -3,8 +3,8 @@ package com.nukateam.ntgl.common.foundation.entity;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.example.common.data.interfaces.IExplosiveOnHit;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.base.gun.Gun;
-import com.nukateam.ntgl.common.base.gun.Gun.Projectile;
+import com.nukateam.ntgl.common.base.config.Ammo;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
 import com.nukateam.ntgl.common.data.interfaces.*;
@@ -76,7 +76,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected LivingEntity shooter;
     protected Gun modifiedGun;
     protected Gun.General general;
-    protected Gun.Projectile projectile;
+    protected Ammo projectile;
     protected ItemStack weapon = ItemStack.EMPTY;
     protected ItemStack ammoStack = ItemStack.EMPTY;
     protected float additionalDamage = 0.0F;
@@ -107,18 +107,18 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         getEntityData().set(SHOOTER , shooterId);
         getEntityData().set(IS_RIGHT, isRightHand);
         getEntityData().set(IS_VISIBLE, projectile.isVisible());
-        getEntityData().set(ITEM, GunModifierHelper.getAmmoItem(weapon).toString());
+        getEntityData().set(ITEM, GunModifierHelper.getCurrentAmmo(weapon).toString());
 
         /* Get speed and set motion */
         setupDirection(shooter, weapon, item, modifiedGun);
 
-        /* Spawn the projectile half way between the previous and current position */
+        /* Spawn the ammo half way between the previous and current position */
         var posX = shooter.xOld + (shooter.getX() - shooter.xOld) / 2.0;
         var posY = shooter.yOld + (shooter.getY() - shooter.yOld) / 2.0 + shooter.getEyeHeight();
         var posZ = shooter.zOld + (shooter.getZ() - shooter.zOld) / 2.0;
         this.setPos(posX, posY, posZ);
 
-        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getAmmoItem(weapon));
+        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmo(weapon));
 
         if (ammo != null) {
             int customModelData = -1;
@@ -291,7 +291,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
-        this.projectile = new Gun.Projectile();
+        this.projectile = new Ammo();
         this.projectile.deserializeNBT(compound.getCompound("Projectile"));
         this.general = new Gun.General();
         this.general.deserializeNBT(compound.getCompound("General"));
@@ -320,7 +320,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     @Override
     public void readSpawnData(FriendlyByteBuf buffer) {
-        this.projectile = new Gun.Projectile();
+        this.projectile = new Ammo();
         this.projectile.deserializeNBT(buffer.readNbt());
         this.general = new Gun.General();
         this.general.deserializeNBT(buffer.readNbt());
@@ -340,19 +340,19 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.xRotO = this.getXRot();
     }
 
-    public Projectile getProjectile() {
+    public Ammo getProjectile() {
         return this.projectile;
     }
 
     /**
-     * Gets the entity who spawned the projectile
+     * Gets the entity who spawned the ammo
      */
     public LivingEntity getShooter() {
         return this.shooter;
     }
 
     /**
-     * Gets the id of the entity who spawned the projectile
+     * Gets the id of the entity who spawned the ammo
      */
     public int getShooterId() {
         shooterId = getEntityData().get(SHOOTER);
@@ -360,7 +360,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     public float getDamage() {
-        float initialDamage = (this.projectile.getDamage() + this.additionalDamage);
+        float initialDamage = GunModifierHelper.getModifiedDamage(this.weapon)  + this.additionalDamage;
 
         if (this.projectile.isDamageReduceOverLife()) {
             float modifier = ((float) this.projectile.getLife() - (float) (this.tickCount - 1)) / (float) this.projectile.getLife();
@@ -368,7 +368,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
 
         var damage = initialDamage / this.general.getProjectileAmount();
-        damage = GunModifierHelper.getModifiedDamage(this.weapon, damage);
+//        damage = GunModifierHelper.getModifiedDamage(this.weapon);
         damage = GunEnchantmentHelper.getAcceleratorDamage(this.weapon, damage);
 
         return Math.max(0F, damage);
@@ -379,7 +379,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     /**
-     * Creates a projectile explosion for the specified entity.
+     * Creates a ammo explosion for the specified entity.
      *
      * @param entity    The entity to explodeOnHit
      * @param radius    The amount of radius the entity should deal
@@ -392,7 +392,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         var source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
         var mode = forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
-        Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
+        var explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
 
         if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
             return;
@@ -422,14 +422,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     /**
-     * A simple method to perform logic on each tick of the projectile. This method is appropriate
+     * A simple method to perform logic on each tick of the ammo. This method is appropriate
      * for spawning particles. Override {@link #tick()} to make changes to physics
      */
     protected void onProjectileTick() {
     }
 
     /**
-     * Called when the projectile has run out of it's life. In other words, the projectile managed
+     * Called when the ammo has run out of it's life. In other words, the ammo managed
      * to not hit any blocks and instead aged. The grenade uses this to explodeOnHit in the air.
      */
     protected void onExpired() {
@@ -822,14 +822,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
 
         /**
-         * Gets the entity that was hit by the projectile
+         * Gets the entity that was hit by the ammo
          */
         public Entity getEntity() {
             return this.entity;
         }
 
         /**
-         * Gets the position the projectile hit
+         * Gets the position the ammo hit
          */
         public Vec3 getHitPos() {
             return this.hitVec;

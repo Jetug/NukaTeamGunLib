@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.container;
 
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
 import com.nukateam.ntgl.common.foundation.init.ModContainers;
 import com.nukateam.ntgl.common.foundation.item.AttachmentItem;

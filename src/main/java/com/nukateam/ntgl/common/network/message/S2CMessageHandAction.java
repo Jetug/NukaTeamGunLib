@@ -2,11 +2,10 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
-import com.nukateam.ntgl.common.base.network.ServerPlayHandler;
+import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.network.HandAction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
 
 public class S2CMessageHandAction extends PlayMessage<S2CMessageHandAction> {
     private InteractionHand hand = InteractionHand.MAIN_HAND;

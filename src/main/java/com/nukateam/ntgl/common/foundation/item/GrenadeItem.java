@@ -1,9 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.ntgl.common.base.gun.AmmoType;
 import com.nukateam.ntgl.common.foundation.entity.ThrowableGrenadeEntity;
-import com.nukateam.ntgl.common.foundation.init.ModSounds;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -14,13 +11,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
-
 public class GrenadeItem extends AmmoItem {
     protected int maxCookTime;
 
-
     public GrenadeItem(Item.Properties properties, int maxCookTime) {
-        super(properties, AmmoType.EXPLOSIVE);
+        super(properties);
         this.maxCookTime = maxCookTime;
     }
 
@@ -38,9 +33,15 @@ public class GrenadeItem extends AmmoItem {
     public void onUseTick(Level level, LivingEntity player, ItemStack stack, int count) {
         if (!this.canCook()) return;
 
-        int duration = this.getUseDuration(stack) - count;
-        if (duration == 10)
-            player.level().playLocalSound(player.getX(), player.getY(), player.getZ(), ModSounds.ITEM_GRENADE_PIN.get(), SoundSource.PLAYERS, 1.0F, 1.0F, false);
+//        int duration = this.getUseDuration(stack) - count;
+//        if (duration == 10)
+//            player.level().playLocalSound(
+//                    player.getX(),
+//                    player.getY(),
+//                    player.getZ(),
+//                    ModSounds.ITEM_GRENADE_PIN.get(),
+//                    SoundSource.PLAYERS,
+//                    1.0F, 1.0F, false);
     }
 
     @Override
@@ -86,12 +87,9 @@ public class GrenadeItem extends AmmoItem {
         return new ThrowableGrenadeEntity(world, entity, timeLeft);
     }
 
-
-
     public boolean canCook() {
         return true;
     }
 
-    protected void onThrown(Level world, ThrowableGrenadeEntity entity) {
-    }
+    protected void onThrown(Level world, ThrowableGrenadeEntity entity) {}
 }

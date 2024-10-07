@@ -60,7 +60,7 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
         if (shooter == null) return;
 
         var playerPos = projectile.getEndVec();
-        var laserPos = shooter.getEyePosition(partialTicks); //projectile.getStartVec();
+        var laserPos = shooter.getEyePosition(partialTicks); //ammo.getStartVec();
         var pos = playerPos.subtract(laserPos);
         var offset = getBeamOffset();
         var distance = projectile.getDistance() - offset.y;

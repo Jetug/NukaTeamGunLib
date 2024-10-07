@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;

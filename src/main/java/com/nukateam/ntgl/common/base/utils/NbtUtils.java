@@ -1,8 +1,9 @@
 package com.nukateam.ntgl.common.base.utils;
 
+import com.nukateam.ntgl.common.base.config.Ammo;
 import com.nukateam.ntgl.common.base.gun.AttachmentType;
 import com.nukateam.ntgl.common.base.gun.FireMode;
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.config.Gun;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -28,13 +29,13 @@ public class NbtUtils {
         return array;
     }
 
-    public static CompoundTag serializeFireMode(Set<FireMode> array){
+    public static <T> CompoundTag serializeSet(Set<T> array){
         var tag = new CompoundTag();
         var iterator = array.iterator();
         var i = 0;
 
         while (iterator.hasNext()){
-            tag.putString(String.valueOf(i), iterator.next().getId().toString());
+            tag.putString(String.valueOf(i), iterator.next().toString());
             i++;
         }
 
@@ -43,9 +44,21 @@ public class NbtUtils {
 
     public static Set<FireMode> deserializeFireMode(CompoundTag tag){
         var array = new HashSet<FireMode>();
+
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_STRING)) {
                 array.add(FireMode.getType(ResourceLocation.tryParse(tag.getString(key))));
+            }
+        }
+
+        return array;
+    }
+    public static Set<ResourceLocation> deserializeAmmoSet(CompoundTag tag){
+        var array = new HashSet<ResourceLocation>();
+
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_STRING)) {
+                array.add(ResourceLocation.tryParse(tag.getString(key)));
             }
         }
 
@@ -84,12 +97,12 @@ public class NbtUtils {
         return tag;
     }
 
-    public static Map<ResourceLocation, Gun.Projectile> deserializeProjectileMap(CompoundTag tag){
-        var map = new HashMap<ResourceLocation, Gun.Projectile>();
+    public static Map<ResourceLocation, Ammo> deserializeProjectileMap(CompoundTag tag){
+        var map = new HashMap<ResourceLocation, Ammo>();
 
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {
-                var projectile = new Gun.Projectile();
+                var projectile = new Ammo();
                 var resource = ResourceLocation.tryParse(key);
 
                 projectile.deserializeNBT(tag.getCompound(key));

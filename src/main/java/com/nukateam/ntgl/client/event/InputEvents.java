@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import static com.nukateam.ntgl.client.input.KeyBinds.*;
+import static com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys.getReloadKey;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class InputEvents {
@@ -37,7 +38,9 @@ public class InputEvents {
                 PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_FIRE_MODE));
             }
             else if(event.getKey() == KEY_AMMO_SELECT.getKey().getValue()){
-                PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_AMMO));
+                var isReloading = getReloadKey(hand);
+                if(!isReloading.getValue(minecraft.player))
+                    PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_AMMO));
             }
         }
 

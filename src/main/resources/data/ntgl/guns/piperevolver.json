@@ -1,0 +1,115 @@
+{
+  "general": {
+    "rate": 5,
+    "gripType": "ntgl:one_handed",
+    "maxAmmo": 6,
+    "reloadTime": 20,
+    "reloadAmount": 2,
+    "recoilAngle": 5.6,
+    "recoilKick": 0.8,
+    "damage": 7.0,
+    "recoilAdsReduction": 0.27,
+    "alwaysSpread": true,
+    "spread": 1.4,
+    "ammo": [
+      "ntgl:round45"
+    ]
+  },
+  "sounds": {
+    "fire": "ntgl:item.pistol45mm.fire",
+    "reload": "ntgl:item.pistol45mm.reload",
+    "cock": "ntgl:item.pistol45mm.cock",
+    "silencedFire": "ntgl:item.pistol45mm.silenced_fire",
+    "enchantedFire": "ntgl:item.pistol45mm.enchanted_fire"
+  },
+  "modules": {
+    "zoom": {
+      "xOffset": 0.0,
+      "yOffset": 5.7,
+      "zOffset": 0.0,
+      "fovModifier": 0.7
+    },
+    "attachments": {
+      "ntgl:scope": [
+        {
+          "name": "scope_1",
+          "item": "ntgl:pistol_holographic_sight"
+        },
+        {
+          "name": "scope_2",
+          "item": "ntgl:pistol_collimator_sight"
+        },
+        {
+          "name": "scope_3",
+          "item": "ntgl:pistol_hunting_optics"
+        },
+        {
+          "name": "scope_4",
+          "item": "ntgl:pistol_iron_sight"
+        },
+        {
+          "name": "scope_5",
+          "item": "ntgl:pistol_scout_sight"
+        }
+      ],
+      "ntgl:barrel": [
+        {
+          "name": "barrel_1",
+          "item": "ntgl:pipe_silencer",
+          "hide": [
+            "muzzle_flash"
+          ]
+        },
+        {
+          "name": "barrel_2",
+          "item": "ntgl:pipe_flame_hider",
+          "hide": [
+            "muzzle_flash"
+          ]
+        },
+        {
+          "name": "barrel_3",
+          "item": "ntgl:pipe_compensator"
+        },
+        {
+          "name": "barrel_4",
+          "item": "ntgl:pipe_heavy_barrel"
+        },
+        {
+          "name": "barrel_5",
+          "item": "ntgl:pipe_long_barrel"
+        }
+      ],
+      "ntgl:stock": [
+        {
+          "name": "grip_1",
+          "item": "ntgl:pipe_tactical_grip",
+          "hide": [
+            "grip_default"
+          ]
+        },
+        {
+          "name": "grip_2",
+          "item": "ntgl:pipe_pistol_grip",
+          "hide": [
+            "grip_default"
+          ]
+        },
+        {
+          "name": "grip_3",
+          "item": "ntgl:pipe_long_grip",
+          "hide": [
+            "grip_default"
+          ]
+        },
+        {
+          "name": "grip_4",
+          "item": "ntgl:pipe_carbine_grip",
+          "hide": [
+            "grip_default"
+          ]
+        }
+      ]
+    }
+  }
+}

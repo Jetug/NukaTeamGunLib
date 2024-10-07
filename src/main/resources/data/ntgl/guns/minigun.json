@@ -1,0 +1,86 @@
+{
+  "general": {
+    "fireMode": ["ntgl:auto"],
+    "fireTimer": 20,
+    "fullCharge": true,
+    "rate": 1,
+    "gripType": "ntgl:mini_gun",
+    "category": "heavy",
+    "maxAmmo": 100,
+    "reloadTime": 80,
+    "reloadAmount": 10,
+    "recoilAngle": 1.0,
+    "damage": 5.0,
+    "alwaysSpread": true,
+    "spread": 6.0,
+    "ammo": [
+      "ntgl:round5mm"
+    ]
+  },
+  "sounds": {
+    "fire": "ntgl:item.minigun.fire",
+    "reload": "ntgl:item.minigun.reload"
+  },
+  "modules": {
+  "attachments": {
+    "ntgl:barrel": [
+      {
+        "name": "barrel_1",
+        "item": "ntgl:minigun_long_barrel",
+        "hide": [
+          "barrel_default"
+        ]
+      },
+      {
+        "name": "barrel_2",
+        "item": "ntgl:minigun_shredder",
+        "hide": [
+          "barrel_default"
+        ]
+      },
+      {
+        "name": "barrel_3",
+        "item": "ntgl:minigun_six_barrel",
+        "hide": [
+          "barrel_default"
+        ]
+      },
+      {
+        "name": "barrel_4",
+        "item": "ntgl:minigun_shredder_saturnite",
+        "hide": [
+          "barrel_default"
+        ]
+      },
+      {
+        "name": "barrel_5",
+        "item": "ntgl:minigun_shredder_heat",
+        "hide": [
+          "barrel_default"
+        ]
+      }
+    ],
+    "ntgl:magazine": [
+      {
+        "name": "magazine_1",
+        "item": "ntgl:minigun_extend_mag",
+        "hide": [
+          "magazine_default"
+        ]
+      },
+      {
+        "name": "magazine_2",
+        "item": "ntgl:minigun_drum_mag",
+        "hide": [
+          "magazine_default"
+        ]
+      }
+    ],
+    "ntgl:stock": [
+      {
+        "name": "grip_1",
+        "item": "ntgl:stock_shield"
+      }
+    ]
+  }
+}}

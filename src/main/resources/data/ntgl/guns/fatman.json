@@ -1,0 +1,33 @@
+{
+  "general": {
+    "rate": 10,
+    "gripType": "ntgl:bazooka",
+    "category": "heavy",
+    "maxAmmo": 1,
+    "reloadTime": 60,
+    "recoilAngle": 10.0,
+    "recoilDurationOffset": 0.25,
+    "ammo": [
+      "ntgl:mini_nuke"
+    ]
+  },
+  "sounds": {
+    "fire": "ntgl:item.fatman.fire",
+    "reload": "ntgl:item.fatman.reload"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 4.3,
+      "zOffset": -8.01,
+      "size": 2.0
+    }
+  },
+  "modules": {
+    "zoom": {
+      "xOffset": 3.5,
+      "yOffset": 4.3,
+      "zOffset": 16.0,
+      "fovModifier": 0.5
+    }
+  }
+}

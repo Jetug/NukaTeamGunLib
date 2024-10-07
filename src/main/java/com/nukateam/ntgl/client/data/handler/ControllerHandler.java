@@ -5,7 +5,7 @@ import com.mrcrayfish.controllable.event.ControllerEvents;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.screen.WorkbenchScreen;
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -20,10 +20,7 @@ import com.mrcrayfish.controllable.client.gui.navigation.BasicNavigationPoint;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,11 +34,12 @@ public class ControllerHandler {
     public static void init() {
         MinecraftForge.EVENT_BUS.register(new ControllerHandler());
         ControllerEvents.INPUT.register((controller, newButton, originalButton, state) -> {
-            Player player = Minecraft.getInstance().player;
-            Level world = Minecraft.getInstance().level;
-            boolean shouldCancel = false;
+            var player = Minecraft.getInstance().player;
+            var world = Minecraft.getInstance().level;
+            var shouldCancel = false;
+
             if (player != null && world != null && Minecraft.getInstance().screen == null) {
-                ItemStack heldItem = player.getMainHandItem();
+                var heldItem = player.getMainHandItem();
                 if (originalButton == GunButtonBindings.SHOOT.getButton()) {
                     if (heldItem.getItem() instanceof GunItem) {
                         shouldCancel = true;
@@ -75,17 +73,18 @@ public class ControllerHandler {
             }
             return shouldCancel;
         });
+
         ControllerEvents.UPDATE_CAMERA.register((yawSpeed, pitchSpeed) -> {
-            Player player = Minecraft.getInstance().player;
+            var player = Minecraft.getInstance().player;
             if (player != null) {
-                ItemStack heldItem = player.getMainHandItem();
+                var heldItem = player.getMainHandItem();
                 if (heldItem.getItem() instanceof GunItem && AimingHandler.get().isAiming()) {
                     double adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
                     yawSpeed.set(10.0F * (float) adsSensitivity);
                     pitchSpeed.set(7.5F * (float) adsSensitivity);
 
-                    Scope scope = Gun.getScope(heldItem);
-                    Controller controller = Controllable.getController();
+                    var scope = Gun.getScope(heldItem);
+                    var controller = Controllable.getController();
                     if (scope != null && scope.isStable() && controller != null && controller.isButtonPressed(GunButtonBindings.STEADY_AIM.getButton())) {
                         yawSpeed.set(yawSpeed.get() / 2.0F);
                         pitchSpeed.set(pitchSpeed.get() / 2.0F);

@@ -1,15 +1,11 @@
 package com.nukateam.ntgl.common.helpers;
 
 import com.nukateam.ntgl.common.base.AmmoContext;
-import com.nukateam.ntgl.common.base.gun.Gun;
-import com.mrcrayfish.backpacked.Backpacked;
-import com.mrcrayfish.backpacked.core.ModEnchantments;
-import com.mrcrayfish.backpacked.inventory.BackpackInventory;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.mrcrayfish.backpacked.inventory.BackpackedInventoryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 /**
  * Author: MrCrayfish

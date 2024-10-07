@@ -1,0 +1,149 @@
+{
+  "general": {
+    "rate": 4,
+    "gripType": "ntgl:one_handed",
+    "maxAmmo": 5,
+    "reloadTime": 45,
+    "reloadAmount": 1,
+    "recoilAngle": 5.5,
+	"recoilKick": 0.6,
+    "recoilAdsReduction": 0.12,
+    "alwaysSpread": true,
+    "damage": 6.0,
+    "spread": 1.0,
+    "ammo": [
+      "ntgl:round38"
+    ]
+  },
+  "sounds": {
+    "fire": "ntgl:item.pistol38mm.fire",
+    "reload": "ntgl:item.pistol38mm.reload",
+    "cock": "ntgl:item.pistol38mm.cock",
+    "silencedFire": "ntgl:item.pistol38mm.silenced_fire",
+    "enchantedFire": "ntgl:item.pistol38mm.fire"
+  },
+  "modules": {
+    "zoom": {
+      "xOffset": 0.0,
+      "yOffset": 4.7,
+      "zOffset": 0.0,
+      "fovModifier": 0.7
+    },
+    "attachments": {
+      "ntgl:scope": [
+        {
+          "name": "scope_1",
+          "item": "ntgl:pistol_holographic_sight",
+          "xOffset": 10.0,
+          "yOffset": 4.7,
+          "zOffset": 0.0
+        },
+        {
+          "name": "scope_2",
+          "item": "ntgl:pistol_collimator_sight"
+        },
+        {
+          "name": "scope_3",
+          "item": "ntgl:pistol_hunting_optics"
+        },
+        {
+          "name": "scope_4",
+          "item": "ntgl:pistol_iron_sight"
+        },
+        {
+          "name": "scope_5",
+          "item": "ntgl:pistol_scout_sight"
+        }
+      ],
+      "ntgl:barrel": [
+        {
+          "name": "barrel_1",
+          "item": "ntgl:pipe_silencer",
+          "hide": [
+            "muzzle_flash"
+          ]
+        },
+        {
+          "name": "barrel_2",
+          "item": "ntgl:pipe_flame_hider",
+          "hide": [
+            "muzzle_flash"
+          ]
+        },
+        {
+          "name": "barrel_3",
+          "item": "ntgl:pipe_compensator"
+        },
+        {
+          "name": "barrel_4",
+          "item": "ntgl:pipe_heavy_barrel"
+        },
+        {
+          "name": "barrel_5",
+          "item": "ntgl:pipe_long_barrel"
+        }
+      ],
+      "ntgl:stock": [
+        {
+          "name": "grip_1",
+          "item": "ntgl:pipe_tactical_grip",
+          "hide": [
+            "grip_default"
+          ]
+        },
+        {
+          "name": "grip_2",
+          "item": "ntgl:pipe_pistol_grip",
+          "hide": [
+            "grip_default"
+          ]
+        },
+        {
+          "name": "grip_3",
+          "item": "ntgl:pipe_long_grip",
+          "hide": [
+            "grip_default"
+          ]
+        },
+        {
+          "name": "grip_4",
+          "item": "ntgl:pipe_carbine_grip",
+          "hide": [
+            "grip_default"
+          ]
+        }
+      ],
+      "ntgl:magazine": [
+        {
+          "name": "magazine_1",
+          "item": "ntgl:pistol_extended_magazine",
+          "hide": [
+            "magazine_default"
+          ]
+        },
+        {
+          "name": "magazine_2",
+          "item": "ntgl:pistol_quick_magazine",
+          "hide": [
+            "magazine_default"
+          ]
+        },
+        {
+          "name": "magazine_3",
+          "item": "ntgl:pistol_drum_magazine",
+          "hide": [
+            "magazine_default"
+          ]
+        },
+        {
+          "name": "magazine_4",
+          "item": "ntgl:pistol_huge_magazine",
+          "hide": [
+            "magazine_default"
+          ]
+        }
+      ]
+    }
+
+  }
+}

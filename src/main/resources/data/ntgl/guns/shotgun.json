@@ -1,0 +1,115 @@
+{
+  "general": {
+    "rate": 15,
+    "gripType": "ntgl:two_handed",
+    "loadingType": "ntgl:per_cartridge",
+    "maxAmmo": 6,
+    "reloadTime": 10,
+    "reloadAmount": 1,
+    "recoilAngle": 15.0,
+    "recoilKick": 1,
+    "recoilAdsReduction": 0.6,
+    "projectileAmount": 6,
+    "alwaysSpread": true,
+    "spread": 10.0,
+    "ammo": [
+      "ntgl:shotshell"
+    ]
+  },
+  "sounds": {
+    "fire": "ntgl:item.pump_shotgun.fire",
+    "reload": "ntgl:item.pump_shotgun.reload",
+    "cock": "ntgl:item.pump_shotgun.cock",
+    "silencedFire": "ntgl:item.pump_shotgun.silenced_fire",
+    "enchantedFire": "ntgl:item.pump_shotgun.enchanted_fire"
+  },
+  "display": {
+    "flash": {
+      "yOffset": 3.6505,
+      "zOffset": -3.81
+    }
+  },
+  "modules": {
+    "zoom": {
+      "xOffset": 0.0,
+      "yOffset": 4.8,
+      "zOffset": 0.0,
+      "fovModifier": 0.7
+    },
+    "attachments": {
+      "ntgl:scope": [
+        {
+          "name": "scope_1",
+          "item": "ntgl:pistol_collimator_sight"
+        },
+        {
+          "name": "scope_2",
+          "item": "ntgl:pistol_hunting_optics"
+        },
+        {
+          "name": "scope_3",
+          "item": "ntgl:pistol_iron_sight"
+        },
+        {
+          "name": "scope_4",
+          "item": "ntgl:pistol_holographic_sight"
+        },
+        {
+          "name": "scope_5",
+          "item": "ntgl:pistol_scout_sight"
+        },
+        {
+          "name": "scope_6",
+          "item": "ntgl:laser_all_vision"
+        }
+      ],
+      "ntgl:barrel": [
+        {
+          "name": "barrel_1",
+          "item": "ntgl:pump_shield_barrel"
+        },
+        {
+          "name": "barrel_2",
+          "item": "ntgl:pump_silencer_barrel",
+          "hide": [
+            "muzzle_flash"
+          ]
+        },
+        {
+          "name": "barrel_3",
+          "item": "ntgl:pump_long_barrel"
+        }
+      ],
+      "ntgl:stock": [
+        {
+          "name": "grip_1",
+          "item": "ntgl:pump_long_grip",
+          "hide": [
+            "grip_default"
+          ]
+        },
+        {
+          "name": "grip_2",
+          "item": "ntgl:pump_pistol_grip",
+          "hide": [
+            "grip_default"
+          ]
+        },
+        {
+          "name": "grip_3",
+          "item": "ntgl:pump_tactical_grip",
+          "hide": [
+            "grip_default"
+          ]
+        },
+        {
+          "name": "grip_4",
+          "item": "ntgl:pump_weighted_grip",
+          "hide": [
+            "grip_default"
+          ]
+        }
+      ]
+    }
+  }
+}

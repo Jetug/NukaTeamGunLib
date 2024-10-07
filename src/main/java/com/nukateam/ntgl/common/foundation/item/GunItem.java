@@ -5,7 +5,7 @@ import com.nukateam.example.common.data.utils.ResourceUtils;
 import com.nukateam.ntgl.client.render.renderers.DefaultGunRenderer;
 import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
 import com.nukateam.ntgl.client.render.renderers.GunItemRenderer;
-import com.nukateam.ntgl.common.base.gun.Gun;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
@@ -26,7 +26,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -110,8 +109,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
-        var modifiedGun = this.getModifiedGun(stack);
-        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getAmmoItem(stack));
+        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmo(stack));
 
         if (ammo != null) {
             tooltip.add(Component.translatable("info.ntgl.ammo_type", Component.translatable(ammo.getDescriptionId()).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GRAY));
@@ -132,7 +130,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
             }
         }
 
-        float damage = GunModifierHelper.getCurrentProjectile(stack).getDamage();
+        float damage = GunModifierHelper.getModifiedDamage(stack);
         damage = GunModifierHelper.getModifiedProjectileDamage(stack, damage);
         damage = GunEnchantmentHelper.getAcceleratorDamage(stack, damage);
         tooltip.add(Component.translatable("info.ntgl.damage",
