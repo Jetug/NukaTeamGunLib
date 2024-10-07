@@ -12,9 +12,7 @@ import com.nukateam.ntgl.common.base.utils.EntityDeathUtils;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGibs;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.model.SkeletonModel;
+import net.minecraft.client.model.*;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
@@ -162,18 +160,22 @@ public class DeathEffect {
         if (deathtype == DeathType.GORE) {
 
             var data = DeathEffect.getGoreData(entity);
-            var render = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity);
+            var render = ClientProxy.getLivingEntityRenderer(entity);
 
             try {
                 if (data.model == null && render != null) {
-                    var mainModel = (Model) DeathEffectEntityRenderer.RLB_mainModel.get((LivingEntityRenderer) render);
+                    var mainModel = render.getModel();//(Model) DeathEffectEntityRenderer.RLB_mainModel.get((LivingEntityRenderer) render);
+
                     if (mainModel instanceof HumanoidModel) {
                         data.model = new ModelGibsBiped(((HumanoidModel) mainModel).getClass().newInstance());
-                    } else if (mainModel instanceof ModelQuadruped) {
-                        data.model = new ModelGibsQuadruped(((ModelQuadruped) mainModel).getClass().newInstance());
-                    } else if (mainModel instanceof ModelVillager) {
-                        data.model = new ModelGibsVillager(((ModelVillager) mainModel).getClass().newInstance());
-                    } else {
+                    }
+                    else if (mainModel instanceof QuadrupedModel<? extends LivingEntity>) {
+                        data.model = new ModelGibsQuadruped(((QuadrupedModel) mainModel).getClass().newInstance());
+                    }
+                    else if (mainModel instanceof VillagerModel<? extends LivingEntity>) {
+                        data.model = new ModelGibsVillager(((VillagerModel) mainModel).getClass().newInstance());
+                    }
+                    else {
                         data.model = genericGore.model; //new ModelGibsGeneric(mainModel.getClass().newInstance());
                         data.texture = genericGore.texture;
                     }
@@ -193,39 +195,40 @@ public class DeathEffect {
             if (data.numGibs >= 0) {
                 count = data.numGibs;
             } else {
-                if (data.model == null) {
+                if (data.model == null)
                     return;
-                }
                 count = data.model.getNumGibs();
             }
 
             for (int i = 0; i < count; i++) {
-                var rand = entity.level().random;
-                double vx = (0.5 - entity.level().random.nextDouble()) * 0.35;
+                var random = entity.level().random;
+                var vx = (0.5 - random.nextDouble()) * 0.35;
                 double vy;
-                if (entity.onGround()) {
-                    vy = (entity.level().random.nextDouble()) * 0.35;
-                } else {
-                    vy = (0.5 - entity.level().random.nextDouble()) * 0.35;
-                }
-                double vz = (0.5 - entity.level().random.nextDouble()) * 0.35;
 
-                FlyingGibs ent = new FlyingGibs(entity.level(), entity, data, x, y, z,
+                if (entity.onGround())
+                    vy = (random.nextDouble()) * 0.35;
+                else
+                    vy = (0.5 - random.nextDouble()) * 0.35;
+                var vz = (0.5 - random.nextDouble()) * 0.35;
+
+                var ent = new FlyingGibs(entity.level(), entity, data, x, y, z,
                         xo * 0.35 + vx,
                         yo * 0.35 + vy,
                         zo * 0.35 + vz,
-                        (entity.level() + entity.height) / 2.0f, i);
+                        (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
 
                 entity.level().addFreshEntity(ent);
             }
-        } else if (deathtype == DeathType.BIO) {
-            ClientProxy.get().createFX("biodeath", entity.level(), x, y, z, (double) xo, (double) yo, (double) zo);
-            ClientProxy.get().playSoundOnPosition(TGSounds.DEATH_BIO, (float) x, (float) y, (float) z, 1.0f, 1.0f, false, TGSoundCategory.DEATHEFFECT);
-        } else if (deathtype == DeathType.LASER) {
-            ClientProxy.get().createFX("laserdeathFire", entity.level(), x, y, z, (double) xo, 0, (double) zo);
-            ClientProxy.get().createFX("laserdeathAsh", entity.level(), x, y, z, (double) xo, 0, (double) zo);
-            ClientProxy.get().playSoundOnPosition(TGSounds.DEATH_LASER, (float) x, (float) y, (float) z, 1.0f, 1.0f, false, TGSoundCategory.DEATHEFFECT);
         }
+//        else if (deathtype == DeathType.BIO) {
+//            ClientProxy.get().createFX("biodeath", entity.level(), x, y, z, (double) xo, (double) yo, (double) zo);
+//            ClientProxy.get().playSoundOnPosition(TGSounds.DEATH_BIO, (float) x, (float) y, (float) z, 1.0f, 1.0f, false, TGSoundCategory.DEATHEFFECT);
+//        }
+//        else if (deathtype == DeathType.LASER) {
+//            ClientProxy.get().createFX("laserdeathFire", entity.level(), x, y, z, (double) xo, 0, (double) zo);
+//            ClientProxy.get().createFX("laserdeathAsh", entity.level(), x, y, z, (double) xo, 0, (double) zo);
+//            ClientProxy.get().playSoundOnPosition(TGSounds.DEATH_LASER, (float) x, (float) y, (float) z, 1.0f, 1.0f, false, TGSoundCategory.DEATHEFFECT);
+//        }
     }
 
     public static class GoreData {

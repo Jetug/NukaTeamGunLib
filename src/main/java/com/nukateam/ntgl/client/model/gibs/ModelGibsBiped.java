@@ -1,58 +1,55 @@
 package com.nukateam.ntgl.client.model.gibs;
 
-import com.nukateam.ntgl.ClientProxy;
-import dev.kosmx.playerAnim.mixin.BipedEntityModelMixin;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.Entity;
 
-import static com.nukateam.ntgl.ClientProxy.*;
+import static com.nukateam.ntgl.ClientProxy.getEntityRenderer;
 
-public class ModelGibsBiped extends ModelGibs
-{
-	public HumanoidModel model;
-    
+public class ModelGibsBiped extends ModelGibs {
+    public HumanoidModel model;
+
     public ModelGibsBiped(HumanoidModel model) {
-		super();
-		this.model = model;
-    	this.model.head.setRotation(0.0f,0.0f,0.0f);
-    	this.model.body.setRotation(0.0f,0.0f,0.0f);
-    	this.model.rightArm.setRotation(0.0f,0.0f,0.0f);
-    	this.model.leftArm.setRotation(0.0f,0.0f,0.0f);
-    	this.model.rightLeg.setRotation(0.0f,0.0f,0.0f);
-    	this.model.leftLeg.setRotation(0.0f,0.0f,0.0f);
+        this.model = model;
+        this.model.head.setRotation(0.0f, 0.0f, 0.0f);
+        this.model.body.setRotation(0.0f, 0.0f, 0.0f);
+        this.model.rightArm.setRotation(0.0f, 0.0f, 0.0f);
+        this.model.leftArm.setRotation(0.0f, 0.0f, 0.0f);
+        this.model.rightLeg.setRotation(0.0f, 0.0f, 0.0f);
+        this.model.leftLeg.setRotation(0.0f, 0.0f, 0.0f);
     }
 
     /**
      * Sets the models various rotation angles then renders the model.
      */
-    public void render(Entity entityIn, float scale, int part)
-    {
-		var s = (HumanoidModel)(Object)getEntityRenderer(entityIn);
-		
-        switch(part) {
-	        case 0:
-	        	this.model.head.render(scale);
-	        	break;
-	        case 1:
-	        	this.model.body.render(scale);
-	        	break;
-	        case 2:
-	        	this.model.rightArm.render(scale);
-	        	break;
-	        case 3:
-	        	this.model.leftArm.render(scale);
-	        	break;
-	        case 4:
-	        	this.model.rightLeg.render(scale);
-	        	break;
-	        case 5:
-	        	this.model.leftLeg.render(scale);
-	        	break;
+    public void render(Entity entityIn, int part, PoseStack pPoseStack, VertexConsumer pVertexConsumer, int pPackedLight, int pPackedOverlay) {
+        var s = (HumanoidModel) (Object) getEntityRenderer(entityIn);
+
+        switch (part) {
+            case 0:
+                this.model.head.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
+                break;
+            case 1:
+                this.model.body.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
+                break;
+            case 2:
+                this.model.rightArm.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
+                break;
+            case 3:
+                this.model.leftArm.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
+                break;
+            case 4:
+                this.model.rightLeg.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
+                break;
+            case 5:
+                this.model.leftLeg.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
+                break;
         }
     }
 
-	@Override
-	public int getNumGibs() {
-		return 6;
-	}
+    @Override
+    public int getNumGibs() {
+        return 6;
+    }
 }

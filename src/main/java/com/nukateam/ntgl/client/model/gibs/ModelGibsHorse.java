@@ -1,10 +1,8 @@
 package com.nukateam.ntgl.client.model.gibs;
 
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public class ModelGibsHorse extends ModelGibs {
-
     private final ModelRenderer head;
     private final ModelRenderer upperMouth;
     private final ModelRenderer neck;

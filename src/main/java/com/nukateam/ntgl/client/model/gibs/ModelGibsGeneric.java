@@ -1,16 +1,13 @@
 package com.nukateam.ntgl.client.model.gibs;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.model.Model;
+import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 public class ModelGibsGeneric extends ModelGibs{
-
-	ModelBase model;
+	Model model;
 	
 	List<ModelRenderer> gibs = new ArrayList<ModelRenderer>();
 	

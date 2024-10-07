@@ -1,15 +1,9 @@
 package com.nukateam.ntgl.client.particle;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.nukateam.ntgl.client.particle.list.ParticleList;
+import dev.kosmx.playerAnim.core.util.Vec3d;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import techguns.TGConfig;
-import techguns.client.particle.list.ParticleList;
-import techguns.client.particle.list.ParticleList.ParticleListIterator;
 
 import java.util.Comparator;
 import java.util.Iterator;
