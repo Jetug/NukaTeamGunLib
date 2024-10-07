@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.foundation.entity.projectile;
 
 
 import com.nukateam.ntgl.ClientProxy;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.model.gibs.*;
 import com.nukateam.ntgl.client.particle.TGFX;
 import com.nukateam.ntgl.client.particle.TGFXType;
@@ -34,7 +35,7 @@ import static com.nukateam.ntgl.common.base.utils.EntityDeathUtils.*;
 
 public class DeathEffect {
 
-    public static HashMap<EntityType<? extends LivingEntity>, GoreData> goreStats = new HashMap<>();
+    public static HashMap<EntityType<?>, GoreData> goreStats = new HashMap<>();
 
     private static GoreData genericGore;
 
@@ -54,60 +55,60 @@ public class DeathEffect {
 
         goreStats.put(EntityType.SKELETON, (new GoreData(new ModelGibsBiped(model), 0,0,0)));
 
-        goreStats.put(Villager.class, (new GoreData(new ModelGibsVillager(new ModelVillager(0.0f)), 150, 21, 51)));
-        goreStats.put(Cow.class, (new GoreData(new ModelGibsQuadruped(new ModelCow()), 170, 26, 37)));
-        goreStats.put(Sheep.class, (new GoreData(new ModelGibsQuadruped(new ModelSheep1()), 170, 26, 37)).setFXscale(0.8f));
-        goreStats.put(Chicken.class, (new GoreData(new ModelGibsGeneric(new ModelChicken()), 170, 26, 37)).setFXscale(0.5f));
-        goreStats.put(Creeper.class, (new GoreData(new ModelGibsGeneric(new ModelCreeper()), 50, 175, 57)));
-        goreStats.put(EnderMan.class, (new GoreData(new ModelGibsBiped(new ModelEnderman(0.0f)), 160, 36, 167)));
-        goreStats.put(Pig.class, (new GoreData(new ModelGibsQuadruped(new ModelPig()), 170, 26, 37)).setFXscale(0.8f));
-        goreStats.put(Spider.class, (new GoreData(new ModelGibsGeneric(new ModelSpider()), 85, 156, 17)));
-        goreStats.put(CaveSpider.class, (new GoreData(new ModelGibsGeneric(new ModelSpider()), 85, 156, 17)).setFXscale(0.7f));
+//        goreStats.put(Villager.class, (new GoreData(new ModelGibsVillager(new ModelVillager(0.0f)), 150, 21, 51)));
+//        goreStats.put(Cow.class, (new GoreData(new ModelGibsQuadruped(new ModelCow()), 170, 26, 37)));
+//        goreStats.put(Sheep.class, (new GoreData(new ModelGibsQuadruped(new ModelSheep1()), 170, 26, 37)).setFXscale(0.8f));
+//        goreStats.put(Chicken.class, (new GoreData(new ModelGibsGeneric(new ModelChicken()), 170, 26, 37)).setFXscale(0.5f));
+//        goreStats.put(Creeper.class, (new GoreData(new ModelGibsGeneric(new ModelCreeper()), 50, 175, 57)));
+//        goreStats.put(EnderMan.class, (new GoreData(new ModelGibsBiped(new ModelEnderman(0.0f)), 160, 36, 167)));
+//        goreStats.put(Pig.class, (new GoreData(new ModelGibsQuadruped(new ModelPig()), 170, 26, 37)).setFXscale(0.8f));
+//        goreStats.put(Spider.class, (new GoreData(new ModelGibsGeneric(new ModelSpider()), 85, 156, 17)));
+//        goreStats.put(CaveSpider.class, (new GoreData(new ModelGibsGeneric(new ModelSpider()), 85, 156, 17)).setFXscale(0.7f));
+////
+//        goreStats.put(EntityPigZombie.class, (new GoreData(modelBiped, 110, 51, 11)));
+//        goreStats.put(ZombiePigmanSoldier.class, (new GoreData(modelBiped, 110, 51, 11)));
+//        goreStats.put(CyberDemon.class, (new GoreData(new ModelGibsBiped(new ModelCyberDemon()), 85, 156, 17)));
 //
-        goreStats.put(EntityPigZombie.class, (new GoreData(modelBiped, 110, 51, 11)));
-        goreStats.put(ZombiePigmanSoldier.class, (new GoreData(modelBiped, 110, 51, 11)));
-        goreStats.put(CyberDemon.class, (new GoreData(new ModelGibsBiped(new ModelCyberDemon()), 85, 156, 17)));
-
-        goreStats.put(SuperMutantBasic.class, (new GoreData(new ModelGibsBiped(new ModelSuperMutant()), 109, 60, 25)).setFXscale(1.2f));
-        goreStats.put(SuperMutantElite.class, (new GoreData(new ModelGibsBiped(new ModelSuperMutant()), 109, 60, 25)).setFXscale(1.2f));
-        goreStats.put(SuperMutantHeavy.class, (new GoreData(new ModelGibsBiped(new ModelSuperMutant()), 109, 60, 25)).setFXscale(1.2f));
-
-        goreStats.put(StormTrooper.class, (new GoreData(modelBiped, 160, 21, 31)));
-        goreStats.put(Commando.class, (new GoreData(modelBiped, 160, 21, 31)));
-        goreStats.put(DictatorDave.class, (new GoreData(modelBiped, 160, 21, 31)));
-        goreStats.put(PsychoSteve.class, (new GoreData(modelBiped, 160, 21, 31)));
-
-        goreStats.put(EntityWitch.class, (new GoreData(new ModelGibsVillager(new ModelWitch(1.0f)), 160, 21, 31)));
-        goreStats.put(EntitySlime.class, (new GoreData(new ModelGibsSlime(), 40, 255, 40)));
+//        goreStats.put(SuperMutantBasic.class, (new GoreData(new ModelGibsBiped(new ModelSuperMutant()), 109, 60, 25)).setFXscale(1.2f));
+//        goreStats.put(SuperMutantElite.class, (new GoreData(new ModelGibsBiped(new ModelSuperMutant()), 109, 60, 25)).setFXscale(1.2f));
+//        goreStats.put(SuperMutantHeavy.class, (new GoreData(new ModelGibsBiped(new ModelSuperMutant()), 109, 60, 25)).setFXscale(1.2f));
 //
-        goreStats.put(ZombieFarmer.class, (new GoreData(modelBiped, 110, 21, 41)));
-        goreStats.put(ZombieMiner.class, (new GoreData(modelBiped, 110, 21, 41)));
+//        goreStats.put(StormTrooper.class, (new GoreData(modelBiped, 160, 21, 31)));
+//        goreStats.put(Commando.class, (new GoreData(modelBiped, 160, 21, 31)));
+//        goreStats.put(DictatorDave.class, (new GoreData(modelBiped, 160, 21, 31)));
+//        goreStats.put(PsychoSteve.class, (new GoreData(modelBiped, 160, 21, 31)));
 //
-        goreStats.put(Bandit.class, new GoreData(modelBiped, 160, 21, 31));
-        goreStats.put(SkeletonSoldier.class, (new GoreData(new ModelGibsBiped(new ModelSkeleton()), 255, 255, 255)));
-        goreStats.put(AlienBug.class, (new GoreData(new ModelGibsGeneric(new ModelAlienBug()), 235, 255, 70)));
-        goreStats.put(Ghastling.class, (new GoreData(new ModelGibsSlime(), 255, 255, 255)).setFXscale(1.0f));
+//        goreStats.put(EntityWitch.class, (new GoreData(new ModelGibsVillager(new ModelWitch(1.0f)), 160, 21, 31)));
+//        goreStats.put(EntitySlime.class, (new GoreData(new ModelGibsSlime(), 40, 255, 40)));
+////
+//        goreStats.put(ZombieFarmer.class, (new GoreData(modelBiped, 110, 21, 41)));
+//        goreStats.put(ZombieMiner.class, (new GoreData(modelBiped, 110, 21, 41)));
+////
+//        goreStats.put(Bandit.class, new GoreData(modelBiped, 160, 21, 31));
+//        goreStats.put(SkeletonSoldier.class, (new GoreData(new ModelGibsBiped(new ModelSkeleton()), 255, 255, 255)));
+//        goreStats.put(AlienBug.class, (new GoreData(new ModelGibsGeneric(new ModelAlienBug()), 235, 255, 70)));
+//        goreStats.put(Ghastling.class, (new GoreData(new ModelGibsSlime(), 255, 255, 255)).setFXscale(1.0f));
+//
+//        goreStats.put(EntityLlama.class, (new GoreData(new ModelGibsQuadruped(new ModelLlama(0f)), 170, 26, 37)));
+//        goreStats.put(EntityEvoker.class, (new GoreData(new ModelGibsIllager(new ModelIllager(0.0F, 0.0F, 64, 64)), 110, 21, 41)));
+//        goreStats.put(EntityHusk.class, (new GoreData(modelBiped, 110, 21, 41)));
+//        goreStats.put(EntityPolarBear.class, (new GoreData(new ModelGibsQuadruped(new ModelPolarBear()), 170, 26, 37)).setFXscale(0.8f));
+//        goreStats.put(EntityMagmaCube.class, (new GoreData(new ModelGibsSlime(), 92, 26, 0)));
+//        goreStats.put(EntityParrot.class, (new GoreData(new ModelGibsGeneric(new ModelParrot()), 170, 26, 37)).setFXscale(0.5f));
+//        goreStats.put(EntityRabbit.class, (new GoreData(new ModelGibsGeneric(new ModelRabbit()), 170, 26, 37)).setFXscale(0.3f));
+//        goreStats.put(EntityStray.class, (new GoreData(new ModelGibsBiped(new ModelSkeleton()), 255, 255, 255)));
+//        goreStats.put(EntitySilverfish.class, (new GoreData(new ModelGibsGeneric(new ModelSilverfish()), 90, 16, 27)).setFXscale(0.4f));
+//        goreStats.put(EntityVindicator.class, (new GoreData(new ModelGibsIllager(new ModelIllager(0.0F, 0.0F, 64, 64)), 110, 21, 41)));
+//        goreStats.put(EntityVex.class, (new GoreData(new ModelGibsSlime(), 215, 215, 215)).setFXscale(0.4f));
+//        goreStats.put(EntityShulker.class, (new GoreData(new ModelGibsSlime(), 125, 0, 106)).setFXscale(1.5f));
+//        goreStats.put(EntityWitherSkeleton.class, (new GoreData(new ModelGibsBiped(new ModelSkeleton()), 50, 50, 50).setFXscale(1.4f)));
+//        goreStats.put(EntityGhast.class, (new GoreData(new ModelGibsSlime(), 255, 255, 255)).setFXscale(3.5f));
+//        goreStats.put(EntityZombieVillager.class, (new GoreData(modelBiped, 110, 21, 41)));
+//        goreStats.put(EntityHorse.class, (new GoreData(new ModelGibsHorse(), 170, 26, 37)).setFXscale(1.0f));
+//        goreStats.put(EntityDonkey.class, (new GoreData(new ModelGibsHorse(), 170, 26, 37)).setFXscale(1.0f));
+//        goreStats.put(EntityMule.class, (new GoreData(new ModelGibsHorse(), 170, 26, 37)).setFXscale(1.0f));
 
-        goreStats.put(EntityLlama.class, (new GoreData(new ModelGibsQuadruped(new ModelLlama(0f)), 170, 26, 37)));
-        goreStats.put(EntityEvoker.class, (new GoreData(new ModelGibsIllager(new ModelIllager(0.0F, 0.0F, 64, 64)), 110, 21, 41)));
-        goreStats.put(EntityHusk.class, (new GoreData(modelBiped, 110, 21, 41)));
-        goreStats.put(EntityPolarBear.class, (new GoreData(new ModelGibsQuadruped(new ModelPolarBear()), 170, 26, 37)).setFXscale(0.8f));
-        goreStats.put(EntityMagmaCube.class, (new GoreData(new ModelGibsSlime(), 92, 26, 0)));
-        goreStats.put(EntityParrot.class, (new GoreData(new ModelGibsGeneric(new ModelParrot()), 170, 26, 37)).setFXscale(0.5f));
-        goreStats.put(EntityRabbit.class, (new GoreData(new ModelGibsGeneric(new ModelRabbit()), 170, 26, 37)).setFXscale(0.3f));
-        goreStats.put(EntityStray.class, (new GoreData(new ModelGibsBiped(new ModelSkeleton()), 255, 255, 255)));
-        goreStats.put(EntitySilverfish.class, (new GoreData(new ModelGibsGeneric(new ModelSilverfish()), 90, 16, 27)).setFXscale(0.4f));
-        goreStats.put(EntityVindicator.class, (new GoreData(new ModelGibsIllager(new ModelIllager(0.0F, 0.0F, 64, 64)), 110, 21, 41)));
-        goreStats.put(EntityVex.class, (new GoreData(new ModelGibsSlime(), 215, 215, 215)).setFXscale(0.4f));
-        goreStats.put(EntityShulker.class, (new GoreData(new ModelGibsSlime(), 125, 0, 106)).setFXscale(1.5f));
-        goreStats.put(EntityWitherSkeleton.class, (new GoreData(new ModelGibsBiped(new ModelSkeleton()), 50, 50, 50).setFXscale(1.4f)));
-        goreStats.put(EntityGhast.class, (new GoreData(new ModelGibsSlime(), 255, 255, 255)).setFXscale(3.5f));
-        goreStats.put(EntityZombieVillager.class, (new GoreData(modelBiped, 110, 21, 41)));
-        goreStats.put(EntityHorse.class, (new GoreData(new ModelGibsHorse(), 170, 26, 37)).setFXscale(1.0f));
-        goreStats.put(EntityDonkey.class, (new GoreData(new ModelGibsHorse(), 170, 26, 37)).setFXscale(1.0f));
-        goreStats.put(EntityMule.class, (new GoreData(new ModelGibsHorse(), 170, 26, 37)).setFXscale(1.0f));
-
-        genericGore = (new GoreData(modelBiped, 160, 21, 31)).setTexture(new ResourceLocation(Techguns.MODID, "textures/entity/gore.png"));
+        genericGore = (new GoreData(modelBiped, 160, 21, 31)).setTexture(new ResourceLocation(Ntgl.MOD_ID, "textures/entity/gore.png"));
         genericGore.setRandomScale(0.5f, 0.8f);
         //ModelHorse horse = new ModelHorse();
         //goreStats.put(EntityHorse.class, new GoreData(new ModelGibsHorse(horse), horse.boxList.size(), new ResourceLocation("textures/entity/horse/horse_brown.png"), 0.66f, 150,21,51));
@@ -144,7 +145,7 @@ public class DeathEffect {
             data.type_trail = genericGore.type_trail;
             data.sound = genericGore.sound;
             data.numGibs = -1; //TODO
-            goreStats.put(entityClass, data);
+            goreStats.put(entityClass.getType(), data);
             return data;
         }
     }
@@ -167,13 +168,13 @@ public class DeathEffect {
                     var mainModel = render.getModel();//(Model) DeathEffectEntityRenderer.RLB_mainModel.get((LivingEntityRenderer) render);
 
                     if (mainModel instanceof HumanoidModel) {
-                        data.model = new ModelGibsBiped(((HumanoidModel) mainModel).getClass().newInstance());
+                        data.model = new ModelGibsBiped((HumanoidModel) mainModel);
                     }
                     else if (mainModel instanceof QuadrupedModel<? extends LivingEntity>) {
-                        data.model = new ModelGibsQuadruped(((QuadrupedModel) mainModel).getClass().newInstance());
+                        data.model = new ModelGibsQuadruped((QuadrupedModel) mainModel);
                     }
                     else if (mainModel instanceof VillagerModel<? extends LivingEntity>) {
-                        data.model = new ModelGibsVillager(((VillagerModel) mainModel).getClass().newInstance());
+                        data.model = new ModelGibsVillager((VillagerModel)mainModel);
                     }
                     else {
                         data.model = genericGore.model; //new ModelGibsGeneric(mainModel.getClass().newInstance());
