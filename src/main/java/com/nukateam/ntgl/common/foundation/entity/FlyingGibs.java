@@ -5,7 +5,10 @@ import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import dev.kosmx.playerAnim.core.util.Vec3d;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -13,23 +16,28 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import static com.nukateam.ntgl.ClientProxy.getEntityBlockPos;
+import static net.minecraft.network.syncher.SynchedEntityData.defineId;
 import static net.minecraft.tags.FluidTags.LAVA;
 
 public class FlyingGibs extends Entity {
-    private RandomSource rand;
-    public int maxTimeToLive = 200;
-    public int timeToLive = 200;
+    public static final EntityDataAccessor<Integer> ENTITY = defineId(FlyingGibs.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> PART = defineId(FlyingGibs.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Float> SIZE = defineId(FlyingGibs.class, EntityDataSerializers.FLOAT);
+    public static final int LIFE = 750;
 
+    private RandomSource rand;
+    public int maxTimeToLive = 2000;
+    public int timeToLive = 2000;
     public double gravity = 0.029999999329447746D;
-    public float size;
+
     public Vec3d rotationAxis;
-    public int bodypart;
     public int hitGroundTTL = 0;
 
     //the exploding entity
-    public LivingEntity entity;
+    public float size;
 
     public DeathEffect.GoreData data;
 
@@ -41,27 +49,56 @@ public class FlyingGibs extends Entity {
         super(type, level);
     }
 
-    public FlyingGibs(Level world, LivingEntity entity, DeathEffect.GoreData data, double posX, double posY, double posZ, double xo, double yo, double zo, float size, int bodypart) {
+    public FlyingGibs(Level world, LivingEntity entity, DeathEffect.GoreData data, Vec3 pos, double xo, double yo, double zo, float size, int bodypart) {
         this(Projectiles.FLYING_GIBS.get(), world);
-        this.setPos(posX, posY, posZ);
-//        this.setDeltaMovement( xo, yo, zo);
+        this.setPos(pos.x, pos.y, pos.z);
+//        this.setDeltaMovement(xo, yo, zo);
         this.rand = this.level().getRandom();
+
+        setDeltaMovement(xo, yo, zo);
 
         this.xo = xo;
         this.yo = yo;
         this.zo = zo;
 
         this.size = size;
-        this.maxTimeToLive = 75 + rand.nextInt(50);
+        this.maxTimeToLive = LIFE + rand.nextInt(50);
         this.timeToLive = maxTimeToLive;
-        this.entity = entity;
-        this.bodypart = bodypart;
         //this.entityDT = entityDT;
         this.rotationAxis = new Vec3d(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
         this.data = data;
 
+        var entityId = entity.getId();
+
+        getEntityData().set(ENTITY, entityId);
+        getEntityData().set(PART, bodypart);
+        getEntityData().set(SIZE, size);
+
 //        trail_system = new TGParticleSystem(this, data.type_trail);
 //        ClientProxy.particleManager.addEffect(trail_system);
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        entityData.define(ENTITY, -1);
+        entityData.define(PART, 0);
+        entityData.define(SIZE, 1f);
+    }
+
+    public int getEntityId() {
+        return getEntityData().get(ENTITY);
+    }
+
+    public int getPartId() {
+        return getEntityData().get(PART);
+    }
+
+    public float getSize() {
+        return getEntityData().get(SIZE);
+    }
+
+    public LivingEntity getLocalEntity(){
+        return (LivingEntity)Minecraft.getInstance().level.getEntity(getEntityId());
     }
 
     @Override
@@ -69,11 +106,9 @@ public class FlyingGibs extends Entity {
         super.tick();
         var rand = this.level().getRandom();
 
-        if (this.timeToLive > 0) {
+        if (this.timeToLive > 0)
             --timeToLive;
-        } else {
-            this.kill();
-        }
+        else this.kill();
 
         this.xOld = this.getX();
         this.yOld = this.getY();
@@ -132,15 +167,9 @@ public class FlyingGibs extends Entity {
 //        ArrowRenderer
 //    }
 
-
     @Override
     public boolean shouldRender(double pX, double pY, double pZ) {
         return true;
-    }
-
-    @Override
-    protected void defineSynchedData() {
-
     }
 
     @Override

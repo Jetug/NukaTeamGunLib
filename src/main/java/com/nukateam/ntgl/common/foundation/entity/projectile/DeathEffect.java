@@ -6,6 +6,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.model.gibs.*;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGibs;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
+import dev.kosmx.playerAnim.core.util.Vec3d;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.QuadrupedModel;
@@ -16,6 +17,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 
@@ -141,7 +143,7 @@ public class DeathEffect {
         double y = entity.getY() + (entity.getType().getHeight() / 2.0f);
         double z = entity.getZ();
 
-        if (deathtype == DeathType.GORE) {
+         if (deathtype == DeathType.GORE) {
             var data = DeathEffect.getGoreData(entity);
             var render = ClientProxy.getLivingEntityRenderer(entity);
 
@@ -195,7 +197,7 @@ public class DeathEffect {
                     vy = (0.5 - random.nextDouble()) * 0.35;
                 var vz = (0.5 - random.nextDouble()) * 0.35;
 
-                var ent = new FlyingGibs(entity.level(), entity, data, x, y, z,
+                var ent = new FlyingGibs(entity.level(), entity, data, new Vec3(x, y, z),
                         xo * 0.35 + vx,
                         yo * 0.35 + vy,
                         zo * 0.35 + vz,

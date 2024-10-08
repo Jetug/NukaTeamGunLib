@@ -21,7 +21,7 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
 
     @Override
     public void render(FlyingGibs pEntity, float pEntityYaw, float pPartialTick, PoseStack poseStack, MultiBufferSource pBuffer, int pPackedLight) {
-        var entity = pEntity.entity;
+        var entity = pEntity.getLocalEntity();
         if(entity == null) return;
 
         var data = getGoreData(entity);
@@ -29,10 +29,11 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
         if (data.model != null) {
             poseStack.pushPose();
             {
-                var render = ClientProxy.getEntityRenderer(pEntity.entity);
+                var render = ClientProxy.getEntityRenderer(pEntity.getLocalEntity());
                 if (render instanceof LivingEntityRenderer<?, ?>) {
                     try {
                         if (data.texture == null) {
+                            data.texture = render.getTextureLocation(entity);
 //							DeathEffectEntityRenderer.bindEntityTexture(render, pEntity.entity);
                         } else {
 //							Minecraft.getInstance().getRenderManager().renderEngine.bindTexture(data.texture);
@@ -70,13 +71,11 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
 //                        (float) pEntity.rotationAxis.z);
 
 //                poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-
-
 //                GlStateManager.disableCull();
 
                 var rendertype = RenderType.itemEntityTranslucentCull(data.texture);
                 var vertexConsumer = pBuffer.getBuffer(rendertype);
-                data.model.render(pEntity, pEntity.bodypart, poseStack, vertexConsumer, pPackedLight, 0xFFFFFF);
+                data.model.render(pEntity, pEntity.getPartId(), poseStack, vertexConsumer, pPackedLight, 0xFFFFFF);
 
 //				GlStateManager.enableCull();
             }
@@ -89,6 +88,8 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
 
     @Override
     public ResourceLocation getTextureLocation(FlyingGibs entity) {
-        return getGoreData(entity.entity).texture;
+        var render = ClientProxy.getEntityRenderer(entity.getLocalEntity());
+        return render.getTextureLocation(entity.getLocalEntity());
+//        return getGoreData(entity.entity).texture;
     }
 }

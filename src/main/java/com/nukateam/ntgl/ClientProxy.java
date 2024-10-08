@@ -18,7 +18,6 @@ public class ClientProxy {
         return new BlockPos(Mth.floor(entity.getX()), Mth.floor(entity.getY()), Mth.floor(entity.getZ()));
     }
 
-
     public static EntityRenderer getEntityRenderer(EntityType entity) {
         return Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity.create(Minecraft.getInstance().level));
     }
@@ -30,13 +29,6 @@ public class ClientProxy {
     public static LivingEntityRenderer<? super LivingEntity, ? extends EntityModel<? extends LivingEntity>> getLivingEntityRenderer(Entity entity) {
         return (LivingEntityRenderer<? super LivingEntity, ? extends EntityModel<? extends LivingEntity>>)getEntityRenderer(entity);
     }
-
-
-    public static SkeletonRenderer getLivingEntityRenderers(Entity entity) {
-        return (SkeletonRenderer)getEntityRenderer(entity);
-    }
-
-
 
 //    public static ClientProxy get(){
 //        return (ClientProxy) Techguns.proxy;
