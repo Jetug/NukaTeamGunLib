@@ -132,6 +132,12 @@ public class FlyingGibs extends Entity {
 //        ArrowRenderer
 //    }
 
+
+    @Override
+    public boolean shouldRender(double pX, double pY, double pZ) {
+        return true;
+    }
+
     @Override
     protected void defineSynchedData() {
 

@@ -23,6 +23,7 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
     public void render(FlyingGibs pEntity, float pEntityYaw, float pPartialTick, PoseStack poseStack, MultiBufferSource pBuffer, int pPackedLight) {
         var entity = pEntity.entity;
         if(entity == null) return;
+
         var data = getGoreData(entity);
 
         if (data.model != null) {
