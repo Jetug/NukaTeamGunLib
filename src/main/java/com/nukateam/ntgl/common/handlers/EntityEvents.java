@@ -30,7 +30,7 @@ public class EntityEvents {
 //            }
 
 
-            DeathEffect.createDeathEffect(entity, DeathType.GORE, (float)entity.xo, (float)entity.yo, (float)entity.zo);
+            DeathEffect.createDeathEffect(entity, DeathType.GORE, entity.getDeltaMovement());
 
 
 //            PacketHandler.getPlayChannel().sendToNearbyPlayers(

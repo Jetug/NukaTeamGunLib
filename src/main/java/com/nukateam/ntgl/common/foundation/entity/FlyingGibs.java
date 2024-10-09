@@ -139,13 +139,15 @@ public class FlyingGibs extends Entity {
 
         }
 
-        this.xo *= (double) f;
+        this.xo *= f;
         this.yo *= 0.9800000190734863D;
-        this.zo *= (double) f;
+        this.zo *= f;
 
         if (this.onGround()) {
             this.yo *= -0.8999999761581421D;
         }
+
+        this.setDeltaMovement(this.xo, this.yo, this.zo);
 
 //        this.posX += this.xo;
 //        this.posY += this.yo;

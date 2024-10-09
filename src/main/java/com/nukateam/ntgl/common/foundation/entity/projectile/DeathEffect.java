@@ -135,7 +135,7 @@ public class DeathEffect {
         return data;
     }
 
-    public static void createDeathEffect(LivingEntity entity, DeathType deathtype, float xo, float yo, float zo) {
+    public static void createDeathEffect(LivingEntity entity, DeathType deathtype, Vec3 delta) {
         //GetEntityType
         //EntityDT entityDT = EntityDeathUtils.getEntityDeathType(entity);
 
@@ -198,9 +198,9 @@ public class DeathEffect {
                 var vz = (0.5 - random.nextDouble()) * 0.35;
 
                 var ent = new FlyingGibs(entity.level(), entity, data, new Vec3(x, y, z),
-                        xo * 0.35 + vx,
-                        yo * 0.35 + vy,
-                        zo * 0.35 + vz,
+                        delta.x * 0.35 + vx,
+                        delta.y * 0.35 + vy,
+                        delta.z * 0.35 + vz,
                         (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
 
                 entity.level().addFreshEntity(ent);

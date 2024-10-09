@@ -56,24 +56,24 @@ public class S2CMessageEntityDeath extends PlayMessage<S2CMessageEntityDeath> {
 	@Override
 	public void handle(S2CMessageEntityDeath message, MessageContext supplier) {
 		supplier.execute((() -> {
-			if (Config.CLIENT.particle.enableDeathFX.get()) {
-				Player player = Minecraft.getInstance().player; //TGPackets.getPlayerFromContext(ctx);
-				var entity = (LivingEntity) player.level().getEntity(message.entityId);
-				DeathType deathtype = DeathType.values()[message.deathTypeId];
-
-				if (deathtype != DeathType.GORE || (deathtype == DeathType.GORE && Config.CLIENT.particle.enableDeathFX.get())) {
-
-					if (entity != null) {
-						entity.xo = message.motionX;
-						entity.yo = message.motionY;
-						entity.zo = message.motionZ;
-						//System.out.printf("(message)EntityMotion: (%.1f/%.1f/%.1f)\n",message.motionX,message.motionY,message.motionZ);
-
-//						ClientProxy.get().setEntityDeathType(entity, deathtype);
-						DeathEffect.createDeathEffect(entity, deathtype, message.motionX, message.motionY, message.motionZ);
-					}
-				}
-			}
+//			if (Config.CLIENT.particle.enableDeathFX.get()) {
+//				Player player = Minecraft.getInstance().player; //TGPackets.getPlayerFromContext(ctx);
+//				var entity = (LivingEntity) player.level().getEntity(message.entityId);
+//				DeathType deathtype = DeathType.values()[message.deathTypeId];
+//
+//				if (deathtype != DeathType.GORE || (deathtype == DeathType.GORE && Config.CLIENT.particle.enableDeathFX.get())) {
+//
+//					if (entity != null) {
+//						entity.xo = message.motionX;
+//						entity.yo = message.motionY;
+//						entity.zo = message.motionZ;
+//						//System.out.printf("(message)EntityMotion: (%.1f/%.1f/%.1f)\n",message.motionX,message.motionY,message.motionZ);
+//
+////						ClientProxy.get().setEntityDeathType(entity, deathtype);
+//						DeathEffect.createDeathEffect(entity, deathtype, entity.getDeltaMovement());
+//					}
+//				}
+//			}
 		}));
 		supplier.setHandled(true);
 	}
