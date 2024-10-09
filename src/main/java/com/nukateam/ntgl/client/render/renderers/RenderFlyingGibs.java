@@ -7,10 +7,12 @@ import com.nukateam.ntgl.common.foundation.entity.FlyingGibs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import org.joml.Quaternionf;
 
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.getGoreData;
@@ -80,7 +82,7 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180));
 
                 poseStack.mulPose(Axis.XP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.x)));
-                poseStack.mulPose(Axis.YP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.y)));
+//                poseStack.mulPose(Axis.YP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.y)));
                 poseStack.mulPose(Axis.ZP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.z)));
                 poseStack.translate(0,-entity.getType().getHeight() / 2,0);
 

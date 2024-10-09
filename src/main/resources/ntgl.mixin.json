@@ -18,6 +18,7 @@
     "client.MinecraftStaticMixin",
     "client.MouseHandlerMixin",
     "client.RenderTypeLookupMixin",
+    "common.AgeableListModelAccessor",
     "common.QuadrupedModelAccessor",
     "common.VillagerModelAccessor"
   ],

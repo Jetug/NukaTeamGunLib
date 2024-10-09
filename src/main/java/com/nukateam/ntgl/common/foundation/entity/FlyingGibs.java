@@ -97,6 +97,7 @@ public class FlyingGibs extends Entity {
     @Override
     public void tick() {
         super.tick();
+        if(!level().isClientSide) return;
         var rand = this.level().getRandom();
 
         if (this.timeToLive > 0)
