@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Quaternionf;
 
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.getGoreData;
 
@@ -64,7 +65,7 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
 
                 } else {
                     angle = 5 + ((float) pEntity.timeToLive / (float) pEntity.maxTimeToLive) * 15.0f;
-//                    rot_angle += ((float) pEntity.ticksExisted + partialTickTime) * angle;
+                    rot_angle += ((float) pEntity.tickCount + partialTickTime) * angle;
                 }
 
 //                poseStack.rotate(rot_angle, (float) pEntity.rotationAxis.x, (float) pEntity.rotationAxis.y,
@@ -75,15 +76,24 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
 
                 var rendertype = RenderType.itemEntityTranslucentCull(data.texture);
                 var vertexConsumer = pBuffer.getBuffer(rendertype);
+
+                poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+
+                poseStack.mulPose(Axis.XP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.x)));
+                poseStack.mulPose(Axis.YP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.y)));
+                poseStack.mulPose(Axis.ZP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.z)));
+                poseStack.translate(0,-entity.getType().getHeight() / 2,0);
+
+//                poseStack.mulPose(new Quaternionf(pEntity.rotationAxis.x, pEntity.rotationAxis.y, pEntity.rotationAxis.z, rot_angle));
+
                 data.model.render(pEntity, pEntity.getPartId(), poseStack, vertexConsumer, pPackedLight, 0xFFFFFF);
 
 //				GlStateManager.enableCull();
+
+                super.render(pEntity, pEntityYaw, pPartialTick, poseStack, pBuffer, pPackedLight);
             }
             poseStack.popPose();
         }
-
-
-        super.render(pEntity, pEntityYaw, pPartialTick, poseStack, pBuffer, pPackedLight);
     }
 
     @Override

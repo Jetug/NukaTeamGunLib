@@ -15,6 +15,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -26,14 +27,18 @@ public class FlyingGibs extends Entity {
     public static final EntityDataAccessor<Integer> ENTITY = defineId(FlyingGibs.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> PART = defineId(FlyingGibs.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Float> SIZE = defineId(FlyingGibs.class, EntityDataSerializers.FLOAT);
-    public static final int LIFE = 750;
+    public static final int LIFE = 7500;
 
     private RandomSource rand;
     public int maxTimeToLive = 2000;
     public int timeToLive = 2000;
     public double gravity = 0.029999999329447746D;
 
-    public Vec3d rotationAxis;
+    private double xo = 0;
+    private double yo = 0;
+    private double zo = 0;
+
+    public Vec3 rotationAxis;
     public int hitGroundTTL = 0;
 
     //the exploding entity
@@ -47,31 +52,35 @@ public class FlyingGibs extends Entity {
 
     public FlyingGibs(EntityType<FlyingGibs> type, Level level) {
         super(type, level);
+        this.rand = this.level().getRandom();
+        this.rotationAxis = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
     }
 
-    public FlyingGibs(Level world, LivingEntity entity, DeathEffect.GoreData data, Vec3 pos, double xo, double yo, double zo, float size, int bodypart) {
+    public FlyingGibs(Level world, LivingEntity entity, DeathEffect.GoreData data, Vec3 pos, Vec3 delta, float size, int bodyPart) {
         this(Projectiles.FLYING_GIBS.get(), world);
         this.setPos(pos.x, pos.y, pos.z);
 //        this.setDeltaMovement(xo, yo, zo);
         this.rand = this.level().getRandom();
 
-        setDeltaMovement(xo, yo, zo);
+        setDeltaMovement(delta);
 
-        this.xo = xo;
-        this.yo = yo;
-        this.zo = zo;
+        this.xo = delta.x;
+        this.yo = delta.y;
+        this.zo = delta.z;
 
         this.size = size;
         this.maxTimeToLive = LIFE + rand.nextInt(50);
         this.timeToLive = maxTimeToLive;
         //this.entityDT = entityDT;
-        this.rotationAxis = new Vec3d(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
+        this.rotationAxis = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
         this.data = data;
+
+        setRot(entity.getYRot(), getXRot());
 
         var entityId = entity.getId();
 
         getEntityData().set(ENTITY, entityId);
-        getEntityData().set(PART, bodypart);
+        getEntityData().set(PART, bodyPart);
         getEntityData().set(SIZE, size);
 
 //        trail_system = new TGParticleSystem(this, data.type_trail);
@@ -85,22 +94,6 @@ public class FlyingGibs extends Entity {
         entityData.define(SIZE, 1f);
     }
 
-    public int getEntityId() {
-        return getEntityData().get(ENTITY);
-    }
-
-    public int getPartId() {
-        return getEntityData().get(PART);
-    }
-
-    public float getSize() {
-        return getEntityData().get(SIZE);
-    }
-
-    public LivingEntity getLocalEntity(){
-        return (LivingEntity)Minecraft.getInstance().level.getEntity(getEntityId());
-    }
-
     @Override
     public void tick() {
         super.tick();
@@ -110,9 +103,10 @@ public class FlyingGibs extends Entity {
             --timeToLive;
         else this.kill();
 
-        this.xOld = this.getX();
-        this.yOld = this.getY();
-        this.zOld = this.getZ();
+//        this.xOld = this.getX();
+//        this.yOld = this.getY();
+//        this.zOld = this.getZ();
+
         this.yo -= gravity;
 
         if (this.level().getBlockState(ClientProxy.getEntityBlockPos(this)).getFluidState().is(LAVA)) {
@@ -147,16 +141,9 @@ public class FlyingGibs extends Entity {
             this.yo *= -0.8999999761581421D;
         }
 
-        this.setDeltaMovement(this.xo, this.yo, this.zo);
+        var motionScale = this.isInWater() ? this.getWaterInertia() : 1f;
 
-//        this.posX += this.xo;
-//        this.posY += this.yo;
-//        this.posZ += this.zo;
-
-//        double e = 0.001d;
-//        if (xo >= e || yo >= e || zo >= e) {
-//        	
-//        }
+        this.setDeltaMovement(new Vec3(this.xo, this.yo, this.zo).scale(motionScale));
     }
 
 //
@@ -168,6 +155,26 @@ public class FlyingGibs extends Entity {
 //        return this.level().handleMaterialAcceleration(this.getEntityBoundingBox(), Material.WATER, this);
 //        ArrowRenderer
 //    }
+
+    protected float getWaterInertia() {
+        return 0.6F;
+    }
+
+    public int getEntityId() {
+        return getEntityData().get(ENTITY);
+    }
+
+    public int getPartId() {
+        return getEntityData().get(PART);
+    }
+
+    public float getSize() {
+        return getEntityData().get(SIZE);
+    }
+
+    public LivingEntity getLocalEntity(){
+        return (LivingEntity)Minecraft.getInstance().level.getEntity(getEntityId());
+    }
 
     @Override
     public boolean shouldRender(double pX, double pY, double pZ) {

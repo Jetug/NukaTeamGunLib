@@ -197,10 +197,12 @@ public class DeathEffect {
                     vy = (0.5 - random.nextDouble()) * 0.35;
                 var vz = (0.5 - random.nextDouble()) * 0.35;
 
-                var ent = new FlyingGibs(entity.level(), entity, data, new Vec3(x, y, z),
-                        delta.x * 0.35 + vx,
-                        delta.y * 0.35 + vy,
-                        delta.z * 0.35 + vz,
+                var ent = new FlyingGibs(entity.level(), entity, data,
+                        new Vec3(x, y, z),
+                        new Vec3(delta.x * 0.35 + vx,
+                                delta.y * 0.35 + vy,
+                                delta.z * 0.35 + vz
+                        ),
                         (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
 
                 entity.level().addFreshEntity(ent);
