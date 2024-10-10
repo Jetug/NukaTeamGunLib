@@ -88,7 +88,7 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
 
 //                poseStack.mulPose(new Quaternionf(pEntity.rotationAxis.x, pEntity.rotationAxis.y, pEntity.rotationAxis.z, rot_angle));
 
-                data.model.render(pEntity, pEntity.getPartId(), poseStack, vertexConsumer, packedLight, 0xFFFFFF);
+                data.model.render(entity, pEntity.getPartId(), poseStack, vertexConsumer, packedLight, 0xFFFFFF);
 
 //				GlStateManager.enableCull();
 

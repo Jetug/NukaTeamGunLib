@@ -29,23 +29,23 @@ public class ModelGibsAgeable extends ModelGibs {
         ageableAccessor.getBodyParts().forEach((val) -> isHead.add(false));
 
         var livingEntity = (LivingEntity)entity;
-        livingEntity.isBaby();
+
         poseStack.pushPose();
         {
-            float scale;
-            if (isHead.get(part)) {
-                if (ageableAccessor.isScaleHead()) {
-                    scale = 1.5F / ageableAccessor.getBabyHeadScale();
-                    poseStack.scale(scale, scale, scale);
-                }
-                poseStack.translate(0.0F, ageableAccessor.getBabyYHeadOffset() / 16.0F, ageableAccessor.getBabyZHeadOffset() / 16.0F);
-            }
-            else {
-                scale = 1.0F / ageableAccessor.getBabyBodyScale();
-                poseStack.scale(scale, scale, scale);
-                poseStack.translate(0.0F, ageableAccessor.getBodyYOffset() / 16.0F, 0.0F);
-            }
+            if(livingEntity.isBaby()) {
+                if (isHead.get(part)) {
+                    if (ageableAccessor.isScaleHead()) {
+                        var scale = 1.5F / ageableAccessor.getBabyHeadScale();
+                        poseStack.scale(scale, scale, scale);
+                    }
 
+                    poseStack.translate(0.0F, ageableAccessor.getBabyYHeadOffset() / 16.0F, ageableAccessor.getBabyZHeadOffset() / 16.0F);
+                } else {
+                    var scale = 1.0F / ageableAccessor.getBabyBodyScale();
+                    poseStack.scale(scale, scale, scale);
+                    poseStack.translate(0.0F, ageableAccessor.getBodyYOffset() / 16.0F, 0.0F);
+                }
+            }
             accessor.getModelParts().get(part).render(poseStack, pVertexConsumer, packedLight, packedOverlay);
         }
         poseStack.popPose();
