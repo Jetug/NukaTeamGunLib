@@ -7,10 +7,7 @@ import com.nukateam.ntgl.client.model.gibs.*;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGibs;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import dev.kosmx.playerAnim.core.util.Vec3d;
-import net.minecraft.client.model.HierarchicalModel;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.QuadrupedModel;
-import net.minecraft.client.model.VillagerModel;
+import net.minecraft.client.model.*;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -150,18 +147,20 @@ public class DeathEffect {
             try {
                 if (data.model == null && render != null) {
                     var mainModel = render.getModel();//(Model) DeathEffectEntityRenderer.RLB_mainModel.get((LivingEntityRenderer) render);
-
-                    if (mainModel instanceof HumanoidModel <? extends Entity> model) {
-                        data.model = new ModelGibsBiped(model);
-                    }
-                    else if (mainModel instanceof QuadrupedModel<? extends LivingEntity> model) {
-                        data.model = new ModelGibsQuadruped(model);
-                    }
-                    else if (mainModel instanceof VillagerModel<? extends LivingEntity> model) {
-                        data.model = new ModelGibsVillager(model);
-                    }
-                    else if(mainModel instanceof HierarchicalModel<? extends Entity> model){
+//                    if (mainModel instanceof HumanoidModel <? extends Entity> model) {
+//                        data.model = new ModelGibsBiped(model);
+//                    }
+//                    else if (mainModel instanceof QuadrupedModel<? extends LivingEntity> model) {
+//                        data.model = new ModelGibsQuadruped(model);
+//                    }
+//                    else if (mainModel instanceof VillagerModel<? extends LivingEntity> model) {
+//                        data.model = new ModelGibsVillager(model);
+//                    }
+                    if(mainModel instanceof HierarchicalModel<? extends Entity> model){
                         data.model = new ModelGibsGeneric(model);
+                    }
+                    else if(mainModel instanceof AgeableListModel<? extends Entity> model){
+                        data.model = new ModelGibsAgeable(model);
                     }
                     else {
                         data.model = genericGore.model;

@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.mixin.common;
 
-import com.nukateam.ntgl.common.data.interfaces.IBabyData;
+import com.nukateam.ntgl.common.data.interfaces.IAgeableAccessor;
 import com.nukateam.ntgl.common.data.interfaces.IModelAccessor;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(AgeableListModel.class)
-public abstract class AgeableListModelAccessor implements IBabyData, IModelAccessor {
+public abstract class AgeableListModelAccessor implements IAgeableAccessor, IModelAccessor {
     @Shadow @Final private boolean scaleHead;
     @Shadow @Final private float babyYHeadOffset;
     @Shadow @Final private float babyZHeadOffset;
@@ -22,6 +22,14 @@ public abstract class AgeableListModelAccessor implements IBabyData, IModelAcces
 
     @Shadow protected abstract Iterable<ModelPart> headParts();
     @Shadow protected abstract Iterable<ModelPart> bodyParts();
+
+    @Override public Iterable<ModelPart> getHeadParts(){
+        return headParts();
+    }
+
+    @Override public Iterable<ModelPart> getBodyParts(){
+        return bodyParts();
+    }
 
     @Override
     public boolean isScaleHead() {

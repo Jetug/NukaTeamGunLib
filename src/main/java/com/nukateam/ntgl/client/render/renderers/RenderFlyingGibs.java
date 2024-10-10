@@ -23,7 +23,7 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
     }
 
     @Override
-    public void render(FlyingGibs pEntity, float pEntityYaw, float pPartialTick, PoseStack poseStack, MultiBufferSource pBuffer, int pPackedLight) {
+    public void render(FlyingGibs pEntity, float pEntityYaw, float pPartialTick, PoseStack poseStack, MultiBufferSource pBuffer, int packedLight) {
         var entity = pEntity.getLocalEntity();
         if(entity == null) return;
 
@@ -81,18 +81,18 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
 
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180));
 
-                poseStack.mulPose(Axis.XP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.x)));
+//                poseStack.mulPose(Axis.XP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.x)));
 //                poseStack.mulPose(Axis.YP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.y)));
-                poseStack.mulPose(Axis.ZP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.z)));
+//                poseStack.mulPose(Axis.ZP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.z)));
                 poseStack.translate(0,-entity.getType().getHeight() / 2,0);
 
 //                poseStack.mulPose(new Quaternionf(pEntity.rotationAxis.x, pEntity.rotationAxis.y, pEntity.rotationAxis.z, rot_angle));
 
-                data.model.render(pEntity, pEntity.getPartId(), poseStack, vertexConsumer, pPackedLight, 0xFFFFFF);
+                data.model.render(pEntity, pEntity.getPartId(), poseStack, vertexConsumer, packedLight, 0xFFFFFF);
 
 //				GlStateManager.enableCull();
 
-                super.render(pEntity, pEntityYaw, pPartialTick, poseStack, pBuffer, pPackedLight);
+                super.render(pEntity, pEntityYaw, pPartialTick, poseStack, pBuffer, packedLight);
             }
             poseStack.popPose();
         }

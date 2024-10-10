@@ -2,10 +2,7 @@ package com.nukateam.ntgl.common.data.interfaces;
 
 import net.minecraft.client.model.geom.ModelPart;
 
-import java.util.List;
-
-public interface IBabyData {
-
+public interface IAgeableAccessor {
     boolean isScaleHead();
 
     float getBabyYHeadOffset();
@@ -17,4 +14,8 @@ public interface IBabyData {
     float getBabyBodyScale();
 
     float getBodyYOffset();
+
+    Iterable<ModelPart> getHeadParts();
+
+    Iterable<ModelPart> getBodyParts();
 }

@@ -23,25 +23,25 @@ public class ModelGibsBiped extends ModelGibs {
     /**
      * Sets the models various rotation angles then renders the model.
      */
-    public void render(Entity entity, int part, PoseStack pPoseStack, VertexConsumer pVertexConsumer, int pPackedLight, int pPackedOverlay) {
+    public void render(Entity entity, int part, PoseStack poseStack, VertexConsumer pVertexConsumer, int packedLight, int packedOverlay) {
         switch (part) {
             case 0:
-                this.model.head.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
+                this.model.head.render(poseStack, pVertexConsumer, packedLight, packedOverlay);
                 break;
             case 1:
-                this.model.body.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
+                this.model.body.render(poseStack, pVertexConsumer, packedLight, packedOverlay);
                 break;
             case 2:
-                this.model.rightArm.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
+                this.model.rightArm.render(poseStack, pVertexConsumer, packedLight, packedOverlay);
                 break;
             case 3:
-                this.model.leftArm.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
+                this.model.leftArm.render(poseStack, pVertexConsumer, packedLight, packedOverlay);
                 break;
             case 4:
-                this.model.rightLeg.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
+                this.model.rightLeg.render(poseStack, pVertexConsumer, packedLight, packedOverlay);
                 break;
             case 5:
-                this.model.leftLeg.render(pPoseStack, pVertexConsumer, pPackedLight, pPackedOverlay);
+                this.model.leftLeg.render(poseStack, pVertexConsumer, packedLight, packedOverlay);
                 break;
         }
     }

@@ -15,7 +15,7 @@ public abstract class ModelGibs/* extends Model */{
 //		super(pRenderType);
 //	}
 
-	public abstract void render(Entity entity, int part, PoseStack pPoseStack, VertexConsumer pVertexConsumer, int pPackedLight, int pPackedOverlay);
+	public abstract void render(Entity entity, int part, PoseStack poseStack, VertexConsumer pVertexConsumer, int packedLight, int packedOverlay);
 	
 	public abstract int getNumGibs();
 }

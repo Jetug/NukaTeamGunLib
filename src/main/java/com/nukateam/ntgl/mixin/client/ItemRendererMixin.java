@@ -22,7 +22,7 @@ public class ItemRendererMixin {
     @Inject(method = "renderStatic(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;ZLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/world/level/Level;III)V",
             at = @At(value = "HEAD"))
     public void renderStatic(LivingEntity pEntity, ItemStack pItemStack, ItemDisplayContext pTransformType,
-                             boolean pLeftHand, PoseStack pPoseStack, MultiBufferSource pBuffer, Level pLevel,
+                             boolean pLeftHand, PoseStack poseStack, MultiBufferSource pBuffer, Level pLevel,
                              int pCombinedLight, int pCombinedOverlay, int pSeed, CallbackInfo ci) {
         if(pItemStack.getItem() instanceof GunItem gunItem){
             gunItem.getRenderer().setEntity(pEntity);
