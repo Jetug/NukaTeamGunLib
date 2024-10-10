@@ -4,7 +4,6 @@ package com.nukateam.ntgl.common.foundation.entity;
 import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
-import dev.kosmx.playerAnim.core.util.Vec3d;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -15,7 +14,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -27,16 +27,17 @@ public class FlyingGibs extends Entity {
     public static final EntityDataAccessor<Integer> ENTITY = defineId(FlyingGibs.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Integer> PART = defineId(FlyingGibs.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Float> SIZE = defineId(FlyingGibs.class, EntityDataSerializers.FLOAT);
-    public static final int LIFE = 7500;
+    public static final int LIFE = 75;
+    public static final double BOUNCE = -0.5;
 
     private RandomSource rand;
     public int maxTimeToLive = 2000;
     public int timeToLive = 2000;
     public double gravity = 0.029999999329447746D;
 
-    private double xo = 0;
-    private double yo = 0;
-    private double zo = 0;
+    private double xDelta = 0;
+    private double yDelta = 0;
+    private double zDelta = 0;
 
     public Vec3 rotationAxis;
     public int hitGroundTTL = 0;
@@ -62,11 +63,11 @@ public class FlyingGibs extends Entity {
 //        this.setDeltaMovement(xo, yo, zo);
         this.rand = this.level().getRandom();
 
-        setDeltaMovement(delta);
+//        setDeltaMovement(delta);
 
-        this.xo = delta.x;
-        this.yo = delta.y;
-        this.zo = delta.z;
+        this.xDelta = delta.x;
+        this.yDelta = delta.y;
+        this.zDelta = delta.z;
 
         this.size = size;
         this.maxTimeToLive = LIFE + rand.nextInt(50);
@@ -97,65 +98,59 @@ public class FlyingGibs extends Entity {
     @Override
     public void tick() {
         super.tick();
-//        if(!level().isClientSide) return;
+//        if(level().isClientSide) return;
         var rand = this.level().getRandom();
 
         if (this.timeToLive > 0)
             --timeToLive;
         else this.kill();
 
-//        this.xOld = this.getX();
-//        this.yOld = this.getY();
-//        this.zOld = this.getZ();
+        var xDelta = this.xDelta;
+        var yDelta = this.yDelta;
+        var zDelta = this.zDelta;
 
-        this.yo -= gravity;
+        yDelta -= gravity;
 
-        if (this.level().getBlockState(ClientProxy.getEntityBlockPos(this)).getFluidState().is(LAVA)) {
-            this.xo = 0.20000000298023224D;
-            this.yo = (rand.nextFloat() - rand.nextFloat()) * 0.2F;
-            this.zo = (rand.nextFloat() - rand.nextFloat()) * 0.2F;
+//        addDeltaMovement(new Vec3(0, yDelta - gravity, 0));
 
-            this.playSound(SoundEvents.GENERIC_BURN, 0.4F, 2.0F + rand.nextFloat() * 0.4F);
-        }
-
+        handleLavaMovement(rand);
 
         this.move(MoverType.SELF, getDeltaMovement());
         float f = 0.98F;
 
         if (this.onGround()) {
-            //System.out.println("onGround.");
             if (hitGroundTTL == 0) {
                 hitGroundTTL = timeToLive;
-//                trail_system.setExpired();
             }
 
-            f = (float) (this.level().getBlockState(getEntityBlockPos(this))
-                    .getBlock().getFriction() * 0.98);
-
+            f = (float)(this.level()
+                    .getBlockState(getEntityBlockPos(this))
+                    .getBlock()
+                    .getFriction() * 0.98);
         }
 
-        this.xo *= f;
-        this.yo *= 0.9800000190734863D;
-        this.zo *= f;
+        xDelta *= f;
+        yDelta *= 0.9800000190734863D;
+        zDelta *= f;
 
         if (this.onGround()) {
-            this.yo *= -0.8999999761581421D;
+            yo *= BOUNCE;
         }
 
         var motionScale = this.isInWater() ? this.getWaterInertia() : 1f;
 
-        this.setDeltaMovement(new Vec3(this.xo, this.yo, this.zo).scale(motionScale));
+        this.setDeltaMovement(new Vec3(xDelta, yDelta, zDelta).scale(motionScale));
     }
 
-//
-//
-//    /**
-//     * Returns if this entity is in water and will end up adding the waters velocity to the entity
-//     */
-//    public boolean handleWaterMovement() {
-//        return this.level().handleMaterialAcceleration(this.getEntityBoundingBox(), Material.WATER, this);
-//        ArrowRenderer
-//    }
+    private void handleLavaMovement(RandomSource rand) {
+        if (this.level().getBlockState(ClientProxy.getEntityBlockPos(this)).getFluidState().is(LAVA)) {
+            this.xDelta = 0.20000000298023224D;
+            this.yDelta = (rand.nextFloat() - rand.nextFloat()) * 0.2F;
+            this.zDelta = (rand.nextFloat() - rand.nextFloat()) * 0.2F;
+
+            this.playSound(SoundEvents.GENERIC_BURN, 0.4F, 2.0F + rand.nextFloat() * 0.4F);
+        }
+    }
 
     protected float getWaterInertia() {
         return 0.6F;
@@ -183,12 +178,8 @@ public class FlyingGibs extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
-
-    }
+    protected void readAdditionalSaveData(CompoundTag pCompound) {}
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
-
-    }
+    protected void addAdditionalSaveData(CompoundTag pCompound) {}
 }
