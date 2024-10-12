@@ -11,7 +11,9 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CompassItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -30,8 +32,11 @@ public class GunModifierHelper {
     public static final String FIRE_MODE = "FireMode";
 
     public static boolean isOneHanded(ItemStack itemStack){
-        var gunItem = (GunItem)itemStack.getItem();
         return GunModifierHelper.getGripType(itemStack) != GripType.ONE_HANDED;
+    }
+
+    public static boolean isAuto(ItemStack itemStack) {
+        return getCurrentFireMode(itemStack) == FireMode.AUTO;
     }
 
     public static boolean isWeaponFull(ItemStack stack) {
@@ -101,10 +106,6 @@ public class GunModifierHelper {
             return fireMode;
         }
         return FireMode.getType(tag.getString(FIRE_MODE));
-    }
-
-    public static boolean isAuto(ItemStack itemStack) {
-        return getCurrentFireMode(itemStack) == FireMode.AUTO;
     }
 
     public static Set<FireMode> getFireModes(ItemStack weapon) {
@@ -291,18 +292,19 @@ public class GunModifierHelper {
 
     public static double getModifiedAimDownSightSpeed(ItemStack weapon, double speed) {
         var buffSpeed = new AtomicReference<>(speed);
-        forEachAttachment(weapon, (modifier -> buffSpeed.set(
-                modifier.modifyAimDownSightSpeed(buffSpeed.get()))));
 
-        return Mth.clamp(speed, 0.01, Double.MAX_VALUE);
+        forEachAttachment(weapon, (modifier ->
+                buffSpeed.set(modifier.modifyAimDownSightSpeed(buffSpeed.get()))));
+
+        return Mth.clamp(buffSpeed.get(), 0.01, Double.MAX_VALUE);
     }
 
-    public static int getModifiedRate(ItemStack weapon) {
+    public static int getRate(ItemStack weapon) {
         var gun = getGun(weapon);
         var rate = GunEnchantmentHelper.getRate(weapon, gun);
         var buffRate = new AtomicInteger(rate);
         forEachAttachment(weapon, (modifier -> buffRate.set(modifier.modifyFireRate(buffRate.get()))));
-        return Mth.clamp(rate, 0, Integer.MAX_VALUE);
+        return Mth.clamp(buffRate.get(), 0, Integer.MAX_VALUE);
     }
 
     public static float getCriticalChance(ItemStack weapon) {
@@ -314,6 +316,7 @@ public class GunModifierHelper {
         return Mth.clamp(chance.get(), 0F, 1F);
     }
 
+    ///PRIVATE
     private static void forEachAttachment(ItemStack weapon, Consumer<IGunModifier> consumer){
         var gun = getGun(weapon);
         var attachments = gun.getModules().getAttachments();
@@ -322,8 +325,6 @@ public class GunModifierHelper {
             var modifiers = getModifiers(weapon, att);
             applyModifiers(consumer, modifiers);
         }
-
-//        applyModifiers(consumer, getCurrentAmmoItem(weapon).getModifiers());
     }
 
     private static void applyModifiers(Consumer<IGunModifier> consumer, IGunModifier[] ammoModifiers) {

@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.base.utils;
 
-import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.google.common.collect.Maps;
@@ -50,7 +49,7 @@ public class ShootTracker {
     public void putCooldown(ItemStack weapon, InteractionHand hand) {
 //        var modifiedGun = item.getModifiedGun(weapon);
 //        int rate = GunEnchantmentHelper.getRate(weapon, modifiedGun);
-        var rate = GunModifierHelper.getModifiedRate(weapon);
+        var rate = GunModifierHelper.getRate(weapon);
         this.cooldownMap.put(hand, Pair.of(Util.getMillis(), rate * 50));
     }
 

@@ -150,7 +150,8 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
                 } else if (isShooting) {
                     animation = playGunAnim(SHOT, LOOP);
 //                    animation = begin().then(SHOT, LOOP);
-                    animationHelper.syncAnimation(event, SHOT, general.getRate());
+                    var rate = GunModifierHelper.getRate(getStack());
+                    animationHelper.syncAnimation(event, SHOT, rate);
                 } else if (reloadHandler.isReloading(entity, arm.getOpposite())) {
                     animation = begin().then("hide", HOLD_ON_LAST_FRAME);
                 }
@@ -240,7 +241,8 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
 
             RawAnimation animation = null;
 
-            if (cooldown == general.getRate()) {
+            var rate = GunModifierHelper.getRate(getStack());
+            if (cooldown == rate) {
                 if (chamberId < 6)
                     chamberId++;
                 else chamberId = 1;
@@ -250,7 +252,7 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
 
             if (isShooting && animationHelper.hasAnimation(chamber)) {
                 animation = begin().then(chamber, HOLD_ON_LAST_FRAME);
-                animationHelper.syncAnimation(event, chamber, general.getRate());
+                animationHelper.syncAnimation(event, chamber, rate);
             }
             return event.setAndContinue(animation);
         };
