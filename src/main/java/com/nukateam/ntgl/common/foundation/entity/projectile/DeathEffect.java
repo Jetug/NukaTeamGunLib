@@ -7,10 +7,12 @@ import com.nukateam.ntgl.client.model.gibs.*;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGibs;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import dev.kosmx.playerAnim.core.util.Vec3d;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -170,7 +172,8 @@ public class DeathEffect {
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
-//            ClientProxy.get().playSoundOnPosition(data.sound, (float) x, (float) y, (float) z, 1.0f, 1.0f, false, TGSoundCategory.DEATHEFFECT);
+
+            entity.playSound(ModSounds.DEATH_GORE.get(), 1.0f, 1.0f);
 
             //Spawn MainFX
 //            TGParticleSystem sys = new TGParticleSystem(entity.level(), data.type_main, x, entity.getY(), z, entity.xo, entity.yo, entity.zo);

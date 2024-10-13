@@ -5,10 +5,12 @@ import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.IronGolemModel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -60,10 +62,9 @@ public class FlyingGibs extends Entity {
     public FlyingGibs(Level world, LivingEntity entity, DeathEffect.GoreData data, Vec3 pos, Vec3 delta, float size, int bodyPart) {
         this(Projectiles.FLYING_GIBS.get(), world);
         this.setPos(pos.x, pos.y, pos.z);
-//        this.setDeltaMovement(xo, yo, zo);
         this.rand = this.level().getRandom();
 
-//        setDeltaMovement(delta);
+        setDeltaMovement(delta.scale(1.5));
 
         this.xDelta = delta.x;
         this.yDelta = delta.y;
@@ -109,7 +110,7 @@ public class FlyingGibs extends Entity {
         var yDelta = this.yDelta;
         var zDelta = this.zDelta;
 
-        yDelta -= gravity;
+//        yDelta -= gravity;
 
 //        addDeltaMovement(new Vec3(0, yDelta - gravity, 0));
 
@@ -129,9 +130,9 @@ public class FlyingGibs extends Entity {
                     .getFriction() * 0.98);
         }
 
-        xDelta *= f;
-        yDelta *= 0.9800000190734863D;
-        zDelta *= f;
+//        xDelta *= f;
+//        yDelta *= 0.9800000190734863D;
+//        zDelta *= f;
 
         if (this.onGround()) {
             yo *= BOUNCE;
@@ -139,8 +140,52 @@ public class FlyingGibs extends Entity {
 
         var motionScale = this.isInWater() ? this.getWaterInertia() : 1f;
 
-        this.setDeltaMovement(new Vec3(xDelta, yDelta, zDelta).scale(motionScale));
+//        this.setDeltaMovement(new Vec3(xDelta, yDelta, zDelta).scale(motionScale));
+
+        this.setDeltaMovement(getDeltaMovement().scale(motionScale));
+        handleGravity();
     }
+
+    private void handleGravity(){
+        var gravity = 0.08D;
+
+        this.checkSlowFallDistance();
+        var vec3 = this.getDeltaMovement();
+        var vec31 = this.getLookAngle();
+        var f = this.getXRot() * ((float)Math.PI / 180F);
+        var d1 = Math.sqrt(vec31.x * vec31.x + vec31.z * vec31.z);
+        var d3 = vec3.horizontalDistance();
+        var d4 = vec31.length();
+        var d5 = Math.cos(f);
+
+        d5 = d5 * d5 * Math.min(1.0D, d4 / 0.4D);
+        vec3 = this.getDeltaMovement().add(0.0D, gravity * (-1.0D + d5 * 0.75D), 0.0D);
+        if (vec3.y < 0.0D && d1 > 0.0D) {
+            double d6 = vec3.y * -0.1D * d5;
+            vec3 = vec3.add(vec31.x * d6 / d1, d6, vec31.z * d6 / d1);
+        }
+
+        if (f < 0.0F && d1 > 0.0D) {
+            double d10 = d3 * (double)(-Mth.sin(f)) * 0.04D;
+            vec3 = vec3.add(-vec31.x * d10 / d1, d10 * 3.2D, -vec31.z * d10 / d1);
+        }
+
+        if (d1 > 0.0D) {
+            vec3 = vec3.add((vec31.x / d1 * d3 - vec3.x) * 0.1D, 0.0D, (vec31.z / d1 * d3 - vec3.z) * 0.1D);
+        }
+
+        this.setDeltaMovement(vec3.multiply(0.99F, 0.95F, 0.99F));
+        this.move(MoverType.SELF, this.getDeltaMovement());
+
+        if (this.horizontalCollision && !this.level().isClientSide) {
+            double d11 = this.getDeltaMovement().horizontalDistance();
+        }
+
+        if (this.onGround() && !this.level().isClientSide) {
+            this.setSharedFlag(7, false);
+        }
+    }
+
 
     private void handleLavaMovement(RandomSource rand) {
         if (this.level().getBlockState(ClientProxy.getEntityBlockPos(this)).getFluidState().is(LAVA)) {
