@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.common.base.NetworkAmmoManager;
+import com.nukateam.ntgl.common.base.NetworkManager;
 import com.nukateam.ntgl.common.base.config.Ammo;
 import com.nukateam.ntgl.common.base.gun.AmmoType;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
@@ -20,7 +21,7 @@ import java.util.List;
  * <p>
  * Author: MrCrayfish
  */
-public class AmmoItem extends Item implements IAmmo {
+public class AmmoItem extends Item implements IAmmo<Ammo>, IConfigProvider<Ammo> {
     private final IGunModifier[] modifiers;
     private Ammo ammo;
 
@@ -29,8 +30,9 @@ public class AmmoItem extends Item implements IAmmo {
         this.modifiers = modifiers;
     }
 
-    public void setAmmo(NetworkAmmoManager.Supplier supplier) {
-        this.ammo = supplier.getAmmo();
+    @Override
+    public void setConfig(NetworkManager.Supplier<Ammo> supplier) {
+        this.ammo = supplier.getConfig();
     }
 
     public Ammo getAmmo() {

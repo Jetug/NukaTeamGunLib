@@ -86,7 +86,6 @@ public class NbtUtils {
         return array;
     }
 
-
     public static <K, R extends INBTSerializable> CompoundTag serializeMap(Map<K, R> map){
         var tag = new CompoundTag();
 

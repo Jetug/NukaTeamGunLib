@@ -6,9 +6,6 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Author: MigaMi
- */
 public class FireMode extends ResourceHolder {
     /** A fire mode that shoots once per trigger press*/
     public static final FireMode SEMI_AUTO = new FireMode(new ResourceLocation(Ntgl.MOD_ID, "semi"));

@@ -32,7 +32,7 @@ public class S2CMessageUpdateGuns extends PlayMessage<S2CMessageUpdateGuns> {
 
     @Override
     public S2CMessageUpdateGuns decode(FriendlyByteBuf buffer) {
-        S2CMessageUpdateGuns message = new S2CMessageUpdateGuns();
+        var message = new S2CMessageUpdateGuns();
         message.registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
         message.customGuns = CustomGunLoader.readCustomGuns(buffer);
         return message;

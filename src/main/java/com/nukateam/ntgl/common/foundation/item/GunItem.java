@@ -5,6 +5,7 @@ import com.nukateam.example.common.data.utils.ResourceUtils;
 import com.nukateam.ntgl.client.render.renderers.DefaultGunRenderer;
 import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
 import com.nukateam.ntgl.client.render.renderers.GunItemRenderer;
+import com.nukateam.ntgl.common.base.NetworkManager;
 import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.nukateam.ntgl.common.data.constants.Tags;
@@ -42,7 +43,7 @@ import java.util.function.Supplier;
 
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
-public class GunItem extends Item implements GeoItem, IColored, IMeta, IResourceProvider {
+public class GunItem extends Item implements GeoItem, IColored, IMeta, IResourceProvider, IConfigProvider<Gun> {
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
@@ -60,8 +61,8 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         return GUN_RENDERER.get();
     }
 
-    public void setGun(NetworkGunManager.Supplier supplier) {
-        this.gun = supplier.getGun();
+    public void setConfig(NetworkManager.Supplier<Gun> supplier) {
+        this.gun = supplier.getConfig();
     }
 
     public Gun getGun() {
