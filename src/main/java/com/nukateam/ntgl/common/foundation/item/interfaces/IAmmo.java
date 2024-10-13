@@ -1,9 +1,8 @@
 package com.nukateam.ntgl.common.foundation.item.interfaces;
 
-import com.nukateam.ntgl.common.base.NetworkAmmoManager;
-import com.nukateam.ntgl.common.base.NetworkManager;
 import com.nukateam.ntgl.common.base.config.Ammo;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.foundation.item.IConfigProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -13,12 +12,10 @@ import net.minecraftforge.common.util.INBTSerializable;
  * <p>
  * Author: MrCrayfish
  */
-public interface IAmmo <T extends INBTSerializable<CompoundTag>> {
+public interface IAmmo <T extends INBTSerializable<CompoundTag>> extends IConfigProvider<T> {
     Ammo getAmmo();
 
     default IGunModifier[] getModifiers() {
         return new IGunModifier[0];
     }
-
-    void setConfig(NetworkManager.Supplier<T> supplier);
 }

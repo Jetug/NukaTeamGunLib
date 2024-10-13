@@ -33,7 +33,7 @@ import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public abstract class NetworkManager<T extends Item & IConfigProvider, Y extends INBTSerializable<CompoundTag>> extends SimplePreparableReloadListener<Map<T, Y>> {
+public abstract class NetworkManager<T extends IConfigProvider, Y extends INBTSerializable<CompoundTag>> extends SimplePreparableReloadListener<Map<T, Y>> {
     private Map<ResourceLocation, Y> registeredGuns = new HashMap<>();
 
     protected abstract Boolean check(Item v);
@@ -49,10 +49,11 @@ public abstract class NetworkManager<T extends Item & IConfigProvider, Y extends
     protected void apply(Map<T, Y> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
         var builder = ImmutableMap.<ResourceLocation, Y>builder();
 
-        objects.forEach((item, gun) -> {
+        objects.forEach((configProvider, gun) -> {
+            var item = (Item)configProvider;
             Validate.notNull(ITEMS.getKey(item));
             builder.put(ITEMS.getKey(item), gun);
-            item.setConfig(new NetworkManager.Supplier<>(gun));
+            configProvider.setConfig(new NetworkManager.Supplier<>(gun));
         });
 
         this.registeredGuns = builder.build();

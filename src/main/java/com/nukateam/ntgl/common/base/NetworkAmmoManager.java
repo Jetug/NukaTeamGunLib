@@ -31,7 +31,7 @@ import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public class NetworkAmmoManager extends NetworkManager<AmmoItem, Ammo> {
+public class NetworkAmmoManager extends NetworkManager<IAmmo, Ammo> {
     private static final List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
     private static NetworkAmmoManager instance;
 
