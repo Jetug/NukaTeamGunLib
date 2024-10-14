@@ -6,10 +6,6 @@ import com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect;
 import com.nukateam.ntgl.common.foundation.init.ModParticleTypes;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.IronGolemModel;
-import net.minecraft.client.model.VillagerModel;
-import net.minecraft.client.renderer.entity.VillagerRenderer;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -20,8 +16,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.animal.Chicken;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.Lazy;
@@ -161,10 +155,6 @@ public class FlyingGibs extends Entity {
                         this.getZ() - (this.getDeltaMovement().z() / i),
                         0, 0, 0);
             }
-//            if (this.level().random.nextInt(2) == 0) {
-//                this.level().addParticle(ParticleTypes.SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-//                this.level().addParticle(ParticleTypes.FLAME, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-//            }
         }
     }
 
