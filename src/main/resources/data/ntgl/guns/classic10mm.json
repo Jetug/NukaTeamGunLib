@@ -18,7 +18,14 @@
   },
   "textures": {
     "default": "classic10mm",
-    "blue": "blue"
+    "blue": "classic10mm_blue",
+    "black": "classic10mm_black",
+    "brown": "classic10mm_brown",
+    "gray": "classic10mm_gray",
+    "cyan": "classic10mm_cyan",
+    "green": "classic10mm_green",
+    "pink": "classic10mm_pink",
+    "rust": "classic10mm_rust"
   },
   "sounds": {
     "fire": "ntgl:item.pistol10mm.fire",
