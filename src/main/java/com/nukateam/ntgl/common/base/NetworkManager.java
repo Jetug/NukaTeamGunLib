@@ -1,30 +1,18 @@
 package com.nukateam.ntgl.common.base;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.config.Gun;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.foundation.item.IConfigProvider;
-import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
+import com.nukateam.ntgl.common.foundation.item.IConfigConsumer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.Validate;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
@@ -33,7 +21,7 @@ import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public abstract class NetworkManager<T extends IConfigProvider, Y extends INBTSerializable<CompoundTag>> extends SimplePreparableReloadListener<Map<T, Y>> {
+public abstract class NetworkManager<T extends IConfigConsumer, Y extends INBTSerializable<CompoundTag>> extends SimplePreparableReloadListener<Map<T, Y>> {
     private Map<ResourceLocation, Y> registeredGuns = new HashMap<>();
 
     protected abstract Boolean check(Item v);

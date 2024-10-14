@@ -96,6 +96,28 @@ public class NbtUtils {
         return tag;
     }
 
+    public static <K, R> CompoundTag serializeStringMap(Map<K, R> map){
+        var tag = new CompoundTag();
+
+        for (var entry : map.entrySet()) {
+            tag.putString(entry.getKey().toString(), entry.getValue().toString());
+        }
+
+        return tag;
+    }
+
+    public static Map<String, String> deserializeStringMap(CompoundTag tag){
+        var map = new HashMap<String, String>();
+
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_STRING)) {
+                map.put(key, tag.getString(key));
+            }
+        }
+
+        return map;
+    }
+
     public static Map<ResourceLocation, Ammo> deserializeProjectileMap(CompoundTag tag){
         var map = new HashMap<ResourceLocation, Ammo>();
 

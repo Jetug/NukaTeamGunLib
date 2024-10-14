@@ -9,11 +9,11 @@ import com.nukateam.ntgl.client.data.handler.ShootingHandler;
 import com.nukateam.ntgl.client.model.GeoGunModel;
 import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
 import com.nukateam.ntgl.client.render.renderers.GeoDynamicItemRenderer;
+import com.nukateam.ntgl.common.base.config.Gun;
 import com.nukateam.ntgl.common.base.gun.GripType;
 import com.nukateam.ntgl.common.data.util.AnimationHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-
 import com.nukateam.ntgl.common.helpers.PlayerHelper;
 import mod.azure.azurelib.core.animation.Animation;
 import mod.azure.azurelib.core.animation.AnimationController;
@@ -33,12 +33,12 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.nukateam.example.common.data.constants.Animations.*;
 import static com.nukateam.ntgl.client.data.util.TransformUtils.*;
-import static mod.azure.azurelib.core.animation.AnimatableManager.*;
+import static mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import static mod.azure.azurelib.core.animation.Animation.LoopType.*;
-import static mod.azure.azurelib.core.animation.RawAnimation.*;
+import static mod.azure.azurelib.core.animation.RawAnimation.begin;
 
 @OnlyIn(Dist.CLIENT)
-public class GunAnimator extends ItemAnimator implements IResourceProvider {
+public class GunAnimator extends ItemAnimator implements IResourceProvider, IConfigProvider<Gun> {
     public static final String RELOAD_START = "reload_start";
     public static final String RELOAD_END = "reload_end";
     public static final String CHARGE = "charge";
@@ -74,6 +74,16 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
     }
 
     @Override
+    public Gun getConfig() {
+        if(getStack().getItem() instanceof IConfigProvider config) {
+            if(config.getConfig() instanceof Gun gun)
+                return gun;
+        }
+
+        return new Gun();
+    }
+
+    @Override
     public String getName() {
         return ((IResourceProvider) renderer.getRenderStack().getItem()).getName();
     }
@@ -83,7 +93,8 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider {
         return ((IResourceProvider) renderer.getRenderStack().getItem()).getNamespace();
     }
 
-    private ItemStack getStack() {
+    @Override
+    public ItemStack getStack() {
         return renderer.getRenderStack();
     }
 

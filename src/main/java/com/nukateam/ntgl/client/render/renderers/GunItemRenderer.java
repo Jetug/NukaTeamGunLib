@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.render.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.client.animators.GunAnimator;
-import com.nukateam.ntgl.client.model.GeoGunModel;
+import com.nukateam.ntgl.client.model.GeoPlaceholderModel;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import mod.azure.azurelib.renderer.GeoItemRenderer;
 import net.minecraft.client.Minecraft;
@@ -14,7 +14,7 @@ public class GunItemRenderer extends GeoItemRenderer<GunItem> {
     private final DynamicGunRenderer<GunAnimator> renderer;
 
     public GunItemRenderer(DynamicGunRenderer<GunAnimator> renderer) {
-        super(new GeoGunModel<>());
+        super(new GeoPlaceholderModel<>());
         this.renderer = renderer;
     }
 

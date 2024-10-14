@@ -7,17 +7,17 @@ import net.minecraft.world.item.ItemDisplayContext;
 
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
-public abstract class ItemAnimator implements GeoEntity {
+public abstract class ItemAnimator implements GeoEntity, IItemAnimator {
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     protected final ItemDisplayContext transformType;
+
+    public ItemAnimator(ItemDisplayContext transformType) {
+        this.transformType = transformType;
+    }
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    public ItemAnimator(ItemDisplayContext transformType) {
-        this.transformType = transformType;
     }
 
     public ItemDisplayContext getTransformType() {

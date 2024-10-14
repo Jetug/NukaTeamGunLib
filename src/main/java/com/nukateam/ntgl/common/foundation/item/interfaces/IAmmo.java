@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.foundation.item.interfaces;
 
 import com.nukateam.ntgl.common.base.config.Ammo;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
-import com.nukateam.ntgl.common.foundation.item.IConfigProvider;
+import com.nukateam.ntgl.common.foundation.item.IConfigConsumer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -12,7 +12,7 @@ import net.minecraftforge.common.util.INBTSerializable;
  * <p>
  * Author: MrCrayfish
  */
-public interface IAmmo <T extends INBTSerializable<CompoundTag>> extends IConfigProvider<T> {
+public interface IAmmo <T extends INBTSerializable<CompoundTag>> extends IConfigConsumer<T> {
     Ammo getAmmo();
 
     default IGunModifier[] getModifiers() {

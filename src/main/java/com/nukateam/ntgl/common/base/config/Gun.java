@@ -55,6 +55,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected Sounds sounds = new Sounds();
     protected Display display = new Display();
     protected Modules modules = new Modules();
+    protected Map<String, String> textures = new HashMap<>();
 
     public General getGeneral() {
         return this.general;
@@ -74,6 +75,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public Modules getModules() {
         return this.modules;
+    }
+
+    public Map<String, String> getTextures() {
+        return textures;
     }
 
     @Override
@@ -1135,6 +1140,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.put("Sounds", this.sounds.serializeNBT());
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
+        tag.put("Textures", NbtUtils.serializeStringMap(this.textures));
         return tag;
     }
 
@@ -1151,6 +1157,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
         if (tag.contains("Modules", Tag.TAG_COMPOUND)) {
             this.modules.deserializeNBT(tag.getCompound("Modules"));
+        }
+        if (tag.contains("Textures", Tag.TAG_COMPOUND)) {
+            this.textures = NbtUtils.deserializeStringMap(tag.getCompound("Textures"));
         }
     }
 

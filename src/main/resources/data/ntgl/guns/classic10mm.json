@@ -16,6 +16,10 @@
       "ntgl:round10mm"
     ]
   },
+  "textures": {
+    "default": "classic10mm",
+    "blue": "blue"
+  },
   "sounds": {
     "fire": "ntgl:item.pistol10mm.fire",
     "reload": "ntgl:item.pistol45mm.reload",

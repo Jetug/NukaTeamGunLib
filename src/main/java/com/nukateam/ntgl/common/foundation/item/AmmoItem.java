@@ -1,9 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.ntgl.common.base.NetworkAmmoManager;
 import com.nukateam.ntgl.common.base.NetworkManager;
 import com.nukateam.ntgl.common.base.config.Ammo;
-import com.nukateam.ntgl.common.base.gun.AmmoType;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.ChatFormatting;
@@ -21,7 +19,7 @@ import java.util.List;
  * <p>
  * Author: MrCrayfish
  */
-public class AmmoItem extends Item implements IAmmo<Ammo>, IConfigProvider<Ammo> {
+public class AmmoItem extends Item implements IAmmo<Ammo>, IConfigConsumer<Ammo> {
     private final IGunModifier[] modifiers;
     private Ammo ammo;
 
