@@ -32,7 +32,7 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
         if (data.model != null) {
             poseStack.pushPose();
             {
-                var render = ClientProxy.getEntityRenderer(pEntity.getLocalEntity());
+                var render = ClientProxy.getEntityRenderer(entity);
                 if (render instanceof LivingEntityRenderer<?, ?>) {
                     try {
                         if (data.texture == null) {

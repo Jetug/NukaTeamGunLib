@@ -3,9 +3,13 @@ package com.nukateam.ntgl.common.foundation.entity;
 
 import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect;
+import com.nukateam.ntgl.common.foundation.init.ModParticleTypes;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.IronGolemModel;
+import net.minecraft.client.model.VillagerModel;
+import net.minecraft.client.renderer.entity.VillagerRenderer;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -20,6 +24,7 @@ import net.minecraft.world.entity.animal.Chicken;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.Lazy;
 
 import static com.nukateam.ntgl.ClientProxy.getEntityBlockPos;
 import static net.minecraft.network.syncher.SynchedEntityData.defineId;
@@ -64,7 +69,7 @@ public class FlyingGibs extends Entity {
         this.setPos(pos.x, pos.y, pos.z);
         this.rand = this.level().getRandom();
 
-        setDeltaMovement(delta.scale(1.5));
+        setDeltaMovement(delta);
 
         this.xDelta = delta.x;
         this.yDelta = delta.y;
@@ -144,6 +149,23 @@ public class FlyingGibs extends Entity {
 
         this.setDeltaMovement(getDeltaMovement().scale(motionScale));
         handleGravity();
+        particleTick();
+    }
+
+    private void particleTick() {
+        if (this.level().isClientSide) {
+            for (int i = 5; i > 0; i--) {
+                this.level().addParticle(ModParticleTypes.BLOOD.get(), true,
+                        this.getX() - (this.getDeltaMovement().x() / i),
+                        this.getY() - (this.getDeltaMovement().y() / i),
+                        this.getZ() - (this.getDeltaMovement().z() / i),
+                        0, 0, 0);
+            }
+//            if (this.level().random.nextInt(2) == 0) {
+//                this.level().addParticle(ParticleTypes.SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+//                this.level().addParticle(ParticleTypes.FLAME, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+//            }
+        }
     }
 
     private void handleGravity(){
@@ -213,8 +235,10 @@ public class FlyingGibs extends Entity {
         return getEntityData().get(SIZE);
     }
 
+    private final Lazy<LivingEntity> localEntity = Lazy.of(() -> (LivingEntity)Minecraft.getInstance().level.getEntity(getEntityId()));
+
     public LivingEntity getLocalEntity(){
-        return (LivingEntity)Minecraft.getInstance().level.getEntity(getEntityId());
+        return localEntity.get();
     }
 
     @Override

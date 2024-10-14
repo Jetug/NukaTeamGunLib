@@ -21,7 +21,8 @@ public class ModelGibsGeneric extends ModelGibs{
 
     @Override
     public void render(Entity entity, int part, PoseStack poseStack, VertexConsumer pVertexConsumer, int packedLight, int packedOverlay) {
-        gibs.get(part).render(poseStack, pVertexConsumer, packedLight, packedOverlay);
+        if (part != 0)
+            gibs.get(part).render(poseStack, pVertexConsumer, packedLight, packedOverlay);
     }
 
     public int getNumGibs() {
