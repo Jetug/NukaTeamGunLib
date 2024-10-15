@@ -22,6 +22,17 @@
     "silencedFire": "ntgl:item.pistol45mm.silenced_fire",
     "enchantedFire": "ntgl:item.pistol45mm.enchanted_fire"
   },
+  "textures": {
+    "default" : "ntgl:piperevolver",
+    "blue"    : "ntgl:piperevolver_blue",
+    "black"   : "ntgl:piperevolver_black",
+    "brown"   : "ntgl:piperevolver_brown",
+    "gray"    : "ntgl:piperevolver_gray",
+    "cyan"    : "ntgl:piperevolver_cyan",
+    "green"   : "ntgl:piperevolver_green",
+    "pink"    : "ntgl:piperevolver_pink",
+    "rust"    : "ntgl:piperevolver_rust"
+  },
   "modules": {
     "zoom": {
       "xOffset": 0.0,

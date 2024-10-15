@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.animators.ItemAnimator;
+import com.nukateam.ntgl.client.render.layers.AutoGlowingLayer;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.common.base.gun.AttachmentType;
 import com.nukateam.ntgl.common.base.config.Gun;

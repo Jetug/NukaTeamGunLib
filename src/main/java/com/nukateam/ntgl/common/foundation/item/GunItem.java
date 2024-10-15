@@ -78,6 +78,7 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     @Override
     public void setConfig(NetworkManager.Supplier<Gun> supplier) {
         this.gun = supplier.getConfig();
+        gun.onCreated(getName());
     }
 
     @Override
@@ -193,7 +194,8 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
             return this.modifiedGunCache.computeIfAbsent(tagCompound, item ->
             {
                 if (tagCompound.getBoolean("Custom")) {
-                    return Gun.create(tagCompound.getCompound("Gun"));
+                    var key = ForgeRegistries.ITEMS.getKey(stack.getItem());
+                    return Gun.create(key, tagCompound.getCompound("Gun"));
                 } else {
                     var gunCopy = this.gun.copy();
                     gunCopy.deserializeNBT(tagCompound.getCompound("Gun"));

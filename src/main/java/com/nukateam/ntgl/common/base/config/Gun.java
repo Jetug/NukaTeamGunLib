@@ -55,7 +55,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected Sounds sounds = new Sounds();
     protected Display display = new Display();
     protected Modules modules = new Modules();
-    protected Map<String, String> textures = new HashMap<>();
+    protected Map<String, ResourceLocation> textures = new HashMap<>();
+    @Ignored
+    protected Map<String, ResourceLocation> preparedTextures = new HashMap<>();
 
     public General getGeneral() {
         return this.general;
@@ -77,8 +79,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.modules;
     }
 
-    public Map<String, String> getTextures() {
-        return textures;
+    public Map<String, ResourceLocation> getTextures() {
+        return preparedTextures;
     }
 
     @Override
@@ -1159,7 +1161,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             this.modules.deserializeNBT(tag.getCompound("Modules"));
         }
         if (tag.contains("Textures", Tag.TAG_COMPOUND)) {
-            this.textures = NbtUtils.deserializeStringMap(tag.getCompound("Textures"));
+            this.textures = NbtUtils.deserializeRLMap(tag.getCompound("Textures"));
         }
     }
 
@@ -1172,11 +1174,28 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return object;
     }
 
-    public static Gun create(CompoundTag tag) {
-        Gun gun = new Gun();
+    public static Gun create(ResourceLocation id, CompoundTag tag) {
+        var gun = new Gun();
         gun.deserializeNBT(tag);
+        prepareTextures(id.getPath(), gun);
         return gun;
     }
+
+    public void onCreated(String id){
+        prepareTextures(id, this);
+    }
+
+    private static void prepareTextures(String itemId, Gun gun) {
+        gun.textures.forEach((variant, path) -> {
+            gun.preparedTextures.put(variant, getTextureLocation(itemId, path));
+        });
+    }
+
+    @NotNull
+    private static ResourceLocation getTextureLocation(String itemId, ResourceLocation path) {
+        return new ResourceLocation(path.getNamespace(), "textures/guns/" + itemId + "/" + path.getPath() + ".png");
+    }
+
 
     public Gun copy() {
         Gun gun = new Gun();

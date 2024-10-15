@@ -1,14 +1,20 @@
 package com.nukateam.ntgl.client.model;
 
+import com.ibm.icu.impl.Pair;
 import com.nukateam.example.common.data.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
-public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> {
+import java.util.HashMap;
+import java.util.Map;
+
+public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements IGlowingModel<T> {
     public static final GeoGunModel<GunAnimator> INSTANCE = new GeoGunModel<>();
+    public static final Map<Pair<String, String>, ResourceLocation> textureMap = new HashMap<>();
 
     @Override
     public ResourceLocation getModelResource(T animator) {
@@ -24,10 +30,9 @@ public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> {
         var variant = GunItem.getVariant(stack);
         ResourceLocation resource;
 
-        if (textures.containsKey(variant)) {
-            var textureName = textures.get(variant);
-            resource = new ResourceLocation(animator.getNamespace(), "textures/guns/" + itemName + "/" + textureName + ".png");
-        } else resource = getGunResource(animator, "textures/guns/" + itemName + "/", ".png");
+        if (textures.containsKey(variant))
+            resource = textures.get(variant);
+        else resource = getGunResource(animator, "textures/guns/" + itemName + "/", ".png");
 
         return resource;
     }
@@ -47,5 +52,18 @@ public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> {
         var modId = animator.getNamespace();
 
         return new ResourceLocation(modId, path + name + extension);
+    }
+
+    @Override
+    public ResourceLocation getGlowingTextureResource(T animator) {
+        var itemName = animator.getName();
+        var name = animator.getName();
+        var modId = animator.getNamespace();
+
+        ResourceLocation resource;
+
+        resource = new ResourceLocation(modId, "textures/guns/" + name + "/" + name + "_glowmask" + ".png");
+
+        return resource;
     }
 }

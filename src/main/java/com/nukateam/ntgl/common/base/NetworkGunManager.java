@@ -78,7 +78,7 @@ public class NetworkGunManager extends NetworkManager<GunItem, Gun> {
 
             for (int i = 0; i < size; i++) {
                 var id = buffer.readResourceLocation();
-                Gun gun = Gun.create(buffer.readNbt());
+                Gun gun = Gun.create(id, buffer.readNbt());
                 builder.put(id, gun);
             }
             return builder.build();

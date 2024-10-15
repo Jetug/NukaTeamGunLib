@@ -118,6 +118,18 @@ public class NbtUtils {
         return map;
     }
 
+    public static Map<String, ResourceLocation> deserializeRLMap(CompoundTag tag){
+        var map = new HashMap<String, ResourceLocation>();
+
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_STRING)) {
+                map.put(key, ResourceLocation.tryParse(tag.getString(key)));
+            }
+        }
+
+        return map;
+    }
+
     public static Map<ResourceLocation, Ammo> deserializeProjectileMap(CompoundTag tag){
         var map = new HashMap<ResourceLocation, Ammo>();
 
