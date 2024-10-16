@@ -25,7 +25,7 @@
   "textures": {
     "default" : "ntgl:piperevolver",
     "blue"    : "ntgl:piperevolver_blue",
-    "black"   : "ntgl:piperevolver_black",
+    "black"   : "ntgl:textures/guns/piperevolver/piperevolver_black.png",
     "brown"   : "ntgl:piperevolver_brown",
     "gray"    : "ntgl:piperevolver_gray",
     "cyan"    : "ntgl:piperevolver_cyan",

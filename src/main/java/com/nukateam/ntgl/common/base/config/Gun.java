@@ -43,6 +43,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import javax.swing.plaf.nimbus.NimbusStyle;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -1187,7 +1188,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     private static void prepareTextures(String itemId, Gun gun) {
         gun.textures.forEach((variant, path) -> {
-            gun.preparedTextures.put(variant, getTextureLocation(itemId, path));
+            var buff = Minecraft.getInstance().getResourceManager().listResources("textures", rl -> rl.equals(path));
+            if(!buff.isEmpty())
+                gun.preparedTextures.put(variant, path);
+            else gun.preparedTextures.put(variant, getTextureLocation(itemId, path));
         });
     }
 
