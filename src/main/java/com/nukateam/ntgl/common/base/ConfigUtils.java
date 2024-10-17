@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.util.Easings;
-import com.nukateam.ntgl.common.base.gun.*;
+import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.base.utils.JsonDeserializers;
 import com.nukateam.ntgl.common.data.annotation.Validator;
 import net.minecraft.Util;
@@ -13,7 +13,6 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;

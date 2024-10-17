@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.pose;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
-import com.nukateam.ntgl.common.base.gun.GripType;
+import com.nukateam.ntgl.common.base.holders.GripType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mod.azure.azurelib.core.animation.AnimationProcessor;

@@ -4,7 +4,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.IHeldAnimation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.nukateam.ntgl.common.base.gun.GripType;
+import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;

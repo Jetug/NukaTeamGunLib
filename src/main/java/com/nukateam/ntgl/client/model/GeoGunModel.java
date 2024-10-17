@@ -28,11 +28,9 @@ public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements I
         var textures = config.getTextures();
         var itemName = animator.getName();
         var variant = GunItem.getVariant(stack);
-        ResourceLocation resource;
-
-        if (textures.containsKey(variant))
-            resource = textures.get(variant);
-        else resource = getGunResource(animator, "textures/guns/" + itemName + "/", ".png");
+        var resource = textures.containsKey(variant) ?
+                textures.get(variant) :
+                getGunResource(animator, "textures/guns/" + itemName + "/", ".png".formatted());
 
         return resource;
     }
@@ -47,13 +45,6 @@ public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements I
         return RenderType.entityTranslucent(getTextureResource(animatable));
     }
 
-    public static ResourceLocation getGunResource(IResourceProvider animator, String path, String extension) {
-        var name = animator.getName();
-        var modId = animator.getNamespace();
-
-        return new ResourceLocation(modId, path + name + extension);
-    }
-
     @Override
     public ResourceLocation getGlowingTextureResource(T animator) {
         var itemName = animator.getName();
@@ -65,5 +56,12 @@ public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements I
         resource = new ResourceLocation(modId, "textures/guns/" + name + "/" + name + "_glowmask" + ".png");
 
         return resource;
+    }
+
+    public static ResourceLocation getGunResource(IResourceProvider animator, String path, String extension) {
+        var name = animator.getName();
+        var modId = animator.getNamespace();
+
+        return new ResourceLocation(modId, path + name + extension);
     }
 }

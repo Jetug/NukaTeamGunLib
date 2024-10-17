@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item.attachment;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.gun.AttachmentType;
+import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Attachment;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.base.utils;
 
 import com.nukateam.ntgl.client.data.util.Easings;
 import com.google.gson.JsonDeserializer;
-import com.nukateam.ntgl.common.base.gun.*;
+import com.nukateam.ntgl.common.base.holders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.CraftingHelper;

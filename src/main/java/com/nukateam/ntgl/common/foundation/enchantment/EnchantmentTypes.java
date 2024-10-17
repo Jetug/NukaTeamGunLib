@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.enchantment;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.gun.FireMode;
+import com.nukateam.ntgl.common.base.holders.FireMode;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 

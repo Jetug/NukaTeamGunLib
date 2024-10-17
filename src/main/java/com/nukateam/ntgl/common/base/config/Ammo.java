@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.base.config;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.base.gun.AmmoType;
+import com.nukateam.ntgl.common.base.holders.AmmoType;
 import com.nukateam.ntgl.common.data.annotation.Optional;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;

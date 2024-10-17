@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.data.util;
 
 import com.nukateam.ntgl.common.base.config.Ammo;
 import com.nukateam.ntgl.common.base.config.Gun;
-import com.nukateam.ntgl.common.base.gun.*;
+import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -11,9 +11,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CompassItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
