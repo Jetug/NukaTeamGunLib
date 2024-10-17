@@ -1,6 +1,6 @@
-package com.nukateam.ntgl.common.base.config;
+package com.nukateam.ntgl.common.base.config.gun;
 
-import com.nukateam.ntgl.common.base.config.Gun;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.data.annotation.Ignored;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;

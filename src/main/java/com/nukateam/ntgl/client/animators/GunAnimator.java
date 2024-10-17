@@ -9,7 +9,7 @@ import com.nukateam.ntgl.client.data.handler.ShootingHandler;
 import com.nukateam.ntgl.client.model.GeoGunModel;
 import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
 import com.nukateam.ntgl.client.render.renderers.GeoDynamicItemRenderer;
-import com.nukateam.ntgl.common.base.config.Gun;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.util.AnimationHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;

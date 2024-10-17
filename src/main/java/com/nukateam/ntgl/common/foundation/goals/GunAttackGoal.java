@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.goals;
 
-import com.nukateam.ntgl.common.base.config.Gun;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.base.utils.EntityReloadTracker;
 import com.nukateam.ntgl.common.data.interfaces.IGunUser;

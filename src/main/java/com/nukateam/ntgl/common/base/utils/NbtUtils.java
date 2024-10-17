@@ -1,9 +1,9 @@
 package com.nukateam.ntgl.common.base.utils;
 
 import com.nukateam.ntgl.common.base.config.Ammo;
+import com.nukateam.ntgl.common.base.config.gun.Modules;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.base.holders.FireMode;
-import com.nukateam.ntgl.common.base.config.Gun;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -73,11 +73,11 @@ public class NbtUtils {
         return tag;
     }
 
-    public static ArrayList<Gun.Modules.Attachment> deserializeArray(CompoundTag tag){
-        var array = new ArrayList<Gun.Modules.Attachment>();
+    public static ArrayList<Modules.Attachment> deserializeArray(CompoundTag tag){
+        var array = new ArrayList<Modules.Attachment>();
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {
-                var val = new Gun.Modules.Attachment();
+                var val = new Modules.Attachment();
                 val.deserializeNBT(tag.getCompound(key));
                 array.add(val);
             }
@@ -156,8 +156,8 @@ public class NbtUtils {
         return tag;
     }
 
-    public static Map<AttachmentType, ArrayList<Gun.Modules.Attachment>> deserializeAttachmentMap(CompoundTag tag){
-        var array = new HashMap<AttachmentType, ArrayList<Gun.Modules.Attachment>>();
+    public static Map<AttachmentType, ArrayList<Modules.Attachment>> deserializeAttachmentMap(CompoundTag tag){
+        var array = new HashMap<AttachmentType, ArrayList<Modules.Attachment>>();
 
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {

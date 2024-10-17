@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.data.handler;
 
 import com.nukateam.ntgl.client.data.util.PropertyHelper;
 import com.nukateam.ntgl.common.base.holders.GripType;
-import com.nukateam.ntgl.common.base.config.Gun;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;

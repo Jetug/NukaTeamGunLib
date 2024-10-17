@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.base.config;
+package com.nukateam.ntgl.common.base.config.gun;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
@@ -28,7 +28,6 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String RATE = "Rate";
     public static final String GRIP_TYPE = "GripType";
     public static final String RELOAD_TYPE = "ReloadType";
-    public static final String AUTO = "Auto";
     public static final String MAX_AMMO = "MaxAmmo";
     public static final String RELOAD_SPEED = "ReloadSpeed";
     public static final String RELOAD_TIME = "ReloadTime";
@@ -43,41 +42,41 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String CATEGORY = "category";
 
     @Optional
-    public Set<FireMode> fireMode = new HashSet<>(List.of(FireMode.SEMI_AUTO));
+    Set<FireMode> fireMode = new HashSet<>(List.of(FireMode.SEMI_AUTO));
     @Optional
-    public boolean fullCharge = false;
-    public int rate;
+    boolean fullCharge = false;
+    int rate;
     @Optional
-    public float damage;
+    float damage;
     @Ignored
-    public GripType gripType = GripType.ONE_HANDED;
+    GripType gripType = GripType.ONE_HANDED;
     @Ignored
-    public ResourceLocation reloadType = new ResourceLocation(Ntgl.MOD_ID, "gun_reload");
-    public int maxAmmo;
+    ResourceLocation reloadType = new ResourceLocation(Ntgl.MOD_ID, "gun_reload");
+    int maxAmmo;
     @Optional
-    public int reloadTime = 1;
+    int reloadTime = 1;
     @Optional
-    public LoadingType loadingType = LoadingType.MAGAZINE;
+    LoadingType loadingType = LoadingType.MAGAZINE;
     @Optional
-    public String category = "pistol";
+    String category = "pistol";
     @Optional
-    public int reloadAmount = 1;
+    int reloadAmount = 1;
     @Optional
-    public float recoilAngle;
+    float recoilAngle;
     @Optional
-    public float recoilKick;
+    float recoilKick;
     @Optional
-    public float recoilDurationOffset;
+    float recoilDurationOffset;
     @Optional
-    public float recoilAdsReduction = 0.2F;
+    float recoilAdsReduction = 0.2F;
     @Optional
-    public int projectileAmount = 1;
+    int projectileAmount = 1;
     @Optional
-    public boolean alwaysSpread;
+    boolean alwaysSpread;
     @Optional
-    public float spread;
+    float spread;
     @Optional
-    public int fireTimer;
+    int fireTimer;
     @Optional
     protected Set<ResourceLocation> ammo = new HashSet<>(List.of(new ResourceLocation("ntgl:round10mm")));
 

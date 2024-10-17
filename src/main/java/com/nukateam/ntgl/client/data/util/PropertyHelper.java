@@ -1,8 +1,9 @@
 package com.nukateam.ntgl.client.data.util;
 
 import com.nukateam.ntgl.client.MetaLoader;
+import com.nukateam.ntgl.common.base.config.gun.Display;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
-import com.nukateam.ntgl.common.base.config.Gun;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.base.properties.SightAnimation;
 import com.nukateam.ntgl.common.cache.ObjectCache;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
@@ -185,7 +186,7 @@ public final class PropertyHelper {
             }
             return DEFAULT_SCALE;
         }
-        Gun.Display.Flash muzzleFlash = modifiedGun.getDisplay().getFlash();
+        Display.Flash muzzleFlash = modifiedGun.getDisplay().getFlash();
         if (muzzleFlash != null) {
             double scale = muzzleFlash.getSize();
             return new Vec3(scale, scale, 1.0);
