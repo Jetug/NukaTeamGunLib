@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class AmmoItem extends Item implements IAmmo<Ammo>, IConfigConsumer<Ammo> {
     private final IGunModifier[] modifiers;
-    private Ammo ammo;
+    private Ammo ammo = new Ammo();
 
     public AmmoItem(Properties properties, IGunModifier... modifiers) {
         super(properties);
