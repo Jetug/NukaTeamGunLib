@@ -39,8 +39,9 @@ public class InputEvents {
             }
             else if(event.getKey() == KEY_AMMO_SELECT.getKey().getValue()){
                 var isReloading = getReloadKey(hand);
-                if(!isReloading.getValue(minecraft.player))
+                if(minecraft.player != null && !isReloading.getValue(minecraft.player) && minecraft.screen == null){
                     PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_AMMO));
+                }
             }
         }
 
