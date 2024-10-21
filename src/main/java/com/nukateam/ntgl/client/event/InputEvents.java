@@ -1,9 +1,6 @@
 package com.nukateam.ntgl.client.event;
 
-import com.mojang.text2speech.Narrator;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
-import com.nukateam.ntgl.common.foundation.item.MagazineItem;
 import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageHandAction;
@@ -32,21 +29,27 @@ public class InputEvents {
         var minecraft = Minecraft.getInstance();
         var shiftDown = minecraft.options.keyShift.isDown();
         var hand = shiftDown ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+        var player = minecraft.player;
 
-        if(event.getAction() == GLFW.GLFW_RELEASE){
-            if(event.getKey() == KEY_FIRE_SELECT.getKey().getValue()){
-                PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_FIRE_MODE));
-            }
-            else if(event.getKey() == KEY_AMMO_SELECT.getKey().getValue()){
-                var isReloading = getReloadKey(hand);
-                if(minecraft.player != null && !isReloading.getValue(minecraft.player) && minecraft.screen == null){
-                    PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_AMMO));
+        if(minecraft.player != null && minecraft.level != null && minecraft.screen == null) {
+            if (event.getAction() == GLFW.GLFW_RELEASE) {
+                if (event.getKey() == KEY_FIRE_SELECT.getKey().getValue()) {
+                    PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_FIRE_MODE));
+                }
+                else if (event.getKey() == KEY_AMMO_SELECT.getKey().getValue()) {
+                    if (!getReloadKey(hand).getValue(player)) {
+                        PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_AMMO));
+                    }
                 }
             }
-        }
 
-        if(event.getAction() == GLFW.GLFW_PRESS || event.getAction() == GLFW.GLFW_REPEAT){
-            if(Ntgl.isDebugging()) {
+            handleDebugKeys(event);
+        }
+    }
+
+    private static void handleDebugKeys(InputEvent.@NotNull Key event) {
+        if (event.getAction() == GLFW.GLFW_PRESS || event.getAction() == GLFW.GLFW_REPEAT) {
+            if (Ntgl.isDebugging()) {
                 switch (event.getKey()) {
                     case GLFW.GLFW_KEY_KP_1 -> X += 1;
                     case GLFW.GLFW_KEY_KP_2 -> Y += 1;
