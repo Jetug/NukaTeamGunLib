@@ -101,7 +101,6 @@ public class Raider extends PathfinderMob implements IGunUser {
         this.entityData.set(DATA_ID_TYPE_VARIANT, pTypeVariant);
     }
 
-
     @Override
     public void performRangedAttack(LivingEntity pTarget, float pVelocity) {
         GunAttackGoal.shoot(this, true);

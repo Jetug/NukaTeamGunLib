@@ -37,6 +37,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
      * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
      * method as well.
      */
+    @Override
     public boolean canUse() {
         return this.isValidTarget() && this.isHoldingGun();
     }
@@ -48,6 +49,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
+    @Override
     public boolean canContinueToUse() {
         return this.isValidTarget() && (this.canUse() || !this.mob.getNavigation().isDone()) && this.isHoldingGun();
     }
@@ -59,6 +61,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
     /**
      * Reset the task's internal state. Called when this task is interrupted by another one
      */
+    @Override
     public void stop() {
         super.stop();
         this.mob.setAggressive(false);
@@ -74,6 +77,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
         ModSyncedDataKeys.RELOADING_RIGHT.setValue(mob, value);
     }
 
+    @Override
     public boolean requiresUpdateEveryTick() {
         return true;
     }
@@ -81,6 +85,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
     /**
      * Keep ticking a continuous task that has already been started
      */
+    @Override
     public void tick() {
         var target = this.mob.getTarget();
         if (target == null) return;

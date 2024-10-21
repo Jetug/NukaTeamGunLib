@@ -12,6 +12,7 @@
     "projectileAmount": 6,
     "alwaysSpread": true,
     "spread": 10.0,
+    "damage": 40.0,
     "ammo": [
       "ntgl:shotshell"
     ]
