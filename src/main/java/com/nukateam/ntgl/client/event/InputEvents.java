@@ -31,7 +31,7 @@ public class InputEvents {
         var hand = shiftDown ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         var player = minecraft.player;
 
-        if(minecraft.player != null && minecraft.level != null && minecraft.screen == null) {
+        if(minecraft.player != null && minecraft.level != null && minecraft.screen == null && minecraft.isRunning() && !minecraft.isPaused()) {
             if (event.getAction() == GLFW.GLFW_RELEASE) {
                 if (event.getKey() == KEY_FIRE_SELECT.getKey().getValue()) {
                     PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_FIRE_MODE));
