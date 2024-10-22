@@ -94,7 +94,7 @@ public class EntityDeathUtils {
 	}
 	
     public enum DeathType {
-    	DEFAULT(0), GORE(1), BIO(2), LASER(3), DISMEMBER(4);
+    	DEFAULT(0), GORE(1), BIO(2), LASER(3);
     	
     	int value;
     	

@@ -15,6 +15,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.ThreadLocalRandom;
@@ -23,7 +24,15 @@ import java.util.concurrent.ThreadLocalRandom;
  * Author: MrCrayfish
  */
 public class ModDamageTypes {
-    public static final ResourceKey<DamageType> BULLET = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(Ntgl.MOD_ID, "bullet"));
+    public static final ResourceKey<DamageType> BULLET = create("bullet");
+    public static final ResourceKey<DamageType> ENERGY = create("energy");
+    public static final ResourceKey<DamageType> EXPLOSIVE = create("explosive");
+    public static final ResourceKey<DamageType> FIRE = create("fire");
+
+    @NotNull
+    private static ResourceKey<DamageType> create(String explosive) {
+        return ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(Ntgl.MOD_ID, explosive));
+    }
 
     public static void bootstrap(BootstapContext<DamageType> bootstapContext) {
         bootstapContext.register(BULLET, new DamageType("bullet", 0.1f));
@@ -38,7 +47,7 @@ public class ModDamageTypes {
             return access.registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(damageTypeKey);
         }
 
-        private static DamageSource source(RegistryAccess access, ResourceKey<DamageType> damageTypeKey, @Nullable Entity directEntity, @Nullable Entity causingEntity) {
+        public static DamageSource source(RegistryAccess access, ResourceKey<DamageType> damageTypeKey, @Nullable Entity directEntity, @Nullable Entity causingEntity) {
             return new BulletDamageSource(getHolder(access, damageTypeKey), directEntity, causingEntity);
         }
 

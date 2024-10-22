@@ -3,6 +3,8 @@ package com.nukateam.ntgl.client.model.gibs;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.Entity;
 
 import static com.nukateam.ntgl.ClientProxy.getEntityRenderer;
@@ -23,7 +25,7 @@ public class ModelGibsBiped extends ModelGibs {
     /**
      * Sets the models various rotation angles then renders the model.
      */
-    public void render(Entity entity, int part, PoseStack poseStack, VertexConsumer pVertexConsumer, int packedLight, int packedOverlay) {
+    public void render(Entity entity, int part, PoseStack poseStack, RenderType rendertype, MultiBufferSource buffer, VertexConsumer pVertexConsumer, int packedLight, int packedOverlay) {
         switch (part) {
             case 0:
                 this.model.head.render(poseStack, pVertexConsumer, packedLight, packedOverlay);

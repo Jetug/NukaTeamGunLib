@@ -6,6 +6,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.base.config.Ammo;
 import com.nukateam.ntgl.common.base.config.gun.General;
 import com.nukateam.ntgl.common.base.config.gun.Gun;
+import com.nukateam.ntgl.common.base.holders.AmmoType;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
 import com.nukateam.ntgl.common.data.interfaces.*;
@@ -70,6 +71,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     public static final EntityDataAccessor<Boolean> IS_RIGHT = defineId(ProjectileEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> IS_VISIBLE = defineId(ProjectileEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<String> ITEM = defineId(ProjectileEntity.class, EntityDataSerializers.STRING);
+    public static final EntityDataAccessor<String> AMMO_TYPE = defineId(ProjectileEntity.class, EntityDataSerializers.STRING);
 
     private boolean hasClientData = false;
     protected boolean isServerSide = !level().isClientSide();
@@ -109,6 +111,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         getEntityData().set(IS_RIGHT, isRightHand);
         getEntityData().set(IS_VISIBLE, projectile.isVisible());
         getEntityData().set(ITEM, GunModifierHelper.getCurrentAmmo(weapon).toString());
+        getEntityData().set(AMMO_TYPE, projectile.getType().toString());
 
         /* Get speed and set motion */
         setupDirection(shooter, weapon, item, modifiedGun);
@@ -154,6 +157,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         entityData.define(IS_RIGHT, true);
         entityData.define(IS_VISIBLE, false);
         entityData.define(ITEM, "");
+        entityData.define(AMMO_TYPE, "ntgl:standard");
     }
 
     @Override
@@ -197,6 +201,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     public double getModifiedGravity() {
         return this.modifiedGravity;
+    }
+
+    private AmmoType getAmmoType(){
+        var id = getEntityData().get(AMMO_TYPE);
+        return AmmoType.getType(id);
     }
 
     @Override
@@ -603,7 +612,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         if (headshot) damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
 
-        var source = ModDamageTypes.Sources.projectile(this.level().registryAccess(), this, this.shooter);
+        var source = ModDamageTypes.Sources.source(this.level().registryAccess(), getAmmoType().getDamageType(),this, this.shooter);
         entity.hurt(source, damage);
 
         if (this.shooter instanceof Player) {

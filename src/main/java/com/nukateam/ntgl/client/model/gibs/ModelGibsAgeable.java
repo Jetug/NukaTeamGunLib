@@ -6,6 +6,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.common.data.interfaces.IAgeableAccessor;
 import com.nukateam.ntgl.common.data.interfaces.IModelAccessor;
 import net.minecraft.client.model.AgeableListModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -22,7 +24,7 @@ public class ModelGibsAgeable extends ModelGibs {
     }
 
     @Override
-    public void render(Entity entity, int part, PoseStack poseStack, VertexConsumer pVertexConsumer, int packedLight, int packedOverlay) {
+    public void render(Entity entity, int part, PoseStack poseStack, RenderType rendertype, MultiBufferSource buffer, VertexConsumer pVertexConsumer, int packedLight, int packedOverlay) {
         var ageableAccessor = (IAgeableAccessor)model;
         var isHead = new ArrayList<Boolean>();
         ageableAccessor.getHeadParts().forEach((val) -> isHead.add(true));

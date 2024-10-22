@@ -23,7 +23,7 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
     }
 
     @Override
-    public void render(FlyingGibs pEntity, float pEntityYaw, float pPartialTick, PoseStack poseStack, MultiBufferSource pBuffer, int packedLight) {
+    public void render(FlyingGibs pEntity, float pEntityYaw, float pPartialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         var entity = pEntity.getLocalEntity();
         if(entity == null) return;
 
@@ -37,19 +37,12 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
                     try {
                         if (data.texture == null) {
                             data.texture = render.getTextureLocation(entity);
-//							DeathEffectEntityRenderer.bindEntityTexture(render, pEntity.entity);
-                        } else {
-//							Minecraft.getInstance().getRenderManager().renderEngine.bindTexture(data.texture);
                         }
-//						DeathEffectEntityRenderer.preRenderCallback((RenderLivingBase) render, pEntity.entity,
-//								partialTickTime);
 
                     } catch (IllegalArgumentException e) {
                         e.printStackTrace();
                     }
                 }
-
-//				GlStateManager.translate(x, y, z);
 
                 var partialTickTime = Minecraft.getInstance().getFrameTime();
 
@@ -77,7 +70,7 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
 //                GlStateManager.disableCull();
 
                 var rendertype = RenderType.itemEntityTranslucentCull(data.texture);
-                var vertexConsumer = pBuffer.getBuffer(rendertype);
+                var vertexConsumer = buffer.getBuffer(rendertype);
 
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180));
 
@@ -88,11 +81,9 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
 
 //                poseStack.mulPose(new Quaternionf(pEntity.rotationAxis.x, pEntity.rotationAxis.y, pEntity.rotationAxis.z, rot_angle));
 
-                data.model.render(entity, pEntity.getPartId(), poseStack, vertexConsumer, packedLight, 0xFFFFFF);
+                data.model.render(entity, pEntity.getPartId(), poseStack, rendertype, buffer, vertexConsumer, packedLight, 0xFFFFFF);
 
-//				GlStateManager.enableCull();
-
-                super.render(pEntity, pEntityYaw, pPartialTick, poseStack, pBuffer, packedLight);
+                super.render(pEntity, pEntityYaw, pPartialTick, poseStack, buffer, packedLight);
             }
             poseStack.popPose();
         }
