@@ -5,8 +5,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.animators.ItemAnimator;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
-import com.nukateam.ntgl.common.base.gun.AttachmentType;
-import com.nukateam.ntgl.common.base.config.Gun;
+import com.nukateam.ntgl.common.base.config.gun.Modules;
+import com.nukateam.ntgl.common.base.holders.AttachmentType;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.item.BarrelItem;
@@ -41,7 +42,7 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
     private ItemStack renderStack;
     protected LivingEntity buffEntity = null;
     protected ArrayList<ItemStack> gunAttachments;
-    protected ArrayList<Gun.Modules.Attachment> configAttachments;
+    protected ArrayList<Modules.Attachment> configAttachments;
     protected ArrayList<String> hiddenBones = new ArrayList<>();
     protected BarrelItem barrelItem;
     protected Gun gun;
@@ -69,7 +70,9 @@ public class DynamicGunRenderer<T extends ItemAnimator> extends GeoDynamicItemRe
         else this.barrelItem = null;
 
         for (var attachment : configAttachments) {
-            hiddenBones.addAll(attachment.getHidden());
+            if(transformType != ItemDisplayContext.GUI) {
+                hiddenBones.addAll(attachment.getHidden());
+            }
         }
 
         if(buffEntity != null){

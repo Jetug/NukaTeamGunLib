@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.data.util;
 
-import com.nukateam.ntgl.common.base.config.Gun;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.init.ModEnchantments;
 import com.nukateam.ntgl.common.foundation.particles.TrailData;
 import net.minecraft.core.particles.ParticleOptions;
@@ -36,8 +36,9 @@ public class GunEnchantmentHelper {
     }
 
     public static int getRate(ItemStack weapon, Gun modifiedGun) {
-        int rate = modifiedGun.getGeneral().getRate();
-        int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.TRIGGER_FINGER.get(), weapon);
+        var rate = modifiedGun.getGeneral().getRate();
+        var level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.TRIGGER_FINGER.get(), weapon);
+
         if (level > 0) {
             float newRate = rate * (0.25F * level);
             rate -= Mth.clamp(newRate, 0, rate);

@@ -1,15 +1,12 @@
 package com.nukateam.ntgl.common.network;
 
-import com.mrcrayfish.framework.api.network.FrameworkNetwork;
-import com.mrcrayfish.framework.api.network.MessageDirection;
-import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.CustomAmmoManager;
-import com.nukateam.ntgl.client.CustomGunManager;
-import com.nukateam.ntgl.common.base.NetworkAmmoManager;
-import com.nukateam.ntgl.common.base.NetworkGunManager;
+import com.mrcrayfish.framework.api.network.*;
+import com.nukateam.ntgl.*;
+import com.nukateam.ntgl.client.*;
+import com.nukateam.ntgl.common.base.*;
 import com.nukateam.ntgl.common.network.message.*;
-import com.mrcrayfish.framework.api.FrameworkAPI;
-import net.minecraft.resources.ResourceLocation;
+import com.mrcrayfish.framework.api.*;
+import net.minecraft.resources.*;
 
 public class PacketHandler {
     private static FrameworkNetwork PLAY_CHANNEL;

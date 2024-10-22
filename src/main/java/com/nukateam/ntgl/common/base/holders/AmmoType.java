@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.base.gun;
+package com.nukateam.ntgl.common.base.holders;
 
 import net.minecraft.resources.ResourceLocation;
 

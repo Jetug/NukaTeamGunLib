@@ -1,7 +1,6 @@
 package com.nukateam.example.common.registery;
 
 import com.nukateam.ntgl.common.base.GunModifiers;
-import com.nukateam.ntgl.common.base.gun.AmmoType;
 import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.*;

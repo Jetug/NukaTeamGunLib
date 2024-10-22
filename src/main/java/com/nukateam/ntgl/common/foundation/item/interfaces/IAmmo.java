@@ -1,8 +1,10 @@
 package com.nukateam.ntgl.common.foundation.item.interfaces;
 
-import com.nukateam.ntgl.common.base.NetworkAmmoManager;
 import com.nukateam.ntgl.common.base.config.Ammo;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.foundation.item.IConfigConsumer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.common.util.INBTSerializable;
 
 /**
  * A simple interface to indicate that this item is ammo. This will make sure that it's put into the
@@ -10,12 +12,10 @@ import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
  * <p>
  * Author: MrCrayfish
  */
-public interface IAmmo {
+public interface IAmmo <T extends INBTSerializable<CompoundTag>> extends IConfigConsumer<T> {
     Ammo getAmmo();
 
     default IGunModifier[] getModifiers() {
         return new IGunModifier[0];
     }
-
-    void setAmmo(NetworkAmmoManager.Supplier supplier);
 }

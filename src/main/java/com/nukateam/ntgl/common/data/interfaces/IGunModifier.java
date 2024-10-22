@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.data.interfaces;
 
 import com.nukateam.ntgl.common.base.GunModifiers;
-import com.nukateam.ntgl.common.base.gun.FireMode;
-import com.nukateam.ntgl.common.base.gun.GripType;
+import com.nukateam.ntgl.common.base.holders.FireMode;
+import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
 import net.minecraft.resources.ResourceLocation;
 

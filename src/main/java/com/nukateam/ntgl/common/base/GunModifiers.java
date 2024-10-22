@@ -1,11 +1,7 @@
 package com.nukateam.ntgl.common.base;
 
-import com.nukateam.ntgl.common.base.gun.FireMode;
 import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
 import net.minecraft.util.Mth;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Author: MrCrayfish

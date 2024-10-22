@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.base;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.config.CustomGun;
+import com.nukateam.ntgl.common.base.config.gun.CustomGun;
 import com.nukateam.ntgl.common.data.annotation.Validator;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

@@ -2,9 +2,9 @@ package com.nukateam.ntgl.client.data.handler;
 
 import com.ibm.icu.impl.Pair;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.gun.FireMode;
-import com.nukateam.ntgl.common.base.gun.GripType;
-import com.nukateam.ntgl.common.base.config.Gun;
+import com.nukateam.ntgl.common.base.holders.FireMode;
+import com.nukateam.ntgl.common.base.holders.GripType;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.data.interfaces.CurrentFpsGetter;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
@@ -352,7 +352,7 @@ public class ShootingHandler {
 
         if (heldItem.getItem() instanceof GunItem gunItem) {
             var modifiedGun = gunItem.getModifiedGun(heldItem);
-            var rate = modifiedGun.getGeneral().getRate();
+            var rate = GunModifierHelper.getRate(heldItem);
             var cooldown = getCooldown(entity, convertHand(hand));
             return cooldown / rate;
         }
@@ -402,7 +402,7 @@ public class ShootingHandler {
 
             // CHECK HERE: Change this to test different rpm settings.
             // TODO: Test serverside, possible issues 0.3.4-alpha
-            final int rpm = modifiedGun.getGeneral().getRate(); // Rounds per sec. Should come from gun properties in the end.
+            final var rpm = GunModifierHelper.getRate(heldItem); // Rounds per sec. Should come from gun properties in the end.
             shootGap += rpm;
             entityShootGaps.put(Pair.of(hand, shooter), shootGap);
             shootMsGap = calcShootTickGap(rpm);

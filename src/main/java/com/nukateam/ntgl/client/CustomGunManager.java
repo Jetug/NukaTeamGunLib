@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.client;
 
-import com.nukateam.ntgl.common.base.config.CustomGun;
-import com.nukateam.ntgl.common.base.CustomGunLoader;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
-import com.nukateam.ntgl.Ntgl;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
+import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.base.CustomGunLoader;
+import com.nukateam.ntgl.common.base.config.gun.CustomGun;
+import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;

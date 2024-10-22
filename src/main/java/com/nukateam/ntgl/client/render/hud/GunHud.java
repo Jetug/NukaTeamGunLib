@@ -3,8 +3,8 @@ package com.nukateam.ntgl.client.render.hud;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.client.event.InputEvents;
-import com.nukateam.ntgl.common.base.config.*;
-import com.nukateam.ntgl.common.base.gun.GripType;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
+import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
@@ -36,29 +36,33 @@ public class GunHud implements IGuiOverlay {
     public static final IGuiOverlay AMMO_HUD = new GunHud();
     public static int hudColor = DEFAULT_AMMO_COLOR;
 
+    public static void setHudColor(int hudColor) {
+        GunHud.hudColor = hudColor;
+    }
+
     @Override
     public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
         var minecraft = Minecraft.getInstance();
 
-        if(minecraft.player == null) return;
+        if (minecraft.player == null) return;
         var mainHandItem = minecraft.player.getMainHandItem();
-        var offhandItem  = minecraft.player.getOffhandItem();
+        var offhandItem = minecraft.player.getOffhandItem();
+        var poseStack = graphics.pose();
 
-        if(mainHandItem.getItem() instanceof GunItem) {
-            var x = width;
-            renderAmmoCounter(graphics, mainHandItem, x, height);
+        poseStack.pushPose();
+        {
+            if (mainHandItem.getItem() instanceof GunItem) {
+                renderAmmoCounter(graphics, mainHandItem, width + InputEvents.X, height + InputEvents.Y);
+            }
         }
-        if(offhandItem.getItem() instanceof GunItem) {
+        poseStack.popPose();
+        if (offhandItem.getItem() instanceof GunItem) {
             var x = 110;
-            if(GunModifierHelper.getGripType(offhandItem) == GripType.ONE_HANDED &&
+            if (GunModifierHelper.getGripType(offhandItem) == GripType.ONE_HANDED &&
                     !(mainHandItem.getItem() instanceof GunItem &&
-                    GunModifierHelper.getGripType(mainHandItem) != GripType.ONE_HANDED))
-                renderAmmoCounter(graphics, offhandItem, x, height);
+                            GunModifierHelper.getGripType(mainHandItem) != GripType.ONE_HANDED))
+                renderAmmoCounter(graphics, offhandItem, x - InputEvents.X, height - InputEvents.Y);
         }
-    }
-
-    public static void setHudColor(int hudColor) {
-        GunHud.hudColor = hudColor;
     }
 
     private static void renderAmmoCounter(GuiGraphics graphics, ItemStack stack, int width, int height) {
@@ -112,8 +116,8 @@ public class GunHud implements IGuiOverlay {
             int inventoryAmmoCountColor = 0xAAAAAA;
 
             graphics.drawString(font, inventoryAmmoCountText,
-                    (width  - 67) / COUNTER_SCALE,
-                    (height - 26 ) / COUNTER_SCALE,
+                    (width - 67) / COUNTER_SCALE,
+                    (height - 26) / COUNTER_SCALE,
                     inventoryAmmoCountColor, true);
         }
         poseStack.popPose();
@@ -123,12 +127,12 @@ public class GunHud implements IGuiOverlay {
         var fireMode = GunModifierHelper.getCurrentFireMode(stack);
         var icon = fireMode.getIcon();
 
-        var x = (int)(width - ICON_X + font.width(currentAmmoCountText) * 1.5);
+        var x = (int) (width - ICON_X + font.width(currentAmmoCountText) * 1.5);
 
         RenderSystem.setShaderColor(1, 1, 1, 1);
         graphics.blit(icon,
-                x           + InputEvents.X,
-                height - 46 + InputEvents.Y,
+                x,
+                height - 46,
                 0, 0,
                 16, 16,
                 16, 16);
@@ -139,12 +143,12 @@ public class GunHud implements IGuiOverlay {
         var ammoType = GunModifierHelper.getCurrentAmmoType(stack);
         var icon = ammoType.getIcon();
 
-        var x = (int)(width - ICON_X + font.width(currentAmmoCountText) * 1.5);
+        var x = (int) (width - ICON_X + font.width(currentAmmoCountText) * 1.5);
 
         RenderSystem.setShaderColor(1, 1, 1, 1);
         graphics.blit(icon,
-                x           + InputEvents.X,
-                height - 32 + InputEvents.Z,
+                x,
+                height - 32,
                 0, 0,
                 16, 16,
                 16, 16);

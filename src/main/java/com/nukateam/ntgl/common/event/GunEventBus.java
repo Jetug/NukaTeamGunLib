@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.event;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.data.handler.ShootingHandler;
+import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.sounds.SoundEvents;
@@ -32,10 +33,14 @@ public class GunEventBus {
 
             if (heldItem.isDamageableItem() && tag != null) {
                 if (heldItem.getDamageValue() == (heldItem.getMaxDamage() - 1)) {
-                    level.playSound(entity, entity.blockPosition(), SoundEvents.ITEM_BREAK,
-                            SoundSource.PLAYERS, 1.0F, 1.0F);
+                    level.playSound(
+                            entity, entity.blockPosition(),
+                            SoundEvents.ITEM_BREAK, SoundSource.PLAYERS,
+                            1.0F, 1.0F
+                    );
 
-                    ShootingHandler.get().setCooldown(event.getEntity(), event.getArm(), gun.getGeneral().getRate());
+                    var rate = GunModifierHelper.getRate(heldItem);
+                    ShootingHandler.get().setCooldown(event.getEntity(), event.getArm(), rate);
                     event.setCanceled(true);
                 }
                 //This is the Jam function
@@ -44,7 +49,8 @@ public class GunEventBus {
                 if (currentDamage >= maxDamage / 1.5) {
                     if (Math.random() >= 0.975) {
                         event.getEntity().playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
-                        int coolDown = gun.getGeneral().getRate() * 10;
+                        var rate = GunModifierHelper.getRate(heldItem);
+                        int coolDown = rate * 10;
                         if (coolDown > 60) {
                             coolDown = 60;
                         }

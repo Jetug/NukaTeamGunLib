@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.config.Ammo;
+import com.nukateam.ntgl.common.foundation.item.AmmoItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAmmo;
@@ -30,28 +31,25 @@ import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, Ammo>> {
-    private static List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
+public class NetworkAmmoManager extends NetworkManager<IAmmo, Ammo> {
+    private static final List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
     private static NetworkAmmoManager instance;
 
     private Map<ResourceLocation, Ammo> registeredAmmo = new HashMap<>();
 
     @Override
-    protected Map<IAmmo, Ammo> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, Ammo.class, "ammo");
+    protected Boolean check(Item v) {
+        return v instanceof IAmmo;
     }
 
     @Override
-    protected void apply(Map<IAmmo, Ammo> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
-        ImmutableMap.Builder<ResourceLocation, Ammo> builder = ImmutableMap.builder();
+    protected Class<Ammo> getConfigClass() {
+        return Ammo.class;
+    }
 
-        objects.forEach((item, ammo) -> {
-            Validate.notNull(ITEMS.getKey((Item)item));
-            builder.put(ITEMS.getKey((Item)item), ammo);
-            item.setAmmo(new Supplier(ammo));
-        });
-
-        this.registeredAmmo = builder.build();
+    @Override
+    protected String getPath() {
+        return "ammo";
     }
 
     /**
@@ -106,7 +104,7 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
                 if (!(item instanceof IAmmo)) {
                     return false;
                 }
-                ((IAmmo) item).setAmmo(new Supplier(entry.getValue()));
+                ((IAmmo) item).setConfig(new Supplier(entry.getValue()));
                 clientRegisteredAmmo.add((IAmmo) item);
             }
             return true;
@@ -160,23 +158,6 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
     @Nullable
     public static NetworkAmmoManager get() {
         return instance;
-    }
-
-    /**
-     * A simple wrapper for a ammo object to pass to IAmmo. This is to indicate to developers that
-     * Ammo instances shouldn't be changed on GunItems as they are controlled by NetworkAmmoManager.
-     * Changes to ammo properties should be made through the JSON file.
-     */
-    public static class Supplier {
-        private Ammo ammo;
-
-        private Supplier(Ammo ammo) {
-            this.ammo = ammo;
-        }
-
-        public Ammo getAmmo() {
-            return this.ammo;
-        }
     }
 
     public static class LoginData implements ILoginData {

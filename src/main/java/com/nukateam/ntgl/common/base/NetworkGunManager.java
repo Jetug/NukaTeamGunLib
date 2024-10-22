@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.base;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.config.Gun;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
@@ -10,9 +10,6 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
@@ -30,28 +27,25 @@ import static net.minecraftforge.registries.ForgeRegistries.*;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunItem, Gun>> {
+public class NetworkGunManager extends NetworkManager<GunItem, Gun> {
     private static List<GunItem> clientRegisteredGuns = new ArrayList<>();
     private static NetworkGunManager instance;
 
     private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
 
     @Override
-    protected Map<GunItem, Gun> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof GunItem, Gun.class, "guns");
+    protected Boolean check(Item v) {
+        return v instanceof GunItem;
     }
 
     @Override
-    protected void apply(Map<GunItem, Gun> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
-        ImmutableMap.Builder<ResourceLocation, Gun> builder = ImmutableMap.builder();
+    protected Class<Gun> getConfigClass() {
+        return Gun.class;
+    }
 
-        objects.forEach((item, gun) -> {
-            Validate.notNull(ITEMS.getKey(item));
-            builder.put(ITEMS.getKey(item), gun);
-            item.setGun(new Supplier(gun));
-        });
-
-        this.registeredGuns = builder.build();
+    @Override
+    protected String getPath() {
+        return "guns";
     }
 
     /**
@@ -81,7 +75,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
 
             for (int i = 0; i < size; i++) {
                 var id = buffer.readResourceLocation();
-                Gun gun = Gun.create(buffer.readNbt());
+                Gun gun = Gun.create(id, buffer.readNbt());
                 builder.put(id, gun);
             }
             return builder.build();
@@ -106,7 +100,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
                 if (!(item instanceof GunItem)) {
                     return false;
                 }
-                ((GunItem) item).setGun(new Supplier(entry.getValue()));
+                ((GunItem) item).setConfig(new Supplier<>(entry.getValue()));
                 clientRegisteredGuns.add((GunItem) item);
             }
             return true;
@@ -160,23 +154,6 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
     @Nullable
     public static NetworkGunManager get() {
         return instance;
-    }
-
-    /**
-     * A simple wrapper for a gun object to pass to GunItem. This is to indicate to developers that
-     * Gun instances shouldn't be changed on GunItems as they are controlled by NetworkGunManager.
-     * Changes to gun properties should be made through the JSON file.
-     */
-    public static class Supplier {
-        private Gun gun;
-
-        private Supplier(Gun gun) {
-            this.gun = gun;
-        }
-
-        public Gun getGun() {
-            return this.gun;
-        }
     }
 
     public static class LoginData implements ILoginData {

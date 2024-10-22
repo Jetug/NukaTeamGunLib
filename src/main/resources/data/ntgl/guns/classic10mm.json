@@ -16,6 +16,17 @@
       "ntgl:round10mm"
     ]
   },
+  "textures": {
+    "default" : "ntgl:classic10mm",
+    "blue"    : "ntgl:classic10mm_blue",
+    "black"   : "ntgl:classic10mm_black",
+    "brown"   : "ntgl:classic10mm_brown",
+    "gray"    : "ntgl:classic10mm_gray",
+    "cyan"    : "ntgl:classic10mm_cyan",
+    "green"   : "ntgl:classic10mm_green",
+    "pink"    : "ntgl:classic10mm_pink",
+    "rust"    : "ntgl:classic10mm_rust"
+  },
   "sounds": {
     "fire": "ntgl:item.pistol10mm.fire",
     "reload": "ntgl:item.pistol45mm.reload",

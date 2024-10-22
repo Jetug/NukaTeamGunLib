@@ -1,10 +1,11 @@
-package com.nukateam.ntgl.common.base.config;
+package com.nukateam.ntgl.common.base.config.gun;
 
-import com.nukateam.ntgl.common.base.config.Gun;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.data.annotation.Ignored;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Author: MrCrayfish
@@ -33,6 +34,7 @@ public class CustomGun implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(CompoundTag compound) {
         this.model = ItemStack.of(compound.getCompound("Model"));
-        this.gun = Gun.create(compound.getCompound("Gun"));
+        var key = ForgeRegistries.ITEMS.getKey(model.getItem());
+        this.gun = Gun.create(key, compound.getCompound("Gun"));
     }
 }

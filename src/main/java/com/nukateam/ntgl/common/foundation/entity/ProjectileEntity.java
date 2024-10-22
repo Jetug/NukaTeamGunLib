@@ -4,7 +4,8 @@ import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.example.common.data.interfaces.IExplosiveOnHit;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.base.config.Ammo;
-import com.nukateam.ntgl.common.base.config.Gun;
+import com.nukateam.ntgl.common.base.config.gun.General;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
 import com.nukateam.ntgl.common.data.interfaces.*;
@@ -75,7 +76,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected int shooterId;
     protected LivingEntity shooter;
     protected Gun modifiedGun;
-    protected Gun.General general;
+    protected General general;
     protected Ammo projectile;
     protected ItemStack weapon = ItemStack.EMPTY;
     protected ItemStack ammoStack = ItemStack.EMPTY;
@@ -293,7 +294,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     public void readAdditionalSaveData(CompoundTag compound) {
         this.projectile = new Ammo();
         this.projectile.deserializeNBT(compound.getCompound("Projectile"));
-        this.general = new Gun.General();
+        this.general = new General();
         this.general.deserializeNBT(compound.getCompound("General"));
         this.modifiedGravity = compound.getDouble("ModifiedGravity");
         this.life = compound.getInt("MaxLife");
@@ -322,7 +323,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     public void readSpawnData(FriendlyByteBuf buffer) {
         this.projectile = new Ammo();
         this.projectile.deserializeNBT(buffer.readNbt());
-        this.general = new Gun.General();
+        this.general = new General();
         this.general.deserializeNBT(buffer.readNbt());
         this.shooterId = buffer.readInt();
         this.ammoStack = BufferUtil.readItemStackFromBufIgnoreTag(buffer);

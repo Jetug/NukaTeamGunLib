@@ -1,8 +1,7 @@
-package com.nukateam.ntgl.common.base.gun;
+package com.nukateam.ntgl.common.base.holders;
 
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.resources.ResourceLocation;
-
 
 public class ResourceHolder {
     protected final ResourceLocation id;

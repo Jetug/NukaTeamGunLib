@@ -1,9 +1,8 @@
 package com.nukateam.ntgl.client.render.pose;
 
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.base.gun.GripType;
+import com.nukateam.ntgl.common.base.holders.GripType;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import mod.azure.azurelib.core.animation.AnimationProcessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;

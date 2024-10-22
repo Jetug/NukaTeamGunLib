@@ -3,9 +3,9 @@ package com.nukateam.ntgl.common.network.message;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.ClientPlayHandler;
-import com.nukateam.ntgl.common.base.config.CustomGun;
+import com.nukateam.ntgl.common.base.config.gun.CustomGun;
 import com.nukateam.ntgl.common.base.CustomGunLoader;
-import com.nukateam.ntgl.common.base.config.Gun;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,7 +32,7 @@ public class S2CMessageUpdateGuns extends PlayMessage<S2CMessageUpdateGuns> {
 
     @Override
     public S2CMessageUpdateGuns decode(FriendlyByteBuf buffer) {
-        S2CMessageUpdateGuns message = new S2CMessageUpdateGuns();
+        var message = new S2CMessageUpdateGuns();
         message.registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
         message.customGuns = CustomGunLoader.readCustomGuns(buffer);
         return message;

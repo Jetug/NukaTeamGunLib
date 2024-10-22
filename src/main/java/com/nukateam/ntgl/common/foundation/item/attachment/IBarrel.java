@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.attachment;
 
-import com.nukateam.ntgl.common.base.gun.AttachmentType;
+import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.foundation.item.BarrelItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
 

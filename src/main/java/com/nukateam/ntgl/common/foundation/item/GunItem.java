@@ -2,11 +2,12 @@ package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.example.common.data.interfaces.IResourceProvider;
 import com.nukateam.example.common.data.utils.ResourceUtils;
+import com.nukateam.ntgl.client.animators.IConfigProvider;
 import com.nukateam.ntgl.client.render.renderers.DefaultGunRenderer;
 import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
 import com.nukateam.ntgl.client.render.renderers.GunItemRenderer;
-import com.nukateam.ntgl.common.base.config.Gun;
-import com.nukateam.ntgl.common.base.NetworkGunManager;
+import com.nukateam.ntgl.common.base.NetworkManager;
+import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
@@ -42,7 +43,8 @@ import java.util.function.Supplier;
 
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
-public class GunItem extends Item implements GeoItem, IColored, IMeta, IResourceProvider {
+public class GunItem extends Item implements GeoItem, IColored, IMeta, IResourceProvider, IConfigConsumer<Gun>, IConfigProvider<Gun> {
+    public static final String VARIANT = "variant";
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
@@ -60,12 +62,28 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         return GUN_RENDERER.get();
     }
 
-    public void setGun(NetworkGunManager.Supplier supplier) {
-        this.gun = supplier.getGun();
-    }
-
     public Gun getGun() {
         return this.gun;
+    }
+
+    public static String getVariant(ItemStack stack){
+        var tag = stack.getOrCreateTag();
+        if(!tag.contains(VARIANT, Tag.TAG_STRING)){
+            tag.putString(VARIANT, "default");
+        }
+
+        return tag.getString(VARIANT);
+    }
+
+    @Override
+    public void setConfig(NetworkManager.Supplier<Gun> supplier) {
+        this.gun = supplier.getConfig();
+        gun.onCreated(getName());
+    }
+
+    @Override
+    public Gun getConfig() {
+        return getGun();
     }
 
     @Override
@@ -176,7 +194,8 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
             return this.modifiedGunCache.computeIfAbsent(tagCompound, item ->
             {
                 if (tagCompound.getBoolean("Custom")) {
-                    return Gun.create(tagCompound.getCompound("Gun"));
+                    var key = ForgeRegistries.ITEMS.getKey(stack.getItem());
+                    return Gun.create(key, tagCompound.getCompound("Gun"));
                 } else {
                     var gunCopy = this.gun.copy();
                     gunCopy.deserializeNBT(tagCompound.getCompound("Gun"));
