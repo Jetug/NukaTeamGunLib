@@ -12,6 +12,7 @@ import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.data.datagen.BlockTagGen;
+import com.nukateam.ntgl.common.data.datagen.DamageTypeGen;
 import com.nukateam.ntgl.common.data.datagen.ItemTagGen;
 import com.nukateam.ntgl.common.data.datagen.LootTableGen;
 import com.nukateam.ntgl.common.foundation.ModBlocks;
@@ -156,7 +157,7 @@ public class Ntgl {
         generator.addProvider(event.includeServer(), new ItemTagGen(output, lookupProvider, blockTagGen.contentsGetter(), existingFileHelper));
 //        generator.addProvider(event.includeServer(), new LanguageGen(generator));
 //        generator.addProvider(event.includeServer(), new GunGen(generator));
-//        generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
 
         generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
                 output, event.getLookupProvider(), BUILDER, Set.of(Ntgl.MOD_ID)));
