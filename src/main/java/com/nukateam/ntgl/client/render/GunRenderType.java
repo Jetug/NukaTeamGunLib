@@ -11,8 +11,7 @@ import net.minecraft.client.renderer.RenderType;
  * Author: MrCrayfish
  */
 
-public final class GunRenderType extends RenderType
-{
+public final class GunRenderType extends RenderType {
     private static final RenderType BULLET_TRAIL = RenderType.create(Ntgl.MOD_ID + ":projectile_trail",
             DefaultVertexFormat.POSITION_COLOR_LIGHTMAP,
             VertexFormat.Mode.QUADS, 256, true,
@@ -29,18 +28,15 @@ public final class GunRenderType extends RenderType
                     .setTextureState(new RenderStateShard.TextureStateShard(GunRenderingHandler.MUZZLE_FLASH_TEXTURE, false, false))
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).createCompositeState(true));
 
-    private GunRenderType(String nameIn, VertexFormat formatIn, VertexFormat.Mode drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn)
-    {
+    private GunRenderType(String nameIn, VertexFormat formatIn, VertexFormat.Mode drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {
         super(nameIn, formatIn, drawModeIn, bufferSizeIn, useDelegateIn, needsSortingIn, setupTaskIn, clearTaskIn);
     }
 
-    public static RenderType getBulletTrail()
-    {
+    public static RenderType getBulletTrail() {
         return BULLET_TRAIL;
     }
 
-    public static RenderType getMuzzleFlash()
-    {
+    public static RenderType getMuzzleFlash() {
         return MUZZLE_FLASH;
     }
 }
