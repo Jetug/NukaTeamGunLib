@@ -1,9 +1,8 @@
 
 package com.nukateam.example.client;
 
-import com.nukateam.example.common.Raider;
+import com.nukateam.example.common.entities.Raider;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;

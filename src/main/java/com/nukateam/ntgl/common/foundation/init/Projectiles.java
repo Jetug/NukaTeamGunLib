@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.foundation.init;
 
-import com.nukateam.example.common.Raider;
 import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.resources.ResourceLocation;

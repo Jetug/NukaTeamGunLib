@@ -3,7 +3,11 @@ package com.nukateam.ntgl.client.render.renderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.ClientProxy;
+import com.nukateam.ntgl.client.model.gibs.ModelGibsGeo;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGibs;
+import mod.azure.azurelib.core.animatable.GeoAnimatable;
+import mod.azure.azurelib.model.GeoModel;
+import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -12,6 +16,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.joml.Quaternionf;
 
@@ -33,7 +38,7 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
             poseStack.pushPose();
             {
                 var render = ClientProxy.getEntityRenderer(entity);
-                if (render instanceof LivingEntityRenderer<?, ?>) {
+                if (render instanceof LivingEntityRenderer<?, ?> livingRenderer) {
                     try {
                         if (data.texture == null) {
                             data.texture = render.getTextureLocation(entity);
@@ -41,6 +46,12 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
 
                     } catch (IllegalArgumentException e) {
                         e.printStackTrace();
+                    }
+                }
+                else if(render instanceof GeoEntityRenderer geoRenderer && entity instanceof GeoAnimatable animatable){
+                    if (data.texture == null) {
+                        var geoModel = geoRenderer.getGeoModel();
+                        data.texture = geoModel.getTextureResource(animatable);
                     }
                 }
 
@@ -69,7 +80,8 @@ public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
 //                poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 //                GlStateManager.disableCull();
 
-                var rendertype = RenderType.itemEntityTranslucentCull(data.texture);
+                var texture = data.texture;
+                var rendertype = RenderType.itemEntityTranslucentCull(texture);
                 var vertexConsumer = buffer.getBuffer(rendertype);
 
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180));

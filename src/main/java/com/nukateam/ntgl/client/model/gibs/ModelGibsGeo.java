@@ -10,18 +10,25 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.Entity;
+import org.checkerframework.checker.units.qual.C;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ModelGibsGeo extends ModelGibs {
-    private List<? extends CoreGeoBone> gibs;
+    private ArrayList<CoreGeoBone> gibs = new ArrayList<>();
     private final BakedGeoModel model;
     private final GeoEntityRenderer geoRenderer;
 
     public ModelGibsGeo(BakedGeoModel model, GeoEntityRenderer geoRenderer) {
         this.model = model;
         this.geoRenderer = geoRenderer;
-        gibs = model.getBones();
+        var topBones = model.getBones();
+
+        for (var bone: topBones) {
+            var children = bone.getChildBones();
+            gibs.addAll(children);
+        }
     }
 
     @Override

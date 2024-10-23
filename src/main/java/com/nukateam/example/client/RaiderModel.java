@@ -1,7 +1,7 @@
 
 package com.nukateam.example.client;
 
-import com.nukateam.example.common.Raider;
+import com.nukateam.example.common.entities.Raider;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;

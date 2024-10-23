@@ -1,15 +1,11 @@
 package com.nukateam.example.common.registery;
 
-import com.nukateam.example.common.Raider;
+import com.nukateam.example.common.entities.*;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.*;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.*;
 
 import static net.minecraft.world.entity.EntityType.Builder;
 
@@ -22,8 +18,17 @@ public class EntityTypes {
                     .of(Raider::new, MobCategory.CREATURE)
                     .sized(1.0f, 1.9f));
 
+    public static final RegistryObject<EntityType<Deathclaw>> DEATHCLAW =
+            registerEntity("deathclaw", Builder
+                    .of(Deathclaw::new, MobCategory.MONSTER)
+                    .sized(1.5f, 3f));
+
+    public static final RegistryObject<EntityType<Brahmin>> BRAHMIN =
+            registerEntity("brahmin", Builder
+                    .of(Brahmin::new, MobCategory.CREATURE)
+                    .sized(1.5f, 1.5f));
+
     private static <T extends Entity> RegistryObject<EntityType<T>> registerEntity(String entityName, Builder<T> builder) {
-        Ntgl.LOGGER.debug(entityName + "ENTITY REGISTERED");
         return ENTITY_TYPES.register(entityName, () -> builder.build(new ResourceLocation(Ntgl.MOD_ID, entityName).toString()));
     }
 

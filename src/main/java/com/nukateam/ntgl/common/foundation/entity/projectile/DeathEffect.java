@@ -6,18 +6,13 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.model.gibs.*;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGibs;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
-import dev.kosmx.playerAnim.core.util.Vec3d;
-import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -135,7 +130,7 @@ public class DeathEffect {
                     vy = (0.5 - random.nextDouble()) * 0.35;
                 var vz = (0.5 - random.nextDouble()) * 0.35;
 
-                var ent = new FlyingGibs(entity.level(), entity, data,
+                var flyingGibs = new FlyingGibs(entity.level(), entity, data,
                         new Vec3(x, y, z),
                         new Vec3(delta.x * 0.35 + vx,
                                 delta.y * 0.35 + vy,
@@ -143,7 +138,7 @@ public class DeathEffect {
                         ),
                         (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
 
-                entity.level().addFreshEntity(ent);
+                entity.level().addFreshEntity(flyingGibs);
             }
         }
 //        else if (deathtype == DeathType.BIO) {
