@@ -85,18 +85,18 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider, ICon
 
     @Override
     public String getName() {
-        return ((IResourceProvider) renderer.getRenderStack().getItem()).getName();
+        return ((IResourceProvider) getStack().getItem()).getName();
     }
 
     @Override
     public String getNamespace() {
-        return ((IResourceProvider) renderer.getRenderStack().getItem()).getNamespace();
+        return ((IResourceProvider) getStack().getItem()).getNamespace();
     }
 
-    @Override
-    public ItemStack getStack() {
-        return renderer.getRenderStack();
-    }
+//    @Override
+//    public ItemStack getStack() {
+//        return renderer.getRenderStack();
+//    }
 
     private LivingEntity getEntity() {
         return renderer.getRenderEntity();
