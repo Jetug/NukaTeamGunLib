@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.render.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.utils.EntityDeathUtils;
 import com.nukateam.ntgl.common.data.interfaces.IModelAccessor;
 import com.nukateam.ntgl.common.data.util.MathUtil;
@@ -11,6 +12,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Slime;
@@ -25,27 +27,26 @@ import java.util.Random;
 import static com.nukateam.ntgl.common.base.utils.EntityDeathUtils.DeathType.*;
 
 public class DeathEffectEntityRenderer {
-    private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
-    private static final ResourceLocation RES_BIO_EFFECT = new ResourceLocation(Techguns.MODID, "textures/fx/bio.png");
-    private static final ResourceLocation RES_LASER_EFFECT = new ResourceLocation(Techguns.MODID, "textures/fx/laserdeath.png");
+    private static final ResourceLocation RES_BIO_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/bio.png");
+//    private static final ResourceLocation RES_LASER_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/laserdeath.png");
     private static final int MAX_DEATH_TIME = 20;
 
-    public static Field RLB_mainModel = ReflectionHelper.findField(RenderLivingBase.class, "mainModel", "field_77045_g");
-    protected static Method RLB_preRenderCallback = ReflectionHelper.findMethod(RenderLivingBase.class, "preRenderCallback", "func_77041_b", EntityLivingBase.class, float.class);
-    protected static Method R_bindEntityTexture = ReflectionHelper.findMethod(Render.class, "bindEntityTexture", "func_180548_c", Entity.class);
-
-    public static Field R_renderManager = ReflectionHelper.findField(Render.class, "renderManager", "field_76990_c");
-
-    protected static Method R_bindTexture = ReflectionHelper.findMethod(Render.class, "bindTexture", "func_110776_a", ResourceLocation.class);
-    protected static Method RLB_getColorMultiplier = ReflectionHelper.findMethod(RenderLivingBase.class, "getColorMultiplier", "func_77030_a", EntityLivingBase.class, float.class, float.class);
-
-    public static void preRenderCallback(RenderLivingBase<? extends EntityLivingBase> renderer, EntityLivingBase elb, float ptt) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        RLB_preRenderCallback.invoke(renderer, elb, ptt);
-    }
-
-    public static void bindEntityTexture(Render<? extends Entity> renderer, Entity entity) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        R_bindEntityTexture.invoke(renderer, entity);
-    }
+//    public static Field RLB_mainModel = ReflectionHelper.findField(RenderLivingBase.class, "mainModel", "field_77045_g");
+//    protected static Method RLB_preRenderCallback = ReflectionHelper.findMethod(RenderLivingBase.class, "preRenderCallback", "func_77041_b", EntityLivingBase.class, float.class);
+//    protected static Method R_bindEntityTexture = ReflectionHelper.findMethod(Render.class, "bindEntityTexture", "func_180548_c", Entity.class);
+//
+//    public static Field R_renderManager = ReflectionHelper.findField(Render.class, "renderManager", "field_76990_c");
+//
+//    protected static Method R_bindTexture = ReflectionHelper.findMethod(Render.class, "bindTexture", "func_110776_a", ResourceLocation.class);
+//    protected static Method RLB_getColorMultiplier = ReflectionHelper.findMethod(RenderLivingBase.class, "getColorMultiplier", "func_77030_a", EntityLivingBase.class, float.class, float.class);
+//
+//    public static void preRenderCallback(RenderLivingBase<? extends EntityLivingBase> renderer, EntityLivingBase elb, float ptt) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+//        RLB_preRenderCallback.invoke(renderer, elb, ptt);
+//    }
+//
+//    public static void bindEntityTexture(Render<? extends Entity> renderer, Entity entity) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+//        R_bindEntityTexture.invoke(renderer, entity);
+//    }
 
 
     public static void setRenderScalingForEntity(LivingEntity elb, PoseStack poseStack) {
@@ -69,10 +70,13 @@ public class DeathEffectEntityRenderer {
      * double d2, float f, float f1). But JAD is pre 1.5 so doesn't do that.
      */
     public static void doRender(LivingEntityRenderer renderer, LivingEntity entity, PoseStack poseStack,
-                                MultiBufferSource buffer, int pPackedLight, int pPackedOverlay,
-                                Vec3 pos, float ptt, EntityDeathUtils.DeathType deathType) {
+                                MultiBufferSource buffer, int pPackedLight,
+                                Vec3 pos) {
+        this.model.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F);
+
         poseStack.pushPose();
         {
+            renderer.render();
             //renderer.mainModel.onGround = renderer.renderSwingProgress(entity, ptt);
 
             //   if (renderer.renderPassModel != null)
@@ -101,7 +105,7 @@ public class DeathEffectEntityRenderer {
 //
 //                float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * ptt;
 
-                poseStack.translate(pos.x, pos.y, pos.z);
+//                poseStack.translate(pos.x, pos.y, pos.z);
 //                f4 = (float) entity.ticksExisted + ptt;
 
                 float f5 = 0.0625F;
@@ -115,38 +119,40 @@ public class DeathEffectEntityRenderer {
 
                 poseStack.translate(0.0F, -24.0F * f5 - 0.0078125F, 0.0F);
 
-                float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * ptt;
-                float limbSwing = entity.limbSwing - entity.limbSwingAmount * (1.0F - ptt);
+//                float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * ptt;
+//                float limbSwing = entity.limbSwing - entity.limbSwingAmount * (1.0F - ptt);
 
-                if (entity.isChild()) {
-                    limbSwing *= 3.0F;
-                }
+//                if (entity.isChild()) {
+//                    limbSwing *= 3.0F;
+//                }
 
-                if (f6 > 1.0F) {
-                    f6 = 1.0F;
-                }
+//                if (f6 > 1.0F) {
+//                    f6 = 1.0F;
+//                }
 
                 //GL11.glEnable(GL11.GL_ALPHA_TEST);
 //                GlStateManager.enableAlpha();
 
-                switch (deathType) {
-                    case BIO:
-                        mainModel.setupAnim(entity, limbSwing, f6, ptt);
-                        //renderModel(renderer, entity, f7, f6, f4, f3 - f2, f13, f5, null, RenderType.SOLID);
-                        //renderModel(renderer, entity, f7, f6, f4, f3 - f2, f13, f5, RES_BIO_EFFECT, RenderType.ADDITIVE);
-                        preRenderCallback(renderer, entity, ptt);
-                        renderModelDeathBio(renderer, entity, poseStack, buffer, pPackedLight, pPackedOverlay);
-                        break;
-//                    case LASER:
-//                        mainModel.setLivingAnimations(entity, limbSwing, f6, ptt);
-//                        preRenderCallback(renderer, entity, ptt);
-//                        renderModelDeathLaser(renderer, entity, limbSwing, f6, f4, f3 - f2, f13, f5);
-//                        break;
-                    case DEFAULT:
-                    default:
-                        break;
+                renderModelDeathBio(renderer, entity, poseStack, buffer, pPackedLight, OverlayTexture.NO_OVERLAY);
 
-                }
+//                switch (deathType) {
+//                    case BIO:
+////                        mainModel.setupAnim(entity, limbSwing, f6, ptt);
+//                        //renderModel(renderer, entity, f7, f6, f4, f3 - f2, f13, f5, null, RenderType.SOLID);
+//                        //renderModel(renderer, entity, f7, f6, f4, f3 - f2, f13, f5, RES_BIO_EFFECT, RenderType.ADDITIVE);
+////                        preRenderCallback(renderer, entity, ptt);
+//                        renderModelDeathBio(renderer, entity, poseStack, buffer, pPackedLight, OverlayTexture.NO_OVERLAY);
+//                        break;
+////                    case LASER:
+////                        mainModel.setLivingAnimations(entity, limbSwing, f6, ptt);
+////                        preRenderCallback(renderer, entity, ptt);
+////                        renderModelDeathLaser(renderer, entity, limbSwing, f6, f4, f3 - f2, f13, f5);
+////                        break;
+//                    case DEFAULT:
+//                    default:
+//                        break;
+//
+//                }
                 /**DO NOT DISABLE ALPHA, VANILLA DOESN'T DO IT EITHER**/
                 //    GlStateManager.disableAlpha();
 //                GlStateManager.disableRescaleNormal();
@@ -171,17 +177,17 @@ public class DeathEffectEntityRenderer {
     /**
      * Renders the model in RenderLiving
      */
-    static void renderModelDeathBio(LivingEntityRenderer renderer, LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int pPackedLight, int pPackedOverlay) {
+    static void renderModelDeathBio(LivingEntityRenderer renderer, LivingEntity entity, PoseStack poseStack,
+                                    MultiBufferSource buffer, int pPackedLight, int pPackedOverlay) {
         var prog = ((float) entity.deathTime / (float) MAX_DEATH_TIME);
         var rand = entity.getRandom();
         var mainModel = renderer.getModel();
 
-        try {
-            R_bindEntityTexture.invoke(renderer, entity);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            R_bindEntityTexture.invoke(renderer, entity);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
 //        if (mainModel instanceof HumanoidModel<?>) {
 //            mainModel.setupAnim(entity, limbSwing, f6, f4, p_77036_5_, f13, f5);
@@ -202,10 +208,10 @@ public class DeathEffectEntityRenderer {
         {
 //            poseStack.rotate(entity.yHeadRot, 0, 1, 0);
 
-            setRenderScalingForEntity(entity, poseStack);
+//            setRenderScalingForEntity(entity, poseStack);
 
             for (var box : accessor.getModelParts()) {
-                if (!childBoxes.contains(box) && box.visible && !box.skipDraw) {
+                if (childBoxes.contains(box) && box.visible && !box.skipDraw) {
                     float scale = 1.0f + (rand.nextFloat() * prog);
                     poseStack.pushPose();
                     {
@@ -323,35 +329,35 @@ public class DeathEffectEntityRenderer {
 //    }
 //
 
-    /**
-     * Renders the model in RenderLiving
-     */
-    static void renderModel(RenderLivingBase renderer, EntityLivingBase entity, float f7, float f6, float f4, float p_77036_5_, float f13, float f5, ResourceLocation texture, RenderType renderType) {
-
-        ModelBase mainModel = null;
-        ModelBase renderPassModel;
-        RenderManager renderManager = null;
-        try {
-            mainModel = (ModelBase) RLB_mainModel.get(renderer);
-            renderManager = (RenderManager) R_renderManager.get(renderer);
-//            renderPassModel = (ModelBase)RLB_renderPassModel.get(renderer);
-
-            if (texture != null) {
-                renderManager.renderEngine.bindTexture(RES_BIO_EFFECT);
-            } else {
-                R_bindEntityTexture.invoke(renderer, entity);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        TGRenderHelper.enableBlendMode(renderType);
-
-        if (!entity.isInvisible()) {
-            mainModel.render(entity, f7, f6, f4, p_77036_5_, f13, f5);
-        }
-
-        TGRenderHelper.disableBlendMode(renderType);
-    }
+//    /**
+//     * Renders the model in RenderLiving
+//     */
+//    static void renderModel(RenderLivingBase renderer, EntityLivingBase entity, float f7, float f6, float f4, float p_77036_5_, float f13, float f5, ResourceLocation texture, RenderType renderType) {
+//
+//        ModelBase mainModel = null;
+//        ModelBase renderPassModel;
+//        RenderManager renderManager = null;
+//        try {
+//            mainModel = (ModelBase) RLB_mainModel.get(renderer);
+//            renderManager = (RenderManager) R_renderManager.get(renderer);
+////            renderPassModel = (ModelBase)RLB_renderPassModel.get(renderer);
+//
+//            if (texture != null) {
+//                renderManager.renderEngine.bindTexture(RES_BIO_EFFECT);
+//            } else {
+//                R_bindEntityTexture.invoke(renderer, entity);
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        TGRenderHelper.enableBlendMode(renderType);
+//
+//        if (!entity.isInvisible()) {
+//            mainModel.render(entity, f7, f6, f4, p_77036_5_, f13, f5);
+//        }
+//
+//        TGRenderHelper.disableBlendMode(renderType);
+//    }
 }

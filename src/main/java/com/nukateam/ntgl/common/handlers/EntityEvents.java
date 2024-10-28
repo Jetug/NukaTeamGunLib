@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.handlers;
 
+import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect;
 import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
@@ -15,6 +16,7 @@ public class EntityEvents {
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public static void onLivingDeathEvent(LivingDeathEvent event) {
         var entity = event.getEntity();
+        ClientProxy.setDamageType(entity, event.getSource());
 
         if (!entity.level().isClientSide && event.getSource().is(ModDamageTypes.EXPLOSIVE)){
             DeathEffect.createDeathEffect(entity, DeathType.GORE, entity.getDeltaMovement());
