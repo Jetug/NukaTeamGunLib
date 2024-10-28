@@ -8,14 +8,12 @@ import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 public class DebugHud {
     private static final int BAR_OFFSET_X = 140;
-    private static final int OFFSET_Y = 20;
+    private static final int OFFSET_Y = 15;
 
     public static final IGuiOverlay DEBUG_HUD = ((gui, graphics, partialTick, width, height) -> {
         var minecraft = Minecraft.getInstance();
-        if(!Ntgl.isDebugging() || minecraft.player == null) return;
-
-        var xCenter = width / 2;
-        var x = xCenter + BAR_OFFSET_X;
+        if(InputEvents.isHidden || !Ntgl.isDebugging() || minecraft.player == null) return;
+        var x = width - 70;
 
         renderAmmoCounter(graphics, "x", InputEvents.X, x, OFFSET_Y);
         renderAmmoCounter(graphics, "y", InputEvents.Y, x, OFFSET_Y * 2);

@@ -159,7 +159,7 @@ public class FlyingGibs extends Entity {
     }
 
     private void handleGravity(){
-        var gravity = 0.08D;
+        var gravity = 0.1D;
 
         this.checkSlowFallDistance();
         var vec3 = this.getDeltaMovement();

@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.client.event;
 
 import com.nukateam.ntgl.client.render.renderers.projectiles.*;
-import com.nukateam.ntgl.common.foundation.entity.FlyingGibs;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,6 +24,6 @@ public class GunEntityRenderers {
         event.registerEntityRenderer(Projectiles.THROWABLE_GRENADE.get(), ThrowableGrenadeRenderer::new);
         event.registerEntityRenderer(Projectiles.THROWABLE_STUN_GRENADE.get(), ThrowableGrenadeRenderer::new);
 
-        event.registerEntityRenderer(Projectiles.FLYING_GIBS.get(), RenderFlyingGibs::new);
+        event.registerEntityRenderer(Projectiles.FLYING_GIBS.get(), FlyingGibsRenderer::new);
     }
 }

@@ -1,12 +1,10 @@
-package com.nukateam.ntgl.client.render;
+package com.nukateam.ntgl.client.event;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.render.particle.BloodParticle;
 import com.nukateam.ntgl.client.render.particle.BulletHoleParticle;
 import com.nukateam.ntgl.client.render.particle.TrailParticle;
 import com.nukateam.ntgl.common.foundation.init.ModParticleTypes;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

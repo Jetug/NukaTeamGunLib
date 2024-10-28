@@ -3,27 +3,21 @@ package com.nukateam.ntgl.client.render.renderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.ClientProxy;
-import com.nukateam.ntgl.client.model.gibs.ModelGibsGeo;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGibs;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.CowRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import org.joml.Quaternionf;
 
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.getGoreData;
 
-public class RenderFlyingGibs extends EntityRenderer<FlyingGibs> {
-    public RenderFlyingGibs(EntityRendererProvider.Context pContext) {
+public class FlyingGibsRenderer extends EntityRenderer<FlyingGibs> {
+    public FlyingGibsRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
     }
 

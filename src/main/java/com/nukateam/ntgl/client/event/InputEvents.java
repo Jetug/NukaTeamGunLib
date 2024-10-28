@@ -22,6 +22,7 @@ public class InputEvents {
     public static int X = 0;
     public static int Y = 0;
     public static int Z = 0;
+    public static boolean isHidden = false;
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
@@ -57,6 +58,7 @@ public class InputEvents {
                     case GLFW.GLFW_KEY_KP_4 -> X -= 1;
                     case GLFW.GLFW_KEY_KP_5 -> Y -= 1;
                     case GLFW.GLFW_KEY_KP_6 -> Z -= 1;
+                    case GLFW.GLFW_KEY_KP_MULTIPLY -> isHidden = !isHidden;
                     case GLFW.GLFW_KEY_KP_ENTER -> {
                         X = 0;
                         Y = 0;
