@@ -68,7 +68,9 @@ public class DeathEffectEntityRenderer {
      * (Render<T extends Entity) and this method has signature public void func_76986_a(T entity, double d, double d1,
      * double d2, float f, float f1). But JAD is pre 1.5 so doesn't do that.
      */
-    public static void doRender(LivingEntityRenderer renderer, LivingEntity entity, PoseStack poseStack, Vec3 pos double x, double y, double z, float ptt, EntityDeathUtils.DeathType deathType) {
+    public static void doRender(LivingEntityRenderer renderer, LivingEntity entity, PoseStack poseStack,
+                                MultiBufferSource buffer, int pPackedLight, int pPackedOverlay,
+                                Vec3 pos, float ptt, EntityDeathUtils.DeathType deathType) {
         poseStack.pushPose();
         {
             //renderer.mainModel.onGround = renderer.renderSwingProgress(entity, ptt);
@@ -84,40 +86,34 @@ public class DeathEffectEntityRenderer {
             //   {
             //       renderer.renderPassModel.isRiding = renderer.mainModel.isRiding;
             //   }
-            ModelBase mainModel = null;
-//	        ModelBase renderPassModel = null;
-            try {
-                mainModel = (ModelBase) RLB_mainModel.get(renderer);
-//	        	renderPassModel = (ModelBase)RLB_renderPassModel.get(renderer);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            mainModel.isChild = entity.isChild();
+            var mainModel = renderer.getModel();
 
+//	        ModelBase renderPassModel = null;
 //	        if (renderPassModel != null)
 //	        {
 //	            renderPassModel.isChild = mainModel.isChild;
 //	        }
 
             try {
-                float f2 = MathUtil.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, ptt);
-                float f3 = MathUtil.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, ptt);
-                float f4;
-
-                float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * ptt;
+//                float f2 = MathUtil.interpolateRotation(entity.yRotO.prevRenderYawOffset, entity.yBodyRot.renderYawOffset, ptt);
+//                float f3 = MathUtil.interpolateRotation(entity.yHeadRotO, entity.yHeadRot, ptt);
+//                float f4;
+//
+//                float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * ptt;
 
                 poseStack.translate(pos.x, pos.y, pos.z);
-                f4 = (float) entity.ticksExisted + ptt;
+//                f4 = (float) entity.ticksExisted + ptt;
 
                 float f5 = 0.0625F;
                 //GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                GlStateManager.enableRescaleNormal();
-                GlStateManager.scale(-1.0f, -1.0f, -1.0f);
+
+//                GlStateManager.enableRescaleNormal();
+                poseStack.scale(-1.0f, -1.0f, -1.0f);
                 //GL11.glScalef(-1.0F, -1.0F, 1.0F);
 
                 //renderer.preRenderCallback(entity, ptt);
 
-                GlStateManager.translate(0.0F, -24.0F * f5 - 0.0078125F, 0.0F);
+                poseStack.translate(0.0F, -24.0F * f5 - 0.0078125F, 0.0F);
 
                 float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * ptt;
                 float limbSwing = entity.limbSwing - entity.limbSwingAmount * (1.0F - ptt);
@@ -131,26 +127,21 @@ public class DeathEffectEntityRenderer {
                 }
 
                 //GL11.glEnable(GL11.GL_ALPHA_TEST);
-                GlStateManager.enableAlpha();
+//                GlStateManager.enableAlpha();
 
                 switch (deathType) {
                     case BIO:
-                        mainModel.setLivingAnimations(entity, limbSwing, f6, ptt);
+                        mainModel.setupAnim(entity, limbSwing, f6, ptt);
                         //renderModel(renderer, entity, f7, f6, f4, f3 - f2, f13, f5, null, RenderType.SOLID);
                         //renderModel(renderer, entity, f7, f6, f4, f3 - f2, f13, f5, RES_BIO_EFFECT, RenderType.ADDITIVE);
                         preRenderCallback(renderer, entity, ptt);
-                        renderModelDeathBio(renderer, entity, limbSwing, f6, f4, f3 - f2, f13, f5);
+                        renderModelDeathBio(renderer, entity, poseStack, buffer, pPackedLight, pPackedOverlay);
                         break;
-                    case LASER:
-                        mainModel.setLivingAnimations(entity, limbSwing, f6, ptt);
-                        preRenderCallback(renderer, entity, ptt);
-                        renderModelDeathLaser(renderer, entity, limbSwing, f6, f4, f3 - f2, f13, f5);
-                        break;
-//				case DISMEMBER:
-//					mainModel.setLivingAnimations(entity, f7, f6, ptt);
-//					renderModelDeathDismember(renderer, entity, f7, f6, f4, f3 - f2, f13, f5, ptt);
-//					break;
-                    case GORE:
+//                    case LASER:
+//                        mainModel.setLivingAnimations(entity, limbSwing, f6, ptt);
+//                        preRenderCallback(renderer, entity, ptt);
+//                        renderModelDeathLaser(renderer, entity, limbSwing, f6, f4, f3 - f2, f13, f5);
+//                        break;
                     case DEFAULT:
                     default:
                         break;
@@ -158,7 +149,7 @@ public class DeathEffectEntityRenderer {
                 }
                 /**DO NOT DISABLE ALPHA, VANILLA DOESN'T DO IT EITHER**/
                 //    GlStateManager.disableAlpha();
-                GlStateManager.disableRescaleNormal();
+//                GlStateManager.disableRescaleNormal();
                 //renderExtraPasses(renderer, entity, f7, f6, f4, f3-f2, f13, f5, ptt);
 
             } catch (Exception exception) {
@@ -166,11 +157,11 @@ public class DeathEffectEntityRenderer {
             }
 
 
-            GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-            GlStateManager.enableTexture2D();
-            GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-            GlStateManager.enableCull();
-            GlStateManager.popMatrix();
+//            GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+//            GlStateManager.enableTexture2D();
+//            GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+//            GlStateManager.enableCull();
+//            GlStateManager.popMatrix();
         }
         poseStack.popPose();
         //renderer.passSpecialRender(entity, x, y, z);
@@ -180,8 +171,7 @@ public class DeathEffectEntityRenderer {
     /**
      * Renders the model in RenderLiving
      */
-    static void renderModelDeathBio(LivingEntityRenderer renderer, LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer,
-                                    float limbSwing, float f6, float f4, float p_77036_5_, float f13, float f5) {
+    static void renderModelDeathBio(LivingEntityRenderer renderer, LivingEntity entity, PoseStack poseStack, MultiBufferSource buffer, int pPackedLight, int pPackedOverlay) {
         var prog = ((float) entity.deathTime / (float) MAX_DEATH_TIME);
         var rand = entity.getRandom();
         var mainModel = renderer.getModel();
@@ -193,9 +183,9 @@ public class DeathEffectEntityRenderer {
             e.printStackTrace();
         }
 
-        if (mainModel instanceof HumanoidModel<?>) {
-            mainModel.setupAnim(entity, limbSwing, f6, f4, p_77036_5_, f13, f5);
-        }
+//        if (mainModel instanceof HumanoidModel<?>) {
+//            mainModel.setupAnim(entity, limbSwing, f6, f4, p_77036_5_, f13, f5);
+//        }
 
 //        HashSet<ModelRenderer> childBoxes = new HashSet<>(64);
 //        for (Object o : mainModel.boxList) {
@@ -231,14 +221,16 @@ public class DeathEffectEntityRenderer {
                         var rendertype = RenderType.itemEntityTranslucentCull(texture);
                         var vertexConsumer = buffer.getBuffer(rendertype);
 
-                        box.render(poseStack, vertexConsumer, Minecraft.getInstance());
+                        box.render(poseStack, vertexConsumer, pPackedLight, pPackedOverlay);
                         RenderSystem.setShaderTexture(0, RES_BIO_EFFECT);
 //                        renderManager.renderEngine.bindTexture(RES_BIO_EFFECT);
 //                        TGRenderHelper.enableBlendMode(renderType);
-                        double overlayColor = 0.5 + (Math.sin((Math.sqrt(prog) + 0.75) * 2.0 * Math.PI) / 2);
+                        RenderSystem.enableBlend();
+                        var overlayColor = 0.5 + (Math.sin((Math.sqrt(prog) + 0.75) * 2.0 * Math.PI) / 2);
                         RenderSystem.setShaderColor((float) overlayColor, (float) overlayColor, (float) overlayColor, 1);
-                        box.render(f5);
-                        TGRenderHelper.disableBlendMode(renderType);
+                        box.render(poseStack, vertexConsumer, pPackedLight, pPackedOverlay);
+                        RenderSystem.disableBlend();
+//                        TGRenderHelper.disableBlendMode(renderType);
                     }
                     poseStack.popPose();
                 }
