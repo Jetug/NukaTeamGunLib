@@ -14,7 +14,6 @@ import java.util.Map;
 
 public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements IGlowingModel<T> {
     public static final GeoGunModel<GunAnimator> INSTANCE = new GeoGunModel<>();
-    public static final Map<Pair<String, String>, ResourceLocation> textureMap = new HashMap<>();
 
     @Override
     public ResourceLocation getModelResource(T animator) {
@@ -47,15 +46,9 @@ public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements I
 
     @Override
     public ResourceLocation getGlowingTextureResource(T animator) {
-        var itemName = animator.getName();
         var name = animator.getName();
         var modId = animator.getNamespace();
-
-        ResourceLocation resource;
-
-        resource = new ResourceLocation(modId, "textures/guns/" + name + "/" + name + "_glowmask" + ".png");
-
-        return resource;
+        return new ResourceLocation(modId, "textures/guns/" + name + "/" + name + "_glowmask" + ".png");
     }
 
     public static ResourceLocation getGunResource(IResourceProvider animator, String path, String extension) {

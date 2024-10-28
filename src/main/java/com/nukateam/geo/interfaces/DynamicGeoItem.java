@@ -1,8 +1,9 @@
-package com.nukateam.geo;
+package com.nukateam.geo.interfaces;
 
+import com.nukateam.geo.render.DynamicGeoItemRenderer;
+import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
-import com.nukateam.ntgl.client.render.renderers.GeoDynamicItemRenderer;
-import com.nukateam.ntgl.client.render.renderers.GunItemRenderer;
+import com.nukateam.ntgl.client.render.renderers.ProxyItemRenderer;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.client.RenderProvider;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -13,7 +14,20 @@ import java.util.function.Consumer;
 
 public interface DynamicGeoItem extends GeoItem {
     @OnlyIn(Dist.CLIENT)
-    GeoDynamicItemRenderer getRenderer();
+    DynamicGeoItemRenderer getRenderer();
+
+    @Override
+    default void createRenderer(Consumer<Object> consumer) {
+        consumer.accept(new RenderProvider() {
+            private ProxyItemRenderer renderer = null;
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (renderer == null)
+                    return new ProxyItemRenderer(getRenderer());
+                return this.renderer;
+            }
+        });
+    }
 
 //    @Override
 //    default void createRenderer(Consumer<Object> consumer) {

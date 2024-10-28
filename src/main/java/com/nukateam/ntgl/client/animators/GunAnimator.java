@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.animators;
 
-import com.nukateam.example.common.data.interfaces.IResourceProvider;
+import com.nukateam.geo.render.DynamicGeoItemRenderer;
+import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.ClientHandler;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.data.handler.AimingHandler;
@@ -8,9 +9,9 @@ import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.data.handler.ShootingHandler;
 import com.nukateam.ntgl.client.model.GeoGunModel;
 import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
-import com.nukateam.ntgl.client.render.renderers.GeoDynamicItemRenderer;
 import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.GripType;
+import com.nukateam.ntgl.common.data.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.data.util.AnimationHelper;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -38,7 +39,7 @@ import static mod.azure.azurelib.core.animation.Animation.LoopType.*;
 import static mod.azure.azurelib.core.animation.RawAnimation.begin;
 
 @OnlyIn(Dist.CLIENT)
-public class GunAnimator extends ItemAnimator implements IResourceProvider, IConfigProvider<Gun> {
+public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     public static final String RELOAD_START = "reload_start";
     public static final String RELOAD_END = "reload_end";
     public static final String CHARGE = "charge";
@@ -54,7 +55,7 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider, ICon
     private AnimationController<GunAnimator> triggerController = new AnimationController<>(this, "triggerController", event -> PlayState.CONTINUE);
 
 
-    public GunAnimator(ItemDisplayContext transformType, GeoDynamicItemRenderer<GunAnimator> renderer) {
+    public GunAnimator(ItemDisplayContext transformType, DynamicGeoItemRenderer<GunAnimator> renderer) {
         super(transformType);
         this.renderer = (DynamicGunRenderer<GunAnimator>) renderer;
     }
@@ -81,16 +82,6 @@ public class GunAnimator extends ItemAnimator implements IResourceProvider, ICon
         }
 
         return new Gun();
-    }
-
-    @Override
-    public String getName() {
-        return ((IResourceProvider) getStack().getItem()).getName();
-    }
-
-    @Override
-    public String getNamespace() {
-        return ((IResourceProvider) getStack().getItem()).getNamespace();
     }
 
 //    @Override

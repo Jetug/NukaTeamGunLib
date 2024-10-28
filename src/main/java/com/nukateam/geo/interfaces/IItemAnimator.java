@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.animators;
+package com.nukateam.geo.interfaces;
 
 import mod.azure.azurelib.animatable.GeoEntity;
 import net.minecraft.world.item.ItemDisplayContext;

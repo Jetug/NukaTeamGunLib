@@ -1,8 +1,6 @@
-package com.nukateam.ntgl.client.render.renderers;
+package com.nukateam.geo.render;
 
-import com.nukateam.ntgl.client.animators.ItemAnimator;
 import com.mojang.blaze3d.vertex.*;
-
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.constant.DataTickets;
 import mod.azure.azurelib.core.animation.AnimationState;
@@ -16,22 +14,20 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
-
-public class GeoDynamicItemRenderer<Animator extends ItemAnimator> extends GeoObjectRenderer<Animator> {
+public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoObjectRenderer<Animator> {
     private final Map<Pair<LivingEntity, ItemDisplayContext>, Animator> animatorsByTransform = new HashMap<>();
-    private final BiFunction<ItemDisplayContext, GeoDynamicItemRenderer<Animator>, Animator> animatorFactory;
+    private final BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> animatorFactory;
     protected ItemStack currentStack;
     protected ItemDisplayContext currentTransform;
     protected LivingEntity currentEntity;
     protected LivingEntity buffEntity = null;
 
-    public GeoDynamicItemRenderer(GeoModel<Animator> model, BiFunction<ItemDisplayContext, GeoDynamicItemRenderer<Animator>, Animator> animatorFactory) {
+    public DynamicGeoItemRenderer(GeoModel<Animator> model, BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> animatorFactory) {
         super(model);
         this.animatorFactory = animatorFactory;
     }

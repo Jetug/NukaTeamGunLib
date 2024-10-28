@@ -2,8 +2,9 @@ package com.nukateam.ntgl.client.render.renderers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.animators.ItemAnimator;
+import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.common.base.config.gun.Modules;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
@@ -33,7 +34,7 @@ import static com.nukateam.ntgl.client.event.InputEvents.*;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderRightArm;
 
-public class DynamicGunRenderer<Animator extends ItemAnimator> extends GeoDynamicItemRenderer<Animator> {
+public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
     public static final String RIGHT_ARM = "right_arm";
     public static final String LEFT_ARM = "left_arm";
     public static final String MUZZLE_FLASH = "muzzle_flash";
@@ -44,7 +45,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends GeoDynami
     protected BarrelItem barrelItem;
     protected Gun gun;
 
-    public DynamicGunRenderer(GeoModel<Animator> model, BiFunction<ItemDisplayContext, GeoDynamicItemRenderer<Animator>, Animator> animatorFactory) {
+    public DynamicGunRenderer(GeoModel<Animator> model, BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> animatorFactory) {
         super(model, animatorFactory);
         addRenderLayer(new GlowingLayer<>(this));
     }
