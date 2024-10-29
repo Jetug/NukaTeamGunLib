@@ -3,6 +3,7 @@ package com.nukateam.ntgl.client.render.renderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.ClientProxy;
+import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
@@ -14,6 +15,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 
+import static com.nukateam.ntgl.client.render.renderers.DeathEffectEntityRenderer.MAX_DEATH_TIME;
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.getGoreData;
 
 public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
@@ -22,8 +24,9 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
     }
 
     @Override
-    public void render(FlyingGib pEntity, float pEntityYaw, float pPartialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        var entity = pEntity.getLocalEntity();
+    public void render(FlyingGib flyingGib, float pEntityYaw, float pPartialTick, PoseStack poseStack,
+                       MultiBufferSource buffer, int packedLight) {
+        var entity = flyingGib.getLocalEntity();
         if(entity == null) return;
 
         var data = getGoreData(entity);
@@ -52,22 +55,22 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                 float angle;
                 float rot_angle = 90.0f;
 
-                if (pEntity.onGround()) {
-                    angle = 5 + ((float) pEntity.hitGroundTTL / (float) pEntity.maxTimeToLive) * 15.0f;
-                    rot_angle += ((float) (pEntity.maxTimeToLive - pEntity.hitGroundTTL) * angle);
+                if (flyingGib.onGround()) {
+                    angle = 5 + ((float) flyingGib.hitGroundTTL / (float) flyingGib.maxTimeToLive) * 15.0f;
+                    rot_angle += ((float) (flyingGib.maxTimeToLive - flyingGib.hitGroundTTL) * angle);
 
-                    if (pEntity.timeToLive <= 20) {
-                        float offsetY = ((20 - pEntity.timeToLive) + partialTickTime) * -0.05f;
+                    if (flyingGib.timeToLive <= 20) {
+                        float offsetY = ((20 - flyingGib.timeToLive) + partialTickTime) * -0.05f;
                         poseStack.translate(0.0f, offsetY, 0.0f);
                     }
 
                 } else {
-                    angle = 5 + ((float) pEntity.timeToLive / (float) pEntity.maxTimeToLive) * 15.0f;
-                    rot_angle += ((float) pEntity.tickCount + partialTickTime) * angle;
+                    angle = 5 + ((float) flyingGib.timeToLive / (float) flyingGib.maxTimeToLive) * 15.0f;
+                    rot_angle += ((float) flyingGib.tickCount + partialTickTime) * angle;
                 }
 
-//                poseStack.rotate(rot_angle, (float) pEntity.rotationAxis.x, (float) pEntity.rotationAxis.y,
-//                        (float) pEntity.rotationAxis.z);
+//                poseStack.rotate(rot_angle, (float) flyingGib.rotationAxis.x, (float) flyingGib.rotationAxis.y,
+//                        (float) flyingGib.rotationAxis.z);
 
 //                poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 //                GlStateManager.disableCull();
@@ -78,16 +81,33 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
 
                 poseStack.mulPose(Axis.ZP.rotationDegrees(180));
 
-//                poseStack.mulPose(Axis.XP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.x)));
-//                poseStack.mulPose(Axis.YP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.y)));
-//                poseStack.mulPose(Axis.ZP.rotationDegrees((float)(rot_angle * pEntity.rotationAxis.z)));
+//                poseStack.mulPose(Axis.XP.rotationDegrees((float)(rot_angle * flyingGib.rotationAxis.x)));
+//                poseStack.mulPose(Axis.YP.rotationDegrees((float)(rot_angle * flyingGib.rotationAxis.y)));
+//                poseStack.mulPose(Axis.ZP.rotationDegrees((float)(rot_angle * flyingGib.rotationAxis.z)));
                 poseStack.translate(0,-entity.getType().getHeight() / 2,0);
 
-//                poseStack.mulPose(new Quaternionf(pEntity.rotationAxis.x, pEntity.rotationAxis.y, pEntity.rotationAxis.z, rot_angle));
+//                poseStack.mulPose(new Quaternionf(flyingGib.rotationAxis.x, flyingGib.rotationAxis.y, flyingGib.rotationAxis.z, rot_angle));
 
-                data.model.render(entity, pEntity.getPartId(), poseStack, rendertype, buffer, vertexConsumer, packedLight, 0xFFFFFF);
+                var prog = ((float) entity.deathTime / (float) MAX_DEATH_TIME);
+                var mainAlpha = 1.0f - prog;
+                var scale = 1.0f + prog;
+                var rgba = Rgba.DEFAULT;
 
-                super.render(pEntity, pEntityYaw, pPartialTick, poseStack, buffer, packedLight);
+                poseStack.pushPose();
+                {
+                    switch (flyingGib.getData().deathType){
+                        case LASER -> {
+                            poseStack.scale(scale, scale, scale);
+                            rgba = rgba.setAlpha(mainAlpha);
+                        }
+                    }
+
+                    data.model.render(entity, flyingGib.getPartId(), poseStack, rendertype, buffer,
+                            vertexConsumer, packedLight, 0xFFFFFF, rgba);
+                }
+                poseStack.popPose();
+
+                super.render(flyingGib, pEntityYaw, pPartialTick, poseStack, buffer, packedLight);
             }
             poseStack.popPose();
         }

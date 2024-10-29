@@ -9,8 +9,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import static com.nukateam.ntgl.common.base.utils.EntityDeathUtils.DeathType;
-
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class EntityEvents {
     @SubscribeEvent(priority = EventPriority.NORMAL)

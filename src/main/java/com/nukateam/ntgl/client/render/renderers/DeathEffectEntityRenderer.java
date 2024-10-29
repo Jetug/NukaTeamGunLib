@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.renderers;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.utils.EntityDeathUtils;
+
 import com.nukateam.ntgl.common.data.interfaces.IModelAccessor;
 import com.nukateam.ntgl.common.data.util.MathUtil;
 import com.nukateam.ntgl.common.foundation.item.MagazineItem;
@@ -25,12 +25,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Random;
 
-import static com.nukateam.ntgl.common.base.utils.EntityDeathUtils.DeathType.*;
 
 public class DeathEffectEntityRenderer {
     private static final ResourceLocation RES_BIO_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/bio.png");
     private static final ResourceLocation RES_LASER_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/laserdeath.png");
-    private static final int MAX_DEATH_TIME = 20;
+    public static final int MAX_DEATH_TIME = 20;
 
 //    public static Field RLB_mainModel = ReflectionHelper.findField(RenderLivingBase.class, "mainModel", "field_77045_g");
 //    protected static Method RLB_preRenderCallback = ReflectionHelper.findMethod(RenderLivingBase.class, "preRenderCallback", "func_77041_b", EntityLivingBase.class, float.class);

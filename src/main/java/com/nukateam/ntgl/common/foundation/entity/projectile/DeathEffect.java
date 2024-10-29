@@ -1,9 +1,12 @@
 package com.nukateam.ntgl.common.foundation.entity.projectile;
 
-
 import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.model.gibs.*;
+import com.nukateam.ntgl.client.model.gibs.ModelGibs;
+import com.nukateam.ntgl.client.model.gibs.ModelGibsAgeable;
+import com.nukateam.ntgl.client.model.gibs.ModelGibsGeneric;
+import com.nukateam.ntgl.client.model.gibs.ModelGibsGeo;
+import com.nukateam.ntgl.common.base.utils.DeathType;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
@@ -12,20 +15,20 @@ import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.SkeletonRenderer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
 public class DeathEffect {
-//    public static HashMap<EntityType<?>, GoreData> goreStats = new HashMap<>();
+    //    public static HashMap<EntityType<?>, GoreData> goreStats = new HashMap<>();
     public static HashMap<Integer, GoreData> goreStats = new HashMap<>();
     private static GoreData genericGore;
 
@@ -33,11 +36,8 @@ public class DeathEffect {
     private static final ResourceLocation RES_LASER_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/laserdeath.png");
 
     static {
-        var render = (SkeletonRenderer) ClientProxy.getEntityRenderer(EntityType.SKELETON);
-        var model = render.getModel();
-
-//        goreStats.put(EntityType.SKELETON, (new GoreData(new ModelGibsBiped(model), 0, 0, 0)));
-        genericGore = (new GoreData(null, 160, 21, 31)).setTexture(new ResourceLocation(Ntgl.MOD_ID, "textures/entity/gore.png"));
+        genericGore = (new GoreData(null, 160, 21, 31))
+                .setTexture(new ResourceLocation(Ntgl.MOD_ID, "textures/entity/gore.png"));
         genericGore.setRandomScale(0.5f, 0.8f);
     }
 
@@ -61,9 +61,6 @@ public class DeathEffect {
             data.bloodColorR = genericGore.bloodColorR;
             data.bloodColorG = genericGore.bloodColorG;
             data.bloodColorB = genericGore.bloodColorB;
-//            data.type_main = genericGore.type_main;
-//            data.type_trail = genericGore.type_trail;
-            data.sound = genericGore.sound;
             goreStats.put(entity.getId(), data);
         }
         return data;
@@ -78,15 +75,18 @@ public class DeathEffect {
 
         if (deathtype.is(ModDamageTypes.EXPLOSIVE)) {
             setupGoreData(entity, data);
+            data.gravity = 0.2f;
+            data.deathType = DeathType.GORE;
             createGoreGibs(entity, x, y, z, data);
-        }
-        else if (deathtype.is(ModDamageTypes.ENERGY)) {
+        } else if (deathtype.is(ModDamageTypes.ENERGY)) {
             setupGoreData(entity, data);
-            CreateDisintegratedGibs(entity, x, y, z, data);
+            data.showBlood = false;
+            data.deathType = DeathType.LASER;
+            createDisintegratedGibs(entity, x, y, z, data);
         }
     }
 
-    private static void CreateDisintegratedGibs(LivingEntity entity, double x, double y, double z, GoreData data) {
+    private static void createDisintegratedGibs(LivingEntity entity, double x, double y, double z, GoreData data) {
         entity.playSound(ModSounds.DEATH_LASER.get(), 1.0f, 1.0f);
         data.texture = RES_LASER_EFFECT;
 
@@ -102,10 +102,21 @@ public class DeathEffect {
 
     private static void createGoreGibs(LivingEntity entity, double x, double y, double z, GoreData data) {
         entity.playSound(ModSounds.DEATH_GORE.get(), 1.0f, 1.0f);
-        var delta = entity.getDeltaMovement();
 
         for (int i = 0; i < data.getNumGibs(); i++) {
-            var random = entity.level().random;
+            var random = entity.getRandom();
+//            var delta = new Vec3(
+//                    0.1 * random.nextInt(-1, 1),
+//                    0.1,
+//                    0.1 * random.nextInt(-1, 1));
+
+//            var delta = new Vec3(
+//                    0.1,
+//                    0.1,
+//                    0.1);
+
+            var delta = entity.getDeltaMovement();
+
             var vx = (0.5 - random.nextDouble()) * 0.35;
             var vz = (0.5 - random.nextDouble()) * 0.35;
             var vy = entity.onGround() ?
@@ -148,27 +159,27 @@ public class DeathEffect {
         }
     }
 
-    public static class GoreData {
-        @Nullable public ModelGibs model = null;
-        @Nullable public ResourceLocation texture = null;
+    public static class GoreData implements INBTSerializable<CompoundTag> {
+        @Nullable
+        public ModelGibs model = null;
+        @Nullable
+        public ResourceLocation texture = null;
         public float particleScale = 1.0f;
-
-        int bloodColorR;
-        int bloodColorG;
-        int bloodColorB;
-
-        //public boolean showBlood = true;
-        String fx_main = "GoreFX_Blood";
-        String fx_trail = "GoreTrailFX_Blood";
+        public float gravity;
+        public int bloodColorR;
+        public int bloodColorG;
+        public int bloodColorB;
+        public boolean showBlood = true;
         public SoundEvent sound = ModSounds.DEATH_GORE.get();
-
+        public DeathType deathType = DeathType.DEFAULT;
 //        public TGParticleSystemType type_main;
 //        public TGParticleSystemType type_trail;
 
         public float minPartScale = 1.0f;
         public float maxPartScale = 1.0f;
 
-        public GoreData() {}
+        public GoreData() {
+        }
 
         public GoreData(ModelGibs model, int bloodColorR, int bloodColorG, int bloodColorB) {
             this.model = model;
@@ -178,23 +189,46 @@ public class DeathEffect {
             this.bloodColorB = bloodColorB;
         }
 
+        @Override
+        public CompoundTag serializeNBT() {
+            var tag = new CompoundTag();
+            if (texture != null)
+                tag.putString("texture", texture.toString());
+            tag.putFloat("gravity", gravity);
+
+            tag.putInt("bloodColorR", bloodColorR);
+            tag.putInt("bloodColorG", bloodColorG);
+            tag.putInt("bloodColorB", bloodColorB);
+            tag.putBoolean("showBlood", showBlood);
+            tag.putInt("deathType", deathType.getValue());
+
+            return tag;
+        }
+
+        @Override
+        public void deserializeNBT(CompoundTag tag) {
+            if (tag.contains("texture"))
+                texture = new ResourceLocation(tag.getString("texture"));
+            if (tag.contains("gravity"))
+                gravity = tag.getFloat("gravity");
+            if (tag.contains("bloodColorR"))
+                bloodColorR = tag.getInt("bloodColorR");
+            if (tag.contains("bloodColorG"))
+                bloodColorG = tag.getInt("bloodColorG");
+            if (tag.contains("bloodColorB"))
+                bloodColorB = tag.getInt("bloodColorB");
+            if (tag.contains("showBlood"))
+                showBlood = tag.getBoolean("showBlood");
+            if (tag.contains("deathType"))
+                deathType = DeathType.getById(tag.getInt("deathType"));
+        }
+
         public int getNumGibs() {
             return model != null ? model.getNumGibs() : 0;
         }
 
         public GoreData setTexture(ResourceLocation texture) {
             this.texture = texture;
-            return this;
-        }
-
-        public GoreData setFXscale(float scale) {
-            this.particleScale = scale;
-            return this;
-        }
-
-        public GoreData setFX(String fx_main, String fx_trail) {
-            this.fx_main = fx_main;
-            this.fx_trail = fx_trail;
             return this;
         }
 
@@ -238,31 +272,5 @@ public class DeathEffect {
             minPartScale = min;
             maxPartScale = max;
         }
-
-
-//        private TGParticleSystemType getExtendedType(TGParticleSystemType supertype) {
-//            var type = new TGParticleSystemType();
-//
-//            type.extend(supertype);
-//
-//            if (type.colorEntries.size() >= 1) {
-//                type.colorEntries.get(0).r = (float) this.bloodColorR / 255.0f;
-//                type.colorEntries.get(0).g = (float) this.bloodColorG / 255.0f;
-//                type.colorEntries.get(0).b = (float) this.bloodColorB / 255.0f;
-//            }
-//
-//            type.sizeMin *= particleScale;
-//            type.sizeMax *= particleScale;
-//            type.sizeRateMin *= particleScale;
-//            type.sizeRateMax *= particleScale;
-//            type.startSizeRateDampingMin *= particleScale;
-//            type.startSizeRateMin *= particleScale;
-//            type.startSizeRateMax *= particleScale;
-//            for (int i = 0; i < type.volumeData.length; i++) {
-//                type.volumeData[i] *= particleScale;
-//            }
-//            return type;
-//        }
-
     }
 }

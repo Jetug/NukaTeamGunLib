@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.common.data.interfaces.IAgeableAccessor;
 import com.nukateam.ntgl.common.data.interfaces.IModelAccessor;
+import com.nukateam.ntgl.common.data.util.Rgba;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -23,7 +24,8 @@ public class ModelGibsAgeable extends ModelGibs {
     }
 
     @Override
-    public void render(Entity entity, int part, PoseStack poseStack, RenderType rendertype, MultiBufferSource buffer, VertexConsumer pVertexConsumer, int packedLight, int packedOverlay) {
+    public void render(Entity entity, int part, PoseStack poseStack, RenderType rendertype, MultiBufferSource buffer,
+                       VertexConsumer pVertexConsumer, int packedLight, int packedOverlay, Rgba rgba) {
         var ageableAccessor = (IAgeableAccessor)model;
         var isHead = new ArrayList<Boolean>();
         ageableAccessor.getHeadParts().forEach((val) -> isHead.add(true));
@@ -47,7 +49,8 @@ public class ModelGibsAgeable extends ModelGibs {
                     poseStack.translate(0.0F, ageableAccessor.getBodyYOffset() / 16.0F, 0.0F);
                 }
             }
-            accessor.getModelParts().get(part).render(poseStack, pVertexConsumer, packedLight, packedOverlay);
+            accessor.getModelParts().get(part).render(poseStack, pVertexConsumer, packedLight, packedOverlay,
+                    rgba.r(), rgba.g(), rgba.g(), rgba.a());
         }
         poseStack.popPose();
     }
