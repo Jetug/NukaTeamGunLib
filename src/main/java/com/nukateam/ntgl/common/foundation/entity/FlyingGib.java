@@ -57,18 +57,13 @@ public class FlyingGib extends Entity {
         this(Projectiles.FLYING_GIBS.get(), world);
         this.setPos(pos.x, pos.y, pos.z);
         this.rand = this.level().getRandom();
-
-        setDeltaMovement(delta);
-
-//        this.xDelta = delta.x;
-//        this.yDelta = delta.y;
-//        this.zDelta = delta.z;
         this.size = size;
         this.maxTimeToLive = LIFE + rand.nextInt(50);
         this.timeToLive = maxTimeToLive;
         this.rotationAxis = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
         this.data = data;
 
+        setDeltaMovement(delta);
         setRot(entity.getYRot(), getXRot());
 
         getEntityData().set(ENTITY, entity.getId());

@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoReplacedEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -42,9 +43,14 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                     } catch (IllegalArgumentException e) {
                         e.printStackTrace();
                     }
+                    poseStack.mulPose(Axis.ZP.rotationDegrees(180));
                 }
-                else if(render instanceof GeoEntityRenderer geoRenderer && entity instanceof GeoAnimatable animatable){
-                    if (data.texture == null) {
+                else if(data.texture == null && entity instanceof GeoAnimatable animatable){
+                    if (render instanceof GeoEntityRenderer geoRenderer) {
+                        var geoModel = geoRenderer.getGeoModel();
+                        data.texture = geoModel.getTextureResource(animatable);
+                    }
+                    else if(render instanceof GeoReplacedEntityRenderer geoRenderer){
                         var geoModel = geoRenderer.getGeoModel();
                         data.texture = geoModel.getTextureResource(animatable);
                     }
@@ -79,7 +85,7 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                 var rendertype = RenderType.itemEntityTranslucentCull(texture);
                 var vertexConsumer = buffer.getBuffer(rendertype);
 
-                poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+//                poseStack.mulPose(Axis.ZP.rotationDegrees(180));
 
 //                poseStack.mulPose(Axis.XP.rotationDegrees((float)(rot_angle * flyingGib.rotationAxis.x)));
 //                poseStack.mulPose(Axis.YP.rotationDegrees((float)(rot_angle * flyingGib.rotationAxis.y)));
@@ -90,7 +96,7 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
 
                 var prog = ((float) entity.deathTime / (float) MAX_DEATH_TIME);
                 var mainAlpha = 1.0f - prog;
-                var scale = 1.0f + prog;
+                var scale = 1.0f + prog / 2;
                 var rgba = Rgba.DEFAULT;
 
                 poseStack.pushPose();
@@ -98,6 +104,7 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                     switch (flyingGib.getData().deathType){
                         case LASER -> {
                             poseStack.scale(scale, scale, scale);
+                            poseStack.translate(0, -scale / 2, 0);
                             rgba = rgba.setAlpha(mainAlpha);
                         }
                     }
