@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.renderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.ClientProxy;
-import com.nukateam.ntgl.common.foundation.entity.FlyingGibs;
+import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import net.minecraft.client.Minecraft;
@@ -16,13 +16,13 @@ import net.minecraft.resources.ResourceLocation;
 
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.getGoreData;
 
-public class FlyingGibsRenderer extends EntityRenderer<FlyingGibs> {
+public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
     public FlyingGibsRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
     }
 
     @Override
-    public void render(FlyingGibs pEntity, float pEntityYaw, float pPartialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void render(FlyingGib pEntity, float pEntityYaw, float pPartialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         var entity = pEntity.getLocalEntity();
         if(entity == null) return;
 
@@ -32,12 +32,10 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGibs> {
             poseStack.pushPose();
             {
                 var render = ClientProxy.getEntityRenderer(entity);
-                if (render instanceof LivingEntityRenderer<?, ?> livingRenderer) {
+                if (render instanceof LivingEntityRenderer<?, ?>) {
                     try {
-                        if (data.texture == null) {
+                        if (data.texture == null)
                             data.texture = render.getTextureLocation(entity);
-                        }
-
                     } catch (IllegalArgumentException e) {
                         e.printStackTrace();
                     }
@@ -96,7 +94,7 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGibs> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(FlyingGibs entity) {
+    public ResourceLocation getTextureLocation(FlyingGib entity) {
         var render = ClientProxy.getEntityRenderer(entity.getLocalEntity());
         return render.getTextureLocation(entity.getLocalEntity());
 //        return getGoreData(entity.entity).texture;

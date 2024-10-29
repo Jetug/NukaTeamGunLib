@@ -18,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3d;
+import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +29,7 @@ import static com.nukateam.ntgl.common.base.utils.EntityDeathUtils.DeathType.*;
 
 public class DeathEffectEntityRenderer {
     private static final ResourceLocation RES_BIO_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/bio.png");
-//    private static final ResourceLocation RES_LASER_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/laserdeath.png");
+    private static final ResourceLocation RES_LASER_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/laserdeath.png");
     private static final int MAX_DEATH_TIME = 20;
 
 //    public static Field RLB_mainModel = ReflectionHelper.findField(RenderLivingBase.class, "mainModel", "field_77045_g");
@@ -72,11 +73,11 @@ public class DeathEffectEntityRenderer {
     public static void doRender(LivingEntityRenderer renderer, LivingEntity entity, PoseStack poseStack,
                                 MultiBufferSource buffer, int pPackedLight,
                                 Vec3 pos) {
-        this.model.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F);
+//        this.model.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F);
 
-        poseStack.pushPose();
+//        poseStack.pushPose();
         {
-            renderer.render();
+//            renderer.render();
             //renderer.mainModel.onGround = renderer.renderSwingProgress(entity, ptt);
 
             //   if (renderer.renderPassModel != null)
@@ -91,6 +92,14 @@ public class DeathEffectEntityRenderer {
             //       renderer.renderPassModel.isRiding = renderer.mainModel.isRiding;
             //   }
             var mainModel = renderer.getModel();
+            var accessor = (IModelAccessor)mainModel;
+            var childBoxes = accessor.getModelParts();
+            var rendertype = RenderType.itemEntityTranslucentCull(RES_BIO_EFFECT);
+            var vertexConsumer = buffer.getBuffer(rendertype);
+
+            childBoxes.forEach((bone) -> {
+                bone.render(poseStack, vertexConsumer, pPackedLight, 0xffffff);
+            });
 
 //	        ModelBase renderPassModel = null;
 //	        if (renderPassModel != null)
@@ -108,16 +117,16 @@ public class DeathEffectEntityRenderer {
 //                poseStack.translate(pos.x, pos.y, pos.z);
 //                f4 = (float) entity.ticksExisted + ptt;
 
-                float f5 = 0.0625F;
+//                float f5 = 0.0625F;
                 //GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 
 //                GlStateManager.enableRescaleNormal();
-                poseStack.scale(-1.0f, -1.0f, -1.0f);
-                //GL11.glScalef(-1.0F, -1.0F, 1.0F);
-
+//                poseStack.scale(-1.0f, -1.0f, -1.0f);
+//                GL11.glScalef(-1.0F, -1.0F, 1.0F);
+//
                 //renderer.preRenderCallback(entity, ptt);
 
-                poseStack.translate(0.0F, -24.0F * f5 - 0.0078125F, 0.0F);
+//                poseStack.translate(0.0F, -24.0F * f5 - 0.0078125F, 0.0F);
 
 //                float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * ptt;
 //                float limbSwing = entity.limbSwing - entity.limbSwingAmount * (1.0F - ptt);
@@ -133,7 +142,7 @@ public class DeathEffectEntityRenderer {
                 //GL11.glEnable(GL11.GL_ALPHA_TEST);
 //                GlStateManager.enableAlpha();
 
-                renderModelDeathBio(renderer, entity, poseStack, buffer, pPackedLight, OverlayTexture.NO_OVERLAY);
+//                renderModelDeathBio(renderer, entity, poseStack, buffer, pPackedLight, OverlayTexture.NO_OVERLAY);
 
 //                switch (deathType) {
 //                    case BIO:
@@ -169,7 +178,7 @@ public class DeathEffectEntityRenderer {
 //            GlStateManager.enableCull();
 //            GlStateManager.popMatrix();
         }
-        poseStack.popPose();
+//        poseStack.popPose();
         //renderer.passSpecialRender(entity, x, y, z);
     }
 

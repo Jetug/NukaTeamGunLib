@@ -24,10 +24,10 @@ import static com.nukateam.ntgl.ClientProxy.getEntityBlockPos;
 import static net.minecraft.network.syncher.SynchedEntityData.defineId;
 import static net.minecraft.tags.FluidTags.LAVA;
 
-public class FlyingGibs extends Entity {
-    public static final EntityDataAccessor<Integer> ENTITY = defineId(FlyingGibs.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Integer> PART = defineId(FlyingGibs.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Float> SIZE = defineId(FlyingGibs.class, EntityDataSerializers.FLOAT);
+public class FlyingGib extends Entity {
+    public static final EntityDataAccessor<Integer> ENTITY = defineId(FlyingGib.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> PART = defineId(FlyingGib.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Float> SIZE = defineId(FlyingGib.class, EntityDataSerializers.FLOAT);
     public static final int LIFE = 75;
     public static final double BOUNCE = -0.5;
 
@@ -49,16 +49,15 @@ public class FlyingGibs extends Entity {
     public DeathEffect.GoreData data;
 
 //    public TGParticleSystem trail_system;
-
     //public EntityDT entityDT;
 
-    public FlyingGibs(EntityType<FlyingGibs> type, Level level) {
+    public FlyingGib(EntityType<FlyingGib> type, Level level) {
         super(type, level);
         this.rand = this.level().getRandom();
         this.rotationAxis = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
     }
 
-    public FlyingGibs(Level world, LivingEntity entity, DeathEffect.GoreData data, Vec3 pos, Vec3 delta, float size, int bodyPart) {
+    public FlyingGib(Level world, LivingEntity entity, DeathEffect.GoreData data, Vec3 pos, Vec3 delta, float size, int bodyPart) {
         this(Projectiles.FLYING_GIBS.get(), world);
         this.setPos(pos.x, pos.y, pos.z);
         this.rand = this.level().getRandom();
@@ -139,11 +138,15 @@ public class FlyingGibs extends Entity {
 
         var motionScale = this.isInWater() ? this.getWaterInertia() : 1f;
 
-//        this.setDeltaMovement(new Vec3(xDelta, yDelta, zDelta).scale(motionScale));
-
         this.setDeltaMovement(getDeltaMovement().scale(motionScale));
         handleGravity();
         particleTick();
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        DeathEffect.goreStats.remove(getEntityId());
+        super.onRemovedFromWorld();
     }
 
     private void particleTick() {

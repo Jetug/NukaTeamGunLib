@@ -18,8 +18,8 @@ public class EntityEvents {
         var entity = event.getEntity();
         ClientProxy.setDamageType(entity, event.getSource());
 
-        if (!entity.level().isClientSide && event.getSource().is(ModDamageTypes.EXPLOSIVE)){
-            DeathEffect.createDeathEffect(entity, DeathType.GORE, entity.getDeltaMovement());
+        if (!entity.level().isClientSide){
+            DeathEffect.createDeathEffect(entity, event.getSource());
         }
     }
 }

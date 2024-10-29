@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.client.model.gibs;
 
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.common.data.interfaces.IAgeableAccessor;

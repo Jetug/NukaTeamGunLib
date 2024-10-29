@@ -11,12 +11,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
 import javax.annotation.Nullable;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -47,7 +45,8 @@ public class ModDamageTypes {
             return access.registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(damageTypeKey);
         }
 
-        public static DamageSource source(RegistryAccess access, ResourceKey<DamageType> damageTypeKey, @Nullable Entity directEntity, @Nullable Entity causingEntity) {
+        public static DamageSource source(RegistryAccess access, ResourceKey<DamageType> damageTypeKey,
+                                          @Nullable Entity directEntity, @Nullable Entity causingEntity) {
             return new BulletDamageSource(getHolder(access, damageTypeKey), directEntity, causingEntity);
         }
 
@@ -69,20 +68,29 @@ public class ModDamageTypes {
             }
 
             public Component getLocalizedDeathMessage(LivingEntity pLivingEntity) {
-                final String s = "death.attack." + this.getMsgId();
+                final var s = "death.attack." + this.getMsgId();
                 if (this.getEntity() == null && this.getDirectEntity() == null) {
-                    LivingEntity living = pLivingEntity.getKillCredit();
-                    return living != null ? Component.translatable(s + ".player", pLivingEntity.getDisplayName(), living.getDisplayName()) : Component.translatable(s, pLivingEntity.getDisplayName());
+                    var living = pLivingEntity.getKillCredit();
+                    return living != null ?
+                            Component.translatable(s + ".player", pLivingEntity.getDisplayName(), living.getDisplayName()) :
+                            Component.translatable(s, pLivingEntity.getDisplayName());
                 } else {
-                    final Component component = this.getEntity() == null ? this.getDirectEntity().getDisplayName() : this.getEntity().getDisplayName();
-                    final ItemStack stack = this.getEntity() instanceof LivingEntity livingentity ? livingentity.getMainHandItem() : ItemStack.EMPTY;
+                    final var component = this.getEntity() == null ?
+                            this.getDirectEntity().getDisplayName() :
+                            this.getEntity().getDisplayName();
+
+                    final var stack = this.getEntity() instanceof LivingEntity livingentity ?
+                            livingentity.getMainHandItem() :
+                            ItemStack.EMPTY;
+
                     return !stack.isEmpty() && stack.hasCustomHoverName() ?
                             Component.translatable(
                                     s + ".item",
                                     pLivingEntity.getDisplayName(),
                                     component,
                                     stack.getDisplayName()
-                            ) : Component.translatable(s, pLivingEntity.getDisplayName(), component);
+                            ) :
+                            Component.translatable(s, pLivingEntity.getDisplayName(), component);
                 }
             }
 

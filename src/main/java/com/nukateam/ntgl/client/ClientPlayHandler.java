@@ -48,57 +48,62 @@ import javax.annotation.Nullable;
  */
 public class ClientPlayHandler {
     public static void handleMessageGunSound(S2CMessageGunSound message) {
-        Minecraft mc = Minecraft.getInstance();
+        var mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null)
             return;
 
-        if (message.showMuzzleFlash()) {
+        if (message.showMuzzleFlash())
             GunRenderingHandler.get().showMuzzleFlashForPlayer(message.getShooterId());
-        }
 
-        if (message.getShooterId() == mc.player.getId()) {
+        if (message.getShooterId() == mc.player.getId())
             Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(message.getId(), SoundSource.PLAYERS, message.getVolume(), message.getPitch(), mc.level.getRandom(), false, 0, SoundInstance.Attenuation.NONE, 0, 0, 0, true));
-        } else {
-            Minecraft.getInstance().getSoundManager().play(new GunShotSound(message.getId(), SoundSource.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch(), message.isReload()));
-        }
+        else Minecraft.getInstance().getSoundManager().play(new GunShotSound(message.getId(), SoundSource.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch(), message.isReload()));
     }
 
     public static void handleMessageBlood(S2CMessageBlood message) {
-        if (!Config.CLIENT.particle.enableBlood.get()) {
+        if (!Config.CLIENT.particle.enableBlood.get())
             return;
-        }
-        Level world = Minecraft.getInstance().level;
+
+        var world = Minecraft.getInstance().level;
         if (world != null) {
             for (int i = 0; i < 10; i++) {
-                world.addParticle(ModParticleTypes.BLOOD.get(), true, message.getX(), message.getY(), message.getZ(), 0.5, 0, 0.5);
+                world.addParticle(
+                        ModParticleTypes.BLOOD.get(), true,
+                        message.getX(), message.getY(), message.getZ(),
+                        0.5, 0, 0.5);
             }
         }
     }
 
     public static void handleMessageBulletTrail(S2CMessageBulletTrail message) {
-        Level world = Minecraft.getInstance().level;
+        var world = Minecraft.getInstance().level;
         if (world != null) {
-            int[] entityIds = message.getEntityIds();
-            Vec3[] positions = message.getPositions();
-            Vec3[] motions = message.getMotions();
-            ItemStack item = message.getItem();
-            int trailColor = message.getTrailColor();
-            double trailLengthMultiplier = message.getTrailLengthMultiplier();
-            int life = message.getLife();
-            double gravity = message.getGravity();
-            int shooterId = message.getShooterId();
-            boolean enchanted = message.isEnchanted();
-            ParticleOptions data = message.getParticleData();
+            var entityIds = message.getEntityIds();
+            var positions = message.getPositions();
+            var motions = message.getMotions();
+            var item = message.getItem();
+            var trailColor = message.getTrailColor();
+            var trailLengthMultiplier = message.getTrailLengthMultiplier();
+            var life = message.getLife();
+            var gravity = message.getGravity();
+            var shooterId = message.getShooterId();
+            var enchanted = message.isEnchanted();
+            var data = message.getParticleData();
+
             for (int i = 0; i < message.getCount(); i++) {
-                BulletTrailRenderingHandler.get().add(new BulletTrail(entityIds[i], positions[i], motions[i], item, trailColor, trailLengthMultiplier, life, gravity, shooterId, enchanted, data));
+                BulletTrailRenderingHandler.get().add(
+                        new BulletTrail(entityIds[i], positions[i], motions[i],
+                                item, trailColor, trailLengthMultiplier, life,
+                                gravity, shooterId, enchanted, data)
+                );
             }
         }
     }
 
     public static void handleExplosionStunGrenade(S2CMessageStunGrenade message) {
-        Minecraft mc = Minecraft.getInstance();
-        ParticleEngine particleManager = mc.particleEngine;
-        Level world = mc.level;
+        var mc = Minecraft.getInstance();
+        var particleManager = mc.particleEngine;
+        var world = mc.level;
         double x = message.getX();
         double y = message.getY();
         double z = message.getZ();
@@ -110,7 +115,7 @@ public class ClientPlayHandler {
 
         /* Spawn fast moving smoke/spark particles */
         for (int i = 0; i < 30; i++) {
-            Particle smoke = spawnParticle(particleManager, ParticleTypes.SMOKE, x, y, z, world.random, 4.0);
+            var smoke = spawnParticle(particleManager, ParticleTypes.SMOKE, x, y, z, world.random, 4.0);
             smoke.setLifetime((int) ((8 / (Math.random() * 0.1 + 0.4)) * 0.5));
             spawnParticle(particleManager, ParticleTypes.CRIT, x, y, z, world.random, 4.0);
         }
@@ -121,23 +126,26 @@ public class ClientPlayHandler {
     }
 
     public static void handleProjectileHitBlock(S2CMessageProjectileHitBlock message) {
-        Minecraft mc = Minecraft.getInstance();
-        Level world = mc.level;
+        var mc = Minecraft.getInstance();
+        var world = mc.level;
+
         if (world != null) {
-            BlockState state = world.getBlockState(message.getPos());
+            var state = world.getBlockState(message.getPos());
             double holeX = message.getX() + 0.005 * message.getFace().getStepX();
             double holeY = message.getY() + 0.005 * message.getFace().getStepY();
             double holeZ = message.getZ() + 0.005 * message.getFace().getStepZ();
             double distance = Math.sqrt(mc.player.distanceToSqr(message.getX(), message.getY(), message.getZ()));
             world.addParticle(new BulletHoleData(message.getFace(), message.getPos()), false, holeX, holeY, holeZ, 0, 0, 0);
+
             if (distance < Config.CLIENT.particle.impactParticleDistance.get()) {
                 for (int i = 0; i < 4; i++) {
-                    Vec3i normal = message.getFace().getNormal();
-                    Vec3 motion = new Vec3(normal.getX(), normal.getY(), normal.getZ());
+                    var normal = message.getFace().getNormal();
+                    var motion = new Vec3(normal.getX(), normal.getY(), normal.getZ());
                     motion.add(getRandomDir(world.random), getRandomDir(world.random), getRandomDir(world.random));
                     world.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), false, message.getX(), message.getY(), message.getZ(), motion.x, motion.y, motion.z);
                 }
             }
+
             if (distance <= Config.CLIENT.sounds.impactSoundDistance.get()) {
                 world.playLocalSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 2.0F, 2.0F, false);
             }
@@ -148,6 +156,7 @@ public class ClientPlayHandler {
     public static void handleEntityData(S2CMessageEntityData message) {
         var mc = Minecraft.getInstance();
         var level = mc.level;
+
         if (level != null) {
             var entity = level.getEntity(message.getEntityId());
             if(entity instanceof ProjectileEntity projectile) {

@@ -61,5 +61,12 @@
          "ntgl:effects/gore_b",
          "ntgl:effects/gore_c"
       ]
+   },
+
+   "effects.disintegrate": {
+      "category": "hostile",
+      "sounds": [
+         "ntgl:effects/disintegrate"
+      ]
    }
 }
