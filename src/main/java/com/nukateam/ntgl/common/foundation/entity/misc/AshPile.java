@@ -34,6 +34,14 @@ public class AshPile extends Entity implements GeoEntity {
         else this.kill();
     }
 
+    public int getMaxLife(){
+        return LIFE;
+    }
+
+    public int getLife(){
+        return timeToLive;
+    }
+
     @Override
     protected void defineSynchedData() {}
 

@@ -20,9 +20,6 @@ public class EntityEvents {
 
         if (!entity.level().isClientSide){
             DeathEffect.createDeathEffect(entity, event.getSource());
-            var pos = new Vec3(entity.getX(), entity.getBlockY(), entity.getZ());
-            var ashPile = new AshPile(entity.level(), pos);
-            entity.level().addFreshEntity(ashPile);
         }
     }
 }

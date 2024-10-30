@@ -8,6 +8,7 @@ import com.nukateam.ntgl.client.model.gibs.ModelGibsGeneric;
 import com.nukateam.ntgl.client.model.gibs.ModelGibsGeo;
 import com.nukateam.ntgl.common.base.utils.DeathType;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
+import com.nukateam.ntgl.common.foundation.entity.misc.AshPile;
 import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
@@ -79,11 +80,19 @@ public class DeathEffect {
             data.deathType = DeathType.GORE;
             createGoreGibs(entity, vec, data);
         } else if (deathtype.is(ModDamageTypes.ENERGY)) {
+            createAshPile(entity);
             setupGoreData(entity, data);
-//            data.gravity = -0.005f;
             data.showBlood = false;
             data.deathType = DeathType.LASER;
             createDisintegratedGibs(entity, vec, data);
+        }
+    }
+
+    private static void createAshPile(LivingEntity entity) {
+        if(!entity.isInWater()) {
+            var pos = new Vec3(entity.getX(), entity.getBlockY(), entity.getZ());
+            var ashPile = new AshPile(entity.level(), pos);
+            entity.level().addFreshEntity(ashPile);
         }
     }
 
