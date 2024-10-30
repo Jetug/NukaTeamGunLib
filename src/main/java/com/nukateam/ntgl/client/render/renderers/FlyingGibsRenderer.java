@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
+import mod.azure.azurelib.renderer.GeoRenderer;
 import mod.azure.azurelib.renderer.GeoReplacedEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -45,15 +46,12 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                     }
                     poseStack.mulPose(Axis.ZP.rotationDegrees(180));
                 }
-                else if(data.texture == null && entity instanceof GeoAnimatable animatable){
-                    if (render instanceof GeoEntityRenderer geoRenderer) {
+                else if(render instanceof GeoRenderer geoRenderer && entity instanceof GeoAnimatable animatable){
+                    if (data.texture == null) {
                         var geoModel = geoRenderer.getGeoModel();
                         data.texture = geoModel.getTextureResource(animatable);
                     }
-                    else if(render instanceof GeoReplacedEntityRenderer geoRenderer){
-                        var geoModel = geoRenderer.getGeoModel();
-                        data.texture = geoModel.getTextureResource(animatable);
-                    }
+                    poseStack.mulPose(Axis.YP.rotationDegrees(180));
                 }
 
                 var partialTickTime = Minecraft.getInstance().getFrameTime();
@@ -87,9 +85,7 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
 
 //                poseStack.mulPose(Axis.ZP.rotationDegrees(180));
 
-//                poseStack.mulPose(Axis.XP.rotationDegrees((float)(rot_angle * flyingGib.rotationAxis.x)));
-//                poseStack.mulPose(Axis.YP.rotationDegrees((float)(rot_angle * flyingGib.rotationAxis.y)));
-//                poseStack.mulPose(Axis.ZP.rotationDegrees((float)(rot_angle * flyingGib.rotationAxis.z)));
+//
                 poseStack.translate(0,-entity.getType().getHeight() / 2,0);
 
 //                poseStack.mulPose(new Quaternionf(flyingGib.rotationAxis.x, flyingGib.rotationAxis.y, flyingGib.rotationAxis.z, rot_angle));
@@ -99,20 +95,23 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                 var scale = 1.0f + prog / 2;
                 var rgba = Rgba.DEFAULT;
 
-                poseStack.pushPose();
-                {
-                    switch (flyingGib.getData().deathType){
-                        case LASER -> {
-                            poseStack.scale(scale, scale, scale);
-                            poseStack.translate(0, -scale / 2, 0);
-                            rgba = rgba.setAlpha(mainAlpha);
-                        }
-                    }
 
-                    data.model.render(entity, flyingGib.getPartId(), poseStack, rendertype, buffer,
-                            vertexConsumer, packedLight, 0xFFFFFF, rgba);
+                switch (flyingGib.getData().deathType){
+                    case LASER -> {
+                        poseStack.scale(scale, scale, scale);
+                        poseStack.translate(0, -scale / 2, 0);
+                        rgba = rgba.setAlpha(mainAlpha);
+                    }
+                    case GORE -> {
+                        poseStack.mulPose(Axis.XP.rotationDegrees(prog * (float) flyingGib.rotationAxis.x));
+                        poseStack.mulPose(Axis.YP.rotationDegrees(prog * (float) flyingGib.rotationAxis.y));
+                        poseStack.mulPose(Axis.ZP.rotationDegrees(prog * (float) flyingGib.rotationAxis.z));
+                    }
                 }
-                poseStack.popPose();
+
+                data.model.render(entity, flyingGib.getPartId(), poseStack, rendertype, buffer,
+                        vertexConsumer, packedLight, 0xFFFFFF, rgba);
+
 
                 super.render(flyingGib, pEntityYaw, pPartialTick, poseStack, buffer, packedLight);
             }

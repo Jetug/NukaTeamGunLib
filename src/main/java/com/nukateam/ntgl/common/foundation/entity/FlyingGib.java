@@ -49,7 +49,10 @@ public class FlyingGib extends Entity {
     public FlyingGib(EntityType<FlyingGib> type, Level level) {
         super(type, level);
         this.rand = this.level().getRandom();
-        this.rotationAxis = new Vec3(rand.nextDouble(), rand.nextDouble(), rand.nextDouble());
+        this.rotationAxis = new Vec3(
+                rand.nextInt(0, 90),
+                rand.nextInt(0, 90),
+                rand.nextInt(0, 90));
     }
 
     public FlyingGib(Level world, LivingEntity entity, GoreData data, Vec3 pos, Vec3 delta,
