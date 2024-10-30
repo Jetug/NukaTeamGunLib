@@ -57,9 +57,8 @@
    "effects.gore": {
       "category": "hostile",
       "sounds": [
-         "ntgl:effects/gore_a",
-         "ntgl:effects/gore_b",
-         "ntgl:effects/gore_c"
+         "ntgl:effects/gore_1",
+         "ntgl:effects/gore_2"
       ]
    },
 
