@@ -5,17 +5,21 @@ import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.common.foundation.init.ModParticleTypes;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PowderSnowBlock;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.Lazy;
 
@@ -40,7 +44,7 @@ public class FlyingGib extends Entity {
 
     public int maxTimeToLive = 2000;
     public int timeToLive = 2000;
-//    public double gravity = 0.029999999329447746D;
+    public double gravity = 0.029999999329447746D;
     public Vec3 rotationAxis;
     public int hitGroundTTL = 0;
     public float size;
@@ -73,6 +77,8 @@ public class FlyingGib extends Entity {
         getEntityData().set(PART, bodyPart);
         getEntityData().set(SIZE, size);
         getEntityData().set(DATA, data.serializeNBT());
+//        this.gravity = data.gravity * (1 + entity.getRandom().nextFloat());
+//        this.gravity = data.gravity;
     }
 
     @Override
@@ -87,50 +93,63 @@ public class FlyingGib extends Entity {
     @Override
     public void tick() {
         super.tick();
-//        if(level().isClientSide) return;
-//        var rand = this.level().getRandom();
 
         if (this.timeToLive > 0)
             --timeToLive;
         else this.kill();
 
-//        var xDelta = this.xDelta;
-//        var yDelta = this.yDelta;
-//        var zDelta = this.zDelta;
-
-//        yDelta -= gravity;
-
-//        addDeltaMovement(new Vec3(0, yDelta - gravity, 0));
-
         handleLavaMovement();
 
         this.move(MoverType.SELF, getDeltaMovement());
-//        float f = 0.98F;
 
         if (this.onGround()) {
             if (hitGroundTTL == 0) {
                 hitGroundTTL = timeToLive;
             }
 
-//            f = (float)(this.level()
-//                    .getBlockState(getEntityBlockPos(this))
-//                    .getBlock()
-//                    .getFriction() * 0.98);
+//            var pos = getBlockPosBelowThatAffectsMyMovement();
+//            var friction = this.level().getBlockState(pos).getFriction(this.level(), pos, this) * 0.98F;
+//
+//            friction = this.onGround() ? friction * 0.91F : 0.91F;
+//            this.setDeltaMovement(this.getDeltaMovement().multiply(friction, 0.98D, friction));
+
+            BlockPos blockpos = this.getBlockPosBelowThatAffectsMyMovement();
+            float friction = this.level().getBlockState(this.getBlockPosBelowThatAffectsMyMovement()).getFriction(level(), this.getBlockPosBelowThatAffectsMyMovement(), this);
+            float newFriction = this.onGround() ? friction * 0.91F : 0.91F;
+
+            Vec3 vec35 = this.handleRelativeFrictionAndCalculateMovement(getDeltaMovement(), friction);
+            double d2 = vec35.y;
+
+            if (this.level().isClientSide && !this.level().hasChunkAt(blockpos)) {
+                if (this.getY() > (double)this.level().getMinBuildHeight())
+                    d2 = -0.1D;
+                else d2 = 0.0D;
+            }
+
+            this.setDeltaMovement(vec35.x * (double)newFriction, d2 * (double)0.98F, vec35.z * (double)newFriction);
         }
-
-//        xDelta *= f;
-//        yDelta *= 0.9800000190734863D;
-//        zDelta *= f;
-
-//        if (this.onGround()) {
-//            yo *= BOUNCE;
-//        }
 
         var motionScale = this.isInWater() ? this.getWaterInertia() : 1f;
 
         this.setDeltaMovement(getDeltaMovement().scale(motionScale));
         handleGravity();
         particleTick();
+    }
+
+    public Vec3 handleRelativeFrictionAndCalculateMovement(Vec3 pDeltaMovement, float pFriction) {
+        this.moveRelative(this.getFrictionInfluencedSpeed(pFriction), pDeltaMovement);
+//        this.setDeltaMovement(this.handleOnClimbable(this.getDeltaMovement()));
+        this.move(MoverType.SELF, this.getDeltaMovement());
+        Vec3 vec3 = this.getDeltaMovement();
+        if ((this.horizontalCollision) && (this.getFeetBlockState().is(Blocks.POWDER_SNOW) && PowderSnowBlock.canEntityWalkOnPowderSnow(this))) {
+            vec3 = new Vec3(vec3.x, 0.2D, vec3.z);
+        }
+
+        return vec3;
+    }
+
+    private float getFrictionInfluencedSpeed(float pFriction) {
+        return this.onGround() ? 1.5F * (0.21600002F / (pFriction * pFriction * pFriction)) : 0.02F;
     }
 
     @Override
@@ -156,39 +175,13 @@ public class FlyingGib extends Entity {
 
         var gravity = getData().gravity;
         var vec3 = this.getDeltaMovement();
-        var vec31 = this.getLookAngle();
         var f = this.getXRot() * ((float)Math.PI / 180F);
-        var d1 = Math.sqrt(vec31.x * vec31.x + vec31.z * vec31.z);
-        var d3 = vec3.horizontalDistance();
-        var d4 = vec31.length();
         var d5 = Math.cos(f);
 
-        d5 = d5 * d5 * Math.min(1.0D, d4 / 0.4D);
         vec3 = this.getDeltaMovement().add(0.0D, gravity * (-1.0D + d5 * 0.75D), 0.0D);
-        if (vec3.y < 0.0D && d1 > 0.0D) {
-            double d6 = vec3.y * -0.1D * d5;
-            vec3 = vec3.add(vec31.x * d6 / d1, d6, vec31.z * d6 / d1);
-        }
-
-        if (f < 0.0F && d1 > 0.0D) {
-            double d10 = d3 * (double)(-Mth.sin(f)) * 0.04D;
-            vec3 = vec3.add(-vec31.x * d10 / d1, d10 * 3.2D, -vec31.z * d10 / d1);
-        }
-
-        if (d1 > 0.0D) {
-            vec3 = vec3.add((vec31.x / d1 * d3 - vec3.x) * 0.1D, 0.0D, (vec31.z / d1 * d3 - vec3.z) * 0.1D);
-        }
 
         this.setDeltaMovement(vec3.multiply(0.99F, 0.95F, 0.99F));
         this.move(MoverType.SELF, this.getDeltaMovement());
-
-        if (this.horizontalCollision && !this.level().isClientSide) {
-            double d11 = this.getDeltaMovement().horizontalDistance();
-        }
-
-        if (this.onGround() && !this.level().isClientSide) {
-            this.setSharedFlag(7, false);
-        }
     }
 
     private void handleLavaMovement() {

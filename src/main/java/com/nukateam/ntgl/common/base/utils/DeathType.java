@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.base.utils;
 
 public enum DeathType {
-	DEFAULT(0), GORE(1), BIO(2), LASER(3);
+	DEFAULT(0), GORE(1), FIRE(2), LASER(3);
 
 	final int value;
 

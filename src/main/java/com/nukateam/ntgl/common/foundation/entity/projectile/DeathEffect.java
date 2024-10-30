@@ -80,7 +80,7 @@ public class DeathEffect {
             createGoreGibs(entity, vec, data);
         } else if (deathtype.is(ModDamageTypes.ENERGY)) {
             setupGoreData(entity, data);
-            data.gravity = -0.005f;
+//            data.gravity = -0.005f;
             data.showBlood = false;
             data.deathType = DeathType.LASER;
             createDisintegratedGibs(entity, vec, data);
