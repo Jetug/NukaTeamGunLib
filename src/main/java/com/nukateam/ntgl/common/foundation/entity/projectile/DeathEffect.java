@@ -111,7 +111,7 @@ public class DeathEffect {
     }
 
     private static void createGoreGibs(LivingEntity entity, Vec3 vec, GoreData data) {
-        entity.playSound(ModSounds.DEATH_GORE.get(), 1.0f, 1.0f);
+        entity.playSound(ModSounds.DEATH_GORE.get(), 8.0f, 1.0f);
 
         for (int i = 0; i < data.getNumGibs(); i++) {
             var random = entity.getRandom();

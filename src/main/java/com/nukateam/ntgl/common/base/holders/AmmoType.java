@@ -19,8 +19,8 @@ public class AmmoType extends ResourceHolder {
     public static AmmoType EXPLOSIVE            = AmmoType.create("explosive"            ).damageType(ModDamageTypes.EXPLOSIVE).build();
     public static AmmoType EXPLOSIVE_INCENDIARY = AmmoType.create("explosive_incendiary" ).damageType(ModDamageTypes.FIRE).build();
     public static AmmoType FIRE                 = AmmoType.create("fire"                 ).damageType(ModDamageTypes.FIRE).build();
-    public static AmmoType SLUG                 = AmmoType.create("slug"                 ).damageType(ModDamageTypes.BULLET).build();
-    public static AmmoType BUCKSHOT             = AmmoType.create("buckshot"             ).damageType(ModDamageTypes.BULLET).build();
+    public static AmmoType SLUG                 = AmmoType.create("slug"                 ).damageType(ModDamageTypes.EXPLOSIVE).build();
+    public static AmmoType BUCKSHOT             = AmmoType.create("buckshot"             ).damageType(ModDamageTypes.EXPLOSIVE).build();
 
     private static final Map<ResourceLocation, AmmoType> typeMap = new HashMap<>();
     
@@ -34,6 +34,8 @@ public class AmmoType extends ResourceHolder {
         registerType(EXPLOSIVE              );
         registerType(EXPLOSIVE_INCENDIARY   );
         registerType(FIRE                   );
+        registerType(SLUG                   );
+        registerType(BUCKSHOT               );
     }
 
     private ResourceKey<DamageType> damageType;

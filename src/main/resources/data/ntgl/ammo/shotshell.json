@@ -3,5 +3,5 @@
   "size": 1.0,
   "speed": 10.0,
   "life": 5,
-  "type": "ntgl:explosive"
+  "type": "ntgl:buckshot"
 }
