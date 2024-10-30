@@ -31,8 +31,8 @@ public class AshPileRenderer extends GeoEntityRenderer<AshPile> {
         }
         poseStack.pushPose();
         {
-            poseStack.scale(1.5f, 1.5f, 1.5f);
-            poseStack.translate(0, 1f / 16D, 0);
+//            poseStack.scale(1.5f, 1.5f, 1.5f);
+//            poseStack.translate(0, 1f / 16D, 0);
             poseStack.scale(newAlpha, newAlpha, newAlpha);
             RenderSystem.setShaderColor(1, 1, 1, newAlpha);
             super.actuallyRender(poseStack, animatable, model,

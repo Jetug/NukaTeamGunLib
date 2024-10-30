@@ -32,6 +32,7 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
         if(entity == null) return;
 
         var data = getGoreData(entity);
+        var isGeoModel = false;
 
         if (data.model != null) {
             poseStack.pushPose();
@@ -52,6 +53,7 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                         data.texture = geoModel.getTextureResource(animatable);
                     }
                     poseStack.mulPose(Axis.YP.rotationDegrees(180));
+                    isGeoModel = true;
                 }
 
                 var partialTickTime = Minecraft.getInstance().getFrameTime();
@@ -76,7 +78,11 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                 switch (flyingGib.getData().deathType){
                     case LASER -> {
                         poseStack.scale(scale, scale, scale);
-                        poseStack.translate(0, -scale / 2, 0);
+                        if(isGeoModel)
+                            poseStack.translate(0, (-scale / 2) / 16D, 0);
+                        else
+                            poseStack.translate(0, -scale / 2, 0);
+
                         rgba = rgba.setAlpha(mainAlpha);
                     }
                     case GORE -> {
