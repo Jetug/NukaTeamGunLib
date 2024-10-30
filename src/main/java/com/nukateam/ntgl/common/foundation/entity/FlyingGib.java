@@ -72,7 +72,6 @@ public class FlyingGib extends Entity {
         getEntityData().set(ENTITY, entity.getId());
         getEntityData().set(PART, bodyPart);
         getEntityData().set(SIZE, size);
-//        getEntityData().set(GRAVITY, gravity);
         getEntityData().set(DATA, data.serializeNBT());
     }
 

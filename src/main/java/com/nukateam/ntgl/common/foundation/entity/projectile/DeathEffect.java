@@ -41,7 +41,6 @@ public class DeathEffect {
         genericGore.setRandomScale(0.5f, 0.8f);
     }
 
-
     public static void addGoreData(Entity entity, GoreData data) {
         goreStats.put(entity.getId(), data);
     }
@@ -71,52 +70,43 @@ public class DeathEffect {
         double y = entity.getY() + (entity.getType().getHeight() / 2.0f);
         double z = entity.getZ();
 
+        var vec = new Vec3(x, y, z);
         var data = DeathEffect.getGoreData(entity);
 
         if (deathtype.is(ModDamageTypes.EXPLOSIVE)) {
             setupGoreData(entity, data);
             data.gravity = 0.2f;
             data.deathType = DeathType.GORE;
-            createGoreGibs(entity, x, y, z, data);
+            createGoreGibs(entity, vec, data);
         } else if (deathtype.is(ModDamageTypes.ENERGY)) {
             setupGoreData(entity, data);
+            data.gravity = -0.005f;
             data.showBlood = false;
             data.deathType = DeathType.LASER;
-            createDisintegratedGibs(entity, x, y, z, data);
+            createDisintegratedGibs(entity, vec, data);
         }
     }
 
-    private static void createDisintegratedGibs(LivingEntity entity, double x, double y, double z, GoreData data) {
+    private static void createDisintegratedGibs(LivingEntity entity, Vec3 vec, GoreData data) {
         entity.playSound(ModSounds.DEATH_LASER.get(), 1.0f, 1.0f);
         data.texture = RES_LASER_EFFECT;
 
         for (int i = 0; i < data.getNumGibs(); i++) {
             var flyingGibs = new FlyingGib(
                     entity.level(), entity, data,
-                    new Vec3(x, y, z), Vec3.ZERO,
+                    vec, Vec3.ZERO,
                     (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
 
             entity.level().addFreshEntity(flyingGibs);
         }
     }
 
-    private static void createGoreGibs(LivingEntity entity, double x, double y, double z, GoreData data) {
+    private static void createGoreGibs(LivingEntity entity, Vec3 vec, GoreData data) {
         entity.playSound(ModSounds.DEATH_GORE.get(), 1.0f, 1.0f);
 
         for (int i = 0; i < data.getNumGibs(); i++) {
             var random = entity.getRandom();
-//            var delta = new Vec3(
-//                    0.1 * random.nextInt(-1, 1),
-//                    0.1,
-//                    0.1 * random.nextInt(-1, 1));
-
-//            var delta = new Vec3(
-//                    0.1,
-//                    0.1,
-//                    0.1);
-
             var delta = entity.getDeltaMovement();
-
             var vx = (0.5 - random.nextDouble()) * 0.35;
             var vz = (0.5 - random.nextDouble()) * 0.35;
             var vy = entity.onGround() ?
@@ -124,8 +114,7 @@ public class DeathEffect {
                     (0.5 - random.nextDouble()) * 0.35;
 
             var flyingGibs = new FlyingGib(
-                    entity.level(), entity, data,
-                    new Vec3(x, y, z),
+                    entity.level(), entity, data, vec,
                     new Vec3(delta.x * 0.35 + vx,
                             delta.y * 0.35 + vy,
                             delta.z * 0.35 + vz
