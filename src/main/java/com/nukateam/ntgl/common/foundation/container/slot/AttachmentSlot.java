@@ -60,8 +60,11 @@ public class AttachmentSlot extends Slot {
         var modifiedGun = item.getModifiedGun(this.weapon);
 
         if (stack.getItem() instanceof IAttachment<?> attachment) {
-            var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
             var attachments = modifiedGun.getModules().getAttachments().get(attachment.getType());
+            if(attachments == null)
+                return false;
+
+            var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
             var canAttachType = modifiedGun.canAttachType(this.type, modifiedGun);
             var isRightType = attachment.getType().equals(this.type);
             var canAttach = attachment.canAttachTo(this.weapon);
