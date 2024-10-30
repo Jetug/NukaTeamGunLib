@@ -44,8 +44,8 @@ public class Brahmin extends Cow implements GeoEntity, Shearable, IForgeShearabl
 
     private boolean partyBrahmin;
 
-    public Brahmin(EntityType<? extends Cow> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
+    public Brahmin(EntityType<? extends Cow> entityType, Level pLevel) {
+        super(entityType, pLevel);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -38,8 +38,8 @@ public class Raider extends PathfinderMob implements IGunUser {
             ModGuns.MINIGUN.get(),
     };
 
-    public Raider(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
+    public Raider(EntityType<? extends PathfinderMob> entityType, Level pLevel) {
+        super(entityType, pLevel);
         this.setCanPickUpLoot(true);
     }
 

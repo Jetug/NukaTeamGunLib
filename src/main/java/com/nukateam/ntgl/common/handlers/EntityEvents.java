@@ -2,8 +2,10 @@ package com.nukateam.ntgl.common.handlers;
 
 import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
+import com.nukateam.ntgl.common.foundation.entity.misc.AshPile;
 import com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect;
-import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -18,6 +20,9 @@ public class EntityEvents {
 
         if (!entity.level().isClientSide){
             DeathEffect.createDeathEffect(entity, event.getSource());
+            var pos = new Vec3(entity.getX(), entity.getBlockY(), entity.getZ());
+            var ashPile = new AshPile(entity.level(), pos);
+            entity.level().addFreshEntity(ashPile);
         }
     }
 }

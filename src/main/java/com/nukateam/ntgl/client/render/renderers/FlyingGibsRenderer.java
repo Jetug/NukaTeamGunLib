@@ -56,45 +56,22 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
 
                 var partialTickTime = Minecraft.getInstance().getFrameTime();
 
-                float angle;
-                float rot_angle = 90.0f;
-
                 if (flyingGib.onGround()) {
-                    angle = 5 + ((float) flyingGib.hitGroundTTL / (float) flyingGib.maxTimeToLive) * 15.0f;
-                    rot_angle += ((float) (flyingGib.maxTimeToLive - flyingGib.hitGroundTTL) * angle);
-
                     if (flyingGib.timeToLive <= 20) {
                         float offsetY = ((20 - flyingGib.timeToLive) + partialTickTime) * -0.05f;
                         poseStack.translate(0.0f, offsetY, 0.0f);
                     }
-
-                } else {
-                    angle = 5 + ((float) flyingGib.timeToLive / (float) flyingGib.maxTimeToLive) * 15.0f;
-                    rot_angle += ((float) flyingGib.tickCount + partialTickTime) * angle;
                 }
 
-//                poseStack.rotate(rot_angle, (float) flyingGib.rotationAxis.x, (float) flyingGib.rotationAxis.y,
-//                        (float) flyingGib.rotationAxis.z);
-
-//                poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-//                GlStateManager.disableCull();
+                poseStack.translate(0,-entity.getType().getHeight() / 2,0);
 
                 var texture = data.texture;
                 var rendertype = RenderType.itemEntityTranslucentCull(texture);
                 var vertexConsumer = buffer.getBuffer(rendertype);
-
-//                poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-
-//
-                poseStack.translate(0,-entity.getType().getHeight() / 2,0);
-
-//                poseStack.mulPose(new Quaternionf(flyingGib.rotationAxis.x, flyingGib.rotationAxis.y, flyingGib.rotationAxis.z, rot_angle));
-
                 var prog = ((float) entity.deathTime / (float) MAX_DEATH_TIME);
                 var mainAlpha = 1.0f - prog;
                 var scale = 1.0f + prog / 2;
                 var rgba = Rgba.DEFAULT;
-
 
                 switch (flyingGib.getData().deathType){
                     case LASER -> {
@@ -111,7 +88,6 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
 
                 data.model.render(entity, flyingGib.getPartId(), poseStack, rendertype, buffer,
                         vertexConsumer, packedLight, 0xFFFFFF, rgba);
-
 
                 super.render(flyingGib, pEntityYaw, pPartialTick, poseStack, buffer, packedLight);
             }

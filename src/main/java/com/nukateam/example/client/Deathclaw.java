@@ -51,8 +51,8 @@ public class Deathclaw extends PathfinderMob implements GeoEntity {
     };
     private String attackAnimName;
 
-    public Deathclaw(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
+    public Deathclaw(EntityType<? extends PathfinderMob> entityType, Level pLevel) {
+        super(entityType, pLevel);
         getEntityData().set(IS_RUNNING, true);
     }
 

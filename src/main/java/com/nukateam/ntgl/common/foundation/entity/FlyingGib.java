@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.foundation.entity;
 
 
 import com.nukateam.ntgl.ClientProxy;
+import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.init.ModParticleTypes;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import net.minecraft.client.Minecraft;
@@ -34,7 +35,6 @@ public class FlyingGib extends Entity {
     public static final EntityDataAccessor<Float> GRAVITY = defineId(FlyingGib.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<CompoundTag> DATA = defineId(FlyingGib.class, EntityDataSerializers.COMPOUND_TAG);
     public static final int LIFE = 75;
-    public static final double BOUNCE = -0.5;
     private final Lazy<LivingEntity> localEntity = Lazy.of(() -> (LivingEntity)Minecraft.getInstance().level.getEntity(getEntityId()));
 
     private RandomSource rand;
@@ -42,8 +42,8 @@ public class FlyingGib extends Entity {
 //    private double yDelta = 0;
 //    private double zDelta = 0;
 
-    public int maxTimeToLive = 2000;
-    public int timeToLive = 2000;
+    public int maxTimeToLive = LIFE;
+    public int timeToLive = LIFE;
     public double gravity = 0.029999999329447746D;
     public Vec3 rotationAxis;
     public int hitGroundTTL = 0;
@@ -61,8 +61,8 @@ public class FlyingGib extends Entity {
 
     public FlyingGib(Level world, LivingEntity entity, GoreData data, Vec3 pos, Vec3 delta,
                      float size, int bodyPart) {
-        this(Projectiles.FLYING_GIBS.get(), world);
-        this.setPos(pos.x, pos.y, pos.z);
+        this(ModEntityTypes.FLYING_GIBS.get(), world);
+        this.setPos(pos);
         this.rand = this.level().getRandom();
         this.size = size;
         this.maxTimeToLive = LIFE + rand.nextInt(50);
@@ -107,26 +107,24 @@ public class FlyingGib extends Entity {
                 hitGroundTTL = timeToLive;
             }
 
-//            var pos = getBlockPosBelowThatAffectsMyMovement();
-//            var friction = this.level().getBlockState(pos).getFriction(this.level(), pos, this) * 0.98F;
+            var pos = getBlockPosBelowThatAffectsMyMovement();
+            var friction = (this.level().getBlockState(pos).getFriction(this.level(), pos, this) * 0.98F) / 5;
+            friction = friction * 0.91F;
+            this.setDeltaMovement(this.getDeltaMovement().multiply(friction, 0.98D, friction));
+
+//            var blockpos = this.getBlockPosBelowThatAffectsMyMovement();
+//            var friction = this.level().getBlockState(this.getBlockPosBelowThatAffectsMyMovement()).getFriction(level(), this.getBlockPosBelowThatAffectsMyMovement(), this);
+//            var newFriction = this.onGround() ? friction * 0.91F : 0.91F;
+//            var vec35 = this.handleRelativeFrictionAndCalculateMovement(getDeltaMovement(), friction);
+//            var d2 = vec35.y;
 //
-//            friction = this.onGround() ? friction * 0.91F : 0.91F;
-//            this.setDeltaMovement(this.getDeltaMovement().multiply(friction, 0.98D, friction));
-
-            BlockPos blockpos = this.getBlockPosBelowThatAffectsMyMovement();
-            float friction = this.level().getBlockState(this.getBlockPosBelowThatAffectsMyMovement()).getFriction(level(), this.getBlockPosBelowThatAffectsMyMovement(), this);
-            float newFriction = this.onGround() ? friction * 0.91F : 0.91F;
-
-            Vec3 vec35 = this.handleRelativeFrictionAndCalculateMovement(getDeltaMovement(), friction);
-            double d2 = vec35.y;
-
-            if (this.level().isClientSide && !this.level().hasChunkAt(blockpos)) {
-                if (this.getY() > (double)this.level().getMinBuildHeight())
-                    d2 = -0.1D;
-                else d2 = 0.0D;
-            }
-
-            this.setDeltaMovement(vec35.x * (double)newFriction, d2 * (double)0.98F, vec35.z * (double)newFriction);
+//            if (this.level().isClientSide && !this.level().hasChunkAt(blockpos)) {
+//                if (this.getY() > (double)this.level().getMinBuildHeight())
+//                    d2 = -0.1D;
+//                else d2 = 0.0D;
+//            }
+//
+//            this.setDeltaMovement(vec35.x * (double)newFriction, d2 * (double)0.98F, vec35.z * (double)newFriction);
         }
 
         var motionScale = this.isInWater() ? this.getWaterInertia() : 1f;

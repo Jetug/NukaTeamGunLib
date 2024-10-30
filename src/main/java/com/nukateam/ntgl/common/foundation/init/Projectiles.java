@@ -31,11 +31,6 @@ public class Projectiles {
 
 //    public static final RegistryObject<EntityType<FlyingGib>> FLYING_GIBS = register("flying_gibs", FlyingGib::new);
 
-    public static final RegistryObject<EntityType<FlyingGib>> FLYING_GIBS =
-            registerEntity("flying_gibs", EntityType.Builder
-                    .<FlyingGib>of(FlyingGib::new, MobCategory.MISC)
-                    .sized(0.5f, 0.5f));
-
     private static <T extends Entity> RegistryObject<EntityType<T>> registerEntity(String entityName, EntityType.Builder<T> builder) {
         return REGISTER.register(entityName, () -> builder.build(new ResourceLocation(Ntgl.MOD_ID, entityName).toString()));
     }
