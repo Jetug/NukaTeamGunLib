@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.animators;
+package com.nukateam.ntgl.common.data.interfaces;
 
 import net.minecraft.world.item.ItemStack;
 
