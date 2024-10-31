@@ -18,6 +18,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.nukateam.ntgl.common.base.config.gun.General.PROJECTILE_AMOUNT;
+import static com.nukateam.ntgl.common.base.config.gun.General.SPREAD;
+
 public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String TYPE = "Type";
     @Optional
@@ -38,6 +41,10 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     private double trailLengthMultiplier = 1.0;
     @Optional
     private AmmoType type = AmmoType.STANDARD;
+    @Optional
+    int projectileAmount = 1;
+    @Optional
+    float spread;
 
     @Override
     public CompoundTag serializeNBT() {
@@ -52,7 +59,9 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.putBoolean("MagazineMode", this.magazineMode);
         tag.putInt("TrailColor", this.trailColor);
         tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
+        tag.putInt(PROJECTILE_AMOUNT, this.projectileAmount);
         tag.putString(TYPE, this.type.toString());
+        tag.putFloat(SPREAD, this.spread);
         return tag;
     }
 
@@ -91,6 +100,12 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains(TYPE, Tag.TAG_STRING)) {
             this.type = AmmoType.getType(ResourceLocation.tryParse(tag.getString(TYPE)));
         }
+        if (tag.contains(PROJECTILE_AMOUNT, Tag.TAG_ANY_NUMERIC)) {
+            this.projectileAmount = tag.getInt(PROJECTILE_AMOUNT);
+        }
+        if (tag.contains(SPREAD, Tag.TAG_ANY_NUMERIC)) {
+            this.spread = tag.getFloat(SPREAD);
+        }
     }
 
     public Ammo copy() {
@@ -106,6 +121,9 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         projectile.trailColor = this.trailColor;
         projectile.trailLengthMultiplier = this.trailLengthMultiplier;
         projectile.type = this.type;
+        projectile.projectileAmount = this.projectileAmount;
+        projectile.spread = this.spread;
+
         return projectile;
     }
 
@@ -115,7 +133,11 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         Preconditions.checkArgument(this.speed >= 0.0, "Projectile speed must be more than or equal to zero");
         Preconditions.checkArgument(this.life > 0, "Projectile life must be more than zero");
         Preconditions.checkArgument(this.trailLengthMultiplier >= 0.0, "Projectile trail length multiplier must be more than or equal to zero");
+        Preconditions.checkArgument(this.projectileAmount >= 1, "Projectile amount must be more than or equal to one");
+        Preconditions.checkArgument(this.spread >= 0.0F, "Spread must be more than or equal to zero");
+
         JsonObject object = new JsonObject();
+
         if (this.visible) object.addProperty("visible", true);
         object.addProperty("damage", this.damage);
         object.addProperty("size", this.size);
@@ -127,8 +149,9 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (this.damageReduceOverLife) object.addProperty("damageReduceOverLife", this.damageReduceOverLife);
         if (this.magazineMode) object.addProperty("magazineMode", this.magazineMode);
         if (this.trailColor != 0xFFD289) object.addProperty("trailColor", this.trailColor);
-        if (this.trailLengthMultiplier != 1.0)
-            object.addProperty("trailLengthMultiplier", this.trailLengthMultiplier);
+        if (this.trailLengthMultiplier != 1.0) object.addProperty("trailLengthMultiplier", this.trailLengthMultiplier);
+        if (this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
+        if (this.spread != 0.0F) object.addProperty("spread", this.spread);
         return object;
     }
 
@@ -198,6 +221,21 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
      */
     public double getTrailLengthMultiplier() {
         return this.trailLengthMultiplier;
+    }
+
+    /**
+     * @return The amount of projectiles this weapon fires
+     */
+    public int getProjectileAmount() {
+        return this.projectileAmount;
+    }
+
+    /**
+     * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
+     * the fired ammo.
+     */
+    public float getSpread() {
+        return this.spread;
     }
 
     public AmmoType getType() {

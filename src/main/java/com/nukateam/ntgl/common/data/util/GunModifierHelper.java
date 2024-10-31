@@ -82,6 +82,15 @@ public class GunModifierHelper {
         return finalMaxAmmo.get();
     }
 
+    public static int getProjectileAmount(ItemStack weapon) {
+        var gunProjectileAmount = getGun(weapon).getGeneral().getProjectileAmount();
+        var ammoProjectileAmount = getCurrentAmmoItem(weapon).getAmmo().getProjectileAmount();
+
+        var finalProjectileAmount = new AtomicInteger(gunProjectileAmount * ammoProjectileAmount);
+        forEachAttachment(weapon, (modifier -> finalProjectileAmount.set(modifier.modifyProjectileAmount(finalProjectileAmount.get()))));
+        return finalProjectileAmount.get();
+    }
+
     public static void switchFireMode(ItemStack weapon){
         var fireModes = getFireModes(weapon);
         var current = getCurrentFireMode(weapon);
@@ -191,8 +200,12 @@ public class GunModifierHelper {
         return finalGravity.get();
     }
 
-    public static float getModifiedSpread(ItemStack weapon, float spread) {
+    public static float getModifiedSpread(ItemStack weapon) {
+        var gunSpread = getGun(weapon).getGeneral().getSpread();
+        var ammoSpread = getCurrentAmmoItem(weapon).getAmmo().getSpread();
+        var spread = Math.max(gunSpread + ammoSpread, 0);
         var finalSpread = new AtomicReference<>(spread);
+
         forEachAttachment(weapon, (modifier -> finalSpread.set(modifier.modifyProjectileSpread(finalSpread.get()))));
         return finalSpread.get();
     }

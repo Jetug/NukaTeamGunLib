@@ -377,8 +377,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             initialDamage *= modifier;
         }
 
-        var damage = initialDamage / this.general.getProjectileAmount();
-//        damage = GunModifierHelper.getModifiedDamage(this.weapon);
+        var projectileAmount = GunModifierHelper.getProjectileAmount(this.weapon);
+        var damage = initialDamage / projectileAmount;
         damage = GunEnchantmentHelper.getAcceleratorDamage(this.weapon, damage);
 
         return Math.max(0F, damage);
@@ -707,16 +707,20 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     private Vec3 getDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
-        float gunSpread = GunModifierHelper.getModifiedSpread(weapon, modifiedGun.getGeneral().getSpread());
+        var gunSpread = GunModifierHelper.getModifiedSpread(weapon);
 
-        if (gunSpread == 0F) return this.getVectorFromRotation(shooter.getXRot(), shooter.getYRot());
+        if (gunSpread == 0F)
+            return this.getVectorFromRotation(shooter.getXRot(), shooter.getYRot());
 
         if (!modifiedGun.getGeneral().isAlwaysSpread())
             gunSpread *= SpreadTracker.get(shooter).getSpread(item);
 
-        if (ModSyncedDataKeys.AIMING.getValue(shooter)) gunSpread *= 0.5F;
+        if (ModSyncedDataKeys.AIMING.getValue(shooter))
+            gunSpread *= 0.5F;
 
-        return this.getVectorFromRotation(shooter.getXRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread, shooter.getYHeadRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread);
+        return this.getVectorFromRotation(
+                shooter.getXRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread,
+                shooter.getYHeadRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread);
     }
 
     /**

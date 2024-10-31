@@ -368,7 +368,7 @@ public class General implements INBTSerializable<CompoundTag> {
     }
 
     /**
-     * @return If this weapon should always spread it's projectiles according to {@link #getSpread()}
+     * @return If this weapon should always spread its projectiles according to {@link #getSpread()}
      */
     public boolean isAlwaysSpread() {
         return this.alwaysSpread;

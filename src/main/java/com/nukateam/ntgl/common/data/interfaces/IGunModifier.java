@@ -202,6 +202,10 @@ public interface IGunModifier {
         return maxAmmo;
     }
 
+    default int modifyProjectileAmount(int amount) {
+        return amount;
+    }
+
     default Set<FireMode> modifyFireModes(Set<FireMode> fireMode) {
         return fireMode;
     }

@@ -13,7 +13,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class AshPile extends Entity implements GeoEntity {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-    public static final int LIFE = 75;
+    public static final int LIFE = 20 * 10;
     public int timeToLive = LIFE;
 
     public AshPile(EntityType<?> entityType, Level pLevel) {

@@ -118,11 +118,13 @@ public class ServerPlayHandler {
                     ModSyncedDataKeys.RELOADING_LEFT.setValue(shooter, false);
                 }
 
-                if (!modifiedGun.getGeneral().isAlwaysSpread() && modifiedGun.getGeneral().getSpread() > 0.0F) {
+                var gunSpread = GunModifierHelper.getModifiedSpread(heldItem);
+
+                if (!modifiedGun.getGeneral().isAlwaysSpread() && gunSpread > 0.0F) {
                     SpreadTracker.get(shooter).update(shooter, item);
                 }
 
-                var count = modifiedGun.getGeneral().getProjectileAmount();
+                var count = GunModifierHelper.getProjectileAmount(heldItem);
                 var projectileProps = GunModifierHelper.getCurrentProjectile(heldItem);
                 var spawnedProjectiles = new ProjectileEntity[count];
 
