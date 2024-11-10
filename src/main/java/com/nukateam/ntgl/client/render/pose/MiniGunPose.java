@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.pose;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.core.animation.AnimationProcessor;
+import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -65,16 +65,13 @@ public class MiniGunPose extends WeaponPose {
     }
 
     @Override
-    public void applyGeoModelRotation(LivingEntity entity, AnimationProcessor animationProcessor) {
-        var mainArm = animationProcessor.getBone("right_arm");
-        var secondaryArm = animationProcessor.getBone("left_arm");
-
-        mainArm.setRotX((float)Math.toRadians(15F));
-        mainArm.setRotY((float)Math.toRadians(45F));
-        mainArm.setRotZ((float)Math.toRadians(0F));
-        secondaryArm.setRotX((float)Math.toRadians(45F));
-        secondaryArm.setRotY((float)Math.toRadians(-30F));
-        secondaryArm.setRotZ((float)Math.toRadians(0F));
+    public void applyGeoModelRotation(LivingEntity entity, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head, InteractionHand interactionHand) {
+        rightArm.setRotX((float)Math.toRadians(15F));
+        rightArm.setRotY((float)Math.toRadians(45F));
+        rightArm.setRotZ((float)Math.toRadians(0F));
+        leftArm.setRotX((float)Math.toRadians(45F));
+        leftArm.setRotY((float)Math.toRadians(-30F));
+        leftArm.setRotZ((float)Math.toRadians(0F));
     }
 
     public static boolean rightHandIsMain(InteractionHand hand){

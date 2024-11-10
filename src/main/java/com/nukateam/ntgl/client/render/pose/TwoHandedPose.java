@@ -1,12 +1,13 @@
 package com.nukateam.ntgl.client.render.pose;
 
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.client.data.handler.AimingHandler;
 import com.nukateam.ntgl.client.data.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import mod.azure.azurelib.core.animation.AnimationProcessor;
+import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
 import net.minecraft.client.model.geom.ModelPart;
@@ -78,8 +79,23 @@ public class TwoHandedPose extends WeaponPose {
     }
 
     @Override
-    public void applyGeoModelRotation(LivingEntity entity, AnimationProcessor animationProcessor) {
+    public void applyGeoModelRotation(LivingEntity entity, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head, InteractionHand interactionHand) {
+        var aimProgress = AimingHandler.get().getAimProgress(entity, Minecraft.getInstance().getFrameTime());
+        var right = interactionHand == InteractionHand.MAIN_HAND;
 
+        rightArm.setRotX((float)Math.toRadians(head.getRotX()));
+        rightArm.setRotY((float)Math.toRadians(head.getRotY()));
+        rightArm.setRotZ((float)Math.toRadians(head.getRotZ()));
+
+        leftArm.setRotX((float)Math.toRadians(head.getRotX()));
+        leftArm.setRotY((float)Math.toRadians(head.getRotY()));
+        leftArm.setRotZ((float)Math.toRadians(head.getRotZ()));
+
+        rightArm.setRotX((float)Math.toRadians(55F + aimProgress * 30F));
+        rightArm.setRotY((float)Math.toRadians((45F + aimProgress * 20F) * (right ? 1F : -1F)));
+
+        leftArm.setRotX((float)Math.toRadians(42F + aimProgress * 48F));
+        leftArm.setRotY((float)Math.toRadians((15F + aimProgress * 5F) * (right ? 1F : -1F)));
     }
 
     @Override

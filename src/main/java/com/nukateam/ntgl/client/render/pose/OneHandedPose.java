@@ -8,7 +8,6 @@ import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
-import mod.azure.azurelib.core.animation.AnimationProcessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -50,14 +49,15 @@ public class OneHandedPose implements IHeldAnimation {
 
 //    @Override
     @OnlyIn(Dist.CLIENT)
-    public void applyGeoModelRotation(LivingEntity entity, AnimationProcessor animationProcessor) {
+    public void applyGeoModelRotation(LivingEntity entity, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head, InteractionHand interactionHand) {
         try {
-            CoreGeoBone head = animationProcessor.getBone("head");
-            CoreGeoBone rightArm = animationProcessor.getBone("right_arm");
-            rightArm.setRotX(head.getRotX());
-            rightArm.setRotY(head.getRotY());
-            rightArm.setRotZ(head.getRotZ());
-            rightArm.setRotX(head.getRotX() + 70);
+            var right = interactionHand == InteractionHand.MAIN_HAND;
+            var arm = right ? rightArm : leftArm;
+
+            arm.setRotX(head.getRotX());
+            arm.setRotY(head.getRotY());
+            arm.setRotZ(head.getRotZ());
+            arm.setRotX(head.getRotX() + 70);
         }
         catch (Exception e){
             Ntgl.LOGGER.debug(e.getMessage(), e);

@@ -3,7 +3,6 @@ package com.nukateam.ntgl.client.render.pose;
 import com.nukateam.ntgl.client.data.IHeldAnimation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
-import mod.azure.azurelib.core.animation.AnimationProcessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -72,7 +71,7 @@ public abstract class WeaponPose implements IHeldAnimation {
     }
 
     @Override
-    public void applyGeoModelRotation(LivingEntity entity, AnimationProcessor animationProcessor) {
+    public void applyGeoModelRotation(LivingEntity entity, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head, InteractionHand interactionHand) {
 //        var mc = Minecraft.getInstance();
 //
 //        var rightArm = animationProcessor.getBone("right_arm");
