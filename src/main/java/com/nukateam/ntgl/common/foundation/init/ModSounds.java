@@ -68,6 +68,7 @@ public class ModSounds {
 
     public static RegistryObject<SoundEvent> DEATH_GORE = register("effects.gore");
     public static RegistryObject<SoundEvent> DEATH_LASER = register("effects.disintegrate");
+//    public static RegistryObject<SoundEvent> DEATH_FIRE = register("effects.disintegrate");
 
     private static RegistryObject<SoundEvent> register(String key) {
         return REGISTER.register(key, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Ntgl.MOD_ID, key)));

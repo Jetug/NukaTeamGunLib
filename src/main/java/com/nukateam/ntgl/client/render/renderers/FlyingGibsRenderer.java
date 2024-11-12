@@ -6,9 +6,7 @@ import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.common.data.util.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import mod.azure.azurelib.renderer.GeoRenderer;
-import mod.azure.azurelib.renderer.GeoReplacedEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -71,25 +69,30 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                 var rendertype = RenderType.itemEntityTranslucentCull(texture);
                 var vertexConsumer = buffer.getBuffer(rendertype);
                 var prog = ((float) entity.deathTime / (float) MAX_DEATH_TIME);
-                var mainAlpha = 1.0f - prog;
+                var reverseProg = 1.0f - prog;
                 var scale = 1.0f + prog / 2;
+                var reverseScale = reverseProg;
                 var rgba = Rgba.DEFAULT;
 
-                switch (flyingGib.getData().deathType){
-                    case LASER -> {
-                        poseStack.scale(scale, scale, scale);
-                        if(isGeoModel)
-                            poseStack.translate(0, (-scale / 2) / 16D, 0);
-                        else
-                            poseStack.translate(0, -scale / 2, 0);
+                if(isGeoModel)
+                    poseStack.translate(0, (-scale / 2) / 16D, 0);
+                else poseStack.translate(0, -scale / 2, 0);
 
-                        rgba = rgba.setAlpha(mainAlpha);
-                    }
-                    case GORE -> {
+                switch (flyingGib.getData().deathType){
+                    case LASER:
+                        poseStack.scale(scale, scale, scale);
+                        rgba = rgba.setAlpha(reverseProg);
+                    break;
+                    case FIRE :
+                        poseStack.scale(reverseScale, reverseScale, reverseScale);
+                        rgba = rgba.setAlpha(reverseProg);
+                    break;
+
+                    case GORE:
                         poseStack.mulPose(Axis.XP.rotationDegrees(prog * (float) flyingGib.rotationAxis.x));
                         poseStack.mulPose(Axis.YP.rotationDegrees(prog * (float) flyingGib.rotationAxis.y));
                         poseStack.mulPose(Axis.ZP.rotationDegrees(prog * (float) flyingGib.rotationAxis.z));
-                    }
+                    break;
                 }
 
                 data.model.render(entity, flyingGib.getPartId(), poseStack, rendertype, buffer,

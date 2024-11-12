@@ -33,8 +33,8 @@ public class DeathEffect {
     public static HashMap<Integer, GoreData> goreStats = new HashMap<>();
     private static GoreData genericGore;
 
-    private static final ResourceLocation RES_BIO_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/bio.png");
-    private static final ResourceLocation RES_LASER_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/laserdeath.png");
+    private static final ResourceLocation RES_BURN_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/death/burn.png");
+    private static final ResourceLocation RES_LASER_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/death/laser.png");
 
     static {
         genericGore = (new GoreData(null, 160, 21, 31))
@@ -79,12 +79,21 @@ public class DeathEffect {
             data.gravity = 0.2f;
             data.deathType = DeathType.GORE;
             createGoreGibs(entity, vec, data);
-        } else if (deathtype.is(ModDamageTypes.ENERGY)) {
+        }
+        else if (deathtype.is(ModDamageTypes.ENERGY)) {
             createAshPile(entity);
             setupGoreData(entity, data);
             data.showBlood = false;
             data.deathType = DeathType.LASER;
             createDisintegratedGibs(entity, vec, data);
+        }
+        else if(deathtype.is(ModDamageTypes.FIRE)){
+            createAshPile(entity);
+            setupGoreData(entity, data);
+            data.gravity = 0.2f;
+            data.showBlood = false;
+            data.deathType = DeathType.FIRE;
+            createBurntGibs(entity, vec, data);
         }
     }
 
@@ -99,6 +108,20 @@ public class DeathEffect {
     private static void createDisintegratedGibs(LivingEntity entity, Vec3 vec, GoreData data) {
         entity.playSound(ModSounds.DEATH_LASER.get(), 1.0f, 1.0f);
         data.texture = RES_LASER_EFFECT;
+
+        for (int i = 0; i < data.getNumGibs(); i++) {
+            var flyingGibs = new FlyingGib(
+                    entity.level(), entity, data,
+                    vec, Vec3.ZERO,
+                    (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
+
+            entity.level().addFreshEntity(flyingGibs);
+        }
+    }
+
+    private static void createBurntGibs(LivingEntity entity, Vec3 vec, GoreData data) {
+        entity.playSound(ModSounds.DEATH_LASER.get(), 1.0f, 1.0f);
+        data.texture = RES_BURN_EFFECT;
 
         for (int i = 0; i < data.getNumGibs(); i++) {
             var flyingGibs = new FlyingGib(

@@ -133,7 +133,7 @@ public class Ntgl {
                 (worldIn, entity, weapon, item, modifiedGun) ->
                         new ContinuousLaserProjectile(Projectiles.CONTINUOUS_LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
 
-        ProjectileManager.getInstance().registerFactory(ROUND5MM.get(),
+        ProjectileManager.getInstance().registerFactory(FUEL.get(),
                 (worldIn, entity, weapon, item, modifiedGun) ->
                         new FlameProjectile(Projectiles.FLAME_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
     }

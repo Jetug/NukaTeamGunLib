@@ -51,6 +51,7 @@ public class ModGuns {
     public static final RegistryObject<Item> ROUND127   = registerAmmo("round127"   );
     public static final RegistryObject<Item> ROUND22    = registerAmmo("round22"    );
     public static final RegistryObject<Item> MININUKE   = registerAmmo("mini_nuke"  );
+    public static final RegistryObject<Item> FUEL       = registerAmmo("fuel"  );
 
     /* Scope Attachments */
     public static final RegistryObject<Item> HOLOGRAPHIC_SIGHT = ITEMS.register("holographic_sight",
