@@ -15,10 +15,11 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 
-import static com.nukateam.ntgl.client.render.renderers.DeathEffectEntityRenderer.MAX_DEATH_TIME;
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.getGoreData;
 
 public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
+    public static final int MAX_DEATH_TIME = 20;
+
     public FlyingGibsRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
     }
@@ -71,21 +72,28 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                 var prog = ((float) entity.deathTime / (float) MAX_DEATH_TIME);
                 var reverseProg = 1.0f - prog;
                 var scale = 1.0f + prog / 2;
-                var reverseScale = reverseProg;
+                var reverseScale = 1.0f - prog / 4;
                 var rgba = Rgba.DEFAULT;
 
-                if(isGeoModel)
-                    poseStack.translate(0, (-scale / 2) / 16D, 0);
-                else poseStack.translate(0, -scale / 2, 0);
 
                 switch (flyingGib.getData().deathType){
                     case LASER:
                         poseStack.scale(scale, scale, scale);
+
+                        if(isGeoModel)
+                            poseStack.translate(0, (-scale / 2) / 16D, 0);
+                        else poseStack.translate(0, -scale / 2, 0);
+
                         rgba = rgba.setAlpha(reverseProg);
                     break;
                     case FIRE :
                         poseStack.scale(reverseScale, reverseScale, reverseScale);
-                        rgba = rgba.setAlpha(reverseProg);
+//
+//                        if(isGeoModel)
+//                            poseStack.translate(0, (reverseScale / 2) / 16D, 0);
+//                        else poseStack.translate(0, reverseScale / 2, 0);
+
+//                        rgba = rgba.setAlpha(reverseProg);
                     break;
 
                     case GORE:
