@@ -60,7 +60,7 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                 if (flyingGib.onGround()) {
                     if (flyingGib.timeToLive <= 20) {
                         float offsetY = ((20 - flyingGib.timeToLive) + partialTickTime) * -0.05f;
-                        poseStack.translate(0.0f, offsetY, 0.0f);
+                        poseStack.translate(0.0f, -offsetY, 0.0f);
                     }
                 }
 
@@ -85,22 +85,22 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                         else poseStack.translate(0, -scale / 2, 0);
 
                         rgba = rgba.setAlpha(reverseProg);
-                    break;
+                        break;
                     case FIRE :
-                        poseStack.scale(reverseScale, reverseScale, reverseScale);
-//
-//                        if(isGeoModel)
-//                            poseStack.translate(0, (reverseScale / 2) / 16D, 0);
-//                        else poseStack.translate(0, reverseScale / 2, 0);
+                        poseStack.scale(reverseScale, 1, reverseScale);
+
+                        if(isGeoModel)
+                            poseStack.translate(0, (-reverseScale / 2) / 16D, 0);
+                        else poseStack.translate(0, -reverseScale / 2, 0);
 
 //                        rgba = rgba.setAlpha(reverseProg);
-                    break;
+                        break;
 
                     case GORE:
                         poseStack.mulPose(Axis.XP.rotationDegrees(prog * (float) flyingGib.rotationAxis.x));
                         poseStack.mulPose(Axis.YP.rotationDegrees(prog * (float) flyingGib.rotationAxis.y));
                         poseStack.mulPose(Axis.ZP.rotationDegrees(prog * (float) flyingGib.rotationAxis.z));
-                    break;
+                        break;
                 }
 
                 data.model.render(entity, flyingGib.getPartId(), poseStack, rendertype, buffer,
