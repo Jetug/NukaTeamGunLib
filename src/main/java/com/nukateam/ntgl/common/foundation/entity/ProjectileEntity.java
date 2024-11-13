@@ -42,9 +42,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.*;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -53,7 +51,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -415,7 +412,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             explosion.clearToBlow();
         }
 
-        for (ServerPlayer player : ((ServerLevel) world).players()) {
+        for (var player : ((ServerLevel) world).players()) {
             if (player.distanceToSqr(entity.getX(), entity.getY(), entity.getZ()) < 4096) {
                 player.connection.send(new ClientboundExplodePacket(entity.getX(), entity.getY(), entity.getZ(), radius, explosion.getToBlow(), explosion.getHitPlayers().get(player)));
             }
@@ -606,11 +603,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         var source = ModDamageTypes.Sources.projectile(this.level().registryAccess(), this, this.shooter);
         entity.hurt(source, damage);
 
-        if (this.shooter instanceof Player) {
+        if (this.shooter instanceof ServerPlayer playerShooter) {
             var bodyHitType = headshot ? HitType.HEADSHOT : HitType.NORMAL;
-            int hitType = critical ? HitType.CRITICAL : bodyHitType;
+            var hitType = critical ? HitType.CRITICAL : bodyHitType;
 
-            PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) this.shooter, new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
+            PacketHandler.getPlayChannel().sendToPlayer(() -> playerShooter,
+                    new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
         }
 
         /* Send blood particle to tracking clients. */
@@ -627,37 +625,49 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     @Nullable
     @SuppressWarnings("unchecked")
     private EntityResult getHitResult(Entity entity, Vec3 startVec, Vec3 endVec) {
-        double expandHeight = entity instanceof Player && !entity.isCrouching() ? 0.0625 : 0.0;
-        AABB boundingBox = entity.getBoundingBox();
-        if (Config.COMMON.gameplay.improvedHitboxes.get() && entity instanceof ServerPlayer && this.shooter != null) {
-            int ping = (int) Math.floor((((ServerPlayer) this.shooter).latency / 1000.0) * 20.0 + 0.5);
-            boundingBox = BoundingBoxManager.getBoundingBox((Player) entity, ping);
+        var expandHeight = entity instanceof Player && !entity.isCrouching() ? 0.0625 : 0.0;
+        var boundingBox = entity.getBoundingBox();
+
+        if (Config.COMMON.gameplay.improvedHitboxes.get()
+                && entity instanceof ServerPlayer targetPlayer
+                && shooter instanceof ServerPlayer shooterPlayer) {
+            int ping = (int) Math.floor((shooterPlayer.latency / 1000.0) * 20.0 + 0.5);
+            boundingBox = BoundingBoxManager.getBoundingBox(targetPlayer, ping);
         }
+
         boundingBox = boundingBox.expandTowards(0, expandHeight, 0);
 
-        Vec3 hitPos = boundingBox.clip(startVec, endVec).orElse(null);
-        Vec3 grownHitPos = boundingBox.inflate(Config.COMMON.gameplay.growBoundingBoxAmount.get(), 0, Config.COMMON.gameplay.growBoundingBoxAmount.get()).clip(startVec, endVec).orElse(null);
+        var hitPos = boundingBox.clip(startVec, endVec).orElse(null);
+        var grownHitPos = boundingBox.inflate(Config.COMMON.gameplay.growBoundingBoxAmount.get(), 0,
+                Config.COMMON.gameplay.growBoundingBoxAmount.get()).clip(startVec, endVec).orElse(null);
+
         if (hitPos == null && grownHitPos != null) {
-            HitResult raytraceresult = rayTraceBlocks(this.level(), new ClipContext(startVec, grownHitPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this), getBlockFilter());
-            if (raytraceresult.getType() == HitResult.Type.BLOCK) {
+            var clipContext = new ClipContext(startVec, grownHitPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this);
+            var rayTraceResult = rayTraceBlocks(this.level(), clipContext, getBlockFilter());
+
+            if (rayTraceResult.getType() == HitResult.Type.BLOCK)
                 return null;
-            }
+
             hitPos = grownHitPos;
         }
 
         /* Check for headshot */
         boolean headshot = false;
-        if (Config.COMMON.gameplay.enableHeadShots.get() && entity instanceof LivingEntity) {
-            IHeadshotBox<LivingEntity> headshotBox = (IHeadshotBox<LivingEntity>) BoundingBoxManager.getHeadshotBoxes(entity.getType());
+        if (Config.COMMON.gameplay.enableHeadShots.get() && entity instanceof LivingEntity livingEntity) {
+            var headshotBox = (IHeadshotBox<LivingEntity>) BoundingBoxManager.getHeadshotBoxes(entity.getType());
+
             if (headshotBox != null) {
-                AABB box = headshotBox.getHeadshotBox((LivingEntity) entity);
+                var box = headshotBox.getHeadshotBox(livingEntity);
+
                 if (box != null) {
                     box = box.move(boundingBox.getCenter().x, boundingBox.minY, boundingBox.getCenter().z);
-                    Optional<Vec3> headshotHitPos = box.clip(startVec, endVec);
+                    var headshotHitPos = box.clip(startVec, endVec);
+
                     if (!headshotHitPos.isPresent()) {
                         box = box.inflate(Config.COMMON.gameplay.growBoundingBoxAmount.get(), 0, Config.COMMON.gameplay.growBoundingBoxAmount.get());
                         headshotHitPos = box.clip(startVec, endVec);
                     }
+
                     if (headshotHitPos.isPresent() && (hitPos == null || headshotHitPos.get().distanceTo(hitPos) < 0.5)) {
                         hitPos = headshotHitPos.get();
                         headshot = true;
@@ -666,9 +676,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
         }
 
-        if (hitPos == null) {
+        if (hitPos == null)
             return null;
-        }
 
         return new EntityResult(entity, hitPos, headshot);
     }
@@ -721,51 +730,54 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
      */
     protected static BlockHitResult rayTraceBlocks(Level world, ClipContext context, Predicate<BlockState> ignorePredicate) {
         return performRayTrace(context, (rayTraceContext, blockPos) -> {
-            BlockState blockState = world.getBlockState(blockPos);
+            var blockState = world.getBlockState(blockPos);
             if (ignorePredicate.test(blockState)) return null;
-            FluidState fluidState = world.getFluidState(blockPos);
-            Vec3 startVec = rayTraceContext.getFrom();
-            Vec3 endVec = rayTraceContext.getTo();
-            VoxelShape blockShape = rayTraceContext.getBlockShape(blockState, world, blockPos);
-            BlockHitResult blockResult = world.clipWithInteractionOverride(startVec, endVec, blockPos, blockShape, blockState);
-            VoxelShape fluidShape = rayTraceContext.getFluidShape(fluidState, world, blockPos);
-            BlockHitResult fluidResult = fluidShape.clip(startVec, endVec, blockPos);
-            double blockDistance = blockResult == null ? Double.MAX_VALUE : rayTraceContext.getFrom().distanceToSqr(blockResult.getLocation());
-            double fluidDistance = fluidResult == null ? Double.MAX_VALUE : rayTraceContext.getFrom().distanceToSqr(fluidResult.getLocation());
+            var fluidState = world.getFluidState(blockPos);
+            var startVec = rayTraceContext.getFrom();
+            var endVec = rayTraceContext.getTo();
+            var blockShape = rayTraceContext.getBlockShape(blockState, world, blockPos);
+            var blockResult = world.clipWithInteractionOverride(startVec, endVec, blockPos, blockShape, blockState);
+            var fluidShape = rayTraceContext.getFluidShape(fluidState, world, blockPos);
+            var fluidResult = fluidShape.clip(startVec, endVec, blockPos);
+            var blockDistance = blockResult == null ? Double.MAX_VALUE : rayTraceContext.getFrom().distanceToSqr(blockResult.getLocation());
+            var fluidDistance = fluidResult == null ? Double.MAX_VALUE : rayTraceContext.getFrom().distanceToSqr(fluidResult.getLocation());
             return blockDistance <= fluidDistance ? blockResult : fluidResult;
         }, (rayTraceContext) -> {
-            Vec3 Vector3d = rayTraceContext.getFrom().subtract(rayTraceContext.getTo());
+            var Vector3d = rayTraceContext.getFrom().subtract(rayTraceContext.getTo());
             return BlockHitResult.miss(rayTraceContext.getTo(), Direction.getNearest(Vector3d.x, Vector3d.y, Vector3d.z), BlockPos.containing(rayTraceContext.getTo()));
         });
     }
 
-    private static <T> T performRayTrace(ClipContext context, BiFunction<ClipContext, BlockPos, T> hitFunction, Function<ClipContext, T> p_217300_2_) {
-        Vec3 startVec = context.getFrom();
-        Vec3 endVec = context.getTo();
-        if (startVec.equals(endVec)) {
-            return p_217300_2_.apply(context);
-        } else {
-            double startX = Mth.lerp(-0.0000001, endVec.x, startVec.x);
-            double startY = Mth.lerp(-0.0000001, endVec.y, startVec.y);
-            double startZ = Mth.lerp(-0.0000001, endVec.z, startVec.z);
-            double endX = Mth.lerp(-0.0000001, startVec.x, endVec.x);
-            double endY = Mth.lerp(-0.0000001, startVec.y, endVec.y);
-            double endZ = Mth.lerp(-0.0000001, startVec.z, endVec.z);
-            int blockX = Mth.floor(endX);
-            int blockY = Mth.floor(endY);
-            int blockZ = Mth.floor(endZ);
-            BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos(blockX, blockY, blockZ);
+    private static <T> T performRayTrace(ClipContext context, BiFunction<ClipContext, BlockPos, T> hitFunction, Function<ClipContext, T> onFinish) {
+        var startVec = context.getFrom();
+        var endVec = context.getTo();
+
+        if (!startVec.equals(endVec)) {
+            var startX = Mth.lerp(-0.0000001, endVec.x, startVec.x);
+            var startY = Mth.lerp(-0.0000001, endVec.y, startVec.y);
+            var startZ = Mth.lerp(-0.0000001, endVec.z, startVec.z);
+
+            var endX = Mth.lerp(-0.0000001, startVec.x, endVec.x);
+            var endY = Mth.lerp(-0.0000001, startVec.y, endVec.y);
+            var endZ = Mth.lerp(-0.0000001, startVec.z, endVec.z);
+
+            var blockX = Mth.floor(endX);
+            var blockY = Mth.floor(endY);
+            var blockZ = Mth.floor(endZ);
+
+            var mutablePos = new BlockPos.MutableBlockPos(blockX, blockY, blockZ);
             T t = hitFunction.apply(context, mutablePos);
-            if (t != null) {
-                return t;
-            }
+
+            if (t != null) return t;
 
             double deltaX = startX - endX;
             double deltaY = startY - endY;
             double deltaZ = startZ - endZ;
+
             int signX = Mth.sign(deltaX);
             int signY = Mth.sign(deltaY);
             int signZ = Mth.sign(deltaZ);
+
             double d9 = signX == 0 ? Double.MAX_VALUE : (double) signX / deltaX;
             double d10 = signY == 0 ? Double.MAX_VALUE : (double) signY / deltaY;
             double d11 = signZ == 0 ? Double.MAX_VALUE : (double) signZ / deltaZ;
@@ -790,14 +802,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                     d14 += d11;
                 }
 
-                T t1 = hitFunction.apply(context, mutablePos.set(blockX, blockY, blockZ));
-                if (t1 != null) {
+                var t1 = hitFunction.apply(context, mutablePos.set(blockX, blockY, blockZ));
+                if (t1 != null)
                     return t1;
-                }
             }
 
-            return p_217300_2_.apply(context);
         }
+        return onFinish.apply(context);
     }
 
     public boolean isClientUpdated() {
