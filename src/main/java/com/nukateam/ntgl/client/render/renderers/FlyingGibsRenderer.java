@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.getGoreData;
 
@@ -92,6 +93,14 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                         if(isGeoModel)
                             poseStack.translate(0, (-reverseScale / 2) / 16D, 0);
                         else poseStack.translate(0, -reverseScale / 2, 0);
+
+                        if (entity.deathTime > 0) {
+                            var partialTicks = Minecraft.getInstance().getFrameTime();
+                            var rotProg = ((float)entity.deathTime + partialTicks - 1.0F) / 20.0F * 1.6F;
+                            rotProg = Mth.sqrt(rotProg);
+                            if (rotProg > 1.0F) rotProg = 1.0F;
+                            poseStack.mulPose(Axis.ZP.rotationDegrees(rotProg *  90.0F));
+                        }
 
 //                        rgba = rgba.setAlpha(reverseProg);
                         break;

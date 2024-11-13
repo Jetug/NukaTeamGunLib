@@ -16,7 +16,7 @@ public class EntityEvents {
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public static void onLivingDeathEvent(LivingDeathEvent event) {
         var entity = event.getEntity();
-        ClientProxy.setDamageType(entity, event.getSource());
+//        ClientProxy.setDamageType(entity, event.getSource());
 
         if (!entity.level().isClientSide){
             DeathEffect.createDeathEffect(entity, event.getSource());

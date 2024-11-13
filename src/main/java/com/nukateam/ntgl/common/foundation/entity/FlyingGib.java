@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.PowderSnowBlock;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.Lazy;
 
+import static com.nukateam.ntgl.ClientProxy.setDamageType;
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.*;
 import static net.minecraft.network.syncher.SynchedEntityData.defineId;
 import static net.minecraft.tags.FluidTags.LAVA;
@@ -221,6 +222,9 @@ public class FlyingGib extends Entity {
     }
 
     public LivingEntity getLocalEntity(){
+        var entity = localEntity.get();
+        if(entity != null)
+            setDamageType(localEntity.get(), getData().deathType);
         return localEntity.get();
     }
 

@@ -66,7 +66,7 @@ public class DeathEffect {
         return data;
     }
 
-    public static void createDeathEffect(LivingEntity entity, DamageSource deathtype) {
+    public static void createDeathEffect(LivingEntity entity, DamageSource deathType) {
         double x = entity.getX();
         double y = entity.getY() + (entity.getType().getHeight() / 2.0f);
         double z = entity.getZ();
@@ -74,24 +74,25 @@ public class DeathEffect {
         var vec = new Vec3(x, y, z);
         var data = DeathEffect.getGoreData(entity);
 
-        if (deathtype.is(ModDamageTypes.EXPLOSIVE)) {
+        if (deathType.is(ModDamageTypes.EXPLOSIVE)) {
             setupGoreData(entity, data);
             data.gravity = 0.2f;
             data.deathType = DeathType.GORE;
             createGoreGibs(entity, vec, data);
         }
-        else if (deathtype.is(ModDamageTypes.ENERGY)) {
+        else if (deathType.is(ModDamageTypes.ENERGY)) {
             createAshPile(entity);
             setupGoreData(entity, data);
             data.showBlood = false;
+            data.gravity = 110.2f;
             data.deathType = DeathType.LASER;
             createDisintegratedGibs(entity, vec, data);
         }
-        else if(deathtype.is(ModDamageTypes.FIRE)){
+        else if(deathType.is(ModDamageTypes.FIRE)){
             createAshPile(entity);
             setupGoreData(entity, data);
-            data.gravity = 0.2f;
             data.showBlood = false;
+            data.gravity = 110.2f;
             data.deathType = DeathType.FIRE;
             createBurntGibs(entity, vec, data);
         }
@@ -124,10 +125,28 @@ public class DeathEffect {
         data.texture = RES_BURN_EFFECT;
 
         for (int i = 0; i < data.getNumGibs(); i++) {
+            var random = entity.getRandom();
+            var delta = entity.getDeltaMovement();
+            var ax = 0.01;
+            var vx = (0.5 - random.nextDouble()) * ax;
+            var vz = (0.5 - random.nextDouble()) * ax;
+            var vy = entity.onGround() ?
+                    (random.nextDouble()) * ax :
+                    (0.5 - random.nextDouble()) * ax;
+
             var flyingGibs = new FlyingGib(
-                    entity.level(), entity, data,
-                    vec, Vec3.ZERO,
+                    entity.level(), entity, data, vec,
+                    new Vec3(delta.x * ax + vx,
+                             delta.y * ax + vy,
+                             delta.z * ax + vz
+                    ),
                     (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
+//
+
+//            var flyingGibs = new FlyingGib(
+//                    entity.level(), entity, data,
+//                    vec, Vec3.ZERO,
+//                    (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
 
             entity.level().addFreshEntity(flyingGibs);
         }

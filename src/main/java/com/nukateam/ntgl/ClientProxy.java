@@ -1,5 +1,6 @@
 package com.nukateam.ntgl;
 
+import com.nukateam.ntgl.common.base.utils.DeathType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -26,12 +27,12 @@ public class ClientProxy {
 
     public static Map<Integer, Ses> damageTypes = new HashMap<>();
 
-    public static void setDamageType(Entity entity, DamageSource damageType) {
+    public static void setDamageType(@NotNull Entity entity, DeathType damageType) {
         ClientProxy.damageTypes.put(entity.getId(), new Ses(damageType, MAX_TICKS));
     }
 
     @Nullable
-    public static DamageSource getDamageType(Entity entity) {
+    public static DeathType getDamageType(Entity entity) {
         var ses = ClientProxy.damageTypes.get(entity.getId());
         return ses == null ? null : ses.deathType;
     }
@@ -53,7 +54,6 @@ public class ClientProxy {
         return (LivingEntityRenderer<? super LivingEntity, ? extends EntityModel<? extends LivingEntity>>) getEntityRenderer(entity);
     }
 
-
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
@@ -70,9 +70,9 @@ public class ClientProxy {
 
     public static class Ses {
         public int ticks;
-        public DamageSource deathType;
+        public DeathType deathType;
 
-        public Ses(DamageSource damageType, int maxTicks) {
+        public Ses(DeathType damageType, int maxTicks) {
             this.ticks = maxTicks;
             this.deathType = damageType;
         }
