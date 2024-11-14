@@ -67,10 +67,11 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
 
                 poseStack.translate(0,-entity.getType().getHeight() / 2,0);
 
+                var partialTicks = Minecraft.getInstance().getFrameTime();
                 var texture = data.texture;
                 var rendertype = RenderType.itemEntityTranslucentCull(texture);
                 var vertexConsumer = buffer.getBuffer(rendertype);
-                var prog = ((float) entity.deathTime / (float) MAX_DEATH_TIME);
+                var prog = (entity.deathTime + partialTicks - 1.0F) / MAX_DEATH_TIME;
                 var reverseProg = 1.0f - prog;
                 var scale = 1.0f + prog / 2;
                 var reverseScale = 1.0f - prog / 4;
@@ -94,13 +95,13 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                             poseStack.translate(0, (-reverseScale / 2) / 16D, 0);
                         else poseStack.translate(0, -reverseScale / 2, 0);
 
-                        if (entity.deathTime > 0) {
-                            var partialTicks = Minecraft.getInstance().getFrameTime();
-                            var rotProg = ((float)entity.deathTime + partialTicks - 1.0F) / 20.0F * 1.6F;
-                            rotProg = Mth.sqrt(rotProg);
-                            if (rotProg > 1.0F) rotProg = 1.0F;
-                            poseStack.mulPose(Axis.ZP.rotationDegrees(rotProg *  90.0F));
-                        }
+//                        if (entity.deathTime > 0) {
+//                            var partialTicks = Minecraft.getInstance().getFrameTime();
+//                            var rotProg = ((float)entity.deathTime + partialTicks - 1.0F) / 20.0F * 1.6F;
+//                            rotProg = Mth.sqrt(rotProg);
+//                            if (rotProg > 1.0F) rotProg = 1.0F;
+//                            poseStack.mulPose(Axis.ZP.rotationDegrees(rotProg *  90.0F));
+//                        }
 
 //                        rgba = rgba.setAlpha(reverseProg);
                         break;
