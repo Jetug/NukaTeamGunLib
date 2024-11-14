@@ -61,7 +61,10 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
                 if (flyingGib.onGround()) {
                     if (flyingGib.timeToLive <= 20) {
                         float offsetY = ((20 - flyingGib.timeToLive) + partialTickTime) * -0.05f;
-                        poseStack.translate(0.0f, -offsetY, 0.0f);
+
+                        if(isGeoModel)
+                            poseStack.translate(0.0f, offsetY, 0.0f);
+                        else poseStack.translate(0.0f, -offsetY, 0.0f);
                     }
                 }
 

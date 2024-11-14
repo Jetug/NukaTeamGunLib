@@ -35,7 +35,7 @@ public class FlyingGib extends Entity {
     public static final EntityDataAccessor<Float> SIZE = defineId(FlyingGib.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Float> GRAVITY = defineId(FlyingGib.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<CompoundTag> DATA = defineId(FlyingGib.class, EntityDataSerializers.COMPOUND_TAG);
-    public static final int LIFE = 75;
+    public static final int LIFE = 20 * 3;
     private final Lazy<LivingEntity> localEntity = Lazy.of(() -> (LivingEntity)Minecraft.getInstance().level.getEntity(getEntityId()));
 
     private RandomSource rand;
