@@ -4,6 +4,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -17,19 +18,22 @@ public class ServerEvent {
     @SubscribeEvent
     public static void onServerTick(TickEvent.PlayerTickEvent event) {
         if (event.side == LogicalSide.SERVER && event.phase != TickEvent.Phase.START) {
-            var player = (ServerPlayer) event.player;
-            handleAutoReload(player, InteractionHand.MAIN_HAND);
-            handleAutoReload(player, InteractionHand.OFF_HAND);
+            handleAutoReload((ServerPlayer) event.player, InteractionHand.MAIN_HAND);
+            handleAutoReload((ServerPlayer) event.player, InteractionHand.OFF_HAND);
         }
     }
 
     private static void handleAutoReload(ServerPlayer player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
         var shootTracker = getShootTracker(player, hand);
-        shootTracker.hasCooldown(hand);
+        var isGun = GunModifierHelper.isGun(stack);
 
-        if (GunModifierHelper.isGun(stack) && GunModifierHelper.getGun(stack).getGeneral().isAutoReloading()) {
+        if (!player.isCreative() && isGun && isAutoReloading(stack) && shootTracker.hasCooldown()) {
             reloadGun(hand, player);
         }
+    }
+
+    private static boolean isAutoReloading(ItemStack stack) {
+        return GunModifierHelper.getGun(stack).getGeneral().isAutoReloading();
     }
 }

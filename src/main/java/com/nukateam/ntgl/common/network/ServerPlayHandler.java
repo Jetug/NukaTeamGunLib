@@ -102,14 +102,14 @@ public class ServerPlayHandler {
 
                 var tracker = ShootTracker.getShootTracker(shooter, hand);
 
-                if (tracker.hasCooldown(hand) && tracker.getRemaining(hand) > Config.SERVER.cooldownThreshold.get()) {
+                if (tracker.hasCooldown() && tracker.getRemaining() > Config.SERVER.cooldownThreshold.get()) {
                     Ntgl.LOGGER.warn(shooter.getName().getContents() +
                             "(" + shooter.getUUID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: "
-                            + tracker.getRemaining(hand));
+                            + tracker.getRemaining());
                     return;
                 }
 
-                tracker.putCooldown(heldItem, hand);
+                tracker.putCooldown(heldItem);
 
                 if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(shooter)) {
                     ModSyncedDataKeys.RELOADING_RIGHT.setValue(shooter, false);
