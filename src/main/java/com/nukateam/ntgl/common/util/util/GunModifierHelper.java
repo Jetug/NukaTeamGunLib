@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.util.util;
 
-import com.nukateam.ntgl.common.base.config.Ammo;
-import com.nukateam.ntgl.common.base.config.gun.Gun;
-import com.nukateam.ntgl.common.base.config.gun.Modules;
+import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.gun.Modules;
 import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.util.constants.Tags;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
@@ -64,6 +64,11 @@ public class GunModifierHelper {
             return attachment.getProperties().getModifiers();
         }
         return EMPTY;
+    }
+
+    public static boolean isGun(ItemStack weapon){
+        var gunItem = weapon.getItem();
+        return gunItem instanceof GunItem;
     }
 
     public static Gun getGun(ItemStack weapon) {

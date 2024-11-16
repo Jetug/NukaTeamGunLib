@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.model.gun;
 
-import com.nukateam.example.common.util.interfaces.IResourceProvider;
+import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.client.model.IGlowingModel;
 import com.nukateam.ntgl.common.foundation.item.GunItem;

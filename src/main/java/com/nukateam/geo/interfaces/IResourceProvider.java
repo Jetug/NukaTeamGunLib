@@ -1,4 +1,4 @@
-package com.nukateam.example.common.util.interfaces;
+package com.nukateam.geo.interfaces;
 
 public interface IResourceProvider {
     String getName();

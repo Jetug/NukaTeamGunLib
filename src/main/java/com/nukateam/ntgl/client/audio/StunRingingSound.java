@@ -9,6 +9,7 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.event.TickEvent;
 
 public class StunRingingSound extends AbstractTickableSoundInstance {
     public StunRingingSound() {
@@ -20,14 +21,14 @@ public class StunRingingSound extends AbstractTickableSoundInstance {
 
     @Override
     public void tick() {
-        Player player = Minecraft.getInstance().player;
+        var player = Minecraft.getInstance().player;
         if (player != null && player.isAlive()) {
-            MobEffectInstance effect = player.getEffect(ModEffects.DEAFENED.get());
+            var effect = player.getEffect(ModEffects.DEAFENED.get());
             if (effect != null) {
                 this.x = (float) player.getX();
                 this.y = (float) player.getY();
                 this.z = (float) player.getZ();
-                float percent = Math.min((effect.getDuration() / (float) Config.SERVER.soundFadeThreshold.get()), 1);
+                var percent = Math.min((effect.getDuration() / (float) Config.SERVER.soundFadeThreshold.get()), 1);
                 this.volume = (float) (percent * Config.SERVER.ringVolume.get());
                 return;
             }

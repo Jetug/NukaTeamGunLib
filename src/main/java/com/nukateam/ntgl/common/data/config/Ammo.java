@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.base.config;
+package com.nukateam.ntgl.common.data.config;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
@@ -18,8 +18,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.nukateam.ntgl.common.base.config.gun.General.PROJECTILE_AMOUNT;
-import static com.nukateam.ntgl.common.base.config.gun.General.SPREAD;
+import static com.nukateam.ntgl.common.data.config.gun.General.PROJECTILE_AMOUNT;
+import static com.nukateam.ntgl.common.data.config.gun.General.SPREAD;
 
 public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String TYPE = "Type";
@@ -29,22 +29,14 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     private float size;
     private double speed;
     private int life;
-    @Optional
-    private boolean gravity;
-    @Optional
-    private boolean damageReduceOverLife;
-    @Optional
-    private boolean magazineMode;
-    @Optional
-    private int trailColor = 0xFFD289;
-    @Optional
-    private double trailLengthMultiplier = 1.0;
-    @Optional
-    private AmmoType type = AmmoType.STANDARD;
-    @Optional
-    int projectileAmount = 1;
-    @Optional
-    float spread;
+    @Optional private boolean gravity;
+    @Optional private boolean damageReduceOverLife;
+    @Optional private boolean magazineMode;
+    @Optional private int trailColor = 0xFFD289;
+    @Optional private double trailLengthMultiplier = 1.0;
+    @Optional private AmmoType type = AmmoType.STANDARD;
+    @Optional int projectileAmount = 1;
+    @Optional float spread;
 
     @Override
     public CompoundTag serializeNBT() {

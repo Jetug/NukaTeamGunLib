@@ -1,6 +1,6 @@
 package com.nukateam.geo.render;
 
-import com.nukateam.example.common.util.interfaces.IResourceProvider;
+import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.example.common.util.utils.ResourceUtils;
 import com.nukateam.geo.interfaces.IItemAnimator;
 import mod.azure.azurelib.animatable.GeoEntity;

@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.base.config.gun;
+package com.nukateam.ntgl.common.data.config.gun;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
@@ -25,6 +25,7 @@ import java.util.Set;
 
 public class General implements INBTSerializable<CompoundTag> {
     public static final String LOADING_TYPE = "LoadingType";
+    public static final String AUTO_RELOAD = "AutoReload";
     public static final String RATE = "Rate";
     public static final String GRIP_TYPE = "GripType";
     public static final String RELOAD_TYPE = "ReloadType";
@@ -41,44 +42,30 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String SPREAD = "Spread";
     public static final String CATEGORY = "category";
 
-    @Optional
-    Set<FireMode> fireMode = new HashSet<>(List.of(FireMode.SEMI_AUTO));
-    @Optional
-    boolean fullCharge = false;
     int rate;
-    @Optional
-    float damage;
-    @Ignored
-    GripType gripType = GripType.ONE_HANDED;
-    @Ignored
-    ResourceLocation reloadType = new ResourceLocation(Ntgl.MOD_ID, "gun_reload");
     int maxAmmo;
-    @Optional
-    int reloadTime = 1;
-    @Optional
-    LoadingType loadingType = LoadingType.MAGAZINE;
-    @Optional
-    String category = "pistol";
-    @Optional
-    int reloadAmount = 1;
-    @Optional
-    float recoilAngle;
-    @Optional
-    float recoilKick;
-    @Optional
-    float recoilDurationOffset;
-    @Optional
-    float recoilAdsReduction = 0.2F;
-    @Optional
-    int projectileAmount = 1;
-    @Optional
-    boolean alwaysSpread;
-    @Optional
-    float spread;
-    @Optional
-    int fireTimer;
-    @Optional
-    protected Set<ResourceLocation> ammo = new HashSet<>(List.of(new ResourceLocation("ntgl:round10mm")));
+
+    @Optional Set<FireMode> fireMode = new HashSet<>(List.of(FireMode.SEMI_AUTO));
+    @Optional boolean fullCharge = false;
+    @Optional float damage;
+    @Ignored GripType gripType = GripType.ONE_HANDED;
+
+    @Optional int reloadAmount = 1;
+    @Optional int reloadTime = 1;
+    @Optional LoadingType loadingType = LoadingType.MAGAZINE;
+    @Optional boolean autoReload = false;
+    @Ignored ResourceLocation reloadType = new ResourceLocation(Ntgl.MOD_ID, "gun_reload");
+
+    @Optional String category = "pistol";
+    @Optional float recoilAngle;
+    @Optional float recoilKick;
+    @Optional float recoilDurationOffset;
+    @Optional float recoilAdsReduction = 0.2F;
+    @Optional int projectileAmount = 1;
+    @Optional boolean alwaysSpread;
+    @Optional float spread;
+    @Optional int fireTimer;
+    @Optional protected Set<ResourceLocation> ammo = new HashSet<>(List.of(new ResourceLocation("ntgl:round10mm")));
 
     @Override
     public CompoundTag serializeNBT() {
@@ -93,6 +80,7 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putInt(RELOAD_SPEED, this.reloadAmount);
         tag.putInt(RELOAD_TIME, this.reloadTime);
         tag.putString(LOADING_TYPE, this.loadingType.toString());
+        tag.putBoolean(AUTO_RELOAD, this.autoReload);
         tag.putString(CATEGORY, this.category);
         tag.putFloat(RECOIL_ANGLE, this.recoilAngle);
         tag.putFloat(DAMAGE, this.damage);
@@ -137,6 +125,9 @@ public class General implements INBTSerializable<CompoundTag> {
         }
         if (tag.contains(LOADING_TYPE, Tag.TAG_STRING)) {
             this.loadingType = LoadingType.getType(tag.getString(LOADING_TYPE));
+        }
+        if (tag.contains(AUTO_RELOAD, Tag.TAG_BYTE)) {
+            this.autoReload = tag.getBoolean(AUTO_RELOAD);
         }
         if (tag.contains(CATEGORY, Tag.TAG_STRING)) {
             this.category = tag.getString(CATEGORY);
@@ -189,6 +180,7 @@ public class General implements INBTSerializable<CompoundTag> {
 //            object.addProperty("fireMode", this.fireMode.getId().toString());
         object.addProperty("gripType", this.gripType.toString());
         object.addProperty("loadingType", this.loadingType.toString());
+        object.addProperty("autoReload", this.autoReload);
         object.addProperty("reloadType", this.reloadType.toString());
         object.addProperty("maxAmmo", this.maxAmmo);
         if (this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
@@ -221,6 +213,7 @@ public class General implements INBTSerializable<CompoundTag> {
         general.reloadAmount = this.reloadAmount;
         general.reloadTime = this.reloadTime;
         general.loadingType = this.loadingType;
+        general.autoReload = this.autoReload;
         general.category = this.category;
         general.recoilAngle = this.recoilAngle;
         general.damage = this.damage;
@@ -316,6 +309,13 @@ public class General implements INBTSerializable<CompoundTag> {
      */
     public LoadingType getLoadingType() {
         return this.loadingType;
+    }
+
+    /**
+     * @return If weapon should automatically reload if it's empty
+     */
+    public boolean isAutoReloading() {
+        return this.autoReload;
     }
 
     /**

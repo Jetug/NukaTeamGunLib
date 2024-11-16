@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.interfaces;
 
-import com.nukateam.ntgl.common.base.config.Ammo;
+import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.IConfigConsumer;
 import net.minecraft.nbt.CompoundTag;

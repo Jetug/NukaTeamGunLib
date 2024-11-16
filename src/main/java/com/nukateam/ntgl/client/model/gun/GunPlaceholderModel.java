@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.model.gun;
 
-import com.nukateam.example.common.util.interfaces.IResourceProvider;
+import com.nukateam.geo.interfaces.IResourceProvider;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.renderer.RenderType;

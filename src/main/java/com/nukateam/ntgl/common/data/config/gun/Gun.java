@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.base.config.gun;
+package com.nukateam.ntgl.common.data.config.gun;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
@@ -43,8 +43,6 @@ import java.util.function.Supplier;
 
 import static com.nukateam.example.common.util.utils.ResourceUtils.resourceExists;
 import static com.nukateam.ntgl.client.event.ClientHandler.*;
-import static com.nukateam.ntgl.common.base.config.gun.Display.*;
-import static com.nukateam.ntgl.common.base.config.gun.Modules.*;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
@@ -242,8 +240,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return null;
     }
 
-    public ArrayList<Attachment> getAttachments(ArrayList<ItemStack> itemStacks) {
-        var result = new ArrayList<Attachment>();
+    public ArrayList<Modules.Attachment> getAttachments(ArrayList<ItemStack> itemStacks) {
+        var result = new ArrayList<Modules.Attachment>();
 
         for (var stack : itemStacks) {
             var item = stack.getItem();
@@ -256,7 +254,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return result;
     }
 
-    private Attachment findAttachment(Item item, ResourceLocation itemRegistryName) {
+    private Modules.Attachment findAttachment(Item item, ResourceLocation itemRegistryName) {
         if(item instanceof IAttachment attachmentItem){
             var attachmentType = attachmentItem.getType();
 
@@ -609,7 +607,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder setMuzzleFlash(double size, double xOffset, double yOffset, double zOffset) {
-            var flash = new Flash();
+            var flash = new Display.Flash();
             flash.size = size;
             flash.xOffset = xOffset;
             flash.yOffset = yOffset;
@@ -619,7 +617,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
 
         public Builder setZoom(float fovModifier, double xOffset, double yOffset, double zOffset) {
-            var zoom = new Zoom();
+            var zoom = new Modules.Zoom();
             zoom.fovModifier = fovModifier;
             zoom.xOffset = xOffset;
             zoom.yOffset = yOffset;
@@ -629,7 +627,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
 
         @Deprecated(since = "1.3.0", forRemoval = true)
-        public Builder setZoom(Zoom.Builder builder) {
+        public Builder setZoom(Modules.Zoom.Builder builder) {
             this.gun.modules.zoom = builder.build();
             return this;
         }

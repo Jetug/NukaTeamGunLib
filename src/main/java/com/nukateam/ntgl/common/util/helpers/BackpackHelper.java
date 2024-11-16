@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.util.helpers;
 
 import com.nukateam.ntgl.common.base.AmmoContext;
-import com.nukateam.ntgl.common.base.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.mrcrayfish.backpacked.inventory.BackpackedInventoryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;

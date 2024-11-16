@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.util.util;
 
-import com.nukateam.example.common.util.interfaces.IResourceProvider;
+import com.nukateam.geo.interfaces.IResourceProvider;
 import mod.azure.azurelib.cache.AzureLibCache;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.core.animation.Animation;

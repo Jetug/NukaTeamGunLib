@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.example.common.util.interfaces.IResourceProvider;
+import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
