@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.base.utils;
 
-import com.nukateam.ntgl.common.data.interfaces.IProjectileFactory;
+import com.nukateam.ntgl.common.util.interfaces.IProjectileFactory;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import net.minecraft.resources.ResourceLocation;

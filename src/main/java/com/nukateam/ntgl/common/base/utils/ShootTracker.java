@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.base.utils;
 
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.google.common.collect.Maps;
 import net.minecraft.Util;

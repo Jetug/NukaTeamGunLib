@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.block;
 
-import com.nukateam.ntgl.common.data.util.VoxelShapeHelper;
+import com.nukateam.ntgl.common.util.util.VoxelShapeHelper;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

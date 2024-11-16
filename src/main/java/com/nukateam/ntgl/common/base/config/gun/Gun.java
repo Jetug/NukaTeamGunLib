@@ -1,15 +1,13 @@
 package com.nukateam.ntgl.common.base.config.gun;
 
-import com.google.gson.internal.reflect.ReflectionHelper;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
-import com.nukateam.ntgl.common.data.annotation.Ignored;
-import com.nukateam.ntgl.common.data.annotation.Optional;
-import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.data.util.GunJsonUtil;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.annotation.Ignored;
+import com.nukateam.ntgl.common.util.constants.Tags;
+import com.nukateam.ntgl.common.util.util.GunJsonUtil;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -18,7 +16,7 @@ import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.ScopeItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
-import com.nukateam.ntgl.common.helpers.BackpackHelper;
+import com.nukateam.ntgl.common.util.helpers.BackpackHelper;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -43,8 +41,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static com.nukateam.example.common.data.utils.ResourceUtils.resourceExists;
-import static com.nukateam.ntgl.client.ClientHandler.*;
+import static com.nukateam.example.common.util.utils.ResourceUtils.resourceExists;
+import static com.nukateam.ntgl.client.event.ClientHandler.*;
 import static com.nukateam.ntgl.common.base.config.gun.Display.*;
 import static com.nukateam.ntgl.common.base.config.gun.Modules.*;
 

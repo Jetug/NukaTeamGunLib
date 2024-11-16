@@ -1,14 +1,13 @@
 package com.nukateam.ntgl.mixin.client;
 
-import com.nukateam.ntgl.client.data.handler.AimingHandler;
-import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.client.util.handler.AimingHandler;
+import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.layers.*;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
@@ -20,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.nukateam.ntgl.common.data.util.GunModifierHelper.*;
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
 
 /**
  * Author: MrCrayfish

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.nukateam.ntgl.common.data.util.LivingEntityUtils.getInteractionHand;
+import static com.nukateam.ntgl.common.util.util.LivingEntityUtils.getInteractionHand;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class EntityReloadTracker {

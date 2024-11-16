@@ -2,7 +2,8 @@ package com.nukateam.ntgl.common.network;
 
 import com.mrcrayfish.framework.api.network.*;
 import com.nukateam.ntgl.*;
-import com.nukateam.ntgl.client.*;
+import com.nukateam.ntgl.client.config.CustomAmmoManager;
+import com.nukateam.ntgl.client.config.CustomGunManager;
 import com.nukateam.ntgl.common.base.*;
 import com.nukateam.ntgl.common.network.message.*;
 import com.mrcrayfish.framework.api.*;

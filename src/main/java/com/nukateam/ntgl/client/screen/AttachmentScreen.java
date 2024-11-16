@@ -3,8 +3,8 @@ package com.nukateam.ntgl.client.screen;
 
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
-import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
+import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
+import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
 import com.nukateam.ntgl.client.screen.widget.MiniButton;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
@@ -33,11 +33,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-
-import static com.nukateam.ntgl.client.event.InputEvents.*;
 
 /**
  * Author: MrCrayfish

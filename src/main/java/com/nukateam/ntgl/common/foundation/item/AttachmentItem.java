@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.example.common.data.interfaces.IResourceProvider;
-import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
+import com.nukateam.example.common.util.interfaces.IResourceProvider;
+import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
 import net.minecraft.world.item.Item;
@@ -11,7 +11,7 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import static com.nukateam.example.common.data.utils.ResourceUtils.getResourceName;
+import static com.nukateam.example.common.util.utils.ResourceUtils.getResourceName;
 
 
 /**

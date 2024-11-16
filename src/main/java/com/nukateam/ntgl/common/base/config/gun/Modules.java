@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.base.config.gun;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
-import com.nukateam.ntgl.common.data.annotation.Optional;
+import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugButton;
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-import static com.nukateam.ntgl.client.ClientHandler.createEditorScreen;
+import static com.nukateam.ntgl.client.event.ClientHandler.createEditorScreen;
 
 public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
     private transient Zoom cachedZoom;

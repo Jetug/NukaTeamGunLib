@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.base.utils;
 
-import com.nukateam.ntgl.client.data.util.Easings;
+import com.nukateam.ntgl.client.util.util.Easings;
 import com.google.gson.JsonDeserializer;
 import com.nukateam.ntgl.common.base.holders.*;
 import net.minecraft.resources.ResourceLocation;

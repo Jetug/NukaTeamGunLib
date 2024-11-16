@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.base.utils;
 
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.base.headshot.*;
-import com.nukateam.ntgl.common.data.interfaces.IHeadshotBox;
+import com.nukateam.ntgl.common.util.interfaces.IHeadshotBox;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;

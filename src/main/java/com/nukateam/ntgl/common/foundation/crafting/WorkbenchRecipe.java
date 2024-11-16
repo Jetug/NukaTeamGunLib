@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.crafting;
 
-import com.nukateam.ntgl.common.data.util.InventoryUtil;
+import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.foundation.init.ModRecipeSerializers;
 import com.google.common.collect.ImmutableList;

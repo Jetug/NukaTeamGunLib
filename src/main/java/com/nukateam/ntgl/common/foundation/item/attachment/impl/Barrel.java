@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.attachment.impl;
 
-import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 
 /**
  * An attachment class related to barrels. Barrels need to specify the length in order to render

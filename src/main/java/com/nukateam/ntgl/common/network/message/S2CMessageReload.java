@@ -2,12 +2,9 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
-import com.nukateam.ntgl.client.ClientPlayHandler;
+import com.nukateam.ntgl.client.event.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 public class S2CMessageReload extends PlayMessage<S2CMessageReload> {
     private boolean reload;

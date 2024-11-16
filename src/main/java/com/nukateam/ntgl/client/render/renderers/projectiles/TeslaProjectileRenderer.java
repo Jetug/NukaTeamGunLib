@@ -1,22 +1,16 @@
 package com.nukateam.ntgl.client.render.renderers.projectiles;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.data.util.RenderUtils;
-import com.nukateam.ntgl.common.data.util.Rgba;
+import com.nukateam.ntgl.client.util.util.RenderUtils;
+import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.TeslaProjectile;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 
 import java.util.concurrent.ThreadLocalRandom;
 

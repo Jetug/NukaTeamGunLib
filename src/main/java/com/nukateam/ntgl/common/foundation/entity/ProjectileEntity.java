@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
-import com.nukateam.example.common.data.interfaces.IExplosiveOnHit;
+import com.nukateam.example.common.util.interfaces.IExplosiveOnHit;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.base.config.Ammo;
 import com.nukateam.ntgl.common.base.config.gun.General;
@@ -9,14 +9,14 @@ import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.AmmoType;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
-import com.nukateam.ntgl.common.data.interfaces.*;
-import com.nukateam.ntgl.common.data.util.*;
-import com.nukateam.ntgl.common.data.util.math.ExtendedEntityRayTraceResult;
+import com.nukateam.ntgl.common.util.interfaces.*;
+import com.nukateam.ntgl.common.util.util.*;
+import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 import com.nukateam.ntgl.common.event.GunProjectileHitEvent;
 import com.nukateam.ntgl.common.foundation.ModTags;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.foundation.world.ProjectileExplosion;
+import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.advancements.CriteriaTriggers;

@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.mixin.common;
 
-import com.nukateam.ntgl.common.data.interfaces.IAgeableAccessor;
-import com.nukateam.ntgl.common.data.interfaces.IModelAccessor;
+import com.nukateam.ntgl.common.util.interfaces.IAgeableAccessor;
+import com.nukateam.ntgl.common.util.interfaces.IModelAccessor;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.geom.ModelPart;
 import org.spongepowered.asm.mixin.Final;

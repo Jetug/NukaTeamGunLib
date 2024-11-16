@@ -2,11 +2,11 @@ package com.nukateam.ntgl.common.base.holders;
 
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.data.IHeldAnimation;
-import com.nukateam.ntgl.client.render.pose.BazookaPose;
-import com.nukateam.ntgl.client.render.pose.MiniGunPose;
-import com.nukateam.ntgl.client.render.pose.OneHandedPose;
-import com.nukateam.ntgl.client.render.pose.TwoHandedPose;
+import com.nukateam.ntgl.client.util.IHeldAnimation;
+import com.nukateam.ntgl.client.util.pose.BazookaPose;
+import com.nukateam.ntgl.client.util.pose.MiniGunPose;
+import com.nukateam.ntgl.client.util.pose.OneHandedPose;
+import com.nukateam.ntgl.client.util.pose.TwoHandedPose;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;

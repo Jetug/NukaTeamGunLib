@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.config.CustomAmmo;
-import com.nukateam.ntgl.common.data.annotation.Validator;
+import com.nukateam.ntgl.common.util.annotation.Validator;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;

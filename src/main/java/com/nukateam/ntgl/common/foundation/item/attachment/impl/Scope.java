@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.attachment.impl;
 
-import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugSlider;

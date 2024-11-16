@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.base.config.gun;
 
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.data.annotation.Optional;
+import com.nukateam.ntgl.common.util.annotation.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;

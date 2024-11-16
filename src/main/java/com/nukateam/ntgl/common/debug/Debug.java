@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.debug;
 
-import com.nukateam.ntgl.client.ClientHandler;
+import com.nukateam.ntgl.client.event.ClientHandler;
 import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugButton;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugToggle;

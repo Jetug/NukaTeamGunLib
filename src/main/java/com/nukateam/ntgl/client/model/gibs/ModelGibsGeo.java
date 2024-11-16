@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.model.gibs;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.nukateam.ntgl.common.data.util.Rgba;
+import com.nukateam.ntgl.common.util.data.Rgba;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;

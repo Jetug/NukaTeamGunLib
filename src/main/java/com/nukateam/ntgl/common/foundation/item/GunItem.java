@@ -1,17 +1,17 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.example.common.data.interfaces.IResourceProvider;
-import com.nukateam.example.common.data.utils.ResourceUtils;
+import com.nukateam.example.common.util.interfaces.IResourceProvider;
+import com.nukateam.example.common.util.utils.ResourceUtils;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.render.renderers.DefaultGunRendererGeo;
+import com.nukateam.ntgl.client.render.renderers.gun.DefaultGunRendererGeo;
 import com.nukateam.ntgl.common.base.NetworkManager;
 import com.nukateam.ntgl.common.base.config.gun.Gun;
-import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.data.interfaces.IConfigProvider;
-import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.constants.Tags;
+import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
+import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.enchantment.EnchantmentTypes;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;

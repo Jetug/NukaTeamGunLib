@@ -2,7 +2,7 @@ package com.nukateam.example.common.entities;
 
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.interfaces.IGunUser;
+import com.nukateam.ntgl.common.util.interfaces.IGunUser;
 import com.nukateam.ntgl.common.foundation.goals.GunAttackGoal;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.nbt.CompoundTag;

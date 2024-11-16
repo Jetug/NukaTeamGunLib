@@ -2,8 +2,8 @@ package com.nukateam.ntgl.common.base.config.gun;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.data.annotation.Optional;
-import com.nukateam.ntgl.common.data.util.GunJsonUtil;
+import com.nukateam.ntgl.common.util.annotation.Optional;
+import com.nukateam.ntgl.common.util.util.GunJsonUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.INBTSerializable;

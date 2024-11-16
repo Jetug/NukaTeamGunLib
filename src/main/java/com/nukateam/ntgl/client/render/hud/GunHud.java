@@ -6,7 +6,7 @@ import com.nukateam.ntgl.client.event.InputEvents;
 import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.FireMode;
 import com.nukateam.ntgl.common.base.holders.GripType;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.client.Minecraft;

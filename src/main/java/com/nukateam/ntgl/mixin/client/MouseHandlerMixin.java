@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.mixin.client;
 
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.client.data.handler.AimingHandler;
+import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.base.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;

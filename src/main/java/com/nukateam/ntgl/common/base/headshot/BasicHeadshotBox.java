@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.base.headshot;
 
-import com.nukateam.ntgl.common.data.interfaces.IHeadshotBox;
+import com.nukateam.ntgl.common.util.interfaces.IHeadshotBox;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 

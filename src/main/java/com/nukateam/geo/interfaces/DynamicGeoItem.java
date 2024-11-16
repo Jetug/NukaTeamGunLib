@@ -1,9 +1,7 @@
 package com.nukateam.geo.interfaces;
 
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
-import com.nukateam.ntgl.client.animators.GunAnimator;
-import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
-import com.nukateam.ntgl.client.render.renderers.ProxyItemRenderer;
+import com.nukateam.geo.render.ProxyItemRenderer;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.client.RenderProvider;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;

@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.base.config;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.base.holders.AmmoType;
-import com.nukateam.ntgl.common.data.annotation.Optional;
+import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import net.minecraft.nbt.CompoundTag;

@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.attachment.impl;
 
-import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 
 public class Magazine extends Attachment {
     private final float maxAmmo;

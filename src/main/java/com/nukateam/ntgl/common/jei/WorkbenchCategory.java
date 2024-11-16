@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.jei;
 
-import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
+import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.Ntgl;

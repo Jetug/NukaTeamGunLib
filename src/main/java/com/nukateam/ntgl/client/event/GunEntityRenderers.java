@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.event;
 
 import com.nukateam.ntgl.client.render.renderers.misc.AshPileRenderer;
+import com.nukateam.ntgl.client.render.renderers.misc.FlyingGibsRenderer;
 import com.nukateam.ntgl.client.render.renderers.projectiles.*;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
@@ -9,7 +10,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import com.nukateam.ntgl.client.render.renderers.*;
 
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)

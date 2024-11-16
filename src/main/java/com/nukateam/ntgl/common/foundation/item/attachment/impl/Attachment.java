@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.attachment.impl;
 
-import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.ChatFormatting;

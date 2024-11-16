@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 
-import static com.nukateam.ntgl.common.data.util.GunModifierHelper.getGunAttachments;
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.getGunAttachments;
 
 /**
  * Author: MrCrayfish

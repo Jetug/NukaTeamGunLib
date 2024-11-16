@@ -1,12 +1,12 @@
 package com.nukateam.ntgl.client.screen;
 
-import com.nukateam.example.common.data.interfaces.IMeleeWeapon;
+import com.nukateam.example.common.util.interfaces.IMeleeWeapon;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
+import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
-import com.nukateam.ntgl.common.data.util.InventoryUtil;
+import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.foundation.crafting.*;
 import com.nukateam.ntgl.common.foundation.item.*;
@@ -20,7 +20,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.world.item.ItemDisplayContext;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;

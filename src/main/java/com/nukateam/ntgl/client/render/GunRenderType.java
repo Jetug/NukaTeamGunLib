@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
+import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 
@@ -20,6 +20,7 @@ public final class GunRenderType extends RenderType {
                     .setShaderState(RenderStateShard.POSITION_COLOR_LIGHTMAP_SHADER)
                     .setCullState(NO_CULL).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .createCompositeState(false));
+
     private static final RenderType MUZZLE_FLASH = RenderType.create(Ntgl.MOD_ID + ":muzzle_flash",
             DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
             VertexFormat.Mode.QUADS, 256, true, false,

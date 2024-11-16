@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.mixin.client;
 
-import com.nukateam.ntgl.client.data.handler.BulletTrailRenderingHandler;
+import com.nukateam.ntgl.client.util.handler.BulletTrailRenderingHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Camera;
