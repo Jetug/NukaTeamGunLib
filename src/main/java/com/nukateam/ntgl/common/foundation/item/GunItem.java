@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
-import com.nukateam.example.common.util.utils.ResourceUtils;
+import com.nukateam.ntgl.common.util.util.ResourceUtils;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.Ntgl;

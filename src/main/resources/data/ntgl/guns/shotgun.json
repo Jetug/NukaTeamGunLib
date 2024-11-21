@@ -41,23 +41,23 @@
       "ntgl:scope": [
         {
           "name": "scope_1",
-          "item": "ntgl:pistol_collimator_sight"
+          "item": "ntgl:collimator_sight"
         },
         {
           "name": "scope_2",
-          "item": "ntgl:pistol_hunting_optics"
+          "item": "ntgl:hunting_optics"
         },
         {
           "name": "scope_3",
-          "item": "ntgl:pistol_iron_sight"
+          "item": "ntgl:iron_sight"
         },
         {
           "name": "scope_4",
-          "item": "ntgl:pistol_holographic_sight"
+          "item": "ntgl:holographic_sight"
         },
         {
           "name": "scope_5",
-          "item": "ntgl:pistol_scout_sight"
+          "item": "ntgl:scout_sight"
         },
         {
           "name": "scope_6",
@@ -91,7 +91,7 @@
         },
         {
           "name": "grip_2",
-          "item": "ntgl:pump_pistol_grip",
+          "item": "ntgl:pump_grip",
           "hide": [
             "grip_default"
           ]

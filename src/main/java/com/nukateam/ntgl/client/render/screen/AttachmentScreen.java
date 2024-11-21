@@ -1,11 +1,11 @@
-package com.nukateam.ntgl.client.screen;
+package com.nukateam.ntgl.client.render.screen;
 
 
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.render.screen.widget.MiniButton;
 import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
 import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
-import com.nukateam.ntgl.client.screen.widget.MiniButton;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
 import com.nukateam.ntgl.common.foundation.item.GunItem;

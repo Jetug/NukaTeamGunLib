@@ -3,6 +3,7 @@ package com.nukateam.ntgl.client.event;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.render.hud.DebugHud;
 import com.nukateam.ntgl.client.render.hud.GunHud;
+import com.nukateam.ntgl.client.render.hud.ScopeHud;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
@@ -15,5 +16,6 @@ public class ClientEvents {
      public static void registerHud(RegisterGuiOverlaysEvent event){
          event.registerAbove(new ResourceLocation("hotbar"), "debug", GunHud.AMMO_HUD);
          event.registerAbove(new ResourceLocation("hotbar"), "ammo", DebugHud.DEBUG_HUD);
+         event.registerAbove(new ResourceLocation("hotbar"), "scope", ScopeHud.SCOPE_HUD);
      }
 }

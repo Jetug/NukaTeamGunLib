@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.screen;
+package com.nukateam.ntgl.client.render.screen;
 
 /**
  * Author: MrCrayfish

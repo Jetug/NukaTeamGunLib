@@ -4,7 +4,7 @@ import com.mrcrayfish.controllable.client.input.Controller;
 import com.mrcrayfish.controllable.event.ControllerEvents;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
-import com.nukateam.ntgl.client.screen.WorkbenchScreen;
+import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;

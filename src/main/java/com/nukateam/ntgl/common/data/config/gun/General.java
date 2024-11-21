@@ -275,18 +275,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The maximum amount of ammo this weapon can hold
      */
-    public int getMaxAmmo(@Nullable ItemStack gunStack) {
-        if (gunStack != null && gunStack.getItem() instanceof GunItem gunItem) {
-            var gun = gunItem.getModifiedGun(gunStack);
-
-            if (GunModifierHelper.getCurrentProjectile(gunStack).isMagazineMode()) {
-                var id = GunModifierHelper.getCurrentAmmo(gunStack);
-                var item = ForgeRegistries.ITEMS.getValue(id);
-
-                return item.getMaxDamage(new ItemStack(item));
-            }
-
-        }
+    public int getMaxAmmo() {
         return this.maxAmmo;
     }
 

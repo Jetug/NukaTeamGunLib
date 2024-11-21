@@ -221,4 +221,8 @@ public interface IGunModifier {
     default int modifyReloadTime(int reloadTime) {
         return reloadTime;
     }
+
+    default boolean modifyAutoReloading(boolean autoReload) {
+        return autoReload;
+    }
 }

@@ -55,7 +55,7 @@ public class ModGuns {
 
     /* Scope Attachments */
     public static final RegistryObject<Item> HOLOGRAPHIC_SIGHT = ITEMS.register("holographic_sight",
-            () -> new ScopeItem(Attachments.SHORT_SCOPE, new Item.Properties().stacksTo(1)));
+            () -> new ScopeItem(Attachments.LONG_SCOPE, new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> COLLIMATOR_SIGHT = ITEMS.register("collimator_sight",
             () -> new ScopeItem(Attachments.SHORT_SCOPE, new Item.Properties().stacksTo(1)));

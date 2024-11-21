@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.screen.widget;
+package com.nukateam.ntgl.client.render.screen.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

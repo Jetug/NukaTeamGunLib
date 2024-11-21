@@ -1,7 +1,6 @@
 package com.nukateam.geo.render;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
-import com.nukateam.example.common.util.utils.ResourceUtils;
 import com.nukateam.geo.interfaces.IItemAnimator;
 import mod.azure.azurelib.animatable.GeoEntity;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
@@ -11,6 +10,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.Nullable;
 
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
@@ -62,8 +62,13 @@ public abstract class ItemAnimator implements GeoEntity, IItemAnimator, IResourc
             return provider.getName();
         } else {
             var registryName = getRegistryKey(item);
-            return ResourceUtils.getResourceName(registryName);
+            return getResourceName(registryName);
         }
+    }
+
+    public static String getResourceName(ResourceLocation resourceLocation) {
+        String path = resourceLocation.getPath();
+        return FilenameUtils.removeExtension(FilenameUtils.getName(path));
     }
 
     private String createNamespace() {

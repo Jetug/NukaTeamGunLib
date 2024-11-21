@@ -41,7 +41,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static com.nukateam.example.common.util.utils.ResourceUtils.resourceExists;
+import static com.nukateam.ntgl.common.util.util.ResourceUtils.resourceExists;
 import static com.nukateam.ntgl.client.event.ClientHandler.*;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {

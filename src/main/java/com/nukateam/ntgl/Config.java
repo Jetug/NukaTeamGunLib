@@ -2,7 +2,7 @@ package com.nukateam.ntgl;
 
 import com.nukateam.ntgl.client.util.enums.SwayType;
 import com.nukateam.ntgl.client.render.crosshair.Crosshair;
-import com.nukateam.ntgl.client.screen.ButtonAlignment;
+import com.nukateam.ntgl.client.render.screen.ButtonAlignment;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 

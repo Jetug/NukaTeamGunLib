@@ -1,4 +1,4 @@
-package com.nukateam.example.common.util.interfaces;
+package com.nukateam.ntgl.common.util.interfaces;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;

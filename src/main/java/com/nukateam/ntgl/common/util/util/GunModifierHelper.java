@@ -19,6 +19,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -82,9 +83,25 @@ public class GunModifierHelper {
     }
 
     public static int getMaxAmmo(ItemStack weapon) {
-        var finalMaxAmmo = new AtomicInteger(getGun(weapon).getGeneral().getMaxAmmo(weapon));
+        var finalMaxAmmo = new AtomicInteger(getGun(weapon).getGeneral().getMaxAmmo());
+
+        if (weapon != null && weapon.getItem() instanceof GunItem) {
+            if (GunModifierHelper.getCurrentProjectile(weapon).isMagazineMode()) {
+                var id = GunModifierHelper.getCurrentAmmo(weapon);
+                var item = ForgeRegistries.ITEMS.getValue(id);
+
+                finalMaxAmmo.set(item.getMaxDamage(new ItemStack(item)));
+            }
+        }
+
         forEachAttachment(weapon, (modifier -> finalMaxAmmo.set(modifier.modifyMaxAmmo(finalMaxAmmo.get()))));
         return finalMaxAmmo.get();
+    }
+
+    public static boolean isAutoReloading(ItemStack weapon) {
+        var autoReloading = new AtomicBoolean(getGun(weapon).getGeneral().isAutoReloading());
+        forEachAttachment(weapon, (modifier -> autoReloading.set(modifier.modifyAutoReloading(autoReloading.get()))));
+        return autoReloading.get();
     }
 
     public static int getProjectileAmount(ItemStack weapon) {

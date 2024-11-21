@@ -1,6 +1,6 @@
-package com.nukateam.ntgl.client.screen;
+package com.nukateam.ntgl.client.render.screen;
 
-import com.nukateam.example.common.util.interfaces.IMeleeWeapon;
+import com.nukateam.ntgl.common.util.interfaces.IMeleeWeapon;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
@@ -125,7 +125,8 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 if (!recipeList.isEmpty()) {
                     var item = (GunItem)recipeList.get(0).getItem().getItem();
                     var icon = new ItemStack(item);
-                    icon.getOrCreateTag().putInt("AmmoCount", item.getGun().getGeneral().getMaxAmmo(icon));
+
+                    icon.getOrCreateTag().putInt("AmmoCount", GunModifierHelper.getMaxAmmo(icon));
                     this.tabs.add(new Tab(icon, category, recipeList));
                 }
             }

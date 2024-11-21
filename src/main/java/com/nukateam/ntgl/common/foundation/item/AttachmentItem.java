@@ -11,7 +11,7 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import static com.nukateam.example.common.util.utils.ResourceUtils.getResourceName;
+import static com.nukateam.ntgl.common.util.util.ResourceUtils.getResourceName;
 
 
 /**

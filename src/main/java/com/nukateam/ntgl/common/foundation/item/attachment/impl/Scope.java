@@ -25,6 +25,7 @@ public class Scope extends Attachment implements IEditorMenu {
     protected double reticleOffset;
     protected boolean stable;
     protected double viewFinderDist;
+    private boolean drawOverlay;
 
     private Scope() {
     }
@@ -36,13 +37,14 @@ public class Scope extends Attachment implements IEditorMenu {
         this.reticleOffset = reticleOffset;
     }
 
-    private Scope(float aimFovModifier, float additionalZoom, double reticleOffset, boolean stable, double viewFinderDist, IGunModifier... modifiers) {
+    private Scope(float aimFovModifier, float additionalZoom, double reticleOffset, boolean stable, double viewFinderDist, boolean drawOverlay, IGunModifier... modifiers) {
         super(modifiers);
         this.aimFovModifier = aimFovModifier;
         this.additionalZoom = additionalZoom;
         this.reticleOffset = reticleOffset;
         this.stable = stable;
         this.viewFinderDist = viewFinderDist;
+        this.drawOverlay = drawOverlay;
     }
 
     /**
@@ -70,6 +72,10 @@ public class Scope extends Attachment implements IEditorMenu {
 
     public float getFovModifier() {
         return this.aimFovModifier;
+    }
+
+    public boolean drawOverlay() {
+        return this.drawOverlay;
     }
 
     /**
@@ -187,6 +193,7 @@ public class Scope extends Attachment implements IEditorMenu {
         private double reticleOffset = 0.0;
         private boolean stable = false;
         private double viewFinderDist = 0.0;
+        private boolean drawOverlay = false;
         private IGunModifier[] modifiers = new IGunModifier[]{};
 
         private Builder() {
@@ -247,13 +254,18 @@ public class Scope extends Attachment implements IEditorMenu {
             return this;
         }
 
+        public Builder drawOverlay(boolean drawOverlay) {
+            this.drawOverlay = drawOverlay;
+            return this;
+        }
+
         public Builder modifiers(IGunModifier... modifiers) {
             this.modifiers = modifiers;
             return this;
         }
 
         public Scope build() {
-            return new Scope(this.aimFovModifier, this.additionalZoom, this.reticleOffset, this.stable, this.viewFinderDist, this.modifiers);
+            return new Scope(this.aimFovModifier, this.additionalZoom, this.reticleOffset, this.stable, this.viewFinderDist, this.drawOverlay, this.modifiers);
         }
     }
 }

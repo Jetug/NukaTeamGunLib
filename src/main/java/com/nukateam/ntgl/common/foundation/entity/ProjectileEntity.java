@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
-import com.nukateam.example.common.util.interfaces.IExplosiveOnHit;
+import com.nukateam.ntgl.common.util.interfaces.IExplosiveOnHit;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.data.config.gun.General;

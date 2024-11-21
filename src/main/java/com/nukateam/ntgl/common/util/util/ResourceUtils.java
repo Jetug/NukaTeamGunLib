@@ -1,4 +1,4 @@
-package com.nukateam.example.common.util.utils;
+package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
