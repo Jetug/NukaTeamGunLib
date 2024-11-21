@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.render.hud;
 
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
@@ -47,10 +48,36 @@ public class ScopeHud implements IGuiOverlay {
         int l = (screenHeight - j) / 2;
         int i1 = k + i;
         int j1 = l + j;
-        pGuiGraphics.blit(SPYGLASS_SCOPE_LOCATION, k, l, -90, 0.0F, 0.0F, i, j, i, j);
-        pGuiGraphics.fill(RenderType.guiOverlay(), 0, j1, screenWidth, screenHeight, -90, -16777216);
-        pGuiGraphics.fill(RenderType.guiOverlay(), 0, 0, screenWidth, l, -90, -16777216);
-        pGuiGraphics.fill(RenderType.guiOverlay(), 0, l, k, j1, -90, -16777216);
-        pGuiGraphics.fill(RenderType.guiOverlay(), i1, l, screenWidth, j1, -90, -16777216);
+        pGuiGraphics.blit(SPYGLASS_SCOPE_LOCATION, 0, 0, 0, 0, 0.0F, screenWidth, screenHeight, screenWidth, screenHeight);
+//        pGuiGraphics.fill(RenderType.guiOverlay(), 0, j1, screenWidth, screenHeight, -90, -16777216);
+//        pGuiGraphics.fill(RenderType.guiOverlay(), 0, 0, screenWidth, l, -90, -16777216);
+//        pGuiGraphics.fill(RenderType.guiOverlay(), 0, l, k, j1, -90, -16777216);
+//        pGuiGraphics.fill(RenderType.guiOverlay(), i1, l, screenWidth, j1, -90, -16777216);
+
+//        if(scopeType != null && scopeType == ItemScope.Type.LONG && normalZoomProgress == 1.0)
+//        {
+//            Minecraft mc = Minecraft.getMinecraft();
+//            mc.getTextureManager().bindTexture(SCOPE_OVERLAY);
+//            GlStateManager.color(1.0F, 1.0F, 1.0F);
+//            GlStateManager.enableBlend();
+//            GlStateManager.enableAlpha();
+//            GlStateManager.disableDepth();
+//
+//            ScaledResolution scaledResolution = new ScaledResolution(mc);
+//
+//            Tessellator tessellator = Tessellator.getInstance();
+//            BufferBuilder buffer = tessellator.getBuffer();
+//            buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+//            buffer.pos(0, scaledResolution.getScaledHeight(), 0).tex(0, 1).endVertex();
+//            buffer.pos(scaledResolution.getScaledWidth(), scaledResolution.getScaledHeight(), 0).tex(1, 1).endVertex();
+//            buffer.pos(scaledResolution.getScaledWidth(), 0, 0).tex(1, 0).endVertex();
+//            buffer.pos(0, 0, 0).tex(0, 0).endVertex();
+//            tessellator.draw();
+//
+//            GlStateManager.disableAlpha();
+//            GlStateManager.disableBlend();
+//            GlStateManager.enableDepth();
+//        }
+
     }
 }
