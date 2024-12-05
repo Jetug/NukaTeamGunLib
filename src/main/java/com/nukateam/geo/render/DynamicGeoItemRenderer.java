@@ -1,6 +1,7 @@
 package com.nukateam.geo.render;
 
 import com.mojang.blaze3d.vertex.*;
+import com.nukateam.geo.interfaces.DynamicGeoItem;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.constant.DataTickets;
 import mod.azure.azurelib.core.animation.AnimationState;
@@ -21,11 +22,15 @@ import java.util.function.BiFunction;
 
 public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoObjectRenderer<Animator> {
     private final Map<Pair<LivingEntity, ItemDisplayContext>, Animator> animatorsByTransform = new HashMap<>();
-    private final BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> animatorFactory;
+    private BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> animatorFactory = null;
     protected ItemStack currentStack;
     protected ItemDisplayContext currentTransform;
     protected LivingEntity currentEntity;
     protected LivingEntity buffEntity = null;
+
+    public DynamicGeoItemRenderer(GeoModel<Animator> model) {
+        super(model);
+    }
 
     public DynamicGeoItemRenderer(GeoModel<Animator> model, BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> animatorFactory) {
         super(model);
@@ -47,14 +52,20 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
             buffEntity = null;
         }
 
-        super.render(poseStack, getRenderItem(currentEntity, transformType), bufferSource, renderType, buffer, packedLight);
+
+        super.render(poseStack, getAnimator(currentEntity, transformType, stack), bufferSource, renderType, buffer, packedLight);
     }
 
-    public Animator getRenderItem(LivingEntity entity, ItemDisplayContext transformType) {
+    public Animator getAnimator(LivingEntity entity, ItemDisplayContext transformType, ItemStack stack) {
         var key = Pair.of(entity, transformType);
 
-        if (!animatorsByTransform.containsKey(key))
+        if (!animatorsByTransform.containsKey(key)) {
+            if(animatorFactory == null) {
+                var dynamicItem = (DynamicGeoItem) stack.getItem();
+                animatorFactory = dynamicItem.getAnimatorFactory();
+            }
             animatorsByTransform.put(key, animatorFactory.apply(transformType, this));
+        }
 
         return animatorsByTransform.get(key);
     }

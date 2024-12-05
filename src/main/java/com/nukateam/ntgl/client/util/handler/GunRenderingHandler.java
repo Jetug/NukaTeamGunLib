@@ -620,8 +620,8 @@ public class GunRenderingHandler {
 
 //            Render.GUN_RENDERER.renderGun(entity, transformType, model.isEmpty() ? stack : model, poseStack, renderTypeBuffer, light);
 //            GunRendererTest.INSTANCE.render(entity,stack,transformType,
-////                    poseStack, DynamicGunRenderer.getRenderItem(transformType),renderTypeBuffer,null, null, light);
-//            GunRendererTest.INSTANCE.render(poseStack, stack,DynamicGunRenderer.getRenderItem(transformType),
+////                    poseStack, DynamicGunRenderer.getAnimator(transformType),renderTypeBuffer,null, null, light);
+//            GunRendererTest.INSTANCE.render(poseStack, stack,DynamicGunRenderer.getAnimator(transformType),
 //                    renderTypeBuffer, null, null, light);
             this.renderingWeapon = null;
 
