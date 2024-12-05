@@ -101,7 +101,7 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
-    maven { url 'https://libs.azuredoom.com:4443/mods' }
+    maven { url 'https://maven.azuredoom.com/mods' }
     maven {
         name "KosmX's maven"
         url 'https://maven.kosmx.dev/'

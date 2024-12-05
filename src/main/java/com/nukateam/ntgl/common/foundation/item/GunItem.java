@@ -1,6 +1,8 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
+import com.nukateam.geo.render.ItemAnimator;
+import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.common.util.util.ResourceUtils;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
@@ -26,6 +28,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -39,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
@@ -59,6 +63,11 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     @OnlyIn(Dist.CLIENT)
     public DynamicGeoItemRenderer getRenderer() {
         return GUN_RENDERER.get();
+    }
+
+    @Override
+    public BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<GunAnimator>, GunAnimator> getAnimatorFactory() {
+        return GunAnimator::new;
     }
 
     public Gun getGun() {

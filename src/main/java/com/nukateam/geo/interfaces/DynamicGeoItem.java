@@ -1,18 +1,23 @@
 package com.nukateam.geo.interfaces;
 
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
+import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.geo.render.ProxyItemRenderer;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.animatable.client.RenderProvider;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 public interface DynamicGeoItem extends GeoItem {
     @OnlyIn(Dist.CLIENT)
     DynamicGeoItemRenderer getRenderer();
+
+    <Animator extends ItemAnimator> BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> getAnimatorFactory();
 
     @Override
     default void createRenderer(Consumer<Object> consumer) {

@@ -5,12 +5,15 @@ import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugSlider;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.function.Supplier;
+
+import static com.nukateam.example.common.registery.Attachments.SCOPE_LOCATION;
 
 /**
  * An attachment class related to scopes. Scopes need to at least specify the additional zoom (or fov)
@@ -25,7 +28,7 @@ public class Scope extends Attachment implements IEditorMenu {
     protected double reticleOffset;
     protected boolean stable;
     protected double viewFinderDist;
-    private boolean drawOverlay;
+    private ResourceLocation overlayTexture;
 
     private Scope() {
     }
@@ -37,14 +40,14 @@ public class Scope extends Attachment implements IEditorMenu {
         this.reticleOffset = reticleOffset;
     }
 
-    private Scope(float aimFovModifier, float additionalZoom, double reticleOffset, boolean stable, double viewFinderDist, boolean drawOverlay, IGunModifier... modifiers) {
+    private Scope(float aimFovModifier, float additionalZoom, double reticleOffset, boolean stable, double viewFinderDist, ResourceLocation overlayTexture, IGunModifier... modifiers) {
         super(modifiers);
         this.aimFovModifier = aimFovModifier;
         this.additionalZoom = additionalZoom;
         this.reticleOffset = reticleOffset;
         this.stable = stable;
         this.viewFinderDist = viewFinderDist;
-        this.drawOverlay = drawOverlay;
+        this.overlayTexture = overlayTexture;
     }
 
     /**
@@ -74,8 +77,12 @@ public class Scope extends Attachment implements IEditorMenu {
         return this.aimFovModifier;
     }
 
-    public boolean drawOverlay() {
-        return this.drawOverlay;
+    public boolean hasOverlay() {
+        return this.overlayTexture != null;
+    }
+
+    public ResourceLocation getOverlay() {
+        return overlayTexture;
     }
 
     /**
@@ -193,7 +200,7 @@ public class Scope extends Attachment implements IEditorMenu {
         private double reticleOffset = 0.0;
         private boolean stable = false;
         private double viewFinderDist = 0.0;
-        private boolean drawOverlay = false;
+        private ResourceLocation overlayTexture = null;
         private IGunModifier[] modifiers = new IGunModifier[]{};
 
         private Builder() {
@@ -254,8 +261,8 @@ public class Scope extends Attachment implements IEditorMenu {
             return this;
         }
 
-        public Builder drawOverlay(boolean drawOverlay) {
-            this.drawOverlay = drawOverlay;
+        public Builder overlay( ResourceLocation overlayTexture) {
+            this.overlayTexture = overlayTexture;
             return this;
         }
 
@@ -265,7 +272,7 @@ public class Scope extends Attachment implements IEditorMenu {
         }
 
         public Scope build() {
-            return new Scope(this.aimFovModifier, this.additionalZoom, this.reticleOffset, this.stable, this.viewFinderDist, this.drawOverlay, this.modifiers);
+            return new Scope(this.aimFovModifier, this.additionalZoom, this.reticleOffset, this.stable, this.viewFinderDist, this.overlayTexture, this.modifiers);
         }
     }
 }
