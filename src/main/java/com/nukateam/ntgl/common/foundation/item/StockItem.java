@@ -12,7 +12,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
  * <p>
  * Author: MrCrayfish
  */
-public class StockItem extends AttachmentItem implements IStock, IColored {
+public class StockItem extends AttachmentItemBase implements IStock, IColored {
     private final Stock stock;
     private final boolean colored;
 

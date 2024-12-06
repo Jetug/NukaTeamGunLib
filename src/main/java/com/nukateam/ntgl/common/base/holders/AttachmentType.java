@@ -14,6 +14,7 @@ public class AttachmentType {
     public static AttachmentType GRIP         = new AttachmentType("grip");
     public static AttachmentType UNDER_BARREL = new AttachmentType("under_barrel");
     public static AttachmentType MAGAZINE     = new AttachmentType("magazine");
+    public static AttachmentType MUZZLE       = new AttachmentType("muzzle");
 
     private static final Map<ResourceLocation, AttachmentType> typeMap = new HashMap<>();
     
@@ -21,9 +22,10 @@ public class AttachmentType {
         registerType(SCOPE       );
         registerType(BARREL      );
         registerType(STOCK       );
-        registerType(GRIP       );
+        registerType(GRIP        );
         registerType(UNDER_BARREL);
         registerType(MAGAZINE    );
+        registerType(MUZZLE      );
     }
 
     private final ResourceLocation id;

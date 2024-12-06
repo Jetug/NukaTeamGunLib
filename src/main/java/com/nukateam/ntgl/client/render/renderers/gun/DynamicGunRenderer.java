@@ -45,8 +45,8 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
     protected BarrelItem barrelItem;
     protected Gun gun;
 
-    public DynamicGunRenderer(GeoModel<Animator> model, BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> animatorFactory) {
-        super(model, animatorFactory);
+    public DynamicGunRenderer(GeoModel<Animator> model) {
+        super(model);
         addRenderLayer(new GlowingLayer<>(this));
     }
 

@@ -214,6 +214,10 @@ public interface IGunModifier {
         return gripType;
     }
 
+    default int modifyFireDelay(int chargeTime) {
+        return chargeTime;
+    }
+
     default Set<ResourceLocation> modifyAmmoItems(Set<ResourceLocation> item) {
         return item;
     }

@@ -152,6 +152,12 @@ public class GunModifierHelper {
         return finalGripType.get();
     }
 
+    public static int getFireDelay(ItemStack weapon) {
+        var chargeTime = new AtomicInteger(getGun(weapon).getGeneral().getFireDelay());
+        forEachAttachment(weapon, (modifier -> chargeTime.set(modifier.modifyFireDelay(chargeTime.get()))));
+        return chargeTime.get();
+    }
+
     public static void switchAmmo(ItemStack weapon){
         var ammoItems = getAmmoItems(weapon);
         var current = getCurrentAmmo(weapon);

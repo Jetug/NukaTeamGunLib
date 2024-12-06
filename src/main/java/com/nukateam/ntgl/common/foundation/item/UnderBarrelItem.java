@@ -12,7 +12,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
  * <p>
  * Author: MrCrayfish
  */
-public class UnderBarrelItem extends AttachmentItem implements IUnderBarrel, IColored {
+public class UnderBarrelItem extends AttachmentItemBase implements IUnderBarrel, IColored {
     private final UnderBarrel underBarrel;
     private final boolean colored;
 

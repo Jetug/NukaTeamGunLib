@@ -13,7 +13,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
  * <p>
  * Author: MrCrayfish
  */
-public class BarrelItem extends AttachmentItem implements IBarrel, IColored {
+public class BarrelItem extends AttachmentItemBase implements IBarrel, IColored {
     private final Barrel barrel;
     private final boolean colored;
 

@@ -5,6 +5,6 @@ import com.nukateam.ntgl.client.model.gun.GeoGunModel;
 
 public class DefaultGunRendererGeo extends DynamicGunRenderer<GunAnimator> {
     public DefaultGunRendererGeo() {
-        super(new GeoGunModel<>(), GunAnimator::new);
+        super(new GeoGunModel<>());
     }
 }

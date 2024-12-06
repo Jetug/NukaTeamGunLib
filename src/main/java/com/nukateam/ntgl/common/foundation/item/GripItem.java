@@ -2,7 +2,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.common.foundation.item.attachment.IGrip;
-import com.nukateam.ntgl.common.foundation.item.attachment.IStock;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Grip;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +13,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
  * <p>
  * Author: MrCrayfish
  */
-public class GripItem extends AttachmentItem implements IGrip, IColored {
+public class GripItem extends AttachmentItemBase implements IGrip, IColored {
     private final Grip stock;
     private final boolean colored;
 

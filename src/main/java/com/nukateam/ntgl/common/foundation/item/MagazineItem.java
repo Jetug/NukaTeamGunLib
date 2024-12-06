@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.ntgl.common.foundation.item.attachment.IBarrel;
 import com.nukateam.ntgl.common.foundation.item.attachment.IMagazine;
 import com.nukateam.ntgl.common.foundation.item.attachment.impl.Magazine;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
@@ -13,7 +12,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
  * <p>
  * Author: Jetug
  */
-public class MagazineItem extends AttachmentItem implements IMagazine, IColored {
+public class MagazineItem extends AttachmentItemBase implements IMagazine, IColored {
     private final Magazine magazine;
 
     public MagazineItem(Magazine barrel, Properties properties) {

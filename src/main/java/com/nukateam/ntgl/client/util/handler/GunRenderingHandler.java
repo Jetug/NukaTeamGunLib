@@ -657,7 +657,7 @@ public class GunRenderingHandler {
         var result = new ArrayList<String>();
 
         for (var attachmentStack : attachments){
-            if(attachmentStack.getItem() instanceof AttachmentItem attachmentItem){
+            if(attachmentStack.getItem() instanceof AttachmentItemBase attachmentItem){
                 result.add(attachmentItem.getName());
             }
         }

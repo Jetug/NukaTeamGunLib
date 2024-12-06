@@ -9,16 +9,11 @@ import com.nukateam.ntgl.common.base.holders.LoadingType;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.util.annotation.Ignored;
 import com.nukateam.ntgl.common.util.annotation.Optional;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -255,9 +250,9 @@ public class General implements INBTSerializable<CompoundTag> {
     }
 
     /**
-     * @return The timer before firing
+     * @return The delay before firing
      */
-    public int getFireTimer() {
+    public int getFireDelay() {
         return this.fireTimer;
     }
 

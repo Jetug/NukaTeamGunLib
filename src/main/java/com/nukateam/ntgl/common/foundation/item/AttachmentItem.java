@@ -1,48 +1,45 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.geo.interfaces.IResourceProvider;
-import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
-
-import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
-import net.minecraft.world.item.Item;
+import com.nukateam.ntgl.common.foundation.item.attachment.IBarrel;
+import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import static com.nukateam.ntgl.common.util.util.ResourceUtils.getResourceName;
-
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 
 /**
+ * A basic barrel attachment item implementation with color support
+ * <p>
  * Author: MrCrayfish
  */
-public class AttachmentItem extends Item implements IMeta, IResourceProvider {
-    private final Lazy<String> name = Lazy.of(() -> getResourceName(ForgeRegistries.ITEMS.getKey(this)));
+public class AttachmentItem extends AttachmentItemBase implements IBarrel, IColored {
+    private final Barrel barrel;
+    private final boolean colored;
 
-    public AttachmentItem(Properties properties) {
+    public AttachmentItem(Barrel barrel, Properties properties) {
         super(properties);
+        this.barrel = barrel;
+        this.colored = true;
     }
 
-    /* Dirty hack to apply enchant effect to attachments if gun is enchanted */
-    @Override
-    public boolean isFoil(ItemStack stack) {
-        if (FMLEnvironment.dist == Dist.CLIENT) {
-            ItemStack weapon = GunRenderingHandler.get().getRenderingWeapon();
-            if (weapon != null) {
-                return weapon.getItem().isFoil(weapon);
-            }
-        }
-        return super.isFoil(stack);
+    public AttachmentItem(Barrel barrel, Properties properties, boolean colored) {
+        super(properties);
+        this.barrel = barrel;
+        this.colored = colored;
     }
 
     @Override
-    public String getName() {
-        return name.get();
+    public Barrel getProperties() {
+        return this.barrel;
     }
 
     @Override
-    public String getNamespace() {
-        return ForgeRegistries.ITEMS.getKey(this).getNamespace();
+    public boolean canColor(ItemStack stack) {
+        return this.colored;
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return enchantment == Enchantments.BINDING_CURSE || super.canApplyAtEnchantingTable(stack, enchantment);
     }
 }

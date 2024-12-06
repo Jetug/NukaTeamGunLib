@@ -13,7 +13,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
  * <p>
  * Author: MrCrayfish
  */
-public class ScopeItem extends AttachmentItem implements IScope, IColored {
+public class ScopeItem extends AttachmentItemBase implements IScope, IColored {
     private final Scope scope;
     private final boolean colored;
 

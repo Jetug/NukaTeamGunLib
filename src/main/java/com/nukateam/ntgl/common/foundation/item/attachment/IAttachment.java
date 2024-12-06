@@ -29,45 +29,4 @@ public interface IAttachment<T extends Attachment> {
     default boolean canAttachTo(ItemStack stack) {
         return true;
     }
-
-    class Type {
-        public static ResourceLocation SCOPE        = new ResourceLocation (Ntgl.MOD_ID, "scope");
-        public static ResourceLocation BARREL       = new ResourceLocation (Ntgl.MOD_ID, "barrel");
-        public static ResourceLocation STOCK        = new ResourceLocation (Ntgl.MOD_ID, "stock");
-        public static ResourceLocation GRIP         = new ResourceLocation (Ntgl.MOD_ID, "grip");
-        public static ResourceLocation UNDER_BARREL = new ResourceLocation (Ntgl.MOD_ID, "under_barrel");
-        public static ResourceLocation MAGAZINE     = new ResourceLocation (Ntgl.MOD_ID, "magazine");
-
-//        private final String translationKey;
-//        private final String tagKey;
-//        private final String serializeKey;
-
-//        Type(String translationKey, String tagKey, String serializeKey) {
-//            this.translationKey = translationKey;
-//            this.tagKey = tagKey;
-//            this.serializeKey = serializeKey;
-//        }
-//
-//        public String getTranslationKey() {
-//            return this.translationKey;
-//        }
-//
-//        public String getTagKey() {
-//            return this.tagKey;
-//        }
-//
-//        public String getSerializeKey() {
-//            return this.serializeKey;
-//        }
-//
-//        @Nullable
-//        public static Type byTagKey(String s) {
-//            for (Type type : values()) {
-//                if (type.tagKey.equalsIgnoreCase(s)) {
-//                    return type;
-//                }
-//            }
-//            return null;
-//        }
-    }
 }

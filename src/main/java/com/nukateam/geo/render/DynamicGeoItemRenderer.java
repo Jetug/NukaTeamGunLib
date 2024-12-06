@@ -1,6 +1,7 @@
 package com.nukateam.geo.render;
 
 import com.mojang.blaze3d.vertex.*;
+import com.mojang.realmsclient.RealmsMainScreen;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.constant.DataTickets;
@@ -8,6 +9,7 @@ import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.model.data.EntityModelData;
 import mod.azure.azurelib.renderer.GeoObjectRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
@@ -51,7 +53,6 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
             currentEntity = buffEntity;
             buffEntity = null;
         }
-
 
         super.render(poseStack, getAnimator(currentEntity, transformType, stack), bufferSource, renderType, buffer, packedLight);
     }
