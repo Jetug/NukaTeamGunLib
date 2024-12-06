@@ -1,8 +1,8 @@
-package com.nukateam.ntgl.common.foundation.item.attachment;
+package com.nukateam.ntgl.common.data.attachment;
 
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
-import com.nukateam.ntgl.common.foundation.item.UnderBarrelItem;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Magazine;
+import com.nukateam.ntgl.common.data.attachment.impl.UnderBarrel;
+import com.nukateam.ntgl.common.foundation.item.attachment.UnderBarrelItem;
 
 /**
  * An interface to turn an any item into a under barrel attachment. This is useful if your item
@@ -11,12 +11,12 @@ import com.nukateam.ntgl.common.foundation.item.attachment.impl.Magazine;
  * <p>
  * Author: MrCrayfish
  */
-public interface IMagazine extends IAttachment<Magazine> {
+public interface IUnderBarrel extends IAttachment<UnderBarrel> {
     /**
      * @return The type of this attachment
      */
     @Override
     default AttachmentType getType() {
-        return AttachmentType.MAGAZINE;
+        return AttachmentType.UNDER_BARREL;
     }
 }

@@ -1,36 +1,37 @@
-package com.nukateam.ntgl.common.foundation.item;
+package com.nukateam.ntgl.common.foundation.item.attachment;
 
-import com.nukateam.ntgl.common.foundation.item.attachment.IBarrel;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
+import com.nukateam.ntgl.common.data.attachment.IScope;
+import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 /**
- * A basic barrel attachment item implementation with color support
+ * A basic scope attachment item implementation with color support
  * <p>
  * Author: MrCrayfish
  */
-public class AttachmentItem extends AttachmentItemBase implements IBarrel, IColored {
-    private final Barrel barrel;
+public class ScopeItem extends AttachmentItemBase implements IScope, IColored {
+    private final Scope scope;
     private final boolean colored;
 
-    public AttachmentItem(Barrel barrel, Properties properties) {
+    public ScopeItem(Scope scope, Item.Properties properties) {
         super(properties);
-        this.barrel = barrel;
+        this.scope = scope;
         this.colored = true;
     }
 
-    public AttachmentItem(Barrel barrel, Properties properties, boolean colored) {
+    public ScopeItem(Scope scope, Item.Properties properties, boolean colored) {
         super(properties);
-        this.barrel = barrel;
+        this.scope = scope;
         this.colored = colored;
     }
 
     @Override
-    public Barrel getProperties() {
-        return this.barrel;
+    public Scope getProperties() {
+        return this.scope;
     }
 
     @Override

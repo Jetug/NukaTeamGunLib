@@ -4,7 +4,7 @@ import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.foundation.item.ScopeItem;
+import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.client.gui.overlay.ForgeGui;

@@ -10,7 +10,7 @@ import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.foundation.crafting.*;
 import com.nukateam.ntgl.common.foundation.item.*;
-import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
+import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.common.network.PacketHandler;

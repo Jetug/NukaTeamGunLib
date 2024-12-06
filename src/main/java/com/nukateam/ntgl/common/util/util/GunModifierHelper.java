@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.util.constants.Tags;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
+import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;

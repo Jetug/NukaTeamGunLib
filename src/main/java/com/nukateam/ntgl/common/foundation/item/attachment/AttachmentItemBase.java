@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.item;
+package com.nukateam.ntgl.common.foundation.item.attachment;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;

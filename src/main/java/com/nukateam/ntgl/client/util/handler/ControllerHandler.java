@@ -10,7 +10,7 @@ import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
+import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.network.message.C2SMessageUnload;

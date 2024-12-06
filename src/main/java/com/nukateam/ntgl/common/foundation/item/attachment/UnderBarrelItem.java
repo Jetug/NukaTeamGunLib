@@ -1,7 +1,7 @@
-package com.nukateam.ntgl.common.foundation.item;
+package com.nukateam.ntgl.common.foundation.item.attachment;
 
-import com.nukateam.ntgl.common.foundation.item.attachment.IUnderBarrel;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.UnderBarrel;
+import com.nukateam.ntgl.common.data.attachment.IUnderBarrel;
+import com.nukateam.ntgl.common.data.attachment.impl.UnderBarrel;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;

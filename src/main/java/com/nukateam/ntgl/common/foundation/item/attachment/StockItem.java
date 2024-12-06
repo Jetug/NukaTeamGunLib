@@ -1,37 +1,36 @@
-package com.nukateam.ntgl.common.foundation.item;
+package com.nukateam.ntgl.common.foundation.item.attachment;
 
-import com.nukateam.ntgl.common.foundation.item.attachment.IBarrel;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
+import com.nukateam.ntgl.common.data.attachment.IStock;
+import com.nukateam.ntgl.common.data.attachment.impl.Stock;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 /**
- * A basic barrel attachment item implementation with color support
+ * A basic stock attachment item implementation with color support
  * <p>
  * Author: MrCrayfish
  */
-public class BarrelItem extends AttachmentItemBase implements IBarrel, IColored {
-    private final Barrel barrel;
+public class StockItem extends AttachmentItemBase implements IStock, IColored {
+    private final Stock stock;
     private final boolean colored;
 
-    public BarrelItem(Barrel barrel, Item.Properties properties) {
+    public StockItem(Stock stock, Properties properties) {
         super(properties);
-        this.barrel = barrel;
+        this.stock = stock;
         this.colored = true;
     }
 
-    public BarrelItem(Barrel barrel, Item.Properties properties, boolean colored) {
+    public StockItem(Stock stock, Properties properties, boolean colored) {
         super(properties);
-        this.barrel = barrel;
+        this.stock = stock;
         this.colored = colored;
     }
 
     @Override
-    public Barrel getProperties() {
-        return this.barrel;
+    public Stock getProperties() {
+        return this.stock;
     }
 
     @Override

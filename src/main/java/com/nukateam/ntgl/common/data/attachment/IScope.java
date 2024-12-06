@@ -1,8 +1,8 @@
-package com.nukateam.ntgl.common.foundation.item.attachment;
+package com.nukateam.ntgl.common.data.attachment;
 
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
-import com.nukateam.ntgl.common.foundation.item.ScopeItem;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
+import com.nukateam.ntgl.common.data.attachment.impl.Scope;
+import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 
 /**
  * An interface to turn an any item into a scope attachment. This is useful if your item extends a

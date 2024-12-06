@@ -1,37 +1,37 @@
+package com.nukateam.ntgl.common.foundation.item.attachment;
 
-package com.nukateam.ntgl.common.foundation.item;
-
-import com.nukateam.ntgl.common.foundation.item.attachment.IGrip;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Grip;
+import com.nukateam.ntgl.common.data.attachment.IBarrel;
+import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 /**
- * A basic stock attachment item implementation with color support
+ * A basic barrel attachment item implementation with color support
  * <p>
  * Author: MrCrayfish
  */
-public class GripItem extends AttachmentItemBase implements IGrip, IColored {
-    private final Grip stock;
+public class BarrelItem extends AttachmentItemBase implements IBarrel, IColored {
+    private final Barrel barrel;
     private final boolean colored;
 
-    public GripItem(Grip stock, Properties properties) {
+    public BarrelItem(Barrel barrel, Item.Properties properties) {
         super(properties);
-        this.stock = stock;
+        this.barrel = barrel;
         this.colored = true;
     }
 
-    public GripItem(Grip stock, Properties properties, boolean colored) {
+    public BarrelItem(Barrel barrel, Item.Properties properties, boolean colored) {
         super(properties);
-        this.stock = stock;
+        this.barrel = barrel;
         this.colored = colored;
     }
 
     @Override
-    public Grip getProperties() {
-        return this.stock;
+    public Barrel getProperties() {
+        return this.barrel;
     }
 
     @Override

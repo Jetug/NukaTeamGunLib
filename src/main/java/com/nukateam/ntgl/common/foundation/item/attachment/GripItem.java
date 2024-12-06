@@ -1,37 +1,37 @@
-package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.ntgl.common.foundation.item.attachment.IScope;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
+package com.nukateam.ntgl.common.foundation.item.attachment;
+
+import com.nukateam.ntgl.common.data.attachment.IGrip;
+import com.nukateam.ntgl.common.data.attachment.impl.Grip;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 /**
- * A basic scope attachment item implementation with color support
+ * A basic stock attachment item implementation with color support
  * <p>
  * Author: MrCrayfish
  */
-public class ScopeItem extends AttachmentItemBase implements IScope, IColored {
-    private final Scope scope;
+public class GripItem extends AttachmentItemBase implements IGrip, IColored {
+    private final Grip stock;
     private final boolean colored;
 
-    public ScopeItem(Scope scope, Item.Properties properties) {
+    public GripItem(Grip stock, Properties properties) {
         super(properties);
-        this.scope = scope;
+        this.stock = stock;
         this.colored = true;
     }
 
-    public ScopeItem(Scope scope, Item.Properties properties, boolean colored) {
+    public GripItem(Grip stock, Properties properties, boolean colored) {
         super(properties);
-        this.scope = scope;
+        this.stock = stock;
         this.colored = colored;
     }
 
     @Override
-    public Scope getProperties() {
-        return this.scope;
+    public Grip getProperties() {
+        return this.stock;
     }
 
     @Override

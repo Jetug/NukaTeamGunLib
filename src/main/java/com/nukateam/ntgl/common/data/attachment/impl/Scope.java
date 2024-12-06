@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.item.attachment.impl;
+package com.nukateam.ntgl.common.data.attachment.impl;
 
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
@@ -12,8 +12,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.function.Supplier;
-
-import static com.nukateam.example.common.registery.Attachments.SCOPE_LOCATION;
 
 /**
  * An attachment class related to scopes. Scopes need to at least specify the additional zoom (or fov)

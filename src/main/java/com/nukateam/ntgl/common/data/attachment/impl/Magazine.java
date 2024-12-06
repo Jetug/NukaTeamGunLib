@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.item.attachment.impl;
+package com.nukateam.ntgl.common.data.attachment.impl;
 
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 

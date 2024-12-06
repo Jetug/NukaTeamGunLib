@@ -1,9 +1,13 @@
 package com.nukateam.example.common.registery;
 
 import com.nukateam.ntgl.common.base.GunModifiers;
+import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
+import com.nukateam.ntgl.common.data.attachment.impl.Grip;
+import com.nukateam.ntgl.common.data.attachment.impl.Magazine;
+import com.nukateam.ntgl.common.data.attachment.impl.Stock;
 import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.*;
+import com.nukateam.ntgl.common.foundation.item.attachment.*;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;

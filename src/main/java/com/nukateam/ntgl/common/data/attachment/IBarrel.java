@@ -1,8 +1,8 @@
-package com.nukateam.ntgl.common.foundation.item.attachment;
+package com.nukateam.ntgl.common.data.attachment;
 
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
-import com.nukateam.ntgl.common.foundation.item.BarrelItem;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Barrel;
+import com.nukateam.ntgl.common.foundation.item.attachment.BarrelItem;
+import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
 
 /**
  * An interface to turn an any item into a barrel attachment. This is useful if your item extends a

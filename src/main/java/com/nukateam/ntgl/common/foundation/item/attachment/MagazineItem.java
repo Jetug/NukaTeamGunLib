@@ -1,7 +1,7 @@
-package com.nukateam.ntgl.common.foundation.item;
+package com.nukateam.ntgl.common.foundation.item.attachment;
 
-import com.nukateam.ntgl.common.foundation.item.attachment.IMagazine;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Magazine;
+import com.nukateam.ntgl.common.data.attachment.IMagazine;
+import com.nukateam.ntgl.common.data.attachment.impl.Magazine;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;

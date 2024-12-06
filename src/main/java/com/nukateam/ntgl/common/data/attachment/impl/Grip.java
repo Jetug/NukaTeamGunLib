@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.item.attachment.impl;
+package com.nukateam.ntgl.common.data.attachment.impl;
 
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 
@@ -7,8 +7,8 @@ import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
  * <p>
  * Author: MrCrayfish
  */
-public class Stock extends Attachment {
-    private Stock(IGunModifier... modifier) {
+public class Grip extends Attachment {
+    private Grip(IGunModifier... modifier) {
         super(modifier);
     }
 
@@ -18,7 +18,7 @@ public class Stock extends Attachment {
      * @param modifier an array of gun modifiers
      * @return a stock get
      */
-    public static Stock create(IGunModifier... modifier) {
-        return new Stock(modifier);
+    public static Grip create(IGunModifier... modifier) {
+        return new Grip(modifier);
     }
 }

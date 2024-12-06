@@ -11,7 +11,7 @@ import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.data.Rgba;
-import com.nukateam.ntgl.common.foundation.item.BarrelItem;
+import com.nukateam.ntgl.common.foundation.item.attachment.BarrelItem;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.util.ClientUtils;
@@ -28,7 +28,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.function.BiFunction;
 
 import static com.nukateam.ntgl.client.event.InputEvents.*;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
