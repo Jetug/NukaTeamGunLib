@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.foundation.item.attachment;
 
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
+import com.nukateam.ntgl.common.data.attachment.impl.Attachment;
 import com.nukateam.ntgl.common.data.attachment.impl.GenericAttachment;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import net.minecraft.world.item.ItemStack;
@@ -13,12 +14,12 @@ import net.minecraft.world.item.enchantment.Enchantments;
  * <p>
  * Author: MrCrayfish
  */
-public class AttachmentItem extends AttachmentItemBase implements IAttachment<GenericAttachment>, IColored {
+public class AttachmentItem<T extends Attachment> extends AttachmentItemBase implements IAttachment<T>, IColored {
     private final AttachmentType type;
-    private final GenericAttachment attachmentData;
+    private final T attachmentData;
     private final boolean colored;
 
-    public AttachmentItem(AttachmentType type, GenericAttachment attachmentData, Properties properties) {
+    public AttachmentItem(AttachmentType type, T attachmentData, Properties properties) {
         super(properties);
         this.type = type;
         this.attachmentData = attachmentData;
@@ -31,7 +32,7 @@ public class AttachmentItem extends AttachmentItemBase implements IAttachment<Ge
     }
 
     @Override
-    public GenericAttachment getProperties() {
+    public T getProperties() {
         return this.attachmentData;
     }
 

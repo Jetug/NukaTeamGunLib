@@ -1,6 +1,8 @@
 package com.nukateam.ntgl.common.foundation.item.attachment;
 
+import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IUnderBarrel;
+import com.nukateam.ntgl.common.data.attachment.impl.Stock;
 import com.nukateam.ntgl.common.data.attachment.impl.UnderBarrel;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import net.minecraft.world.item.ItemStack;
@@ -12,34 +14,8 @@ import net.minecraft.world.item.enchantment.Enchantments;
  * <p>
  * Author: MrCrayfish
  */
-public class UnderBarrelItem extends AttachmentItemBase implements IUnderBarrel, IColored {
-    private final UnderBarrel underBarrel;
-    private final boolean colored;
-
-    public UnderBarrelItem(UnderBarrel underBarrel, Properties properties) {
-        super(properties);
-        this.underBarrel = underBarrel;
-        this.colored = true;
-    }
-
-    public UnderBarrelItem(UnderBarrel underBarrel, Properties properties, boolean colored) {
-        super(properties);
-        this.underBarrel = underBarrel;
-        this.colored = colored;
-    }
-
-    @Override
-    public UnderBarrel getProperties() {
-        return this.underBarrel;
-    }
-
-    @Override
-    public boolean canColor(ItemStack stack) {
-        return this.colored;
-    }
-
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment == Enchantments.BINDING_CURSE || super.canApplyAtEnchantingTable(stack, enchantment);
+public class UnderBarrelItem extends AttachmentItem<UnderBarrel> {
+    public UnderBarrelItem(UnderBarrel data, Properties properties) {
+        super(AttachmentType.SCOPE, data, properties);
     }
 }

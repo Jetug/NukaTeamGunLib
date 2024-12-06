@@ -70,9 +70,9 @@ public class ModGuns {
 
     /* Stock Attachments */
     public static final RegistryObject<Item> LIGHT_STOCK = ITEMS.register("light_stock",
-            () -> new StockItem(Stock.create(GunModifiers.BETTER_CONTROL), new Item.Properties().stacksTo(1), false));
+            () -> new StockItem(Stock.create(GunModifiers.BETTER_CONTROL), new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> TACTICAL_STOCK = ITEMS.register("tactical_stock",
-            () -> new StockItem(Stock.create(GunModifiers.STABILISED), new Item.Properties().stacksTo(1), false));
+            () -> new StockItem(Stock.create(GunModifiers.STABILISED), new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> WEIGHTED_STOCK = ITEMS.register("weighted_stock",
             () -> new StockItem(Stock.create(GunModifiers.SUPER_STABILISED), new Item.Properties().stacksTo(1)));
 
@@ -88,7 +88,6 @@ public class ModGuns {
 
     public static final RegistryObject<Item> DRUM_MAGAZINE = ITEMS.register("drum_magazine",
             () -> new MagazineItem(Magazine.create(60, GunModifiers.SLOWER_ADS, GunModifiers.EXTENDED_MAG), new Item.Properties().stacksTo(1)));
-
 
     public static final RegistryObject<Item> AMMO_BOX = ITEMS.register("ammo_box", () ->
             new AmmoBoxItem(new Item.Properties().stacksTo(1), 100));

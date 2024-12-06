@@ -1,6 +1,8 @@
 package com.nukateam.ntgl.common.foundation.item.attachment;
 
+import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IMagazine;
+import com.nukateam.ntgl.common.data.attachment.impl.Grip;
 import com.nukateam.ntgl.common.data.attachment.impl.Magazine;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import net.minecraft.world.item.ItemStack;
@@ -12,31 +14,8 @@ import net.minecraft.world.item.enchantment.Enchantments;
  * <p>
  * Author: Jetug
  */
-public class MagazineItem extends AttachmentItemBase implements IMagazine, IColored {
-    private final Magazine magazine;
-
-    public MagazineItem(Magazine barrel, Properties properties) {
-        super(properties);
-        this.magazine = barrel;
-    }
-
-    public MagazineItem(Magazine barrel, Properties properties, boolean colored) {
-        super(properties);
-        this.magazine = barrel;
-    }
-
-    @Override
-    public Magazine getProperties() {
-        return this.magazine;
-    }
-
-    @Override
-    public boolean canColor(ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment == Enchantments.BINDING_CURSE || super.canApplyAtEnchantingTable(stack, enchantment);
+public class MagazineItem extends AttachmentItem<Magazine>{
+    public MagazineItem(Magazine data, Properties properties) {
+        super(AttachmentType.MAGAZINE, data, properties);
     }
 }

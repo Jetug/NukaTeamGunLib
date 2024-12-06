@@ -21,11 +21,11 @@ import java.util.List;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
-public abstract class Attachment {
+public class Attachment {
     protected IGunModifier[] modifiers;
     private List<Component> perks = null;
 
-    Attachment(IGunModifier... modifiers) {
+    public Attachment(IGunModifier... modifiers) {
         this.modifiers = modifiers;
     }
 

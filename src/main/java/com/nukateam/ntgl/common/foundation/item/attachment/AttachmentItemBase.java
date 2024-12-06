@@ -13,7 +13,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.nukateam.ntgl.common.util.util.ResourceUtils.getResourceName;
 
-
 /**
  * Author: MrCrayfish
  */

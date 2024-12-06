@@ -8,7 +8,7 @@ import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
  * Author: MrCrayfish
  */
 public class Grip extends Attachment {
-    private Grip(IGunModifier... modifier) {
+    public Grip(IGunModifier... modifier) {
         super(modifier);
     }
 

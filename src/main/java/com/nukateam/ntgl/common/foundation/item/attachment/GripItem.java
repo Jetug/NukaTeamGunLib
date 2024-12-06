@@ -1,6 +1,7 @@
 
 package com.nukateam.ntgl.common.foundation.item.attachment;
 
+import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IGrip;
 import com.nukateam.ntgl.common.data.attachment.impl.Grip;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
@@ -13,34 +14,8 @@ import net.minecraft.world.item.enchantment.Enchantments;
  * <p>
  * Author: MrCrayfish
  */
-public class GripItem extends AttachmentItemBase implements IGrip, IColored {
-    private final Grip stock;
-    private final boolean colored;
-
-    public GripItem(Grip stock, Properties properties) {
-        super(properties);
-        this.stock = stock;
-        this.colored = true;
-    }
-
-    public GripItem(Grip stock, Properties properties, boolean colored) {
-        super(properties);
-        this.stock = stock;
-        this.colored = colored;
-    }
-
-    @Override
-    public Grip getProperties() {
-        return this.stock;
-    }
-
-    @Override
-    public boolean canColor(ItemStack stack) {
-        return this.colored;
-    }
-
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment == Enchantments.BINDING_CURSE || super.canApplyAtEnchantingTable(stack, enchantment);
+public class GripItem extends AttachmentItem<Grip> {
+    public GripItem(Grip grip, Properties properties) {
+        super(AttachmentType.GRIP, grip, properties);
     }
 }

@@ -5,7 +5,7 @@ import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 public class Magazine extends Attachment {
     private final float maxAmmo;
 
-    private Magazine(int maxAmmo, IGunModifier... modifier) {
+    public Magazine(int maxAmmo, IGunModifier... modifier) {
         super(modifier);
         this.maxAmmo = maxAmmo;
     }
