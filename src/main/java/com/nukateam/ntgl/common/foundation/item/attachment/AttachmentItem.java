@@ -3,7 +3,6 @@ package com.nukateam.ntgl.common.foundation.item.attachment;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.attachment.impl.Attachment;
-import com.nukateam.ntgl.common.data.attachment.impl.GenericAttachment;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;

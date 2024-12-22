@@ -1,20 +1,24 @@
 package com.nukateam.geo.render;
 
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.realmsclient.RealmsMainScreen;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
+import com.nukateam.ntgl.client.util.handler.AimingHandler;
+import com.nukateam.ntgl.common.base.holders.AttachmentType;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.constant.DataTickets;
 import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.model.data.EntityModelData;
 import mod.azure.azurelib.renderer.GeoObjectRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import java.util.HashMap;
@@ -52,6 +56,10 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
         if(buffEntity != null){
             currentEntity = buffEntity;
             buffEntity = null;
+        }
+
+        if (Gun.isAiming(stack) && Gun.hasScopeOverlay(stack)) {
+            return;
         }
 
         super.render(poseStack, getAnimator(currentEntity, transformType, stack), bufferSource, renderType, buffer, packedLight);

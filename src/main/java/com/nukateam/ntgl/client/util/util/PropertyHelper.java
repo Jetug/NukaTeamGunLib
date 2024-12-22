@@ -5,6 +5,7 @@ import com.nukateam.ntgl.common.data.config.gun.Display;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.properties.SightAnimation;
+import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.util.data.ObjectCache;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
 import com.nukateam.ntgl.common.data.attachment.IScope;
@@ -84,6 +85,17 @@ public final class PropertyHelper {
             double cameraX = modifiedGun.getModules().getZoom().getXOffset();
             double cameraY = modifiedGun.getModules().getZoom().getYOffset();
             double cameraZ = modifiedGun.getModules().getZoom().getZOffset();
+
+            var attachment = Gun.getAttachmentItem(AttachmentType.SCOPE, stack);
+            if(!attachment.isEmpty() ){
+                var scope = (ScopeItem)attachment.getItem();
+                var attachmentData = modifiedGun.findAttachment(scope);
+
+                cameraX = attachmentData.getXOffset();
+                cameraY = attachmentData.getYOffset();
+                cameraZ = attachmentData.getZOffset();
+            }
+
             return new Vec3(cameraX, cameraY, cameraZ);
         }
         return Vec3.ZERO;

@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
@@ -15,23 +16,17 @@ public class ScopeHud implements IGuiOverlay {
 
     @Override
     public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
-        var minecraft = Minecraft.getInstance();
+        var player = Minecraft.getInstance().player; if (player == null) return;
+        var gun = player.getMainHandItem();
 
-        if (minecraft.player == null) return;
-
-        var mainHandItem = minecraft.player.getMainHandItem();
-        var prog = AimingHandler.get().getAimProgress(minecraft.player, minecraft.getFrameTime());
-
-        if (mainHandItem.getItem() instanceof GunItem && AimingHandler.get().isAiming() && prog == 1) {
-            var attachment = Gun.getAttachmentItem(AttachmentType.SCOPE, mainHandItem);
-            if(!attachment.isEmpty() ){
-                var scope = (ScopeItem)attachment.getItem();
-                if(scope.getProperties().hasOverlay()) {
-                    graphics.blit(scope.getProperties().getOverlay(), 0, 0, 0, 0, 0.0F,
-                            width, height, width, height);
-                }
+        if (Gun.isAiming(gun) && Gun.hasScopeOverlay(gun)) {
+            var attachment = Gun.getAttachmentItem(AttachmentType.SCOPE, gun);
+            if(!attachment.isEmpty()){
+                var scope = Gun.getScopeItem(gun);
+                graphics.blit(scope.getProperties().getOverlay(),
+                        0, 0, 0, 0, 0.0F,
+                        width, height, width, height);
             }
         }
     }
-
 }

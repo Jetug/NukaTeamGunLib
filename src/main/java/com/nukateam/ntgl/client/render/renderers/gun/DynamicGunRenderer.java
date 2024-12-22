@@ -92,26 +92,42 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
             }
             case MUZZLE_FLASH -> {
                 if(barrelItem != null){
-                    var length = barrelItem.getProperties().getLength();
-                    poseStack.pushPose();
-                    {
-                        poseStack.translate(0, 0, -length / 16D);
-                        if (Ntgl.isDebugging())
-                            poseStack.translate((double) X / 10 / 16D, (double) Y / 10 / 16D, (double) Z / 10 / 16D);
-                        super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource,
-                                buffer, isReRender, partialTick, packedLight, packedOverlay,
-                                red, green, blue, alpha);
-                    }
-                    poseStack.popPose();
+                    renderMuzzleFlash(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender,
+                            partialTick, packedLight, packedOverlay, red, green, blue, alpha);
                     return;
                 }
             }
         }
 
+        renderRecursivelyPost(poseStack, animatable, bone, renderType, bufferSource,
+                buffer, isReRender, partialTick, packedLight, packedOverlay,
+                red, green, blue, alpha);
+
         super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource,
                 buffer, isReRender, partialTick, packedLight, packedOverlay,
                 red, green, blue, alpha);
 
+    }
+
+
+    public void renderRecursivelyPost(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
+                                  MultiBufferSource bufferSource, VertexConsumer buffer,
+                                  boolean isReRender, float partialTick, int packedLight, int packedOverlay,
+                                  float red, float green, float blue, float alpha) {
+    }
+
+    private void renderMuzzleFlash(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        var length = barrelItem.getProperties().getLength();
+        poseStack.pushPose();
+        {
+            poseStack.translate(0, 0, -length / 16D);
+            if (Ntgl.isDebugging())
+                poseStack.translate((double) X / 10 / 16D, (double) Y / 10 / 16D, (double) Z / 10 / 16D);
+            super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource,
+                    buffer, isReRender, partialTick, packedLight, packedOverlay,
+                    red, green, blue, alpha);
+        }
+        poseStack.popPose();
     }
 
     protected void renderArms(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,

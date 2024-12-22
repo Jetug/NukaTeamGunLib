@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.data.config.gun;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
@@ -197,6 +198,21 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return /*this.canAttachType(SCOPE, ) || */this.modules.zoom != null;
     }
 
+    public static boolean hasScopeOverlay(ItemStack gun) {
+        var scope = getScopeItem(gun);
+        return scope != null && scope.getProperties().hasOverlay();
+    }
+
+    @org.jetbrains.annotations.Nullable
+    public static ScopeItem getScopeItem(ItemStack gun) {
+        var attachment = Gun.getAttachmentItem(AttachmentType.SCOPE, gun);
+        if(!attachment.isEmpty() ){
+            return (ScopeItem)attachment.getItem();
+        }
+
+        return null;
+    }
+
     public static ItemStack getScopeStack(ItemStack gun) {
         var compound = gun.getTag();
         if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
@@ -245,8 +261,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         for (var stack : itemStacks) {
             var item = stack.getItem();
-            var itemRegistryName = ForgeRegistries.ITEMS.getKey(stack.getItem());
-            var attachment = findAttachment(item, itemRegistryName);
+            var attachment = findAttachment(item);
 
             if(attachment != null)
                 result.add(attachment);
@@ -254,7 +269,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return result;
     }
 
-    private Modules.Attachment findAttachment(Item item, ResourceLocation itemRegistryName) {
+    public Modules.Attachment findAttachment(Item item) {
+        var itemId = ForgeRegistries.ITEMS.getKey(item);
+
         if(item instanceof IAttachment attachmentItem){
             var attachmentType = attachmentItem.getType();
 
@@ -264,7 +281,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             var attachments = getModules().getAttachments().get(attachmentType);
 
             for (var attachment : attachments) {
-                if(attachment.getItem() != null && attachment.getItem().equals(itemRegistryName)){
+                if(attachment.getItem() != null && attachment.getItem().equals(itemId)){
                     return attachment;
                 }
             }
@@ -284,6 +301,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
         }
         return result;
+    }
+
+    public static boolean isAiming(ItemStack gun) {
+        var minecraft = Minecraft.getInstance();
+        var progress = AimingHandler.get().getAimProgress(minecraft.player, minecraft.getFrameTime());
+        return gun.getItem() instanceof GunItem
+                && AimingHandler.get().isAiming()
+                && progress == 1;
     }
 
     public static ItemStack getAttachmentItem(AttachmentType type, ItemStack gun) {
