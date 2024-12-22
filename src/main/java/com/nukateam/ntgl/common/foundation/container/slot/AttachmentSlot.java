@@ -1,12 +1,12 @@
 package com.nukateam.ntgl.common.foundation.container.slot;
 
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
-import com.nukateam.ntgl.common.base.config.gun.Gun;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
+import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import static com.nukateam.ntgl.common.data.util.GunModifierHelper.getGun;
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.getGun;
 
 /**
  * Author: MrCrayfish

@@ -1,33 +1,34 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.example.common.data.interfaces.IResourceProvider;
-import com.nukateam.example.common.data.utils.ResourceUtils;
-import com.nukateam.ntgl.client.animators.IConfigProvider;
-import com.nukateam.ntgl.client.render.renderers.DefaultGunRenderer;
-import com.nukateam.ntgl.client.render.renderers.DynamicGunRenderer;
-import com.nukateam.ntgl.client.render.renderers.GunItemRenderer;
+import com.nukateam.geo.interfaces.IResourceProvider;
+import com.nukateam.geo.render.ItemAnimator;
+import com.nukateam.ntgl.client.animators.GunAnimator;
+import com.nukateam.ntgl.common.util.util.ResourceUtils;
+import com.nukateam.geo.interfaces.DynamicGeoItem;
+import com.nukateam.geo.render.DynamicGeoItemRenderer;
+import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.render.renderers.gun.DefaultGunRendererGeo;
 import com.nukateam.ntgl.common.base.NetworkManager;
-import com.nukateam.ntgl.common.base.config.gun.Gun;
-import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.util.constants.Tags;
+import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
+import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.enchantment.EnchantmentTypes;
-import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
 import mod.azure.azurelib.animatable.GeoItem;
-import mod.azure.azurelib.animatable.client.RenderProvider;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
-import net.minecraft.*;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -37,20 +38,22 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
-public class GunItem extends Item implements GeoItem, IColored, IMeta, IResourceProvider, IConfigConsumer<Gun>, IConfigProvider<Gun> {
+public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IResourceProvider, IConfigConsumer<Gun>, IConfigProvider<Gun> {
     public static final String VARIANT = "variant";
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
-    private final Lazy<DefaultGunRenderer> GUN_RENDERER = Lazy.of(() -> new DefaultGunRenderer());
-
+    private final Lazy<DefaultGunRendererGeo> GUN_RENDERER = Lazy.of(() -> new DefaultGunRendererGeo());
     private Gun gun = new Gun();
 
     public GunItem(Item.Properties properties) {
@@ -58,17 +61,22 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
     }
 
     @OnlyIn(Dist.CLIENT)
-    public DynamicGunRenderer getRenderer(){
+    public DynamicGeoItemRenderer getRenderer() {
         return GUN_RENDERER.get();
+    }
+
+    @Override
+    public BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<GunAnimator>, GunAnimator> getAnimatorFactory() {
+        return GunAnimator::new;
     }
 
     public Gun getGun() {
         return this.gun;
     }
 
-    public static String getVariant(ItemStack stack){
+    public static String getVariant(ItemStack stack) {
         var tag = stack.getOrCreateTag();
-        if(!tag.contains(VARIANT, Tag.TAG_STRING)){
+        if (!tag.contains(VARIANT, Tag.TAG_STRING)) {
             tag.putString(VARIANT, "default");
         }
 
@@ -100,18 +108,18 @@ public class GunItem extends Item implements GeoItem, IColored, IMeta, IResource
         return ForgeRegistries.ITEMS.getKey(this);
     }
 
-    @Override
-    public void createRenderer(Consumer<Object> consumer) {
-        consumer.accept(new RenderProvider() {
-            private GunItemRenderer renderer = null;
-            @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                if (renderer == null)
-                    return new GunItemRenderer(getRenderer());
-                return this.renderer;
-            }
-        });
-    }
+//    @Override
+//    public void createRenderer(Consumer<Object> consumer) {
+//        consumer.accept(new RenderProvider() {
+//            private ProxyItemRenderer renderer = null;
+//            @Override
+//            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+//                if (renderer == null)
+//                    return new ProxyItemRenderer((DynamicGunRenderer<GunAnimator>) getRenderer());
+//                return this.renderer;
+//            }
+//        });
+//    }
 
 //    @Override
 //    public void inventoryTick(ItemStack stack, Level pLevel, Entity entity, int pSlotId, boolean pIsSelected) {

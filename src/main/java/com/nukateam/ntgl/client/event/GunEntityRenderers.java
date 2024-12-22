@@ -1,12 +1,16 @@
 package com.nukateam.ntgl.client.event;
 
+import com.nukateam.ntgl.client.render.renderers.misc.AshPileRenderer;
+import com.nukateam.ntgl.client.render.renderers.misc.FlyingGibsRenderer;
 import com.nukateam.ntgl.client.render.renderers.projectiles.*;
+import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class GunEntityRenderers {
@@ -22,6 +26,7 @@ public class GunEntityRenderers {
         event.registerEntityRenderer(Projectiles.THROWABLE_GRENADE.get(), ThrowableGrenadeRenderer::new);
         event.registerEntityRenderer(Projectiles.THROWABLE_STUN_GRENADE.get(), ThrowableGrenadeRenderer::new);
 
-
+        event.registerEntityRenderer(ModEntityTypes.FLYING_GIBS.get(), FlyingGibsRenderer::new);
+        event.registerEntityRenderer(ModEntityTypes.ASH_PILE.get(), AshPileRenderer::new);
     }
 }

@@ -45,9 +45,9 @@ public class BloodParticle extends TextureSheetParticle {
     @Override
     public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
         Vec3 projectedView = renderInfo.getPosition();
-        float x = (float) (Mth.lerp((double) partialTicks, this.xo, this.x) - projectedView.x());
-        float y = (float) (Mth.lerp((double) partialTicks, this.yo, this.y) - projectedView.y());
-        float z = (float) (Mth.lerp((double) partialTicks, this.zo, this.z) - projectedView.z());
+        float x = (float) (Mth.lerp(partialTicks, this.xo, this.x) - projectedView.x());
+        float y = (float) (Mth.lerp(partialTicks, this.yo, this.y) - projectedView.y());
+        float z = (float) (Mth.lerp(partialTicks, this.zo, this.z) - projectedView.z());
 
         if (this.onGround) {
             y += 0.01;
@@ -73,6 +73,7 @@ public class BloodParticle extends TextureSheetParticle {
         };
 
         float scale = this.getQuadSize(partialTicks);
+
         for(int i = 0; i < 4; ++i) {
             Vector3f vertex = vertices[i];
             vertex.rotate(rotation);
@@ -99,8 +100,10 @@ public class BloodParticle extends TextureSheetParticle {
             this.spriteSet = spriteSet;
         }
 
-        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            BloodParticle particle = new BloodParticle(worldIn, x, y, z);
+        public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn,
+                                       double x, double y, double z,
+                                       double xSpeed, double ySpeed, double zSpeed) {
+            var particle = new BloodParticle(worldIn, x, y, z);
             particle.pickSprite(this.spriteSet);
             return particle;
         }

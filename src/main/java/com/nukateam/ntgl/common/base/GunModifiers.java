@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.base;
 
-import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import net.minecraft.util.Mth;
 
 /**

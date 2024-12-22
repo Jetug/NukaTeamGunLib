@@ -1,12 +1,12 @@
 package com.nukateam.ntgl.common.debug;
 
-import com.nukateam.ntgl.client.ClientHandler;
-import com.nukateam.ntgl.common.base.config.gun.Gun;
+import com.nukateam.ntgl.client.event.ClientHandler;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugButton;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugToggle;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.foundation.item.ScopeItem;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.Scope;
+import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
+import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;

@@ -1,9 +1,13 @@
 package com.nukateam.example.common.registery;
 
 import com.nukateam.ntgl.common.base.GunModifiers;
+import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
+import com.nukateam.ntgl.common.data.attachment.impl.Grip;
+import com.nukateam.ntgl.common.data.attachment.impl.Magazine;
+import com.nukateam.ntgl.common.data.attachment.impl.Stock;
 import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.foundation.item.attachment.impl.*;
+import com.nukateam.ntgl.common.foundation.item.attachment.*;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -51,10 +55,11 @@ public class ModGuns {
     public static final RegistryObject<Item> ROUND127   = registerAmmo("round127"   );
     public static final RegistryObject<Item> ROUND22    = registerAmmo("round22"    );
     public static final RegistryObject<Item> MININUKE   = registerAmmo("mini_nuke"  );
+    public static final RegistryObject<Item> FUEL       = registerAmmo("fuel"  );
 
     /* Scope Attachments */
     public static final RegistryObject<Item> HOLOGRAPHIC_SIGHT = ITEMS.register("holographic_sight",
-            () -> new ScopeItem(Attachments.SHORT_SCOPE, new Item.Properties().stacksTo(1)));
+            () -> new ScopeItem(Attachments.LONG_SCOPE, new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> COLLIMATOR_SIGHT = ITEMS.register("collimator_sight",
             () -> new ScopeItem(Attachments.SHORT_SCOPE, new Item.Properties().stacksTo(1)));
@@ -65,9 +70,9 @@ public class ModGuns {
 
     /* Stock Attachments */
     public static final RegistryObject<Item> LIGHT_STOCK = ITEMS.register("light_stock",
-            () -> new StockItem(Stock.create(GunModifiers.BETTER_CONTROL), new Item.Properties().stacksTo(1), false));
+            () -> new StockItem(Stock.create(GunModifiers.BETTER_CONTROL), new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> TACTICAL_STOCK = ITEMS.register("tactical_stock",
-            () -> new StockItem(Stock.create(GunModifiers.STABILISED), new Item.Properties().stacksTo(1), false));
+            () -> new StockItem(Stock.create(GunModifiers.STABILISED), new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> WEIGHTED_STOCK = ITEMS.register("weighted_stock",
             () -> new StockItem(Stock.create(GunModifiers.SUPER_STABILISED), new Item.Properties().stacksTo(1)));
 
@@ -83,7 +88,6 @@ public class ModGuns {
 
     public static final RegistryObject<Item> DRUM_MAGAZINE = ITEMS.register("drum_magazine",
             () -> new MagazineItem(Magazine.create(60, GunModifiers.SLOWER_ADS, GunModifiers.EXTENDED_MAG), new Item.Properties().stacksTo(1)));
-
 
     public static final RegistryObject<Item> AMMO_BOX = ITEMS.register("ammo_box", () ->
             new AmmoBoxItem(new Item.Properties().stacksTo(1), 100));

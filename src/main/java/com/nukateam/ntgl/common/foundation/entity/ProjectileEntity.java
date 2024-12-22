@@ -1,21 +1,22 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
-import com.nukateam.example.common.data.interfaces.IExplosiveOnHit;
+import com.nukateam.ntgl.common.util.interfaces.IExplosiveOnHit;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.base.config.Ammo;
-import com.nukateam.ntgl.common.base.config.gun.General;
-import com.nukateam.ntgl.common.base.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.data.config.gun.General;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.base.holders.AmmoType;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
-import com.nukateam.ntgl.common.data.interfaces.*;
-import com.nukateam.ntgl.common.data.util.*;
-import com.nukateam.ntgl.common.data.util.math.ExtendedEntityRayTraceResult;
+import com.nukateam.ntgl.common.util.interfaces.*;
+import com.nukateam.ntgl.common.util.util.*;
+import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 import com.nukateam.ntgl.common.event.GunProjectileHitEvent;
 import com.nukateam.ntgl.common.foundation.ModTags;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.foundation.world.ProjectileExplosion;
+import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -67,6 +68,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     public static final EntityDataAccessor<Boolean> IS_RIGHT = defineId(ProjectileEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> IS_VISIBLE = defineId(ProjectileEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<String> ITEM = defineId(ProjectileEntity.class, EntityDataSerializers.STRING);
+    public static final EntityDataAccessor<String> AMMO_TYPE = defineId(ProjectileEntity.class, EntityDataSerializers.STRING);
 
     private boolean hasClientData = false;
     protected boolean isServerSide = !level().isClientSide();
@@ -106,6 +108,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         getEntityData().set(IS_RIGHT, isRightHand);
         getEntityData().set(IS_VISIBLE, projectile.isVisible());
         getEntityData().set(ITEM, GunModifierHelper.getCurrentAmmo(weapon).toString());
+        getEntityData().set(AMMO_TYPE, projectile.getType().toString());
 
         /* Get speed and set motion */
         setupDirection(shooter, weapon, item, modifiedGun);
@@ -151,6 +154,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         entityData.define(IS_RIGHT, true);
         entityData.define(IS_VISIBLE, false);
         entityData.define(ITEM, "");
+        entityData.define(AMMO_TYPE, "ntgl:standard");
     }
 
     @Override
@@ -194,6 +198,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     public double getModifiedGravity() {
         return this.modifiedGravity;
+    }
+
+    private AmmoType getAmmoType(){
+        var id = getEntityData().get(AMMO_TYPE);
+        return AmmoType.getType(id);
     }
 
     @Override
@@ -365,8 +374,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             initialDamage *= modifier;
         }
 
-        var damage = initialDamage / this.general.getProjectileAmount();
-//        damage = GunModifierHelper.getModifiedDamage(this.weapon);
+        var projectileAmount = GunModifierHelper.getProjectileAmount(this.weapon);
+        var damage = initialDamage / projectileAmount;
         damage = GunEnchantmentHelper.getAcceleratorDamage(this.weapon, damage);
 
         return Math.max(0F, damage);
@@ -600,7 +609,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         if (headshot) damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
 
-        var source = ModDamageTypes.Sources.projectile(this.level().registryAccess(), this, this.shooter);
+        var source = ModDamageTypes.Sources.source(this.level().registryAccess(), getAmmoType().getDamageType(),this, this.shooter);
         entity.hurt(source, damage);
 
         if (this.shooter instanceof ServerPlayer playerShooter) {
@@ -707,16 +716,20 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     private Vec3 getDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
-        float gunSpread = GunModifierHelper.getModifiedSpread(weapon, modifiedGun.getGeneral().getSpread());
+        var gunSpread = GunModifierHelper.getModifiedSpread(weapon);
 
-        if (gunSpread == 0F) return this.getVectorFromRotation(shooter.getXRot(), shooter.getYRot());
+        if (gunSpread == 0F)
+            return this.getVectorFromRotation(shooter.getXRot(), shooter.getYRot());
 
         if (!modifiedGun.getGeneral().isAlwaysSpread())
             gunSpread *= SpreadTracker.get(shooter).getSpread(item);
 
-        if (ModSyncedDataKeys.AIMING.getValue(shooter)) gunSpread *= 0.5F;
+        if (ModSyncedDataKeys.AIMING.getValue(shooter))
+            gunSpread *= 0.5F;
 
-        return this.getVectorFromRotation(shooter.getXRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread, shooter.getYHeadRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread);
+        return this.getVectorFromRotation(
+                shooter.getXRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread,
+                shooter.getYHeadRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread);
     }
 
     /**

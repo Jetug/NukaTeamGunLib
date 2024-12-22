@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.common.base.config.gun.Gun;
-import com.nukateam.ntgl.common.data.util.math.ExtendedEntityRayTraceResult;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.mixin.client;
 
-import com.nukateam.ntgl.client.data.handler.GunRenderingHandler;
+import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;

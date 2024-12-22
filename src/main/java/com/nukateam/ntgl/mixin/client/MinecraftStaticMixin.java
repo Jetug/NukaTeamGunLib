@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.mixin.client;
 
-import com.nukateam.ntgl.common.data.interfaces.CurrentFpsGetter;
+import com.nukateam.ntgl.common.util.interfaces.CurrentFpsGetter;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.foundation.init;
 
 import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.Ntgl;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -18,7 +19,6 @@ import java.util.function.BiFunction;
 public class Projectiles {
     public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Ntgl.MOD_ID);
 
-
     public static final RegistryObject<EntityType<ProjectileEntity>> PROJECTILE = registerProjectile("ammo", ProjectileEntity::new);
     public static final RegistryObject<EntityType<LaserProjectile>> LASER_PROJECTILE = registerBasic("laser_projectile", LaserProjectile::new);
     public static final RegistryObject<EntityType<ContinuousLaserProjectile>> CONTINUOUS_LASER_PROJECTILE = registerBasic("continuous_laser_projectile", ContinuousLaserProjectile::new);
@@ -29,6 +29,12 @@ public class Projectiles {
     public static final RegistryObject<EntityType<ThrowableGrenadeEntity>> THROWABLE_GRENADE = registerBasic("throwable_grenade", ThrowableGrenadeEntity::new);
     public static final RegistryObject<EntityType<StunGrenadeEntity>> THROWABLE_STUN_GRENADE = registerBasic("throwable_stun_grenade", StunGrenadeEntity::new);
 
+//    public static final RegistryObject<EntityType<FlyingGib>> FLYING_GIBS = register("flying_gibs", FlyingGib::new);
+
+    private static <T extends Entity> RegistryObject<EntityType<T>> registerEntity(String entityName, EntityType.Builder<T> builder) {
+        return REGISTER.register(entityName, () -> builder.build(new ResourceLocation(Ntgl.MOD_ID, entityName).toString()));
+    }
+
     private static <T extends Entity> RegistryObject<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function) {
         return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
                 .sized(0.25F, 0.25F)
@@ -37,6 +43,13 @@ public class Projectiles {
                 .noSummon()
                 .fireImmune()
                 .setShouldReceiveVelocityUpdates(true).build(id));
+    }
+
+
+    private static <T extends Entity> RegistryObject<EntityType<T>> register(String id, BiFunction<EntityType<T>, Level, T> function) {
+        return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
+                .sized(1.25F, 1.25F)
+                .build(id));
     }
 
     /**

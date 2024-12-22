@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.base.utils;
 
-import com.nukateam.ntgl.common.base.config.Ammo;
-import com.nukateam.ntgl.common.base.config.gun.Modules;
+import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.data.config.gun.Modules;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.base.holders.FireMode;
 import net.minecraft.nbt.CompoundTag;

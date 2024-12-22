@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.event;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.data.handler.ShootingHandler;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.client.util.handler.ShootingHandler;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.sounds.SoundEvents;

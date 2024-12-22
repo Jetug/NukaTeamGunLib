@@ -2,10 +2,10 @@ package com.nukateam.ntgl.common.base.utils;
 
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.LoadingType;
-import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.data.util.*;
+import com.nukateam.ntgl.common.util.constants.Tags;
+import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
@@ -27,7 +27,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import static com.nukateam.ntgl.common.data.util.LivingEntityUtils.getInteractionHand;
+import static com.nukateam.ntgl.common.util.util.LivingEntityUtils.getInteractionHand;
 
 /**
  * Author: MrCrayfish

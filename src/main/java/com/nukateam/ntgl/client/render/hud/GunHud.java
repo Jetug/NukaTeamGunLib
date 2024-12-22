@@ -3,9 +3,10 @@ package com.nukateam.ntgl.client.render.hud;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.client.event.InputEvents;
-import com.nukateam.ntgl.common.base.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.base.holders.FireMode;
 import com.nukateam.ntgl.common.base.holders.GripType;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.client.Minecraft;
@@ -20,6 +21,7 @@ import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.text.DecimalFormat;
+import java.util.Set;
 
 public class GunHud implements IGuiOverlay {
     private static final DecimalFormat CURRENT_AMMO_FORMAT = new DecimalFormat("000");
@@ -32,6 +34,7 @@ public class GunHud implements IGuiOverlay {
     //TODO: make left and right hand cache
     private static int cacheMaxAmmoCount = 0;
     private static int cacheInventoryAmmoCount = 0;
+    private static Set<FireMode> fireModes = Set.of(FireMode.SEMI_AUTO);
 
     public static final IGuiOverlay AMMO_HUD = new GunHud();
     public static int hudColor = DEFAULT_AMMO_COLOR;
@@ -91,6 +94,7 @@ public class GunHud implements IGuiOverlay {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
+//        if(fireModes.size() > 1)
         renderFireModeIcon(graphics, width, height, stack, font, currentAmmoCountText);
         renderAmmoTypeIcon(graphics, width, height, stack, font, currentAmmoCountText);
     }
@@ -158,6 +162,7 @@ public class GunHud implements IGuiOverlay {
         if ((System.currentTimeMillis() - checkAmmoTimestamp) > 200) {
             checkAmmoTimestamp = System.currentTimeMillis();
             cacheMaxAmmoCount = GunModifierHelper.getMaxAmmo(stack);
+            fireModes = GunModifierHelper.getFireModes(stack);
 
             if (!player.isCreative()) {
                 handleInventoryAmmo(stack, player.getInventory());

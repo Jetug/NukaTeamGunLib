@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.common.foundation.container;
 
-import com.nukateam.ntgl.common.base.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
 import com.nukateam.ntgl.common.foundation.init.ModContainers;
-import com.nukateam.ntgl.common.foundation.item.AttachmentItem;
-import com.nukateam.ntgl.common.foundation.item.attachment.IAttachment;
+import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItemBase;
+import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 
-import static com.nukateam.ntgl.common.data.util.GunModifierHelper.getGunAttachments;
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.getGunAttachments;
 
 /**
  * Author: MrCrayfish
@@ -97,7 +97,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
         for (int i = 0; i < this.getWeaponInventory().getContainerSize(); i++) {
             var itemStack = this.getSlot(i).getItem();
             if (itemStack.getItem() instanceof IAttachment attachment
-                    && itemStack.getItem() instanceof AttachmentItem) {
+                    && itemStack.getItem() instanceof AttachmentItemBase) {
                 var tagKey = attachment.getType();
                 attachmentsTag.put(tagKey.toString(), itemStack.save(new CompoundTag()));
             }

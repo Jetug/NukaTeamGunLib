@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.base.utils;
 
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.base.headshot.*;
-import com.nukateam.ntgl.common.data.interfaces.IHeadshotBox;
+import com.nukateam.ntgl.common.util.interfaces.IHeadshotBox;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -31,15 +31,16 @@ public class BoundingBoxManager {
     static {
         /* Player */
         registerHeadshotBox(EntityType.PLAYER, (entity) -> {
-            AABB headBox = new AABB(-4 * 0.0625, 0, -4 * 0.0625, 4 * 0.0625, 8 * 0.0625, 4 * 0.0625);
-            double scale = 30.0 / 32.0;
+            var headBox = new AABB(-4 * 0.0625, 0, -4 * 0.0625, 4 * 0.0625, 8 * 0.0625, 4 * 0.0625);
+            var scale = 30.0 / 32.0;
+
             if (entity.isSwimming()) {
                 headBox = headBox.move(0, 3 * 0.0625, 0);
                 Vec3 pos = Vec3.directionFromRotation(entity.getXRot(), entity.yBodyRot).normalize().scale(0.8);
                 headBox = headBox.move(pos);
-            } else {
-                headBox = headBox.move(0, entity.isShiftKeyDown() ? 20 * 0.0625 : 24 * 0.0625, 0);
             }
+            else headBox = headBox.move(0, entity.isShiftKeyDown() ? 20 * 0.0625 : 24 * 0.0625, 0);
+
             return new AABB(headBox.minX * scale, headBox.minY * scale, headBox.minZ * scale, headBox.maxX * scale, headBox.maxY * scale, headBox.maxZ * scale);
         });
 

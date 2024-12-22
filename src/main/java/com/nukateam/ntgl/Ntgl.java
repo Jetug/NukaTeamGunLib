@@ -4,15 +4,16 @@ import com.mojang.logging.LogUtils;
 import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.nukateam.example.common.registery.EntityTypes;
 import com.nukateam.example.common.registery.*;
-import com.nukateam.ntgl.client.ClientHandler;
+import com.nukateam.ntgl.client.event.ClientHandler;
 import com.nukateam.ntgl.client.MetaLoader;
-import com.nukateam.ntgl.client.data.handler.CrosshairHandler;
+import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
-import com.nukateam.ntgl.common.data.datagen.BlockTagGen;
-import com.nukateam.ntgl.common.data.datagen.ItemTagGen;
-import com.nukateam.ntgl.common.data.datagen.LootTableGen;
+import com.nukateam.ntgl.common.util.datagen.BlockTagGen;
+import com.nukateam.ntgl.common.util.datagen.DamageTypeGen;
+import com.nukateam.ntgl.common.util.datagen.ItemTagGen;
+import com.nukateam.ntgl.common.util.datagen.LootTableGen;
 import com.nukateam.ntgl.common.foundation.ModBlocks;
 import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
@@ -74,6 +75,7 @@ public class Ntgl {
         ModRecipeSerializers.REGISTER.register(MOD_EVENT_BUS);
         ModSounds.REGISTER.register(MOD_EVENT_BUS);
         ModTileEntities.REGISTER.register(MOD_EVENT_BUS);
+        ModEntityTypes.register(MOD_EVENT_BUS);
         EntityTypes.register(MOD_EVENT_BUS);
         MOD_EVENT_BUS.addListener(this::onCommonSetup);
         MOD_EVENT_BUS.addListener(this::onClientSetup);
@@ -131,7 +133,7 @@ public class Ntgl {
                 (worldIn, entity, weapon, item, modifiedGun) ->
                         new ContinuousLaserProjectile(Projectiles.CONTINUOUS_LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
 
-        ProjectileManager.getInstance().registerFactory(ROUND5MM.get(),
+        ProjectileManager.getInstance().registerFactory(FUEL.get(),
                 (worldIn, entity, weapon, item, modifiedGun) ->
                         new FlameProjectile(Projectiles.FLAME_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
     }
@@ -155,7 +157,7 @@ public class Ntgl {
         generator.addProvider(event.includeServer(), new ItemTagGen(output, lookupProvider, blockTagGen.contentsGetter(), existingFileHelper));
 //        generator.addProvider(event.includeServer(), new LanguageGen(generator));
 //        generator.addProvider(event.includeServer(), new GunGen(generator));
-//        generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
 
         generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
                 output, event.getLookupProvider(), BUILDER, Set.of(Ntgl.MOD_ID)));

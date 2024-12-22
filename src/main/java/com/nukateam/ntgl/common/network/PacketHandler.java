@@ -2,7 +2,8 @@ package com.nukateam.ntgl.common.network;
 
 import com.mrcrayfish.framework.api.network.*;
 import com.nukateam.ntgl.*;
-import com.nukateam.ntgl.client.*;
+import com.nukateam.ntgl.client.config.CustomAmmoManager;
+import com.nukateam.ntgl.client.config.CustomGunManager;
 import com.nukateam.ntgl.common.base.*;
 import com.nukateam.ntgl.common.network.message.*;
 import com.mrcrayfish.framework.api.*;
@@ -28,6 +29,7 @@ public class PacketHandler {
                 .registerPlayMessage(C2SMessagePreFireSound.class, MessageDirection.PLAY_SERVER_BOUND)
                 .registerPlayMessage(S2CMessageHandAction.class, MessageDirection.PLAY_SERVER_BOUND)
 
+                .registerPlayMessage(S2CMessageEntityDeath.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageEntityData.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageReload.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageStunGrenade.class, MessageDirection.PLAY_CLIENT_BOUND)

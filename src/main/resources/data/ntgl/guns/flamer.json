@@ -11,7 +11,7 @@
     "alwaysSpread": true,
     "spread": 6.0,
     "ammo": [
-      "ntgl:round5mm"
+      "ntgl:fuel"
     ]
   },
   "sounds": {

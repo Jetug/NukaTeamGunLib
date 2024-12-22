@@ -1,12 +1,9 @@
 package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.nukateam.ntgl.client.ClientPlayHandler;
+import com.nukateam.ntgl.client.event.ClientPlayHandler;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 public class S2CMessageStunGrenade extends PlayMessage<S2CMessageStunGrenade> {
     private double x, y, z;

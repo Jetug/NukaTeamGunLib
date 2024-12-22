@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.render.crosshair;
 
-import com.nukateam.ntgl.client.data.handler.CrosshairHandler;
-import com.nukateam.ntgl.common.data.interfaces.IResourceLocation;
+import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
+import com.nukateam.ntgl.common.util.interfaces.IResourceLocation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;

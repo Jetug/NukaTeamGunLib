@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.render.renderers.projectiles;
 
-import com.nukateam.ntgl.client.data.enums.SpecialModels;
-import com.nukateam.ntgl.client.data.util.ModelRenderUtil;
+import com.nukateam.ntgl.client.util.enums.SpecialModels;
+import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.foundation.entity.MissileEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

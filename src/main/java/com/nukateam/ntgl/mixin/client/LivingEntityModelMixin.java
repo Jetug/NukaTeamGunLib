@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.mixin.client;
 
 
-import com.nukateam.ntgl.client.data.handler.AimingHandler;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
+import com.nukateam.ntgl.client.util.handler.AimingHandler;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;

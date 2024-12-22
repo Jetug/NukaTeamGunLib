@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.common.base.NetworkManager;
-import com.nukateam.ntgl.common.base.config.Ammo;
-import com.nukateam.ntgl.common.data.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

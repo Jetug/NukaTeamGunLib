@@ -7,7 +7,7 @@
     "reloadAmount": 2,
     "recoilAngle": 5.6,
     "recoilKick": 0.8,
-    "damage": 7.0,
+    "damage": 20.0,
     "recoilAdsReduction": 0.27,
     "alwaysSpread": true,
     "spread": 1.4,

@@ -3,14 +3,14 @@ package com.nukateam.ntgl.common.network;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.base.utils.ShootTracker;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
-import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.data.util.GunEnchantmentHelper;
-import com.nukateam.ntgl.common.data.util.GunModifierHelper;
-import com.nukateam.ntgl.common.data.util.StackUtils;
+import com.nukateam.ntgl.common.util.constants.Tags;
+import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.StackUtils;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
@@ -24,7 +24,7 @@ import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
-import com.nukateam.ntgl.common.helpers.PlayerHelper;
+import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
 import com.nukateam.ntgl.common.network.message.C2SMessagePreFireSound;
 import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
 import com.nukateam.ntgl.common.network.message.S2CMessageBulletTrail;
@@ -86,7 +86,8 @@ public class ServerPlayHandler {
         var hand = message.isMainHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         var heldItem = shooter.getItemInHand(hand);
 
-        if (heldItem.getItem() instanceof GunItem item
+        if (
+                heldItem.getItem() instanceof GunItem item
                 && (Gun.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
             var modifiedGun = item.getModifiedGun(heldItem);
             var tag = heldItem.getOrCreateTag();
@@ -101,14 +102,14 @@ public class ServerPlayHandler {
 
                 var tracker = ShootTracker.getShootTracker(shooter, hand);
 
-                if (tracker.hasCooldown(hand) && tracker.getRemaining(hand) > Config.SERVER.cooldownThreshold.get()) {
+                if (tracker.hasCooldown() && tracker.getRemaining() > Config.SERVER.cooldownThreshold.get()) {
                     Ntgl.LOGGER.warn(shooter.getName().getContents() +
                             "(" + shooter.getUUID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: "
-                            + tracker.getRemaining(hand));
+                            + tracker.getRemaining());
                     return;
                 }
 
-                tracker.putCooldown(heldItem, hand);
+                tracker.putCooldown(heldItem);
 
                 if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(shooter)) {
                     ModSyncedDataKeys.RELOADING_RIGHT.setValue(shooter, false);
@@ -118,11 +119,13 @@ public class ServerPlayHandler {
                     ModSyncedDataKeys.RELOADING_LEFT.setValue(shooter, false);
                 }
 
-                if (!modifiedGun.getGeneral().isAlwaysSpread() && modifiedGun.getGeneral().getSpread() > 0.0F) {
+                var gunSpread = GunModifierHelper.getModifiedSpread(heldItem);
+
+                if (!modifiedGun.getGeneral().isAlwaysSpread() && gunSpread > 0.0F) {
                     SpreadTracker.get(shooter).update(shooter, item);
                 }
 
-                var count = modifiedGun.getGeneral().getProjectileAmount();
+                var count = GunModifierHelper.getProjectileAmount(heldItem);
                 var projectileProps = GunModifierHelper.getCurrentProjectile(heldItem);
                 var spawnedProjectiles = new ProjectileEntity[count];
 
@@ -395,8 +398,12 @@ public class ServerPlayHandler {
         if(isReloading.getValue(player))
             return;
         handleUnload(player, hand);
-        handleReload(new C2SMessageReload(true, hand), player);
+        reloadGun(hand, player);
         GunModifierHelper.switchAmmo(stack);
         player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
+    }
+
+    public static void reloadGun(InteractionHand hand, ServerPlayer player) {
+        handleReload(new C2SMessageReload(true, hand), player);
     }
 }

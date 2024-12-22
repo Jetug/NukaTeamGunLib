@@ -7,6 +7,7 @@
     "reloadTime": 60,
     "recoilAngle": 10.0,
     "recoilDurationOffset": 0.25,
+    "autoReload": true,
     "ammo": [
       "ntgl:mini_nuke"
     ]
