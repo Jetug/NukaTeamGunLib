@@ -31,17 +31,4 @@ public interface DynamicGeoItem extends GeoItem {
             }
         });
     }
-
-//    @Override
-//    default void createRenderer(Consumer<Object> consumer) {
-//        consumer.accept(new RenderProvider() {
-//            private GunItemRenderer renderer = null;
-//            @Override
-//            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-//                if (renderer == null)
-//                    return new GunItemRenderer(getRenderer());
-//                return this.renderer;
-//            }
-//        });
-//    }
 }

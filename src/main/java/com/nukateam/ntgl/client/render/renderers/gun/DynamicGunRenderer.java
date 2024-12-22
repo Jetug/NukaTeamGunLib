@@ -57,6 +57,11 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         this.gun = GunModifierHelper.getGun(stack);
         this.gunAttachments = Gun.getAttachmentItems(stack);
         this.configAttachments = gun.getAttachments(gunAttachments);
+
+        if (Gun.isAiming(stack) && Gun.hasScopeOverlay(stack)) {
+            return;
+        }
+
         var barrelStack = Gun.getAttachmentItem(AttachmentType.BARREL, stack);
         hiddenBones.clear();
 
