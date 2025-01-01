@@ -18,14 +18,11 @@ public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements I
 
     @Override
     public ResourceLocation getTextureResource(T animator) {
-        var stack = animator.getStack();
-        var config = animator.getConfig();
-        var textures = config.getTextures();
-        var itemName = animator.getName();
-        var variant = GunItem.getVariant(stack);
+        var textures = animator.getConfig().getTextures();
+        var variant = GunItem.getVariant(animator.getStack());
         var resource = textures.containsKey(variant) ?
                 textures.get(variant) :
-                getGunResource(animator, "textures/guns/" + itemName + "/", ".png".formatted());
+                getGunResource(animator, "textures/guns/" + animator.getName() + "/", ".png".formatted());
 
         return resource;
     }

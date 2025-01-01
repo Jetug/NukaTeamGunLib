@@ -10,7 +10,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
 
-@Deprecated(forRemoval = true)
 public class Display implements INBTSerializable<CompoundTag> {
     @Optional
     @Nullable
@@ -19,6 +18,45 @@ public class Display implements INBTSerializable<CompoundTag> {
     @Nullable
     public Flash getFlash() {
         return this.flash;
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+        if (this.flash != null) {
+            tag.put("Flash", this.flash.serializeNBT());
+        }
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag tag) {
+        if (tag.contains("Flash", Tag.TAG_COMPOUND)) {
+            CompoundTag flashTag = tag.getCompound("Flash");
+            if (!flashTag.isEmpty()) {
+                Flash flash = new Flash();
+                flash.deserializeNBT(tag.getCompound("Flash"));
+                this.flash = flash;
+            } else {
+                this.flash = null;
+            }
+        }
+    }
+
+    public JsonObject toJsonObject() {
+        JsonObject object = new JsonObject();
+        if (this.flash != null) {
+            GunJsonUtil.addObjectIfNotEmpty(object, "flash", this.flash.toJsonObject());
+        }
+        return object;
+    }
+
+    public Display copy() {
+        Display display = new Display();
+        if (this.flash != null) {
+            display.flash = this.flash.copy();
+        }
+        return display;
     }
 
     public static class Flash extends Positioned {
@@ -64,44 +102,5 @@ public class Display implements INBTSerializable<CompoundTag> {
         public double getSize() {
             return this.size;
         }
-    }
-
-    @Override
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        if (this.flash != null) {
-            tag.put("Flash", this.flash.serializeNBT());
-        }
-        return tag;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag tag) {
-        if (tag.contains("Flash", Tag.TAG_COMPOUND)) {
-            CompoundTag flashTag = tag.getCompound("Flash");
-            if (!flashTag.isEmpty()) {
-                Flash flash = new Flash();
-                flash.deserializeNBT(tag.getCompound("Flash"));
-                this.flash = flash;
-            } else {
-                this.flash = null;
-            }
-        }
-    }
-
-    public JsonObject toJsonObject() {
-        JsonObject object = new JsonObject();
-        if (this.flash != null) {
-            GunJsonUtil.addObjectIfNotEmpty(object, "flash", this.flash.toJsonObject());
-        }
-        return object;
-    }
-
-    public Display copy() {
-        Display display = new Display();
-        if (this.flash != null) {
-            display.flash = this.flash.copy();
-        }
-        return display;
     }
 }

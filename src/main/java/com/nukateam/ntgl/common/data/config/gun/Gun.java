@@ -34,6 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -148,13 +149,15 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     private static void prepareTextures(String itemId, Gun gun) {
-        var thread = new Thread(() ->
-            gun.textures.forEach((variant, path) -> {
-                var texture = resourceExists(path) ? path : getTexture(itemId, path);
-                gun.preparedTextures.put(variant, texture);
-            })
-        );
-        thread.start();
+        if(FMLEnvironment.dist == Dist.CLIENT) {
+            var thread = new Thread(() ->
+                    gun.textures.forEach((variant, path) -> {
+                        var texture = resourceExists(path) ? path : getTexture(itemId, path);
+                        gun.preparedTextures.put(variant, texture);
+                    })
+            );
+            thread.start();
+        }
     }
 
     @NotNull
