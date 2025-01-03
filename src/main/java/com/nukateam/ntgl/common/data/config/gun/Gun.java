@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.common.data.config.gun;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
@@ -304,14 +303,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
         }
         return result;
-    }
-
-    public static boolean isAiming(ItemStack gun) {
-        var minecraft = Minecraft.getInstance();
-        var progress = AimingHandler.get().getAimProgress(minecraft.player, minecraft.getFrameTime());
-        return gun.getItem() instanceof GunItem
-                && AimingHandler.get().isAiming()
-                && progress == 1;
     }
 
     public static ItemStack getAttachmentItem(AttachmentType type, ItemStack gun) {

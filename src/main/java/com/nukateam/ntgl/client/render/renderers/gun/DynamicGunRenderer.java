@@ -6,6 +6,7 @@ import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
+import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -58,7 +59,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         this.gunAttachments = Gun.getAttachmentItems(stack);
         this.configAttachments = gun.getAttachments(gunAttachments);
 
-        if (Gun.isAiming(stack) && Gun.hasScopeOverlay(stack)) {
+        if (AimingHandler.isAiming(stack) && Gun.hasScopeOverlay(stack)) {
             return;
         }
 

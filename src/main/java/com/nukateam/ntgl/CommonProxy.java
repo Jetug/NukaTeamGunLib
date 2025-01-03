@@ -1,5 +1,6 @@
 package com.nukateam.ntgl;
 
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -8,10 +9,10 @@ import java.util.HashMap;
 
 import static com.nukateam.ntgl.ClientProxy.damageTypes;
 
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class CommonProxy {
     @SubscribeEvent
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
+    public static void onServerTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             var buffMap = new HashMap<>(damageTypes);
 

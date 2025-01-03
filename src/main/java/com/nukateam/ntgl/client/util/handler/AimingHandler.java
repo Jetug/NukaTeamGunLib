@@ -65,6 +65,14 @@ public class AimingHandler {
     private AimingHandler() {
     }
 
+    public static boolean isAiming(ItemStack gun) {
+        var minecraft = Minecraft.getInstance();
+        var progress = get().getAimProgress(minecraft.player, minecraft.getFrameTime());
+        return gun.getItem() instanceof GunItem
+                && get().isAiming()
+                && progress == 1;
+    }
+
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.START)
