@@ -20,11 +20,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class ClientProxy {
-    //    public static TGParticleManager particleManager = new TGParticleManager();
     public static final int MAX_TICKS = 20 * 5;
-
     public static Map<Integer, Ses> damageTypes = new HashMap<>();
 
     public static void setDamageType(@NotNull Entity entity, DeathType damageType) {
@@ -52,20 +49,6 @@ public class ClientProxy {
 
     public static LivingEntityRenderer<? super LivingEntity, ? extends EntityModel<? extends LivingEntity>> getLivingEntityRenderer(Entity entity) {
         return (LivingEntityRenderer<? super LivingEntity, ? extends EntityModel<? extends LivingEntity>>) getEntityRenderer(entity);
-    }
-
-    @SubscribeEvent
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            var buffMap = new HashMap<>(damageTypes);
-
-            buffMap.forEach((key, value) -> {
-                if (value.ticks <= 0) {
-                    damageTypes.remove(key);
-                }
-                value.ticks--;
-            });
-        }
     }
 
     public static class Ses {
