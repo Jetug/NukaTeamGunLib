@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 
+import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.setupGoreData;
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.getGoreData;
 
 public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
@@ -31,6 +32,8 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
         if(entity == null) return;
 
         var data = getGoreData(entity);
+        setupGoreData(entity, data);
+
         var isGeoModel = false;
 
         if (data.model != null) {

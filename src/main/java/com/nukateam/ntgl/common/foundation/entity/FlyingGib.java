@@ -22,6 +22,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PowderSnowBlock;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Lazy;
 
 import static com.nukateam.ntgl.ClientProxy.setDamageType;
@@ -221,6 +223,7 @@ public class FlyingGib extends Entity {
         return data;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public LivingEntity getLocalEntity(){
         var entity = localEntity.get();
         if(entity != null)

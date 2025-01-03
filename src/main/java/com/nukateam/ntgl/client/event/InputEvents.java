@@ -1,11 +1,16 @@
 package com.nukateam.ntgl.client.event;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
+import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageHandAction;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -60,12 +65,29 @@ public class InputEvents {
                     case GLFW.GLFW_KEY_KP_6 -> Z -= 1;
                     case GLFW.GLFW_KEY_KP_MULTIPLY -> isHidden = !isHidden;
                     case GLFW.GLFW_KEY_KP_ENTER -> {
+                        var level = Minecraft.getInstance().level;
+                        var entity = new FlyingGib(ModEntityTypes.FLYING_GIBS.get(), Minecraft.getInstance().level);
+
+                        entity.setPos(Minecraft.getInstance().player.position());
+                        addClientEntity(level, entity);
+
                         X = 0;
                         Y = 0;
                         Z = 0;
                     }
                 }
             }
+        }
+    }
+
+    private static void addClientEntity(ClientLevel level, FlyingGib entity) {
+        try {
+            var mtd = level.getClass().getDeclaredMethod("addEntity", int.class, Entity.class);
+            mtd.setAccessible(true);
+            mtd.invoke(level, level.random.nextInt(Integer.MAX_VALUE), entity);
+        }
+        catch (Exception e){
+            Ntgl.LOGGER.error("reflection fail", e);
         }
     }
 }

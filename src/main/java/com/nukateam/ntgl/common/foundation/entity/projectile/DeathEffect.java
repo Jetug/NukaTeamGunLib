@@ -1,21 +1,12 @@
 package com.nukateam.ntgl.common.foundation.entity.projectile;
 
-import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.model.gibs.ModelGibs;
-import com.nukateam.ntgl.client.model.gibs.ModelGibsAgeable;
-import com.nukateam.ntgl.client.model.gibs.ModelGibsGeneric;
-import com.nukateam.ntgl.client.model.gibs.ModelGibsGeo;
 import com.nukateam.ntgl.common.base.utils.DeathType;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.entity.misc.AshPile;
 import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
-import mod.azure.azurelib.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.renderer.GeoEntityRenderer;
-import net.minecraft.client.model.AgeableListModel;
-import net.minecraft.client.model.HierarchicalModel;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -29,38 +20,19 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 
 public class DeathEffect {
-    //    public static HashMap<EntityType<?>, GoreData> goreStats = new HashMap<>();
     public static HashMap<Integer, GoreData> goreStats = new HashMap<>();
-    private static GoreData genericGore;
 
     private static final ResourceLocation RES_BURN_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/death/burn.png");
     private static final ResourceLocation RES_LASER_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/death/laser.png");
 
-    static {
-        genericGore = (new GoreData(null, 160, 21, 31))
-                .setTexture(new ResourceLocation(Ntgl.MOD_ID, "textures/entity/gore.png"));
-        genericGore.setRandomScale(0.5f, 0.8f);
-    }
-
     public static void addGoreData(Entity entity, GoreData data) {
         goreStats.put(entity.getId(), data);
-    }
-
-    /**
-     * Called from ClientProxy in postInit
-     */
-    public static void postInit() {
-        goreStats.values().forEach(stat -> stat.init());
-        genericGore.init();
     }
 
     public static GoreData getGoreData(LivingEntity entity) {
         var data = DeathEffect.goreStats.get(entity.getId());
         if (data == null) {
             data = new GoreData();
-            data.bloodColorR = genericGore.bloodColorR;
-            data.bloodColorG = genericGore.bloodColorG;
-            data.bloodColorB = genericGore.bloodColorB;
             goreStats.put(entity.getId(), data);
         }
         return data;
@@ -75,14 +47,14 @@ public class DeathEffect {
         var data = DeathEffect.getGoreData(entity);
 
         if (deathType.is(ModDamageTypes.EXPLOSIVE)) {
-            setupGoreData(entity, data);
+//            setupGoreData(entity, data);
             data.gravity = 0.2f;
             data.deathType = DeathType.GORE;
             createGoreGibs(entity, vec, data);
         }
         else if (deathType.is(ModDamageTypes.ENERGY)) {
             createAshPile(entity);
-            setupGoreData(entity, data);
+//            setupGoreData(entity, data);
             data.showBlood = false;
             data.gravity = 110.2f;
             data.deathType = DeathType.LASER;
@@ -90,7 +62,7 @@ public class DeathEffect {
         }
         else if(deathType.is(ModDamageTypes.FIRE)){
             createAshPile(entity);
-            setupGoreData(entity, data);
+//            setupGoreData(entity, data);
             data.showBlood = false;
             data.gravity = 110.2f;
             data.deathType = DeathType.FIRE;
@@ -141,13 +113,6 @@ public class DeathEffect {
                              delta.z * ax + vz
                     ),
                     (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
-//
-
-//            var flyingGibs = new FlyingGib(
-//                    entity.level(), entity, data,
-//                    vec, Vec3.ZERO,
-//                    (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
-
             entity.level().addFreshEntity(flyingGibs);
         }
     }
@@ -173,29 +138,6 @@ public class DeathEffect {
                     (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
 
             entity.level().addFreshEntity(flyingGibs);
-        }
-    }
-
-    private static void setupGoreData(LivingEntity entity, GoreData data) {
-        var render = ClientProxy.getEntityRenderer(entity);
-
-        if (data.model == null) {
-            if (render instanceof GeoEntityRenderer geoRenderer && entity instanceof GeoAnimatable animatable) {
-                var geoModel = geoRenderer.getGeoModel();
-                var model = geoModel.getBakedModel(geoModel.getModelResource(animatable));
-                data.model = new ModelGibsGeo(model, geoRenderer);
-            } else if (render instanceof LivingEntityRenderer livingRenderer) {
-                var mainModel = livingRenderer.getModel();
-
-                if (mainModel instanceof HierarchicalModel<? extends Entity> model) {
-                    data.model = new ModelGibsGeneric(model);
-                } else if (mainModel instanceof AgeableListModel<? extends Entity> model) {
-                    data.model = new ModelGibsAgeable(model);
-                } else {
-                    data.model = genericGore.model;
-                    data.texture = genericGore.texture;
-                }
-            }
         }
     }
 
@@ -275,34 +217,6 @@ public class DeathEffect {
         public GoreData setSound(SoundEvent sound) {
             this.sound = sound;
             return this;
-        }
-
-        public void init() {
-//            type_main = new TGParticleSystemType();
-//
-//            if (TGFX.FXList.containsKey(fx_main.toLowerCase())) {
-//                TGFXType fxtype_main = TGFX.FXList.get(fx_main.toLowerCase());
-//                if (fxtype_main instanceof TGParticleSystemType) {
-//                    this.type_main = getExtendedType((TGParticleSystemType) fxtype_main);
-//                } else {
-//                    this.type_main = null;
-//                }
-//            } else {
-//                this.type_main = null;
-//            }
-//
-//            type_trail = new TGParticleSystemType();
-//
-//            if (TGFX.FXList.containsKey(fx_trail.toLowerCase())) {
-//                TGFXType fxtype_trail = TGFX.FXList.get(fx_trail.toLowerCase());
-//                if (fxtype_trail instanceof TGParticleSystemType) {
-//                    this.type_trail = getExtendedType((TGParticleSystemType) fxtype_trail);
-//                } else {
-//                    this.type_trail = null;
-//                }
-//            } else {
-//                this.type_trail = null;
-//            }
         }
 
         /**
