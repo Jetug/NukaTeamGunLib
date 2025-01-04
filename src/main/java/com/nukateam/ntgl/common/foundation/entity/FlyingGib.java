@@ -2,18 +2,15 @@ package com.nukateam.ntgl.common.foundation.entity;
 
 
 import com.nukateam.ntgl.ClientProxy;
+import com.nukateam.ntgl.common.foundation.entity.projectile.GoreData;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.init.ModParticleTypes;
-import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

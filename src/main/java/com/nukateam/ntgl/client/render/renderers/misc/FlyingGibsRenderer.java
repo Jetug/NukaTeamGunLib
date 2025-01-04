@@ -31,8 +31,8 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
         var entity = flyingGib.getLocalEntity();
         if(entity == null) return;
 
-        var data = getGoreData(entity);
-        setupGoreData(entity, data);
+        var data = flyingGib.getData(); //getGoreData(entity);
+//        setupGoreData(entity, data);
 
         var isGeoModel = false;
 

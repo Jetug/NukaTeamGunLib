@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import static com.nukateam.ntgl.client.input.KeyBinds.*;
+import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
 import static com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys.getReloadKey;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
@@ -69,7 +70,7 @@ public class InputEvents {
                         var entity = new FlyingGib(ModEntityTypes.FLYING_GIBS.get(), Minecraft.getInstance().level);
 
                         entity.setPos(Minecraft.getInstance().player.position());
-                        addClientEntity(level, entity);
+                        addClientEntity(entity);
 
                         X = 0;
                         Y = 0;
@@ -77,17 +78,6 @@ public class InputEvents {
                     }
                 }
             }
-        }
-    }
-
-    private static void addClientEntity(ClientLevel level, FlyingGib entity) {
-        try {
-            var mtd = level.getClass().getDeclaredMethod("addEntity", int.class, Entity.class);
-            mtd.setAccessible(true);
-            mtd.invoke(level, level.random.nextInt(Integer.MAX_VALUE), entity);
-        }
-        catch (Exception e){
-            Ntgl.LOGGER.error("reflection fail", e);
         }
     }
 }

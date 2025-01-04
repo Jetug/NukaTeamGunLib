@@ -10,7 +10,9 @@ import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
 import com.nukateam.ntgl.common.base.NetworkAmmoManager;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
+import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
+import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.init.ModParticleTypes;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.particles.BulletHoleData;
@@ -29,10 +31,14 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+
+import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
+import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.createDeathEffectClient;
 
 /**
  * Author: MrCrayfish
@@ -142,8 +148,6 @@ public class ClientPlayHandler {
             }
         }
     }
-
-
     public static void handleEntityData(S2CMessageEntityData message) {
         var mc = Minecraft.getInstance();
         var level = mc.level;
@@ -154,6 +158,16 @@ public class ClientPlayHandler {
                 projectile.readAdditionalSaveData(message.getData());
                 projectile.setClientUpdated();
             }
+        }
+    }
+
+    public static void handleEntityDeathFx(S2CMessageEntityDeathFx message) {
+        var mc = Minecraft.getInstance();
+        var level = mc.level;
+
+        if (level != null) {
+            var entity = (LivingEntity)level.getEntity(message.getEntityId());
+            createDeathEffectClient(entity, message.getData());
         }
     }
 

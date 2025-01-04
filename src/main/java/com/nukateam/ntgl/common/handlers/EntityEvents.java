@@ -5,6 +5,8 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.entity.misc.AshPile;
 import com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect;
+import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.S2CMessageEntityDeathFx;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
