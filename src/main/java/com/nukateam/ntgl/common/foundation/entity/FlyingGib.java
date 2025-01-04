@@ -222,9 +222,6 @@ public class FlyingGib extends Entity {
 
     @OnlyIn(Dist.CLIENT)
     public LivingEntity getLocalEntity(){
-        var entity = localEntity.get();
-        if(entity != null)
-            setDamageType(localEntity.get(), getData().deathType);
         return localEntity.get();
     }
 

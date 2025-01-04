@@ -22,6 +22,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import static com.nukateam.ntgl.ClientProxy.setDamageType;
+
 @OnlyIn(Dist.CLIENT)
 public class DeathFxRenderer {
     private static final ResourceLocation RES_BURN_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/death/burn.png");
@@ -76,8 +78,9 @@ public class DeathFxRenderer {
         double x = entity.getX();
         double y = entity.getY() + (entity.getType().getHeight() / 2.0f);
         double z = entity.getZ();
-
         var vec = new Vec3(x, y, z);
+
+        setDamageType(entity, data.deathType);
 
         switch (data.deathType){
             case GORE -> {
@@ -101,8 +104,6 @@ public class DeathFxRenderer {
     }
 
     private static void createGoreFx(LivingEntity entity, Vec3 vec, GoreData data) {
-//        entity.playSound(ModSounds.DEATH_GORE.get(), 8.0f, 1.0f);
-
 //        var minecraft = Minecraft.getInstance();
 //        minecraft.level.playSeededSound(
 //                minecraft.player, entity.getX(), entity.getY(), entity.getZ(), ModSounds.DEATH_GORE.get(),
@@ -127,13 +128,10 @@ public class DeathFxRenderer {
                     (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
 
             addClientEntity(flyingGibs);
-
-//            entity.level().addFreshEntity(flyingGibs);
         }
     }
 
     private static void createDisintegrationFx(LivingEntity entity, Vec3 vec, GoreData data) {
-//        entity.playSound(ModSounds.DEATH_LASER.get(), 1.0f, 1.0f);
         data.texture = RES_LASER_EFFECT;
 
         for (int i = 0; i < data.getNumGibs(); i++) {
@@ -143,12 +141,10 @@ public class DeathFxRenderer {
                     (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
 
             addClientEntity(flyingGibs);
-//            entity.level().addFreshEntity(flyingGibs);
         }
     }
 
     private static void createBurnFx(LivingEntity entity, Vec3 vec, GoreData data) {
-//        entity.playSound(ModSounds.DEATH_LASER.get(), 1.0f, 1.0f);
         data.texture = RES_BURN_EFFECT;
 
         for (int i = 0; i < data.getNumGibs(); i++) {
@@ -170,7 +166,6 @@ public class DeathFxRenderer {
                     (entity.getType().getWidth() + entity.getType().getHeight()) / 2.0f, i);
 
             addClientEntity(flyingGibs);
-//            entity.level().addFreshEntity(flyingGibs);
         }
     }
 }
