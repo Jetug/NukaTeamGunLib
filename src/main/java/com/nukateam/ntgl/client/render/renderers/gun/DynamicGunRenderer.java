@@ -79,7 +79,6 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
     }
 
-
     @Override
     public void renderRecursively(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
                                   MultiBufferSource bufferSource, VertexConsumer buffer,

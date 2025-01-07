@@ -10,6 +10,7 @@
   ],
   "client": [
     "client.GameRendererMixin",
+    "client.GeoEntityRendererMixin",
     "client.ItemInHandLayerMixin",
     "client.ItemRendererMixin",
     "client.LevelRendererMixin",

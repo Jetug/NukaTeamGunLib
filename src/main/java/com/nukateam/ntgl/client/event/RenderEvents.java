@@ -4,6 +4,8 @@ import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.utils.DeathType;
 import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
+import mod.azure.azurelib.event.GeoRenderEntityEvent;
+import mod.azure.azurelib.event.NeoForgeGeoRenderPhaseEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLivingEvent;

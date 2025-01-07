@@ -20,7 +20,7 @@ public class ModelGibsAgeable extends ModelGibs {
     public ModelGibsAgeable(AgeableListModel model) {
         this.model = model;
         this.accessor = (IModelAccessor)model;
-        accessor.getModelParts().forEach(part -> part.setRotation(0.0f, 0.0f, 0.0f));
+//        accessor.getModelParts().forEach(part -> part.setRotation(0.0f, 0.0f, 0.0f));
     }
 
     @Override

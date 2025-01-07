@@ -23,7 +23,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Lazy;
 
-import static com.nukateam.ntgl.ClientProxy.setDamageType;
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.*;
 import static net.minecraft.network.syncher.SynchedEntityData.defineId;
 import static net.minecraft.tags.FluidTags.LAVA;

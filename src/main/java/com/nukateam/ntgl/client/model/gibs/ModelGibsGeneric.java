@@ -18,7 +18,7 @@ public class ModelGibsGeneric extends ModelGibs{
         gibs = model.root().getAllParts().toList();
 
         for(var part : gibs){
-            part.setRotation(0.0f, 0.0f, 0.0f);
+//            part.setRotation(0.0f, 0.0f, 0.0f);
         }
 	}
 

@@ -9,6 +9,7 @@ import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.entity.projectile.GoreData;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
+import mod.azure.azurelib.renderer.GeoArmorRenderer;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.AgeableListModel;
@@ -22,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import static com.nukateam.ntgl.ClientProxy.setDamageType;
+import static com.nukateam.ntgl.ClientProxy.*;
 
 @OnlyIn(Dist.CLIENT)
 public class DeathFxRenderer {
@@ -30,7 +31,6 @@ public class DeathFxRenderer {
     private static final ResourceLocation RES_LASER_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/death/laser.png");
 
     private static GoreData genericGore;
-
     static {
         genericGore = (new GoreData(null, 160, 21, 31))
                 .setTexture(new ResourceLocation(Ntgl.MOD_ID, "textures/entity/gore.png"));
