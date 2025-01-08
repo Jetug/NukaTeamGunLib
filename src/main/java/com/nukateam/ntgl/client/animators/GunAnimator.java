@@ -46,6 +46,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     public static final String INSPECT = "inspect";
     private static final String SHOT_START = "shot_start";
     private static final String SHOT_END = "shot_end";
+    public static final String HIDE = "hide";
     private GunItem currentGun = null;
     protected final Minecraft minecraft = Minecraft.getInstance();
     protected final DynamicGunRenderer<GunAnimator> renderer;
@@ -116,7 +117,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 } else if (isShooting) {
                     animation = getShootingAnimation(event);
                 } else if (reloadHandler.isReloading(entity, arm.getOpposite())) {
-                    animation = begin().then("hide", HOLD_ON_LAST_FRAME);
+                    animation = begin().then(HIDE, HOLD_ON_LAST_FRAME);
                 }
                 else if(ClientHandler.getInspectionTicks() > 0){
                     animation = getInspectionAnimation(event);
