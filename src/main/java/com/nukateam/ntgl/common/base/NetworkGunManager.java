@@ -10,6 +10,9 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
@@ -27,25 +30,28 @@ import static net.minecraftforge.registries.ForgeRegistries.*;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public class NetworkGunManager extends NetworkManager<GunItem, Gun> {
+public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunItem, Gun>> {
     private static List<GunItem> clientRegisteredGuns = new ArrayList<>();
     private static NetworkGunManager instance;
 
     private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
 
     @Override
-    protected Boolean check(Item v) {
-        return v instanceof GunItem;
+    protected Map<GunItem, Gun> prepare(ResourceManager manager, ProfilerFiller profiler) {
+        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof GunItem, Gun.class, "guns");
     }
 
     @Override
-    protected Class<Gun> getConfigClass() {
-        return Gun.class;
-    }
+    protected void apply(Map<GunItem, Gun> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
+        ImmutableMap.Builder<ResourceLocation, Gun> builder = ImmutableMap.builder();
 
-    @Override
-    protected String getPath() {
-        return "guns";
+        objects.forEach((item, gun) -> {
+            Validate.notNull(ITEMS.getKey(item));
+            builder.put(ITEMS.getKey(item), gun);
+            item.setConfig(new NetworkManager.Supplier<>(gun));
+        });
+
+        this.registeredGuns = builder.build();
     }
 
     /**
@@ -100,7 +106,7 @@ public class NetworkGunManager extends NetworkManager<GunItem, Gun> {
                 if (!(item instanceof GunItem)) {
                     return false;
                 }
-                ((GunItem) item).setConfig(new Supplier<>(entry.getValue()));
+                ((GunItem) item).setConfig(new NetworkManager.Supplier<>(entry.getValue()));
                 clientRegisteredGuns.add((GunItem) item);
             }
             return true;
@@ -154,6 +160,23 @@ public class NetworkGunManager extends NetworkManager<GunItem, Gun> {
     @Nullable
     public static NetworkGunManager get() {
         return instance;
+    }
+
+    /**
+     * A simple wrapper for a gun object to pass to GunItem. This is to indicate to developers that
+     * Gun instances shouldn't be changed on GunItems as they are controlled by NetworkGunManager.
+     * Changes to gun properties should be made through the JSON file.
+     */
+    public static class Supplier {
+        private Gun gun;
+
+        private Supplier(Gun gun) {
+            this.gun = gun;
+        }
+
+        public Gun getGun() {
+            return this.gun;
+        }
     }
 
     public static class LoginData implements ILoginData {

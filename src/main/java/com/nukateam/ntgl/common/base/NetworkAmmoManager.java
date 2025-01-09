@@ -10,6 +10,9 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAmmo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
@@ -27,25 +30,28 @@ import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public class NetworkAmmoManager extends NetworkManager<IAmmo, Ammo> {
-    private static final List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
+public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, Ammo>> {
+    private static List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
     private static NetworkAmmoManager instance;
 
     private Map<ResourceLocation, Ammo> registeredAmmo = new HashMap<>();
 
     @Override
-    protected Boolean check(Item v) {
-        return v instanceof IAmmo;
+    protected Map<IAmmo, Ammo> prepare(ResourceManager manager, ProfilerFiller profiler) {
+        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, Ammo.class, "ammo");
     }
 
     @Override
-    protected Class<Ammo> getConfigClass() {
-        return Ammo.class;
-    }
+    protected void apply(Map<IAmmo, Ammo> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
+        ImmutableMap.Builder<ResourceLocation, Ammo> builder = ImmutableMap.builder();
 
-    @Override
-    protected String getPath() {
-        return "ammo";
+        objects.forEach((item, ammo) -> {
+            Validate.notNull(ITEMS.getKey((Item)item));
+            builder.put(ITEMS.getKey((Item)item), ammo);
+            item.setConfig(new NetworkManager.Supplier<>(ammo));
+        });
+
+        this.registeredAmmo = builder.build();
     }
 
     /**
@@ -100,7 +106,7 @@ public class NetworkAmmoManager extends NetworkManager<IAmmo, Ammo> {
                 if (!(item instanceof IAmmo)) {
                     return false;
                 }
-                ((IAmmo) item).setConfig(new Supplier(entry.getValue()));
+                ((IAmmo) item).setConfig(new NetworkManager.Supplier<>(entry.getValue()));
                 clientRegisteredAmmo.add((IAmmo) item);
             }
             return true;
@@ -154,6 +160,23 @@ public class NetworkAmmoManager extends NetworkManager<IAmmo, Ammo> {
     @Nullable
     public static NetworkAmmoManager get() {
         return instance;
+    }
+
+    /**
+     * A simple wrapper for a ammo object to pass to IAmmo. This is to indicate to developers that
+     * Ammo instances shouldn't be changed on GunItems as they are controlled by NetworkAmmoManager.
+     * Changes to ammo properties should be made through the JSON file.
+     */
+    public static class Supplier {
+        private Ammo ammo;
+
+        private Supplier(Ammo ammo) {
+            this.ammo = ammo;
+        }
+
+        public Ammo getAmmo() {
+            return this.ammo;
+        }
     }
 
     public static class LoginData implements ILoginData {
