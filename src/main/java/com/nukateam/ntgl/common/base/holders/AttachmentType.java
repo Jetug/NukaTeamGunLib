@@ -55,6 +55,10 @@ public class AttachmentType {
         return this.id;
     }
 
+    public ResourceLocation getIcon() {
+        return new ResourceLocation(getId().getNamespace(), "textures/gui/icons/" + getId().getPath() + ".png");
+    }
+
     public boolean equals(ResourceLocation obj) {
         return this == getType(obj);
     }

@@ -20,7 +20,6 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -35,12 +34,18 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.getGunAttachments;
+
 /**
  * Author: MrCrayfish
  */
 public class AttachmentScreen extends AbstractContainerScreen<AttachmentContainer> {
     private static final ResourceLocation GUI_TEXTURES = new ResourceLocation("ntgl:textures/gui/attachments.png");
+    private static final ResourceLocation SLOT = new ResourceLocation("ntgl:textures/gui/slot.png");
     private static final Component CONFIG_TOOLTIP = Component.translatable("ntgl.button.config.tooltip");
+    public static final int SLOT_SIZE = 18;
+    public static final int IMAGE_HEIGHT = 214;
+    public static final int ATTACHMENT_Y = 107;
 
     private final Inventory playerInventory;
     private final Container weaponInventory;
@@ -57,16 +62,15 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         super(screenContainer, playerInventory, titleIn);
         this.playerInventory = playerInventory;
         this.weaponInventory = screenContainer.getWeaponInventory();
-        this.imageHeight = 184;
+        this.imageHeight = IMAGE_HEIGHT;
     }
 
     @Override
     protected void init() {
         super.init();
-
-        List<MiniButton> buttons = this.gatherButtons();
+        var buttons = this.gatherButtons();
         for (int i = 0; i < buttons.size(); i++) {
-            MiniButton button = buttons.get(i);
+            var button = buttons.get(i);
             switch (Config.CLIENT.buttonAlignment.get()) {
                 case LEFT -> {
                     int titleWidth = this.minecraft.font.width(this.title);
@@ -79,16 +83,6 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
             button.setY(this.topPos + 5);
             this.addRenderableWidget(button);
         }
-    }
-
-    private List<MiniButton> gatherButtons() {
-        List<MiniButton> buttons = new ArrayList<>();
-        if (!Config.CLIENT.hideConfigButton.get()) {
-            MiniButton configButton = new MiniButton(0, 0, 192, 0, GUI_TEXTURES, onPress -> this.openConfigScreen());
-            configButton.setTooltip(Tooltip.create(CONFIG_TOOLTIP));
-            buttons.add(configButton);
-        }
-        return buttons;
     }
 
     @Override
@@ -125,10 +119,28 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     }
 
     @Override
+    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+        int left = (this.width - this.imageWidth) / 2;
+        int top = (this.height - this.imageHeight) / 2;
+        graphics.blit(GUI_TEXTURES, left, top, 0, 0, this.imageWidth, this.imageHeight);
+
+        var weapon = getGun();
+        var attachments = getGunAttachments(weapon);
+
+        var id = 0;
+        for (var att : attachments.keySet()) {
+            graphics.blit(SLOT, left + 7 + id * SLOT_SIZE, top + ATTACHMENT_Y, 0, 0, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE);
+            graphics.blit(att.getIcon(), left + 8 + id * SLOT_SIZE, top + ATTACHMENT_Y + 1, 1, 1, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE);
+            id++;
+        }
+    }
+
+    @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        Minecraft minecraft = Minecraft.getInstance();
-        graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
-        graphics.drawString(this.font, this.playerInventory.getDisplayName(), this.inventoryLabelX, this.inventoryLabelY + 19, 4210752, false);
+//        var minecraft = Minecraft.getInstance();
+//        graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
+//        graphics.drawString(this.font, this.playerInventory.getDisplayName(), this.inventoryLabelX, this.inventoryLabelY + 19, 4210752, false);
 
         int left = (this.width - this.imageWidth) / 2;
         int top = (this.height - this.imageHeight) / 2;
@@ -165,30 +177,26 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         RenderSystem.applyModelViewMatrix();
         graphics.disableScissor();
 
-        if (this.showHelp) {
-            graphics.pose().pushPose();
-            graphics.pose().scale(0.5F, 0.5F, 0.5F);
-            graphics.drawString(minecraft.font, I18n.get("container.ntgl.attachments.window_help"), 56, 38, 0xFFFFFF, false);
-            graphics.pose().popPose();
-        }
+//        if (this.showHelp) {
+//            graphics.pose().pushPose();
+//            graphics.pose().scale(0.5F, 0.5F, 0.5F);
+//            graphics.drawString(minecraft.font, I18n.get("container.ntgl.attachments.window_help"), 56, 38, 0xFFFFFF, false);
+//            graphics.pose().popPose();
+//        }
     }
 
-    @Override
-    protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
-        graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
-        int left = (this.width - this.imageWidth) / 2;
-        int top = (this.height - this.imageHeight) / 2;
-        graphics.blit(GUI_TEXTURES, left, top, 0, 0, this.imageWidth, this.imageHeight);
+    protected ItemStack getGun(){
+        return this.minecraft.player.getMainHandItem();
+    }
 
-        /* Draws the icons for each attachment slot. If not applicable
-         * for the weapon, it will draw a cross instead. */
-//        for (int i = 0; i < IAttachment.Type.values().length; i++) {
-//            if (!this.canPlaceAttachmentInSlot(this.menu.getCarried(), this.menu.getSlot(i))) {
-//                graphics.blit(GUI_TEXTURES, left + 8, top + 17 + i * 18, 176, 0, 16, 16);
-//            } else if (this.weaponInventory.getItem(i).isEmpty()) {
-//                graphics.blit(GUI_TEXTURES, left + 8, top + 17 + i * 18, 176, 16 + i * 16, 16, 16);
-//            }
-//        }
+    private List<MiniButton> gatherButtons() {
+        var buttons = new ArrayList<MiniButton>();
+        if (!Config.CLIENT.hideConfigButton.get()) {
+            var configButton = new MiniButton(0, 0, 192, 0, GUI_TEXTURES, onPress -> this.openConfigScreen());
+            configButton.setTooltip(Tooltip.create(CONFIG_TOOLTIP));
+            buttons.add(configButton);
+        }
+        return buttons;
     }
 
     private boolean canPlaceAttachmentInSlot(ItemStack stack, Slot slot) {
