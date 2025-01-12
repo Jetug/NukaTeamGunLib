@@ -1,6 +1,8 @@
 package com.nukateam.ntgl.common.base.holders;
 
 import com.nukateam.ntgl.Ntgl;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -57,6 +59,14 @@ public class AttachmentType {
 
     public ResourceLocation getIcon() {
         return new ResourceLocation(getId().getNamespace(), "textures/gui/icons/" + getId().getPath() + ".png");
+    }
+
+    public String getTranslationKey(){
+        return "slot."+getId().getNamespace()+".attachment." + getId().getPath();
+    }
+
+    public MutableComponent getTranslationComponent(){
+        return Component.translatable(this.getTranslationKey());
     }
 
     public boolean equals(ResourceLocation obj) {

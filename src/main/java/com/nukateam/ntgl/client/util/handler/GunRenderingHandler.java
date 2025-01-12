@@ -592,40 +592,35 @@ public class GunRenderingHandler {
         }
     }
 
-    public void renderWeapon(@Nullable LivingEntity entity, ItemStack stack,
+    public void renderWeapon(@Nullable LivingEntity entity, ItemStack renderStack,
                              ItemDisplayContext transformType, PoseStack poseStack,
                              MultiBufferSource bufferSource, int packedLight) {
-        if (stack.getItem() instanceof GunItem gunItem) {
+        if (renderStack.getItem() instanceof GunItem gunItem) {
             poseStack.pushPose();
-
-            ItemStack model = ItemStack.EMPTY;
-            if (stack.getTag() != null) {
-                if (stack.getTag().contains("Model", Tag.TAG_COMPOUND)) {
-                    model = ItemStack.of(stack.getTag().getCompound("Model"));
+            {
+                var model = ItemStack.EMPTY;
+                if (renderStack.getTag() != null) {
+                    if (renderStack.getTag().contains("Model", Tag.TAG_COMPOUND)) {
+                        model = ItemStack.of(renderStack.getTag().getCompound("Model"));
+                    }
                 }
+
+                ModelRenderUtil.applyTransformType(renderStack, poseStack, transformType, entity);
+
+                this.renderingWeapon = renderStack;
+
+                gunItem.getRenderer().render(
+                        entity,
+                        model.isEmpty() ? renderStack : model,
+                        transformType,
+                        poseStack,
+                        bufferSource,
+                        null,
+                        null,
+                        packedLight);
+
+                this.renderingWeapon = null;
             }
-
-            ModelRenderUtil.applyTransformType(stack, poseStack, transformType, entity);
-
-            this.renderingWeapon = stack;
-
-            gunItem.getRenderer().render(
-                    entity,
-                    model.isEmpty() ? stack : model,
-                    transformType,
-                    poseStack,
-                    bufferSource,
-                    null,
-                    null,
-                    packedLight);
-
-//            Render.GUN_RENDERER.renderGun(entity, transformType, model.isEmpty() ? stack : model, poseStack, renderTypeBuffer, light);
-//            GunRendererTest.INSTANCE.render(entity,stack,transformType,
-////                    poseStack, DynamicGunRenderer.getAnimator(transformType),renderTypeBuffer,null, null, light);
-//            GunRendererTest.INSTANCE.render(poseStack, stack,DynamicGunRenderer.getAnimator(transformType),
-//                    renderTypeBuffer, null, null, light);
-            this.renderingWeapon = null;
-
             poseStack.popPose();
         }
     }

@@ -91,10 +91,14 @@
   "container.ntgl.attachments": "Изменить обвесы",
   "container.ntgl.attachments.window_help": "Кликните, чтобы перемещать и вертеть",
   "slot.ntgl.attachment.not_applicable": "§cНе применимо",
+
   "slot.ntgl.attachment.scope": "Прицел",
   "slot.ntgl.attachment.barrel": "Ствол",
   "slot.ntgl.attachment.stock": "Ложа",
   "slot.ntgl.attachment.under_barrel": "Подствольник",
+  "slot.ntgl.attachment.magazine": "Магазин",
+  "slot.ntgl.attachment.muzzle": "Надульник",
+
   "enchantment.ntgl.quick_hands": "Быстрые руки",
   "enchantment.ntgl.trigger_finger": "Указательный палец",
   "enchantment.ntgl.lightweight": "Облегчённый",

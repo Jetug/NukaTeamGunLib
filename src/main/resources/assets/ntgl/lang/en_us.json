@@ -108,10 +108,14 @@
   "container.ntgl.attachments.window_help": "Click to move and rotate",
   "slot.ntgl.attachment.not_applicable": "\u00a7cNot applicable",
   "slot.ntgl.attachment.incompatible": "This doesn't seem to fit...",
+
   "slot.ntgl.attachment.scope": "Scope",
   "slot.ntgl.attachment.barrel": "Barrel",
   "slot.ntgl.attachment.stock": "Stock",
   "slot.ntgl.attachment.under_barrel": "Under Barrel",
+  "slot.ntgl.attachment.magazine": "Magazine",
+  "slot.ntgl.attachment.muzzle": "Muzzle",
+
   "enchantment.ntgl.quick_hands": "Quick Hands",
   "enchantment.ntgl.trigger_finger": "Trigger Finger",
   "enchantment.ntgl.lightweight": "Lightweight",
