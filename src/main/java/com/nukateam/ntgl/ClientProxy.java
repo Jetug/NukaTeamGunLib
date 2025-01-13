@@ -60,8 +60,4 @@ public class ClientProxy {
             this.deathType = damageType;
         }
     }
-
-//    public static ClientProxy get(){
-//        return (ClientProxy) Techguns.proxy;
-//    }
 }
