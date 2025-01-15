@@ -36,11 +36,17 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Nullable
     Zoom zoom;
     @Optional
+    boolean attachmentScreen = true;
+    @Optional
     private Map<AttachmentType, ArrayList<Attachment>> attachments = new HashMap<>();
 
     @Nullable
     public Zoom getZoom() {
         return this.zoom;
+    }
+
+    public boolean attachmentScreen() {
+        return this.attachmentScreen;
     }
 
     public Map<AttachmentType, ArrayList<Attachment>> getAttachments() {
@@ -96,6 +102,8 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (this.zoom != null)
             tag.put("Zoom", this.zoom.serializeNBT());
 
+        tag.putBoolean("AttachmentScreen", attachmentScreen);
+
         if (attachments != null && !attachments.isEmpty())
             tag.put("Attachments", NbtUtils.serializeArrayMap(attachments));
 
@@ -109,6 +117,9 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
             zoom.deserializeNBT(tag.getCompound("Zoom"));
             this.zoom = zoom;
         }
+        if (tag.contains("AttachmentScreen", Tag.TAG_BYTE)) {
+            this.attachmentScreen = tag.getBoolean("AttachmentScreen");
+        }
         if (tag.contains("Attachments", Tag.TAG_COMPOUND)) {
             var nbt = tag.getCompound("Attachments");
             this.attachments = NbtUtils.deserializeAttachmentMap(nbt);
@@ -116,10 +127,10 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public JsonObject toJsonObject() {
-        JsonObject object = new JsonObject();
-        if (this.zoom != null) {
+        var object = new JsonObject();
+        if (this.zoom != null)
             object.add("zoom", this.zoom.toJsonObject());
-        }
+        object.addProperty("attachmentScreen", attachmentScreen);
 
         return object;
     }

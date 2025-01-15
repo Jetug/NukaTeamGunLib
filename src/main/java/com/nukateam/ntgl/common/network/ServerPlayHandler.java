@@ -352,8 +352,8 @@ public class ServerPlayHandler {
     }
 
     public static void handleAttachments(ServerPlayer player) {
-        ItemStack heldItem = player.getMainHandItem();
-        if (heldItem.getItem() instanceof GunItem) {
+        var heldItem = player.getMainHandItem();
+        if (heldItem.getItem() instanceof GunItem && ((GunItem)heldItem.getItem()).getModifiedGun(heldItem).getModules().attachmentScreen()) {
             NetworkHooks.openScreen(player, new SimpleMenuProvider((windowId, playerInventory, player1) ->
                     new AttachmentContainer(windowId, playerInventory, heldItem), Component.translatable("container.ntgl.attachments")));
         }

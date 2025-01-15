@@ -2,7 +2,6 @@ package com.nukateam.ntgl.client.render.screen;
 
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.math.Axis;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.render.screen.widget.MiniButton;
@@ -11,6 +10,7 @@ import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.util.data.Pos2I;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -67,6 +67,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     private boolean mouseGrabbed;
     private int mouseGrabbedButton;
     private int mouseClickedX, mouseClickedY;
+    private int clickedSlot = -1;
 
     public AttachmentScreen(AttachmentContainer screenContainer, Inventory playerInventory, Component titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -137,25 +138,44 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         int left = (this.width - this.imageWidth) / 2;
         int top = (this.height - this.imageHeight) / 2;
-        int startX = this.leftPos;
-        int startY = this.topPos;
 
 //        renderWeapon(graphics, left, top, 1);
         renderGun(graphics, left, top, mouseX, mouseY, getGun());
-
-
         graphics.blit(GUI_TEXTURES, left, top, 0, 0, this.imageWidth, this.imageHeight);
 
-        var attachments = getGunAttachments(getGun());
-
         var id = 0;
-        for (var att : attachments.keySet()) {
-            graphics.blit(SLOT, left + ATTACHMENT_X + id * SLOT_SIZE, top + ATTACHMENT_Y, 0, 0, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE);
+        for (var att : getGunAttachments(getGun()).keySet()) {
+            var slotPos = getSlotPos(id);
+
+            graphics.blit(SLOT, slotPos.x, slotPos.y, 0, 0, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE);
 
             if (!this.menu.getSlot(id).hasItem())
-                graphics.blit(att.getIcon(), left + ATTACHMENT_X + id * SLOT_SIZE + 1, top + ATTACHMENT_Y + 1, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
+                graphics.blit(att.getIcon(), slotPos.x + 1, slotPos.y + 1, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
             id++;
         }
+
+        if(clickedSlot != -1){
+            var slotPos = getSlotPos(clickedSlot);
+            graphics.blit(GUI_TEXTURES, slotPos.x - 4, top + 100, 0, 214, 26, 28, 256, 256);
+        }
+    }
+
+    public Pos2I getSlotPos(int id) {
+        int left = (this.width - this.imageWidth) / 2;
+        int top = (this.height - this.imageHeight) / 2;
+        return new Pos2I(left + ATTACHMENT_X + id * SLOT_SIZE, top + ATTACHMENT_Y);
+    }
+
+    public int getSlotId(int mouseX, int mouseY) {
+        var attCount = getGunAttachments(getGun()).keySet().size();
+
+        for (var id = 0; id < attCount; id++) {
+            var slotPos = getSlotPos(id);
+            if(isMouseWithin(mouseX, mouseY, slotPos.x + 1, slotPos.y + 1, ICON_SIZE, ICON_SIZE))
+                return id;
+        }
+
+        return -1;
     }
 
     public void renderGun(GuiGraphics graphics, int startX, int startY, int mouseX, int mouseY, ItemStack currentItem) {
@@ -215,6 +235,8 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int startX = (this.width - this.imageWidth) / 2;
         int startY = (this.height - this.imageHeight) / 2;
+
+        clickedSlot = getSlotId((int)mouseX, (int)mouseY);
 
         if (isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70)) {
             if (!this.mouseGrabbed && (button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
