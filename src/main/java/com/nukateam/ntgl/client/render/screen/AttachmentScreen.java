@@ -6,6 +6,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.render.screen.widget.MiniButton;
 import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
+import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
@@ -156,8 +157,21 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 
         if(clickedSlot != -1){
             var slotPos = getSlotPos(clickedSlot);
-            graphics.blit(GUI_TEXTURES, slotPos.x - 4, top + 100, 0, 214, 26, 28, 256, 256);
+            graphics.blit(GUI_TEXTURES, slotPos.x - 4, top + 82, 0, 214, 26, 28, 256, 256);
         }
+    }
+
+    public static ArrayList<ItemStack> findAttachments(Container inventory, AttachmentType type){
+        var result = new ArrayList<ItemStack>();
+        for (int i = 0; i < inventory.getContainerSize(); ++i) {
+            var stack = inventory.getItem(i);
+            if (stack.getItem() instanceof IAttachment attachment
+                    && attachment.getType() == type) {
+                result.add(stack);
+            }
+        }
+
+        return result;
     }
 
     public Pos2I getSlotPos(int id) {
