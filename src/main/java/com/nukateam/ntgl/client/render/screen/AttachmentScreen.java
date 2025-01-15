@@ -166,12 +166,21 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         for (int i = 0; i < inventory.getContainerSize(); ++i) {
             var stack = inventory.getItem(i);
             if (stack.getItem() instanceof IAttachment attachment
-                    && attachment.getType() == type) {
+                    && attachment.getType() == type && !contains(result, stack)) {
                 result.add(stack);
             }
         }
 
         return result;
+    }
+
+    public static boolean contains(ArrayList<ItemStack> arrayList, ItemStack stack){
+        for (var item: arrayList) {
+            if(item.getItem() == stack.getItem()){
+                return true;
+            }
+        }
+        return false;
     }
 
     public Pos2I getSlotPos(int id) {
