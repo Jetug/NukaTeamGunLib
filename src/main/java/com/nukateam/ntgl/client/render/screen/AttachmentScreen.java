@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.render.screen.widget.MiniButton;
+import com.nukateam.ntgl.client.render.screen.widget.SlotButton;
 import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
@@ -134,6 +135,8 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         }
     }
 
+
+
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -146,19 +149,41 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 
         var id = 0;
         for (var att : getGunAttachments(getGun()).keySet()) {
-            var slotPos = getSlotPos(id);
+            var slotPos = getAttachmentBgPos(id);
 
             graphics.blit(SLOT, slotPos.x, slotPos.y, 0, 0, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE);
-
             if (!this.menu.getSlot(id).hasItem())
                 graphics.blit(att.getIcon(), slotPos.x + 1, slotPos.y + 1, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
             id++;
         }
 
         if(clickedSlot != -1){
-            var slotPos = getSlotPos(clickedSlot);
-            graphics.blit(GUI_TEXTURES, slotPos.x - 4, top + 82, 0, 214, 26, 28, 256, 256);
+            var slot = (AttachmentSlot)menu.getSlot(clickedSlot);
+            var attachments = findAttachments(playerInventory, slot.getType());
+
+            for (int i = 0; i < attachments.size(); i++) {
+                var pos = getAttachmentBgPos(clickedSlot, i);
+                var slotPos = getAttachmentSlotPos(clickedSlot, i);
+
+                graphics.blit(GUI_TEXTURES, pos.x, pos.y, 0, 214, 26, 28, 256, 256);
+//                graphics.renderItem(attachments.get(i), slotPos.x, slotPos.y);
+            }
         }
+    }
+
+    private final ArrayList<SlotButton> attachmentButtons = new ArrayList<>();
+
+    public Pos2I getAttachmentBgPos(int clickedSlot, int id) {
+        var slotPos = getAttachmentBgPos(clickedSlot);
+        int top = (this.height - this.imageHeight) / 2;
+        return new Pos2I(slotPos.x - 4, top + 80 - 23 * id);
+    }
+
+    public Pos2I getAttachmentSlotPos(int clickedSlot, int id) {
+        var pos = getAttachmentBgPos(clickedSlot, id);
+        var startX = pos.x + 5;
+        var startY = pos.y + 6;
+        return new Pos2I(startX, startY);
     }
 
     public static ArrayList<ItemStack> findAttachments(Container inventory, AttachmentType type){
@@ -174,7 +199,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         return result;
     }
 
-    public Pos2I getSlotPos(int id) {
+    public Pos2I getAttachmentBgPos(int id) {
         int left = (this.width - this.imageWidth) / 2;
         int top = (this.height - this.imageHeight) / 2;
         return new Pos2I(left + ATTACHMENT_X + id * SLOT_SIZE, top + ATTACHMENT_Y);
@@ -184,7 +209,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         var attCount = getGunAttachments(getGun()).keySet().size();
 
         for (var id = 0; id < attCount; id++) {
-            var slotPos = getSlotPos(id);
+            var slotPos = getAttachmentBgPos(id);
             if(isMouseWithin(mouseX, mouseY, slotPos.x + 1, slotPos.y + 1, ICON_SIZE, ICON_SIZE))
                 return id;
         }
@@ -252,6 +277,24 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 
         clickedSlot = getSlotId((int)mouseX, (int)mouseY);
 
+        if(clickedSlot != -1 && attachmentButtons.isEmpty()) {
+            var slot = (AttachmentSlot)menu.getSlot(clickedSlot);
+            var attachments = findAttachments(playerInventory, slot.getType());
+
+            for (int i = 0; i < attachments.size(); i++) {
+                var slotPos = getAttachmentSlotPos(clickedSlot, i);
+
+                this.addWidget(new SlotButton(slotPos.x, slotPos.y, attachments.get(i), (b) -> {
+                    var stack = ((SlotButton) b).getStack();
+                    var a = slot;
+                }));
+
+            }
+        }
+        else {
+            attachmentButtons.clear();
+        }
+
         if (isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70)) {
             if (!this.mouseGrabbed && (button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
                 this.mouseGrabbed = true;
@@ -307,6 +350,14 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         }
         return buttons;
     }
+//
+//    private List<MiniButton> gatherButtons2() {
+//        var buttons = new ArrayList<MiniButton>();
+//        var configButton = new SlotButton(0, 0, onPress -> this.openConfigScreen());
+//        configButton.setTooltip(Tooltip.create(CONFIG_TOOLTIP));
+//        buttons.add(configButton);
+//        return buttons;
+//    }
 
     private boolean isCompatible(ItemStack stack, AttachmentSlot slot) {
         if (stack.isEmpty()) return true;

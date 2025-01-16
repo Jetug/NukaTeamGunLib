@@ -67,8 +67,6 @@ public class AttachmentContainer extends AbstractContainerMenu {
             id++;
         }
 
-
-
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
                 this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * INVENTORY_OFFSET.x, INVENTORY_OFFSET.y + i * 18));
