@@ -116,22 +116,26 @@ public class AttachmentContainer extends AbstractContainerMenu {
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
-        ItemStack copyStack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
-            ItemStack slotStack = slot.getItem();
+        var copyStack = ItemStack.EMPTY;
+        var slot = this.slots.get(index);
+
+        if (slot.hasItem()) {
+            var slotStack = slot.getItem();
             copyStack = slotStack.copy();
+
             if (index < this.weaponInventory.getContainerSize()) {
                 if (!this.moveItemStackTo(slotStack, this.weaponInventory.getContainerSize(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.moveItemStackTo(slotStack, 0, this.weaponInventory.getContainerSize(), false)) {
+            }
+            else if (!this.moveItemStackTo(slotStack, 0, this.weaponInventory.getContainerSize(), false)) {
                 return ItemStack.EMPTY;
             }
 
             if (slotStack.isEmpty()) {
                 slot.set(ItemStack.EMPTY);
-            } else {
+            }
+            else {
                 slot.setChanged();
             }
         }

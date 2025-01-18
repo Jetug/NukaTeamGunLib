@@ -166,7 +166,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
                 var slotPos = getAttachmentSlotPos(clickedSlot, i);
 
                 graphics.blit(GUI_TEXTURES, pos.x, pos.y, 0, 214, 26, 28, 256, 256);
-//                graphics.renderItem(attachments.get(i), slotPos.x, slotPos.y);
+                graphics.renderItem(attachments.get(i), slotPos.x, slotPos.y);
             }
         }
     }
@@ -286,7 +286,10 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 
                 this.addWidget(new SlotButton(slotPos.x, slotPos.y, attachments.get(i), (b) -> {
                     var stack = ((SlotButton) b).getStack();
+
                     var a = slot;
+
+//                    menu.getSlot(clickedSlot)
                 }));
 
             }
