@@ -36,7 +36,7 @@ public class AttachmentType {
         this.id = id;
     }
 
-    public AttachmentType(String name) {
+    private AttachmentType(String name) {
         this.id = new ResourceLocation(Ntgl.MOD_ID, name);
     }
 

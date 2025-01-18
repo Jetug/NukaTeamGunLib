@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.debug.screen;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.util.util.ScreenUtil;
+import com.nukateam.ntgl.client.util.util.ScreenUtil;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.mojang.blaze3d.systems.RenderSystem;

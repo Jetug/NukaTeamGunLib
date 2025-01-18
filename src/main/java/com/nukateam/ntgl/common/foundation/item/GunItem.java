@@ -22,15 +22,13 @@ import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,6 +43,7 @@ import java.util.WeakHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import static com.nukateam.ntgl.common.util.constants.Tags.AMMO_COUNT;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
 public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IResourceProvider, IConfigConsumer<Gun>, IConfigProvider<Gun> {
@@ -108,6 +107,10 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
         return ForgeRegistries.ITEMS.getKey(this);
     }
 
+    public void setDefaultTag(CompoundTag tag){
+        tag.putInt(AMMO_COUNT, GunModifierHelper.getMaxAmmo(new ItemStack(this)));
+    }
+
 //    @Override
 //    public void createRenderer(Consumer<Object> consumer) {
 //        consumer.accept(new RenderProvider() {
@@ -166,21 +169,12 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
             if (tagCompound.getBoolean("IgnoreAmmo")) {
                 tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
             } else {
-                int ammoCount = tagCompound.getInt(Tags.AMMO_COUNT);
+                int ammoCount = tagCompound.getInt(AMMO_COUNT);
                 tooltip.add(Component.translatable("info.ntgl.ammo", ChatFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack)).withStyle(ChatFormatting.GRAY));
             }
         }
         //tooltip.add(Component.translatable("info.ntgl.attachment_help", new KeybindComponent("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH)).withStyle(ChatFormatting.YELLOW));
     }
-
-//    @Override
-//    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> stacks) {
-//        if (this.allowedIn(group)) {
-//            ItemStack stack = new ItemStack(this);
-//            stack.getOrCreateTag().putInt(Tags.AMMO_COUNT, this.gun.getGeneral().getMaxAmmo(stack));
-//            stacks.add(stack);
-//        }
-//    }
 
 //    @Override
 //    public boolean isBarVisible(ItemStack stack) {

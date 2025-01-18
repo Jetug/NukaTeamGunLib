@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.util.util;
 
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import static net.minecraft.world.item.ItemDisplayContext.*;
@@ -10,6 +11,10 @@ public class TransformUtils {
             case FIRST_PERSON_RIGHT_HAND, FIRST_PERSON_LEFT_HAND, THIRD_PERSON_RIGHT_HAND, THIRD_PERSON_LEFT_HAND -> true;
             default -> false;
         };
+    }
+
+    public static HumanoidArm getHand(ItemDisplayContext transformType){
+        return TransformUtils.isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
     }
 
     public static boolean isRightHand(ItemDisplayContext transformType){

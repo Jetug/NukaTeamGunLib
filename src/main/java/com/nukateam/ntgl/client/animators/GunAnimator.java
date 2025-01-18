@@ -4,15 +4,18 @@ import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.event.ClientHandler;
 import com.nukateam.ntgl.client.audio.GunShotSound;
+import com.nukateam.ntgl.client.event.ClientTickHandler;
 import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.util.handler.ShootingData;
 import com.nukateam.ntgl.client.util.handler.ShootingHandler;
 import com.nukateam.ntgl.client.model.gun.GeoGunModel;
 import com.nukateam.ntgl.client.render.renderers.gun.DynamicGunRenderer;
+import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.util.util.AnimationHelper;
+import com.nukateam.ntgl.common.util.util.Cycler;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
@@ -33,6 +36,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import static com.nukateam.example.common.util.constants.Animations.*;
 import static com.nukateam.ntgl.client.util.util.TransformUtils.*;
+import static com.nukateam.ntgl.common.util.helpers.PlayerHelper.convertHand;
 import static mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import static mod.azure.azurelib.core.animation.Animation.LoopType.*;
 import static mod.azure.azurelib.core.animation.RawAnimation.begin;
@@ -47,16 +51,23 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     private static final String SHOT_START = "shot_start";
     private static final String SHOT_END = "shot_end";
     public static final String HIDE = "hide";
+    public static final String CHAMBER = "chamber";
+    public static final String BARREL = "barrel";
     private GunItem currentGun = null;
     protected final Minecraft minecraft = Minecraft.getInstance();
     protected final DynamicGunRenderer<GunAnimator> renderer;
     protected int chamberId = 1;
     protected AnimationHelper<GunAnimator> animationHelper = new AnimationHelper<>(this, GeoGunModel.INSTANCE);
     protected AnimationController<GunAnimator> triggerController = new AnimationController<>(this, "triggerController", event -> PlayState.CONTINUE);
-
+    
+    protected Cycler barrelCycler = new Cycler(1, getBarrelAmount());
+    protected Cycler chamberCycler = null;
+    
+    
     public GunAnimator(ItemDisplayContext transformType, DynamicGeoItemRenderer<GunAnimator> renderer) {
         super(transformType);
         this.renderer = (DynamicGunRenderer<GunAnimator>) renderer;
+        ClientTickHandler.addTicker(this, this::tick);
     }
 
     @Override
@@ -67,6 +78,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         controllerRegistrar.add(mainController);
         controllerRegistrar.add(triggerController);
         controllerRegistrar.add(new AnimationController<>(this, "revolverController", 0, animateRevolver()));
+        controllerRegistrar.add(new AnimationController<>(this, "barrelController", 0, this.animateBarrels()));
     }
 
     @Override
@@ -77,6 +89,27 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         }
 
         return new Gun();
+    }
+
+    protected int getBarrelAmount(){
+        return 1;
+    }
+
+    public void tick(){
+        if (!(getStack().getItem() instanceof GunItem))
+            return;
+
+        var entity = getEntity();
+        var arm = isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
+        var cooldown = ShootingHandler.get().getCooldown(entity, arm);
+        var rate = GunModifierHelper.getRate(getStack());
+
+        if(chamberCycler == null) chamberCycler = new Cycler(1, GunModifierHelper.getMaxAmmo(getStack()));
+
+        if(cooldown == rate){
+            barrelCycler.cycle();
+            chamberCycler.cycle();
+        }
     }
 
     protected LivingEntity getEntity() {
@@ -139,32 +172,31 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected AnimationController.AnimationStateHandler<GunAnimator> animateRevolver() {
-        return event -> {
-            event.getController().setAnimationSpeed(1);
-            if (!isHandTransform(transformType)) return PlayState.STOP;
+        return (event) -> getCycledAnimation(event, CHAMBER, this.chamberCycler);
+    }
 
-            var entity = getEntity();
-            var arm = isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
-            var cooldown = ShootingHandler.get().getCooldown(entity, arm);
-            var isShooting = ShootingHandler.get().isShooting(entity, arm);
-            var rate = GunModifierHelper.getRate(getStack());
-            var maxAmmo = GunModifierHelper.getMaxAmmo(getStack());
+    protected AnimationController.AnimationStateHandler<GunAnimator> animateBarrels() {
+        return (event) -> getCycledAnimation(event, BARREL, this.barrelCycler);
+    }
 
-            if (cooldown == rate) {
-                if (chamberId < maxAmmo)
-                    chamberId++;
-                else chamberId = 1;
-            }
+    private PlayState getCycledAnimation(AnimationState<GunAnimator> event, String animationName, Cycler cycler) {
+        event.getController().setAnimationSpeed(1.0);
 
-            var chamber = "chamber" + chamberId;
+        if (TransformUtils.isHandTransform(this.transformType) && cycler != null) {
+            var entity = this.getEntity();
+            var isShooting = ShootingHandler.get().isShooting(entity, TransformUtils.getHand(this.transformType));
+            var rate = GunModifierHelper.getRate(this.getStack());
+            var finalAnim = animationName + cycler.getCurrent();
+
             RawAnimation animation = null;
-
-            if (isShooting && animationHelper.hasAnimation(chamber)) {
-                animation = begin().then(chamber, HOLD_ON_LAST_FRAME);
-                animationHelper.syncAnimation(event, chamber, rate);
+            if (isShooting && this.animationHelper.hasAnimation(finalAnim)) {
+                animation = RawAnimation.begin().then(finalAnim, Animation.LoopType.HOLD_ON_LAST_FRAME);
+                this.animationHelper.syncAnimation(event, finalAnim, rate);
             }
+
             return event.setAndContinue(animation);
-        };
+        }
+        return PlayState.STOP;
     }
 
     protected RawAnimation getInspectionAnimation(AnimationState<GunAnimator> event) {
