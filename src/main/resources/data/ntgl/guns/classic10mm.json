@@ -12,6 +12,7 @@
     "recoilAdsReduction": 0.15,
     "alwaysSpread": true,
     "spread": 2.0,
+    "movementModifier": 0.5,
     "ammo": [
       "ntgl:round10mm"
     ]
@@ -40,7 +41,8 @@
       "xOffset": 0.0,
       "yOffset": 4.8,
       "zOffset": 0.0,
-      "fovModifier": 0.7
+      "fovModifier": 0.7,
+      "movementModifier": 0.5
     },
     "attachments": {
       "ntgl:scope": [

@@ -1,5 +1,7 @@
 package com.nukateam.ntgl.common.util.util;
 
+import net.minecraft.util.Mth;
+
 public class Cycler {
     private final int min;
     private final int max;
@@ -18,6 +20,10 @@ public class Cycler {
 
     public int getCurrent(){
         return current;
+    }
+
+    public void setCurrent(int value){
+        current = Mth.clamp(value, min,max);
     }
 
     public int cycle(){

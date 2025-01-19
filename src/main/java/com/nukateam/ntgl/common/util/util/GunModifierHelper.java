@@ -158,6 +158,18 @@ public class GunModifierHelper {
         return chargeTime.get();
     }
 
+    public static boolean needsFullCharge(ItemStack weapon) {
+        var needsFullCharge = new AtomicBoolean(getGun(weapon).getGeneral().isFullCharge());
+        forEachAttachment(weapon, (modifier -> needsFullCharge.set(modifier.modifyNeedsFullCharge(needsFullCharge.get()))));
+        return needsFullCharge.get();
+    }
+
+    public static boolean isOneTimeCharge(ItemStack weapon) {
+        var oneTimeCharge = new AtomicBoolean(getGun(weapon).getGeneral().isOneTimeCharge());
+        forEachAttachment(weapon, (modifier -> oneTimeCharge.set(modifier.modifyIsOneTimeCharge(oneTimeCharge.get()))));
+        return oneTimeCharge.get();
+    }
+
     public static void switchAmmo(ItemStack weapon){
         var ammoItems = getAmmoItems(weapon);
         var current = getCurrentAmmo(weapon);

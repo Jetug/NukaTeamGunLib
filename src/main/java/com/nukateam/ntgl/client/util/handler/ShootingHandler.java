@@ -99,10 +99,10 @@ public class ShootingHandler {
                 }
             } else if(event.getAction() == GLFW.GLFW_RELEASE) {
                 if (isRightHand) {
-                    resetShootingData(heldItem, gunItem, HumanoidArm.RIGHT);
+                    resetShootingData(heldItem, HumanoidArm.RIGHT);
                 }
                 if (isLeftHand) {
-                    resetShootingData(heldItem, gunItem, HumanoidArm.LEFT);
+                    resetShootingData(heldItem, HumanoidArm.LEFT);
                 }
             }
         }
@@ -335,10 +335,9 @@ public class ShootingHandler {
         data.gun = gunItem;
     }
 
-    private void resetShootingData(ItemStack stack, GunItem gunItem, HumanoidArm arm) {
+    private void resetShootingData(ItemStack stack, HumanoidArm arm) {
         var data = shootingData.get(arm);
-        var gun = gunItem.getModifiedGun(stack);
-        if(data.fireTimer != 0 && !gun.getGeneral().isFullCharge()){
+        if(data.fireTimer != 0 && ! GunModifierHelper.needsFullCharge(stack)){
             this.fire(Minecraft.getInstance().player, stack);
         }
 
@@ -363,7 +362,8 @@ public class ShootingHandler {
                 data.fireTimer--;
             } else {
                 this.fire(player, heldItem);
-//                    if (gun.getGeneral().getFireModes() == FireMode.SEMI_AUTO || gun.getGeneral().getFireModes() == FireMode.PULSE) {
+                if(data.fireTimer == 0 && !GunModifierHelper.isOneTimeCharge(heldItem))
+                    setupShootingData(heldItem, data.gun, HumanoidArm.RIGHT);
                 if (maxChargeTime > 0) {
                     if(fireMode != FireMode.AUTO)
                         key.setDown(false);

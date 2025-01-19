@@ -33,6 +33,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import static com.nukateam.example.common.util.constants.Animations.*;
 import static com.nukateam.ntgl.client.util.util.TransformUtils.*;
@@ -56,29 +57,33 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     private GunItem currentGun = null;
     protected final Minecraft minecraft = Minecraft.getInstance();
     protected final DynamicGunRenderer<GunAnimator> renderer;
-    protected int chamberId = 1;
-    protected AnimationHelper<GunAnimator> animationHelper = new AnimationHelper<>(this, GeoGunModel.INSTANCE);
-    protected AnimationController<GunAnimator> triggerController = new AnimationController<>(this, "triggerController", event -> PlayState.CONTINUE);
-    
     protected Cycler barrelCycler = new Cycler(1, getBarrelAmount());
     protected Cycler chamberCycler = null;
-    
-    
+
+    protected AnimationHelper<GunAnimator> animationHelper = new AnimationHelper<>(this, GeoGunModel.INSTANCE);
+
+    protected final AnimationController<GunAnimator> TRIGGER_CONTROLLER = createController( "triggerController", event -> PlayState.CONTINUE);
+    protected final AnimationController<GunAnimator> MAIN_CONTROLLER = createController("mainController", animate()).setSoundKeyframeHandler(this::handleSoundEvent);
+    protected final AnimationController<GunAnimator> REVOLVER_CONTROLLER = createController("revolverController", animateRevolver());
+    protected final AnimationController<GunAnimator> BARREL_CONTROLLER = createController("barrelController", animateBarrels());
+
     public GunAnimator(ItemDisplayContext transformType, DynamicGeoItemRenderer<GunAnimator> renderer) {
         super(transformType);
         this.renderer = (DynamicGunRenderer<GunAnimator>) renderer;
         ClientTickHandler.addTicker(this, this::tick);
     }
 
+    @NotNull
+    private AnimationController<GunAnimator> createController(String name, AnimationController.AnimationStateHandler<GunAnimator> animate) {
+        return new AnimationController<>(this, name, 0, animate);
+    }
+
     @Override
     public void registerControllers(ControllerRegistrar controllerRegistrar) {
-        var mainController = new AnimationController<>(this, "mainController", 0, animate())
-                .setSoundKeyframeHandler(this::handleSoundEvent);
-
-        controllerRegistrar.add(mainController);
-        controllerRegistrar.add(triggerController);
-        controllerRegistrar.add(new AnimationController<>(this, "revolverController", 0, animateRevolver()));
-        controllerRegistrar.add(new AnimationController<>(this, "barrelController", 0, this.animateBarrels()));
+        controllerRegistrar.add(MAIN_CONTROLLER);
+        controllerRegistrar.add(TRIGGER_CONTROLLER);
+        controllerRegistrar.add(REVOLVER_CONTROLLER);
+        controllerRegistrar.add(BARREL_CONTROLLER);
     }
 
     @Override
@@ -144,7 +149,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 var animation = begin();
 
                 if(fireTimer > 0 && data.fireTimer > 0 && fireTimer != data.fireTimer){
-                    animation = getChargingAnimation(controller, data);
+                    animation = getChargingAnimation(event, data);
                 } else if (reloadHandler.isReloading(entity, arm)) {
                     animation = getReloadingAnimation(event);
                 } else if (isShooting) {
@@ -206,14 +211,18 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return animation;
     }
 
-    protected RawAnimation getChargingAnimation(AnimationController<GunAnimator> controller, ShootingData data) {
+    protected RawAnimation getChargingAnimation(AnimationState<GunAnimator> event , ShootingData data) {
         var animation = begin();
         var fireTimer = GunModifierHelper.getFireDelay(getStack());
         var speed = 1 - ((float) data.fireTimer / (float) fireTimer);
+        var controller = event.getController();
         controller.setAnimationSpeed(speed);
 
-        if(animationHelper.hasAnimation(CHARGE))
+        if(animationHelper.hasAnimation(CHARGE)) {
+            BARREL_CONTROLLER.stop();
+            BARREL_CONTROLLER.setAnimation(begin().then("void", PLAY_ONCE));
             animation = playGunAnim(CHARGE, LOOP);
+        }
         return animation;
     }
 

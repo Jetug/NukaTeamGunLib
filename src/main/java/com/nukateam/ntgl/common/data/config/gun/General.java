@@ -36,72 +36,79 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String ALWAYS_SPREAD = "AlwaysSpread";
     public static final String SPREAD = "Spread";
     public static final String CATEGORY = "category";
+    public static final String MOVEMENT_MODIFIER = "MovementModifier";
+    public static final String AMMO = "Ammo";
+    public static final String FULL_CHARGE = "FullCharge";
+    public static final String FIRE_TIMER = "FireTimer";
+    public static final String FIRE_MODE = "FireMode";
+    public static final String ONE_TIME_CHARGE = "OneTimeCharge";
 
     int rate;
     int maxAmmo;
-
     @Optional Set<FireMode> fireMode = new HashSet<>(List.of(FireMode.SEMI_AUTO));
     @Optional boolean fullCharge = false;
     @Optional float damage;
-    @Ignored GripType gripType = GripType.ONE_HANDED;
-
     @Optional int reloadAmount = 1;
     @Optional int reloadTime = 1;
-    @Optional LoadingType loadingType = LoadingType.MAGAZINE;
-    @Optional boolean autoReload = false;
+    @Ignored GripType gripType = GripType.ONE_HANDED;
     @Ignored ResourceLocation reloadType = new ResourceLocation(Ntgl.MOD_ID, "gun_reload");
-
+    @Optional LoadingType loadingType = LoadingType.MAGAZINE;
     @Optional String category = "pistol";
+    @Optional boolean autoReload = false;
     @Optional float recoilAngle;
     @Optional float recoilKick;
     @Optional float recoilDurationOffset;
     @Optional float recoilAdsReduction = 0.2F;
     @Optional int projectileAmount = 1;
     @Optional boolean alwaysSpread;
+    @Optional boolean oneTimeCharge = true;
     @Optional float spread;
     @Optional int fireTimer;
+    @Optional float movementModifier = 1.0f;
     @Optional protected Set<ResourceLocation> ammo = new HashSet<>(List.of(new ResourceLocation("ntgl:round10mm")));
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.putInt(RATE, this.rate);
-        tag.putBoolean("FullCharge", this.fullCharge);
-        tag.putInt("FireTimer", this.fireTimer);
-        tag.put("FireMode", NbtUtils.serializeSet(this.fireMode));
-        tag.putString(GRIP_TYPE, this.gripType.getId().toString());
-        tag.putString(RELOAD_TYPE, this.reloadType.toString());
-        tag.putInt(MAX_AMMO, this.maxAmmo);
-        tag.putInt(RELOAD_SPEED, this.reloadAmount);
-        tag.putInt(RELOAD_TIME, this.reloadTime);
-        tag.putString(LOADING_TYPE, this.loadingType.toString());
-        tag.putBoolean(AUTO_RELOAD, this.autoReload);
-        tag.putString(CATEGORY, this.category);
-        tag.putFloat(RECOIL_ANGLE, this.recoilAngle);
-        tag.putFloat(DAMAGE, this.damage);
-        tag.putFloat(RECOIL_KICK, this.recoilKick);
-        tag.putFloat(RECOIL_DURATION_OFFSET, this.recoilDurationOffset);
-        tag.putFloat(RECOIL_ADS_REDUCTION, this.recoilAdsReduction);
-        tag.putInt(PROJECTILE_AMOUNT, this.projectileAmount);
-        tag.putFloat(SPREAD, this.spread);
-        tag.putBoolean(ALWAYS_SPREAD, this.alwaysSpread);
-        tag.put("Ammo", NbtUtils.serializeSet(this.ammo));
+        tag.putInt      (RATE, this.rate);
+        tag.putBoolean  (FULL_CHARGE, this.fullCharge);
+        tag.putInt      (FIRE_TIMER, this.fireTimer);
+        tag.put         (FIRE_MODE, NbtUtils.serializeSet(this.fireMode));
+        tag.putString   (GRIP_TYPE, this.gripType.getId().toString());
+        tag.putString   (RELOAD_TYPE, this.reloadType.toString());
+        tag.putInt      (MAX_AMMO, this.maxAmmo);
+        tag.putInt      (RELOAD_SPEED, this.reloadAmount);
+        tag.putInt      (RELOAD_TIME, this.reloadTime);
+        tag.putString   (LOADING_TYPE, this.loadingType.toString());
+        tag.putBoolean  (AUTO_RELOAD, this.autoReload);
+        tag.putString   (CATEGORY, this.category);
+        tag.putFloat    (RECOIL_ANGLE, this.recoilAngle);
+        tag.putFloat    (DAMAGE, this.damage);
+        tag.putFloat    (RECOIL_KICK, this.recoilKick);
+        tag.putFloat    (RECOIL_DURATION_OFFSET, this.recoilDurationOffset);
+        tag.putFloat    (RECOIL_ADS_REDUCTION, this.recoilAdsReduction);
+        tag.putInt      (PROJECTILE_AMOUNT, this.projectileAmount);
+        tag.putFloat    (SPREAD, this.spread);
+        tag.putFloat    (MOVEMENT_MODIFIER, this.movementModifier);
+        tag.putBoolean  (ALWAYS_SPREAD, this.alwaysSpread);
+        tag.putBoolean  (ONE_TIME_CHARGE, this.oneTimeCharge);
+        tag.put         (AMMO, NbtUtils.serializeSet(this.ammo));
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        if (tag.contains("FireMode", Tag.TAG_COMPOUND)) {
-            this.fireMode = NbtUtils.deserializeFireMode(tag.getCompound("FireMode"));
+        if (tag.contains(FIRE_MODE, Tag.TAG_COMPOUND)) {
+            this.fireMode = NbtUtils.deserializeFireMode(tag.getCompound(FIRE_MODE));
         }
-        if (tag.contains("FullCharge", Tag.TAG_ANY_NUMERIC)) {
-            this.fullCharge = tag.getBoolean("FullCharge");
+        if (tag.contains(FULL_CHARGE, Tag.TAG_ANY_NUMERIC)) {
+            this.fullCharge = tag.getBoolean(FULL_CHARGE);
         }
         if (tag.contains(RATE, Tag.TAG_ANY_NUMERIC)) {
             this.rate = tag.getInt(RATE);
         }
-        if (tag.contains("FireTimer", Tag.TAG_ANY_NUMERIC)) {
-            this.fireTimer = tag.getInt("FireTimer");
+        if (tag.contains(FIRE_TIMER, Tag.TAG_ANY_NUMERIC)) {
+            this.fireTimer = tag.getInt(FIRE_TIMER);
         }
         if (tag.contains(GRIP_TYPE, Tag.TAG_STRING)) {
             this.gripType = GripType.getType(ResourceLocation.tryParse(tag.getString(GRIP_TYPE)));
@@ -145,14 +152,20 @@ public class General implements INBTSerializable<CompoundTag> {
         if (tag.contains(PROJECTILE_AMOUNT, Tag.TAG_ANY_NUMERIC)) {
             this.projectileAmount = tag.getInt(PROJECTILE_AMOUNT);
         }
-        if (tag.contains(ALWAYS_SPREAD, Tag.TAG_ANY_NUMERIC)) {
+        if (tag.contains(ONE_TIME_CHARGE)) {
+            this.oneTimeCharge = tag.getBoolean(ONE_TIME_CHARGE);
+        }
+        if (tag.contains(ALWAYS_SPREAD)) {
             this.alwaysSpread = tag.getBoolean(ALWAYS_SPREAD);
         }
         if (tag.contains(SPREAD, Tag.TAG_ANY_NUMERIC)) {
             this.spread = tag.getFloat(SPREAD);
         }
-        if (tag.contains("Ammo", Tag.TAG_COMPOUND)) {
-            this.ammo = NbtUtils.deserializeAmmoSet(tag.getCompound("Ammo"));
+        if (tag.contains(MOVEMENT_MODIFIER, Tag.TAG_ANY_NUMERIC)) {
+            this.movementModifier = tag.getFloat(MOVEMENT_MODIFIER);
+        }
+        if (tag.contains(AMMO, Tag.TAG_COMPOUND)) {
+            this.ammo = NbtUtils.deserializeAmmoSet(tag.getCompound(AMMO));
         }
     }
 
@@ -168,6 +181,7 @@ public class General implements INBTSerializable<CompoundTag> {
         Preconditions.checkArgument(this.recoilAdsReduction >= 0.0F && this.recoilAdsReduction <= 1.0F, "Recoil ads reduction must be between 0.0 and 1.0");
         Preconditions.checkArgument(this.projectileAmount >= 1, "Projectile amount must be more than or equal to one");
         Preconditions.checkArgument(this.spread >= 0.0F, "Spread must be more than or equal to zero");
+        Preconditions.checkArgument(this.movementModifier >= 0.0F, "Spread must be more than or equal to zero");
         JsonObject object = new JsonObject();
         if (this.fullCharge) object.addProperty("fullCharge", true);
         object.addProperty("rate", this.rate);
@@ -187,7 +201,9 @@ public class General implements INBTSerializable<CompoundTag> {
             object.addProperty("recoilDurationOffset", this.recoilDurationOffset);
         if (this.recoilAdsReduction != 0.2F) object.addProperty("recoilAdsReduction", this.recoilAdsReduction);
         if (this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
-        if (this.alwaysSpread) object.addProperty("alwaysSpread", true);
+        object.addProperty("alwaysSpread", this.alwaysSpread);
+        object.addProperty("oneTimeCharge", this.oneTimeCharge);
+        if (this.movementModifier != 1.0F) object.addProperty("movementModifier", true);
         if (this.spread != 0.0F) object.addProperty("spread", this.spread);
 //            object.add("", new JsonArray());
         return object;
@@ -218,6 +234,8 @@ public class General implements INBTSerializable<CompoundTag> {
         general.projectileAmount = this.projectileAmount;
         general.alwaysSpread = this.alwaysSpread;
         general.spread = this.spread;
+        general.oneTimeCharge = this.oneTimeCharge;
+        general.movementModifier = this.movementModifier;
         general.ammo = new HashSet<>(this.ammo);
         return general;
     }
@@ -358,11 +376,19 @@ public class General implements INBTSerializable<CompoundTag> {
         return this.alwaysSpread;
     }
 
+    public boolean isOneTimeCharge() {
+        return this.oneTimeCharge;
+    }
+
     /**
      * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
      * the fired ammo.
      */
     public float getSpread() {
         return this.spread;
+    }
+
+    public float getMovementModifier() {
+        return this.movementModifier;
     }
 }

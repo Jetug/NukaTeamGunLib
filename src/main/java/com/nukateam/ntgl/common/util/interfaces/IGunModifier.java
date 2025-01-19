@@ -218,6 +218,14 @@ public interface IGunModifier {
         return chargeTime;
     }
 
+    default boolean modifyNeedsFullCharge(boolean needsFullCharge) {
+        return needsFullCharge;
+    }
+
+    default boolean modifyIsOneTimeCharge(boolean oneTimeCharge) {
+        return oneTimeCharge;
+    }
+
     default Set<ResourceLocation> modifyAmmoItems(Set<ResourceLocation> item) {
         return item;
     }

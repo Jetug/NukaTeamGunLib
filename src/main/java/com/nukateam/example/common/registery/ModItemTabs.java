@@ -3,6 +3,7 @@ package com.nukateam.example.common.registery;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.enchantment.EnchantmentTypes;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.util.helpers.RegistrationHelper;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -33,28 +34,9 @@ public class ModItemTabs {
     private static void registerItems(Output output) {
         if(Ntgl.isDebugging()) {
             for (var entry : ModGuns.ITEMS.getEntries()) {
-                registerGunOrDefault(output, entry.get());
+                RegistrationHelper.registerGunOrDefault(output, entry.get());
             }
         }
-    }
-
-    public static void registerGunOrDefault(Output output, Item item) {
-        registerGunOrDefault(output, item, () -> output.accept(item));
-    }
-
-    public static void registerGunOrDefault(Output output, Item item, Runnable def) {
-        if(!registerGun(output, item))
-            def.run();
-    }
-
-    public static boolean registerGun(Output output, Item item) {
-        if (item instanceof GunItem gunItem) {
-            var stack = new ItemStack(gunItem);
-            gunItem.setDefaultTag(stack.getOrCreateTag());
-            output.accept(stack);
-            return true;
-        }
-        else return false;
     }
 
     public static void register(IEventBus eventBus) {

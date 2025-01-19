@@ -19,6 +19,4 @@ public class IncurableEffect extends MobEffect {
     public List<ItemStack> getCurativeItems() {
         return Collections.emptyList();
     }
-
-
 }
