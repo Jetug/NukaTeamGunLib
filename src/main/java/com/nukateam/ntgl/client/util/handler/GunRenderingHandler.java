@@ -46,6 +46,7 @@ import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
@@ -225,22 +226,13 @@ public class GunRenderingHandler {
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderHandEvent event) {
+    public void onRenderOverlay(@NotNull RenderHandEvent event) {
         var poseStack = event.getPoseStack();
         var minecraft = Minecraft.getInstance();
         var player = minecraft.player;
         var isRight = minecraft.options.mainHand().get() == HumanoidArm.RIGHT ?
                 event.getHand() == InteractionHand.MAIN_HAND : event.getHand() == InteractionHand.OFF_HAND;
         var heldItem = event.getItemStack();
-
-//        if (event.getHand() == InteractionHand.OFF_HAND) {
-//            float offhand = 1.0F - Mth.lerp(event.getPartialTick(), this.prevOffhandTranslate, this.offhandTranslate);
-//            poseStack.translate(0, offhand * -0.6F, 0);
-//
-//            /* Makes the off hand item move out of view */
-//            poseStack.translate(0, -1 * AimingHandler.get().getNormalisedAdsProgress(), 0);
-//        }
-
         var hand = event.getHand();
         var oppositeHand = hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         var oppositeStack = player.getItemInHand(oppositeHand);

@@ -11,6 +11,7 @@ import mod.azure.azurelib.model.data.EntityModelData;
 import mod.azure.azurelib.renderer.GeoObjectRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +19,6 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -61,7 +61,6 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
 
     public Animator getAnimator(LivingEntity entity, ItemDisplayContext transformType, ItemStack stack) {
         var key = Pair.of(entity, transformType);
-
         if (!animatorsByTransform.containsKey(key)) {
             if(animatorFactory == null) {
                 var dynamicItem = (DynamicGeoItem) stack.getItem();

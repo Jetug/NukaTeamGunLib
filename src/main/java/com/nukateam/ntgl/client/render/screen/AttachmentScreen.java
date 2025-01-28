@@ -12,6 +12,8 @@ import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.C2SMessageAttachmentChanged;
 import com.nukateam.ntgl.common.util.data.Pos2I;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -287,9 +289,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
                 this.addWidget(new SlotButton(slotPos.x, slotPos.y, attachments.get(i), (b) -> {
                     var stack = ((SlotButton) b).getStack();
 
-                    var a = slot;
-
-//                    menu.getSlot(clickedSlot)
+                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachmentChanged(menu.containerId, stack, getGun()));
                 }));
 
             }

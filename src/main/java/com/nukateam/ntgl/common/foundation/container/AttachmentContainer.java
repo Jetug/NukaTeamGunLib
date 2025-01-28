@@ -5,6 +5,7 @@ import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
 import com.nukateam.ntgl.common.foundation.init.ModContainers;
 import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItemBase;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
+import com.nukateam.ntgl.common.util.constants.Tags;
 import com.nukateam.ntgl.common.util.data.Pos2I;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -67,24 +68,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
             id++;
         }
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * INVENTORY_OFFSET.x, INVENTORY_OFFSET.y + i * 18));
-            }
-        }
-
-        for (int i = 0; i < 9; i++) {
-            if (i == playerInventory.selected) {
-                this.addSlot(new Slot(playerInventory, i, 8 + i * HOTBAR_OFFSET.x, HOTBAR_OFFSET.y) {
-                    @Override
-                    public boolean mayPickup(Player playerIn) {
-                        return false;
-                    }
-                });
-            } else {
-                this.addSlot(new Slot(playerInventory, i, 8 + i * HOTBAR_OFFSET.x, HOTBAR_OFFSET.y));
-            }
-        }
+        addPlayerInventory(playerInventory);
     }
 
     public boolean isLoaded() {
@@ -110,7 +94,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
         }
 
         var tag = this.weapon.getOrCreateTag();
-        tag.put("Attachments", attachmentsTag);
+        tag.put(Tags.ATTACHMENTS, attachmentsTag);
         super.broadcastChanges();
     }
 
@@ -118,29 +102,28 @@ public class AttachmentContainer extends AbstractContainerMenu {
     public ItemStack quickMoveStack(Player playerIn, int index) {
         var copyStack = ItemStack.EMPTY;
         var slot = this.slots.get(index);
+        var slotStack = slot.getItem();
 
-        if (slot.hasItem()) {
-            var slotStack = slot.getItem();
+        if (!slotStack.isEmpty()) {
             copyStack = slotStack.copy();
 
             if (index < this.weaponInventory.getContainerSize()) {
-                if (!this.moveItemStackTo(slotStack, this.weaponInventory.getContainerSize(), this.slots.size(), true)) {
+                if (!this.moveItemStackTo(slotStack, this.weaponInventory.getContainerSize(), this.slots.size(), true))
                     return ItemStack.EMPTY;
-                }
             }
-            else if (!this.moveItemStackTo(slotStack, 0, this.weaponInventory.getContainerSize(), false)) {
+            else if (!this.moveItemStackTo(slotStack, 0, this.weaponInventory.getContainerSize(), false))
                 return ItemStack.EMPTY;
-            }
 
-            if (slotStack.isEmpty()) {
+            if (slotStack.isEmpty())
                 slot.set(ItemStack.EMPTY);
-            }
-            else {
-                slot.setChanged();
-            }
+            else slot.setChanged();
         }
 
         return copyStack;
+    }
+
+    public boolean moveItemStackTo(ItemStack slotStack, int pStartIndex, int pEndIndex, boolean pReverseDirection) {
+        return this.moveItemStackTo(slotStack, this.weaponInventory.getContainerSize(), this.slots.size(), pReverseDirection);
     }
 
     public Container getPlayerInventory() {
@@ -150,4 +133,24 @@ public class AttachmentContainer extends AbstractContainerMenu {
     public Container getWeaponInventory() {
         return this.weaponInventory;
     }
+
+    private void addPlayerInventory(Inventory playerInventory) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 9; j++)
+                this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * INVENTORY_OFFSET.x, INVENTORY_OFFSET.y + i * 18));
+        }
+
+        for (int i = 0; i < 9; i++) {
+            if (i == playerInventory.selected) {
+                this.addSlot(new Slot(playerInventory, i, 8 + i * HOTBAR_OFFSET.x, HOTBAR_OFFSET.y) {
+                    @Override
+                    public boolean mayPickup(Player playerIn) {
+                        return false;
+                    }
+                });
+            }
+            else this.addSlot(new Slot(playerInventory, i, 8 + i * HOTBAR_OFFSET.x, HOTBAR_OFFSET.y));
+        }
+    }
+
 }

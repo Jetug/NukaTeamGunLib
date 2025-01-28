@@ -37,7 +37,6 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.nukateam.example.common.util.constants.Animations.*;
 import static com.nukateam.ntgl.client.util.util.TransformUtils.*;
-import static com.nukateam.ntgl.common.util.helpers.PlayerHelper.convertHand;
 import static mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
 import static mod.azure.azurelib.core.animation.Animation.LoopType.*;
 import static mod.azure.azurelib.core.animation.RawAnimation.begin;
@@ -184,6 +183,8 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return (event) -> getCycledAnimation(event, BARREL, this.barrelCycler);
     }
 
+
+
     private PlayState getCycledAnimation(AnimationState<GunAnimator> event, String animationName, Cycler cycler) {
         event.getController().setAnimationSpeed(1.0);
 
@@ -251,23 +252,13 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     protected void handleSoundEvent(SoundKeyframeEvent<GunAnimator> event) {
         var player = minecraft.player;
-        if (player == null) return;
-        var sound = event.getKeyframeData().getSound();
-        var gunSounds = getGunItem().getGun().getSounds();
+        var name = event.getKeyframeData().getSound();
+        var sounds = getGunItem().getGun().getSoundsMap();
+        var sound = sounds.get(name);
 
-        switch (sound) {
-            case "reload" -> {
-                var reloadSound = gunSounds.getReload();
-
-                minecraft.getSoundManager().play(new GunShotSound(reloadSound, SoundSource.PLAYERS,
-                        player.position(), 1, 1, true));
-            }
-            case "cock" -> {
-                var cockSound = gunSounds.getCock();
-
-                minecraft.getSoundManager().play(new GunShotSound(cockSound, SoundSource.PLAYERS,
-                        player.position(), 1, 1, true));
-            }
+        if(sound != null && player != null){
+            minecraft.getSoundManager().play(new GunShotSound(sound, SoundSource.PLAYERS,
+                    player.position(), 1, 1, true));
         }
     }
 

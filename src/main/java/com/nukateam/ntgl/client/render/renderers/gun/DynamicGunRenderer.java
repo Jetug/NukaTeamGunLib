@@ -151,6 +151,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
             {
                 RenderUtils.prepMatrixForBone(poseStack, bone);
                 poseStack.translate(0.01, -0.27, 0.05);
+                poseStack.scale(bone.getScaleX(), bone.getScaleY(), bone.getScaleZ());
 
                 var playerSkin = ((LocalPlayer) ClientUtils.getClientPlayer()).getSkinTextureLocation();
                 var arm = this.bufferSource.getBuffer(RenderType.entitySolid(playerSkin));

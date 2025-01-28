@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.data.config.gun;
 
+import com.google.gson.Gson;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.holders.*;
@@ -48,19 +49,24 @@ import static com.nukateam.ntgl.client.event.ClientHandler.*;
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
     protected General general = new General();
-    protected Sounds sounds = new Sounds();
+//    protected Sounds sounds = new Sounds();
+    protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected Display display = new Display();
     protected Modules modules = new Modules();
-    protected Map<String, ResourceLocation> textures = new HashMap<>();
+    protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     @Ignored
-    protected Map<String, ResourceLocation> preparedTextures = new HashMap<>();
+    protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
 
     public General getGeneral() {
         return this.general;
     }
 
     public Sounds getSounds() {
-        return this.sounds;
+        return new Sounds(this);
+    }
+
+    public HashMap<String, ResourceLocation> getSoundsMap() {
+        return sounds;
     }
 
     public Display getDisplay() {
@@ -83,8 +89,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Override
     public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
-            ItemStack scope = Gun.getScopeStack(heldItem);
+            var heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
+            var scope = Gun.getScopeStack(heldItem);
             if (scope.getItem() instanceof ScopeItem scopeItem) {
                 widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(Component.literal("Edit"), btn -> {
                     Minecraft.getInstance().setScreen(createEditorScreen(Debug.getScope(scopeItem)));
@@ -99,13 +105,28 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
+        var tag = new CompoundTag();
         tag.put("General", this.general.serializeNBT());
-        tag.put("Sounds", this.sounds.serializeNBT());
+        tag.put("Sounds", NbtUtils.serializeStringMap(this.sounds));
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
         tag.put("Textures", NbtUtils.serializeStringMap(this.textures));
         return tag;
+    }
+
+    private HashMap<String, ResourceLocation> deserializeSounds(CompoundTag tag){
+        var result = new HashMap<String, ResourceLocation>();
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_STRING)) {
+                result.put(key, createSound(tag, key));
+            }
+        }
+        return result;
+    }
+
+    private ResourceLocation createSound(CompoundTag tag, String key) {
+        var sound = tag.getString(key);
+        return sound.isEmpty() ? null : new ResourceLocation(sound);
     }
 
     @Override
@@ -114,7 +135,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             this.general.deserializeNBT(tag.getCompound("General"));
         }
         if (tag.contains("Sounds", Tag.TAG_COMPOUND)) {
-            this.sounds.deserializeNBT(tag.getCompound("Sounds"));
+            this.sounds = deserializeSounds(tag.getCompound("Sounds"));
         }
         if (tag.contains("Display", Tag.TAG_COMPOUND)) {
             this.display.deserializeNBT(tag.getCompound("Display"));
@@ -128,9 +149,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public JsonObject toJsonObject() {
-        JsonObject object = new JsonObject();
+        var gson = new Gson();
+        var object = new JsonObject();
         object.add("general", this.general.toJsonObject());
-        GunJsonUtil.addObjectIfNotEmpty(object, "sounds", this.sounds.toJsonObject());
+        GunJsonUtil.addObjectIfNotEmpty(object,"sounds", gson.toJsonTree(this).getAsJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modules", this.modules.toJsonObject());
         return object;
@@ -167,7 +189,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public Gun copy() {
         var gun = new Gun();
         gun.general = this.general.copy();
-        gun.sounds = this.sounds.copy();
+        gun.sounds = (HashMap<String, ResourceLocation>) this.sounds.clone();
+        gun.textures = (HashMap<String, ResourceLocation>) this.textures.clone();
         gun.display = this.display.copy();
         gun.modules = this.modules.copy();
         return gun;
@@ -599,30 +622,30 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this;
         }
 
-        public Builder setFireSound(SoundEvent sound) {
-            this.gun.sounds.fire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
-            return this;
-        }
-
-        public Builder setReloadSound(SoundEvent sound) {
-            this.gun.sounds.reload = ForgeRegistries.SOUND_EVENTS.getKey(sound);
-            return this;
-        }
-
-        public Builder setCockSound(SoundEvent sound) {
-            this.gun.sounds.cock = ForgeRegistries.SOUND_EVENTS.getKey(sound);
-            return this;
-        }
-
-        public Builder setSilencedFireSound(SoundEvent sound) {
-            this.gun.sounds.silencedFire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
-            return this;
-        }
-
-        public Builder setEnchantedFireSound(SoundEvent sound) {
-            this.gun.sounds.enchantedFire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
-            return this;
-        }
+//        public Builder setFireSound(SoundEvent sound) {
+//            this.gun.sounds.fire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
+//            return this;
+//        }
+//
+//        public Builder setReloadSound(SoundEvent sound) {
+//            this.gun.sounds.reload = ForgeRegistries.SOUND_EVENTS.getKey(sound);
+//            return this;
+//        }
+//
+//        public Builder setCockSound(SoundEvent sound) {
+//            this.gun.sounds.cock = ForgeRegistries.SOUND_EVENTS.getKey(sound);
+//            return this;
+//        }
+//
+//        public Builder setSilencedFireSound(SoundEvent sound) {
+//            this.gun.sounds.silencedFire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
+//            return this;
+//        }
+//
+//        public Builder setEnchantedFireSound(SoundEvent sound) {
+//            this.gun.sounds.enchantedFire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
+//            return this;
+//        }
 
         @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder setMuzzleFlash(double size, double xOffset, double yOffset, double zOffset) {

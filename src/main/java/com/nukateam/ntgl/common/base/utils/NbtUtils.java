@@ -118,7 +118,7 @@ public class NbtUtils {
         return map;
     }
 
-    public static Map<String, ResourceLocation> deserializeRLMap(CompoundTag tag){
+    public static HashMap<String, ResourceLocation> deserializeRLMap(CompoundTag tag){
         var map = new HashMap<String, ResourceLocation>();
 
         for (var key: tag.getAllKeys()) {
