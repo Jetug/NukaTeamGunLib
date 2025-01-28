@@ -54,7 +54,6 @@ public class C2SMessageAttachmentChanged extends PlayMessage<C2SMessageAttachmen
             if (sameContainer && isAttachment && sameWeapon) {
                 var weapon = player.getMainHandItem();
 
-//                ServerPlayHandler.handleAttachments(player);
                 for (int i = 0; i < player.getInventory().getContainerSize(); ++i) {
                     var stack = player.getInventory().getItem(i);
                     if (stack.getItem() == message.attachment.getItem()) {

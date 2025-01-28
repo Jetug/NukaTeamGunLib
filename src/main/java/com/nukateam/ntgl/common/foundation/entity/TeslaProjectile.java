@@ -81,14 +81,14 @@ public class TeslaProjectile extends AbstractBeamProjectile {
         this.setYRot(laserYaw);
 
         this.setDeltaMovement(
-                dir.x * projectile.getSpeed(),
-                dir.y * projectile.getSpeed(),
-                dir.z * projectile.getSpeed());
+                dir.x * ammo.getSpeed(),
+                dir.y * ammo.getSpeed(),
+                dir.z * ammo.getSpeed());
 
         trace();
 
         if (distance <= 0) {
-            distance = (float)projectile.getSpeed();
+            distance = (float) ammo.getSpeed();
         }
     }
 

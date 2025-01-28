@@ -122,10 +122,6 @@ public class AttachmentContainer extends AbstractContainerMenu {
         return copyStack;
     }
 
-    public boolean moveItemStackTo(ItemStack slotStack, int pStartIndex, int pEndIndex, boolean pReverseDirection) {
-        return this.moveItemStackTo(slotStack, this.weaponInventory.getContainerSize(), this.slots.size(), pReverseDirection);
-    }
-
     public Container getPlayerInventory() {
         return this.playerInventory;
     }

@@ -63,12 +63,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null &&
             Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
-    public static final EntityDataAccessor<Integer> SHOOTER = defineId(ProjectileEntity.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Integer> LIFE    = defineId(ProjectileEntity.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Boolean> IS_RIGHT = defineId(ProjectileEntity.class, EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<Boolean> IS_VISIBLE = defineId(ProjectileEntity.class, EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<String> ITEM = defineId(ProjectileEntity.class, EntityDataSerializers.STRING);
-    public static final EntityDataAccessor<String> AMMO_TYPE = defineId(ProjectileEntity.class, EntityDataSerializers.STRING);
+
+    public static final EntityDataAccessor<Integer> SHOOTER     = defineId(ProjectileEntity.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> LIFE        = defineId(ProjectileEntity.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Boolean> IS_RIGHT    = defineId(ProjectileEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> IS_VISIBLE  = defineId(ProjectileEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<String>  ITEM        = defineId(ProjectileEntity.class, EntityDataSerializers.STRING);
+    public static final EntityDataAccessor<String>  AMMO_TYPE   = defineId(ProjectileEntity.class, EntityDataSerializers.STRING);
 
     private boolean hasClientData = false;
     protected boolean isServerSide = !level().isClientSide();
@@ -76,7 +77,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected LivingEntity shooter;
     protected Gun modifiedGun;
     protected General general;
-    protected Ammo projectile;
+    protected Ammo ammo;
     protected ItemStack weapon = ItemStack.EMPTY;
     protected ItemStack ammoStack = ItemStack.EMPTY;
     protected float additionalDamage = 0.0F;
@@ -96,19 +97,19 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.shooter = shooter;
         this.modifiedGun = modifiedGun;
         this.general = modifiedGun.getGeneral();
-        this.projectile = GunModifierHelper.getCurrentProjectile(weapon);
-        this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
+        this.ammo = GunModifierHelper.getCurrentProjectile(weapon);
+        this.entitySize = new EntityDimensions(this.ammo.getSize(), this.ammo.getSize(), false);
         this.modifiedGravity = GunModifierHelper.getCurrentProjectile(weapon).isGravity() ? GunModifierHelper.getModifiedProjectileGravity(weapon, -0.04) : 0.0;
-        this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.projectile.getLife());
+        this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.ammo.getLife());
         this.isRightHand = shooter.getItemInHand(InteractionHand.MAIN_HAND) == weapon;
         this.weapon = weapon;
 
         getEntityData().set(LIFE    , life);
         getEntityData().set(SHOOTER , shooterId);
         getEntityData().set(IS_RIGHT, isRightHand);
-        getEntityData().set(IS_VISIBLE, projectile.isVisible());
+        getEntityData().set(IS_VISIBLE, ammo.isVisible());
         getEntityData().set(ITEM, GunModifierHelper.getCurrentAmmo(weapon).toString());
-        getEntityData().set(AMMO_TYPE, projectile.getType().toString());
+        getEntityData().set(AMMO_TYPE, ammo.getType().toString());
 
         /* Get speed and set motion */
         setupDirection(shooter, weapon, item, modifiedGun);
@@ -142,7 +143,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void setupDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
         var dir = this.getDirection(shooter, weapon, item, modifiedGun);
         var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
-        var speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.projectile.getSpeed() * speedModifier);
+        var speed = GunModifierHelper.getModifiedProjectileSpeed(weapon, this.ammo.getSpeed() * speedModifier);
         this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
     }
@@ -216,9 +217,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
 
         if (isServerSide) {
-            Vec3 startVec = this.position();
-            Vec3 endVec = startVec.add(this.getDeltaMovement());
+            var startVec = this.position();
+            var endVec = startVec.add(this.getDeltaMovement());
             HitResult result = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this), getBlockFilter());
+
             if (result.getType() != HitResult.Type.MISS) {
                 endVec = result.getLocation();
             }
@@ -257,9 +259,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         double nextPosX = this.getX() + this.getDeltaMovement().x();
         double nextPosY = this.getY() + this.getDeltaMovement().y();
         double nextPosZ = this.getZ() + this.getDeltaMovement().z();
+
         this.setPos(nextPosX, nextPosY, nextPosZ);
 
-        if (this.projectile.isGravity()) {
+        if (this.ammo.isGravity()) {
             this.setDeltaMovement(this.getDeltaMovement().add(0, this.modifiedGravity, 0));
         }
 
@@ -268,19 +271,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 this.onExpired();
             }
             this.remove(RemovalReason.KILLED);
-        }
-    }
-
-//    private void requestServerData(){
-//        if (level().isClientSide)
-//            PacketHandler.getPlayChannel().sendToServer(new C2SRequestEntityData(this.getId()));
-//    }
-
-    public void updateClient() {
-        if(isServerSide) {
-            var tag = new CompoundTag();
-            addAdditionalSaveData(tag);
-            sendS2CData(tag);
         }
     }
 
@@ -298,17 +288,24 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
-        this.projectile = new Ammo();
-        this.projectile.deserializeNBT(compound.getCompound("Projectile"));
+        this.ammo = new Ammo();
+        this.ammo.deserializeNBT(compound.getCompound("Projectile"));
         this.general = new General();
         this.general.deserializeNBT(compound.getCompound("General"));
         this.modifiedGravity = compound.getDouble("ModifiedGravity");
         this.life = compound.getInt("MaxLife");
+
+//        entityData.set(SHOOTER    ,   ;
+        entityData.set(LIFE       ,   this.life);
+//        entityData.set(IS_RIGHT   ,   ;
+//        entityData.set(IS_VISIBLE ,   ;
+//        entityData.set(ITEM       ,   ;
+//        entityData.set(AMMO_TYPE  ,   ;
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("Projectile", this.projectile.serializeNBT());
+        compound.put("Projectile", this.ammo.serializeNBT());
         compound.put("General", this.general.serializeNBT());
         compound.putDouble("ModifiedGravity", this.modifiedGravity);
         compound.putInt("MaxLife", this.life);
@@ -316,7 +313,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {
-        buffer.writeNbt(this.projectile.serializeNBT());
+        buffer.writeNbt(this.ammo.serializeNBT());
         buffer.writeNbt(this.general.serializeNBT());
         buffer.writeInt(this.shooterId);
         BufferUtil.writeItemStackToBufIgnoreTag(buffer, this.ammoStack);
@@ -327,16 +324,24 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     @Override
     public void readSpawnData(FriendlyByteBuf buffer) {
-        this.projectile = new Ammo();
-        this.projectile.deserializeNBT(buffer.readNbt());
+        this.ammo = new Ammo();
+        this.ammo.deserializeNBT(buffer.readNbt());
         this.general = new General();
         this.general.deserializeNBT(buffer.readNbt());
         this.shooterId = buffer.readInt();
         this.ammoStack = BufferUtil.readItemStackFromBufIgnoreTag(buffer);
         this.modifiedGravity = buffer.readDouble();
         this.life = buffer.readVarInt();
-        this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
+        this.entitySize = new EntityDimensions(this.ammo.getSize(), this.ammo.getSize(), false);
         this.isRightHand = buffer.readBoolean();
+    }
+
+    public void updateClient() {
+        if(isServerSide) {
+            var tag = new CompoundTag();
+            addAdditionalSaveData(tag);
+            sendS2CData(tag);
+        }
     }
 
     public void updateHeading() {
@@ -347,8 +352,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.xRotO = this.getXRot();
     }
 
-    public Ammo getProjectile() {
-        return this.projectile;
+    public Ammo getAmmo() {
+        return this.ammo;
     }
 
     /**
@@ -369,8 +374,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     public float getDamage() {
         float initialDamage = GunModifierHelper.getModifiedDamage(this.weapon)  + this.additionalDamage;
 
-        if (this.projectile.isDamageReduceOverLife()) {
-            float modifier = ((float) this.projectile.getLife() - (float) (this.tickCount - 1)) / (float) this.projectile.getLife();
+        if (this.ammo.isDamageReduceOverLife()) {
+            float modifier = ((float) this.ammo.getLife() - (float) (this.tickCount - 1)) / (float) this.ammo.getLife();
             initialDamage *= modifier;
         }
 
@@ -432,15 +437,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
      * A simple method to perform logic on each tick of the ammo. This method is appropriate
      * for spawning particles. Override {@link #tick()} to make changes to physics
      */
-    protected void onProjectileTick() {
-    }
+    protected void onProjectileTick() {}
 
     /**
      * Called when the ammo has run out of it's life. In other words, the ammo managed
      * to not hit any blocks and instead aged. The grenade uses this to explodeOnHit in the air.
      */
-    protected void onExpired() {
-    }
+    protected void onExpired() {}
 
     protected Predicate<BlockState> getBlockFilter() {
         return IGNORE_LEAVES;

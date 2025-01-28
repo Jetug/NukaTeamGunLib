@@ -52,14 +52,14 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     private static final ResourceLocation GUI_TEXTURES = new ResourceLocation("ntgl:textures/gui/attachments.png");
     private static final ResourceLocation SLOT = new ResourceLocation("ntgl:textures/gui/slot.png");
     private static final Component CONFIG_TOOLTIP = translatable("ntgl.button.config.tooltip");
+    public static final String ATTACHMENT_NOT_APPLICABLE = "slot.ntgl.attachment.not_applicable";
+    public static final String ATTACHMENT_INCOMPATIBLE = "slot.ntgl.attachment.incompatible";
+    public static final String WINDOW_HELP = "container.ntgl.attachments.window_help";
     public static final int SLOT_SIZE = 18;
     public static final int IMAGE_HEIGHT = 214;
     public static final int ATTACHMENT_Y = 107;
-    public static final String ATTACHMENT_NOT_APPLICABLE = "slot.ntgl.attachment.not_applicable";
-    public static final String ATTACHMENT_INCOMPATIBLE = "slot.ntgl.attachment.incompatible";
     public static final int ATTACHMENT_X = 7;
     public static final int ICON_SIZE = 16;
-    public static final String WINDOW_HELP = "container.ntgl.attachments.window_help";
 
     private final Inventory playerInventory;
     private final Container weaponInventory;
@@ -137,8 +137,6 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         }
     }
 
-
-
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
         graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -159,18 +157,18 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
             id++;
         }
 
-        if(clickedSlot != -1){
-            var slot = (AttachmentSlot)menu.getSlot(clickedSlot);
-            var attachments = findAttachments(playerInventory, slot.getType());
-
-            for (int i = 0; i < attachments.size(); i++) {
-                var pos = getAttachmentBgPos(clickedSlot, i);
-                var slotPos = getAttachmentSlotPos(clickedSlot, i);
-
-                graphics.blit(GUI_TEXTURES, pos.x, pos.y, 0, 214, 26, 28, 256, 256);
-                graphics.renderItem(attachments.get(i), slotPos.x, slotPos.y);
-            }
-        }
+//        if(clickedSlot != -1){
+//            var slot = (AttachmentSlot)menu.getSlot(clickedSlot);
+//            var attachments = findAttachments(playerInventory, slot.getType());
+//
+//            for (int i = 0; i < attachments.size(); i++) {
+//                var pos = getAttachmentBgPos(clickedSlot, i);
+//                var slotPos = getAttachmentSlotPos(clickedSlot, i);
+//
+//                graphics.blit(GUI_TEXTURES, pos.x, pos.y, 0, 214, 26, 28, 256, 256);
+//                graphics.renderItem(attachments.get(i), slotPos.x, slotPos.y);
+//            }
+//        }
     }
 
     private final ArrayList<SlotButton> attachmentButtons = new ArrayList<>();
@@ -220,21 +218,11 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     }
 
     public void renderGun(GuiGraphics graphics, int startX, int startY, int mouseX, int mouseY, ItemStack currentItem) {
-//        GL11.glEnable(GL11.GL_SCISSOR_TEST);
-//        ModelRenderUtil.scissor(startX + 8, startY + 17, 160, 70);
-
         var poseStack = RenderSystem.getModelViewStack();
         poseStack.pushPose();
         {
             poseStack.translate(startX + 88, startY + 60, 100);
             poseStack.scale(50F, -50F, 50F);
-
-//            graphics.pose().pushPose();
-//            graphics.pose().translate(windowX + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseX - this.mouseClickedX : 0), 0, 0);
-//            graphics.pose().translate(0, windowY + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseY - this.mouseClickedY : 0), 0);
-//            graphics.pose().mulPose(Axis.XP.rotationDegrees(this.windowRotationY - (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseY - this.mouseClickedY : 0)));
-//            graphics.pose().mulPose(Axis.YP.rotationDegrees(this.windowRotationX + (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseX - this.mouseClickedX : 0)));
-
             RenderSystem.applyModelViewMatrix();
             var buffer = minecraft.renderBuffers().bufferSource();
             minecraft.getItemRenderer().render(currentItem, ItemDisplayContext.FIXED,
@@ -257,46 +245,28 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
-        int startX = (this.width - this.imageWidth) / 2;
-        int startY = (this.height - this.imageHeight) / 2;
-        if (isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70)) {
-            if (scroll < 0 && this.windowZoom > 0) {
-                this.showHelp = false;
-                this.windowZoom--;
-            } else if (scroll > 0) {
-                this.showHelp = false;
-                this.windowZoom++;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int startX = (this.width - this.imageWidth) / 2;
         int startY = (this.height - this.imageHeight) / 2;
 
-        clickedSlot = getSlotId((int)mouseX, (int)mouseY);
-
-        if(clickedSlot != -1 && attachmentButtons.isEmpty()) {
-            var slot = (AttachmentSlot)menu.getSlot(clickedSlot);
-            var attachments = findAttachments(playerInventory, slot.getType());
-
-            for (int i = 0; i < attachments.size(); i++) {
-                var slotPos = getAttachmentSlotPos(clickedSlot, i);
-
-                this.addWidget(new SlotButton(slotPos.x, slotPos.y, attachments.get(i), (b) -> {
-                    var stack = ((SlotButton) b).getStack();
-
-                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachmentChanged(menu.containerId, stack, getGun()));
-                }));
-
-            }
-        }
-        else {
-            attachmentButtons.clear();
-        }
+//        clickedSlot = getSlotId((int)mouseX, (int)mouseY);
+//
+//        if(clickedSlot != -1 && attachmentButtons.isEmpty()) {
+//            var slot = (AttachmentSlot)menu.getSlot(clickedSlot);
+//            var attachments = findAttachments(playerInventory, slot.getType());
+//
+//            for (int i = 0; i < attachments.size(); i++) {
+//                var slotPos = getAttachmentSlotPos(clickedSlot, i);
+//
+//                this.addWidget(new SlotButton(slotPos.x, slotPos.y, attachments.get(i), (b) -> {
+//                    var stack = ((SlotButton) b).getStack();
+//                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachmentChanged(menu.containerId, stack, getGun()));
+//                }));
+//            }
+//        }
+//        else {
+//            attachmentButtons.clear();
+//        }
 
         if (isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70)) {
             if (!this.mouseGrabbed && (button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
@@ -338,6 +308,22 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
             graphics.drawString(minecraft.font, I18n.get(WINDOW_HELP), 56, 38, 0xFFFFFF, false);
             graphics.pose().popPose();
         }
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
+        int startX = (this.width - this.imageWidth) / 2;
+        int startY = (this.height - this.imageHeight) / 2;
+        if (isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70)) {
+            if (scroll < 0 && this.windowZoom > 0) {
+                this.showHelp = false;
+                this.windowZoom--;
+            } else if (scroll > 0) {
+                this.showHelp = false;
+                this.windowZoom++;
+            }
+        }
+        return false;
     }
 
     private boolean isMouseWithinSlot(int mouseX, int mouseY, int left, int top, int i) {
