@@ -18,8 +18,8 @@ public class AnimationHelper<T extends IResourceProvider & GeoAnimatable> {
         this.model = model;
     }
 
-    public void syncAnimation(AnimationState event, String animationName, int reloadDuration) {
-        var multiplier = (float) getSpeedMultiplier(animationName, reloadDuration);
+    public void syncAnimation(AnimationState event, String animationName, int targetDuration) {
+        var multiplier = (float) getSpeedMultiplier(animationName, targetDuration);
         event.setControllerSpeed(multiplier);
     }
 

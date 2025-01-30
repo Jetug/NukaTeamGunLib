@@ -58,6 +58,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected final DynamicGunRenderer<GunAnimator> renderer;
     protected Cycler barrelCycler = new Cycler(1, getBarrelAmount());
     protected Cycler chamberCycler = null;
+    protected final ShootingHandler shootingHandler = ShootingHandler.get();
 
     protected AnimationHelper<GunAnimator> animationHelper = new AnimationHelper<>(this, GeoGunModel.INSTANCE);
 
@@ -70,11 +71,6 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         super(transformType);
         this.renderer = (DynamicGunRenderer<GunAnimator>) renderer;
         ClientTickHandler.addTicker(this, this::tick);
-    }
-
-    @NotNull
-    private AnimationController<GunAnimator> createController(String name, AnimationController.AnimationStateHandler<GunAnimator> animate) {
-        return new AnimationController<>(this, name, 0, animate);
     }
 
     @Override
@@ -95,17 +91,13 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return new Gun();
     }
 
-    protected int getBarrelAmount(){
-        return 1;
-    }
-
     public void tick(){
         if (!(getStack().getItem() instanceof GunItem))
             return;
 
         var entity = getEntity();
         var arm = isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
-        var cooldown = ShootingHandler.get().getCooldown(entity, arm);
+        var cooldown = shootingHandler.getCooldown(entity, arm);
         var rate = GunModifierHelper.getRate(getStack());
 
         if(chamberCycler == null) chamberCycler = new Cycler(1, GunModifierHelper.getMaxAmmo(getStack()));
@@ -114,6 +106,10 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             barrelCycler.cycle();
             chamberCycler.cycle();
         }
+    }
+
+    protected int getBarrelAmount(){
+        return 1;
     }
 
     protected LivingEntity getEntity() {
@@ -128,6 +124,15 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return stack.getItem() instanceof GunItem && GunModifierHelper.getGripType(stack) == GripType.ONE_HANDED;
     }
 
+    @NotNull
+    protected AnimationController<GunAnimator> createController(String name, AnimationController.AnimationStateHandler<GunAnimator> animate) {
+        return new AnimationController<>(this, name, 0, animate);
+    }
+
+    protected HumanoidArm getArm(){
+        return isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
+    }
+
     protected AnimationController.AnimationStateHandler<GunAnimator> animate() {
         return event -> {
             try {
@@ -140,8 +145,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 if (!isFirstPerson(transformType))
                     return event.setAndContinue(holdAnimation);
 
-                var arm = isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
-                var shootingHandler = ShootingHandler.get();
+                var arm = getArm();
                 var isShooting = shootingHandler.isShooting(entity, arm);
                 var data = shootingHandler.getShootingData(arm);
                 var fireTimer = GunModifierHelper.getFireDelay(getStack());
@@ -183,14 +187,12 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return (event) -> getCycledAnimation(event, BARREL, this.barrelCycler);
     }
 
-
-
-    private PlayState getCycledAnimation(AnimationState<GunAnimator> event, String animationName, Cycler cycler) {
+    protected PlayState getCycledAnimation(AnimationState<GunAnimator> event, String animationName, Cycler cycler) {
         event.getController().setAnimationSpeed(1.0);
 
         if (TransformUtils.isHandTransform(this.transformType) && cycler != null) {
             var entity = this.getEntity();
-            var isShooting = ShootingHandler.get().isShooting(entity, TransformUtils.getHand(this.transformType));
+            var isShooting = shootingHandler.isShooting(entity, TransformUtils.getHand(this.transformType));
             var rate = GunModifierHelper.getRate(this.getStack());
             var finalAnim = animationName + cycler.getCurrent();
 
@@ -267,7 +269,6 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         var entity = getEntity();
         var currentItem = entity.getItemInHand(PlayerHelper.convertHand(arm));
         var oppositeItem = entity.getItemInHand(PlayerHelper.convertHand(arm.getOpposite()));
-
         var isOneHanded = isOneHanded(currentItem) && isOneHanded(oppositeItem) || arm == HumanoidArm.LEFT;
 
         if(isOneHanded && animationHelper.hasAnimation(name + ONE_HAND_SUFFIX))
