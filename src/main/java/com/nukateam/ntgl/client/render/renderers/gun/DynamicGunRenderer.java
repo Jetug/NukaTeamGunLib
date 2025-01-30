@@ -7,6 +7,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
+import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -59,9 +60,8 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         this.gunAttachments = Gun.getAttachmentItems(stack);
         this.configAttachments = gun.getAttachments(gunAttachments);
 
-        if (AimingHandler.isAiming(stack) && Gun.hasScopeOverlay(stack)) {
+        if (TransformUtils.isFirstPerson(transformType) && AimingHandler.isScoping(stack))
             return;
-        }
 
         var barrelStack = Gun.getAttachmentItem(AttachmentType.BARREL, stack);
         hiddenBones.clear();

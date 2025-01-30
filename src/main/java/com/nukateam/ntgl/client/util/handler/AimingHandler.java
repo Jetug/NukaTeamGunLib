@@ -73,6 +73,10 @@ public class AimingHandler {
                 && progress == 1;
     }
 
+    public static boolean isScoping(ItemStack gun) {
+        return AimingHandler.isAiming(gun) && Gun.hasScopeOverlay(gun);
+    }
+
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.START)

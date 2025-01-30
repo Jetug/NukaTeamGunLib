@@ -30,7 +30,7 @@ public class ScopeHud implements IGuiOverlay {
 
         scopeScale = Mth.lerp(0.5F * frameTime, scopeScale, 1.125F);
 
-        if (isScoping(gun)) {
+        if (AimingHandler.isScoping(gun)) {
             var attachment = Gun.getAttachmentItem(AttachmentType.SCOPE, gun);
             if (!attachment.isEmpty()) {
                 var scope = Gun.getScopeItem(gun);
@@ -44,8 +44,8 @@ public class ScopeHud implements IGuiOverlay {
     }
 
     private void renderScope(GuiGraphics graphics, int width, int height, ResourceLocation overlay) {
-        float f = (float) Math.min(width, height);
-        float f1 = Math.min((float) width / f, (float) height / f) * scopeScale;
+        var f = (float) Math.min(width, height);
+        var f1 = Math.min((float) width / f, (float) height / f) * scopeScale;
         int i = Mth.floor(f * f1);
         int j = Mth.floor(f * f1);
         int k = (width - i) / 2;
@@ -68,9 +68,5 @@ public class ScopeHud implements IGuiOverlay {
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-    }
-
-    private static boolean isScoping(ItemStack gun) {
-        return AimingHandler.isAiming(gun) && Gun.hasScopeOverlay(gun);
     }
 }

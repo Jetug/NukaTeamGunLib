@@ -253,7 +253,8 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         @Override
         public CompoundTag serializeNBT() {
-            CompoundTag tag = new CompoundTag();
+            CompoundTag tag = super.serializeNBT();
+
             if (this.name != null) {
                 tag.putString("Name", this.name);
             }
@@ -268,6 +269,8 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         @Override
         public void deserializeNBT(CompoundTag tag) {
+            super.deserializeNBT(tag);
+
             if (tag.contains("Name", Tag.TAG_STRING)) {
                 this.name = tag.getString("Name");
             }

@@ -91,9 +91,9 @@ public final class PropertyHelper {
                 var scope = (ScopeItem)attachment.getItem();
                 var attachmentData = modifiedGun.findAttachment(scope);
 
-                cameraX = attachmentData.getXOffset();
-                cameraY = attachmentData.getYOffset();
-                cameraZ = attachmentData.getZOffset();
+                cameraX += attachmentData.getXOffset();
+                cameraY += attachmentData.getYOffset();
+                cameraZ += attachmentData.getZOffset();
             }
 
             return new Vec3(cameraX, cameraY, cameraZ);

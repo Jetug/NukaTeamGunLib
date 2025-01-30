@@ -142,7 +142,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 var reloadHandler = ClientReloadHandler.get();
                 var holdAnimation = playGunAnim(HOLD, LOOP);
 
-                if (!isFirstPerson(transformType))
+                if (!isHandTransform(transformType))
                     return event.setAndContinue(holdAnimation);
 
                 var arm = getArm();
@@ -153,11 +153,11 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
                 if(fireTimer > 0 && data.fireTimer > 0 && fireTimer != data.fireTimer){
                     animation = getChargingAnimation(event, data);
-                } else if (reloadHandler.isReloading(entity, arm)) {
+                } else if (reloadHandler.isReloading(entity, arm) && isFirstPerson(transformType)) {
                     animation = getReloadingAnimation(event);
                 } else if (isShooting) {
                     animation = getShootingAnimation(event);
-                } else if (reloadHandler.isReloading(entity, arm.getOpposite())) {
+                } else if (reloadHandler.isReloading(entity, arm.getOpposite()) && isFirstPerson(transformType)) {
                     animation = begin().then(HIDE, HOLD_ON_LAST_FRAME);
                 }
                 else if(ClientHandler.getInspectionTicks() > 0){

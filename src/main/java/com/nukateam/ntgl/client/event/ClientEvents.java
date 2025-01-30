@@ -14,8 +14,8 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientEvents {
      @SubscribeEvent
      public static void registerHud(RegisterGuiOverlaysEvent event){
-         event.registerAbove(new ResourceLocation("hotbar"), "debug", GunHud.AMMO_HUD);
-         event.registerAbove(new ResourceLocation("hotbar"), "ammo", DebugHud.DEBUG_HUD);
-         event.registerAbove(new ResourceLocation("hotbar"), "scope", ScopeHud.SCOPE_HUD);
+         event.registerAboveAll("debug", GunHud.AMMO_HUD);
+         event.registerAboveAll("ammo", DebugHud.DEBUG_HUD);
+         event.registerBelowAll("scope", ScopeHud.SCOPE_HUD);
      }
 }
