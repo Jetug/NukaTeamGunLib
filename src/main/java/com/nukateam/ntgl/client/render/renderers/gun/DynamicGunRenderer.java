@@ -45,6 +45,9 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
     protected ArrayList<String> hiddenBones = new ArrayList<>();
     protected BarrelItem barrelItem;
     protected Gun gun;
+    protected boolean firstRightRender = true;
+    protected boolean firstLeftRender = true;
+
 
     public DynamicGunRenderer(GeoModel<Animator> model) {
         super(model);
@@ -59,6 +62,8 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         this.gun = GunModifierHelper.getGun(stack);
         this.gunAttachments = Gun.getAttachmentItems(stack);
         this.configAttachments = gun.getAttachments(gunAttachments);
+        this.firstRightRender = true;
+        this.firstLeftRender  = true;
 
         if (TransformUtils.isFirstPerson(transformType) && AimingHandler.isScoping(stack))
             return;
@@ -90,50 +95,35 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
             case LEFT_ARM, RIGHT_ARM -> {
                 bone.setHidden(true);
                 bone.setChildrenHidden(false);
-                var rgba = new Rgba(red, green, blue, alpha);
                 renderArms(poseStack, animatable, bone, renderType, bufferSource,
-                        isReRender, partialTick, packedLight, packedOverlay, rgba);
-                return;
+                        isReRender, partialTick, packedLight, packedOverlay, new Rgba(red, green, blue, alpha));
             }
             case MUZZLE_FLASH -> {
                 if(barrelItem != null){
                     renderMuzzleFlash(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender,
                             partialTick, packedLight, packedOverlay, red, green, blue, alpha);
-                    return;
                 }
             }
         }
 
         renderRecursivelyPost(poseStack, animatable, bone, renderType, bufferSource,
-                buffer, isReRender, partialTick, packedLight, packedOverlay,
-                red, green, blue, alpha);
+                buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
 
         super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource,
-                buffer, isReRender, partialTick, packedLight, packedOverlay,
-                red, green, blue, alpha);
+                this.bufferSource.getBuffer(renderType), isReRender, partialTick, packedLight,
+                packedOverlay, red, green, blue, alpha);
 
     }
 
-
-    public void renderRecursivelyPost(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
-                                  MultiBufferSource bufferSource, VertexConsumer buffer,
-                                  boolean isReRender, float partialTick, int packedLight, int packedOverlay,
-                                  float red, float green, float blue, float alpha) {
+    public LivingEntity getRenderEntity() {
+        return currentEntity;
     }
 
-    private void renderMuzzleFlash(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        var length = barrelItem.getProperties().getLength();
-        poseStack.pushPose();
-        {
-            poseStack.translate(0, 0, -length / 16D);
-            if (Ntgl.isDebugging())
-                poseStack.translate((double) X / 10 / 16D, (double) Y / 10 / 16D, (double) Z / 10 / 16D);
-            super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource,
-                    buffer, isReRender, partialTick, packedLight, packedOverlay,
-                    red, green, blue, alpha);
-        }
-        poseStack.popPose();
-    }
+    protected void renderRecursivelyPost(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
+                                         MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender,
+                                         float partialTick, int packedLight, int packedOverlay,
+                                         float red, float green, float blue, float alpha) {}
+
 
     protected void renderArms(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
                               MultiBufferSource bufferSource, boolean isReRender, float partialTick,
@@ -143,6 +133,17 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
 
         var isRightHand = this.currentTransform == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND;
         var isLeftHand = this.currentTransform == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
+
+        if (bone.getName().equals(RIGHT_ARM)){
+            if(!firstRightRender)
+                return;
+            firstRightRender = false;
+        }
+        if (bone.getName().equals(LEFT_ARM)){
+            if(!firstLeftRender)
+                return;
+            firstLeftRender = false;
+        }
 
         if (isRightHand || isLeftHand) {
             var playerEntityRenderer = (PlayerRenderer) client.getEntityRenderDispatcher().getRenderer(client.player);
@@ -174,14 +175,19 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
             }
             poseStack.popPose();
         }
-        // This super call is needed with the custom getBuffer call for the weapon model to get it's texture back and not use the players skin
-        super.renderRecursively(poseStack, animatable, bone, renderType,
-                bufferSource, this.bufferSource.getBuffer(renderType), isReRender, partialTick, packedLight,
-                packedOverlay, rgba.r(), rgba.g(), rgba.b(), rgba.a());
     }
 
-    public LivingEntity getRenderEntity() {
-        return currentEntity;
+    protected void renderMuzzleFlash(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
+                                   MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
+                                   int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        var length = barrelItem.getProperties().getLength();
+        poseStack.pushPose();
+        {
+            poseStack.translate(0, 0, -length / 16D);
+            if (Ntgl.isDebugging())
+                poseStack.translate((double) X / 10 / 16D, (double) Y / 10 / 16D, (double) Z / 10 / 16D);
+        }
+        poseStack.popPose();
     }
 
     protected void renderAttachments(GeoBone bone) {
@@ -214,7 +220,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
             bone.setHidden(true);
             return;
         }
-        
+
         bone.setHidden(false);
     }
 }

@@ -1,5 +1,5 @@
 {
-  "itemGroup.weapons": "Guns Core",
+  "itemGroup.weapons": "NTGL",
   "item.ntgl.steel_ball": "Шарики .50кал",
   "block.ntgl.workbench": "Сборочный Верстак",
 
@@ -43,7 +43,7 @@
   "info.ntgl.ammo": "Боеприпасов: %s/%s",
   "info.ntgl.ammo_type": "Тип боеприпасов: %s",
   "info.ntgl.attachment_help": "Нажмите %s в игре для изменения обвесов",
-  "key.categories.ntgl": "Guns Core Weapons",
+  "key.categories.ntgl": "NTGL Weapons",
   "key.ntgl.reload": "Перезарядить",
   "key.ntgl.unload": "Разрядить",
   "key.ntgl.attachments": "Изменить обвесы",

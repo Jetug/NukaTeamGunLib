@@ -25,15 +25,29 @@
         0
       ]
     },
+    "firstperson_righthand": {
+      "translation": [
+        0,
+        -1.75,
+        0
+      ]
+    },
+    "firstperson_lefthand": {
+      "translation": [
+        0,
+        -1.75,
+        0
+      ]
+    },
     "gui": {
       "rotation": [
-        90,
-        50,
-        -90
+        -142.71,
+        44.09,
+        173.32
       ],
       "translation": [
-        -1.5,
-        1.5,
+        -1.75,
+        4,
         0
       ],
       "scale": [
@@ -59,6 +73,11 @@
         0,
         90,
         0
+      ],
+      "translation": [
+        -2,
+        8.5,
+        -1.75
       ]
     }
   }
