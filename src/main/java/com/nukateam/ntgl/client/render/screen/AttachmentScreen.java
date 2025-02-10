@@ -2,8 +2,10 @@ package com.nukateam.ntgl.client.render.screen;
 
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.math.Axis;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.event.InputEvents;
 import com.nukateam.ntgl.client.render.screen.widget.MiniButton;
 import com.nukateam.ntgl.client.render.screen.widget.SlotButton;
 import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
@@ -223,12 +225,21 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         {
             poseStack.translate(startX + 88, startY + 60, 100);
             poseStack.scale(50F, -50F, 50F);
-            RenderSystem.applyModelViewMatrix();
-            var buffer = minecraft.renderBuffers().bufferSource();
-            minecraft.getItemRenderer().render(currentItem, ItemDisplayContext.FIXED,
-                    false, graphics.pose(), buffer, 15728880,
-                    OverlayTexture.NO_OVERLAY, ModelRenderUtil.getModel(currentItem));
-            buffer.endBatch();
+            poseStack.pushPose();
+            {
+                poseStack.mulPose(Axis.XP.rotation(0 + InputEvents.X / 10f));
+                poseStack.mulPose(Axis.YP.rotation(3.7f + InputEvents.Y / 10f));
+                poseStack.mulPose(Axis.ZP.rotation(-0.3f + InputEvents.Z / 10f));
+                RenderSystem.applyModelViewMatrix();
+
+                var buffer = minecraft.renderBuffers().bufferSource();
+
+                minecraft.getItemRenderer().render(currentItem, ItemDisplayContext.FIXED,
+                        false, graphics.pose(), buffer, 15728880,
+                        OverlayTexture.NO_OVERLAY, ModelRenderUtil.getModel(currentItem));
+                buffer.endBatch();
+            }
+            poseStack.popPose();
         }
         poseStack.popPose();
         RenderSystem.applyModelViewMatrix();

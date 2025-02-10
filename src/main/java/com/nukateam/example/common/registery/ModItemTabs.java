@@ -17,6 +17,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 import static net.minecraft.world.item.CreativeModeTab.*;
@@ -25,17 +26,23 @@ public class ModItemTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Ntgl.MOD_ID);
 
-    public static final RegistryObject<CreativeModeTab> ITEMS = CREATIVE_MODE_TABS.register("ntgl_items",
-            () -> builder().icon(() -> new ItemStack(ModGuns.ROUND10MM.get()))
-                    .title(Component.translatable("itemGroup.ntgl"))
-                    .displayItems((params, output) -> registerItems(output))
-                    .build());
+    @Nullable
+    public static final RegistryObject<CreativeModeTab> ITEMS = createNtglTab();
+
+    private static RegistryObject<CreativeModeTab> createNtglTab() {
+        if(Ntgl.isDebugging()) {
+            return CREATIVE_MODE_TABS.register("ntgl_items",
+                    () -> builder().icon(() -> new ItemStack(ModGuns.ROUND10MM.get()))
+                            .title(Component.translatable("itemGroup.ntgl"))
+                            .displayItems((params, output) -> registerItems(output))
+                            .build());
+        }
+        return null;
+    }
 
     private static void registerItems(Output output) {
-        if(Ntgl.isDebugging()) {
-            for (var entry : ModGuns.ITEMS.getEntries()) {
-                RegistrationHelper.registerGunOrDefault(output, entry.get());
-            }
+        for (var entry : ModGuns.ITEMS.getEntries()) {
+            RegistrationHelper.registerGunOrDefault(output, entry.get());
         }
     }
 
