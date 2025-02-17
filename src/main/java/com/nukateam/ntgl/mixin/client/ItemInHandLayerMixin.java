@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.mixin.client;
 
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
+import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -31,9 +32,12 @@ public class ItemInHandLayerMixin {
     private void renderArmWithItem(LivingEntity entity, ItemStack stack,
                                        ItemDisplayContext transformType, HumanoidArm arm,
                                        PoseStack poseStack, MultiBufferSource source, int light, CallbackInfo ci) {
-        var hand = Minecraft.getInstance().options.mainHand().get() == arm ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        var minecraft = Minecraft.getInstance();
+        var hand = minecraft.options.mainHand().get() == arm ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+
         if(stack != entity.getItemInHand(hand)) return;
-        var oppositeHand = Minecraft.getInstance().options.mainHand().get() == arm ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+
+        var oppositeHand = minecraft.options.mainHand().get() == arm ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         var oppositeStack = entity.getItemInHand(oppositeHand);
 
         if (hand == InteractionHand.OFF_HAND) {
@@ -43,11 +47,25 @@ public class ItemInHandLayerMixin {
             }
         }
 
+//        var reloadHandler = ClientReloadHandler.get();
+//        var player = Minecraft.getInstance().player;
+//
+//        var isReloadingLeft = reloadHandler.isReloadingLeft(player);
+//        var isRightArm = hand == InteractionHand.MAIN_HAND;
+//
+//        var isReloadingRight = reloadHandler.isReloadingRight(player);
+//        var isLeftArm = hand == InteractionHand.OFF_HAND;
+//
+//        if ((isReloadingLeft && isRightArm) || (isReloadingRight && isLeftArm)) {
+//            ci.cancel();
+//            return;
+//        }
+
         if (stack.getItem() instanceof GunItem gunItem) {
             ci.cancel();
             var layer = (ItemInHandLayer<?, ?>) (Object) this;
             renderArmWithGun(layer, entity, stack, gunItem, transformType, hand, arm,
-                    poseStack, source, light, Minecraft.getInstance().getFrameTime());
+                    poseStack, source, light, minecraft.getFrameTime());
         }
     }
 

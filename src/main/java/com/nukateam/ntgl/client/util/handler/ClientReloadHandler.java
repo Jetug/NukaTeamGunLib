@@ -93,8 +93,8 @@ public class ClientReloadHandler {
                 var mainGun = player.getMainHandItem();
                 var offGun = player.getOffhandItem();
 
-                if(mainGun.getItem() instanceof GunItem gunItem &&
-                        ClientHandler.getInspectionTicks() == 0){
+                if((mainGun.getItem() instanceof GunItem || offGun.getItem() instanceof GunItem)
+                        && !ClientHandler.isInspecting()){
                     ClientHandler.resetInspectionTimer();
                 }
             }

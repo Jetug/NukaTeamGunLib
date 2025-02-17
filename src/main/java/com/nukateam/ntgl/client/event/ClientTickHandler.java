@@ -21,7 +21,7 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
-        if(event.phase == TickEvent.Phase.START) {
+        if(event.phase == TickEvent.Phase.END) {
             tickingAnimators.forEach((k, v) -> {
                 v.run();
             });

@@ -11,6 +11,7 @@ import com.nukateam.ntgl.client.util.handler.ShootingHandler;
 import com.nukateam.ntgl.client.model.gun.GeoGunModel;
 import com.nukateam.ntgl.client.render.renderers.gun.DynamicGunRenderer;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
+import com.nukateam.ntgl.common.base.utils.ReloadTracker;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
@@ -26,6 +27,7 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.keyframe.event.SoundKeyframeEvent;
 import mod.azure.azurelib.core.object.PlayState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,6 +36,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.TimerTask;
 
 import static com.nukateam.example.common.util.constants.Animations.*;
 import static com.nukateam.ntgl.client.util.util.TransformUtils.*;
@@ -59,6 +63,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected Cycler barrelCycler = new Cycler(1, getBarrelAmount());
     protected Cycler chamberCycler = null;
     protected final ShootingHandler shootingHandler = ShootingHandler.get();
+    protected final ClientReloadHandler reloadHandler = ClientReloadHandler.get();
 
     protected AnimationHelper<GunAnimator> animationHelper = new AnimationHelper<>(this, GeoGunModel.INSTANCE);
 
@@ -94,7 +99,16 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     public void tick(){
         if (!(getStack().getItem() instanceof GunItem))
             return;
+//
+//        var itemInHandRenderer = minecraft.gameRenderer.itemInHandRenderer;
+//
+//        if (reloadHandler.isReloading(getEntity(), HumanoidArm.LEFT))
+//            itemInHandRenderer.mainHandHeight = 0;
 
+        setupCycledAnimations();
+    }
+
+    private void setupCycledAnimations() {
         var entity = getEntity();
         var arm = isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
         var cooldown = shootingHandler.getCooldown(entity, arm);
@@ -133,13 +147,14 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
     }
 
+    int delay = 0;
+
     protected AnimationController.AnimationStateHandler<GunAnimator> animate() {
         return event -> {
             try {
                 var controller = event.getController();
                 controller.setAnimationSpeed(1);
                 var entity = getEntity();
-                var reloadHandler = ClientReloadHandler.get();
                 var holdAnimation = playGunAnim(HOLD, LOOP);
 
                 if (!isHandTransform(transformType))
@@ -160,7 +175,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 } else if (reloadHandler.isReloading(entity, arm.getOpposite()) && isFirstPerson(transformType)) {
                     animation = begin().then(HIDE, HOLD_ON_LAST_FRAME);
                 }
-                else if(ClientHandler.getInspectionTicks() > 0){
+                else if(ClientHandler.getInspectionTicks(getArm()) > 0){
                     animation = getInspectionAnimation(event);
                 }
                 else {

@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
@@ -45,6 +46,7 @@ import java.lang.reflect.Field;
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientHandler {
     public static final int INSPECTION_DURATION = 60;
+    public static final int INSPECTION_OFFSET = 5;
     private static Field mouseOptionsField;
 
     public static void setup() {
@@ -107,14 +109,19 @@ public class ClientHandler {
         MenuScreens.register(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
     }
 
-    private static int inspectionTimer;
+    private static int inspectionTimerRight;
+    private static int inspectionTimerLeft;
 
     public static void resetInspectionTimer(){
-        inspectionTimer = INSPECTION_DURATION;
+        inspectionTimerRight = INSPECTION_DURATION;
     }
 
-    public static int getInspectionTicks() {
-        return inspectionTimer;
+    public static int getInspectionTicks(HumanoidArm arm) {
+        return arm == HumanoidArm.RIGHT ? inspectionTimerRight : inspectionTimerLeft;
+    }
+
+    public static boolean isInspecting() {
+        return inspectionTimerRight > 0 || inspectionTimerLeft > 0;
     }
 
     public static int getMaxInspectionTicks() {
@@ -124,8 +131,14 @@ public class ClientHandler {
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
         if(event.phase == TickEvent.Phase.END) {
-            if (inspectionTimer > 0)
-                inspectionTimer--;
+            if(inspectionTimerRight == INSPECTION_DURATION - 2) {
+                inspectionTimerLeft = INSPECTION_DURATION;
+            }
+
+            if (inspectionTimerRight > 0)
+                inspectionTimerRight--;
+            if (inspectionTimerLeft > 0)
+                inspectionTimerLeft--;
         }
     }
 
@@ -168,6 +181,14 @@ public class ClientHandler {
 
     public static Screen createEditorScreen(IEditorMenu menu) {
         return new EditorScreen(Minecraft.getInstance().screen, menu);
+    }
+
+    public static int getInspectionTimerRight() {
+        return inspectionTimerRight;
+    }
+
+    public static void setInspectionTimerRight(int inspectionTimerRight) {
+        ClientHandler.inspectionTimerRight = inspectionTimerRight;
     }
 
     /* Uncomment for debugging headshot hit boxes */
