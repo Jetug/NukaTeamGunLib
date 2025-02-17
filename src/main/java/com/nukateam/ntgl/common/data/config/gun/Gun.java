@@ -24,7 +24,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
@@ -306,7 +305,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             var attachments = getModules().getAttachments().get(attachmentType);
 
             for (var attachment : attachments) {
-                if(attachment.getItem() != null && attachment.getItem().equals(itemId)){
+                if(attachment.getItemId() != null && attachment.getItemId().equals(itemId)){
                     return attachment;
                 }
             }

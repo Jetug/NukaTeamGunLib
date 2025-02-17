@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -58,7 +59,8 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (getAttachments() == null) return null;
         AtomicReference<Attachment> result = new AtomicReference<>();
         getAttachments().forEach((k, v) -> {
-            var att = v.stream().filter((s) -> s.name.equals(name)).findFirst();
+            var att = v.stream().filter((attachment) ->
+                    attachment.name.equals(name)).findFirst();
             att.ifPresent(result::set);
         });
 
@@ -243,7 +245,7 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
 
         @Nullable
-        public ResourceLocation getItem() {
+        public ResourceLocation getItemId() {
             return this.item;
         }
 

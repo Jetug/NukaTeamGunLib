@@ -27,7 +27,7 @@ import java.util.function.BiFunction;
 public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoObjectRenderer<Animator> {
     private final Map<Pair<LivingEntity, ItemDisplayContext>, Animator> animatorsByTransform = new HashMap<>();
     private BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> animatorFactory = null;
-    protected ItemStack currentStack;
+    private ItemStack currentStack;
     protected ItemDisplayContext currentTransform;
     protected LivingEntity currentEntity;
     protected LivingEntity buffEntity = null;

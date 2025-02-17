@@ -71,7 +71,7 @@ public class AttachmentSlot extends Slot {
             var isItemAllowed = false;
 
             for (var att : attachments){
-                if(att.getItem().equals(id)) {
+                if(att.getItemId().equals(id)) {
                     isItemAllowed = true;
                     break;
                 }

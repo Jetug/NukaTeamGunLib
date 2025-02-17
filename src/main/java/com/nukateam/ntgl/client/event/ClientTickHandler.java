@@ -10,21 +10,31 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientTickHandler {
     private static final Map<ItemAnimator, Runnable> tickingAnimators = new HashMap<>();
+    private static final Map<Object, Consumer<TickEvent>> tickers = new HashMap<>();
 
     public static void addTicker(ItemAnimator animator, Runnable onTick){
         tickingAnimators.put(animator, onTick);
     }
 
+    public static void addTicker(Object object, Consumer<TickEvent> onTick){
+        tickers.put(object, onTick);
+    }
+
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
-        if(event.phase == TickEvent.Phase.END) {
+        if(event.phase == TickEvent.Phase.START) {
             tickingAnimators.forEach((k, v) -> {
                 v.run();
             });
         }
+
+        tickers.forEach((k, v) -> {
+            v.accept(event);
+        });
     }
 }

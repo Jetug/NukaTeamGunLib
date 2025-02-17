@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
+import com.nukateam.ntgl.client.event.ClientTickHandler;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
@@ -26,6 +27,7 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +47,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
     protected ArrayList<String> hiddenBones = new ArrayList<>();
     protected BarrelItem barrelItem;
     protected Gun gun;
+    protected ItemStack gunStack;
     protected boolean firstRightRender = true;
     protected boolean firstLeftRender = true;
 
@@ -52,6 +55,13 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
     public DynamicGunRenderer(GeoModel<Animator> model) {
         super(model);
         addRenderLayer(new GlowingLayer<>(this));
+        ClientTickHandler.addTicker(this, this::tick);
+    }
+
+    protected void tick(TickEvent event){
+        if (event.phase == TickEvent.Phase.START){
+
+        }
     }
 
     @Override
@@ -59,7 +69,9 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
                        @Nullable MultiBufferSource bufferSource,
                        @Nullable RenderType renderType, @Nullable VertexConsumer buffer, int packedLight) {
         this.bufferSource = bufferSource;
+
         this.gun = GunModifierHelper.getGun(stack);
+        this.gunStack = stack;
         this.gunAttachments = Gun.getAttachmentItems(stack);
         this.configAttachments = gun.getAttachments(gunAttachments);
         this.firstRightRender = true;
@@ -69,19 +81,41 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
             return;
 
         var barrelStack = Gun.getAttachmentItem(AttachmentType.BARREL, stack);
-        hiddenBones.clear();
 
-        if(barrelStack.getItem() instanceof BarrelItem barrelItem)
+        if(barrelStack.getItem() instanceof BarrelItem barrelItem) {
             this.barrelItem = barrelItem;
+        }
         else this.barrelItem = null;
 
-        for (var attachment : configAttachments) {
-            if(transformType != ItemDisplayContext.GUI) {
-                hiddenBones.addAll(attachment.getHidden());
-            }
-        }
+        prepareHiddenBones(transformType);
 
         super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
+    }
+
+    private void prepareHiddenBones(ItemDisplayContext transformType) {
+        if(gunStack == null || gunStack.isEmpty()) return;
+
+        hiddenBones.clear();
+
+        var gunAttachments = this.gun.getModules().getAttachments();
+
+        gunAttachments.forEach((type, typeAttachments) -> {
+            var item = Gun.getAttachmentItem(type, gunStack);
+
+            typeAttachments.forEach((attachment) -> {
+                if(shouldRender(attachment, item)){
+                    if(transformType != ItemDisplayContext.GUI) {
+                        hiddenBones.addAll(attachment.getHidden());
+                    }
+                }
+                else hiddenBones.add(attachment.getName());
+            });
+        });
+    }
+
+    private boolean shouldRender(Modules.Attachment attachment, ItemStack item) {
+        var itemId = ForgeRegistries.ITEMS.getKey(item.getItem());
+        return !item.isEmpty() && attachment.getItemId().equals(itemId);
     }
 
     @Override
@@ -194,33 +228,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         var boneName = bone.getName();
         if(hiddenBones.stream().anyMatch((s) -> s.equals(boneName))) {
             bone.setHidden(true);
-            return;
         }
-
-        var configAttachments = gun.getModules().getAttachments();
-        if (configAttachments == null) {
-            bone.setHidden(false);
-            return;
-        }
-
-        var attachment = gun.getModules().getAttachmentByBone(boneName);
-        if (attachment != null) {
-            if(currentTransform == ItemDisplayContext.GUI){
-                bone.setHidden(true);
-                return;
-            }
-
-            for (var att : this.gunAttachments) {
-                var registryName = ForgeRegistries.ITEMS.getKey(att.getItem());
-                if (registryName != null && registryName.equals(attachment.getItem())) {
-                    bone.setHidden(false);
-                    return;
-                }
-            }
-            bone.setHidden(true);
-            return;
-        }
-
-        bone.setHidden(false);
+        else bone.setHidden(false);
     }
 }
