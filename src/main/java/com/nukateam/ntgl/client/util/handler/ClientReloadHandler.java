@@ -5,7 +5,7 @@ import com.nukateam.ntgl.client.event.ClientHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.LoadingType;
-import com.nukateam.ntgl.common.util.constants.Tags;
+import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.*;

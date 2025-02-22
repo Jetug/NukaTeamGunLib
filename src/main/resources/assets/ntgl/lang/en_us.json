@@ -75,9 +75,13 @@
   "subtitle.ntgl.attach": "Attachment Attach",
   "subtitle.ntgl.cock": "Cocking Weapon",
   "ntgl.option_list.no_items": "No Items",
+
+  "ntgl.options.gun_volume_button": "Gun Sounds",
+  "ntgl.options.gun_volume": "Gun Sounds %s",
   "ntgl.options.adsSensitivity": "ADS Sensitivity",
   "ntgl.options.adsSensitivity.format": "ADS Sensitivity: %s",
   "ntgl.options.crosshair": "Crosshair",
+
   "ntgl.crosshair.arrow": "Arrow",
   "ntgl.crosshair.better_default": "Better Default",
   "ntgl.crosshair.box": "Box",

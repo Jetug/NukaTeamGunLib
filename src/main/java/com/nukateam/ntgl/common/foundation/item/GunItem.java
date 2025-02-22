@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
-import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.common.util.util.ResourceUtils;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
@@ -10,7 +9,6 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.render.renderers.gun.DefaultGunRendererGeo;
 import com.nukateam.ntgl.common.base.NetworkManager;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.util.constants.Tags;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -22,7 +20,6 @@ import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -43,7 +40,7 @@ import java.util.WeakHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import static com.nukateam.ntgl.common.util.constants.Tags.AMMO_COUNT;
+import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
 public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IResourceProvider, IConfigConsumer<Gun>, IConfigProvider<Gun> {

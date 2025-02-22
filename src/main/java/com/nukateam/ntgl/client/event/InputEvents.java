@@ -49,9 +49,9 @@ public class InputEvents {
                     }
                 }
             }
-
-            handleDebugKeys(event);
         }
+
+        handleDebugKeys(event);
     }
 
     private static void handleDebugKeys(InputEvent.@NotNull Key event) {

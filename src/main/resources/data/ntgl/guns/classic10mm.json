@@ -48,23 +48,24 @@
       "ntgl:scope": [
         {
           "name": "scope_1",
-          "item": "ntgl:pistol_collimator_sight"
+          "item": "ntgl:collimator_sight"
         },
         {
           "name": "scope_2",
-          "item": "ntgl:pistol_holographic_sight"
+          "bones": ["scope_2", "chamber", "cock"],
+          "item": "ntgl:holographic_sight"
         },
         {
           "name": "scope_3",
-          "item": "ntgl:pistol_hunting_optics"
+          "item": "ntgl:hunting_optics"
         },
         {
           "name": "scope_4",
-          "item": "ntgl:pistol_iron_sight"
+          "item": "ntgl:iron_sight"
         },
         {
           "name": "scope_5",
-          "item": "ntgl:pistol_scout_sight"
+          "item": "ntgl:scout_sight"
         },
         {
           "name": "scope_6",
@@ -74,46 +75,46 @@
       "ntgl:barrel": [
         {
           "name": "barrel_1",
-          "item": "ntgl:pistol_silencer",
+          "item": "ntgl:silencer",
           "hide": [
             "muzzle_flash"
           ]
         },
         {
           "name": "barrel_2",
-          "item": "ntgl:pistol_flame_hider"
+          "item": "ntgl:flame_hider"
         },
         {
           "name": "barrel_3",
-          "item": "ntgl:pistol_compensator"
+          "item": "ntgl:compensator"
         },
         {
           "name": "barrel_4",
-          "item": "ntgl:pistol_heavy_barrel"
+          "item": "ntgl:heavy_barrel"
         },
         {
           "name": "barrel_5",
-          "item": "ntgl:pistol_long_barrel"
+          "item": "ntgl:long_barrel"
         }
       ],
       "ntgl:stock": [
         {
           "name": "grip_1",
-          "item": "ntgl:pistol_specialised_grip",
+          "item": "ntgl:specialised_grip",
           "hide": [
             "grip_default"
           ]
         },
         {
           "name": "grip_3",
-          "item": "ntgl:pistol_tactical_grip",
+          "item": "ntgl:tactical_grip",
           "hide": [
             "grip_default"
           ]
         },
         {
           "name": "grip_2",
-          "item": "ntgl:pistol_weighted_grip",
+          "item": "ntgl:weighted_grip",
           "hide": [
             "grip_default"
           ]

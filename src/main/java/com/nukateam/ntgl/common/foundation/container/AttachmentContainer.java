@@ -5,7 +5,7 @@ import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
 import com.nukateam.ntgl.common.foundation.init.ModContainers;
 import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItemBase;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import com.nukateam.ntgl.common.util.constants.Tags;
+import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.util.data.Pos2I;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;

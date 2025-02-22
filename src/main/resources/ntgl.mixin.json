@@ -6,7 +6,7 @@
     "common.EndPortalBlockMixin",
     "common.LivingEntityMixin",
     "common.NarratorMixin",
-    "common.SittingPhaseMixin"
+    "common.SittingPhaseMixin",
   ],
   "client": [
     "client.GameRendererMixin",
@@ -19,6 +19,7 @@
     "client.MinecraftStaticMixin",
     "client.MouseHandlerMixin",
     "client.RenderTypeLookupMixin",
+    "client.SoundOptionsScreenMixin",
     "common.AgeableListModelAccessor",
     "common.QuadrupedModelAccessor",
     "common.VillagerModelAccessor"

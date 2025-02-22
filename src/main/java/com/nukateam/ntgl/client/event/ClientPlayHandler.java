@@ -52,9 +52,17 @@ public class ClientPlayHandler {
         if (message.showMuzzleFlash())
             GunRenderingHandler.get().showMuzzleFlashForPlayer(message.getShooterId());
 
-        if (message.getShooterId() == mc.player.getId())
-            Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(message.getId(), SoundSource.PLAYERS, message.getVolume(), message.getPitch(), mc.level.getRandom(), false, 0, SoundInstance.Attenuation.NONE, 0, 0, 0, true));
-        else Minecraft.getInstance().getSoundManager().play(new GunShotSound(message.getId(), SoundSource.PLAYERS, message.getX(), message.getY(), message.getZ(), message.getVolume(), message.getPitch(), message.isReload()));
+        if (message.getShooterId() == mc.player.getId()) {
+            mc.getSoundManager().play(new SimpleSoundInstance(message.getId(), SoundSource.PLAYERS,
+                    GunShotSound.getVolume(message.getVolume()), message.getPitch(),
+                    mc.level.getRandom(), false, 0,
+                    SoundInstance.Attenuation.NONE, 0, 0, 0, true));
+        }
+        else {
+            mc.getSoundManager().play(new GunShotSound(message.getId(), SoundSource.PLAYERS,
+                    message.getX(), message.getY(), message.getZ(),
+                    message.getVolume(), message.getPitch(), message.isReload()));
+        }
     }
 
     public static void handleMessageBlood(S2CMessageBlood message) {

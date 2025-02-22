@@ -16,6 +16,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
  */
 public class StockItem extends AttachmentItem<Stock> {
     public StockItem(Stock data, Properties properties) {
-        super(AttachmentType.SCOPE, data, properties);
+        super(AttachmentType.STOCK, data, properties);
     }
 }

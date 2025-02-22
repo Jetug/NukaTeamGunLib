@@ -11,7 +11,6 @@ import com.nukateam.ntgl.client.util.handler.ShootingHandler;
 import com.nukateam.ntgl.client.model.gun.GeoGunModel;
 import com.nukateam.ntgl.client.render.renderers.gun.DynamicGunRenderer;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
-import com.nukateam.ntgl.common.base.utils.ReloadTracker;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
@@ -22,12 +21,12 @@ import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
 import mod.azure.azurelib.core.animation.Animation;
 import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.AnimationController.AnimationStateHandler;
 import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.keyframe.event.SoundKeyframeEvent;
 import mod.azure.azurelib.core.object.PlayState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,8 +36,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.TimerTask;
-
 import static com.nukateam.example.common.util.constants.Animations.*;
 import static com.nukateam.ntgl.client.util.util.TransformUtils.*;
 import static mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
@@ -47,35 +44,31 @@ import static mod.azure.azurelib.core.animation.RawAnimation.begin;
 
 @OnlyIn(Dist.CLIENT)
 public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
-    public static final String RELOAD_START = "reload_start";
-    public static final String RELOAD_END = "reload_end";
-    public static final String CHARGE = "charge";
-    public static final String ONE_HAND_SUFFIX = "_one_hand";
-    public static final String INSPECT = "inspect";
-    private static final String SHOT_START = "shot_start";
-    private static final String SHOT_END = "shot_end";
-    public static final String HIDE = "hide";
-    public static final String CHAMBER = "chamber";
-    public static final String BARREL = "barrel";
-    private GunItem currentGun = null;
-    protected final Minecraft minecraft = Minecraft.getInstance();
     protected final DynamicGunRenderer<GunAnimator> renderer;
-    protected Cycler barrelCycler = new Cycler(1, getBarrelAmount());
-    protected Cycler chamberCycler = null;
+    protected final Minecraft minecraft = Minecraft.getInstance();
     protected final ShootingHandler shootingHandler = ShootingHandler.get();
     protected final ClientReloadHandler reloadHandler = ClientReloadHandler.get();
+    protected final AnimationHelper<GunAnimator> animationHelper;
 
-    protected AnimationHelper<GunAnimator> animationHelper = new AnimationHelper<>(this, GeoGunModel.INSTANCE);
+    protected final AnimationController<GunAnimator> TRIGGER_CONTROLLER;
+    protected final AnimationController<GunAnimator> MAIN_CONTROLLER;
+    protected final AnimationController<GunAnimator> REVOLVER_CONTROLLER;
+    protected final AnimationController<GunAnimator> BARREL_CONTROLLER;
 
-    protected final AnimationController<GunAnimator> TRIGGER_CONTROLLER = createController( "triggerController", event -> PlayState.CONTINUE);
-    protected final AnimationController<GunAnimator> MAIN_CONTROLLER = createController("mainController", animate()).setSoundKeyframeHandler(this::handleSoundEvent);
-    protected final AnimationController<GunAnimator> REVOLVER_CONTROLLER = createController("revolverController", animateRevolver());
-    protected final AnimationController<GunAnimator> BARREL_CONTROLLER = createController("barrelController", animateBarrels());
+    protected Cycler barrelCycler = new Cycler(1, getBarrelAmount());
+    protected Cycler chamberCycler = null;
+
+    private GunItem currentGun = null;
 
     public GunAnimator(ItemDisplayContext transformType, DynamicGeoItemRenderer<GunAnimator> renderer) {
         super(transformType);
         this.renderer = (DynamicGunRenderer<GunAnimator>) renderer;
         ClientTickHandler.addTicker(this, this::tick);
+        TRIGGER_CONTROLLER = createController( "triggerController", event -> PlayState.CONTINUE);
+        MAIN_CONTROLLER = createController("mainController", animate()).setSoundKeyframeHandler(this::handleSoundEvent);
+        REVOLVER_CONTROLLER = createController("revolverController", animateRevolver());
+        BARREL_CONTROLLER = createController("barrelController", animateBarrels());
+        animationHelper = new AnimationHelper<>(this, GeoGunModel.INSTANCE);
     }
 
     @Override
@@ -135,11 +128,12 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected boolean isOneHanded(ItemStack stack){
-        return stack.getItem() instanceof GunItem && GunModifierHelper.getGripType(stack) == GripType.ONE_HANDED;
+        return stack.getItem() instanceof GunItem
+                && GunModifierHelper.getGripType(stack) == GripType.ONE_HANDED;
     }
 
     @NotNull
-    protected AnimationController<GunAnimator> createController(String name, AnimationController.AnimationStateHandler<GunAnimator> animate) {
+    protected AnimationController<GunAnimator> createController(String name, AnimationStateHandler<GunAnimator> animate) {
         return new AnimationController<>(this, name, 0, animate);
     }
 
@@ -149,7 +143,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     int delay = 0;
 
-    protected AnimationController.AnimationStateHandler<GunAnimator> animate() {
+    protected AnimationStateHandler<GunAnimator> animate() {
         return event -> {
             try {
                 var controller = event.getController();
@@ -173,7 +167,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 } else if (isShooting) {
                     animation = getShootingAnimation(event);
                 } else if (reloadHandler.isReloading(entity, arm.getOpposite()) && isFirstPerson(transformType)) {
-                    animation = begin().then(HIDE, HOLD_ON_LAST_FRAME);
+                    animation = begin().then(com.nukateam.ntgl.common.data.constants.Animation.HIDE, HOLD_ON_LAST_FRAME);
                 }
                 else if(ClientHandler.getInspectionTicks(getArm()) > 0){
                     animation = getInspectionAnimation(event);
@@ -194,12 +188,12 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         };
     }
 
-    protected AnimationController.AnimationStateHandler<GunAnimator> animateRevolver() {
-        return (event) -> getCycledAnimation(event, CHAMBER, this.chamberCycler);
+    protected AnimationStateHandler<GunAnimator> animateRevolver() {
+        return (event) -> getCycledAnimation(event, com.nukateam.ntgl.common.data.constants.Animation.CHAMBER, this.chamberCycler);
     }
 
-    protected AnimationController.AnimationStateHandler<GunAnimator> animateBarrels() {
-        return (event) -> getCycledAnimation(event, BARREL, this.barrelCycler);
+    protected AnimationStateHandler<GunAnimator> animateBarrels() {
+        return (event) -> getCycledAnimation(event, com.nukateam.ntgl.common.data.constants.Animation.BARREL, this.barrelCycler);
     }
 
     protected PlayState getCycledAnimation(AnimationState<GunAnimator> event, String animationName, Cycler cycler) {
@@ -224,8 +218,8 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     protected RawAnimation getInspectionAnimation(AnimationState<GunAnimator> event) {
         RawAnimation animation;
-        animation = playGunAnim(INSPECT, PLAY_ONCE);
-        animationHelper.syncAnimation(event, INSPECT, ClientHandler.getMaxInspectionTicks());
+        animation = playGunAnim(com.nukateam.ntgl.common.data.constants.Animation.INSPECT, PLAY_ONCE);
+        animationHelper.syncAnimation(event, com.nukateam.ntgl.common.data.constants.Animation.INSPECT, ClientHandler.getMaxInspectionTicks());
         return animation;
     }
 
@@ -236,10 +230,10 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         var controller = event.getController();
         controller.setAnimationSpeed(speed);
 
-        if(animationHelper.hasAnimation(CHARGE)) {
+        if(animationHelper.hasAnimation(com.nukateam.ntgl.common.data.constants.Animation.CHARGE)) {
             BARREL_CONTROLLER.stop();
             BARREL_CONTROLLER.setAnimation(begin().then("void", PLAY_ONCE));
-            animation = playGunAnim(CHARGE, LOOP);
+            animation = playGunAnim(com.nukateam.ntgl.common.data.constants.Animation.CHARGE, LOOP);
         }
         return animation;
     }
@@ -254,13 +248,13 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected RawAnimation getReloadingAnimation(AnimationState<GunAnimator> event) {
         var animation = begin();
 
-        if(animationHelper.containsAnimation(RELOAD_START))
-            animation.then(RELOAD_START, PLAY_ONCE);
+        if(animationHelper.containsAnimation(com.nukateam.ntgl.common.data.constants.Animation.RELOAD_START))
+            animation.then(com.nukateam.ntgl.common.data.constants.Animation.RELOAD_START, PLAY_ONCE);
 
         animation.then(RELOAD, LOOP);
 
-        if(animationHelper.containsAnimation(RELOAD_END))
-            animation.then(RELOAD_END, PLAY_ONCE);
+        if(animationHelper.containsAnimation(com.nukateam.ntgl.common.data.constants.Animation.RELOAD_END))
+            animation.then(com.nukateam.ntgl.common.data.constants.Animation.RELOAD_END, PLAY_ONCE);
 
         if(event.getController().getCurrentAnimation().animation().name().equals(RELOAD))
             animationHelper.syncAnimation(event, RELOAD, GunModifierHelper.getReloadTime(getStack()));
@@ -286,8 +280,8 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         var oppositeItem = entity.getItemInHand(PlayerHelper.convertHand(arm.getOpposite()));
         var isOneHanded = isOneHanded(currentItem) && isOneHanded(oppositeItem) || arm == HumanoidArm.LEFT;
 
-        if(isOneHanded && animationHelper.hasAnimation(name + ONE_HAND_SUFFIX))
-            return begin().then(name + ONE_HAND_SUFFIX, loopType);
+        if(isOneHanded && animationHelper.hasAnimation(name + com.nukateam.ntgl.common.data.constants.Animation.ONE_HAND_SUFFIX))
+            return begin().then(name + com.nukateam.ntgl.common.data.constants.Animation.ONE_HAND_SUFFIX, loopType);
         return begin().then(name, loopType);
     }
 

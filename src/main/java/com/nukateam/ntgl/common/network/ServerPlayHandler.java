@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.base.utils.ShootTracker;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
-import com.nukateam.ntgl.common.util.constants.Tags;
+import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.util.StackUtils;

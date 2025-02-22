@@ -6,7 +6,7 @@ import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.util.annotation.Ignored;
-import com.nukateam.ntgl.common.util.constants.Tags;
+import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.util.util.GunJsonUtil;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;

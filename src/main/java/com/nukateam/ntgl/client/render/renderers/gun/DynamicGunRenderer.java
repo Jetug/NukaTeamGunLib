@@ -51,7 +51,6 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
     protected boolean firstRightRender = true;
     protected boolean firstLeftRender = true;
 
-
     public DynamicGunRenderer(GeoModel<Animator> model) {
         super(model);
         addRenderLayer(new GlowingLayer<>(this));
@@ -95,10 +94,8 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
     private void prepareHiddenBones(ItemDisplayContext transformType) {
         if(gunStack == null || gunStack.isEmpty()) return;
 
-        hiddenBones.clear();
-
         var gunAttachments = this.gun.getModules().getAttachments();
-
+        hiddenBones.clear();
         gunAttachments.forEach((type, typeAttachments) -> {
             var item = Gun.getAttachmentItem(type, gunStack);
 
@@ -108,7 +105,10 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
                         hiddenBones.addAll(attachment.getHidden());
                     }
                 }
-                else hiddenBones.add(attachment.getName());
+                else {
+                    hiddenBones.add(attachment.getName());
+                    hiddenBones.addAll(attachment.getBones());
+                }
             });
         });
     }
@@ -134,8 +134,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
             }
             case MUZZLE_FLASH -> {
                 if(barrelItem != null){
-                    renderMuzzleFlash(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender,
-                            partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+                    renderMuzzleFlash(poseStack);
                 }
             }
         }
@@ -211,9 +210,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         }
     }
 
-    protected void renderMuzzleFlash(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
-                                   MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
-                                   int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    protected void renderMuzzleFlash(PoseStack poseStack) {
         var length = barrelItem.getProperties().getLength();
         poseStack.pushPose();
         {
@@ -226,9 +223,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
 
     protected void renderAttachments(GeoBone bone) {
         var boneName = bone.getName();
-        if(hiddenBones.stream().anyMatch((s) -> s.equals(boneName))) {
-            bone.setHidden(true);
-        }
-        else bone.setHidden(false);
+        var hideBone = hiddenBones.stream().anyMatch((s) -> s.equals(boneName));
+        bone.setHidden(hideBone);
     }
 }

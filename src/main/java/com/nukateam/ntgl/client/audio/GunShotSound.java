@@ -22,13 +22,18 @@ public class GunShotSound extends AbstractSoundInstance {
 
         var player = Minecraft.getInstance().player;
         if (player != null) {
-            float distance = reload ? Config.SERVER.reloadMaxDistance.get().floatValue() : Config.SERVER.gunShotMaxDistance.get().floatValue();
+            float distance = reload ?
+                    Config.SERVER.reloadMaxDistance.get().floatValue() :
+                    Config.SERVER.gunShotMaxDistance.get().floatValue();
+
             this.volume = volume * (1.0F - Math.min(1.0F, (float) Math.sqrt(player.distanceToSqr(x, y, z)) / distance));
             this.volume *= this.volume; //Ease the volume instead of linear
+            this.volume = getVolume(this.volume);
         }
     }
 
-    public GunShotSound(ResourceLocation soundIn, SoundSource categoryIn, Vec3 position, float volume, float pitch, boolean reload) {
+    public GunShotSound(ResourceLocation soundIn, SoundSource categoryIn, Vec3 position,
+                        float volume, float pitch, boolean reload) {
         this(soundIn, categoryIn,
                 position.x,
                 position.y,
@@ -37,5 +42,9 @@ public class GunShotSound extends AbstractSoundInstance {
                 pitch,
                 reload
         );
+    }
+
+    public static float getVolume(float volume) {
+        return (float) (volume * Config.CLIENT.sounds.gunVolume.get());
     }
 }

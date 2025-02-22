@@ -230,14 +230,10 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static class Attachment extends Positioned {
-        @Optional
-        @Nullable
-        String name;
-        @Optional
-        @Nullable
-        ResourceLocation item;
-        @Optional
-        ArrayList<String> hide = new ArrayList<>();
+        @Optional @Nullable String name;
+        @Optional @Nullable ResourceLocation item;
+        @Optional ArrayList<String> hide = new ArrayList<>();
+        @Optional ArrayList<String> bones = new ArrayList<>();
 
         @Nullable
         public String getName() {
@@ -253,6 +249,10 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this.hide;
         }
 
+        public ArrayList<String> getBones() {
+            return this.bones;
+        }
+
         @Override
         public CompoundTag serializeNBT() {
             CompoundTag tag = super.serializeNBT();
@@ -265,6 +265,9 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
             if (this.hide != null) {
                 tag.put("Hide", NbtUtils.serializeStringArray(this.hide));
+            }
+            if (this.bones != null) {
+                tag.put("Bones", NbtUtils.serializeStringArray(this.bones));
             }
             return tag;
         }
@@ -281,6 +284,9 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
             if (tag.contains("Hide", Tag.TAG_COMPOUND)) {
                 this.hide = NbtUtils.deserializeStringArray(tag.getCompound("Hide"));
+            }
+            if (tag.contains("Bones", Tag.TAG_COMPOUND)) {
+                this.bones = NbtUtils.deserializeStringArray(tag.getCompound("Bones"));
             }
         }
 
@@ -305,6 +311,9 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
             if (this.hide != null) {
                 attachments.hide = this.hide;
+            }
+            if (this.bones != null) {
+                attachments.bones = this.bones;
             }
             return attachments;
         }
