@@ -237,17 +237,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return null;
     }
 
-    public static ItemStack getScopeStack(ItemStack gun) {
-        var compound = gun.getTag();
-        if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
-            CompoundTag attachment = compound.getCompound(ATTACHMENTS);
-            if (attachment.contains("Scope", Tag.TAG_COMPOUND)) {
-                return ItemStack.of(attachment.getCompound("Scope"));
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
     public static boolean hasAttachmentEquipped(ItemStack stack, Gun gun, AttachmentType type) {
         if (!gun.canAttachType(type, gun))
             return false;
@@ -260,22 +249,19 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return false;
     }
 
+    public static ItemStack getScopeStack(ItemStack gun) {
+        return getAttachmentItem(AttachmentType.SCOPE, gun);
+    }
+
     @Nullable
     public static Scope getScope(ItemStack gun) {
-        var compound = gun.getTag();
-        if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
-            var attachment = compound.getCompound(ATTACHMENTS);
-            if (attachment.contains("Scope", Tag.TAG_COMPOUND)) {
-                var scopeStack = ItemStack.of(attachment.getCompound("Scope"));
-                Scope scope = null;
-                if (scopeStack.getItem() instanceof ScopeItem scopeItem) {
-                    if (Ntgl.isDebugging()) {
-                        return Debug.getScope(scopeItem);
-                    }
-                    scope = scopeItem.getProperties();
-                }
-                return scope;
-            }
+        var scopeStack = getScopeStack(gun);
+
+        if (scopeStack.getItem() instanceof ScopeItem scopeItem) {
+            if (Ntgl.isDebugging())
+                return Debug.getScope(scopeItem);
+
+            return scopeItem.getProperties();
         }
         return null;
     }

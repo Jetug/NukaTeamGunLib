@@ -151,7 +151,7 @@ public class AimingHandler {
         if (mc.player == null || mc.player.getMainHandItem().isEmpty() || mc.options.getCameraType() != CameraType.FIRST_PERSON)
             return;
 
-        ItemStack heldItem = mc.player.getMainHandItem();
+        var heldItem = mc.player.getMainHandItem();
         if (!(heldItem.getItem() instanceof GunItem gunItem))
             return;
 

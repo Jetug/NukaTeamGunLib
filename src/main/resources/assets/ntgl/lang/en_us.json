@@ -77,7 +77,7 @@
   "ntgl.option_list.no_items": "No Items",
 
   "ntgl.options.gun_volume_button": "Gun Sounds",
-  "ntgl.options.gun_volume": "Gun Sounds %s",
+  "ntgl.options.gun_volume": "Guns",
   "ntgl.options.adsSensitivity": "ADS Sensitivity",
   "ntgl.options.adsSensitivity.format": "ADS Sensitivity: %s",
   "ntgl.options.crosshair": "Crosshair",

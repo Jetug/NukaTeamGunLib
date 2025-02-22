@@ -130,7 +130,7 @@ public class BulletTrailRenderingHandler {
 
         if (trail.isTrailVisible()) {
             RenderType bulletType = GunRenderType.getBulletTrail();
-            VertexConsumer builder = renderTypeBuffer.getBuffer(bulletType);
+            var builder = renderTypeBuffer.getBuffer(bulletType);
             builder.vertex(matrix4f, 0, 0, -0.035F).color(red, green, blue, alpha).uv2(15728880).endVertex();
             builder.vertex(matrix4f, 0, 0, 0.035F).color(red, green, blue, alpha).uv2(15728880).endVertex();
             builder.vertex(matrix4f, 0, -trailLength, 0).color(red, green, blue, alpha).uv2(15728880).endVertex();

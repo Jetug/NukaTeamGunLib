@@ -91,7 +91,7 @@ public class GunRenderingHandler {
     private float fallSway;
     private float prevFallSway;
 
-    private boolean usedConfiguredFov;
+    private boolean usedConfiguredFov = true;
 
     @Nullable
     private ItemStack renderingWeapon;

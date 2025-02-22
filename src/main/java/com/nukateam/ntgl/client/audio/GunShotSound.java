@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.audio;
 
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.client.settings.GunOptions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractSoundInstance;
 import net.minecraft.resources.ResourceLocation;
@@ -45,6 +46,6 @@ public class GunShotSound extends AbstractSoundInstance {
     }
 
     public static float getVolume(float volume) {
-        return (float) (volume * Config.CLIENT.sounds.gunVolume.get());
+        return (float) (volume * GunOptions.getInstance().getGunVolume());
     }
 }

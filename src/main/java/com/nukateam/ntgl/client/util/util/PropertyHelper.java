@@ -187,29 +187,29 @@ public final class PropertyHelper {
 //        }
 //        return Vec3.ZERO;
 //    }
-
-    public static Vec3 getMuzzleFlashScale(ItemStack weapon, Gun modifiedGun) {
-        DataObject weaponObject = getObjectByPath(weapon, WEAPON_KEY);
-        if (weaponObject.has("muzzleFlash", DataType.OBJECT)) {
-            DataObject muzzleObject = weaponObject.getDataObject("muzzleFlash");
-            if (muzzleObject.has("scale", DataType.ARRAY)) {
-                DataArray scaleArray = muzzleObject.getDataArray("scale");
-                return arrayToVec3(scaleArray, DEFAULT_SCALE);
-            }
-            return DEFAULT_SCALE;
-        }
-        Display.Flash muzzleFlash = modifiedGun.getDisplay().getFlash();
-        if (muzzleFlash != null) {
-            double scale = muzzleFlash.getSize();
-            return new Vec3(scale, scale, 1.0);
-        }
-        return DEFAULT_SCALE;
-    }
-
-    public static boolean isUsingBarrelMuzzleFlash(ItemStack barrel) {
-        DataObject customObject = getObjectByPath(barrel, BARREL_KEY);
-        return customObject.has("muzzleFlash", DataType.OBJECT);
-    }
+//
+//    public static Vec3 getMuzzleFlashScale(ItemStack weapon, Gun modifiedGun) {
+//        DataObject weaponObject = getObjectByPath(weapon, WEAPON_KEY);
+//        if (weaponObject.has("muzzleFlash", DataType.OBJECT)) {
+//            DataObject muzzleObject = weaponObject.getDataObject("muzzleFlash");
+//            if (muzzleObject.has("scale", DataType.ARRAY)) {
+//                DataArray scaleArray = muzzleObject.getDataArray("scale");
+//                return arrayToVec3(scaleArray, DEFAULT_SCALE);
+//            }
+//            return DEFAULT_SCALE;
+//        }
+//        Display.Flash muzzleFlash = modifiedGun.getDisplay().getFlash();
+//        if (muzzleFlash != null) {
+//            double scale = muzzleFlash.getSize();
+//            return new Vec3(scale, scale, 1.0);
+//        }
+//        return DEFAULT_SCALE;
+//    }
+//
+//    public static boolean isUsingBarrelMuzzleFlash(ItemStack barrel) {
+//        DataObject customObject = getObjectByPath(barrel, BARREL_KEY);
+//        return customObject.has("muzzleFlash", DataType.OBJECT);
+//    }
 
     public static int getReticleColor(ItemStack stack) {
         // Prioritise getting the reticle colour from the ItemStack tag
@@ -261,8 +261,8 @@ public final class PropertyHelper {
     public static double getViewportFov(ItemStack weapon, Gun modifiedGun) {
         // Get the viewport from the attached scope
         if (Gun.hasAttachmentEquipped(weapon, modifiedGun, AttachmentType.SCOPE)) {
-            ItemStack scopeStack = Gun.getScopeStack(weapon);
-            DataObject customObject = getObjectByPath(scopeStack, SCOPE_KEY);
+            var scopeStack = Gun.getScopeStack(weapon);
+            var customObject = getObjectByPath(scopeStack, SCOPE_KEY);
             if (customObject.has("viewportFov", DataType.NUMBER)) {
                 return Mth.clamp(customObject.getDataNumber("viewportFov").asDouble(), 1.0, 100.0);
             }
