@@ -352,34 +352,15 @@ public class GunRenderingHandler {
                 yOffset += gunOrigin.y * 0.0625 * scaleY;
                 zOffset += gunOrigin.z * 0.0625 * scaleZ;
 
-                /* Creates the required offsets to position the scope into the middle of the screen. */
-                var scope = Gun.getScope(heldItem);
-                if (modifiedGun.canAttachType(AttachmentType.SCOPE, modifiedGun) && scope != null) {
-                    /* Translate to the mounting position of scopes */
-//                    Vec3 scopePosition = PropertyHelper.getAttachmentPosition(heldItem, modifiedGun, IAttachment.Type.SCOPE).subtract(gunOrigin);
-//                    xOffset += scopePosition.x * 0.0625 * scaleX;
-//                    yOffset += scopePosition.y * 0.0625 * scaleY;
-//                    zOffset += scopePosition.z * 0.0625 * scaleZ;
+                /* Translate to iron sight */
+                var ironSightCamera = getIronSightCamera(heldItem, modifiedGun).subtract(gunOrigin);
+                xOffset += ironSightCamera.x * 0.0625 * scaleX;
+                yOffset += ironSightCamera.y * 0.0625 * scaleY;
+                zOffset += ironSightCamera.z * 0.0625 * scaleZ;
 
-                    /* Translate to the reticle of the scope */
-//                    var scopeStack = Gun.getScopeStack(heldItem);
-//                    var scopeOrigin = getModelOrigin(scopeStack, ATTACHMENT_DEFAULT_ORIGIN);
-//                    var scopeCamera = getScopeCamera(scopeStack).subtract(scopeOrigin);
-//                    var scopeScale = getAttachmentScale(heldItem, modifiedGun, IAttachment.Type.SCOPE);
-//                    xOffset += scopeCamera.x * 0.0625 * scaleX * scopeScale.x;
-//                    yOffset += scopeCamera.y * 0.0625 * scaleY * scopeScale.y;
-//                    zOffset += scopeCamera.z * 0.0625 * scaleZ * scopeScale.z;
-                } else {
-                    /* Translate to iron sight */
-                    var ironSightCamera = getIronSightCamera(heldItem, modifiedGun).subtract(gunOrigin);
-                    xOffset += ironSightCamera.x * 0.0625 * scaleX;
-                    yOffset += ironSightCamera.y * 0.0625 * scaleY;
-                    zOffset += ironSightCamera.z * 0.0625 * scaleZ;
-
-                    /* Need to add this to ensure old method still works */
-                    if (isLegacyIronSight(heldItem)) {
-                        zOffset += 0.72;
-                    }
+                /* Need to add this to ensure old method still works */
+                if (isLegacyIronSight(heldItem)) {
+                    zOffset += 0.72;
                 }
 
                 /* Controls the direction of the following translations, changes depending on the main hand. */

@@ -240,8 +240,8 @@ public final class PropertyHelper {
     public static SightAnimation getSightAnimations(ItemStack weapon, Gun modifiedGun) {
         // Try and get the animations from the scope
         if (Gun.hasAttachmentEquipped(weapon, modifiedGun, AttachmentType.SCOPE)) {
-            ItemStack scopeStack = Gun.getScopeStack(weapon);
-            if (scopeStack.getItem() instanceof IScope scope) {
+            var scopeStack = Gun.getScopeStack(weapon);
+            if (scopeStack.getItem() instanceof IScope) {
                 DataObject scopeObject = getObjectByPath(scopeStack, SCOPE_KEY);
                 if (scopeObject.get("sightAnimation") instanceof DataObject sightObject) {
                     return objectToSightAnimation(sightObject);
