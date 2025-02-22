@@ -6,6 +6,7 @@ import com.nukateam.example.common.registery.EntityTypes;
 import com.nukateam.example.common.registery.*;
 import com.nukateam.ntgl.client.event.ClientHandler;
 import com.nukateam.ntgl.client.MetaLoader;
+import com.nukateam.ntgl.client.settings.GunOptions;
 import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
@@ -97,6 +98,10 @@ public class Ntgl {
 
     public static boolean isDebugging() {
         return !FMLEnvironment.production;
+    }
+
+    public static GunOptions getOptions() {
+        return GunOptions.getInstance();
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {

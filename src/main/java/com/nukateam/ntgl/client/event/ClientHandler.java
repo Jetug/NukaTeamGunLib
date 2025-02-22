@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.event;
 
+import com.nukateam.ntgl.client.settings.OptionInstances;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.input.KeyBinds;
@@ -16,6 +17,7 @@ import com.nukateam.ntgl.common.foundation.ModBlocks;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.OptionInstance;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.components.OptionsList;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -151,8 +153,10 @@ public class ClientHandler {
             }
             try {
                 OptionsList list = (OptionsList) mouseOptionsField.get(screen);
-                //list.addBig(OptionInstance.createBoolean("t", true));
-                //list.addSmall(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
+//                list.addBig(OptionInstance.createBoolean("t", true));
+//                list.addSmall(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
+
+                list.addSmall(OptionInstances.createSensitivitySlider(), null);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }

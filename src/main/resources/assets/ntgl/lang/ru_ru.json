@@ -60,7 +60,7 @@
   "subtitle.ntgl.cock": "Взведение оружия",
   "ntgl.option_list.no_items": "Нет предметов",
   "ntgl.options.gun_volume_button": "Звуки Оружия",
-  "ntgl.options.gun_volume": "Звуки Оружия %s",
+  "ntgl.options.gun_volume": "Оружие",
   "ntgl.options.adsSensitivity": "Чувствительность ADS",
   "ntgl.options.adsSensitivity.format": "Чувствительность ADS: %s",
   "ntgl.options.crosshair": "Перекрестие",

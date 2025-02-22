@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.mixin.client;
 
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.client.settings.GunOptions;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -37,7 +38,8 @@ public class MouseHandlerMixin {
             }
         }
 
-        var adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
+//        var adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
+        var adsSensitivity = GunOptions.getInstance().getAdsSensitivity();
         return original * (1.0 - (1.0 - adsSensitivity) * AimingHandler.get().getNormalisedAdsProgress()) * additionalAdsSensitivity;
     }
 }
