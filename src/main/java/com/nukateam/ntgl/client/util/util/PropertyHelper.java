@@ -64,11 +64,11 @@ public final class PropertyHelper {
             }
         }
 
-        // Old method of getting the camera position
-        if (stack.getItem() instanceof IScope scope) {
-            Scope properties = scope.getProperties();
-            return new Vec3(0, properties.getReticleOffset(), (properties.getViewFinderDistance()) * 16.0).add(ATTACHMENT_DEFAULT_ORIGIN); // 0.72 is magic number I decided to add long ago. Here for backwards compat.
-        }
+//        // Old method of getting the camera position
+//        if (stack.getItem() instanceof IScope scope) {
+//            Scope properties = scope.getProperties();
+//            return new Vec3(0, properties.getReticleOffset(), (properties.getViewFinderDistance()) * 16.0).add(ATTACHMENT_DEFAULT_ORIGIN); // 0.72 is magic number I decided to add long ago. Here for backwards compat.
+//        }
 
         return ATTACHMENT_DEFAULT_ORIGIN;
     }
