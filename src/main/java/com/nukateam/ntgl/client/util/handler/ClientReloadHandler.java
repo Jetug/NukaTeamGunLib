@@ -180,10 +180,10 @@ public class ClientReloadHandler {
 
     private static void playAnimation(LocalPlayer player, ItemStack stack, Gun gun, InteractionHand arm) {
         var reloadDuration = 0;
-        var general = gun.getGeneral();
         var reloadTime = GunModifierHelper.getReloadTime(stack);
+        var loadingType = GunModifierHelper.getLoadingType(stack);
 
-        if(general.getLoadingType().equals(LoadingType.PER_CARTRIDGE)){
+        if(loadingType.equals(LoadingType.PER_CARTRIDGE)){
 //            var ammoCount = general.getMaxAmmo(stack) - Gun.getAmmo(stack);
             var ammoCount =  GunModifierHelper.getMaxAmmo(stack) - Gun.getAmmo(stack);
 

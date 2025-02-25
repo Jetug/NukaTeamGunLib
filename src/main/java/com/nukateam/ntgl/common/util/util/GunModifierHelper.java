@@ -104,6 +104,12 @@ public class GunModifierHelper {
         return autoReloading.get();
     }
 
+    public static LoadingType getLoadingType(ItemStack weapon) {
+        var loadingType = new AtomicReference<>(getGun(weapon).getGeneral().getLoadingType());
+        forEachAttachment(weapon, (modifier -> loadingType.set(modifier.modifyLoadingType(loadingType.get()))));
+        return loadingType.get();
+    }
+
     public static int getProjectileAmount(ItemStack weapon) {
         var gunProjectileAmount = getGun(weapon).getGeneral().getProjectileAmount();
         var ammoProjectileAmount = getCurrentAmmoItem(weapon).getAmmo().getProjectileAmount();

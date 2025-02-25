@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.data.constants;
 
-public class Animation {
+public class Animations {
     public static final String RELOAD_START = "reload_start";
     public static final String RELOAD_END = "reload_end";
     public static final String CHARGE = "charge";

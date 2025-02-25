@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.data.attachment.impl;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -21,6 +22,8 @@ import java.util.function.Supplier;
  * Author: MrCrayfish
  */
 public class Scope extends Attachment implements IEditorMenu {
+    public static final ResourceLocation SCOPE_LOCATION = new ResourceLocation(Ntgl.MOD_ID, "textures/hud/overlay/scope_long_overlay.png");
+
     protected float aimFovModifier;
     protected float additionalZoom;
     protected double reticleOffset;
@@ -261,6 +264,11 @@ public class Scope extends Attachment implements IEditorMenu {
 
         public Builder overlay( ResourceLocation overlayTexture) {
             this.overlayTexture = overlayTexture;
+            return this;
+        }
+
+        public Builder overlay() {
+            this.overlayTexture = SCOPE_LOCATION;
             return this;
         }
 

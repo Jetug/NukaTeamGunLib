@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.util.interfaces;
 import com.nukateam.ntgl.common.base.GunModifiers;
 import com.nukateam.ntgl.common.base.holders.FireMode;
 import com.nukateam.ntgl.common.base.holders.GripType;
+import com.nukateam.ntgl.common.base.holders.LoadingType;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
 import net.minecraft.resources.ResourceLocation;
 
@@ -152,7 +153,6 @@ public interface IGunModifier {
      * @param size the current size
      * @return the new size for the muzzle flash
      */
-    @Deprecated(since = "1.3.0", forRemoval = true)
     default double modifyMuzzleFlashSize(double size) {
         return size;
     }
@@ -236,5 +236,9 @@ public interface IGunModifier {
 
     default boolean modifyAutoReloading(boolean autoReload) {
         return autoReload;
+    }
+
+    default LoadingType modifyLoadingType(LoadingType loadingType) {
+        return loadingType;
     }
 }

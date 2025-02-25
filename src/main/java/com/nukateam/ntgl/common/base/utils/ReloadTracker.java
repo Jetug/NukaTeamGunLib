@@ -251,6 +251,7 @@ public class ReloadTracker {
     private static void handTick(LivingEntity player, HumanoidArm arm) {
         if (addTracker(player, arm)) return;
         var tracker = RELOAD_TRACKER_MAP.get(player);
+        var loadingType = GunModifierHelper.getLoadingType(tracker.stack);
         final var gun = tracker.gun;
 
         if (!tracker.isSameWeapon(player) || tracker.isWeaponFull() || tracker.hasNoAmmo(player)) {
@@ -258,7 +259,7 @@ public class ReloadTracker {
             var reloadKey = getReloadKey(arm);
             reloadKey.setValue(player, false);
         }
-        else if(gun.getGeneral().getLoadingType() == LoadingType.MAGAZINE){
+        else if(loadingType == LoadingType.MAGAZINE){
             if(tracker.reloadTick > 0)
                 tracker.reloadTick--;
 
@@ -267,7 +268,7 @@ public class ReloadTracker {
                 stopReloading(player, gun, arm);
             }
         }
-        else if(gun.getGeneral().getLoadingType() == LoadingType.PER_CARTRIDGE){
+        else if(loadingType == LoadingType.PER_CARTRIDGE){
             if(tracker.reloadTick > 0)
                 tracker.reloadTick--;
 
