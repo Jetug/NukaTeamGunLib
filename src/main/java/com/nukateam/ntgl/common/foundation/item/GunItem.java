@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.animators.GunAnimator;
+import com.nukateam.ntgl.common.base.DynamicGunModifier;
 import com.nukateam.ntgl.common.util.util.ResourceUtils;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
@@ -24,6 +25,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -52,8 +54,21 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     private final Lazy<DefaultGunRendererGeo> GUN_RENDERER = Lazy.of(() -> new DefaultGunRendererGeo());
     private Gun gun = new Gun();
 
+    @Nullable
+    public DynamicGunModifier getGunModifier() {
+        return gunModifier;
+    }
+
+    @Nullable
+    private DynamicGunModifier gunModifier = null;
+
     public GunItem(Item.Properties properties) {
         super(properties);
+    }
+
+    public GunItem(Supplier<DynamicGunModifier> gunModifier, Item.Properties properties) {
+        this(properties);
+        this.gunModifier = gunModifier.get();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -108,7 +123,18 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
         tag.putInt(AMMO_COUNT, GunModifierHelper.getMaxAmmo(new ItemStack(this)));
     }
 
-//    @Override
+    @Override
+    public void inventoryTick(ItemStack stack, Level pLevel, Entity entity, int pSlotId, boolean pIsSelected) {
+        if(gunModifier != null && entity instanceof LivingEntity livingEntity) {
+            var item = livingEntity.getMainHandItem();
+            var ss = item == stack;
+            var d = ss;
+            gunModifier.setEntity(livingEntity);
+            gunModifier.setStack(stack);
+        }
+    }
+
+    //    @Override
 //    public void createRenderer(Consumer<Object> consumer) {
 //        consumer.accept(new RenderProvider() {
 //            private ProxyItemRenderer renderer = null;

@@ -1,5 +1,6 @@
 package com.nukateam.example.common.registery;
 
+import com.nukateam.ntgl.common.base.DynamicGunModifier;
 import com.nukateam.ntgl.common.base.GunModifiers;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
 import com.nukateam.ntgl.common.data.attachment.impl.Grip;
@@ -14,10 +15,12 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.function.Supplier;
+
 public class ModGuns {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Ntgl.MOD_ID);
     ///GUNS
-    public static final RegistryObject<GunItem> PISTOL10MM = registerGun("pistol10mm");
+    public static final RegistryObject<GunItem> PISTOL10MM = registerGun("pistol10mm", TestModifier::new);
     public static final RegistryObject<GunItem> PIPE_PISTOL = registerGun("pipepistol");
     public static final RegistryObject<GunItem> CLASSIC10MM = registerGun("classic10mm", 10);
     public static final RegistryObject<GunItem> SCOUT10MM = registerGun("scout10mm");
@@ -95,6 +98,10 @@ public class ModGuns {
 
     public static RegistryObject<GunItem> registerGun(String name) {
         return ITEMS.register(name, () -> new GunItem(new Item.Properties().stacksTo(1)));
+    }
+
+    public static RegistryObject<GunItem> registerGun(String name, Supplier<DynamicGunModifier> modifier) {
+        return ITEMS.register(name, () -> new GunItem(modifier, new Item.Properties().stacksTo(1)));
     }
 
     public static RegistryObject<GunItem> registerGun(String name, int durability) {

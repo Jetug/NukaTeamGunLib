@@ -15,14 +15,18 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish
@@ -61,8 +65,15 @@ public class GunModifierHelper {
 
     private static IGunModifier[] getModifiers(ItemStack weapon, AttachmentType type) {
         var stack = Gun.getAttachmentItem(type, weapon);
+        var gunItem = (GunItem) weapon.getItem();
+
         if (!stack.isEmpty() && stack.getItem() instanceof IAttachment<?> attachment) {
-            return attachment.getProperties().getModifiers();
+            var modifiers = attachment.getProperties().getModifiers();
+
+            if(gunItem.getGunModifier() != null)
+                modifiers = ArrayUtils.add(modifiers, gunItem.getGunModifier());
+
+            return modifiers;
         }
         return EMPTY;
     }
@@ -136,7 +147,7 @@ public class GunModifierHelper {
         var tag = weapon.getOrCreateTag();
         if (!tag.contains(FIRE_MODE, Tag.TAG_STRING)) {
             var buff = new ArrayList<>(getFireModes(weapon).stream().toList());
-            var fireMode = (FireMode) buff.get(0);
+            var fireMode = buff.get(0);
 
 //            setCurrentFireMode(weapon, fireMode);
             return fireMode;
@@ -385,8 +396,8 @@ public class GunModifierHelper {
         }
     }
 
-    private static void applyModifiers(Consumer<IGunModifier> consumer, IGunModifier[] ammoModifiers) {
-        for (var modifier : ammoModifiers) {
+    private static void applyModifiers(Consumer<IGunModifier> consumer, IGunModifier[] gunModifiers) {
+        for (var modifier : gunModifiers) {
             consumer.accept(modifier);
         }
     }
