@@ -172,7 +172,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         if(FMLEnvironment.dist == Dist.CLIENT) {
             var thread = new Thread(() ->
                     gun.textures.forEach((variant, path) -> {
-                        var texture = resourceExists(path) ? path : getTexture(itemId, path);
+//                        var texture = resourceExists(path) ? path : getTexture(itemId, path);
+                        var texture = getTexture(itemId, path);
                         gun.preparedTextures.put(variant, texture);
                     })
             );
