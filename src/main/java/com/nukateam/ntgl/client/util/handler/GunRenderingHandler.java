@@ -420,7 +420,7 @@ public class GunRenderingHandler {
 
 
     private void applyAimingTransforms(PoseStack poseStack, ItemStack heldItem, Gun modifiedGun, float x, float y, float z, int offset) {
-        if (!Config.CLIENT.display.oldAnimations.get()) {
+//        if (!Config.CLIENT.display.oldAnimations.get()) {
             poseStack.translate(x * offset, y, z);
             poseStack.translate(0, -0.25, 0.25);
             float aiming = (float) Math.sin(Math.toRadians(AimingHandler.get().getNormalisedAdsProgress() * 180F));
@@ -430,7 +430,7 @@ public class GunRenderingHandler {
             poseStack.mulPose(Axis.YP.rotationDegrees(aiming * 5F * offset));
             poseStack.translate(0, 0.25, -0.25);
             poseStack.translate(-x * offset, -y, -z);
-        }
+//        }
     }
 
     private void applySwayTransforms(PoseStack poseStack, ItemStack heldItem, LocalPlayer player, Vector3f translation, float partialTicks) {

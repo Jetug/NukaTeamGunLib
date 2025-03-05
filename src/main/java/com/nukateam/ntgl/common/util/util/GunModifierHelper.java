@@ -18,15 +18,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish
@@ -63,15 +60,12 @@ public class GunModifierHelper {
         return true;
     }
 
-    private static IGunModifier[] getModifiers(ItemStack weapon, AttachmentType type) {
-        var stack = Gun.getAttachmentItem(type, weapon);
-        var gunItem = (GunItem) weapon.getItem();
+    private static IGunModifier[] getAttachmentModifiers(ItemStack weapon, AttachmentType type) {
+        var attachmentItem = Gun.getAttachmentItem(type, weapon);
 
-        if (!stack.isEmpty() && stack.getItem() instanceof IAttachment<?> attachment) {
+        if (!attachmentItem.isEmpty() && attachmentItem.getItem() instanceof IAttachment<?> attachment) {
             var modifiers = attachment.getProperties().getModifiers();
 
-            if(gunItem.getGunModifier() != null)
-                modifiers = ArrayUtils.add(modifiers, gunItem.getGunModifier());
 
             return modifiers;
         }
@@ -311,7 +305,7 @@ public class GunModifierHelper {
         var attachments = gun.getModules().getAttachments();
 
         for (var att : attachments.keySet()) {
-            var modifiers = getModifiers(weapon, att);
+            var modifiers = getAttachmentModifiers(weapon, att);
             for (var modifier : modifiers) {
                 if (modifier.silencedFire())
                     return true;
@@ -391,12 +385,23 @@ public class GunModifierHelper {
         var attachments = gun.getModules().getAttachments();
 
         for (var att : attachments.keySet()) {
-            var modifiers = getModifiers(weapon, att);
+            var modifiers = getAttachmentModifiers(weapon, att);
             applyModifiers(consumer, modifiers);
+        }
+
+        applyDynamicModifier(weapon, consumer);
+    }
+
+    private static void applyDynamicModifier(ItemStack weapon, Consumer<IGunModifier> consumer) {
+        var gunItem = (GunItem) weapon.getItem();
+        var dynamicModifier = gunItem.getGunModifier(weapon);
+
+        if(dynamicModifier != null) {
+            applyModifiers(consumer, dynamicModifier);
         }
     }
 
-    private static void applyModifiers(Consumer<IGunModifier> consumer, IGunModifier[] gunModifiers) {
+    private static void applyModifiers(Consumer<IGunModifier> consumer, IGunModifier... gunModifiers) {
         for (var modifier : gunModifiers) {
             consumer.accept(modifier);
         }

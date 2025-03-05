@@ -1,5 +1,6 @@
 package com.nukateam.example.common.registery;
 
+import com.nukateam.example.common.modifiers.*;
 import com.nukateam.ntgl.common.base.DynamicGunModifier;
 import com.nukateam.ntgl.common.base.GunModifiers;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
@@ -27,11 +28,13 @@ public class ModGuns {
 //    public static final RegistryObject<GunItem> CLASSIC10MM_ZAP = registerGun("classic10mm_zapaway", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.NUKA_EQUIP)));
     public static final RegistryObject<GunItem> PIPE_REVOLVER = registerGun("piperevolver");
     public static final RegistryObject<GunItem> FATMAN = registerGun("fatman");
-    public static final RegistryObject<GunItem> MINIGUN = registerGun("minigun");
+    public static final RegistryObject<GunItem> MINIGUN = registerGun("minigun", MinigunModifier::new);
 
     public static final RegistryObject<GunItem> POWDERGUN = registerGun("powdergun");
     public static final RegistryObject<GunItem> SHOTGUN = registerGun("shotgun");
     public static final RegistryObject<GunItem> FLAMER = registerGun("flamer");
+    public static final RegistryObject<GunItem> GATLING = registerGun("gatling");
+    public static final RegistryObject<GunItem> REVOLVER = registerGun("revolver");
 
 //    public static final RegistryObject<Item> MISSILE = ITEMS.register("missile",
 //            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));

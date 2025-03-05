@@ -4,7 +4,9 @@
     "gripType": "ntgl:two_handed",
     "loadingType": "ntgl:per_cartridge",
     "maxAmmo": 6,
+    "reloadStartTime": 20,
     "reloadTime": 10,
+    "reloadEndTime": 20,
     "reloadAmount": 1,
     "recoilAngle": 15.0,
     "recoilKick": 1,
@@ -18,11 +20,11 @@
     ]
   },
   "sounds": {
-    "fire": "ntgl:item.pump_shotgun.fire",
-    "reload": "ntgl:item.pump_shotgun.reload",
-    "cock": "ntgl:item.pump_shotgun.cock",
-    "silencedFire": "ntgl:item.pump_shotgun.silenced_fire",
-    "enchantedFire": "ntgl:item.pump_shotgun.enchanted_fire"
+    "fire": "ntgl:item.shotgun.fire",
+    "reload": "ntgl:item.shotgun.reload",
+    "cock": "ntgl:item.shotgun.cock",
+    "silencedFire": "ntgl:item.shotgun.silenced_fire",
+    "enchantedFire": "ntgl:item.shotgun.enchanted_fire"
   },
   "display": {
     "flash": {

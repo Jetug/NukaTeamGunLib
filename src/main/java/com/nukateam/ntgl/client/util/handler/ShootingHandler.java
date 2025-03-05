@@ -363,7 +363,7 @@ public class ShootingHandler {
             } else {
                 this.fire(player, heldItem);
                 if(data.fireTimer == 0 && !GunModifierHelper.isOneTimeCharge(heldItem))
-                    setupShootingData(heldItem, data.gun, HumanoidArm.RIGHT);
+                    setupShootingData(heldItem, data.gun, arm);
                 if (maxChargeTime > 0) {
                     if(fireMode != FireMode.AUTO)
                         key.setDown(false);

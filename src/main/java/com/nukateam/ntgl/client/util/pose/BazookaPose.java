@@ -89,9 +89,9 @@ public class BazookaPose extends WeaponPose {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void applyHeldItemTransforms(LivingEntity entity, InteractionHand hand, float aimProgress, PoseStack poseStack, MultiBufferSource buffer) {
-//        if (!Config.CLIENT.display.oldAnimations.get()) {
-//            super.applyHeldItemTransforms(entity, hand, aimProgress, poseStack, buffer);
-//        }
+        if (!Config.CLIENT.display.oldAnimations.get()) {
+            super.applyHeldItemTransforms(entity, hand, aimProgress, poseStack, buffer);
+        }
         poseStack.translate(-0.5, -0.45, -1);
     }
 

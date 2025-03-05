@@ -81,14 +81,19 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
 
         var barrelStack = Gun.getAttachmentItem(AttachmentType.BARREL, stack);
 
-        if(barrelStack.getItem() instanceof BarrelItem barrelItem) {
-            this.barrelItem = barrelItem;
+        if(barrelStack.getItem() instanceof BarrelItem barrel) {
+            this.barrelItem = barrel;
         }
         else this.barrelItem = null;
 
         prepareHiddenBones(transformType);
 
-        super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
+        poseStack.pushPose();
+        {
+            poseStack.translate(0, /*InputEvents.Y / 16D*/ -6 / 16D, 0);
+            super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
+        }
+        poseStack.popPose();
     }
 
     private void prepareHiddenBones(ItemDisplayContext transformType) {

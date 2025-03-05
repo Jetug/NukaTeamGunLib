@@ -61,10 +61,10 @@ public class ItemInHandLayerMixin {
 //            return;
 //        }
 
-        if (stack.getItem() instanceof GunItem gunItem) {
+        if (stack.getItem() instanceof GunItem) {
             ci.cancel();
             var layer = (ItemInHandLayer<?, ?>) (Object) this;
-            renderArmWithGun(layer, entity, stack, gunItem, transformType, hand, arm,
+            renderArmWithGun(layer, entity, stack, transformType, hand, arm,
                     poseStack, source, light, minecraft.getFrameTime());
         }
     }
@@ -72,7 +72,7 @@ public class ItemInHandLayerMixin {
 
     //Third person render
     private static void renderArmWithGun(ItemInHandLayer<?, ?> layer, LivingEntity entity, ItemStack stack,
-                                         GunItem item, ItemDisplayContext transformType,
+                                         ItemDisplayContext transformType,
                                          InteractionHand hand, HumanoidArm arm, PoseStack poseStack,
                                          MultiBufferSource source, int light, float deltaTicks) {
         poseStack.pushPose();
@@ -82,7 +82,6 @@ public class ItemInHandLayerMixin {
             poseStack.mulPose(Axis.YP.rotationDegrees(180F));
             GunRenderingHandler.get().applyWeaponScale(stack, poseStack);
 
-            var gun = item.getModifiedGun(stack);
             var heldAnimation = GunModifierHelper.getGripType(stack).getHeldAnimation();
 
             heldAnimation.applyHeldItemTransforms(entity, hand, AimingHandler.get().getAimProgress(entity, deltaTicks), poseStack, source);

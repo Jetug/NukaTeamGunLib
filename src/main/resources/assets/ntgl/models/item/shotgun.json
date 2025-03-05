@@ -1,81 +1,79 @@
 {
-	"parent": "builtin/entity",
-	"display": {
-		"thirdperson_righthand": {
-			"translation": [
-				0,
-				-3.25,
-				-6.5
-			]
-		},
-		"thirdperson_lefthand": {
-			"translation": [
-				0,
-				-3.25,
-				-6.5
-			]
-		},
-		"firstperson_righthand": {
-			"translation": [
-				0,
-				0,
-				-2.25
-			]
-		},
-		"firstperson_lefthand": {
-			"translation": [
-				0,
-				0,
-				-2.25
-			]
-		},
-		"ground": {
-			"translation": [
-				0,
-				-2.75,
-				0
-			]
-		},
-		"gui": {
-			"rotation": [
-				-150.88,
-				35.59,
-				172.98
-			],
-			"translation": [
-				-1.5,
-				-4.25,
-				0
-			],
-			"scale": [
-				0.82,
-				0.82,
-				0.82
-			]
-		},
-		"head": {
-			"translation": [
-				0,
-				-0.25,
-				-5.75
-			],
-			"scale": [
-				2.341796875,
-				2.341796875,
-				1.873046875
-			]
-		},
-		"fixed": {
-			"rotation": [
-				0,
-				90,
-				0
-			],
-			"translation": [
-				0,
-				-3.25,
-				0
-			]
-		}
-	}
+  "credit": "Made with Blockbench",
+  "parent": "builtin/entity",
+  "texture_size": [
+    512,
+    512
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "translation": [
+        0,
+        5,
+        -5.5
+      ]
+    },
+    "thirdperson_lefthand": {
+      "translation": [
+        0,
+        5,
+        -5.5
+      ]
+    },
+    "firstperson_righthand": {
+      "translation": [
+        -0.75,
+        7,
+        0
+      ]
+    },
+    "firstperson_lefthand": {
+      "translation": [
+        -0.75,
+        7,
+        0
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        5,
+        0
+      ]
+    },
+    "gui": {
+      "rotation": [
+        -142.63,
+        44.37,
+        174.98
+      ],
+      "translation": [
+        -0.75,
+        2.75,
+        0
+      ],
+      "scale": [
+        0.90234375,
+        0.90234375,
+        0.90234375
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        180,
+        -90,
+        180
+      ],
+      "translation": [
+        -1,
+        6,
+        0
+      ],
+      "scale": [
+        1.4375,
+        1.4375,
+        1.4375
+      ]
+    }
+  }
 }

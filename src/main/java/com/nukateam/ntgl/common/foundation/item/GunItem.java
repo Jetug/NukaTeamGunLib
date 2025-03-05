@@ -47,6 +47,7 @@ import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
 public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IResourceProvider, IConfigConsumer<Gun>, IConfigProvider<Gun> {
     public static final String VARIANT = "variant";
+    public static final Map<ItemStack, String> stackAnimations = new HashMap<>();
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
@@ -55,20 +56,21 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     private Gun gun = new Gun();
 
     @Nullable
-    public DynamicGunModifier getGunModifier() {
-        return gunModifier;
-    }
+    protected Supplier<DynamicGunModifier> modifierFactory = null;
+    protected HashMap<ItemStack, DynamicGunModifier> dynamycmodifiers = new HashMap<>();
 
     @Nullable
-    private DynamicGunModifier gunModifier = null;
+    public DynamicGunModifier getGunModifier(ItemStack stack) {
+        return dynamycmodifiers.get(stack);
+    }
 
     public GunItem(Item.Properties properties) {
         super(properties);
     }
 
-    public GunItem(Supplier<DynamicGunModifier> gunModifier, Item.Properties properties) {
+    public GunItem(Supplier<DynamicGunModifier> modifierFactory, Item.Properties properties) {
         this(properties);
-        this.gunModifier = gunModifier.get();
+        this.modifierFactory = modifierFactory;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -79,19 +81,6 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     @Override
     public BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<GunAnimator>, GunAnimator> getAnimatorFactory() {
         return GunAnimator::new;
-    }
-
-    public Gun getGun() {
-        return this.gun;
-    }
-
-    public static String getVariant(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (!tag.contains(VARIANT, Tag.TAG_STRING)) {
-            tag.putString(VARIANT, "default");
-        }
-
-        return tag.getString(VARIANT);
     }
 
     @Override
@@ -115,8 +104,17 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
         return getRegistryName().getNamespace();
     }
 
-    private ResourceLocation getRegistryName() {
-        return ForgeRegistries.ITEMS.getKey(this);
+    public Gun getGun() {
+        return this.gun;
+    }
+
+    public static String getVariant(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        if (!tag.contains(VARIANT, Tag.TAG_STRING)) {
+            tag.putString(VARIANT, "default");
+        }
+
+        return tag.getString(VARIANT);
     }
 
     public void setDefaultTag(CompoundTag tag){
@@ -125,12 +123,11 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
 
     @Override
     public void inventoryTick(ItemStack stack, Level pLevel, Entity entity, int pSlotId, boolean pIsSelected) {
-        if(gunModifier != null && entity instanceof LivingEntity livingEntity) {
-            var item = livingEntity.getMainHandItem();
-            var ss = item == stack;
-            var d = ss;
-            gunModifier.setEntity(livingEntity);
-            gunModifier.setStack(stack);
+        if(modifierFactory != null && entity instanceof LivingEntity livingEntity) {
+            var modifier = dynamycmodifiers.getOrDefault(stack, modifierFactory.get());
+            modifier.setEntity(livingEntity);
+            modifier.setStack(stack);
+            dynamycmodifiers.put(stack, modifier);
         }
     }
 
@@ -268,7 +265,6 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
         return 5;
     }
 
-    public static final Map<ItemStack, String> stackAnimations = new HashMap<>();
 
     public static void doAnim(ItemStack stack, String animation) {
         stackAnimations.put(stack, animation);
@@ -278,7 +274,6 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
         stackAnimations.put(stack, null);
     }
 
-
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
     }
@@ -286,5 +281,9 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
+    }
+
+    private ResourceLocation getRegistryName() {
+        return ForgeRegistries.ITEMS.getKey(this);
     }
 }
