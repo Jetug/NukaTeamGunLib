@@ -47,6 +47,7 @@ import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -278,19 +279,14 @@ public class ServerPlayHandler {
 
     public static void handleUnload(ServerPlayer player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
-        unloadArm(player, stack);
-    }
-
-    private static void unloadArm(ServerPlayer player, ItemStack stack) {
-        if (!(stack.getItem() instanceof GunItem)) return;
-
-        if (GunModifierHelper.getCurrentProjectile(stack).isMagazineMode())
-            unloadMagazine(player, stack);
-        else unloadAmmo(player, stack);
+        if (stack.getItem() instanceof GunItem) {
+            if (GunModifierHelper.getCurrentProjectile(stack).isMagazineMode())
+                unloadMagazine(player, stack);
+            else unloadAmmo(player, stack);
+        }
     }
 
     private static void unloadAmmo(ServerPlayer player, ItemStack stack) {
-//        ItemStack stack = player.getMainHandItem();
         if (stack.getItem() instanceof GunItem) {
             var tag = stack.getTag();
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
@@ -299,20 +295,8 @@ public class ServerPlayHandler {
                 var id = GunModifierHelper.getCurrentAmmo(stack);
                 var item = ForgeRegistries.ITEMS.getValue(id);
 
-                if (item == null) {
-                    return;
-                }
-
-                int maxStackSize = item.getMaxStackSize();
-                int stacks = count / maxStackSize;
-
-                for (int i = 0; i < stacks; i++) {
-                    spawnAmmo(player, new ItemStack(item, maxStackSize));
-                }
-
-                int remaining = count % maxStackSize;
-                if (remaining > 0) {
-                    spawnAmmo(player, new ItemStack(item, remaining));
+                if (item != null && !player.isCreative()) {
+                    givePlayerAmmo(player, item, count);
                 }
             }
         }
@@ -330,20 +314,29 @@ public class ServerPlayHandler {
                 var id = GunModifierHelper.getCurrentAmmo(stack);
                 var item = ForgeRegistries.ITEMS.getValue(id);
 
-                if (item == null) return;
-
-                var usedMagazine = new ItemStack(item);
-                StackUtils.setDurability(usedMagazine, count);
-//                player.addItem(usedMagazine);
-                spawnAmmo(player, usedMagazine);
+                if (item != null && !player.isCreative()) {
+                    var usedMagazine = new ItemStack(item);
+                    StackUtils.setDurability(usedMagazine, count);
+                    spawnAmmo(player, usedMagazine);
+                }
             }
         }
     }
 
-    /**
-     * @param player
-     * @param stack
-     */
+    private static void givePlayerAmmo(ServerPlayer player, Item item, int count) {
+        int maxStackSize = item.getMaxStackSize();
+        int stacks = count / maxStackSize;
+
+        for (int i = 0; i < stacks; i++) {
+            spawnAmmo(player, new ItemStack(item, maxStackSize));
+        }
+
+        int remaining = count % maxStackSize;
+        if (remaining > 0) {
+            spawnAmmo(player, new ItemStack(item, remaining));
+        }
+    }
+
     private static void spawnAmmo(ServerPlayer player, ItemStack stack) {
         player.getInventory().add(stack);
         if (stack.getCount() > 0) {
