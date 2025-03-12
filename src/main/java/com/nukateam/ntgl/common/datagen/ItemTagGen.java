@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.util.datagen;
+package com.nukateam.ntgl.common.datagen;
 
 
 import com.nukateam.ntgl.Ntgl;

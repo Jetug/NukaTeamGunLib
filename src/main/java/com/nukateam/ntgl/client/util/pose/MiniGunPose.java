@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.util.pose;
 
+import com.mojang.math.Axis;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -16,6 +17,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Vector3f;
 
+import static com.nukateam.ntgl.client.event.InputEvents.*;
+
 /**
  * Author: MrCrayfish
  */
@@ -25,7 +28,8 @@ public class MiniGunPose extends WeaponPose {
         AimPose pose = new AimPose();
         pose.getIdle()
                 .setRenderYawOffset(45F)
-//                .setItemRotation(new Vector3f(60F, 0F, 0F))
+//                .setItemTranslate(new Vector3f(0F, -18F, -18F))
+                .setItemRotation(new Vector3f(10, 0F, 0F))
                 .setRightArm(new LimbPose().setRotationAngleX(-100F).setRotationAngleY(-45F).setRotationAngleZ(0F).setRotationPointY(2))
                 .setLeftArm(new LimbPose().setRotationAngleX(-150F).setRotationAngleY(40F).setRotationAngleZ(-10F).setRotationPointY(1));
         return pose;
@@ -36,7 +40,9 @@ public class MiniGunPose extends WeaponPose {
         AimPose pose = new AimPose();
         pose.getIdle()
                 .setRenderYawOffset(45F)
-                .setItemRotation(new Vector3f(60F, 0F, 0F))
+//                .setItemRotation(new Vector3f(67F, 0F, 0F))
+//                .setItemTranslate(new Vector3f(0F, -18F, -18F))
+//                .setItemRotation(new Vector3f(X, Y, Z))
                 .setRightArm(new LimbPose().setRotationAngleX(-15F).setRotationAngleY(-45F).setRotationAngleZ(0F).setRotationPointY(2))
                 .setLeftArm(new LimbPose().setRotationAngleX(-45F).setRotationAngleY(30F).setRotationAngleZ(0F).setRotationPointY(2));
         return pose;
@@ -47,7 +53,9 @@ public class MiniGunPose extends WeaponPose {
         AimPose pose = new AimPose();
         pose.getIdle()
                 .setRenderYawOffset(45F)
-//                .setItemRotation(new Vector3f(-50F, 0F, 0F))
+                .setItemRotation(new Vector3f(-30F, 0F, 0F))
+//                .setItemRotation(new Vector3f(-17F, 0F, 0F))
+//                .setItemTranslate(new Vector3f(0F, -18F, -18F))
                 .setItemTranslate(new Vector3f(0F, 0F, 1F))
                 .setRightArm(new LimbPose().setRotationAngleX(0F).setRotationAngleY(-45F).setRotationAngleZ(0F).setRotationPointY(1))
                 .setLeftArm(new LimbPose().setRotationAngleX(-25F).setRotationAngleY(30F).setRotationAngleZ(15F).setRotationPointY(4));
@@ -115,9 +123,17 @@ public class MiniGunPose extends WeaponPose {
 //            super.applyHeldItemTransforms(entity, hand, aimProgress, poseStack, buffer);
 //        }
 //
-        super.applyHeldItemTransforms(entity, hand, aimProgress, poseStack, buffer);
         // z = y; y = z; x = x
-        poseStack.translate(-0.5, 0.37, -1.25);
+//        poseStack.translate(-0.5, 0.37, -1.25);
+//        poseStack.translate(-0.5, 0.37, -1.25);
+//        poseStack.translate(X * 0.0625 , Y * 0.0625, Z * 0.0625);
+        poseStack.translate(-7 * 0.0625 , 3 * 0.0625, -20 * 0.0625);
+        poseStack.mulPose(Axis.XP.rotationDegrees(67));
+
+        super.applyHeldItemTransforms(entity, hand, aimProgress, poseStack, buffer);
+//        poseStack.mulPose(Axis.YP.rotationDegrees(Y));
+//        poseStack.mulPose(Axis.ZP.rotationDegrees(Z));
+
     }
 
     @Override

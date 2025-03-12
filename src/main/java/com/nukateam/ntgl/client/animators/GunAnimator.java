@@ -184,7 +184,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         };
     }
 
-    private static @NotNull RawAnimation getHideAnimation() {
+    protected static @NotNull RawAnimation getHideAnimation() {
         return begin().then(Animations.HIDE, HOLD_ON_LAST_FRAME);
     }
 

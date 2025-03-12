@@ -16,6 +16,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Vector3f;
 
+import static com.nukateam.ntgl.client.event.InputEvents.*;
+
 /**
  * Author: MrCrayfish
  */
@@ -92,7 +94,9 @@ public class BazookaPose extends WeaponPose {
         if (!Config.CLIENT.display.oldAnimations.get()) {
             super.applyHeldItemTransforms(entity, hand, aimProgress, poseStack, buffer);
         }
-        poseStack.translate(-0.5, -0.45, -1);
+//        poseStack.translate(-0.5, -0.45, -1);
+//        poseStack.translate(X * 0.0625, Y * 0.0625, Z * 0.0625);
+        poseStack.translate(-10 * 0.0625, -11 * 0.0625, -20 * 0.0625);
     }
 
     @Override

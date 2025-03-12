@@ -15,6 +15,7 @@ import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.item.attachment.BarrelItem;
+import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.util.ClientUtils;
@@ -30,6 +31,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
 
 import java.util.ArrayList;
 
@@ -96,33 +98,6 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         poseStack.popPose();
     }
 
-    private void prepareHiddenBones(ItemDisplayContext transformType) {
-        if(gunStack == null || gunStack.isEmpty()) return;
-
-        var gunAttachments = this.gun.getModules().getAttachments();
-        hiddenBones.clear();
-        gunAttachments.forEach((type, typeAttachments) -> {
-            var item = Gun.getAttachmentItem(type, gunStack);
-
-            typeAttachments.forEach((attachment) -> {
-                if(shouldRender(attachment, item)){
-                    if(transformType != ItemDisplayContext.GUI) {
-                        hiddenBones.addAll(attachment.getHidden());
-                    }
-                }
-                else {
-                    hiddenBones.add(attachment.getName());
-                    hiddenBones.addAll(attachment.getBones());
-                }
-            });
-        });
-    }
-
-    private boolean shouldRender(Modules.Attachment attachment, ItemStack item) {
-        var itemId = ForgeRegistries.ITEMS.getKey(item.getItem());
-        return !item.isEmpty() && attachment.getItemId().equals(itemId);
-    }
-
     @Override
     public void renderRecursively(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
                                   MultiBufferSource bufferSource, VertexConsumer buffer,
@@ -155,6 +130,17 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
 
     public LivingEntity getRenderEntity() {
         return currentEntity;
+    }
+
+    protected boolean shouldRenderAttachment(Modules.Attachment attachment, ItemStack item) {
+        var itemId = ForgeRegistries.ITEMS.getKey(item.getItem());
+        return !item.isEmpty() && attachment.getItemId().equals(itemId);
+    }
+
+    protected void renderAttachments(GeoBone bone) {
+        var boneName = bone.getName();
+        var hideBone = hiddenBones.stream().anyMatch((s) -> s.equals(boneName));
+        bone.setHidden(hideBone);
     }
 
     protected void renderRecursivelyPost(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
@@ -226,9 +212,25 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         poseStack.popPose();
     }
 
-    protected void renderAttachments(GeoBone bone) {
-        var boneName = bone.getName();
-        var hideBone = hiddenBones.stream().anyMatch((s) -> s.equals(boneName));
-        bone.setHidden(hideBone);
+    protected void prepareHiddenBones(ItemDisplayContext transformType) {
+        if(gunStack == null || gunStack.isEmpty()) return;
+
+        var gunAttachments = this.gun.getModules().getAttachments();
+        hiddenBones.clear();
+        gunAttachments.forEach((type, typeAttachments) -> {
+            var item = Gun.getAttachmentItem(type, gunStack);
+
+            typeAttachments.forEach((attachment) -> {
+                if(shouldRenderAttachment(attachment, item)){
+                    if(transformType != ItemDisplayContext.GUI) {
+                        hiddenBones.addAll(attachment.getHidden());
+                    }
+                }
+                else {
+                    hiddenBones.add(attachment.getName());
+                    hiddenBones.addAll(attachment.getBones());
+                }
+            });
+        });
     }
 }

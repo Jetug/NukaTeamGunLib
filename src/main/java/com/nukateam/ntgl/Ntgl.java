@@ -11,10 +11,7 @@ import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
-import com.nukateam.ntgl.common.util.datagen.BlockTagGen;
-import com.nukateam.ntgl.common.util.datagen.DamageTypeGen;
-import com.nukateam.ntgl.common.util.datagen.ItemTagGen;
-import com.nukateam.ntgl.common.util.datagen.LootTableGen;
+import com.nukateam.ntgl.common.datagen.*;
 import com.nukateam.ntgl.common.foundation.ModBlocks;
 import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
@@ -58,10 +55,6 @@ public class Ntgl {
 
     public Ntgl() {
 //        AzureLib.initialize();
-
-        ModGuns.register(MOD_EVENT_BUS);
-        ModBlocks.register(MOD_EVENT_BUS);
-
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
@@ -70,7 +63,11 @@ public class Ntgl {
         ModEffects.REGISTER.register(MOD_EVENT_BUS);
         ModEnchantments.REGISTER.register(MOD_EVENT_BUS);
         Projectiles.REGISTER.register(MOD_EVENT_BUS);
-        ModItemTabs.register(MOD_EVENT_BUS);
+        if(Ntgl.isDebugging()) {
+            ModItemTabs.register(MOD_EVENT_BUS);
+            ModGuns.register(MOD_EVENT_BUS);
+            ModBlocks.register(MOD_EVENT_BUS);
+        }
         ModRecipeType.REGISTER.register(MOD_EVENT_BUS);
         ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
         ModRecipeSerializers.REGISTER.register(MOD_EVENT_BUS);
@@ -156,7 +153,7 @@ public class Ntgl {
         var existingFileHelper = event.getExistingFileHelper();
 
         BlockTagGen blockTagGen = new BlockTagGen(output, lookupProvider, existingFileHelper);
-//        generator.addProvider(event.includeServer(), new RecipeGen(generator));
+        generator.addProvider(event.includeServer(), new RecipeGen(output));
         generator.addProvider(event.includeServer(), new LootTableGen(output));
         generator.addProvider(event.includeServer(), blockTagGen);
         generator.addProvider(event.includeServer(), new ItemTagGen(output, lookupProvider, blockTagGen.contentsGetter(), existingFileHelper));
@@ -164,7 +161,6 @@ public class Ntgl {
 //        generator.addProvider(event.includeServer(), new GunGen(generator));
         generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
 
-        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(
-                output, event.getLookupProvider(), BUILDER, Set.of(Ntgl.MOD_ID)));
+        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(), BUILDER, Set.of(Ntgl.MOD_ID)));
     }
 }

@@ -3,7 +3,7 @@
     "fireMode": ["ntgl:auto"],
     "fireTimer": 20,
     "fullCharge": true,
-    "oneTimeCharge": false,
+    "oneTimeCharge": true,
     "rate": 2,
     "gripType": "ntgl:mini_gun",
     "category": "heavy",

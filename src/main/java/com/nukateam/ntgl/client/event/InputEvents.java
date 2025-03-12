@@ -67,7 +67,7 @@ public class InputEvents {
                     case GLFW.GLFW_KEY_KP_MULTIPLY -> isHidden = !isHidden;
                     case GLFW.GLFW_KEY_KP_ENTER -> {
                         var level = Minecraft.getInstance().level;
-                        var entity = new FlyingGib(ModEntityTypes.FLYING_GIBS.get(), Minecraft.getInstance().level);
+                        var entity = new FlyingGib(ModEntityTypes.FLYING_GIBS.get(), level);
 
                         entity.setPos(Minecraft.getInstance().player.position());
                         addClientEntity(entity);

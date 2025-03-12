@@ -1,6 +1,6 @@
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package com.nukateam.ntgl.common.util.datagen;
+package com.nukateam.ntgl.common.datagen;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 
