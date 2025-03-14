@@ -14,7 +14,7 @@
     "spread": 2.0,
     "movementModifier": 0.5,
     "ammo": [
-      "ntgl:round10mm"
+      "minecraft:stick"
     ]
   },
   "textures": {

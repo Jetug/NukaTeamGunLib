@@ -153,7 +153,7 @@ public class BulletTrail {
 
     public boolean isTrailVisible() {
         Entity entity = Minecraft.getInstance().getCameraEntity();
-        return entity != null && entity.getId() != this.shooterId;
+        return entity != null; /*&& entity.getId() != this.shooterId;*/
     }
 
     @Override

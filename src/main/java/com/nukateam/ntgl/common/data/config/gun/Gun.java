@@ -42,7 +42,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static com.nukateam.ntgl.common.util.util.ResourceUtils.resourceExists;
 import static com.nukateam.ntgl.client.event.ClientHandler.*;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
@@ -331,7 +330,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static AmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
-        var id = GunModifierHelper.getCurrentAmmo(weapon);
+        var id = GunModifierHelper.getCurrentAmmoId(weapon);
 
         if (entity instanceof Player player) {
             var context = findPlayerAmmo(player, id);
@@ -356,7 +355,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static AmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {
-        var id = GunModifierHelper.getCurrentAmmo(weapon);
+        var id = GunModifierHelper.getCurrentAmmoId(weapon);
 
         if (entity instanceof Player player) {
             var context = findPlayerMagazine(player, id);

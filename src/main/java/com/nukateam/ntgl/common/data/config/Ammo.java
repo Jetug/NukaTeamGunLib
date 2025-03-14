@@ -27,8 +27,8 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     private boolean visible;
     private float damage = 1;
     private float size;
-    private double speed;
-    private int life;
+    private double speed = 20;
+    private int life = 100;
     @Optional private boolean gravity;
     @Optional private boolean damageReduceOverLife;
     @Optional private boolean magazineMode;

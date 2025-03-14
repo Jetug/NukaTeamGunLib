@@ -127,11 +127,11 @@ public class ServerPlayHandler {
                 }
 
                 var count = GunModifierHelper.getProjectileAmount(heldItem);
-                var projectileProps = GunModifierHelper.getCurrentProjectile(heldItem);
+                var projectileProps = GunModifierHelper.getCurrentAmmo(heldItem);
                 var spawnedProjectiles = new ProjectileEntity[count];
 
                 for (int i = 0; i < count; i++) {
-                    var factory = ProjectileManager.getInstance().getFactory(GunModifierHelper.getCurrentAmmo(heldItem));
+                    var factory = ProjectileManager.getInstance().getFactory(GunModifierHelper.getCurrentAmmoId(heldItem));
                     var projectileEntity = factory.create(world, shooter, heldItem, item, modifiedGun);
                     projectileEntity.setWeapon(heldItem);
                     projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
@@ -280,7 +280,7 @@ public class ServerPlayHandler {
     public static void handleUnload(ServerPlayer player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
         if (stack.getItem() instanceof GunItem) {
-            if (GunModifierHelper.getCurrentProjectile(stack).isMagazineMode())
+            if (GunModifierHelper.getCurrentAmmo(stack).isMagazineMode())
                 unloadMagazine(player, stack);
             else unloadAmmo(player, stack);
         }
@@ -292,7 +292,7 @@ public class ServerPlayHandler {
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
                 int count = tag.getInt(Tags.AMMO_COUNT);
                 tag.putInt(Tags.AMMO_COUNT, 0);
-                var id = GunModifierHelper.getCurrentAmmo(stack);
+                var id = GunModifierHelper.getCurrentAmmoId(stack);
                 var item = ForgeRegistries.ITEMS.getValue(id);
 
                 if (item != null && !player.isCreative()) {
@@ -311,7 +311,7 @@ public class ServerPlayHandler {
 
                 tag.putInt(Tags.AMMO_COUNT, 0);
 
-                var id = GunModifierHelper.getCurrentAmmo(stack);
+                var id = GunModifierHelper.getCurrentAmmoId(stack);
                 var item = ForgeRegistries.ITEMS.getValue(id);
 
                 if (item != null && !player.isCreative()) {
@@ -386,14 +386,14 @@ public class ServerPlayHandler {
         player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
     }
 
-    public static void handleAmmoModeSwitch(InteractionHand hand, ServerPlayer player, ItemStack stack) {
+    public static void handleAmmoModeSwitch(InteractionHand hand, ServerPlayer player, ItemStack weapon) {
         var isReloading = getReloadKey(hand);
-        if(isReloading.getValue(player))
-            return;
-        handleUnload(player, hand);
-        reloadGun(hand, player);
-        GunModifierHelper.switchAmmo(stack);
-        player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
+        if (!isReloading.getValue(player) && GunModifierHelper.getAmmoItems(weapon).size() > 1){
+            handleUnload(player, hand);
+            reloadGun(hand, player);
+            GunModifierHelper.switchAmmo(weapon);
+            player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
+        }
     }
 
     public static void reloadGun(InteractionHand hand, ServerPlayer player) {

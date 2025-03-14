@@ -30,8 +30,7 @@ public class S2CMessageBulletTrail extends PlayMessage<S2CMessageBulletTrail> {
     private boolean enchanted;
     private ParticleOptions particleData;
 
-    public S2CMessageBulletTrail() {
-    }
+    public S2CMessageBulletTrail() {}
 
     public S2CMessageBulletTrail(ProjectileEntity[] spawnedProjectiles, Ammo projectileProps, int shooterId, ParticleOptions particleData) {
         this.positions = new Vec3[spawnedProjectiles.length];

@@ -97,9 +97,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.shooter = shooter;
         this.modifiedGun = modifiedGun;
         this.general = modifiedGun.getGeneral();
-        this.ammo = GunModifierHelper.getCurrentProjectile(weapon);
+        this.ammo = GunModifierHelper.getCurrentAmmo(weapon);
         this.entitySize = new EntityDimensions(this.ammo.getSize(), this.ammo.getSize(), false);
-        this.modifiedGravity = GunModifierHelper.getCurrentProjectile(weapon).isGravity() ? GunModifierHelper.getModifiedProjectileGravity(weapon, -0.04) : 0.0;
+        this.modifiedGravity = GunModifierHelper.getCurrentAmmo(weapon).isGravity() ? GunModifierHelper.getModifiedProjectileGravity(weapon, -0.04) : 0.0;
         this.life = GunModifierHelper.getModifiedProjectileLife(weapon, this.ammo.getLife());
         this.isRightHand = shooter.getItemInHand(InteractionHand.MAIN_HAND) == weapon;
         this.weapon = weapon;
@@ -108,7 +108,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         getEntityData().set(SHOOTER , shooterId);
         getEntityData().set(IS_RIGHT, isRightHand);
         getEntityData().set(IS_VISIBLE, ammo.isVisible());
-        getEntityData().set(ITEM, GunModifierHelper.getCurrentAmmo(weapon).toString());
+        getEntityData().set(ITEM, GunModifierHelper.getCurrentAmmoId(weapon).toString());
         getEntityData().set(AMMO_TYPE, ammo.getType().toString());
 
         /* Get speed and set motion */
@@ -120,7 +120,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         var posZ = shooter.zOld + (shooter.getZ() - shooter.zOld) / 2.0;
         this.setPos(posX, posY, posZ);
 
-        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmo(weapon));
+        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmoId(weapon));
 
         if (ammo != null) {
             int customModelData = -1;

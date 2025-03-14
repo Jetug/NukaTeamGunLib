@@ -13,9 +13,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 public class GunModifierHelper {
     private static final IGunModifier[] EMPTY = {};
     public static final String FIRE_MODE = "FireMode";
+    public static final Ammo AMMO = new Ammo();
 
     public static boolean isOneHanded(ItemStack itemStack){
         return GunModifierHelper.getGripType(itemStack) != GripType.ONE_HANDED;
@@ -91,8 +92,8 @@ public class GunModifierHelper {
         var finalMaxAmmo = new AtomicInteger(getGun(weapon).getGeneral().getMaxAmmo());
 
         if (weapon != null && weapon.getItem() instanceof GunItem) {
-            if (GunModifierHelper.getCurrentProjectile(weapon).isMagazineMode()) {
-                var id = GunModifierHelper.getCurrentAmmo(weapon);
+            if (GunModifierHelper.getCurrentAmmo(weapon).isMagazineMode()) {
+                var id = GunModifierHelper.getCurrentAmmoId(weapon);
                 var item = ForgeRegistries.ITEMS.getValue(id);
 
                 finalMaxAmmo.set(item.getMaxDamage(new ItemStack(item)));
@@ -117,7 +118,7 @@ public class GunModifierHelper {
 
     public static int getProjectileAmount(ItemStack weapon) {
         var gunProjectileAmount = getGun(weapon).getGeneral().getProjectileAmount();
-        var ammoProjectileAmount = getCurrentAmmoItem(weapon).getAmmo().getProjectileAmount();
+        var ammoProjectileAmount = getCurrentAmmo(weapon).getProjectileAmount();
 
         var finalProjectileAmount = new AtomicInteger(gunProjectileAmount * ammoProjectileAmount);
         forEachAttachment(weapon, (modifier -> finalProjectileAmount.set(modifier.modifyProjectileAmount(finalProjectileAmount.get()))));
@@ -183,7 +184,7 @@ public class GunModifierHelper {
 
     public static void switchAmmo(ItemStack weapon){
         var ammoItems = getAmmoItems(weapon);
-        var current = getCurrentAmmo(weapon);
+        var current = getCurrentAmmoId(weapon);
         var newAmmo = cycleSet(ammoItems, current);
 
         setCurrentAmmo(weapon, newAmmo);
@@ -195,7 +196,7 @@ public class GunModifierHelper {
         weapon.setTag(tag);
     }
 
-    public static ResourceLocation getCurrentAmmo(ItemStack weapon) {
+    public static ResourceLocation getCurrentAmmoId(ItemStack weapon) {
         var tag = weapon.getOrCreateTag();
         if (tag.contains("Ammo", Tag.TAG_STRING)) {
             return ResourceLocation.tryParse(tag.getString("Ammo"));
@@ -203,20 +204,19 @@ public class GunModifierHelper {
         return getFirstAmmoItem(weapon);
     }
 
-    public static IAmmo getCurrentAmmoItem(ItemStack weapon) {
-        return (IAmmo)ForgeRegistries.ITEMS.getValue(getCurrentAmmo(weapon));
+    public static Item getCurrentAmmoItem(ItemStack weapon) {
+        return ForgeRegistries.ITEMS.getValue(getCurrentAmmoId(weapon));
     }
 
     public static AmmoType getCurrentAmmoType(ItemStack weapon) {
-        var ammo = (IAmmo)ForgeRegistries.ITEMS.getValue(getCurrentAmmo(weapon));
-        assert ammo != null;
-        return ammo.getAmmo().getType();
+        var ammo = getCurrentAmmo(weapon);
+        return ammo.getType();
     }
 
-    public static Ammo getCurrentProjectile(ItemStack weapon) {
-        var item = getCurrentAmmo(weapon);
-        var ammoItem = (IAmmo)ForgeRegistries.ITEMS.getValue(item);
-        return ammoItem.getAmmo();
+    public static Ammo getCurrentAmmo(ItemStack weapon) {
+        if(getCurrentAmmoItem(weapon) instanceof IAmmo ammo)
+            return ammo.getAmmo();
+        else return AMMO;
     }
 
     public static Set<ResourceLocation> getAmmoItems(ItemStack weapon) {
@@ -253,7 +253,7 @@ public class GunModifierHelper {
 
     public static float getModifiedSpread(ItemStack weapon) {
         var gunSpread = getGun(weapon).getGeneral().getSpread();
-        var ammoSpread = getCurrentAmmoItem(weapon).getAmmo().getSpread();
+        var ammoSpread = getCurrentAmmo(weapon).getSpread();
         var spread = Math.max(gunSpread + ammoSpread, 0);
         var finalSpread = new AtomicReference<>(spread);
 
@@ -350,7 +350,7 @@ public class GunModifierHelper {
     }
 
     public static float getAmmoDamageMultiplier(ItemStack weapon){
-        return getCurrentAmmoItem(weapon).getAmmo().getDamage();
+        return getCurrentAmmo(weapon).getDamage();
     }
 
     public static double getModifiedAimDownSightSpeed(ItemStack weapon, double speed) {
