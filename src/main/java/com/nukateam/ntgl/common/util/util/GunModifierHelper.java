@@ -214,8 +214,15 @@ public class GunModifierHelper {
     }
 
     public static Ammo getCurrentAmmo(ItemStack weapon) {
-        if(getCurrentAmmoItem(weapon) instanceof IAmmo ammo)
+        var gun = getGun(weapon);
+        var ammoId = getCurrentAmmoId(weapon);
+
+        if(gun.hasAmmo(ammoId)) {
+            return gun.getAmmo(ammoId);
+        }
+        else if(getCurrentAmmoItem(weapon) instanceof IAmmo ammo) {
             return ammo.getAmmo();
+        }
         else return AMMO;
     }
 

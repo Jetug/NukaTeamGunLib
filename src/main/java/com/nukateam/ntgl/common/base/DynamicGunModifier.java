@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.base;
 
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -9,6 +10,7 @@ import javax.annotation.Nullable;
 public abstract class DynamicGunModifier implements IGunModifier {
     protected LivingEntity entity;
     protected ItemStack stack;
+    protected HumanoidArm arm;
 
     @Nullable
     public LivingEntity getEntity() {
@@ -25,5 +27,13 @@ public abstract class DynamicGunModifier implements IGunModifier {
 
     public void setStack(ItemStack stack) {
         this.stack = stack;
+    }
+
+    public void setArm(HumanoidArm arm) {
+        this.arm = arm;
+    }
+
+    public HumanoidArm getArm() {
+        return arm;
     }
 }

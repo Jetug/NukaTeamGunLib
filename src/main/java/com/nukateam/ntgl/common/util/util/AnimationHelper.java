@@ -8,6 +8,8 @@ import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AnimationHelper<T extends IResourceProvider & GeoAnimatable> {
     private final T animatable;
@@ -21,6 +23,24 @@ public class AnimationHelper<T extends IResourceProvider & GeoAnimatable> {
     public void syncAnimation(AnimationState event, String animationName, int targetDuration) {
         var multiplier = (float) getSpeedMultiplier(animationName, targetDuration);
         event.setControllerSpeed(multiplier);
+    }
+
+    public void syncAnimations(AnimationState event, int targetDuration, String... animations) {
+        var multiplier = getSpeedMultiplier(targetDuration, List.of(animations));
+        event.setControllerSpeed((float) multiplier);
+    }
+
+    public void syncAnimations(AnimationState event, int targetDuration, Iterable<String> animations) {
+        var multiplier = getSpeedMultiplier(targetDuration, animations);
+        event.setControllerSpeed((float) multiplier);
+    }
+
+    public double getSpeedMultiplier(double targetDuration, Iterable<String> animations) {
+        var generalDuration = 0.0;
+        for (String name : animations)
+            generalDuration += getAnimationDuration(name);
+
+        return generalDuration / targetDuration;
     }
 
     public double getSpeedMultiplier(String animationName, double targetDuration) {

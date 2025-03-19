@@ -26,6 +26,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -125,8 +126,10 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     public void inventoryTick(ItemStack stack, Level pLevel, Entity entity, int pSlotId, boolean pIsSelected) {
         if(modifierFactory != null && entity instanceof LivingEntity livingEntity) {
             var modifier = dynamycmodifiers.getOrDefault(stack, modifierFactory.get());
+            var arm = livingEntity.getOffhandItem() == stack ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
             modifier.setEntity(livingEntity);
             modifier.setStack(stack);
+            modifier.setArm(arm);
             dynamycmodifiers.put(stack, modifier);
         }
     }

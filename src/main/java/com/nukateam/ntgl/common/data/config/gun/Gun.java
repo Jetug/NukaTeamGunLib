@@ -5,6 +5,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
+import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.util.annotation.Ignored;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.util.util.GunJsonUtil;
@@ -54,6 +55,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     @Ignored
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
+    protected HashMap<ResourceLocation, Ammo> progectiles = new HashMap<>();
 
     public General getGeneral() {
         return this.general;
@@ -502,6 +504,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
         var zoom = modifiedGun.getModules().getZoom();
         return zoom != null ? modifier + zoom.getFovModifier() : 0F;
+    }
+
+    public boolean hasAmmo(ResourceLocation ammo){
+        return progectiles.containsKey(ammo);
+    }
+
+    public Ammo getAmmo(ResourceLocation ammo){
+        return progectiles.get(ammo);
     }
 
     public static class Builder {

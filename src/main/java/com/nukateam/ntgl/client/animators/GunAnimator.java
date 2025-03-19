@@ -41,6 +41,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.nukateam.example.common.util.constants.Animations.*;
 import static com.nukateam.ntgl.client.util.util.TransformUtils.*;
 import static mod.azure.azurelib.core.animation.AnimatableManager.ControllerRegistrar;
+import static mod.azure.azurelib.core.animation.Animation.*;
 import static mod.azure.azurelib.core.animation.Animation.LoopType.*;
 import static mod.azure.azurelib.core.animation.RawAnimation.begin;
 
@@ -206,7 +207,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
             RawAnimation animation = null;
             if (isShooting && this.animationHelper.hasAnimation(finalAnim)) {
-                animation = RawAnimation.begin().then(finalAnim, Animation.LoopType.HOLD_ON_LAST_FRAME);
+                animation = RawAnimation.begin().then(finalAnim, LoopType.HOLD_ON_LAST_FRAME);
                 this.animationHelper.syncAnimation(event, finalAnim, rate);
             }
 
@@ -228,14 +229,12 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     protected RawAnimation getChargingAnimation(AnimationState<GunAnimator> event, ShootingData data) {
         var animation = begin();
-        var speed = 1 - ((float) data.fireTimer / (float) fireDelay);
-        var controller = event.getController();
-        controller.setAnimationSpeed(speed);
-
         if (animationHelper.hasAnimation(Animations.CHARGE)) {
             BARREL_CONTROLLER.stop();
             BARREL_CONTROLLER.setAnimation(begin().then("void", PLAY_ONCE));
             animation = playGunAnim(Animations.CHARGE, LOOP);
+            var fireDelay = GunModifierHelper.getFireDelay(getStack());
+            animationHelper.syncAnimation(event, Animations.CHARGE, fireDelay);
         }
         return animation;
     }
@@ -274,15 +273,19 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         }
     }
 
-    protected RawAnimation playGunAnim(String name, Animation.LoopType loopType) {
+    protected RawAnimation playGunAnim(String name, LoopType loopType) {
+        return begin().then(getGunAnim(name), loopType);
+    }
+
+    protected String getGunAnim(String name){
         var entity = getEntity();
         var currentItem = entity.getItemInHand(PlayerHelper.convertHand(arm));
         var oppositeItem = entity.getItemInHand(PlayerHelper.convertHand(arm.getOpposite()));
         var isOneHanded = isOneHanded(currentItem) && isOneHanded(oppositeItem) || arm == HumanoidArm.LEFT;
 
         if (isOneHanded && animationHelper.hasAnimation(name + Animations.ONE_HAND_SUFFIX))
-            return begin().then(name + Animations.ONE_HAND_SUFFIX, loopType);
-        return begin().then(name, loopType);
+            return name + Animations.ONE_HAND_SUFFIX;
+        return name;
     }
 
     private void setupCycledAnimations() {
