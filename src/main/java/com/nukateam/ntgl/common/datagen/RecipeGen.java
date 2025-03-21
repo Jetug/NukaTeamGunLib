@@ -63,156 +63,156 @@ public class RecipeGen extends RecipeProvider
             }
         });
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.WORKBENCH.get())
-                .pattern("CCC")
-                .pattern("III")
-                .pattern("I I")
-                .define('C', Blocks.LIGHT_GRAY_CONCRETE)
-                .define('I', Tags.Items.INGOTS_IRON)
-                .unlockedBy("has_concrete", has(Blocks.LIGHT_GRAY_CONCRETE))
-                .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
-                .save(consumer);
-
-        // Guns
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.PISTOL10MM.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 14))
-                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.SHOTGUN.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 24))
-                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.POWDERGUN.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 24))
-                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.CLASSIC10MM.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 32))
-                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.FATMAN.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 44))
-                .addIngredient(Items.REDSTONE, 4)
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.DYES_RED, 1))
-                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-                .addCriterion("has_redstone", has(Items.REDSTONE))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.MINIGUN.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 38))
-                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.FLAMER.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 28))
-                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.SCOUT10MM.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 20))
-                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.PIPE_REVOLVER.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 36))
-                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
-                .build(consumer);
-
-        // Ammo
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.ROUND10MM.get(), 64)
-                .addIngredient(WorkbenchIngredient.of(Items.COPPER_INGOT, 4))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 1))
-                .addCriterion("has_copper_ingot", has(Items.COPPER_INGOT))
-                .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.ROUND5MM.get(), 32)
-                .addIngredient(WorkbenchIngredient.of(Items.COPPER_INGOT, 4))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 1))
-                .addCriterion("has_copper_ingot", has(Items.COPPER_INGOT))
-                .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.ROUND44.get(), 48)
-                .addIngredient(WorkbenchIngredient.of(Items.COPPER_INGOT, 4))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_GOLD, 1))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 1))
-                .addCriterion("has_copper_ingot", has(Items.COPPER_INGOT))
-                .addCriterion("has_gold_nugget", has(Tags.Items.NUGGETS_GOLD))
-                .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.MININUKE.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 2))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 4))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.GRENADE.get(), 2)
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 1))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 4))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.STUN_GRENADE.get(), 2)
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 1))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 2))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.DUSTS_GLOWSTONE, 4))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
-                .addCriterion("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
-                .build(consumer);
-
-        // Scope Attachments
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.HOLOGRAPHIC_SIGHT.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 2))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.GEMS_AMETHYST, 1))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.DUSTS_REDSTONE, 2))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_amethyst", has(Tags.Items.GEMS_AMETHYST))
-                .addCriterion("has_redstone", has(Tags.Items.DUSTS_REDSTONE))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.COLLIMATOR_SIGHT.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.GEMS_AMETHYST, 1))
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.DUSTS_REDSTONE, 4))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_amethyst", has(Tags.Items.GEMS_AMETHYST))
-                .addCriterion("has_redstone", has(Tags.Items.DUSTS_REDSTONE))
-                .build(consumer);
-
-        // Barrel Attachments
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.SILENCER.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
-                .addIngredient(WorkbenchIngredient.of(Items.SPONGE, 1))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .build(consumer);
-
-        // Stock Attachments
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.LIGHT_STOCK.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 6))
-                .addIngredient(WorkbenchIngredient.of(Items.GRAY_WOOL, 1))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_gray_wool", has(Items.GRAY_WOOL))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.TACTICAL_STOCK.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 8))
-                .addIngredient(WorkbenchIngredient.of(Items.GRAY_WOOL, 1))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_gray_wool", has(Items.GRAY_WOOL))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.WEIGHTED_STOCK.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 12))
-                .addIngredient(WorkbenchIngredient.of(Items.GRAY_WOOL, 1))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_gray_wool", has(Items.GRAY_WOOL))
-                .build(consumer);
-
-        // Under Barrel Attachments
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.LIGHT_GRIP.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
-                .addIngredient(WorkbenchIngredient.of(Items.GRAY_WOOL, 1))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_gray_wool", has(Items.GRAY_WOOL))
-                .build(consumer);
-        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.SPECIALISED_GRIP.get())
-                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 8))
-                .addIngredient(WorkbenchIngredient.of(Items.GRAY_WOOL, 1))
-                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
-                .addCriterion("has_gray_wool", has(Items.GRAY_WOOL))
-                .build(consumer);
+//        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.WORKBENCH.get())
+//                .pattern("CCC")
+//                .pattern("III")
+//                .pattern("I I")
+//                .define('C', Blocks.LIGHT_GRAY_CONCRETE)
+//                .define('I', Tags.Items.INGOTS_IRON)
+//                .unlockedBy("has_concrete", has(Blocks.LIGHT_GRAY_CONCRETE))
+//                .unlockedBy("has_iron", has(Tags.Items.INGOTS_IRON))
+//                .save(consumer);
+//
+//        // Guns
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.PISTOL10MM.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 14))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.SHOTGUN.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 24))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.POWDERGUN.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 24))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.CLASSIC10MM.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 32))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.FATMAN.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 44))
+//                .addIngredient(Items.REDSTONE, 4)
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.DYES_RED, 1))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+//                .addCriterion("has_redstone", has(Items.REDSTONE))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.MINIGUN.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 38))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.FLAMER.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 28))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.SCOUT10MM.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 20))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.PIPE_REVOLVER.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 36))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+//                .build(consumer);
+//
+//        // Ammo
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.ROUND10MM.get(), 64)
+//                .addIngredient(WorkbenchIngredient.of(Items.COPPER_INGOT, 4))
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 1))
+//                .addCriterion("has_copper_ingot", has(Items.COPPER_INGOT))
+//                .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.ROUND5MM.get(), 32)
+//                .addIngredient(WorkbenchIngredient.of(Items.COPPER_INGOT, 4))
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 1))
+//                .addCriterion("has_copper_ingot", has(Items.COPPER_INGOT))
+//                .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.ROUND44.get(), 48)
+//                .addIngredient(WorkbenchIngredient.of(Items.COPPER_INGOT, 4))
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_GOLD, 1))
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 1))
+//                .addCriterion("has_copper_ingot", has(Items.COPPER_INGOT))
+//                .addCriterion("has_gold_nugget", has(Tags.Items.NUGGETS_GOLD))
+//                .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.MININUKE.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 2))
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 4))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+//                .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.GRENADE.get(), 2)
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 1))
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 4))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+//                .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.STUN_GRENADE.get(), 2)
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 1))
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 2))
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.DUSTS_GLOWSTONE, 4))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+//                .addCriterion("has_gunpowder", has(Tags.Items.GUNPOWDER))
+//                .addCriterion("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
+//                .build(consumer);
+//
+//        // Scope Attachments
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.HOLOGRAPHIC_SIGHT.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 2))
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.GEMS_AMETHYST, 1))
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.DUSTS_REDSTONE, 2))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+//                .addCriterion("has_amethyst", has(Tags.Items.GEMS_AMETHYST))
+//                .addCriterion("has_redstone", has(Tags.Items.DUSTS_REDSTONE))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.COLLIMATOR_SIGHT.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.GEMS_AMETHYST, 1))
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.DUSTS_REDSTONE, 4))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+//                .addCriterion("has_amethyst", has(Tags.Items.GEMS_AMETHYST))
+//                .addCriterion("has_redstone", has(Tags.Items.DUSTS_REDSTONE))
+//                .build(consumer);
+//
+//        // Barrel Attachments
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.SILENCER.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
+//                .addIngredient(WorkbenchIngredient.of(Items.SPONGE, 1))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+//                .build(consumer);
+//
+//        // Stock Attachments
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.LIGHT_STOCK.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 6))
+//                .addIngredient(WorkbenchIngredient.of(Items.GRAY_WOOL, 1))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+//                .addCriterion("has_gray_wool", has(Items.GRAY_WOOL))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.TACTICAL_STOCK.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 8))
+//                .addIngredient(WorkbenchIngredient.of(Items.GRAY_WOOL, 1))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+//                .addCriterion("has_gray_wool", has(Items.GRAY_WOOL))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.WEIGHTED_STOCK.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 12))
+//                .addIngredient(WorkbenchIngredient.of(Items.GRAY_WOOL, 1))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+//                .addCriterion("has_gray_wool", has(Items.GRAY_WOOL))
+//                .build(consumer);
+//
+//        // Under Barrel Attachments
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.LIGHT_GRIP.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 4))
+//                .addIngredient(WorkbenchIngredient.of(Items.GRAY_WOOL, 1))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+//                .addCriterion("has_gray_wool", has(Items.GRAY_WOOL))
+//                .build(consumer);
+//        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.SPECIALISED_GRIP.get())
+//                .addIngredient(WorkbenchIngredient.of(Tags.Items.NUGGETS_IRON, 8))
+//                .addIngredient(WorkbenchIngredient.of(Items.GRAY_WOOL, 1))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.NUGGETS_IRON))
+//                .addCriterion("has_gray_wool", has(Items.GRAY_WOOL))
+//                .build(consumer);
     }
 }

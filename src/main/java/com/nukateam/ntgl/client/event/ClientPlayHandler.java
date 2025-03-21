@@ -136,26 +136,40 @@ public class ClientPlayHandler {
 
         if (world != null) {
             var state = world.getBlockState(message.getPos());
-            double holeX = message.getX() + 0.005 * message.getFace().getStepX();
-            double holeY = message.getY() + 0.005 * message.getFace().getStepY();
-            double holeZ = message.getZ() + 0.005 * message.getFace().getStepZ();
-            double distance = Math.sqrt(mc.player.distanceToSqr(message.getX(), message.getY(), message.getZ()));
-            world.addParticle(new BulletHoleData(message.getFace(), message.getPos()), false, holeX, holeY, holeZ, 0, 0, 0);
+            var holeX = message.getX() + 0.005 * message.getFace().getStepX();
+            var holeY = message.getY() + 0.005 * message.getFace().getStepY();
+            var holeZ = message.getZ() + 0.005 * message.getFace().getStepZ();
+            var distance = Math.sqrt(mc.player.distanceToSqr(message.getX(), message.getY(), message.getZ()));
+
+            world.addParticle(
+                    new BulletHoleData(message.getFace(), message.getPos()),
+                    false, holeX, holeY, holeZ, 0, 0, 0
+            );
 
             if (distance < Config.CLIENT.particle.impactParticleDistance.get()) {
                 for (int i = 0; i < 4; i++) {
                     var normal = message.getFace().getNormal();
                     var motion = new Vec3(normal.getX(), normal.getY(), normal.getZ());
                     motion.add(getRandomDir(world.random), getRandomDir(world.random), getRandomDir(world.random));
-                    world.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), false, message.getX(), message.getY(), message.getZ(), motion.x, motion.y, motion.z);
+
+                    world.addParticle(
+                            new BlockParticleOption(ParticleTypes.BLOCK, state),
+                            false, message.getX(), message.getY(),
+                            message.getZ(), motion.x, motion.y, motion.z);
                 }
             }
 
             if (distance <= Config.CLIENT.sounds.impactSoundDistance.get()) {
-                world.playLocalSound(message.getX(), message.getY(), message.getZ(), state.getSoundType().getBreakSound(), SoundSource.BLOCKS, 2.0F, 2.0F, false);
+//                float volume = (float) (1.0F - (distance / Config.CLIENT.sounds.impactSoundDistance.get()));
+//                volume = Math.max(volume, 0.0F);
+
+                world.playLocalSound(message.getX(), message.getY(), message.getZ(),
+                        state.getSoundType().getBreakSound(), SoundSource.BLOCKS,
+                        1.0F, 2.0F, false);
             }
         }
     }
+
     public static void handleEntityData(S2CMessageEntityData message) {
         var mc = Minecraft.getInstance();
         var level = mc.level;
@@ -191,7 +205,7 @@ public class ClientPlayHandler {
         var event = getHitSound(message.isCritical(), message.isHeadshot(), message.isPlayer());
         if (event == null) return;
 
-        mc.getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F, 1.0F + world.random.nextFloat() * 0.2F));
+        mc.getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F, 0.8F + world.random.nextFloat() * 0.2F));
     }
 
     @Nullable
