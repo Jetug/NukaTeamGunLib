@@ -18,6 +18,10 @@ public class Cycler {
         this.current = min;
     }
 
+    public int getMax() {
+        return max;
+    }
+
     public int getCurrent(){
         return current;
     }

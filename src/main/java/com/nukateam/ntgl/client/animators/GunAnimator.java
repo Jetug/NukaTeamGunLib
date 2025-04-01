@@ -291,8 +291,10 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     private void setupCycledAnimations() {
         var entity = getEntity();
         var cooldown = shootingHandler.getCooldown(entity, arm);
+        var maxAmmo = GunModifierHelper.getMaxAmmo(getStack());
 
-        if (chamberCycler == null) chamberCycler = new Cycler(1, GunModifierHelper.getMaxAmmo(getStack()));
+        if (chamberCycler == null || chamberCycler.getMax() != maxAmmo)
+            chamberCycler = new Cycler(1, maxAmmo);
 
         if (cooldown == rate) {
             barrelCycler.cycle();

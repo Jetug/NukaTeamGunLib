@@ -65,9 +65,9 @@ public class Ntgl {
         Projectiles.REGISTER.register(MOD_EVENT_BUS);
         if(Ntgl.isDebugging()) {
             ModItemTabs.register(MOD_EVENT_BUS);
-            ModGuns.register(MOD_EVENT_BUS);
-            ModBlocks.register(MOD_EVENT_BUS);
         }
+        ModGuns.register(MOD_EVENT_BUS);
+        ModBlocks.register(MOD_EVENT_BUS);
         ModRecipeType.REGISTER.register(MOD_EVENT_BUS);
         ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
         ModRecipeSerializers.REGISTER.register(MOD_EVENT_BUS);
