@@ -14,13 +14,13 @@ import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.constants.Animations;
+import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.util.util.AnimationHelper;
 import com.nukateam.ntgl.common.util.util.Cycler;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
-import mod.azure.azurelib.core.animation.Animation;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.AnimationController.AnimationStateHandler;
 import mod.azure.azurelib.core.animation.AnimationState;
@@ -248,17 +248,35 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected RawAnimation getReloadingAnimation(AnimationState<GunAnimator> event) {
         var animation = begin();
 
-        if (animationHelper.containsAnimation(Animations.RELOAD_START))
-            animation.then(Animations.RELOAD_START, PLAY_ONCE);
+        if(ModSyncedDataKeys.RELOAD_START.getValue(getEntity())){
+            animation = getStartReloadAnimation(event);
+        }
+        else if(ModSyncedDataKeys.RELOAD_END.getValue(getEntity())){
+            animation = getEndReloadAnimation(event);
+        }
+        else {
+            animation = getDefaultReloadAminmation(event);
+        }
 
-        animation.then(RELOAD, LOOP);
-
-        if (animationHelper.containsAnimation(Animations.RELOAD_END))
-            animation.then(Animations.RELOAD_END, PLAY_ONCE);
-
-        if (event.getController().getCurrentAnimation().animation().name().equals(RELOAD))
-            animationHelper.syncAnimation(event, RELOAD, GunModifierHelper.getReloadTime(getStack()));
         return animation;
+    }
+
+    protected RawAnimation getDefaultReloadAminmation(AnimationState<GunAnimator> event) {
+        var time = GunModifierHelper.getReloadTime(getStack());
+        animationHelper.syncAnimation(event, RELOAD, time);
+        return begin().then(RELOAD, LOOP);
+    }
+
+    protected RawAnimation getEndReloadAnimation(AnimationState<GunAnimator> event) {
+        var time = GunModifierHelper.getReloadEnd(getStack());
+        animationHelper.syncAnimation(event, Animations.RELOAD_END, time);
+        return begin().then(Animations.RELOAD_END, PLAY_ONCE);
+    }
+
+    protected RawAnimation getStartReloadAnimation(AnimationState<GunAnimator> event) {
+        var time = GunModifierHelper.getReloadStart(getStack());
+        animationHelper.syncAnimation(event, Animations.RELOAD_START, time);
+        return begin().then(Animations.RELOAD_START, PLAY_ONCE);
     }
 
     protected void handleSoundEvent(SoundKeyframeEvent<GunAnimator> event) {
@@ -301,22 +319,4 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             chamberCycler.cycle();
         }
     }
-
-//    @NotNull
-//    private RawAnimation getShootingAnimation(AnimationState<GunAnimator> event, ItemStack stack) {
-//        RawAnimation animation;
-//        animation = begin();
-//
-//        if(animationHelper.containsAnimation(SHOT_START))
-//            animation.then(SHOT_START, PLAY_ONCE);
-//
-//        animation.then(SHOT, LOOP);
-//
-//        if(animationHelper.containsAnimation(SHOT_END))
-//            animation.then(SHOT_END, PLAY_ONCE);
-//
-//        if(event.getController().getCurrentAnimation().animation().name().equals(RELOAD))
-//            animationHelper.syncAnimation(event, SHOT, GunModifierHelper.getReloadTime(stack));
-//        return animation;
-//    }
 }

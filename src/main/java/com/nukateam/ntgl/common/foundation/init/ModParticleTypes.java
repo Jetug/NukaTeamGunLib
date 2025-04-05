@@ -1,14 +1,10 @@
 package com.nukateam.ntgl.common.foundation.init;
 
-import com.nukateam.ntgl.common.foundation.particles.BulletHoleData;
-import com.nukateam.ntgl.common.foundation.particles.TrailData;
+import com.nukateam.ntgl.common.foundation.particles.*;
 import com.nukateam.ntgl.Ntgl;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.core.particles.*;
+import net.minecraftforge.registries.*;
 
 /**
  * Author: MrCrayfish

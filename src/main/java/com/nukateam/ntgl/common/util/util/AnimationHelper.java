@@ -20,17 +20,26 @@ public class AnimationHelper<T extends IResourceProvider & GeoAnimatable> {
         this.model = model;
     }
 
+    /**
+     * Deprecated: Use #syncAnimation(AnimationState, int, String...) instead
+     * <p>
+     * Sets the animation controller speed so that the animation duration matches the target duration
+     */
+    @Deprecated
     public void syncAnimation(AnimationState event, String animationName, int targetDuration) {
         var multiplier = (float) getSpeedMultiplier(animationName, targetDuration);
         event.setControllerSpeed(multiplier);
     }
 
-    public void syncAnimations(AnimationState event, int targetDuration, String... animations) {
+    /**
+     * Sets the animation controller speed so that the animation duration matches the target duration
+     */
+    public void syncAnimation(AnimationState event, int targetDuration, String... animations) {
         var multiplier = getSpeedMultiplier(targetDuration, List.of(animations));
         event.setControllerSpeed((float) multiplier);
     }
 
-    public void syncAnimations(AnimationState event, int targetDuration, Iterable<String> animations) {
+    public void syncAnimation(AnimationState event, int targetDuration, Iterable<String> animations) {
         var multiplier = getSpeedMultiplier(targetDuration, animations);
         event.setControllerSpeed((float) multiplier);
     }

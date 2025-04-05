@@ -52,6 +52,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
     protected ItemStack gunStack;
     protected boolean firstRightRender = true;
     protected boolean firstLeftRender = true;
+    private ItemDisplayContext transformType;
 
     public DynamicGunRenderer(GeoModel<Animator> model) {
         super(model);
@@ -70,13 +71,14 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
                        @Nullable MultiBufferSource bufferSource,
                        @Nullable RenderType renderType, @Nullable VertexConsumer buffer, int packedLight) {
         this.bufferSource = bufferSource;
-
+        this.transformType = transformType;
         this.gun = GunModifierHelper.getGun(stack);
         this.gunStack = stack;
         this.gunAttachments = Gun.getAttachmentItems(stack);
         this.configAttachments = gun.getAttachments(gunAttachments);
         this.firstRightRender = true;
         this.firstLeftRender  = true;
+        this.currentEntity = entity;
 
         if (TransformUtils.isFirstPerson(transformType) && AimingHandler.isScoping(stack))
             return;
@@ -103,6 +105,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
                                   MultiBufferSource bufferSource, VertexConsumer buffer,
                                   boolean isReRender, float partialTick, int packedLight, int packedOverlay,
                                   float red, float green, float blue, float alpha) {
+        poseStack.pushPose();
         renderAttachments(bone);
 
         switch (bone.getName()) {
@@ -125,7 +128,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource,
                 this.bufferSource.getBuffer(renderType), isReRender, partialTick, packedLight,
                 packedOverlay, red, green, blue, alpha);
-
+        poseStack.popPose();
     }
 
     public LivingEntity getRenderEntity() {
@@ -133,8 +136,11 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
     }
 
     protected boolean shouldRenderAttachment(Modules.Attachment attachment, ItemStack item) {
-        var itemId = ForgeRegistries.ITEMS.getKey(item.getItem());
-        return !item.isEmpty() && attachment.getItemId().equals(itemId);
+        if (transformType != ItemDisplayContext.GUI) {
+            var itemId = ForgeRegistries.ITEMS.getKey(item.getItem());
+            return !item.isEmpty() && attachment.getItemId().equals(itemId);
+        }
+        return false;
     }
 
     protected void renderAttachments(GeoBone bone) {
@@ -155,8 +161,8 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         var client = Minecraft.getInstance();
         if(client.player == null) return;
 
-        var isRightHand = this.currentTransform == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND;
-        var isLeftHand = this.currentTransform == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
+        var isRightHand = this.transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND;
+        var isLeftHand = this.transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
 
         if (bone.getName().equals(RIGHT_ARM)){
             if(!firstRightRender)
@@ -203,13 +209,9 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
 
     protected void renderMuzzleFlash(PoseStack poseStack) {
         var length = barrelItem.getProperties().getLength();
-        poseStack.pushPose();
-        {
-            poseStack.translate(0, 0, -length / 16D);
-            if (Ntgl.isDebugging())
-                poseStack.translate((double) X / 10 / 16D, (double) Y / 10 / 16D, (double) Z / 10 / 16D);
-        }
-        poseStack.popPose();
+        poseStack.translate(0, 0, -length / 16D);
+        if (Ntgl.isDebugging())
+            poseStack.translate(-(double) X / 10 / 16D, (double) Y / 10 / 16D, (double) Z / 10 / 16D);
     }
 
     protected void prepareHiddenBones(ItemDisplayContext transformType) {

@@ -28,9 +28,9 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
     private final Map<Pair<LivingEntity, ItemDisplayContext>, Animator> animatorsByTransform = new HashMap<>();
     private BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> animatorFactory = null;
     private ItemStack currentStack;
-    protected ItemDisplayContext currentTransform;
+    private ItemDisplayContext currentTransform;
     protected LivingEntity currentEntity;
-    protected LivingEntity buffEntity = null;
+    private LivingEntity buffEntity = null;
 
     public DynamicGeoItemRenderer(GeoModel<Animator> model) {
         super(model);

@@ -26,7 +26,9 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String RELOAD_TYPE = "ReloadType";
     public static final String MAX_AMMO = "MaxAmmo";
     public static final String RELOAD_SPEED = "ReloadSpeed";
+    public static final String RELOAD_START = "reloadStart";
     public static final String RELOAD_TIME = "ReloadTime";
+    public static final String RELOAD_END = "ReloadEnd";
     public static final String RECOIL_ANGLE = "RecoilAngle";
     public static final String DAMAGE = "Damage";
     public static final String RECOIL_KICK = "RecoilKick";
@@ -49,7 +51,9 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional boolean fullCharge = false;
     @Optional float damage;
     @Optional int reloadAmount = 1;
+    @Optional int reloadStart = 0;
     @Optional int reloadTime = 1;
+    @Optional int reloadEnd = 0;
     @Ignored GripType gripType = GripType.ONE_HANDED;
     @Ignored ResourceLocation reloadType = new ResourceLocation(Ntgl.MOD_ID, "gun_reload");
     @Optional LoadingType loadingType = LoadingType.MAGAZINE;
@@ -78,7 +82,9 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putString   (RELOAD_TYPE, this.reloadType.toString());
         tag.putInt      (MAX_AMMO, this.maxAmmo);
         tag.putInt      (RELOAD_SPEED, this.reloadAmount);
+        tag.putInt      (RELOAD_START, this.reloadStart);
         tag.putInt      (RELOAD_TIME, this.reloadTime);
+        tag.putInt      (RELOAD_END, this.reloadEnd);
         tag.putString   (LOADING_TYPE, this.loadingType.toString());
         tag.putBoolean  (AUTO_RELOAD, this.autoReload);
         tag.putString   (CATEGORY, this.category);
@@ -122,8 +128,14 @@ public class General implements INBTSerializable<CompoundTag> {
         if (tag.contains(RELOAD_SPEED, Tag.TAG_ANY_NUMERIC)) {
             this.reloadAmount = tag.getInt(RELOAD_SPEED);
         }
+        if (tag.contains(RELOAD_START, Tag.TAG_ANY_NUMERIC)) {
+            this.reloadStart = tag.getInt(RELOAD_START);
+        }
         if (tag.contains(RELOAD_TIME, Tag.TAG_ANY_NUMERIC)) {
             this.reloadTime = tag.getInt(RELOAD_TIME);
+        }
+        if (tag.contains(RELOAD_END, Tag.TAG_ANY_NUMERIC)) {
+            this.reloadEnd = tag.getInt(RELOAD_END);
         }
         if (tag.contains(LOADING_TYPE, Tag.TAG_STRING)) {
             this.loadingType = LoadingType.getType(tag.getString(LOADING_TYPE));
@@ -193,7 +205,9 @@ public class General implements INBTSerializable<CompoundTag> {
         object.addProperty("reloadType", this.reloadType.toString());
         object.addProperty("maxAmmo", this.maxAmmo);
         if (this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
+        if (this.reloadStart > 0 ) object.addProperty("reloadStart", this.reloadStart);
         if (this.reloadTime != 1) object.addProperty("reloadTime", this.reloadTime);
+        if (this.reloadEnd > 0 ) object.addProperty("reloadEnd", this.reloadEnd);
         if (this.recoilAngle != 0.0F) object.addProperty("recoilAngle", this.recoilAngle);
         if (this.damage != 0.0F) object.addProperty("damage", this.damage);
         if (this.recoilKick != 0.0F) object.addProperty("recoilKick", this.recoilKick);
@@ -222,7 +236,9 @@ public class General implements INBTSerializable<CompoundTag> {
         general.reloadType = this.reloadType;
         general.maxAmmo = this.maxAmmo;
         general.reloadAmount = this.reloadAmount;
+        general.reloadStart = this.reloadStart;
         general.reloadTime = this.reloadTime;
+        general.reloadEnd = this.reloadEnd;
         general.loadingType = this.loadingType;
         general.autoReload = this.autoReload;
         general.category = this.category;
@@ -299,11 +315,19 @@ public class General implements INBTSerializable<CompoundTag> {
         return this.reloadAmount;
     }
 
+    public int getReloadStart() {
+        return this.reloadStart;
+    }
+
     /**
      * @return Time to reload the gun
      */
     public int getReloadTime() {
         return this.reloadTime;
+    }
+
+    public int getReloadEnd() {
+        return this.reloadEnd;
     }
 
     /**

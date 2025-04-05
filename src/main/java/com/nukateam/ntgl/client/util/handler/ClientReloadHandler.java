@@ -138,13 +138,15 @@ public class ClientReloadHandler {
 
         if (reloading) {
             if (stack.getItem() instanceof GunItem) {
-                var tag = stack.getTag();
+                var isAmmoIgnored = Gun.isAmmoIgnored(stack);
+                var hasAmmo = Gun.hasNoAmmo(player, stack);
+                var isMaxAmmo = Gun.isMaxAmmo(stack);
 
-                if (tag != null && !tag.contains("IgnoreAmmo", Tag.TAG_BYTE)) {
+                if (!isAmmoIgnored && !hasAmmo && !isMaxAmmo) {
                     var gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
                     reloadTicks = GunModifierHelper.getReloadTime(stack);
 
-                    if (tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(stack))
+                    if (Gun.getAmmo(stack) >= GunEnchantmentHelper.getAmmoCapacity(stack))
                         return;
                     if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))
                         return;

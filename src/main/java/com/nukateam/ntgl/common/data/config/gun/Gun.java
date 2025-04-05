@@ -57,6 +57,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
     protected HashMap<ResourceLocation, Ammo> progectiles = new HashMap<>();
 
+    public static boolean isAmmoIgnored(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        return tag.contains("IgnoreAmmo", Tag.TAG_BYTE);
+    }
+
     public General getGeneral() {
         return this.general;
     }
@@ -331,6 +336,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return tag.getFloat("AdditionalDamage");
     }
 
+    public static boolean hasNoAmmo(LivingEntity player, ItemStack weapon) {
+        return Gun.findAmmo(player, weapon).stack().isEmpty();
+    }
+
     public static AmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
         var id = GunModifierHelper.getCurrentAmmoId(weapon);
 
@@ -469,6 +478,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static int getAmmo(ItemStack gunStack) {
         var tag = gunStack.getOrCreateTag();
         return tag.getInt(Tags.AMMO_COUNT);
+    }
+
+    public static boolean isMaxAmmo(ItemStack gunStack) {
+        var ammo = getAmmo(gunStack);
+        var maxAmmo = GunModifierHelper.getMaxAmmo(gunStack);
+        return ammo == maxAmmo;
     }
 
     public static void setAmmo(ItemStack gunStack, int amount) {

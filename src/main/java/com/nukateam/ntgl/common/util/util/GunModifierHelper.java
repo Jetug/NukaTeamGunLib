@@ -238,10 +238,24 @@ public class GunModifierHelper {
         return items.iterator().next();
     }
 
+    public static int getReloadStart(ItemStack weapon) {
+        var reloadTime = getGun(weapon).getGeneral().getReloadStart();
+        var finalReloadTime = new AtomicInteger(reloadTime);
+        forEachAttachment(weapon, (modifier -> finalReloadTime.set(modifier.modifyReloadStart(finalReloadTime.get()))));
+        return finalReloadTime.get();
+    }
+
     public static int getReloadTime(ItemStack weapon) {
         var reloadTime = getGun(weapon).getGeneral().getReloadTime();
         var finalReloadTime = new AtomicInteger(reloadTime);
         forEachAttachment(weapon, (modifier -> finalReloadTime.set(modifier.modifyReloadTime(finalReloadTime.get()))));
+        return finalReloadTime.get();
+    }
+
+    public static int getReloadEnd(ItemStack weapon) {
+        var reloadTime = getGun(weapon).getGeneral().getReloadEnd();
+        var finalReloadTime = new AtomicInteger(reloadTime);
+        forEachAttachment(weapon, (modifier -> finalReloadTime.set(modifier.modifyReloadEnd(finalReloadTime.get()))));
         return finalReloadTime.get();
     }
 

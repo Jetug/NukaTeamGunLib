@@ -15,31 +15,34 @@ import net.minecraft.world.entity.player.Player;
  */
 public class ModSyncedDataKeys {
 
-    public static final SyncedDataKey<LivingEntity, Boolean> AIMING = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
+    public static final SyncedDataKey<LivingEntity, Boolean> AIMING
+            = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
             .id(new ResourceLocation(Ntgl.MOD_ID, "aiming"))
             .defaultValueSupplier(() -> false)
             .resetOnDeath()
             .build();
 
-    public static final SyncedDataKey<LivingEntity, Boolean> SHOOTING_RIGHT = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
+    public static final SyncedDataKey<LivingEntity, Boolean> SHOOTING_RIGHT
+            = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
             .id(new ResourceLocation(Ntgl.MOD_ID, "shooting_right"))
             .defaultValueSupplier(() -> false)
             .resetOnDeath()
             .build();
 
-    public static final SyncedDataKey<LivingEntity, Boolean> RELOADING_RIGHT = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
+    public static final SyncedDataKey<LivingEntity, Boolean> RELOADING_RIGHT
+            = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
             .id(new ResourceLocation(Ntgl.MOD_ID, "reloading_right"))
             .defaultValueSupplier(() -> false)
             .resetOnDeath()
             .build();
 
-//    public static final SyncedDataKey<LivingEntity, Boolean> AIMING          = registerBooleanKey("aiming"         );
-//    public static final SyncedDataKey<LivingEntity, Boolean> SHOOTING_RIGHT  = registerBooleanKey("shooting_right" );
     public static final SyncedDataKey<LivingEntity, Boolean> SHOOTING_LEFT   = registerBooleanKey("shooting_left"  );
-//    public static final SyncedDataKey<LivingEntity, Boolean> RELOADING_RIGHT = registerBooleanKey("reloading_right");
     public static final SyncedDataKey<LivingEntity, Boolean> RELOADING_LEFT  = registerBooleanKey("reloading_left" );
     public static final SyncedDataKey<LivingEntity, Boolean> CHARGING_RIGHT  = registerBooleanKey("charging_right" );
     public static final SyncedDataKey<LivingEntity, Boolean> CHARGING_LEFT   = registerBooleanKey("charging_left"  );
+
+    public static final SyncedDataKey<LivingEntity, Boolean> RELOAD_START = registerBooleanKey("reload_start"  );
+    public static final SyncedDataKey<LivingEntity, Boolean> RELOAD_END   = registerBooleanKey("reload_end"    );
 
     public static SyncedDataKey<LivingEntity, Boolean> getReloadKey(InteractionHand hand){
         return switch (hand){
@@ -56,6 +59,8 @@ public class ModSyncedDataKeys {
         FrameworkAPI.registerSyncedDataKey(RELOADING_LEFT);
         FrameworkAPI.registerSyncedDataKey(CHARGING_RIGHT);
         FrameworkAPI.registerSyncedDataKey(CHARGING_LEFT);
+        FrameworkAPI.registerSyncedDataKey(RELOAD_START);
+        FrameworkAPI.registerSyncedDataKey(RELOAD_END);
     }
 
     private static SyncedDataKey<LivingEntity, Boolean> registerBooleanKey(String name) {

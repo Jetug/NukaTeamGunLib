@@ -230,7 +230,15 @@ public interface IGunModifier {
         return item;
     }
 
+    default int modifyReloadStart(int reloadTime) {
+        return reloadTime;
+    }
+
     default int modifyReloadTime(int reloadTime) {
+        return reloadTime;
+    }
+
+    default int modifyReloadEnd(int reloadTime) {
         return reloadTime;
     }
 
