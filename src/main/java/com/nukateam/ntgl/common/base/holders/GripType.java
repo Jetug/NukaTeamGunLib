@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class GripType extends ResourceHolder {
     /** A grip type designed for weapons that are held with only one hand, like a pistol. */
-    public static final GripType ONE_HANDED = new GripType(new ResourceLocation(Ntgl.MOD_ID, "one_handed"), new OneHandedPose());
+    public static final GripType ONE_HANDED = new GripType(new ResourceLocation(Ntgl.MOD_ID, "one_handed"), new OneHandedPose(), true);
 
     /** A grip type designed for weapons that are held with two hands, like an assault rifle. */
     public static final GripType TWO_HANDED = new GripType(new ResourceLocation(Ntgl.MOD_ID, "two_handed"), new TwoHandedPose());
@@ -43,6 +43,7 @@ public class GripType extends ResourceHolder {
     }
 
     private final IHeldAnimation heldAnimation;
+    private final boolean isOneHanded;
 
     /**
      * Creates a new grip type.
@@ -51,8 +52,20 @@ public class GripType extends ResourceHolder {
      * @param heldAnimation the animation functions to apply to the held weapon
      */
     public GripType(ResourceLocation id, IHeldAnimation heldAnimation) {
+        this(id, heldAnimation, false);
+
+    }
+
+    /**
+     * Creates a new grip type.
+     *
+     * @param id            the id of the grip type
+     * @param heldAnimation the animation functions to apply to the held weapon
+     */
+    public GripType(ResourceLocation id, IHeldAnimation heldAnimation, boolean isOneHanded) {
         super(id);
         this.heldAnimation = heldAnimation;
+        this.isOneHanded = isOneHanded;
     }
 
     /**
@@ -107,5 +120,9 @@ public class GripType extends ResourceHolder {
     /** Gets the held animation get. Used for rendering. */
     public IHeldAnimation getHeldAnimation() {
         return this.heldAnimation;
+    }
+
+    public boolean isOneHanded() {
+        return isOneHanded;
     }
 }

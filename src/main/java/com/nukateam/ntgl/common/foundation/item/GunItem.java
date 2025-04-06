@@ -1,47 +1,37 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.geo.interfaces.IResourceProvider;
-import com.nukateam.ntgl.client.animators.GunAnimator;
-import com.nukateam.ntgl.common.base.DynamicGunModifier;
-import com.nukateam.ntgl.common.util.util.ResourceUtils;
-import com.nukateam.geo.interfaces.DynamicGeoItem;
-import com.nukateam.geo.render.DynamicGeoItemRenderer;
+import com.nukateam.geo.interfaces.*;
+import com.nukateam.ntgl.client.animators.*;
+import com.nukateam.ntgl.client.event.ClientTickHandler;
+import com.nukateam.ntgl.common.base.*;
+import com.nukateam.ntgl.common.util.util.*;
+import com.nukateam.geo.render.*;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.render.renderers.gun.DefaultGunRendererGeo;
-import com.nukateam.ntgl.common.base.NetworkManager;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
-import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.debug.Debug;
-import com.nukateam.ntgl.common.foundation.enchantment.EnchantmentTypes;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
-import mod.azure.azurelib.animatable.GeoItem;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
+import com.nukateam.ntgl.client.render.renderers.gun.*;
+import com.nukateam.ntgl.common.data.config.gun.*;
+import com.nukateam.ntgl.common.util.interfaces.*;
+import com.nukateam.ntgl.common.debug.*;
+import com.nukateam.ntgl.common.foundation.enchantment.*;
+import com.nukateam.ntgl.common.foundation.item.interfaces.*;
+import mod.azure.azurelib.animatable.*;
+import mod.azure.azurelib.core.animatable.instance.*;
+import mod.azure.azurelib.core.animation.*;
+import net.minecraft.*;
+import net.minecraft.nbt.*;
+import net.minecraft.network.chat.*;
+import net.minecraft.resources.*;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.ForgeRegistries;
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
+import net.minecraftforge.api.distmarker.*;
+import net.minecraftforge.common.util.*;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.registries.*;
+
+import javax.annotation.*;
+import java.util.*;
+import java.util.function.*;
 
 import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
@@ -58,15 +48,41 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
 
     @Nullable
     protected Supplier<DynamicGunModifier> modifierFactory = null;
-    protected HashMap<ItemStack, DynamicGunModifier> dynamycmodifiers = new HashMap<>();
+    protected HashMap<MyPair<LivingEntity, HumanoidArm>, MyPair<ItemStack, DynamicGunModifier>> dynamicModifiers = new HashMap<>();
 
     @Nullable
     public DynamicGunModifier getGunModifier(ItemStack stack) {
-        return dynamycmodifiers.get(stack);
+        for(var value : dynamicModifiers.values()){
+            if(value.getFirst() == stack)
+                return value.getSecond();
+        }
+
+        return null;
     }
 
     public GunItem(Item.Properties properties) {
         super(properties);
+        ClientTickHandler.addTicker(this, this::tick);
+    }
+
+    public void tick(TickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
+
+        }
+        else {
+//            var forRemoval = new ArrayList<ItemStack>();
+//            dynamycModifiers.forEach((k, v) -> {
+//                if(!dynamycModifiersBuffer.containsKey(k)){
+//                    forRemoval.add(k);
+//                }
+//            });
+//
+//            forRemoval.forEach((stack) ->{
+//                dynamycModifiers.remove(stack);
+//            });
+//
+//            dynamycModifiersBuffer.clear();
+        }
     }
 
     public GunItem(Supplier<DynamicGunModifier> modifierFactory, Item.Properties properties) {
@@ -118,20 +134,50 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
         return tag.getString(VARIANT);
     }
 
-    public void setDefaultTag(CompoundTag tag){
+    public void setDefaultTag(CompoundTag tag) {
         tag.putInt(AMMO_COUNT, GunModifierHelper.getMaxAmmo(new ItemStack(this)));
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level pLevel, Entity entity, int pSlotId, boolean pIsSelected) {
-        if(modifierFactory != null && entity instanceof LivingEntity livingEntity) {
-            var modifier = dynamycmodifiers.getOrDefault(stack, modifierFactory.get());
-            var arm = livingEntity.getOffhandItem() == stack ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
-            modifier.setEntity(livingEntity);
-            modifier.setStack(stack);
-            modifier.setArm(arm);
-            dynamycmodifiers.put(stack, modifier);
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        if (modifierFactory != null && entity instanceof LivingEntity livingEntity) {
+            var arm = getGunHoldingArm(stack, livingEntity);
+            var modifier = modifierFactory.get();
+            var key = new MyPair<>(livingEntity, arm);
+            var value = new MyPair<>(stack, modifier);
+
+            if(arm == null)
+                return;
+
+            if (!dynamicModifiers.containsKey(key)) {
+                dynamicModifiers.put(key, value);
+            }
+
+            value = dynamicModifiers.get(key);
+            modifier = value.getSecond()
+                    .setEntity(livingEntity)
+                    .setStack(stack)
+                    .setArm(arm);
+
+            if(!value.getFirst().equals(stack)){
+                var i = 1;
+//                value.setFirst(stack);
+            }
+
+//            dynamicModifiers.put(key, value);
         }
+    }
+
+    private static @Nullable HumanoidArm getGunHoldingArm(ItemStack stack, LivingEntity livingEntity) {
+        HumanoidArm arm = null;
+
+        if(livingEntity.getMainHandItem() == stack){
+            arm = HumanoidArm.RIGHT;
+        }
+        else if(livingEntity.getOffhandItem() == stack){
+            arm = HumanoidArm.LEFT;
+        }
+        return arm;
     }
 
     //    @Override

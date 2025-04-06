@@ -82,8 +82,9 @@ public class AimingHandler {
         if (event.phase != TickEvent.Phase.START)
             return;
 
-        Player player = event.player;
-        AimTracker tracker = getAimTracker(player);
+        var player = event.player;
+        var tracker = getAimTracker(player);
+
         if (tracker != null) {
             tracker.handleAiming(player, player.getItemInHand(InteractionHand.MAIN_HAND));
             if (!tracker.isAiming()) {
@@ -201,7 +202,10 @@ public class AimingHandler {
         if (!(mainHandItem.getItem() instanceof GunItem))
             return false;
 
-        if(!mainHandItem.isEmpty() && !offhandItem.isEmpty() && canRenderInOffhand(mainHandItem) && canRenderInOffhand(offhandItem))
+        var mainOneHanded = canRenderInOffhand(mainHandItem);
+        var offOneHanded = canRenderInOffhand(offhandItem);
+
+        if(!mainHandItem.isEmpty() && !offhandItem.isEmpty() && mainOneHanded && offOneHanded)
             return false;
 
         var gun = ((GunItem) mainHandItem.getItem()).getModifiedGun(mainHandItem);
@@ -218,7 +222,16 @@ public class AimingHandler {
         if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player))
             return false;
 
+        if(mainHandItem.getItem() instanceof GunItem && offhandItem.getItem() instanceof GunItem) {
+            var off =  GunModifierHelper.getGripType(offhandItem);
+            if(off.isOneHanded()) {
+                return false;
+            }
+            return false;
+        }
+
         boolean zooming = mc.options.keyUse.isDown();
+
         if (Ntgl.controllableLoaded) {
             zooming |= ControllerHandler.isAiming();
         }

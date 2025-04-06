@@ -15,7 +15,6 @@ import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.item.attachment.BarrelItem;
-import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.util.ClientUtils;
@@ -31,7 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
 
 import java.util.ArrayList;
 
@@ -57,7 +55,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
     public DynamicGunRenderer(GeoModel<Animator> model) {
         super(model);
         addRenderLayer(new GlowingLayer<>(this));
-        ClientTickHandler.addTicker(this, this::tick);
+        ClientTickHandler.addClientTicker(this, this::tick);
     }
 
     protected void tick(TickEvent event){

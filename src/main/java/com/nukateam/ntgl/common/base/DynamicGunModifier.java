@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 public abstract class DynamicGunModifier implements IGunModifier {
     protected LivingEntity entity;
     protected ItemStack stack;
+    @Nullable
     protected HumanoidArm arm;
 
     @Nullable
@@ -17,23 +18,26 @@ public abstract class DynamicGunModifier implements IGunModifier {
         return entity;
     }
 
-    public void setEntity(LivingEntity entity) {
+    public DynamicGunModifier setEntity(LivingEntity entity) {
         this.entity = entity;
+        return this;
     }
 
     public ItemStack getStack() {
         return stack;
     }
 
-    public void setStack(ItemStack stack) {
+    public DynamicGunModifier setStack(ItemStack stack) {
         this.stack = stack;
+        return this;
     }
 
-    public void setArm(HumanoidArm arm) {
+    public DynamicGunModifier setArm(@Nullable HumanoidArm arm) {
         this.arm = arm;
+        return this;
     }
 
-    public HumanoidArm getArm() {
+    public @Nullable HumanoidArm getArm() {
         return arm;
     }
 }
