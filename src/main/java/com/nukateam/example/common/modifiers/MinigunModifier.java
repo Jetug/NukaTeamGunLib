@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class MinigunModifier extends DynamicGunModifier {
     @Override
-    public int modifyReloadTime(int reloadTime) {
+    public int modifyReloadTime(int reloadTime, GunData data) {
         var mainHandStack = getEntity().getMainHandItem();
 
         if(ItemStack.matches(mainHandStack, stack)) {

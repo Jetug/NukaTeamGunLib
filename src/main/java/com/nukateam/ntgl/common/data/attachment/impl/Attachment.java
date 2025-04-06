@@ -3,7 +3,9 @@ package com.nukateam.ntgl.common.data.attachment.impl;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.util.util.GunData;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -11,7 +13,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,12 @@ public class Attachment {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void addInformationEvent(ItemTooltipEvent event) {
-        ItemStack stack = event.getItemStack();
+        var stack = event.getItemStack();
+        var player = Minecraft.getInstance().player;
+        if(player == null) return;
+
+        var data = new GunData(stack, player);
+
         if (stack.getItem() instanceof IAttachment<?>) {
             IAttachment<?> attachment = (IAttachment<?>) stack.getItem();
             List<Component> perks = attachment.getProperties().getPerks();
@@ -66,7 +72,7 @@ public class Attachment {
             float inputSound = 1.0F;
             float outputSound = inputSound;
             for (IGunModifier modifier : modifiers) {
-                outputSound = modifier.modifyFireSoundVolume(outputSound);
+                outputSound = modifier.modifyFireSoundVolume(outputSound, data);
             }
             if (outputSound > inputSound) {
                 addPerk(negativePerks, false, "perk.ntgl.fire_volume.negative");
@@ -76,7 +82,7 @@ public class Attachment {
 
             /* Test for silenced */
             for (IGunModifier modifier : modifiers) {
-                if (modifier.silencedFire()) {
+                if (modifier.silencedFire(data)) {
                     addPerk(positivePerks, true, "perk.ntgl.silenced.positive");
                     break;
                 }
@@ -86,7 +92,7 @@ public class Attachment {
             double inputRadius = 10.0;
             double outputRadius = inputRadius;
             for (IGunModifier modifier : modifiers) {
-                outputRadius = modifier.modifyFireSoundRadius(outputRadius);
+                outputRadius = modifier.modifyFireSoundRadius(outputRadius, data);
             }
             if (outputRadius > inputRadius) {
                 addPerk(negativePerks, false, "perk.ntgl.sound_radius.negative");
@@ -97,7 +103,7 @@ public class Attachment {
             /* Test for additional damage */
             float additionalDamage = 0.0F;
             for (IGunModifier modifier : modifiers) {
-                additionalDamage += modifier.additionalDamage();
+                additionalDamage += modifier.additionalDamage(data);
             }
             if (additionalDamage > 0.0F) {
                 addPerk(positivePerks, true, "perk.ntgl.additional_damage.positive", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage / 2.0));
@@ -109,7 +115,7 @@ public class Attachment {
             float inputDamage = 10.0F;
             float outputDamage = inputDamage;
             for (IGunModifier modifier : modifiers) {
-                outputDamage = modifier.modifyDamage(outputDamage);
+                outputDamage = modifier.modifyDamage(outputDamage, data);
             }
             if (outputDamage > inputDamage) {
                 addPerk(positivePerks, true, "perk.ntgl.modified_damage.positive");
@@ -121,7 +127,7 @@ public class Attachment {
             double inputSpeed = 10.0;
             double outputSpeed = inputSpeed;
             for (IGunModifier modifier : modifiers) {
-                outputSpeed = modifier.modifyProjectileSpeed(outputSpeed);
+                outputSpeed = modifier.modifyProjectileSpeed(outputSpeed, data);
             }
             if (outputSpeed > inputSpeed) {
                 addPerk(positivePerks, true, "perk.ntgl.projectile_speed.positive");
@@ -133,7 +139,7 @@ public class Attachment {
             float inputSpread = 10.0F;
             float outputSpread = inputSpread;
             for (IGunModifier modifier : modifiers) {
-                outputSpread = modifier.modifyProjectileSpread(outputSpread);
+                outputSpread = modifier.modifyProjectileSpread(outputSpread, data);
             }
             if (outputSpread > inputSpread) {
                 addPerk(negativePerks, false, "perk.ntgl.projectile_spread.negative");
@@ -145,7 +151,7 @@ public class Attachment {
             int inputLife = 100;
             int outputLife = inputLife;
             for (IGunModifier modifier : modifiers) {
-                outputLife = modifier.modifyProjectileLife(outputLife);
+                outputLife = modifier.modifyProjectileLife(outputLife, data);
             }
             if (outputLife > inputLife) {
                 addPerk(positivePerks, true, "perk.ntgl.projectile_life.positive");
@@ -157,7 +163,7 @@ public class Attachment {
             float inputRecoil = 10.0F;
             float outputRecoil = inputRecoil;
             for (IGunModifier modifier : modifiers) {
-                outputRecoil *= modifier.recoilModifier();
+                outputRecoil *= modifier.recoilModifier(data);
             }
             if (outputRecoil > inputRecoil) {
                 addPerk(negativePerks, false, "perk.ntgl.recoil.negative");
@@ -169,7 +175,7 @@ public class Attachment {
             double inputAdsSpeed = 10.0;
             double outputAdsSpeed = inputAdsSpeed;
             for (IGunModifier modifier : modifiers) {
-                outputAdsSpeed = modifier.modifyAimDownSightSpeed(outputAdsSpeed);
+                outputAdsSpeed = modifier.modifyAimDownSightSpeed(outputAdsSpeed, data);
             }
             if (outputAdsSpeed > inputAdsSpeed) {
                 addPerk(positivePerks, true, "perk.ntgl.ads_speed.positive");
@@ -181,7 +187,7 @@ public class Attachment {
             int inputRate = 10;
             int outputRate = inputRate;
             for (IGunModifier modifier : modifiers) {
-                outputRate = modifier.modifyFireRate(outputRate);
+                outputRate = modifier.modifyFireRate(outputRate, data);
             }
             if (outputRate > inputRate) {
                 addPerk(negativePerks, false, "perk.ntgl.rate.negative");

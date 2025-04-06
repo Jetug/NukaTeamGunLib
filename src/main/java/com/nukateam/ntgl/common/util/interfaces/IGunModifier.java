@@ -23,9 +23,10 @@ public interface IGunModifier {
      * from, just the volume.
      *
      * @param volume the current fire volume
+     * @param data
      * @return the new volume
      */
-    default float modifyFireSoundVolume(float volume) {
+    default float modifyFireSoundVolume(float volume, GunData data) {
         return volume;
     }
 
@@ -35,7 +36,7 @@ public interface IGunModifier {
      *
      * @return if this fire sound should be silenced version
      */
-    default boolean silencedFire() {
+    default boolean silencedFire(GunData data) {
         return false;
     }
 
@@ -45,9 +46,10 @@ public interface IGunModifier {
      * weapon. This is because another attachment has already modified the radius.
      *
      * @param radius the current sound radius
+     * @param data
      * @return the new sound radius
      */
-    default double modifyFireSoundRadius(double radius) {
+    default double modifyFireSoundRadius(double radius, GunData data) {
         return radius;
     }
 
@@ -57,7 +59,7 @@ public interface IGunModifier {
      *
      * @return additional damage to add on top of the weapon damage
      */
-    default float additionalDamage() {
+    default float additionalDamage(GunData data) {
         return 0.0F;
     }
 
@@ -65,9 +67,10 @@ public interface IGunModifier {
      * Modify the damage of the ammo. This is called before critical logic is
      *
      * @param damage the current ammo damage
+     * @param data
      * @return a new damage for the ammo
      */
-    default float modifyDamage(float damage) {
+    default float modifyDamage(float damage, GunData data) {
         return damage;
     }
 
@@ -75,9 +78,10 @@ public interface IGunModifier {
      * Modify the speed of the ammo.
      *
      * @param speed the current ammo speed
+     * @param data
      * @return a new speed for the ammo
      */
-    default double modifyProjectileSpeed(double speed) {
+    default double modifyProjectileSpeed(double speed, GunData data) {
         return speed;
     }
 
@@ -86,9 +90,10 @@ public interface IGunModifier {
      * applies to weapons that have spread enabled.
      *
      * @param spread the current weapon spread
+     * @param data
      * @return a new spread for the weapon
      */
-    default float modifyProjectileSpread(float spread) {
+    default float modifyProjectileSpread(float spread, GunData data) {
         return spread;
     }
 
@@ -97,7 +102,7 @@ public interface IGunModifier {
      *
      * @return additional gravity to add to the ammo
      */
-    default double additionalProjectileGravity() {
+    default double additionalProjectileGravity(GunData data) {
         return 0;
     }
 
@@ -106,9 +111,10 @@ public interface IGunModifier {
      * fall to the ground.
      *
      * @param gravity the current gravity
+     * @param data
      * @return a new gravity for the ammo
      */
-    default double modifyProjectileGravity(double gravity) {
+    default double modifyProjectileGravity(double gravity, GunData data) {
         return gravity;
     }
 
@@ -118,9 +124,10 @@ public interface IGunModifier {
      * collide).
      *
      * @param life the current ammo life
+     * @param data
      * @return a new life for the ammo
      */
-    default int modifyProjectileLife(int life) {
+    default int modifyProjectileLife(int life, GunData data) {
         return life;
     }
 
@@ -132,7 +139,7 @@ public interface IGunModifier {
      *
      * @return a value to multiply the weapon's kick
      */
-    default float recoilModifier() {
+    default float recoilModifier(GunData data) {
         return 1.0F;
     }
 
@@ -144,7 +151,7 @@ public interface IGunModifier {
      *
      * @return a value to multiply the weapon's kick
      */
-    default float kickModifier() {
+    default float kickModifier(GunData data) {
         return 1.0F;
     }
 
@@ -152,9 +159,10 @@ public interface IGunModifier {
      * Changes the visual size of the muzzle flash.
      *
      * @param size the current size
+     * @param data
      * @return the new size for the muzzle flash
      */
-    default double modifyMuzzleFlashSize(double size) {
+    default double modifyMuzzleFlashSize(double size, GunData data) {
         return size;
     }
 
@@ -162,9 +170,10 @@ public interface IGunModifier {
      * Changes the visual scale of the muzzle flash.
      *
      * @param scale the current scale
+     * @param data
      * @return the new scale for the muzzle flash
      */
-    default double modifyMuzzleFlashScale(double scale) {
+    default double modifyMuzzleFlashScale(double scale, GunData data) {
         return scale;
     }
 
@@ -173,9 +182,10 @@ public interface IGunModifier {
      * quicker the player will look down the sight.
      *
      * @param speed the current speed
+     * @param data
      * @return the new speed
      */
-    default double modifyAimDownSightSpeed(double speed) {
+    default double modifyAimDownSightSpeed(double speed, GunData data) {
         return speed;
     }
 
@@ -183,9 +193,10 @@ public interface IGunModifier {
      * Modifies the fire rate of a weapon. The lower the number, the faster the weapon will fire.
      *
      * @param rate the current fire rate
+     * @param data
      * @return the new fire rate
      */
-    default int modifyFireRate(int rate) {
+    default int modifyFireRate(int rate, GunData data) {
         return rate;
     }
 
@@ -195,19 +206,19 @@ public interface IGunModifier {
      *
      * @return additional chance to include when determining critical hit
      */
-    default float criticalChance() {
+    default float criticalChance(GunData data) {
         return 0F;
     }
 
-    default int modifyMaxAmmo(int maxAmmo) {
+    default int modifyMaxAmmo(int maxAmmo, GunData data) {
         return maxAmmo;
     }
 
-    default int modifyProjectileAmount(int amount) {
+    default int modifyProjectileAmount(int amount, GunData data) {
         return amount;
     }
 
-    default Set<FireMode> modifyFireModes(Set<FireMode> fireMode) {
+    default Set<FireMode> modifyFireModes(Set<FireMode> fireMode, GunData data) {
         return fireMode;
     }
 
@@ -215,39 +226,39 @@ public interface IGunModifier {
         return gripType;
     }
 
-    default int modifyFireDelay(int chargeTime) {
+    default int modifyFireDelay(int chargeTime, GunData data) {
         return chargeTime;
     }
 
-    default boolean modifyNeedsFullCharge(boolean needsFullCharge) {
+    default boolean modifyNeedsFullCharge(boolean needsFullCharge, GunData data) {
         return needsFullCharge;
     }
 
-    default boolean modifyIsOneTimeCharge(boolean oneTimeCharge) {
+    default boolean modifyIsOneTimeCharge(boolean oneTimeCharge, GunData data) {
         return oneTimeCharge;
     }
 
-    default Set<ResourceLocation> modifyAmmoItems(Set<ResourceLocation> item) {
+    default Set<ResourceLocation> modifyAmmoItems(Set<ResourceLocation> item, GunData data) {
         return item;
     }
 
-    default int modifyReloadStart(int reloadTime) {
+    default int modifyReloadStart(int reloadTime, GunData data) {
         return reloadTime;
     }
 
-    default int modifyReloadTime(int reloadTime) {
+    default int modifyReloadTime(int reloadTime, GunData data) {
         return reloadTime;
     }
 
-    default int modifyReloadEnd(int reloadTime) {
+    default int modifyReloadEnd(int reloadTime, GunData data) {
         return reloadTime;
     }
 
-    default boolean modifyAutoReloading(boolean autoReload) {
+    default boolean modifyAutoReloading(boolean autoReload, GunData data) {
         return autoReload;
     }
 
-    default LoadingType modifyLoadingType(LoadingType loadingType) {
+    default LoadingType modifyLoadingType(LoadingType loadingType, GunData data) {
         return loadingType;
     }
 }
