@@ -157,7 +157,7 @@ public class GunModifierHelper {
     public static GripType getGripType(GunData weapon) {
         var gripType = getGun(weapon.stack).getGeneral().getGripType();
         var finalGripType = new AtomicReference<>(gripType);
-        forEachAttachment(weapon.stack, (modifier -> finalGripType.set(modifier.modifyGripType(finalGripType.get(), null))));
+        forEachAttachment(weapon.stack, (modifier -> finalGripType.set(modifier.modifyGripType(finalGripType.get(), weapon))));
         return finalGripType.get();
     }
 
