@@ -1,20 +1,14 @@
 package com.nukateam.example.common.registery;
 
 import com.nukateam.example.common.modifiers.*;
-import com.nukateam.ntgl.common.base.DynamicGunModifier;
-import com.nukateam.ntgl.common.base.GunModifiers;
-import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
-import com.nukateam.ntgl.common.data.attachment.impl.Grip;
-import com.nukateam.ntgl.common.data.attachment.impl.Magazine;
-import com.nukateam.ntgl.common.data.attachment.impl.Stock;
-import com.nukateam.ntgl.common.foundation.item.*;
-import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.item.attachment.*;
+import com.nukateam.ntgl.common.data.attachment.impl.*;
+import com.nukateam.ntgl.common.foundation.item.*;
+import com.nukateam.ntgl.common.base.*;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.*;
 
 import java.util.function.Supplier;
 

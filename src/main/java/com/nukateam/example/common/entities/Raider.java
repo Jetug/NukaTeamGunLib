@@ -31,11 +31,11 @@ public class Raider extends PathfinderMob implements IGunUser {
             SynchedEntityData.defineId(Raider.class, EntityDataSerializers.INT);
 
     private final GunItem[] guns = new GunItem[]{
-            ModGuns.PISTOL10MM.get(),
-            ModGuns.PIPE_REVOLVER.get(),
-            ModGuns.PIPE_PISTOL.get(),
-            ModGuns.SCOUT10MM.get(),
-            ModGuns.MINIGUN.get(),
+//            ModGuns.PISTOL10MM.get(),
+//            ModGuns.PIPE_REVOLVER.get(),
+//            ModGuns.PIPE_PISTOL.get(),
+//            ModGuns.SCOUT10MM.get(),
+//            ModGuns.MINIGUN.get(),
     };
 
     public Raider(EntityType<? extends PathfinderMob> entityType, Level pLevel) {

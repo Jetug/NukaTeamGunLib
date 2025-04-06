@@ -22,7 +22,6 @@ import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -163,10 +162,10 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
-        var player = Minecraft.getInstance().player;
-        if(player == null) return;
+//        var player = Minecraft.getInstance().player;
+//        if(player == null) return;
 
-        var data = new GunData(stack, player);
+        var data = new GunData(stack, null);
         var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmoId(data));
 
         if (ammo != null) {
@@ -249,10 +248,7 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        var player = Minecraft.getInstance().player;
-        if(player == null) return false;
-
-        var data = new GunData(stack, player);
+        var data = new GunData(stack, null);
 
         if (enchantment.category == EnchantmentTypes.SEMI_AUTO_GUN) {
             return GunModifierHelper.isAuto(data);
