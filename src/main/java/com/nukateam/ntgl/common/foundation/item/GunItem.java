@@ -48,13 +48,13 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
 
     @Nullable
     protected Supplier<DynamicGunModifier> modifierFactory = null;
-    protected HashMap<MyPair<LivingEntity, HumanoidArm>, MyPair<ItemStack, DynamicGunModifier>> dynamicModifiers = new HashMap<>();
+    protected HashMap<MyPair<LivingEntity, HumanoidArm>, DynamicGunModifier> dynamicModifiers = new HashMap<>();
 
     @Nullable
     public DynamicGunModifier getGunModifier(ItemStack stack) {
         for(var value : dynamicModifiers.values()){
-            if(value.getFirst() == stack)
-                return value.getSecond();
+            if(value.getStack() == stack)
+                return value;
         }
 
         return null;
@@ -142,26 +142,24 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if (modifierFactory != null && entity instanceof LivingEntity livingEntity) {
             var arm = getGunHoldingArm(stack, livingEntity);
-            var modifier = modifierFactory.get();
+//            var modifier = modifierFactory.get();
             var key = new MyPair<>(livingEntity, arm);
-            var value = new MyPair<>(stack, modifier);
+//            var value = new MyPair<>(stack, modifier);
 
             if(arm == null)
                 return;
 
             if (!dynamicModifiers.containsKey(key)) {
-                dynamicModifiers.put(key, value);
+                dynamicModifiers.put(key, modifierFactory.get());
             }
 
-            value = dynamicModifiers.get(key);
-            modifier = value.getSecond()
-                    .setEntity(livingEntity)
-                    .setStack(stack)
+            var modifier = dynamicModifiers.get(key);
+            modifier.setEntity(livingEntity)
                     .setArm(arm);
 
-            if(!value.getFirst().equals(stack)){
-                var i = 1;
-//                value.setFirst(stack);
+            if(modifier.getStack() == null || !ItemStack.matches(modifier.getStack(), stack)){
+//                var i = 1;
+                modifier.setStack(stack);
             }
 
 //            dynamicModifiers.put(key, value);

@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.base.holders.FireMode;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.interfaces.CurrentFpsGetter;
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -32,8 +33,8 @@ import org.lwjgl.glfw.GLFW;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canRenderInOffhand;
-import static com.nukateam.ntgl.common.util.helpers.PlayerHelper.convertHand;
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
+import static com.nukateam.ntgl.common.util.helpers.PlayerHelper.*;
 import static net.minecraftforge.event.TickEvent.Type.RENDER;
 
 /**
@@ -140,7 +141,7 @@ public class ShootingHandler {
                 if (event.getHand() == InteractionHand.OFF_HAND) {
                     // Allow shields to be used if weapon is one-handed
                     if (offhandItem.getItem() == Items.SHIELD) {
-                        if (GunModifierHelper.getGripType(mainHandItem) == GripType.ONE_HANDED) {
+                        if (GunModifierHelper.getGripType(new GunData(mainHandItem, player)) == GripType.ONE_HANDED) {
                             return;
                         }
                     }

@@ -6,6 +6,7 @@ import com.nukateam.ntgl.client.event.InputEvents;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.FireMode;
 import com.nukateam.ntgl.common.base.holders.GripType;
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
@@ -48,8 +49,9 @@ public class GunHud implements IGuiOverlay {
         var minecraft = Minecraft.getInstance();
 
         if (minecraft.player == null) return;
-        var mainHandItem = minecraft.player.getMainHandItem();
-        var offhandItem = minecraft.player.getOffhandItem();
+        var player = minecraft.player;
+        var mainHandItem = player.getMainHandItem();
+        var offhandItem = player.getOffhandItem();
         var poseStack = graphics.pose();
 
         poseStack.pushPose();
@@ -61,9 +63,9 @@ public class GunHud implements IGuiOverlay {
         poseStack.popPose();
         if (offhandItem.getItem() instanceof GunItem) {
             var x = 110;
-            if (GunModifierHelper.getGripType(offhandItem) == GripType.ONE_HANDED &&
+            if (GunModifierHelper.getGripType(new GunData(offhandItem, player)) == GripType.ONE_HANDED &&
                     !(mainHandItem.getItem() instanceof GunItem &&
-                            GunModifierHelper.getGripType(mainHandItem) != GripType.ONE_HANDED))
+                            GunModifierHelper.getGripType(new GunData(mainHandItem, player)) != GripType.ONE_HANDED))
                 renderAmmoCounter(graphics, offhandItem, x - InputEvents.X, height - InputEvents.Y);
         }
     }

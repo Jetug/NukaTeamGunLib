@@ -4,6 +4,7 @@ package com.nukateam.ntgl.client.util.handler;
 import com.nukateam.ntgl.client.util.util.PropertyHelper;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
@@ -41,7 +42,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canRenderInOffhand;
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.isOneHanded;
 
 /**
  * Author: MrCrayfish
@@ -202,8 +203,8 @@ public class AimingHandler {
         if (!(mainHandItem.getItem() instanceof GunItem))
             return false;
 
-        var mainOneHanded = canRenderInOffhand(mainHandItem);
-        var offOneHanded = canRenderInOffhand(offhandItem);
+        var mainOneHanded = isOneHanded(new GunData(mainHandItem, mc.player));
+        var offOneHanded = isOneHanded(new GunData(offhandItem, mc.player));
 
         if(!mainHandItem.isEmpty() && !offhandItem.isEmpty() && mainOneHanded && offOneHanded)
             return false;
@@ -213,7 +214,8 @@ public class AimingHandler {
         if (!gun.canAimDownSight())
             return false;
 
-        if (mc.player.getOffhandItem().getItem() == Items.SHIELD && GunModifierHelper.getGripType(mainHandItem) == GripType.ONE_HANDED)
+        if (mc.player.getOffhandItem().getItem() == Items.SHIELD
+                && GunModifierHelper.isOneHanded(new GunData(mainHandItem, mc.player)))
             return false;
 
         if (!this.localTracker.isAiming() && this.isLookingAtInteractableBlock())
@@ -223,7 +225,7 @@ public class AimingHandler {
             return false;
 
         if(mainHandItem.getItem() instanceof GunItem && offhandItem.getItem() instanceof GunItem) {
-            var off =  GunModifierHelper.getGripType(offhandItem);
+            var off =  GunModifierHelper.getGripType(new GunData(offhandItem, mc.player));
             if(off.isOneHanded()) {
                 return false;
             }

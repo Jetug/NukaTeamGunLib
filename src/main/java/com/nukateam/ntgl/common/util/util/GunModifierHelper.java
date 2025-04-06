@@ -33,10 +33,6 @@ public class GunModifierHelper {
     public static final String FIRE_MODE = "FireMode";
     public static final Ammo AMMO = new Ammo();
 
-    public static boolean isOneHanded(ItemStack itemStack){
-        return GunModifierHelper.getGripType(itemStack) != GripType.ONE_HANDED;
-    }
-
     public static boolean isAuto(ItemStack itemStack) {
         return getCurrentFireMode(itemStack) == FireMode.AUTO;
     }
@@ -50,13 +46,14 @@ public class GunModifierHelper {
     public static boolean canRenderInOffhand(Player player){
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
-        return canRenderInOffhand(mainHandItem) && canRenderInOffhand(offhandItem);
+
+        return isOneHanded(new GunData(mainHandItem, player))
+                && isOneHanded(new GunData(offhandItem, player));
     }
 
-    public static boolean canRenderInOffhand(ItemStack stack){
-        if(stack.getItem() instanceof GunItem){
-            var animation = GunModifierHelper.getGripType(stack).getHeldAnimation();
-            return animation.canRenderOffhandItem();
+    public static boolean isOneHanded(GunData data){
+        if(data.stack.getItem() instanceof GunItem){
+            return GunModifierHelper.getGripType(data).isOneHanded();
         }
         return true;
     }
@@ -157,10 +154,10 @@ public class GunModifierHelper {
         return finalFireMode.get();
     }
 
-    public static GripType getGripType(ItemStack weapon) {
-        var gripType = getGun(weapon).getGeneral().getGripType();
+    public static GripType getGripType(GunData weapon) {
+        var gripType = getGun(weapon.stack).getGeneral().getGripType();
         var finalGripType = new AtomicReference<>(gripType);
-        forEachAttachment(weapon, (modifier -> finalGripType.set(modifier.modifyGripType(finalGripType.get()))));
+        forEachAttachment(weapon.stack, (modifier -> finalGripType.set(modifier.modifyGripType(finalGripType.get(), null))));
         return finalGripType.get();
     }
 

@@ -12,6 +12,7 @@ import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.properties.SightAnimation;
 import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItemBase;
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.init.*;
@@ -56,6 +57,7 @@ import java.util.*;
 import static com.nukateam.ntgl.client.util.util.PropertyHelper.*;
 import static com.nukateam.ntgl.client.event.InputEvents.*;
 import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canRenderInOffhand;
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.isOneHanded;
 
 public class GunRenderingHandler {
     private static GunRenderingHandler instance;
@@ -160,7 +162,7 @@ public class GunRenderingHandler {
         boolean down = false;
         ItemStack heldItem = mc.player.getMainHandItem();
         if (heldItem.getItem() instanceof GunItem) {
-            down = GunModifierHelper.getGripType(heldItem).getHeldAnimation().canRenderOffhandItem();
+            down = GunModifierHelper.getGripType(new GunData(heldItem, mc.player)).getHeldAnimation().canRenderOffhandItem();
         }
 
         float direction = down ? -0.3F : 0.3F;
@@ -238,7 +240,7 @@ public class GunRenderingHandler {
         var oppositeStack = player.getItemInHand(oppositeHand);
 
         if (hand == InteractionHand.OFF_HAND) {
-            if(!canRenderInOffhand(heldItem) || !canRenderInOffhand(oppositeStack)){
+            if(!isOneHanded(new GunData(heldItem, player)) || !isOneHanded(new GunData(oppositeStack, player))){
                 event.setCanceled(true);
                 return;
             }
@@ -283,7 +285,7 @@ public class GunRenderingHandler {
             /* Applies recoil and reload rotations */
             this.applyAimingTransforms(poseStack, heldItem, modifiedGun, translateX, translateY, translateZ, offset);
             this.applySwayTransforms(poseStack, heldItem, player, rightHandTranslation, event.getPartialTick());
-//          this.applySprintingTransforms(heldItem, hand, poseStack, event.getPartialTick());
+//          this.applySprintingTransforms(player, heldItem, hand, poseStack, event.getPartialTick());
 //            this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
 //          this.applyReloadTransforms(poseStack, event.getPartialTick());
             this.applyShieldTransforms(poseStack, player, heldItem, event.getPartialTick());
@@ -437,7 +439,7 @@ public class GunRenderingHandler {
         if (Config.CLIENT.display.weaponSway.get() && player != null) {
             poseStack.translate(translation.x(), translation.y(), translation.z());
 
-            double zOffset = GunModifierHelper.getGripType(heldItem).getHeldAnimation().getFallSwayZOffset();
+            double zOffset = GunModifierHelper.getGripType(new GunData(heldItem, player)).getHeldAnimation().getFallSwayZOffset();
             poseStack.translate(0, -0.25, zOffset);
             poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, this.prevFallSway, this.fallSway)));
             poseStack.translate(0, 0.25, -zOffset);
@@ -458,8 +460,12 @@ public class GunRenderingHandler {
         }
     }
 
-    private void applySprintingTransforms(ItemStack stack, HumanoidArm hand, PoseStack poseStack, float partialTicks) {
-        if (Config.CLIENT.display.sprintAnimation.get() && GunModifierHelper.getGripType(stack).getHeldAnimation().canApplySprintingAnimation()) {
+    private void applySprintingTransforms(Player player, ItemStack stack, HumanoidArm hand, PoseStack poseStack, float partialTicks) {
+        if (Config.CLIENT.display.sprintAnimation.get()
+                && GunModifierHelper
+                .getGripType(new GunData(stack, player))
+                .getHeldAnimation()
+                .canApplySprintingAnimation()) {
             float leftHanded = hand == HumanoidArm.LEFT ? -1 : 1;
             float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
             transition = (float) Math.sin((transition * Math.PI) / 2);
@@ -496,7 +502,8 @@ public class GunRenderingHandler {
     }
 
     private void applyShieldTransforms(PoseStack poseStack, LocalPlayer player, ItemStack stack, float partialTick) {
-        if (player.isUsingItem() && player.getOffhandItem().getItem() == Items.SHIELD && GunModifierHelper.getGripType(stack) == GripType.ONE_HANDED) {
+        if (player.isUsingItem() && player.getOffhandItem().getItem() == Items.SHIELD
+                && GunModifierHelper.isOneHanded(new GunData(stack, player))) {
             double time = Mth.clamp((player.getTicksUsingItem() + partialTick), 0.0, 4.0) / 4.0;
             poseStack.translate(0, 0.35 * time, 0);
             poseStack.mulPose(Axis.XP.rotationDegrees(45F * (float) time));

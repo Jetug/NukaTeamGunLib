@@ -3,6 +3,7 @@ package com.nukateam.ntgl.mixin.client;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -41,7 +42,7 @@ public class ItemInHandLayerMixin {
         var oppositeStack = entity.getItemInHand(oppositeHand);
 
         if (hand == InteractionHand.OFF_HAND) {
-            if(!canRenderInOffhand(stack) || !canRenderInOffhand(oppositeStack)){
+            if(!isOneHanded(new GunData(stack, entity)) || !isOneHanded(new GunData(oppositeStack, entity))){
                 ci.cancel();
                 return;
             }
@@ -82,7 +83,7 @@ public class ItemInHandLayerMixin {
             poseStack.mulPose(Axis.YP.rotationDegrees(180F));
             GunRenderingHandler.get().applyWeaponScale(stack, poseStack);
 
-            var heldAnimation = GunModifierHelper.getGripType(stack).getHeldAnimation();
+            var heldAnimation = GunModifierHelper.getGripType(new GunData(stack, entity)).getHeldAnimation();
 
             heldAnimation.applyHeldItemTransforms(entity, hand, AimingHandler.get().getAimProgress(entity, deltaTicks), poseStack, source);
             GunRenderingHandler.get().renderWeapon(entity, stack, transformType, poseStack, source, light);

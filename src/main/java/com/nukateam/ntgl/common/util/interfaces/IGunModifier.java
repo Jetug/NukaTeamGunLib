@@ -5,6 +5,7 @@ import com.nukateam.ntgl.common.base.holders.FireMode;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.base.holders.LoadingType;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
+import com.nukateam.ntgl.common.util.util.GunData;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Set;
@@ -210,7 +211,7 @@ public interface IGunModifier {
         return fireMode;
     }
 
-    default GripType modifyGripType(GripType gripType) {
+    default GripType modifyGripType(GripType gripType, GunData data) {
         return gripType;
     }
 
