@@ -2,14 +2,17 @@ package com.nukateam.ntgl.common.foundation.container.slot;
 
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -89,15 +92,16 @@ public class AttachmentSlot extends Slot {
         checkAmmoCount(weapon, player);
     }
 
-    public static void checkAmmoCount(ItemStack stack, Entity entity) {
-        var maxAmmo = GunModifierHelper.getMaxAmmo(stack);
+    public static void checkAmmoCount(ItemStack stack, LivingEntity entity) {
+        var gunData = new GunData(stack, entity);
+        var maxAmmo = GunModifierHelper.getMaxAmmo(gunData  );
         var ammoCount = Gun.getAmmo(stack);
         var diff = ammoCount - maxAmmo;
 
         if(diff > 0){
             Gun.setAmmo(stack, maxAmmo);
 
-            var ammoItem = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmoId(stack));
+            var ammoItem = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmoId(gunData));
             var dropStack = new ItemStack(ammoItem, diff);
 
             if (entity instanceof Player player && !player.addItem(dropStack)) {

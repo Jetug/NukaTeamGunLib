@@ -6,6 +6,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -104,10 +105,10 @@ public class ControllerHandler {
                     actions.put(GunButtonBindings.AIM, new Action(Component.translatable("ntgl.action.aim"), Action.Side.RIGHT));
                     actions.put(GunButtonBindings.SHOOT, new Action(Component.translatable("ntgl.action.shoot"), Action.Side.RIGHT));
 
-                    var modifiedGun = gunItem.getModifiedGun(heldItem);
                     var tag = heldItem.getTag();
+                    var data = new GunData(heldItem, player);
 
-                    if (tag != null && Gun.getAmmo(heldItem) < GunEnchantmentHelper.getAmmoCapacity(heldItem)) {
+                    if (tag != null && Gun.getAmmo(heldItem) < GunEnchantmentHelper.getAmmoCapacity(data)) {
                         actions.put(GunButtonBindings.RELOAD, new Action(Component.translatable("ntgl.action.reload"), Action.Side.LEFT));
                     }
 
@@ -151,13 +152,16 @@ public class ControllerHandler {
 
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
+
         if (player == null)
             return;
 
         if (controller.isButtonPressed(GunButtonBindings.SHOOT.getButton()) && Minecraft.getInstance().screen == null) {
             var heldItem = player.getMainHandItem();
+            var gunData = new GunData(heldItem, player);
+
             if (heldItem.getItem() instanceof GunItem) {
-                if (GunModifierHelper.isAuto(heldItem)) {
+                if (GunModifierHelper.isAuto(gunData)) {
                     ShootingHandler.get().fire(player, heldItem);
                 }
             }

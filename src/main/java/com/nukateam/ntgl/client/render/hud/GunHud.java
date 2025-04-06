@@ -129,8 +129,12 @@ public class GunHud implements IGuiOverlay {
         poseStack.popPose();
     }
 
-    private static void renderFireModeIcon(GuiGraphics graphics, int width, int height, ItemStack stack, Font font, String currentAmmoCountText) {
-        var fireMode = GunModifierHelper.getCurrentFireMode(stack);
+    private static void renderFireModeIcon(GuiGraphics graphics, int width, int height, ItemStack stack,
+                                           Font font, String currentAmmoCountText) {
+        var player = Minecraft.getInstance().player;
+        var gunData = new GunData(stack, player);
+
+        var fireMode = GunModifierHelper.getCurrentFireMode(gunData);
         var icon = fireMode.getIcon();
 
         var x = (int) (width - ICON_X + font.width(currentAmmoCountText) * 1.5);
@@ -146,7 +150,9 @@ public class GunHud implements IGuiOverlay {
 
 
     private static void renderAmmoTypeIcon(GuiGraphics graphics, int width, int height, ItemStack stack, Font font, String currentAmmoCountText) {
-        var ammoType = GunModifierHelper.getCurrentAmmoType(stack);
+        var player = Minecraft.getInstance().player;
+        var gunData = new GunData(stack, player);
+        var ammoType = GunModifierHelper.getCurrentAmmoType(gunData);
         var icon = ammoType.getIcon();
 
         var x = (int) (width - ICON_X + font.width(currentAmmoCountText) * 1.5);
@@ -162,9 +168,10 @@ public class GunHud implements IGuiOverlay {
 
     private static void handleCacheCount(LocalPlayer player, ItemStack stack) {
         if ((System.currentTimeMillis() - checkAmmoTimestamp) > 200) {
+            var data = new GunData(stack, player);
             checkAmmoTimestamp = System.currentTimeMillis();
-            cacheMaxAmmoCount = GunModifierHelper.getMaxAmmo(stack);
-            fireModes = GunModifierHelper.getFireModes(stack);
+            cacheMaxAmmoCount = GunModifierHelper.getMaxAmmo(data);
+            fireModes = GunModifierHelper.getFireModes(data);
 
             if (!player.isCreative()) {
                 handleInventoryAmmo(stack, player.getInventory());
@@ -177,11 +184,14 @@ public class GunHud implements IGuiOverlay {
     private static void handleInventoryAmmo(ItemStack stack, Inventory inventory) {
         cacheInventoryAmmoCount = 0;
         for (int i = 0; i < inventory.getContainerSize(); i++) {
+            var player = Minecraft.getInstance().player;
+            var gunData = new GunData(stack, player);
             var inventoryStack = inventory.getItem(i);
             var inventoryItem = inventoryStack.getItem();
 
             if (inventoryStack.getItem() instanceof IAmmo &&
-                    GunModifierHelper.getCurrentAmmoId(stack).equals(ForgeRegistries.ITEMS.getKey(inventoryItem))) {
+                    GunModifierHelper.getCurrentAmmoId(gunData)
+                            .equals(ForgeRegistries.ITEMS.getKey(inventoryItem))) {
                 cacheInventoryAmmoCount += inventoryStack.getCount();
             }
 //            if (inventoryStack.getItem() instanceof AmmoBoxItem iAmmoBox && iAmmoBox.isAmmoBoxOfGun(stack, inventoryStack)) {

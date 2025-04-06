@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -48,10 +49,12 @@ public class RecoilHandler {
         if (!Config.SERVER.enableCameraRecoil.get())
             return;
 
-        ItemStack heldItem = event.getStack();
-        GunItem gunItem = (GunItem) heldItem.getItem();
-        Gun modifiedGun = gunItem.getModifiedGun(heldItem);
-        float recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(heldItem);
+        var heldItem = event.getStack();
+        var gunItem = (GunItem) heldItem.getItem();
+        var modifiedGun = gunItem.getModifiedGun(heldItem);
+        var data = new GunData(heldItem, event.getEntity());
+        var recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(data);
+
         recoilModifier *= this.getAdsRecoilReduction(modifiedGun);
         this.cameraRecoil = modifiedGun.getGeneral().getRecoilAngle() * recoilModifier;
         this.progressCameraRecoil = 0F;

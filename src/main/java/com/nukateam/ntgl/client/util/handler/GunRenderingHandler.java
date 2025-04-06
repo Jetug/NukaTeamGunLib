@@ -482,17 +482,20 @@ public class GunRenderingHandler {
         poseStack.mulPose(Axis.XP.rotationDegrees(45F * reloadProgress));
     }
 
-    private void applyRecoilTransforms(PoseStack poseStack, ItemStack item, Gun gun) {
+    private void applyRecoilTransforms(PoseStack poseStack, Player player, ItemStack item, Gun gun) {
         double recoilNormal = RecoilHandler.get().getGunRecoilNormal();
         if (Gun.hasAttachmentEquipped(item, gun, AttachmentType.SCOPE)) {
             recoilNormal -= recoilNormal * (0.5 * AimingHandler.get().getNormalisedAdsProgress());
         }
-        float kickReduction = 1.0F - GunModifierHelper.getKickReduction(item);
-        float recoilReduction = 1.0F - GunModifierHelper.getRecoilModifier(item);
-        double kick = gun.getGeneral().getRecoilKick() * 0.0625 * recoilNormal * RecoilHandler.get().getAdsRecoilReduction(gun);
-        float recoilLift = (float) (gun.getGeneral().getRecoilAngle() * recoilNormal) * (float) RecoilHandler.get().getAdsRecoilReduction(gun);
-        float recoilSwayAmount = (float) (2F + 1F * (1.0 - AimingHandler.get().getNormalisedAdsProgress()));
-        float recoilSway = (float) ((RecoilHandler.get().getGunRecoilRandom() * recoilSwayAmount - recoilSwayAmount / 2F) * recoilNormal);
+
+        var data = new GunData(item, player);
+        var kickReduction = 1.0F - GunModifierHelper.getKickReduction(data);
+        var recoilReduction = 1.0F - GunModifierHelper.getRecoilModifier(data);
+        var kick = gun.getGeneral().getRecoilKick() * 0.0625 * recoilNormal * RecoilHandler.get().getAdsRecoilReduction(gun);
+        var recoilLift = (float) (gun.getGeneral().getRecoilAngle() * recoilNormal) * (float) RecoilHandler.get().getAdsRecoilReduction(gun);
+        var recoilSwayAmount = (float) (2F + 1F * (1.0 - AimingHandler.get().getNormalisedAdsProgress()));
+        var recoilSway = (float) ((RecoilHandler.get().getGunRecoilRandom() * recoilSwayAmount - recoilSwayAmount / 2F) * recoilNormal);
+
         poseStack.translate(0, 0, kick * kickReduction);
         poseStack.translate(0, 0, 0.15);
         poseStack.mulPose(Axis.YP.rotationDegrees(recoilSway * recoilReduction));

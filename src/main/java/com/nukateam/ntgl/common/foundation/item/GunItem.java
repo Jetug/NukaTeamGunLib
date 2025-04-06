@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.foundation.item;
 import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.common.base.DynamicGunModifier;
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.ResourceUtils;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
@@ -21,6 +22,7 @@ import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -119,7 +121,7 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     }
 
     public void setDefaultTag(CompoundTag tag){
-        tag.putInt(AMMO_COUNT, GunModifierHelper.getMaxAmmo(new ItemStack(this)));
+        tag.putInt(AMMO_COUNT, getGun().getGeneral().getMaxAmmo());
     }
 
     @Override
@@ -161,7 +163,11 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
-        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmoId(stack));
+        var player = Minecraft.getInstance().player;
+        if(player == null) return;
+
+        var data = new GunData(stack, player);
+        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmoId(data));
 
         if (ammo != null) {
             tooltip.add(Component.translatable("info.ntgl.ammo_type", Component.translatable(ammo.getDescriptionId()).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GRAY));
@@ -169,21 +175,24 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
 
         var additionalDamageText = "";
         var tagCompound = stack.getTag();
+
         if (tagCompound != null) {
             if (tagCompound.contains("AdditionalDamage", Tag.TAG_ANY_NUMERIC)) {
-                float additionalDamage = tagCompound.getFloat("AdditionalDamage");
-                additionalDamage += GunModifierHelper.getAdditionalDamage(stack);
+                var additionalDamage = tagCompound.getFloat("AdditionalDamage");
+                additionalDamage += GunModifierHelper.getAdditionalDamage(data);
 
                 if (additionalDamage > 0) {
                     additionalDamageText = ChatFormatting.GREEN + " +" + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
                 } else if (additionalDamage < 0) {
                     additionalDamageText = ChatFormatting.RED + " " + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
                 }
+
             }
         }
 
-        float damage = GunModifierHelper.getModifiedDamage(stack);
-        damage = GunModifierHelper.getModifiedProjectileDamage(stack, damage);
+
+        var damage = GunModifierHelper.getModifiedDamage(data);
+        damage = GunModifierHelper.getModifiedProjectileDamage(data, damage);
         damage = GunEnchantmentHelper.getAcceleratorDamage(stack, damage);
         tooltip.add(Component.translatable("info.ntgl.damage",
                 ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage) + additionalDamageText).withStyle(ChatFormatting.GRAY));
@@ -193,7 +202,10 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
                 tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
             } else {
                 int ammoCount = tagCompound.getInt(AMMO_COUNT);
-                tooltip.add(Component.translatable("info.ntgl.ammo", ChatFormatting.WHITE.toString() + ammoCount + "/" + GunEnchantmentHelper.getAmmoCapacity(stack)).withStyle(ChatFormatting.GRAY));
+                tooltip.add(Component.translatable("info.ntgl.ammo",
+                        ChatFormatting.WHITE.toString()
+                        + ammoCount + "/"
+                        + GunEnchantmentHelper.getAmmoCapacity(data)).withStyle(ChatFormatting.GRAY));
             }
         }
         //tooltip.add(Component.translatable("info.ntgl.attachment_help", new KeybindComponent("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH)).withStyle(ChatFormatting.YELLOW));
@@ -237,8 +249,13 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        var player = Minecraft.getInstance().player;
+        if(player == null) return false;
+
+        var data = new GunData(stack, player);
+
         if (enchantment.category == EnchantmentTypes.SEMI_AUTO_GUN) {
-            return GunModifierHelper.isAuto(stack);
+            return GunModifierHelper.isAuto(data);
         }
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }

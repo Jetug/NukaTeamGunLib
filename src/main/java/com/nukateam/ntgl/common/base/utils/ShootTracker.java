@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.base.utils;
 
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.google.common.collect.Maps;
@@ -49,10 +50,11 @@ public class ShootTracker {
      * Puts a cooldown for the specified gun item. This stores the time it was fired and the rate
      * of the weapon to determine when it's allowed to fire again.
      */
-    public void putCooldown(ItemStack weapon) {
+    public void putCooldown(ItemStack weapon, LivingEntity shooter) {
 //        var modifiedGun = item.getModifiedGun(weapon);
 //        int rate = GunEnchantmentHelper.getRate(weapon, modifiedGun);
-        var rate = GunModifierHelper.getRate(weapon);
+        var data = new GunData(weapon, shooter);
+        var rate = GunModifierHelper.getRate(data);
         this.cooldownMap = Pair.of(Util.getMillis(), rate * 50);
     }
 

@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.event;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.handler.ShootingHandler;
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -30,6 +31,7 @@ public class GunEventBus {
 //            if (tracker.isOnCooldown(heldItem.getItem()) && gun.getGeneral().getFireModes() == FireMode.PULSE) {
 //                event.setCanceled(true);
 //            }
+            var data = new GunData(heldItem, entity);
 
             if (heldItem.isDamageableItem() && tag != null) {
                 if (heldItem.getDamageValue() == (heldItem.getMaxDamage() - 1)) {
@@ -39,7 +41,8 @@ public class GunEventBus {
                             1.0F, 1.0F
                     );
 
-                    var rate = GunModifierHelper.getRate(heldItem);
+
+                    var rate = GunModifierHelper.getRate(data);
                     ShootingHandler.get().setCooldown(event.getEntity(), event.getArm(), rate);
                     event.setCanceled(true);
                 }
@@ -49,7 +52,7 @@ public class GunEventBus {
                 if (currentDamage >= maxDamage / 1.5) {
                     if (Math.random() >= 0.975) {
                         event.getEntity().playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
-                        var rate = GunModifierHelper.getRate(heldItem);
+                        var rate = GunModifierHelper.getRate(data);
                         int coolDown = rate * 10;
                         if (coolDown > 60) {
                             coolDown = 60;

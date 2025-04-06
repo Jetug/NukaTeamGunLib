@@ -4,6 +4,7 @@ import com.nukateam.ntgl.common.util.interfaces.IMeleeWeapon;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
@@ -477,8 +478,10 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 if (!recipeList.isEmpty()) {
                     var item = (GunItem)recipeList.get(0).getItem().getItem();
                     var icon = new ItemStack(item);
+                    var player = Minecraft.getInstance().player;
+                    var gunData = new GunData(icon, player);
 
-                    icon.getOrCreateTag().putInt("AmmoCount", GunModifierHelper.getMaxAmmo(icon));
+                    icon.getOrCreateTag().putInt("AmmoCount", GunModifierHelper.getMaxAmmo(gunData));
                     this.tabs.add(new Tab(icon, category, recipeList));
                 }
             }
@@ -513,12 +516,14 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
     private boolean isAmmo(ItemStack stack) {
         if (stack.getItem() instanceof IAmmo)
             return true;
+        var player = Minecraft.getInstance().player;
+        var gunData = new GunData(stack, player);
 
         var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
         Objects.requireNonNull(id);
 
         for (var gunItem : NetworkGunManager.getClientRegisteredGuns()) {
-            if (id.equals(GunModifierHelper.getFirstAmmoItem(stack))) {
+            if (id.equals(GunModifierHelper.getFirstAmmoItem(gunData))) {
                 return true;
             }
         }

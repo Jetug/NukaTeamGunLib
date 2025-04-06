@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.handlers;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.util.util.GunData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.event.TickEvent;
@@ -27,7 +28,7 @@ public class ServerEvent {
         var stack = player.getItemInHand(hand);
         var shootTracker = getShootTracker(player, hand);
 
-        if (!player.isCreative() && isGun(stack) && isAutoReloading(stack) && shootTracker.hasCooldown()) {
+        if (!player.isCreative() && isGun(stack) && isAutoReloading(new GunData(stack, player)) && shootTracker.hasCooldown()) {
             reloadGun(hand, player);
         }
     }

@@ -6,6 +6,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.util.util.GunData;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -77,7 +78,8 @@ public class EntityReloadTracker {
             tracker.reloadTick = Math.max(tracker.reloadTick - 1, 0);
         }
         else{
-            Gun.fillAmmo(tracker.stack);
+            var data = new GunData(tracker.stack, entity);
+            Gun.fillAmmo(data);
             setReloading(entity, tracker.arm, false);
 //            RELOAD_TRACKER_MAP.remove(entity);
             FOR_REMOVE.add(entity);

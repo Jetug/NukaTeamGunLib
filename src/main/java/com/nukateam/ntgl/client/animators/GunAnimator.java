@@ -99,9 +99,9 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected void tickStart() {
         if (!(getStack().getItem() instanceof GunItem))
             return;
-
-        this.rate = GunModifierHelper.getRate(getStack());
-        this.fireDelay = GunModifierHelper.getFireDelay(getStack());
+        var data = getGunData(getStack());
+        this.rate = GunModifierHelper.getRate(data);
+        this.fireDelay = GunModifierHelper.getFireDelay(data);
 
         setupCycledAnimations();
     }
@@ -123,7 +123,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     protected boolean isOneHanded(ItemStack stack) {
         return stack.getItem() instanceof GunItem
-                && GunModifierHelper.getGripType(new GunData(stack, getEntity())) == GripType.ONE_HANDED;
+                && GunModifierHelper.getGripType(getGunData(stack)) == GripType.ONE_HANDED;
     }
 
     @NotNull
@@ -218,13 +218,14 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return playGunAnim(HOLD, LOOP);
     }
 
-    protected RawAnimation getChargingAnimation(AnimationState<GunAnimator> event, ShootingData data) {
+    protected RawAnimation getChargingAnimation(AnimationState<GunAnimator> event, ShootingData shootingData) {
         var animation = begin();
         if (animationHelper.hasAnimation(Animations.CHARGE)) {
             BARREL_CONTROLLER.stop();
             BARREL_CONTROLLER.setAnimation(begin().then("void", PLAY_ONCE));
             animation = playGunAnim(Animations.CHARGE, LOOP);
-            var fireDelay = GunModifierHelper.getFireDelay(getStack());
+            var data = getGunData(getStack());
+            var fireDelay = GunModifierHelper.getFireDelay(data);
             animationHelper.syncAnimation(event, Animations.CHARGE, fireDelay);
         }
         return animation;
@@ -252,20 +253,31 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return animation;
     }
 
+
+
     protected RawAnimation getDefaultReloadAminmation(AnimationState<GunAnimator> event) {
-        var time = GunModifierHelper.getReloadTime(getStack());
+        var data = getGunData(getStack());
+
+        var time = GunModifierHelper.getReloadTime(data);
         animationHelper.syncAnimation(event, RELOAD, time);
         return begin().then(RELOAD, LOOP);
     }
 
+    protected @NotNull GunData getGunData(ItemStack Stack) {
+        return new GunData(Stack, getEntity());
+    }
+
     protected RawAnimation getEndReloadAnimation(AnimationState<GunAnimator> event) {
-        var time = GunModifierHelper.getReloadEnd(getStack());
+        var data = getGunData(getStack());
+        var time = GunModifierHelper.getReloadEnd(data);
         animationHelper.syncAnimation(event, Animations.RELOAD_END, time);
         return begin().then(Animations.RELOAD_END, PLAY_ONCE);
     }
 
     protected RawAnimation getStartReloadAnimation(AnimationState<GunAnimator> event) {
-        var time = GunModifierHelper.getReloadStart(getStack());
+        var data = getGunData(getStack());
+
+        var time = GunModifierHelper.getReloadStart(data);
         animationHelper.syncAnimation(event, Animations.RELOAD_START, time);
         return begin().then(Animations.RELOAD_START, PLAY_ONCE);
     }
@@ -300,7 +312,8 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     private void setupCycledAnimations() {
         var entity = getEntity();
         var cooldown = shootingHandler.getCooldown(entity, arm);
-        var maxAmmo = GunModifierHelper.getMaxAmmo(getStack());
+        var data = getGunData(getStack());
+        var maxAmmo = GunModifierHelper.getMaxAmmo(data);
 
         if (chamberCycler == null || chamberCycler.getMax() != maxAmmo)
             chamberCycler = new Cycler(1, maxAmmo);

@@ -33,14 +33,14 @@ public class GunModifierHelper {
     public static final String FIRE_MODE = "FireMode";
     public static final Ammo AMMO = new Ammo();
 
-    public static boolean isAuto(ItemStack itemStack) {
+    public static boolean isAuto(GunData itemStack) {
         return getCurrentFireMode(itemStack) == FireMode.AUTO;
     }
 
-    public static boolean isWeaponFull(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        var gun = ((GunItem)stack.getItem()).getModifiedGun(stack);
-        return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(stack);
+    public static boolean isWeaponFull(GunData data) {
+        var tag = data.stack.getOrCreateTag();
+        var gun = ((GunItem)data.stack.getItem()).getModifiedGun(data.stack);
+        return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(data);
     }
 
     public static boolean canRenderInOffhand(Player player){
@@ -58,8 +58,8 @@ public class GunModifierHelper {
         return true;
     }
 
-    private static IGunModifier[] getAttachmentModifiers(ItemStack weapon, AttachmentType type) {
-        var attachmentItem = Gun.getAttachmentItem(type, weapon);
+    private static IGunModifier[] getAttachmentModifiers(GunData weapon, AttachmentType type) {
+        var attachmentItem = Gun.getAttachmentItem(type, weapon.stack);
 
         if (!attachmentItem.isEmpty() && attachmentItem.getItem() instanceof IAttachment<?> attachment) {
             var modifiers = attachment.getProperties().getModifiers();
@@ -85,10 +85,10 @@ public class GunModifierHelper {
         return gun.getModules().getAttachments();
     }
 
-    public static int getMaxAmmo(ItemStack weapon) {
-        var finalMaxAmmo = new AtomicInteger(getGun(weapon).getGeneral().getMaxAmmo());
+    public static int getMaxAmmo(GunData weapon) {
+        var finalMaxAmmo = new AtomicInteger(getGun(weapon.stack).getGeneral().getMaxAmmo());
 
-        if (weapon != null && weapon.getItem() instanceof GunItem) {
+        if (weapon != null && weapon.stack.getItem() instanceof GunItem) {
             if (GunModifierHelper.getCurrentAmmo(weapon).isMagazineMode()) {
                 var id = GunModifierHelper.getCurrentAmmoId(weapon);
                 var item = ForgeRegistries.ITEMS.getValue(id);
@@ -101,20 +101,20 @@ public class GunModifierHelper {
         return finalMaxAmmo.get();
     }
 
-    public static boolean isAutoReloading(ItemStack weapon) {
-        var autoReloading = new AtomicBoolean(getGun(weapon).getGeneral().isAutoReloading());
+    public static boolean isAutoReloading(GunData weapon) {
+        var autoReloading = new AtomicBoolean(getGun(weapon.stack).getGeneral().isAutoReloading());
         forEachAttachment(weapon, (modifier -> autoReloading.set(modifier.modifyAutoReloading(autoReloading.get()))));
         return autoReloading.get();
     }
 
-    public static LoadingType getLoadingType(ItemStack weapon) {
-        var loadingType = new AtomicReference<>(getGun(weapon).getGeneral().getLoadingType());
+    public static LoadingType getLoadingType(GunData weapon) {
+        var loadingType = new AtomicReference<>(getGun(weapon.stack).getGeneral().getLoadingType());
         forEachAttachment(weapon, (modifier -> loadingType.set(modifier.modifyLoadingType(loadingType.get()))));
         return loadingType.get();
     }
 
-    public static int getProjectileAmount(ItemStack weapon) {
-        var gunProjectileAmount = getGun(weapon).getGeneral().getProjectileAmount();
+    public static int getProjectileAmount(GunData weapon) {
+        var gunProjectileAmount = getGun(weapon.stack).getGeneral().getProjectileAmount();
         var ammoProjectileAmount = getCurrentAmmo(weapon).getProjectileAmount();
 
         var finalProjectileAmount = new AtomicInteger(gunProjectileAmount * ammoProjectileAmount);
@@ -122,21 +122,21 @@ public class GunModifierHelper {
         return finalProjectileAmount.get();
     }
 
-    public static void switchFireMode(ItemStack weapon){
+    public static void switchFireMode(GunData weapon){
         var fireModes = getFireModes(weapon);
         var current = getCurrentFireMode(weapon);
         var newFireMode = cycleSet(fireModes, current);
         setCurrentFireMode(weapon, newFireMode);
     }
 
-    public static void setCurrentFireMode(ItemStack weapon, FireMode fireMode) {
-        var tag = weapon.getOrCreateTag();
+    public static void setCurrentFireMode(GunData weapon, FireMode fireMode) {
+        var tag = weapon.stack.getOrCreateTag();
         tag.putString(FIRE_MODE, fireMode.toString());
-        weapon.setTag(tag);
+        weapon.stack.setTag(tag);
     }
 
-    public static FireMode getCurrentFireMode(ItemStack weapon) {
-        var tag = weapon.getOrCreateTag();
+    public static FireMode getCurrentFireMode(GunData weapon) {
+        var tag = weapon.stack.getOrCreateTag();
         if (!tag.contains(FIRE_MODE, Tag.TAG_STRING)) {
             var buff = new ArrayList<>(getFireModes(weapon).stream().toList());
             var fireMode = buff.get(0);
@@ -147,8 +147,8 @@ public class GunModifierHelper {
         return FireMode.getType(tag.getString(FIRE_MODE));
     }
 
-    public static Set<FireMode> getFireModes(ItemStack weapon) {
-        var fireMode = getGun(weapon).getGeneral().getFireModes();
+    public static Set<FireMode> getFireModes(GunData weapon) {
+        var fireMode = getGun(weapon.stack).getGeneral().getFireModes();
         var finalFireMode = new AtomicReference<>(fireMode);
         forEachAttachment(weapon, (modifier -> finalFireMode.set(modifier.modifyFireModes(finalFireMode.get()))));
         return finalFireMode.get();
@@ -157,29 +157,29 @@ public class GunModifierHelper {
     public static GripType getGripType(GunData weapon) {
         var gripType = getGun(weapon.stack).getGeneral().getGripType();
         var finalGripType = new AtomicReference<>(gripType);
-        forEachAttachment(weapon.stack, (modifier -> finalGripType.set(modifier.modifyGripType(finalGripType.get(), weapon))));
+        forEachAttachment(weapon, (modifier -> finalGripType.set(modifier.modifyGripType(finalGripType.get(), weapon))));
         return finalGripType.get();
     }
 
-    public static int getFireDelay(ItemStack weapon) {
-        var chargeTime = new AtomicInteger(getGun(weapon).getGeneral().getFireDelay());
+    public static int getFireDelay(GunData weapon) {
+        var chargeTime = new AtomicInteger(getGun(weapon.stack).getGeneral().getFireDelay());
         forEachAttachment(weapon, (modifier -> chargeTime.set(modifier.modifyFireDelay(chargeTime.get()))));
         return chargeTime.get();
     }
 
-    public static boolean needsFullCharge(ItemStack weapon) {
-        var needsFullCharge = new AtomicBoolean(getGun(weapon).getGeneral().isFullCharge());
+    public static boolean needsFullCharge(GunData weapon) {
+        var needsFullCharge = new AtomicBoolean(getGun(weapon.stack).getGeneral().isFullCharge());
         forEachAttachment(weapon, (modifier -> needsFullCharge.set(modifier.modifyNeedsFullCharge(needsFullCharge.get()))));
         return needsFullCharge.get();
     }
 
-    public static boolean isOneTimeCharge(ItemStack weapon) {
-        var oneTimeCharge = new AtomicBoolean(getGun(weapon).getGeneral().isOneTimeCharge());
+    public static boolean isOneTimeCharge(GunData weapon) {
+        var oneTimeCharge = new AtomicBoolean(getGun(weapon.stack).getGeneral().isOneTimeCharge());
         forEachAttachment(weapon, (modifier -> oneTimeCharge.set(modifier.modifyIsOneTimeCharge(oneTimeCharge.get()))));
         return oneTimeCharge.get();
     }
 
-    public static void switchAmmo(ItemStack weapon){
+    public static void switchAmmo(GunData weapon){
         var ammoItems = getAmmoItems(weapon);
         var current = getCurrentAmmoId(weapon);
         var newAmmo = cycleSet(ammoItems, current);
@@ -187,31 +187,31 @@ public class GunModifierHelper {
         setCurrentAmmo(weapon, newAmmo);
     }
 
-    public static void setCurrentAmmo(ItemStack weapon, ResourceLocation ammo) {
-        var tag = weapon.getOrCreateTag();
+    public static void setCurrentAmmo(GunData weapon, ResourceLocation ammo) {
+        var tag = weapon.stack.getOrCreateTag();
         tag.putString("Ammo", ammo.toString());
-        weapon.setTag(tag);
+        weapon.stack.setTag(tag);
     }
 
-    public static ResourceLocation getCurrentAmmoId(ItemStack weapon) {
-        var tag = weapon.getOrCreateTag();
+    public static ResourceLocation getCurrentAmmoId(GunData weapon) {
+        var tag = weapon.stack.getOrCreateTag();
         if (tag.contains("Ammo", Tag.TAG_STRING)) {
             return ResourceLocation.tryParse(tag.getString("Ammo"));
         }
         return getFirstAmmoItem(weapon);
     }
 
-    public static Item getCurrentAmmoItem(ItemStack weapon) {
+    public static Item getCurrentAmmoItem(GunData weapon) {
         return ForgeRegistries.ITEMS.getValue(getCurrentAmmoId(weapon));
     }
 
-    public static AmmoType getCurrentAmmoType(ItemStack weapon) {
+    public static AmmoType getCurrentAmmoType(GunData weapon) {
         var ammo = getCurrentAmmo(weapon);
         return ammo.getType();
     }
 
-    public static Ammo getCurrentAmmo(ItemStack weapon) {
-        var gun = getGun(weapon);
+    public static Ammo getCurrentAmmo(GunData weapon) {
+        var gun = getGun(weapon.stack);
         var ammoId = getCurrentAmmoId(weapon);
 
         if(gun.hasAmmo(ammoId)) {
@@ -223,54 +223,54 @@ public class GunModifierHelper {
         else return AMMO;
     }
 
-    public static Set<ResourceLocation> getAmmoItems(ItemStack weapon) {
-        var items = getGun(weapon).getGeneral().getAmmo();
+    public static Set<ResourceLocation> getAmmoItems(GunData weapon) {
+        var items = getGun(weapon.stack).getGeneral().getAmmo();
         var ammoItem = new AtomicReference<>(items);
         forEachAttachment(weapon, (modifier -> ammoItem.set(modifier.modifyAmmoItems(ammoItem.get()))));
         return ammoItem.get();
     }
 
-    public static ResourceLocation getFirstAmmoItem(ItemStack weapon) {
+    public static ResourceLocation getFirstAmmoItem(GunData weapon) {
         var items = getAmmoItems(weapon);
         return items.iterator().next();
     }
 
-    public static int getReloadStart(ItemStack weapon) {
-        var reloadTime = getGun(weapon).getGeneral().getReloadStart();
+    public static int getReloadStart(GunData weapon) {
+        var reloadTime = getGun(weapon.stack).getGeneral().getReloadStart();
         var finalReloadTime = new AtomicInteger(reloadTime);
         forEachAttachment(weapon, (modifier -> finalReloadTime.set(modifier.modifyReloadStart(finalReloadTime.get()))));
         return finalReloadTime.get();
     }
 
-    public static int getReloadTime(ItemStack weapon) {
-        var reloadTime = getGun(weapon).getGeneral().getReloadTime();
+    public static int getReloadTime(GunData weapon) {
+        var reloadTime = getGun(weapon.stack).getGeneral().getReloadTime();
         var finalReloadTime = new AtomicInteger(reloadTime);
         forEachAttachment(weapon, (modifier -> finalReloadTime.set(modifier.modifyReloadTime(finalReloadTime.get()))));
         return finalReloadTime.get();
     }
 
-    public static int getReloadEnd(ItemStack weapon) {
-        var reloadTime = getGun(weapon).getGeneral().getReloadEnd();
+    public static int getReloadEnd(GunData weapon) {
+        var reloadTime = getGun(weapon.stack).getGeneral().getReloadEnd();
         var finalReloadTime = new AtomicInteger(reloadTime);
         forEachAttachment(weapon, (modifier -> finalReloadTime.set(modifier.modifyReloadEnd(finalReloadTime.get()))));
         return finalReloadTime.get();
     }
 
-    public static int getModifiedProjectileLife(ItemStack weapon, int life) {
+    public static int getModifiedProjectileLife(GunData weapon, int life) {
         var finalLife = new AtomicInteger(life);
         forEachAttachment(weapon, (modifier -> finalLife.set(modifier.modifyProjectileLife(finalLife.get()))));
         return finalLife.get();
     }
 
-    public static double getModifiedProjectileGravity(ItemStack weapon, double gravity) {
+    public static double getModifiedProjectileGravity(GunData weapon, double gravity) {
         var finalGravity = new AtomicReference<>(gravity);
         forEachAttachment(weapon, (modifier -> finalGravity.set(modifier.modifyProjectileGravity(finalGravity.get()))));
         forEachAttachment(weapon, (modifier -> finalGravity.updateAndGet(v -> v + modifier.additionalProjectileGravity())));
         return finalGravity.get();
     }
 
-    public static float getModifiedSpread(ItemStack weapon) {
-        var gunSpread = getGun(weapon).getGeneral().getSpread();
+    public static float getModifiedSpread(GunData weapon) {
+        var gunSpread = getGun(weapon.stack).getGeneral().getSpread();
         var ammoSpread = getCurrentAmmo(weapon).getSpread();
         var spread = Math.max(gunSpread + ammoSpread, 0);
         var finalSpread = new AtomicReference<>(spread);
@@ -279,38 +279,38 @@ public class GunModifierHelper {
         return finalSpread.get();
     }
 
-    public static double getModifiedProjectileSpeed(ItemStack weapon, double speed) {
+    public static double getModifiedProjectileSpeed(GunData weapon, double speed) {
         var finalSpeed = new AtomicReference<>(speed);
         forEachAttachment(weapon, (modifier -> finalSpeed.set(modifier.modifyProjectileSpeed(finalSpeed.get()))));
         return finalSpeed.get();
     }
 
-    public static float getFireSoundVolume(ItemStack weapon) {
+    public static float getFireSoundVolume(GunData weapon) {
         var volume = new AtomicReference<>(1.0F);
         forEachAttachment(weapon, (modifier -> volume.set(modifier.modifyFireSoundVolume(volume.get()))));
         return Mth.clamp(volume.get(), 0.0F, 16.0F);
     }
 
     @Deprecated(since = "1.3.0", forRemoval = true)
-    public static double getMuzzleFlashSize(ItemStack weapon, double size) {
+    public static double getMuzzleFlashSize(GunData weapon, double size) {
         var finalSize = new AtomicReference<>(size);
         forEachAttachment(weapon, (modifier -> finalSize.set(modifier.modifyMuzzleFlashSize(finalSize.get()))));
         return finalSize.get();
     }
 
-    public static double getMuzzleFlashScale(ItemStack weapon, double scale) {
+    public static double getMuzzleFlashScale(GunData weapon, double scale) {
         var finalScale = new AtomicReference<>(scale);
         forEachAttachment(weapon, (modifier -> finalScale.set(modifier.modifyMuzzleFlashScale(scale))));
         return finalScale.get();
     }
 
-    public static float getKickReduction(ItemStack weapon) {
+    public static float getKickReduction(GunData weapon) {
         var kickReduction = new AtomicReference<>(1.0F);
         forEachAttachment(weapon, (modifier -> kickReduction.updateAndGet(v -> v * Mth.clamp(modifier.kickModifier(), 0.0F, 1.0F))));
         return 1.0F - kickReduction.get();
     }
 
-    public static float getRecoilModifier(ItemStack weapon) {
+    public static float getRecoilModifier(GunData weapon) {
         var recoilReduction = new AtomicReference<>(1.0F);
         forEachAttachment(weapon, (modifier -> recoilReduction.updateAndGet(
                 v -> v * Mth.clamp(modifier.recoilModifier(), 0.0F, 1.0F))));
@@ -318,8 +318,8 @@ public class GunModifierHelper {
         return 1.0F - recoilReduction.get();
     }
 
-    public static boolean isSilencedFire(ItemStack weapon) {
-        var gun = getGun(weapon);
+    public static boolean isSilencedFire(GunData weapon) {
+        var gun = getGun(weapon.stack);
         var attachments = gun.getModules().getAttachments();
 
         for (var att : attachments.keySet()) {
@@ -332,7 +332,7 @@ public class GunModifierHelper {
         return false;
     }
 
-    public static double getModifiedFireSoundRadius(ItemStack weapon, double radius) {
+    public static double getModifiedFireSoundRadius(GunData weapon, double radius) {
         var minRadius = new AtomicReference<>(radius);
         forEachAttachment(weapon, (modifier -> {
             var newRadius = modifier.modifyFireSoundRadius(radius);
@@ -343,21 +343,21 @@ public class GunModifierHelper {
         return Mth.clamp(minRadius.get(), 0.0, Double.MAX_VALUE);
     }
 
-    public static float getAdditionalDamage(ItemStack weapon) {
+    public static float getAdditionalDamage(GunData weapon) {
         var additionalDamage = new AtomicReference<>(0.0F);
         forEachAttachment(weapon, (modifier -> additionalDamage.updateAndGet(
                 v -> v + modifier.additionalDamage())));
         return additionalDamage.get();
     }
 
-    public static float getModifiedProjectileDamage(ItemStack weapon, float damage) {
+    public static float getModifiedProjectileDamage(GunData weapon, float damage) {
         var finalDamage = new AtomicReference<>(damage);
         forEachAttachment(weapon, (modifier -> finalDamage.set(modifier.modifyDamage(finalDamage.get()))));
         return finalDamage.get();
     }
 
-    public static float getModifiedDamage(ItemStack weapon) {
-        var gun = getGun(weapon);
+    public static float getModifiedDamage(GunData weapon) {
+        var gun = getGun(weapon.stack);
         var damage = gun.getGeneral().getDamage();
         damage *= getAmmoDamageMultiplier(weapon);
         var finalDamage = new AtomicReference<>(damage);
@@ -367,11 +367,11 @@ public class GunModifierHelper {
         return finalDamage.get();
     }
 
-    public static float getAmmoDamageMultiplier(ItemStack weapon){
+    public static float getAmmoDamageMultiplier(GunData weapon){
         return getCurrentAmmo(weapon).getDamage();
     }
 
-    public static double getModifiedAimDownSightSpeed(ItemStack weapon, double speed) {
+    public static double getModifiedAimDownSightSpeed(GunData weapon, double speed) {
         var buffSpeed = new AtomicReference<>(speed);
 
         forEachAttachment(weapon, (modifier ->
@@ -380,26 +380,26 @@ public class GunModifierHelper {
         return Mth.clamp(buffSpeed.get(), 0.01, Double.MAX_VALUE);
     }
 
-    public static int getRate(ItemStack weapon) {
-        var gun = getGun(weapon);
-        var rate = GunEnchantmentHelper.getRate(weapon, gun);
+    public static int getRate(GunData weapon) {
+        var gun = getGun(weapon.stack);
+        var rate = GunEnchantmentHelper.getRate(weapon.stack, gun);
         var buffRate = new AtomicInteger(rate);
         forEachAttachment(weapon, (modifier -> buffRate.set(modifier.modifyFireRate(buffRate.get()))));
         return Mth.clamp(buffRate.get(), 0, Integer.MAX_VALUE);
     }
 
-    public static float getCriticalChance(ItemStack weapon) {
+    public static float getCriticalChance(GunData weapon) {
         var chance = new AtomicReference<>(0F);
         forEachAttachment(weapon, (modifier ->
                 chance.updateAndGet(v -> v + modifier.criticalChance())));
-        chance.updateAndGet(v -> v + GunEnchantmentHelper.getPuncturingChance(weapon));
+        chance.updateAndGet(v -> v + GunEnchantmentHelper.getPuncturingChance(weapon.stack));
 
         return Mth.clamp(chance.get(), 0F, 1F);
     }
 
     ///PRIVATE
-    private static void forEachAttachment(ItemStack weapon, Consumer<IGunModifier> consumer){
-        var gun = getGun(weapon);
+    private static void forEachAttachment(GunData weapon, Consumer<IGunModifier> consumer){
+        var gun = getGun(weapon.stack);
         var attachments = gun.getModules().getAttachments();
 
         for (var att : attachments.keySet()) {
@@ -410,9 +410,9 @@ public class GunModifierHelper {
         applyDynamicModifier(weapon, consumer);
     }
 
-    private static void applyDynamicModifier(ItemStack weapon, Consumer<IGunModifier> consumer) {
-        var gunItem = (GunItem) weapon.getItem();
-        var dynamicModifier = gunItem.getGunModifier(weapon);
+    private static void applyDynamicModifier(GunData weapon, Consumer<IGunModifier> consumer) {
+        var gunItem = (GunItem) weapon.stack.getItem();
+        var dynamicModifier = gunItem.getGunModifier(weapon.stack);
 
         if(dynamicModifier != null) {
             applyModifiers(consumer, dynamicModifier);

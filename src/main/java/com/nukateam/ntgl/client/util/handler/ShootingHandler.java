@@ -93,17 +93,17 @@ public class ShootingHandler {
         if (heldItem.getItem() instanceof GunItem gunItem) {
             if (event.getAction() == GLFW.GLFW_PRESS) {
                 if (isRightHand) {
-                    setupShootingData(heldItem, gunItem, HumanoidArm.RIGHT);
+                    setupShootingData(heldItem, player, HumanoidArm.RIGHT);
                 }
                 if (isLeftHand) {
-                    setupShootingData(heldItem, gunItem, HumanoidArm.LEFT);
+                    setupShootingData(heldItem, player, HumanoidArm.LEFT);
                 }
             } else if(event.getAction() == GLFW.GLFW_RELEASE) {
                 if (isRightHand) {
-                    resetShootingData(heldItem, HumanoidArm.RIGHT);
+                    resetShootingData(heldItem, player, HumanoidArm.RIGHT);
                 }
                 if (isLeftHand) {
-                    resetShootingData(heldItem, HumanoidArm.LEFT);
+                    resetShootingData(heldItem, player, HumanoidArm.LEFT);
                 }
             }
         }
@@ -244,8 +244,8 @@ public class ShootingHandler {
         var heldItem = entity.getItemInHand(hand);
 
         if (heldItem.getItem() instanceof GunItem gunItem) {
-            var modifiedGun = gunItem.getModifiedGun(heldItem);
-            var rate = GunModifierHelper.getRate(heldItem);
+            var data = new GunData(heldItem, entity);
+            var rate = GunModifierHelper.getRate(data);
             var cooldown = getCooldown(entity, convertHand(hand));
             return cooldown / rate;
         }
@@ -293,7 +293,8 @@ public class ShootingHandler {
 
             // CHECK HERE: Change this to test different rpm settings.
             // TODO: Test serverside, possible issues 0.3.4-alpha
-            final var rpm = GunModifierHelper.getRate(heldItem); // Rounds per sec. Should come from gun properties in the end.
+            var gunData = new GunData(heldItem, shooter);
+            final var rpm = GunModifierHelper.getRate(gunData); // Rounds per sec. Should come from gun properties in the end.
             shootGap += rpm;
             entityShootGaps.put(Pair.of(hand, shooter), shootGap);
             shootMsGap = calcShootTickGap(rpm);
@@ -329,16 +330,19 @@ public class ShootingHandler {
         } );
     }
 
-    private void setupShootingData(ItemStack stack, GunItem gunItem, HumanoidArm arm) {
+    private void setupShootingData(ItemStack stack, Player player, HumanoidArm arm) {
         if(!Gun.hasAmmo(stack)) return;
         var data = shootingData.get(arm);
-        data.fireTimer = GunModifierHelper.getFireDelay(stack);
-        data.gun = gunItem;
+        var gunData = new GunData(stack, player);
+
+        data.fireTimer = GunModifierHelper.getFireDelay(gunData);
+        data.gun = (GunItem) stack.getItem();
     }
 
-    private void resetShootingData(ItemStack stack, HumanoidArm arm) {
+    private void resetShootingData(ItemStack stack, Player player, HumanoidArm arm) {
         var data = shootingData.get(arm);
-        if(data.fireTimer != 0 && ! GunModifierHelper.needsFullCharge(stack)){
+        var gunData = new GunData(stack, player);
+        if(data.fireTimer != 0 && ! GunModifierHelper.needsFullCharge(gunData)){
             this.fire(Minecraft.getInstance().player, stack);
         }
 
@@ -350,8 +354,10 @@ public class ShootingHandler {
         var mc = Minecraft.getInstance();
         var key = arm == HumanoidArm.RIGHT ? mc.options.keyAttack : mc.options.keyUse;
         var data = shootingData.get(arm);
-        var fireMode =  GunModifierHelper.getCurrentFireMode(heldItem);
-        var maxChargeTime = GunModifierHelper.getFireDelay(heldItem);
+        var gunData = new GunData(heldItem, player);
+
+        var fireMode =  GunModifierHelper.getCurrentFireMode(gunData);
+        var maxChargeTime = GunModifierHelper.getFireDelay(gunData);
 
         if (maxChargeTime != 0) {
             var isOnCooldown = ShootingHandler.get().isOnCooldown(player, arm);
@@ -363,8 +369,8 @@ public class ShootingHandler {
                 data.fireTimer--;
             } else {
                 this.fire(player, heldItem);
-                if(data.fireTimer == 0 && !GunModifierHelper.isOneTimeCharge(heldItem))
-                    setupShootingData(heldItem, data.gun, arm);
+                if(data.fireTimer == 0 && !GunModifierHelper.isOneTimeCharge(gunData))
+                    setupShootingData(heldItem, player, arm);
                 if (maxChargeTime > 0) {
                     if(fireMode != FireMode.AUTO)
                         key.setDown(false);

@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.util.annotation.Ignored;
 import com.nukateam.ntgl.common.data.constants.Tags;
+import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunJsonUtil;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
@@ -341,19 +342,20 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static AmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
-        var id = GunModifierHelper.getCurrentAmmoId(weapon);
+        var data = new GunData(weapon, entity);
+        var id = GunModifierHelper.getCurrentAmmoId(data);
 
         if (entity instanceof Player player) {
             var context = findPlayerAmmo(player, id);
 
             if(context == AmmoContext.NONE){
-                var set = GunModifierHelper.getAmmoItems(weapon);
+                var set = GunModifierHelper.getAmmoItems(data);
                 for (var value: set) {
                     if(!value.equals(id) && Gun.getAmmo(weapon) == 0){
                         id = value;
                         context = findPlayerAmmo(player, id);
                         if(context != AmmoContext.NONE) {
-                            GunModifierHelper.setCurrentAmmo(weapon, id);
+                            GunModifierHelper.setCurrentAmmo(data, id);
                             return context;
                         }
                     }
@@ -366,19 +368,20 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static AmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {
-        var id = GunModifierHelper.getCurrentAmmoId(weapon);
+        var data = new GunData(weapon, entity);
+        var id = GunModifierHelper.getCurrentAmmoId(data);
 
         if (entity instanceof Player player) {
             var context = findPlayerMagazine(player, id);
 
             if(context == AmmoContext.NONE){
-                var set = GunModifierHelper.getAmmoItems(weapon);
+                var set = GunModifierHelper.getAmmoItems(data);
                 for (var value: set) {
                     if(!value.equals(id) && Gun.getAmmo(weapon) == 0){
                         id = value;
                         context = findPlayerMagazine(player, id);
                         if(context != AmmoContext.NONE) {
-                            GunModifierHelper.setCurrentAmmo(weapon, id);
+                            GunModifierHelper.setCurrentAmmo(data, id);
                             return context;
                         }
                     }
@@ -480,9 +483,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return tag.getInt(Tags.AMMO_COUNT);
     }
 
-    public static boolean isMaxAmmo(ItemStack gunStack) {
-        var ammo = getAmmo(gunStack);
-        var maxAmmo = GunModifierHelper.getMaxAmmo(gunStack);
+    public static boolean isMaxAmmo(GunData data) {
+        var ammo = getAmmo(data.stack);
+        var maxAmmo = GunModifierHelper.getMaxAmmo(data);
         return ammo == maxAmmo;
     }
 
@@ -496,11 +499,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) > 0;
     }
 
-    public static void fillAmmo(ItemStack gunStack) {
-        if (gunStack.getItem() instanceof GunItem gunItem) {
-            var tag = gunStack.getOrCreateTag();
+    public static void fillAmmo(GunData data) {
+        if (data.stack.getItem() instanceof GunItem gunItem) {
+            var tag = data.stack.getOrCreateTag();
 //            var maxAmmo = gunItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo(gunStack);
-            var maxAmmo = GunModifierHelper.getMaxAmmo(gunStack);
+            var maxAmmo = GunModifierHelper.getMaxAmmo(data);
 
             tag.putInt(Tags.AMMO_COUNT, maxAmmo);
         }
