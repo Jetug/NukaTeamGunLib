@@ -58,13 +58,11 @@ public class GunModifierHelper {
         return true;
     }
 
-    private static IGunModifier[] getAttachmentModifiers(GunData data, AttachmentType type) {
-        var attachmentItem = Gun.getAttachmentItem(type, data.gun);
+    private static IGunModifier[] getAttachmentModifiers(ItemStack gun, AttachmentType type) {
+        var attachmentItem = Gun.getAttachmentItem(type, gun);
 
         if (!attachmentItem.isEmpty() && attachmentItem.getItem() instanceof IAttachment<?> attachment) {
             var modifiers = attachment.getProperties().getModifiers();
-
-
             return modifiers;
         }
         return EMPTY;
@@ -322,8 +320,8 @@ public class GunModifierHelper {
         var gun = getGun(data.gun);
         var attachments = gun.getModules().getAttachments();
 
-        for (var att : attachments.keySet()) {
-            var modifiers = getAttachmentModifiers(data, att);
+        for (var attachmentType : attachments.keySet()) {
+            var modifiers = getAttachmentModifiers(data.gun, attachmentType);
             for (var modifier : modifiers) {
                 if (modifier.silencedFire(data))
                     return true;
@@ -397,26 +395,19 @@ public class GunModifierHelper {
         return Mth.clamp(chance.get(), 0F, 1F);
     }
 
-    ///PRIVATE
+    ///PRIVATE______________
     private static void forEachAttachment(GunData data, Consumer<IGunModifier> consumer){
-        var gun = getGun(data.gun);
-        var attachments = gun.getModules().getAttachments();
+        var gun = data.gun;
+        var config = getGun(gun);
+        var attachments = config.getModules().getAttachments();
 
-        for (var att : attachments.keySet()) {
-            var modifiers = getAttachmentModifiers(data, att);
+        for (var attachmentType : attachments.keySet()) {
+            var modifiers = getAttachmentModifiers(gun, attachmentType);
             applyModifiers(consumer, modifiers);
         }
 
-        applyDynamicModifier(data, consumer);
-    }
-
-    private static void applyDynamicModifier(GunData data, Consumer<IGunModifier> consumer) {
-        var gunItem = (GunItem) data.gun.getItem();
-        var dynamicModifier = gunItem.getGunModifier(data.gun);
-
-        if(dynamicModifier != null) {
-            applyModifiers(consumer, dynamicModifier);
-        }
+        var gunItem = (GunItem) gun.getItem();
+        applyModifiers(consumer, gunItem.getGunModifiers());
     }
 
     private static void applyModifiers(Consumer<IGunModifier> consumer, IGunModifier... gunModifiers) {

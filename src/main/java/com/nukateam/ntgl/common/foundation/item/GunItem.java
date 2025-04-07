@@ -38,8 +38,6 @@ import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
 public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IResourceProvider, IConfigConsumer<Gun>, IConfigProvider<Gun> {
     public static final String VARIANT = "variant";
-    private static final Map<ItemStack, String> stackAnimations = new HashMap<>();
-
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
@@ -49,13 +47,15 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     protected IGunModifier[] modifiers;
 
-    @Nullable
-    public IGunModifier[] getGunModifiers(ItemStack stack) {
-        return modifiers;
-    }
 
     public GunItem(Item.Properties properties, IGunModifier... modifiers) {
         super(properties);
+        this.modifiers = modifiers;
+    }
+
+    @Nullable
+    public IGunModifier[] getGunModifiers() {
+        return modifiers;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -227,14 +227,6 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     @Override
     public int getEnchantmentValue() {
         return 5;
-    }
-
-    private static void doAnim(ItemStack stack, String animation) {
-        stackAnimations.put(stack, animation);
-    }
-
-    private static void resetAnim(ItemStack stack) {
-        stackAnimations.put(stack, null);
     }
 
     @Override
