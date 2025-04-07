@@ -1,17 +1,17 @@
 package com.nukateam.example.common.modifiers;
 
-import com.nukateam.ntgl.common.base.DynamicGunModifier;
 import com.nukateam.ntgl.common.base.holders.GripType;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.util.util.GunData;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 
-public class MinigunModifier extends DynamicGunModifier {
+public class MinigunModifier implements IGunModifier {
     @Override
     public int modifyReloadTime(int reloadTime, GunData data) {
-        var mainHandStack = getEntity().getMainHandItem();
+        var mainHandStack = data.shooter.getMainHandItem();
 
-        if(ItemStack.matches(mainHandStack, stack)) {
+        if(ItemStack.matches(mainHandStack, data.gun)) {
             return 1;
         }
         else return reloadTime;
@@ -19,9 +19,9 @@ public class MinigunModifier extends DynamicGunModifier {
 
     @Override
     public GripType modifyGripType(GripType gripType, GunData data) {
-        if(getEntity().hasEffect(MobEffects.DAMAGE_BOOST)){
+        if(data.shooter.hasEffect(MobEffects.DAMAGE_BOOST)){
             return GripType.ONE_HANDED;
         }
-        return super.modifyGripType(gripType, data);
+        return IGunModifier.super.modifyGripType(gripType, data);
     }
 }

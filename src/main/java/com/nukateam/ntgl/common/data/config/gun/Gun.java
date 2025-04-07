@@ -484,7 +484,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static boolean isMaxAmmo(GunData data) {
-        var ammo = getAmmo(data.stack);
+        var ammo = getAmmo(data.gun);
         var maxAmmo = GunModifierHelper.getMaxAmmo(data);
         return ammo == maxAmmo;
     }
@@ -500,8 +500,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static void fillAmmo(GunData data) {
-        if (data.stack.getItem() instanceof GunItem gunItem) {
-            var tag = data.stack.getOrCreateTag();
+        if (data.gun.getItem() instanceof GunItem gunItem) {
+            var tag = data.gun.getOrCreateTag();
 //            var maxAmmo = gunItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo(gunStack);
             var maxAmmo = GunModifierHelper.getMaxAmmo(data);
 

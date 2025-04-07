@@ -2,77 +2,60 @@ package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.animators.GunAnimator;
-import com.nukateam.ntgl.common.base.DynamicGunModifier;
-import com.nukateam.ntgl.common.util.util.GunData;
-import com.nukateam.ntgl.common.util.util.ResourceUtils;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.render.renderers.gun.DefaultGunRendererGeo;
+import com.nukateam.ntgl.client.render.renderers.gun.*;
 import com.nukateam.ntgl.common.base.NetworkManager;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
-import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.debug.Debug;
-import com.nukateam.ntgl.common.foundation.enchantment.EnchantmentTypes;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
+import com.nukateam.ntgl.common.foundation.enchantment.*;
+import com.nukateam.ntgl.common.foundation.item.interfaces.*;
 import mod.azure.azurelib.animatable.GeoItem;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
+import mod.azure.azurelib.core.animatable.instance.*;
+import mod.azure.azurelib.core.animation.*;
+import net.minecraft.*;
+import net.minecraft.nbt.*;
+import net.minecraft.network.chat.*;
+import net.minecraft.resources.*;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.ForgeRegistries;
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
+import net.minecraftforge.registries.*;
+import javax.annotation.*;
+import java.util.*;
+import java.util.function.*;
 
 import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
 public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IResourceProvider, IConfigConsumer<Gun>, IConfigProvider<Gun> {
     public static final String VARIANT = "variant";
-    public static final Map<ItemStack, String> stackAnimations = new HashMap<>();
-    protected final AnimatableInstanceCache cache = createInstanceCache(this);
+    private static final Map<ItemStack, String> stackAnimations = new HashMap<>();
+
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
     private final Lazy<DefaultGunRendererGeo> GUN_RENDERER = Lazy.of(() -> new DefaultGunRendererGeo());
     private Gun gun = new Gun();
 
-    @Nullable
-    protected Supplier<DynamicGunModifier> modifierFactory = null;
-    protected HashMap<ItemStack, DynamicGunModifier> dynamycmodifiers = new HashMap<>();
+    protected final AnimatableInstanceCache cache = createInstanceCache(this);
+    protected IGunModifier[] modifiers;
 
     @Nullable
-    public DynamicGunModifier getGunModifier(ItemStack stack) {
-        return dynamycmodifiers.get(stack);
+    public IGunModifier[] getGunModifiers(ItemStack stack) {
+        return modifiers;
     }
 
-    public GunItem(Item.Properties properties) {
+    public GunItem(Item.Properties properties, IGunModifier... modifiers) {
         super(properties);
-    }
-
-    public GunItem(Supplier<DynamicGunModifier> modifierFactory, Item.Properties properties) {
-        this(properties);
-        this.modifierFactory = modifierFactory;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -124,47 +107,12 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level pLevel, Entity entity, int pSlotId, boolean pIsSelected) {
-        if(modifierFactory != null && entity instanceof LivingEntity livingEntity) {
-            var modifier = dynamycmodifiers.getOrDefault(stack, modifierFactory.get());
-            var arm = livingEntity.getOffhandItem() == stack ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
-            modifier.setEntity(livingEntity);
-            modifier.setStack(stack);
-            modifier.setArm(arm);
-            dynamycmodifiers.put(stack, modifier);
-        }
-    }
-
-    //    @Override
-//    public void createRenderer(Consumer<Object> consumer) {
-//        consumer.accept(new RenderProvider() {
-//            private ProxyItemRenderer renderer = null;
-//            @Override
-//            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-//                if (renderer == null)
-//                    return new ProxyItemRenderer((DynamicGunRenderer<GunAnimator>) getRenderer());
-//                return this.renderer;
-//            }
-//        });
-//    }
-
-//    @Override
-//    public void inventoryTick(ItemStack stack, Level pLevel, Entity entity, int pSlotId, boolean pIsSelected) {
-//        checkAmmoCount(stack, entity);
-//
-//        super.inventoryTick(stack, pLevel, entity, pSlotId, pIsSelected);
-//    }
-
-    @Override
     public Supplier<Object> getRenderProvider() {
         return renderProvider;
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
-//        var player = Minecraft.getInstance().player;
-//        if(player == null) return;
-
         var data = new GunData(stack, null);
         var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmoId(data));
 
@@ -281,11 +229,11 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
         return 5;
     }
 
-    public static void doAnim(ItemStack stack, String animation) {
+    private static void doAnim(ItemStack stack, String animation) {
         stackAnimations.put(stack, animation);
     }
 
-    public static void resetAnim(ItemStack stack) {
+    private static void resetAnim(ItemStack stack) {
         stackAnimations.put(stack, null);
     }
 

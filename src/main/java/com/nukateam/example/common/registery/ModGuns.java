@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.data.attachment.impl.*;
 import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.common.base.*;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.*;
@@ -15,15 +16,13 @@ import java.util.function.Supplier;
 public class ModGuns {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Ntgl.MOD_ID);
     ///GUNS
-    public static final RegistryObject<GunItem> PISTOL10MM = registerGun("pistol10mm", TestModifier::new);
+    public static final RegistryObject<GunItem> PISTOL10MM = registerGun("pistol10mm", new TestModifier());
     public static final RegistryObject<GunItem> PIPE_PISTOL = registerGun("pipepistol");
     public static final RegistryObject<GunItem> CLASSIC10MM = registerGun("classic10mm", 10);
     public static final RegistryObject<GunItem> SCOUT10MM = registerGun("scout10mm");
-//    public static final RegistryObject<GunItem> CLASSIC10MM_ZAP = registerGun("classic10mm_zapaway", () -> new PistolGun(new Item.Properties().tab(ModItemTabs.NUKA_EQUIP)));
     public static final RegistryObject<GunItem> PIPE_REVOLVER = registerGun("piperevolver");
     public static final RegistryObject<GunItem> FATMAN = registerGun("fatman");
-    public static final RegistryObject<GunItem> MINIGUN = registerGun("minigun", MinigunModifier::new);
-
+    public static final RegistryObject<GunItem> MINIGUN = registerGun("minigun", new MinigunModifier());
     public static final RegistryObject<GunItem> POWDERGUN = registerGun("powdergun");
     public static final RegistryObject<GunItem> SHOTGUN = registerGun("shotgun");
     public static final RegistryObject<GunItem> FLAMER = registerGun("flamer");
@@ -92,13 +91,8 @@ public class ModGuns {
     public static final RegistryObject<Item> AMMO_BOX = ITEMS.register("ammo_box", () ->
             new AmmoBoxItem(new Item.Properties().stacksTo(1), 100));
 
-
-    public static RegistryObject<GunItem> registerGun(String name) {
-        return ITEMS.register(name, () -> new GunItem(new Item.Properties().stacksTo(1)));
-    }
-
-    public static RegistryObject<GunItem> registerGun(String name, Supplier<DynamicGunModifier> modifier) {
-        return ITEMS.register(name, () -> new GunItem(modifier, new Item.Properties().stacksTo(1)));
+    public static RegistryObject<GunItem> registerGun(String name, IGunModifier... modifiers) {
+        return ITEMS.register(name, () -> new GunItem(new Item.Properties().stacksTo(1), modifiers));
     }
 
     public static RegistryObject<GunItem> registerGun(String name, int durability) {

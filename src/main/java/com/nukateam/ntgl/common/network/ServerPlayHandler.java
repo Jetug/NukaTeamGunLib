@@ -232,7 +232,7 @@ public class ServerPlayHandler {
         ResourceLocation fireSound = null;
         if (GunModifierHelper.isSilencedFire(data)) {
             fireSound = modifiedGun.getSounds().getSilencedFire();
-        } else if (data.stack.isEnchanted()) {
+        } else if (data.gun.isEnchanted()) {
             fireSound = modifiedGun.getSounds().getEnchantedFire();
         }
         if (fireSound != null) {

@@ -4,11 +4,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 public class GunData {
-    public final ItemStack stack;
+    public final ItemStack gun;
     public final LivingEntity shooter;
 
-    public GunData(ItemStack stack, LivingEntity shooter) {
-        this.stack = stack;
+    public GunData(ItemStack gun, LivingEntity shooter) {
+        this.gun = gun;
         this.shooter = shooter;
     }
 }
