@@ -133,10 +133,8 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
                 } else if (additionalDamage < 0) {
                     additionalDamageText = ChatFormatting.RED + " " + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
                 }
-
             }
         }
-
 
         var damage = GunModifierHelper.getModifiedDamage(data);
         damage = GunModifierHelper.getModifiedProjectileDamage(data, damage);

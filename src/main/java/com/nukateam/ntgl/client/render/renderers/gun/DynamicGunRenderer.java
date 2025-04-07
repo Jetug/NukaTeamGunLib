@@ -55,7 +55,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
     public DynamicGunRenderer(GeoModel<Animator> model) {
         super(model);
         addRenderLayer(new GlowingLayer<>(this));
-        ClientTickHandler.addClientTicker(this, this::tick);
+        ClientTickHandler.addTicker(this, this::tick);
     }
 
     protected void tick(TickEvent event){

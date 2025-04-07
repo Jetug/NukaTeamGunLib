@@ -62,7 +62,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         this.renderer = (DynamicGunRenderer<GunAnimator>) renderer;
         this.arm = getArm();
 
-        ClientTickHandler.addClientTicker(this, this::tick);
+        ClientTickHandler.addTicker(this, this::tick);
         TRIGGER_CONTROLLER = createController("triggerController", event -> PlayState.CONTINUE);
         MAIN_CONTROLLER = createController("mainController", animate()).setSoundKeyframeHandler(this::handleSoundEvent);
         REVOLVER_CONTROLLER = createController("revolverController", animateRevolver());
@@ -303,8 +303,8 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         var currentItem = entity.getItemInHand(PlayerHelper.convertHand(arm));
         var oppositeItem = entity.getItemInHand(PlayerHelper.convertHand(arm.getOpposite()));
         var isOneHanded = isOneHanded(currentItem) && isOneHanded(oppositeItem) || arm == HumanoidArm.LEFT;
-
-        if (isOneHanded && animationHelper.hasAnimation(name + Animations.ONE_HAND_SUFFIX))
+        var hasShield = isOneHanded(currentItem) && oppositeItem.getItem() instanceof ShieldItem;
+        if ((hasShield || isOneHanded) && animationHelper.hasAnimation(name + Animations.ONE_HAND_SUFFIX))
             return name + Animations.ONE_HAND_SUFFIX;
         return name;
     }

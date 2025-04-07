@@ -1,6 +1,7 @@
 
 package com.nukateam.ntgl.client.event;
 
+import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
@@ -15,26 +16,26 @@ import java.util.function.Consumer;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class ClientTickHandler {
-    private static final Map<Object, Consumer<TickEvent>> clientTickers = new HashMap<>();
-    private static final Map<Object, Consumer<TickEvent>> tickers = new HashMap<>();
+    private static final Map<ItemAnimator, Runnable> tickingAnimators = new HashMap();
+    private static final Map<Object, Consumer<TickEvent>> tickers = new HashMap();
 
-    public static void addTicker(Object object, Consumer<TickEvent> onTick){
+    public ClientTickHandler() {
+    }
+
+    public static void addTicker(ItemAnimator animator, Runnable onTick) {
+        tickingAnimators.put(animator, onTick);
+    }
+
+    public static void addTicker(Object object, Consumer<TickEvent> onTick) {
         tickers.put(object, onTick);
     }
 
-    public static void addClientTicker(Object object, Consumer<TickEvent> onTick){
-        clientTickers.put(object, onTick);
-    }
-
-    @SubscribeEvent()
-    public static void clientTick(TickEvent event) {
-        tickers.forEach((k, v) -> {
-            v.accept(event);
-        });
-        if(event.side == LogicalSide.CLIENT) {
-            clientTickers.forEach((k, v) -> {
-                v.accept(event);
-            });
+    @SubscribeEvent
+    public static void clientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
+            tickingAnimators.forEach((k, v) -> v.run());
         }
+
+        tickers.forEach((k, v) -> v.accept(event));
     }
 }
