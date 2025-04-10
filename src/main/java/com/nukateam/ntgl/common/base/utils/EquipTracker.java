@@ -35,7 +35,7 @@ public class EquipTracker {
 
     public int equipTick;
 
-    private EquipTracker(Player player, HumanoidArm arm) {
+    private EquipTracker(Player player, HumanoidArm arm, boolean switchGuns) {
         this.arm = arm;
         this.stack = player.getItemInHand(getInteractionHand(arm));
         this.gunItem = ((GunItem) stack.getItem());
@@ -51,8 +51,8 @@ public class EquipTracker {
         try {
             if (event.phase == TickEvent.Phase.START && !event.player.level().isClientSide) {
                 var player = event.player;
-                handTick(player, HumanoidArm.RIGHT);
-                handTick(player, HumanoidArm.LEFT);
+                handTick(player, net.minecraft.world.entity.HumanoidArm.RIGHT);
+                handTick(player, net.minecraft.world.entity.HumanoidArm.LEFT);
             }
         }
         catch (Exception e){
@@ -81,7 +81,7 @@ public class EquipTracker {
     }
 
     private static SyncedDataKey<LivingEntity, Boolean> getDataKey(HumanoidArm arm) {
-        var dataKey = arm == HumanoidArm.RIGHT ?
+        var dataKey = arm == net.minecraft.world.entity.HumanoidArm.RIGHT ?
                 ModSyncedDataKeys.EQUIP_RIGHT: ModSyncedDataKeys.EQUIP_LEFT;
         return dataKey;
     }
@@ -93,11 +93,14 @@ public class EquipTracker {
 //        return TRACKER_MAP.containsKey(key) && TRACKER_MAP.get(key).equipTick > 0;
     }
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
     public static void startEquip(Player entity, HumanoidArm arm){
+        startEquip(entity, arm, false);
+    }
+
+    public static void startEquip(Player entity, HumanoidArm arm, boolean switchGuns){
         var reloadKey = getDataKey(arm);
         reloadKey.setValue(entity,true);
-        addTracker(entity, arm);
+        addTracker(entity, arm, switchGuns);
     }
 
     private static void stopEquip(Player entity, HumanoidArm arm) {
@@ -106,10 +109,10 @@ public class EquipTracker {
         TRACKER_MAP.remove(new Pair<>(arm, entity));
     }
 
-    private static boolean addTracker(Player entity, HumanoidArm arm) {
+    private static boolean addTracker(Player entity, HumanoidArm arm, boolean switchGuns) {
         var reloadKey = getDataKey(arm);
 
-        var gunItem = arm == HumanoidArm.RIGHT ?
+        var gunItem = arm == net.minecraft.world.entity.HumanoidArm.RIGHT ?
                 entity.getMainHandItem().getItem():
                 entity.getOffhandItem().getItem();
 
@@ -120,7 +123,7 @@ public class EquipTracker {
                 reloadKey.setValue(entity, false);
                 return true;
             }
-            TRACKER_MAP.put(key, new EquipTracker(entity, arm));
+            TRACKER_MAP.put(key, new EquipTracker(entity, arm, switchGuns));
         }
         return false;
     }

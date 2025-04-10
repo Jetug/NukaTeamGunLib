@@ -238,7 +238,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected RawAnimation getEquipAnimation(AnimationState<GunAnimator> event) {
-        var animation = playGunAnim(EQUIP, LOOP);
+        var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);
         animationHelper.syncAnimation(event, EQUIP, equipTime);
         return animation;
     }
