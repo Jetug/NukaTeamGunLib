@@ -1,9 +1,10 @@
-package com.nukateam.ntgl.common.base;
+package com.nukateam.ntgl.common.network.managers;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.base.ConfigUtils;
 import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.network.PacketHandler;

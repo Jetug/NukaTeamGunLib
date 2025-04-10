@@ -6,7 +6,7 @@ import com.nukateam.ntgl.client.event.ClientPlayHandler;
 import com.nukateam.ntgl.common.data.config.gun.CustomGun;
 import com.nukateam.ntgl.common.base.CustomGunLoader;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.base.NetworkGunManager;
+import com.nukateam.ntgl.common.network.managers.NetworkGunManager;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

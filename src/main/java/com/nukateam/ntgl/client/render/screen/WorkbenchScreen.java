@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.screen;
 import com.nukateam.ntgl.common.util.interfaces.IMeleeWeapon;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
-import com.nukateam.ntgl.common.base.NetworkGunManager;
+import com.nukateam.ntgl.common.network.managers.NetworkGunManager;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;

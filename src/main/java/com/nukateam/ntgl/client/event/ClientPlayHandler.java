@@ -5,7 +5,8 @@ import com.nukateam.ntgl.client.config.*;
 import com.nukateam.ntgl.client.util.*;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.util.handler.*;
-import com.nukateam.ntgl.common.base.*;
+import com.nukateam.ntgl.common.network.managers.NetworkAmmoManager;
+import com.nukateam.ntgl.common.network.managers.NetworkGunManager;
 import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.particles.*;
@@ -24,7 +25,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 
-import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.createDeathEffectClient;
 
 /**

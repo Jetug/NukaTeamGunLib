@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.ntgl.common.base.NetworkManager;
+import com.nukateam.ntgl.common.network.managers.NetworkManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 

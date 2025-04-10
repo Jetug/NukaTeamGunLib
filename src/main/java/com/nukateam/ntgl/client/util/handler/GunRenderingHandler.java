@@ -388,10 +388,6 @@ public class GunRenderingHandler {
 
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
                 poseStack.translate(-xOffset * side * transition, -yOffset * transition, -zOffset * transition);
-
-//                poseStack.translate((-1.5) / 16D, (-10) / 16D, (2.5) / 16D);
-//                if(Ntgl.isDebugging())
-//                    poseStack.translate(X / 16D, Y / 16D, Z / 16D);
             }
         }
     }

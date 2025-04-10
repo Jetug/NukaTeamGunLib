@@ -6,7 +6,7 @@ import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.event.ClientPlayHandler;
 import com.nukateam.ntgl.common.base.CustomAmmoLoader;
 import com.nukateam.ntgl.common.base.CustomGunLoader;
-import com.nukateam.ntgl.common.base.NetworkAmmoManager;
+import com.nukateam.ntgl.common.network.managers.NetworkAmmoManager;
 import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.data.config.CustomAmmo;
 import net.minecraft.network.FriendlyByteBuf;
