@@ -88,10 +88,9 @@ public class ServerPlayHandler {
         var hand = message.isMainHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         var heldItem = shooter.getItemInHand(hand);
 
-        if (
-                heldItem.getItem() instanceof GunItem item
+        if (heldItem.getItem() instanceof GunItem gunItem
                 && (Gun.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
-            var modifiedGun = item.getModifiedGun(heldItem);
+            var modifiedGun = gunItem.getModifiedGun(heldItem);
             var tag = heldItem.getOrCreateTag();
 
             if (modifiedGun != null) {
@@ -125,7 +124,7 @@ public class ServerPlayHandler {
                 var gunSpread = GunModifierHelper.getModifiedSpread(data);
 
                 if (!modifiedGun.getGeneral().isAlwaysSpread() && gunSpread > 0.0F) {
-                    SpreadTracker.get(shooter).update(shooter, item);
+                    SpreadTracker.get(shooter).update(shooter, gunItem);
                 }
 
                 var count = GunModifierHelper.getProjectileAmount(data);
@@ -134,7 +133,7 @@ public class ServerPlayHandler {
 
                 for (int i = 0; i < count; i++) {
                     var factory = ProjectileManager.getInstance().getFactory(GunModifierHelper.getCurrentAmmoId(data));
-                    var projectileEntity = factory.create(world, shooter, heldItem, item, modifiedGun);
+                    var projectileEntity = factory.create(world, shooter, heldItem, gunItem, modifiedGun);
                     projectileEntity.setWeapon(heldItem);
                     projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
                     world.addFreshEntity(projectileEntity);
@@ -190,17 +189,17 @@ public class ServerPlayHandler {
                 }
 
                 if (!(shooter instanceof Player player && player.isCreative())) {
-                    tag = heldItem.getOrCreateTag();
-                    if (!tag.getBoolean("IgnoreAmmo")) {
+                    if (!Gun.isAmmoIgnored(heldItem)) {
                         int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.RECLAIMED.get(), heldItem);
                         if (level == 0 || shooter.level().random.nextInt(4 - Mth.clamp(level, 1, 2)) != 0) {
-                            tag.putInt(Tags.AMMO_COUNT, Math.max(0, tag.getInt(Tags.AMMO_COUNT) - 1));
+                            var remainingAmmo =  gunItem.getGunHandler().getAmmoAfterShoot(heldItem, shooter);
+                            Gun.setAmmo(heldItem, remainingAmmo);
                         }
                     }
                 }
 
                 if (shooter instanceof Player player)
-                    player.awardStat(Stats.ITEM_USED.get(item));
+                    player.awardStat(Stats.ITEM_USED.get(gunItem));
             }
         } else {
             world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(),
