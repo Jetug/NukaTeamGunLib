@@ -1,11 +1,16 @@
 package com.nukateam.ntgl.common.data.config.gun;
 
 import com.google.gson.Gson;
+import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.foundation.init.ModSounds;
+import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
 import com.nukateam.ntgl.common.util.annotation.Ignored;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.util.util.GunData;
@@ -26,6 +31,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
@@ -465,6 +471,25 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
      */
     private static boolean hasMoreAmmo(ItemStack first, ItemStack second) {
         return second.getDamageValue() < first.getDamageValue() && first.getDamageValue() < first.getMaxDamage();
+    }
+
+    public void playCockSound(LivingEntity player) {
+        if(!player.level().isClientSide) {
+            var cockSound = this.getSounds().getCock();
+            if (!player.isAlive()) return;
+
+            if (cockSound == null) cockSound = ModSounds.ITEM_PISTOL_COCK.get().getLocation();
+
+            var radius = Config.SERVER.reloadMaxDistance.get();
+            var messageSound = new S2CMessageGunSound(cockSound,
+                    SoundSource.PLAYERS, player,
+                    1.0F, 1.0F,
+                    false, true);
+
+            PacketHandler.getPlayChannel().sendToNearbyPlayers(
+                    () -> LevelLocation.create(player.level(), player.getX(), player.getY() + 1.0, player.getZ(), radius),
+                    messageSound);
+        }
     }
 
     @NotNull

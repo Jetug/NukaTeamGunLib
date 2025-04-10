@@ -8,6 +8,7 @@ import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.model.gun.*;
 import com.nukateam.ntgl.client.render.renderers.gun.*;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
+import com.nukateam.ntgl.common.base.utils.EquipTracker;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.constants.Animations;
@@ -24,6 +25,7 @@ import mod.azure.azurelib.core.object.PlayState;
 import net.minecraft.client.*;
 import net.minecraft.sounds.*;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.event.TickEvent;
@@ -55,6 +57,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     protected GunItem currentGun = null;
     protected int rate;
+    protected int equipTime;
     protected int fireDelay;
 
     public GunAnimator(ItemDisplayContext transformType, DynamicGeoItemRenderer<GunAnimator> renderer) {
@@ -101,6 +104,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             return;
         var data = getGunData(getStack());
         this.rate = GunModifierHelper.getRate(data);
+        this.equipTime = GunModifierHelper.getEquipTime(data);
         this.fireDelay = GunModifierHelper.getFireDelay(data);
 
         setupCycledAnimations();
@@ -150,7 +154,9 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 var data = shootingHandler.getShootingData(arm);
                 var animation = begin();
 
-                if (fireDelay > 0 && data.fireTimer > 0 && fireDelay != data.fireTimer) {
+                if(equipTime > 0 && entity instanceof Player player && EquipTracker.isEquiping(player, getArm())) {
+                    animation = getEquipAnimation(event);
+                } else if (fireDelay > 0 && data.fireTimer > 0 && fireDelay != data.fireTimer) {
                     animation = getChargingAnimation(event, data);
                 } else if (reloadHandler.isReloading(entity, arm) && isFirstPerson(transformType)) {
                     animation = getReloadingAnimation(event);
@@ -228,6 +234,12 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             var fireDelay = GunModifierHelper.getFireDelay(data);
             animationHelper.syncAnimation(event, Animations.CHARGE, fireDelay);
         }
+        return animation;
+    }
+
+    protected RawAnimation getEquipAnimation(AnimationState<GunAnimator> event) {
+        var animation = playGunAnim(EQUIP, LOOP);
+        animationHelper.syncAnimation(event, EQUIP, equipTime);
         return animation;
     }
 

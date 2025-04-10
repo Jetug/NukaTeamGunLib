@@ -28,8 +28,9 @@ public class SpreadTracker {
     private final Map<GunItem, Pair<MutableLong, MutableInt>> SPREAD_TRACKER_MAP = new HashMap<>();
 
     public void update(LivingEntity entity, GunItem item) {
-        Pair<MutableLong, MutableInt> entry = SPREAD_TRACKER_MAP.computeIfAbsent(item, gun -> Pair.of(new MutableLong(-1), new MutableInt()));
-        MutableLong lastFire = entry.getLeft();
+        var entry = SPREAD_TRACKER_MAP.computeIfAbsent(item, gun -> Pair.of(new MutableLong(-1), new MutableInt()));
+        var lastFire = entry.getLeft();
+
         if (lastFire.getValue() != -1) {
             MutableInt spreadCount = entry.getRight();
             long deltaTime = System.currentTimeMillis() - lastFire.getValue();
@@ -50,7 +51,7 @@ public class SpreadTracker {
     }
 
     public float getSpread(GunItem item) {
-        Pair<MutableLong, MutableInt> entry = SPREAD_TRACKER_MAP.get(item);
+        var entry = SPREAD_TRACKER_MAP.get(item);
         if (entry != null) {
             return (float) entry.getRight().getValue() / (float) Config.COMMON.projectileSpread.maxCount.get();
         }
@@ -71,7 +72,7 @@ public class SpreadTracker {
 
     @SubscribeEvent
     public static void onPlayerDisconnect(LivingDeathEvent event) {
-        var entity = (LivingEntity)event.getEntity();
+        var entity = event.getEntity();
         MinecraftServer server = entity.getServer();
         if (server != null) {
             server.execute(() -> TRACKER_MAP.remove(entity));

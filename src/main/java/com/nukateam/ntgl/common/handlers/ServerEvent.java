@@ -9,10 +9,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
-import static com.nukateam.ntgl.common.base.utils.ShootTracker.getShootTracker;
-import static com.nukateam.ntgl.common.network.ServerPlayHandler.reloadGun;
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.isAutoReloading;
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.isGun;
+import static com.nukateam.ntgl.common.base.utils.ShootTracker.*;
+import static com.nukateam.ntgl.common.network.ServerPlayHandler.*;
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class ServerEvent {

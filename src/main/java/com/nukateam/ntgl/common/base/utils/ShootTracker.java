@@ -51,8 +51,6 @@ public class ShootTracker {
      * of the weapon to determine when it's allowed to fire again.
      */
     public void putCooldown(ItemStack weapon, LivingEntity shooter) {
-//        var modifiedGun = item.getModifiedGun(weapon);
-//        int rate = GunEnchantmentHelper.getRate(weapon, modifiedGun);
         var data = new GunData(weapon, shooter);
         var rate = GunModifierHelper.getRate(data);
         this.cooldownMap = Pair.of(Util.getMillis(), rate * 50);

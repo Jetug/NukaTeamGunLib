@@ -6,6 +6,7 @@
     "maxAmmo": 6,
     "damage": 12.0,
     "reloadTime": 50,
+    "equipTime": 20,
     "reloadAmount": 1,
     "recoilAngle": 7.0,
     "recoilKick": 0.4,

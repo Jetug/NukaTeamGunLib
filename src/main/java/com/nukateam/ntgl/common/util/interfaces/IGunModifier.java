@@ -254,6 +254,10 @@ public interface IGunModifier {
         return reloadTime;
     }
 
+    default int modifyEquipTime(int equipTime, GunData data) {
+        return equipTime;
+    }
+
     default boolean modifyAutoReloading(boolean autoReload, GunData data) {
         return autoReload;
     }

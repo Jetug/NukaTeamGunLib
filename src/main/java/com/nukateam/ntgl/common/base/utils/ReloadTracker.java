@@ -364,30 +364,12 @@ public class ReloadTracker {
         RELOAD_TRACKER_MAP.remove(entity);
         reloadKey.setValue(entity, false);
         final var finalPlayer = entity;
-        DelayedTask.runAfter(4, () -> {
-            playCockSound(gun, finalPlayer);
-        });
-
+        DelayedTask.runAfter(4, () -> gun.playCockSound(finalPlayer));
         var oppositeStack = LivingEntityUtils.getItemInHand(entity, arm.getOpposite());
         var data = new GunData(oppositeStack, entity);
 
         if (arm == HumanoidArm.RIGHT && oppositeStack.getItem() instanceof GunItem && !GunModifierHelper.isWeaponFull(data)) {
             PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) entity, new S2CMessageReload(true, arm.getOpposite()));
-        }
-    }
-
-    private static void playCockSound(Gun gun, LivingEntity finalPlayer) {
-        var cockSound = gun.getSounds().getCock();
-        if (cockSound != null && finalPlayer.isAlive()) {
-            var radius = Config.SERVER.reloadMaxDistance.get();
-            var messageSound = new S2CMessageGunSound(cockSound, SoundSource.PLAYERS, finalPlayer,
-                    1.0F, 1.0F, false, true);
-            PacketHandler.getPlayChannel().sendToNearbyPlayers(() ->
-                            LevelLocation.create(finalPlayer.level(),
-                                    finalPlayer.getX(),
-                                    finalPlayer.getY() + 1.0,
-                                    finalPlayer.getZ(), radius),
-                            messageSound);
         }
     }
 }

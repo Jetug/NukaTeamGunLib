@@ -1,10 +1,9 @@
 package com.nukateam.ntgl.common.event;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.handler.ShootingHandler;
-import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.base.utils.EquipTracker;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -20,55 +19,20 @@ public class GunEventBus {
     @SubscribeEvent
     public static void preShoot(GunFireEvent.Pre event) {
         var entity = event.getEntity();
-        var level = event.getEntity().level();
         var heldItem = entity.getItemInHand(event.getHand());
-        var tag = heldItem.getTag();
 
-        if (heldItem.getItem() instanceof GunItem gunItem) {
-            var gun = gunItem.getModifiedGun(heldItem);
+        if (heldItem.getItem() instanceof GunItem) {
+            if(event.getEntity() instanceof Player player && EquipTracker.isEquiping(player, event.getArm())){
+                event.setCanceled(true);
+            }
 
-//            var tracker = ShootingHandler.get().getCooldownPercent();
-//            if (tracker.isOnCooldown(heldItem.getItem()) && gun.getGeneral().getFireModes() == FireMode.PULSE) {
-//                event.setCanceled(true);
-//            }
-            var data = new GunData(heldItem, entity);
-
-            if (heldItem.isDamageableItem() && tag != null) {
-                if (heldItem.getDamageValue() == (heldItem.getMaxDamage() - 1)) {
-                    level.playSound(
-                            entity, entity.blockPosition(),
-                            SoundEvents.ITEM_BREAK, SoundSource.PLAYERS,
-                            1.0F, 1.0F
-                    );
-
-
-                    var rate = GunModifierHelper.getRate(data);
-                    ShootingHandler.get().setCooldown(event.getEntity(), event.getArm(), rate);
-                    event.setCanceled(true);
-                }
-                //This is the Jam function
-                int maxDamage = heldItem.getMaxDamage();
-                int currentDamage = heldItem.getDamageValue();
-                if (currentDamage >= maxDamage / 1.5) {
-                    if (Math.random() >= 0.975) {
-                        event.getEntity().playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
-                        var rate = GunModifierHelper.getRate(data);
-                        int coolDown = rate * 10;
-                        if (coolDown > 60) {
-                            coolDown = 60;
-                        }
-                        ShootingHandler.get().setCooldown(event.getEntity(), event.getArm(), coolDown);
-                        event.setCanceled(true);
-                    }
-                } else if (tag.getInt("AmmoCount") >= 1) {
-                    broken(heldItem, level, entity);
-                }
+            if(isBroken(entity, heldItem)){
+                event.setCanceled(true);
             }
         }
     }
 
-    public GunEventBus() {
-    }
+    public GunEventBus() {}
 
     @SubscribeEvent
     public static void postShoot(GunFireEvent.Post event) {
@@ -77,17 +41,9 @@ public class GunEventBus {
         var heldItem = entity.getItemInHand(event.getHand());
         var tag = heldItem.getTag();
 
-        if (heldItem.getItem() instanceof GunItem gunItem) {
-//            Gun gun = gunItem.getModifiedGun(heldItem);
-//            if (gun.getAmmo().ejectsCasing() && tag != null) {
-//                if (tag.getInt("AmmoCount") >= 1 || entity.getAbilities().instabuild) {
-//                    //event.getEntity().level.playSound(entity, entity.blockPosition(), SoundInit.GARAND_PING.get(), SoundSource.MASTER, 3.0F, 1.0F);
-//                    ejectCasing(level, entity);
-//                }
-//            }
-
+        if (heldItem.getItem() instanceof GunItem) {
             if (heldItem.isDamageableItem() && tag != null) {
-                if (tag.getInt("AmmoCount") >= 1) {
+                if (Gun.hasAmmo(heldItem)) {
                     damageGun(heldItem, level, entity);
                 }
                 if (heldItem.getDamageValue() >= (heldItem.getMaxDamage() / 1.5)) {
@@ -97,12 +53,28 @@ public class GunEventBus {
         }
     }
 
-    public static void broken(ItemStack stack, Level level, LivingEntity player) {
-        int maxDamage = stack.getMaxDamage();
-        int currentDamage = stack.getDamageValue();
-        if (currentDamage >= (maxDamage - 2)) {
-            level.playSound(player, player.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
+    private static boolean isBroken(LivingEntity shooter, ItemStack heldItem) {
+        var level = shooter.level();
+
+        if (heldItem.isDamageableItem()) {
+            int maxDamage = heldItem.getMaxDamage();
+            int currentDamage = heldItem.getDamageValue();
+
+            if (currentDamage == (maxDamage - 1)) {
+                level.playSound(
+                        shooter, shooter.blockPosition(),
+                        SoundEvents.ITEM_BREAK, SoundSource.PLAYERS,
+                        1.0F, 1.0F
+                );
+                return true;
+            }
+
+            if (currentDamage == maxDamage) {
+                GunModifierHelper.getGun(heldItem).playCockSound(shooter);
+                return true;
+            }
         }
+        return false;
     }
 
     public static void damageGun(ItemStack stack, Level level, LivingEntity entity) {

@@ -44,6 +44,7 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String FIRE_TIMER = "FireTimer";
     public static final String FIRE_MODE = "FireMode";
     public static final String ONE_TIME_CHARGE = "OneTimeCharge";
+    public static final String EQUIP_TIME = "equip_time";
 
     int rate;
     int maxAmmo;
@@ -54,6 +55,7 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional int reloadStart = 0;
     @Optional int reloadTime = 1;
     @Optional int reloadEnd = 0;
+    @Optional int equipTime = 0;
     @Ignored GripType gripType = GripType.ONE_HANDED;
     @Ignored ResourceLocation reloadType = new ResourceLocation(Ntgl.MOD_ID, "gun_reload");
     @Optional LoadingType loadingType = LoadingType.MAGAZINE;
@@ -85,6 +87,7 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putInt      (RELOAD_START, this.reloadStart);
         tag.putInt      (RELOAD_TIME, this.reloadTime);
         tag.putInt      (RELOAD_END, this.reloadEnd);
+        tag.putInt      (EQUIP_TIME, this.equipTime);
         tag.putString   (LOADING_TYPE, this.loadingType.toString());
         tag.putBoolean  (AUTO_RELOAD, this.autoReload);
         tag.putString   (CATEGORY, this.category);
@@ -136,6 +139,9 @@ public class General implements INBTSerializable<CompoundTag> {
         }
         if (tag.contains(RELOAD_END, Tag.TAG_ANY_NUMERIC)) {
             this.reloadEnd = tag.getInt(RELOAD_END);
+        }
+        if (tag.contains(EQUIP_TIME, Tag.TAG_ANY_NUMERIC)) {
+            this.equipTime = tag.getInt(EQUIP_TIME);
         }
         if (tag.contains(LOADING_TYPE, Tag.TAG_STRING)) {
             this.loadingType = LoadingType.getType(tag.getString(LOADING_TYPE));
@@ -208,6 +214,7 @@ public class General implements INBTSerializable<CompoundTag> {
         if (this.reloadStart > 0 ) object.addProperty("reloadStart", this.reloadStart);
         if (this.reloadTime != 1) object.addProperty("reloadTime", this.reloadTime);
         if (this.reloadEnd > 0 ) object.addProperty("reloadEnd", this.reloadEnd);
+        if (this.equipTime > 0 ) object.addProperty("equipTime", this.equipTime);
         if (this.recoilAngle != 0.0F) object.addProperty("recoilAngle", this.recoilAngle);
         if (this.damage != 0.0F) object.addProperty("damage", this.damage);
         if (this.recoilKick != 0.0F) object.addProperty("recoilKick", this.recoilKick);
@@ -239,6 +246,7 @@ public class General implements INBTSerializable<CompoundTag> {
         general.reloadStart = this.reloadStart;
         general.reloadTime = this.reloadTime;
         general.reloadEnd = this.reloadEnd;
+        general.equipTime = this.equipTime;
         general.loadingType = this.loadingType;
         general.autoReload = this.autoReload;
         general.category = this.category;
@@ -328,6 +336,10 @@ public class General implements INBTSerializable<CompoundTag> {
 
     public int getReloadEnd() {
         return this.reloadEnd;
+    }
+
+    public int getEquipTime() {
+        return this.equipTime;
     }
 
     /**

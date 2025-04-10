@@ -44,6 +44,9 @@ public class ModSyncedDataKeys {
     public static final SyncedDataKey<LivingEntity, Boolean> RELOAD_START = registerBooleanKey("reload_start"  );
     public static final SyncedDataKey<LivingEntity, Boolean> RELOAD_END   = registerBooleanKey("reload_end"    );
 
+    public static final SyncedDataKey<LivingEntity, Boolean> EQUIP_RIGHT  = registerBooleanKey("equip_right" );
+    public static final SyncedDataKey<LivingEntity, Boolean> EQUIP_LEFT  = registerBooleanKey("equip_left" );
+
     public static SyncedDataKey<LivingEntity, Boolean> getReloadKey(InteractionHand hand){
         return switch (hand){
             case MAIN_HAND -> RELOADING_RIGHT;
@@ -61,6 +64,8 @@ public class ModSyncedDataKeys {
         FrameworkAPI.registerSyncedDataKey(CHARGING_LEFT);
         FrameworkAPI.registerSyncedDataKey(RELOAD_START);
         FrameworkAPI.registerSyncedDataKey(RELOAD_END);
+        FrameworkAPI.registerSyncedDataKey(EQUIP_RIGHT);
+        FrameworkAPI.registerSyncedDataKey(EQUIP_LEFT );
     }
 
     private static SyncedDataKey<LivingEntity, Boolean> registerBooleanKey(String name) {
