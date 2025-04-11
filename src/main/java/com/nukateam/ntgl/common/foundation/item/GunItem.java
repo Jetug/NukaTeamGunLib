@@ -2,14 +2,14 @@ package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.animators.GunAnimator;
-import com.nukateam.ntgl.common.base.handlers.*;
+import com.nukateam.ntgl.common.base.handlers.GunHandler;
+import com.nukateam.ntgl.common.network.managers.NetworkManager;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.render.renderers.gun.*;
-import com.nukateam.ntgl.common.network.managers.NetworkManager;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.debug.Debug;
@@ -41,13 +41,12 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
+    private final Lazy<DefaultGunRendererGeo> GUN_RENDERER = Lazy.of(() -> new DefaultGunRendererGeo());
     private Gun gun = new Gun();
-    private GunHandler gunHandler;
-    protected Supplier<DefaultGunRendererGeo> rendererFactory = DefaultGunRendererGeo::new;
+    private GunHandler gunHandler = new GunHandler();
+
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     protected IGunModifier[] modifiers;
-    protected BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<GunAnimator>, GunAnimator> animatorFactory = GunAnimator::new;
-
 
     public GunItem(Item.Properties properties, IGunModifier... modifiers) {
         super(properties);
@@ -61,23 +60,18 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
 
     @OnlyIn(Dist.CLIENT)
     public DynamicGeoItemRenderer getRenderer() {
-        return rendererFactory.get();
+        return GUN_RENDERER.get();
     }
 
     @Override
     public BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<GunAnimator>, GunAnimator> getAnimatorFactory() {
-        return animatorFactory;
+        return GunAnimator::new;
     }
 
     @Override
     public void setConfig(NetworkManager.Supplier<Gun> supplier) {
         this.gun = supplier.getConfig();
         gun.onCreated(getName());
-    }
-
-    @Override
-    public Supplier<Object> getRenderProvider() {
-        return renderProvider;
     }
 
     @Override
@@ -103,16 +97,6 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
         return gunHandler;
     }
 
-    public GunItem setRendererFactory(Supplier<DefaultGunRendererGeo> rendererFactory) {
-        this.rendererFactory = rendererFactory;
-        return this;
-    }
-
-    public GunItem setAnimatorFactory(BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<GunAnimator>, GunAnimator> animatorFactory) {
-        this.animatorFactory = animatorFactory;
-        return this;
-    }
-
     public GunItem setGunHandler(GunHandler gunHandler) {
         this.gunHandler = gunHandler;
         return this;
@@ -130,6 +114,12 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     public void setDefaultTag(CompoundTag tag){
         tag.putInt(AMMO_COUNT, getGun().getGeneral().getMaxAmmo());
     }
+
+    @Override
+    public Supplier<Object> getRenderProvider() {
+        return renderProvider;
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
         var data = new GunData(stack, null);
@@ -168,8 +158,8 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
                 int ammoCount = tagCompound.getInt(AMMO_COUNT);
                 tooltip.add(Component.translatable("info.ntgl.ammo",
                         ChatFormatting.WHITE.toString()
-                        + ammoCount + "/"
-                        + GunEnchantmentHelper.getAmmoCapacity(data)).withStyle(ChatFormatting.GRAY));
+                                + ammoCount + "/"
+                                + GunEnchantmentHelper.getAmmoCapacity(data)).withStyle(ChatFormatting.GRAY));
             }
         }
         //tooltip.add(Component.translatable("info.ntgl.attachment_help", new KeybindComponent("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH)).withStyle(ChatFormatting.YELLOW));

@@ -26,6 +26,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
+import static net.minecraftforge.registries.ForgeRegistries.*;
+
 /**
  * Author: MrCrayfish
  */
@@ -83,7 +85,7 @@ public class GunModifierHelper {
         if (data != null && data.gun.getItem() instanceof GunItem) {
             if (GunModifierHelper.getCurrentAmmo(data).isMagazineMode()) {
                 var id = GunModifierHelper.getCurrentAmmoId(data);
-                var item = ForgeRegistries.ITEMS.getValue(id);
+                var item = ITEMS.getValue(id);
 
                 finalMaxAmmo.set(item.getMaxDamage(new ItemStack(item)));
             }
@@ -97,6 +99,12 @@ public class GunModifierHelper {
         var autoReloading = new AtomicBoolean(getGeneral(getGun(data.gun)).isAutoReloading());
         forEachAttachment(data, (modifier -> autoReloading.set(modifier.modifyAutoReloading(autoReloading.get(), data))));
         return autoReloading.get();
+    }
+
+    public static boolean shouldRenderHud(GunData data) {
+        var renderHud = new AtomicBoolean(getGeneral(getGun(data.gun)).shouldRenderHud());
+        forEachAttachment(data, (modifier -> renderHud.set(modifier.modifyShouldRenderHud(renderHud.get(), data))));
+        return renderHud.get();
     }
 
     public static LoadingType getLoadingType(GunData data) {
@@ -193,8 +201,12 @@ public class GunModifierHelper {
         return getFirstAmmoItem(data);
     }
 
+    public static boolean isCurrentAmmo(GunData gunData, Item item) {
+        return getCurrentAmmoId(gunData).equals(ITEMS.getKey(item));
+    }
+
     public static Item getCurrentAmmoItem(GunData data) {
-        return ForgeRegistries.ITEMS.getValue(getCurrentAmmoId(data));
+        return ITEMS.getValue(getCurrentAmmoId(data));
     }
 
     public static AmmoType getCurrentAmmoType(GunData data) {
@@ -252,6 +264,13 @@ public class GunModifierHelper {
         var equipTime = getGeneral(getGun(data.gun)).getEquipTime();
         var finalEquipTime = new AtomicInteger(equipTime);
         forEachAttachment(data, (modifier -> finalEquipTime.set(modifier.modifyEquipTime(finalEquipTime.get(), data))));
+        return finalEquipTime.get();
+    }
+
+    public static int getAmmoPerShot(GunData data) {
+        var equipTime = getGeneral(getGun(data.gun)).getAmmoPerShot();
+        var finalEquipTime = new AtomicInteger(equipTime);
+        forEachAttachment(data, (modifier -> finalEquipTime.set(modifier.modifyAmmoPerShot(finalEquipTime.get(), data))));
         return finalEquipTime.get();
     }
 

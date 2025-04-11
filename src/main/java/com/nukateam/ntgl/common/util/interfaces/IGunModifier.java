@@ -258,8 +258,16 @@ public interface IGunModifier {
         return equipTime;
     }
 
+    default int modifyAmmoPerShot(int ammoPerShot, GunData data) {
+        return ammoPerShot;
+    }
+
     default boolean modifyAutoReloading(boolean autoReload, GunData data) {
         return autoReload;
+    }
+
+    default boolean modifyShouldRenderHud(boolean isRenderHud, GunData data) {
+        return isRenderHud;
     }
 
     default LoadingType modifyLoadingType(LoadingType loadingType, GunData data) {

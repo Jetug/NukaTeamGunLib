@@ -251,7 +251,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return null;
     }
 
+    @Deprecated
     public static boolean hasAttachmentEquipped(ItemStack stack, Gun gun, AttachmentType type) {
+        return hasAttachmentEquipped(stack, type);
+    }
+
+    public static boolean hasAttachmentEquipped(ItemStack stack, AttachmentType type) {
+        var gun = GunModifierHelper.getGun(stack);
         if (!gun.canAttachType(type, gun))
             return false;
 

@@ -192,8 +192,7 @@ public class ServerPlayHandler {
                     if (!Gun.isAmmoIgnored(heldItem)) {
                         int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.RECLAIMED.get(), heldItem);
                         if (level == 0 || shooter.level().random.nextInt(4 - Mth.clamp(level, 1, 2)) != 0) {
-                            var remainingAmmo =  gunItem.getGunHandler().getAmmoAfterShoot(heldItem, shooter);
-                            Gun.setAmmo(heldItem, remainingAmmo);
+                            gunItem.getGunHandler().handleAmmoAfterShoot(data);
                         }
                     }
                 }

@@ -44,7 +44,9 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String FIRE_TIMER = "FireTimer";
     public static final String FIRE_MODE = "FireMode";
     public static final String ONE_TIME_CHARGE = "OneTimeCharge";
-    public static final String EQUIP_TIME = "equip_time";
+    public static final String EQUIP_TIME = "EquipTime";
+    public static final String AMMO_PER_SHOT = "AmmoPerShot";
+    public static final String RENDER_HUD = "RenderHud";
 
     int rate;
     int maxAmmo;
@@ -55,12 +57,14 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional int reloadStart = 0;
     @Optional int reloadTime = 1;
     @Optional int reloadEnd = 0;
-    @Optional int equipTime = 0;
+    @Optional int equipTime = 1;
+    @Optional int ammoPerShot = 1;
     @Ignored GripType gripType = GripType.ONE_HANDED;
     @Ignored ResourceLocation reloadType = new ResourceLocation(Ntgl.MOD_ID, "gun_reload");
     @Optional LoadingType loadingType = LoadingType.MAGAZINE;
     @Optional String category = "pistol";
     @Optional boolean autoReload = false;
+    @Optional boolean renderHud = true;
     @Optional float recoilAngle;
     @Optional float recoilKick;
     @Optional float recoilDurationOffset;
@@ -88,8 +92,10 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putInt      (RELOAD_TIME, this.reloadTime);
         tag.putInt      (RELOAD_END, this.reloadEnd);
         tag.putInt      (EQUIP_TIME, this.equipTime);
+        tag.putInt      (AMMO_PER_SHOT, this.ammoPerShot);
         tag.putString   (LOADING_TYPE, this.loadingType.toString());
         tag.putBoolean  (AUTO_RELOAD, this.autoReload);
+        tag.putBoolean  (RENDER_HUD, this.renderHud);
         tag.putString   (CATEGORY, this.category);
         tag.putFloat    (RECOIL_ANGLE, this.recoilAngle);
         tag.putFloat    (DAMAGE, this.damage);
@@ -143,11 +149,17 @@ public class General implements INBTSerializable<CompoundTag> {
         if (tag.contains(EQUIP_TIME, Tag.TAG_ANY_NUMERIC)) {
             this.equipTime = tag.getInt(EQUIP_TIME);
         }
+        if (tag.contains(AMMO_PER_SHOT, Tag.TAG_ANY_NUMERIC)) {
+            this.ammoPerShot = tag.getInt(AMMO_PER_SHOT);
+        }
         if (tag.contains(LOADING_TYPE, Tag.TAG_STRING)) {
             this.loadingType = LoadingType.getType(tag.getString(LOADING_TYPE));
         }
         if (tag.contains(AUTO_RELOAD, Tag.TAG_BYTE)) {
             this.autoReload = tag.getBoolean(AUTO_RELOAD);
+        }
+        if (tag.contains(RENDER_HUD, Tag.TAG_BYTE)) {
+            this.renderHud = tag.getBoolean(RENDER_HUD);
         }
         if (tag.contains(CATEGORY, Tag.TAG_STRING)) {
             this.category = tag.getString(CATEGORY);
@@ -208,6 +220,7 @@ public class General implements INBTSerializable<CompoundTag> {
         object.addProperty("gripType", this.gripType.toString());
         object.addProperty("loadingType", this.loadingType.toString());
         object.addProperty("autoReload", this.autoReload);
+        object.addProperty("renderHud", this.renderHud);
         object.addProperty("reloadType", this.reloadType.toString());
         object.addProperty("maxAmmo", this.maxAmmo);
         if (this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
@@ -215,6 +228,7 @@ public class General implements INBTSerializable<CompoundTag> {
         if (this.reloadTime != 1) object.addProperty("reloadTime", this.reloadTime);
         if (this.reloadEnd > 0 ) object.addProperty("reloadEnd", this.reloadEnd);
         if (this.equipTime > 0 ) object.addProperty("equipTime", this.equipTime);
+        if (this.ammoPerShot > 0 ) object.addProperty("ammoPerShot", this.ammoPerShot);
         if (this.recoilAngle != 0.0F) object.addProperty("recoilAngle", this.recoilAngle);
         if (this.damage != 0.0F) object.addProperty("damage", this.damage);
         if (this.recoilKick != 0.0F) object.addProperty("recoilKick", this.recoilKick);
@@ -247,8 +261,10 @@ public class General implements INBTSerializable<CompoundTag> {
         general.reloadTime = this.reloadTime;
         general.reloadEnd = this.reloadEnd;
         general.equipTime = this.equipTime;
+        general.ammoPerShot = this.ammoPerShot;
         general.loadingType = this.loadingType;
         general.autoReload = this.autoReload;
+        general.renderHud = this.renderHud;
         general.category = this.category;
         general.recoilAngle = this.recoilAngle;
         general.damage = this.damage;
@@ -342,6 +358,10 @@ public class General implements INBTSerializable<CompoundTag> {
         return this.equipTime;
     }
 
+    public int getAmmoPerShot() {
+        return this.ammoPerShot;
+    }
+
     /**
      * @return Type of loading
      */
@@ -354,6 +374,13 @@ public class General implements INBTSerializable<CompoundTag> {
      */
     public boolean isAutoReloading() {
         return this.autoReload;
+    }
+
+    /**
+     * @return If weapon HUD should be rendered
+     */
+    public boolean shouldRenderHud() {
+        return this.renderHud;
     }
 
     /**

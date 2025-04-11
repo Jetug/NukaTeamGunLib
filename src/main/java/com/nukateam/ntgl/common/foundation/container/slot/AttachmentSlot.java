@@ -87,8 +87,8 @@ public class AttachmentSlot extends Slot {
     }
 
     @Override
-    public void set(ItemStack pStack) {
-        super.set(pStack);
+    public void set(ItemStack stack) {
+        super.set(stack);
         checkAmmoCount(weapon, player);
     }
 

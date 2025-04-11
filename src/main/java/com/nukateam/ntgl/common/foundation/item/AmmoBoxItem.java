@@ -1,5 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item;
 
+import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -39,22 +41,25 @@ public class AmmoBoxItem extends Item {
         this.maxWeight = maxWeight;
     }
 
-    public float getFullnessDisplay(ItemStack pStack) {
-        return (float)getContentWeight(pStack) / 64.0F;
+    public float getFullnessDisplay(ItemStack stack) {
+        return (float)getContentWeight(stack) / 64.0F;
     }
 
-    public boolean overrideStackedOnOther(ItemStack pStack, Slot pSlot, ClickAction pAction, Player pPlayer) {
-        if (pStack.getCount() == 1 && pAction == ClickAction.SECONDARY) {
+
+
+    @Override
+    public boolean overrideStackedOnOther(ItemStack stack, Slot pSlot, ClickAction pAction, Player pPlayer) {
+        if (stack.getCount() == 1 && pAction == ClickAction.SECONDARY) {
             var itemstack = pSlot.getItem();
 
             if (itemstack.isEmpty()) {
                 this.playRemoveOneSound(pPlayer);
-                removeOne(pStack).ifPresent((p_150740_) -> {
-                    add(pStack, pSlot.safeInsert(p_150740_));
+                removeOne(stack).ifPresent((p_150740_) -> {
+                    add(stack, pSlot.safeInsert(p_150740_));
                 });
             } else if (itemstack.getItem().canFitInsideContainerItems()) {
-                int i = (maxWeight - getContentWeight(pStack)) / getWeight(itemstack);
-                int j = add(pStack, pSlot.safeTake(itemstack.getCount(), i, pPlayer));
+                int i = (maxWeight - getContentWeight(stack)) / getWeight(itemstack);
+                int j = add(stack, pSlot.safeTake(itemstack.getCount(), i, pPlayer));
                 if (j > 0) {
                     this.playInsertSound(pPlayer);
                 }
@@ -66,17 +71,18 @@ public class AmmoBoxItem extends Item {
         }
     }
 
-    public boolean overrideOtherStackedOnMe(ItemStack pStack, ItemStack pOther, Slot pSlot, ClickAction pAction, Player pPlayer, SlotAccess pAccess) {
-        if (pStack.getCount() != 1) {
+    @Override
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack pOther, Slot pSlot, ClickAction pAction, Player pPlayer, SlotAccess pAccess) {
+        if (stack.getCount() != 1) {
             return false;
         } else if (pAction == ClickAction.SECONDARY && pSlot.allowModification(pPlayer)) {
             if (pOther.isEmpty()) {
-                removeOne(pStack).ifPresent((p_186347_) -> {
+                removeOne(stack).ifPresent((p_186347_) -> {
                     this.playRemoveOneSound(pPlayer);
                     pAccess.set(p_186347_);
                 });
             } else {
-                int i = add(pStack, pOther);
+                int i = add(stack, pOther);
                 if (i > 0) {
                     this.playInsertSound(pPlayer);
                     pOther.shrink(i);
@@ -89,6 +95,7 @@ public class AmmoBoxItem extends Item {
         }
     }
 
+    @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
         if (dropContents(itemstack, pPlayer)) {
@@ -100,16 +107,56 @@ public class AmmoBoxItem extends Item {
         }
     }
 
-    public boolean isBarVisible(ItemStack pStack) {
-        return getContentWeight(pStack) > 0;
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return getContentWeight(stack) > 0;
     }
 
-    public int getBarWidth(ItemStack pStack) {
-        return Math.min(1 + 12 * getContentWeight(pStack) / maxWeight, 13);
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return Math.min(1 + 12 * getContentWeight(stack) / maxWeight, 13);
     }
 
-    public int getBarColor(ItemStack pStack) {
+    @Override
+    public int getBarColor(ItemStack stack) {
         return BAR_COLOR;
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(@NotNull ItemStack stack) {
+        var list = NonNullList.<ItemStack>create();
+        var stream = getContents(stack);
+        Objects.requireNonNull(list);
+        stream.forEach(list::add);
+        return Optional.of(new BundleTooltip(list, getContentWeight(stack)));
+    }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack stack, Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        pTooltipComponents.add(Component.translatable("item.minecraft.bundle.fullness", new Object[]{getContentWeight(stack), 64}).withStyle(ChatFormatting.GRAY));
+    }
+
+    @Override
+    public void onDestroyed(@NotNull ItemEntity pItemEntity) {
+        ItemUtils.onContainerDestroyed(pItemEntity, getContents(pItemEntity.getItem()));
+    }
+
+//    public int getAmmoCount(GunData gunData, ItemStack ammoBox, Item item) {
+//        var result = 0;
+//        for(var ammo : getContents(ammoBox).toList()){
+//            if(GunModifierHelper.isCurrentAmmo(gunData, item))
+//                result += ammo.getCount();
+//        }
+//        return result;
+//    }
+//
+    public int getAmmoCount(ItemStack ammoBox, Item item) {
+        var result = 0;
+        for(var ammo : getContents(ammoBox).toList()){
+            if(ammo.getItem() == item)
+                result += ammo.getCount();
+        }
+        return result;
     }
 
     private int add(ItemStack pBundleStack, ItemStack insertedStack) {
@@ -148,33 +195,33 @@ public class AmmoBoxItem extends Item {
         }
     }
 
-    private static Optional<CompoundTag> getMatchingItem(ItemStack pStack, ListTag pList) {
+    private static Optional<CompoundTag> getMatchingItem(ItemStack stack, ListTag pList) {
         Optional var10000;
-        if (pStack.is(Items.BUNDLE)) {
+        if (stack.is(Items.BUNDLE)) {
             var10000 = Optional.empty();
         } else {
             Stream<Tag> var2 = pList.stream();
             Objects.requireNonNull(CompoundTag.class);
             var2 = var2.filter(CompoundTag.class::isInstance);
             Objects.requireNonNull(CompoundTag.class);
-            var10000 = var2.map(CompoundTag.class::cast).filter((p_186350_) -> ItemStack.isSameItemSameTags(ItemStack.of(p_186350_), pStack)).findFirst();
+            var10000 = var2.map(CompoundTag.class::cast).filter((p_186350_) -> ItemStack.isSameItemSameTags(ItemStack.of(p_186350_), stack)).findFirst();
         }
 
         return var10000;
     }
 
-    private int getWeight(ItemStack pStack) {
-        return maxWeight / pStack.getMaxStackSize();
+    private int getWeight(ItemStack stack) {
+        return maxWeight / stack.getMaxStackSize();
     }
 
-    private int getContentWeight(ItemStack pStack) {
-        return getContents(pStack).mapToInt((p_186356_) -> {
+    private int getContentWeight(ItemStack stack) {
+        return getContents(stack).mapToInt((p_186356_) -> {
             return getWeight(p_186356_) * p_186356_.getCount();
         }).sum();
     }
 
-    private Optional<ItemStack> removeOne(ItemStack pStack) {
-        CompoundTag compoundtag = pStack.getOrCreateTag();
+    private Optional<ItemStack> removeOne(ItemStack stack) {
+        CompoundTag compoundtag = stack.getOrCreateTag();
         if (!compoundtag.contains(TAG_ITEMS)) {
             return Optional.empty();
         } else {
@@ -187,7 +234,7 @@ public class AmmoBoxItem extends Item {
                 ItemStack itemstack = ItemStack.of(compoundtag1);
                 listtag.remove(0);
                 if (listtag.isEmpty()) {
-                    pStack.removeTagKey(TAG_ITEMS);
+                    stack.removeTagKey(TAG_ITEMS);
                 }
 
                 return Optional.of(itemstack);
@@ -195,8 +242,8 @@ public class AmmoBoxItem extends Item {
         }
     }
 
-    private boolean dropContents(ItemStack pStack, Player pPlayer) {
-        CompoundTag compoundtag = pStack.getOrCreateTag();
+    private boolean dropContents(ItemStack stack, Player pPlayer) {
+        CompoundTag compoundtag = stack.getOrCreateTag();
         if (!compoundtag.contains(TAG_ITEMS)) {
             return false;
         } else {
@@ -210,37 +257,21 @@ public class AmmoBoxItem extends Item {
                 }
             }
 
-            pStack.removeTagKey(TAG_ITEMS);
+            stack.removeTagKey(TAG_ITEMS);
             return true;
         }
     }
 
-    private static Stream<ItemStack> getContents(ItemStack pStack) {
-        CompoundTag compoundtag = pStack.getTag();
+    public static Stream<ItemStack> getContents(ItemStack stack) {
+        var compoundtag = stack.getTag();
         if (compoundtag == null) {
             return Stream.empty();
         } else {
-            ListTag listtag = compoundtag.getList(TAG_ITEMS, 10);
-            Stream<Tag> var10000 = listtag.stream();
+            var listTag = compoundtag.getList(TAG_ITEMS, 10);
+            var tagStream = listTag.stream();
             Objects.requireNonNull(CompoundTag.class);
-            return var10000.map(CompoundTag.class::cast).map(ItemStack::of);
+            return tagStream.map(CompoundTag.class::cast).map(ItemStack::of);
         }
-    }
-
-    public Optional<TooltipComponent> getTooltipImage(@NotNull ItemStack pStack) {
-        NonNullList<ItemStack> nonnulllist = NonNullList.create();
-        Stream<ItemStack> var10000 = getContents(pStack);
-        Objects.requireNonNull(nonnulllist);
-        var10000.forEach(nonnulllist::add);
-        return Optional.of(new BundleTooltip(nonnulllist, getContentWeight(pStack)));
-    }
-
-    public void appendHoverText(@NotNull ItemStack pStack, Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(Component.translatable("item.minecraft.bundle.fullness", new Object[]{getContentWeight(pStack), 64}).withStyle(ChatFormatting.GRAY));
-    }
-
-    public void onDestroyed(@NotNull ItemEntity pItemEntity) {
-        ItemUtils.onContainerDestroyed(pItemEntity, getContents(pItemEntity.getItem()));
     }
 
     private void playRemoveOneSound(Entity pEntity) {
