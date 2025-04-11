@@ -50,51 +50,40 @@ public class GunHud implements IGuiOverlay {
 
         if (minecraft.player == null) return;
         var player = minecraft.player;
-        var mainHandItem = player.getMainHandItem();
-        var offhandItem = player.getOffhandItem();
-        var mainHandCache = cache.get(InteractionHand.MAIN_HAND);
-        var offhandCache = cache.get(InteractionHand.OFF_HAND);
 
-        if (mainHandItem.getItem() instanceof GunItem) {
-            updateCache(mainHandCache, player, mainHandItem);
-            renderAmmoCounter(graphics, mainHandCache, mainHandItem, width + InputEvents.X, height + InputEvents.Y);
-        }
-
-        if (offhandItem.getItem() instanceof GunItem) {
-            updateCache(offhandCache, player, offhandItem);
-            renderAmmoCounter(graphics, offhandCache, offhandItem, OFFHAND_X_OFFSET - InputEvents.X, height - InputEvents.Y);
-        }
+        cache.forEach((hand, cache) -> {
+            var heldItem = player.getItemInHand(hand);
+            var x = hand == InteractionHand.OFF_HAND ? width + OFFHAND_X_OFFSET : width;
+            updateCache(cache, player, heldItem);
+            renderAmmoCounter(graphics, cache, heldItem, x, height);
+        });
     }
 
-    private static void renderAmmoCounter(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int width, int height) {
+    protected static void renderAmmoCounter(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int width, int height) {
         var mc = Minecraft.getInstance();
         if(!GunModifierHelper.shouldRenderHud(new GunData(stack, mc.player))) return;
-
-        int ammoCountColor = handCache.ammoCount < (handCache.maxAmmoCount * 0.25) ? LOW_AMMO_COLOR : hudColor;
+        var ammoCountColor = handCache.ammoCount < (handCache.maxAmmoCount * 0.25) ? LOW_AMMO_COLOR : hudColor;
         var currentAmmoCountText = CURRENT_AMMO_FORMAT.format(handCache.ammoCount);
-
-        drawLine(graphics, width - 70, height - 30, 27, 2);
-
         var poseStack = graphics.pose();
-        var font = mc.font;
 
-        renderCurrentAmmo(graphics, handCache, width, height, poseStack, font, currentAmmoCountText, ammoCountColor);
-        renderInventoryAmmo(graphics, handCache, width, height, poseStack, font);
+        renderCurrentAmmo(graphics, handCache, width, height, poseStack, mc.font, currentAmmoCountText, ammoCountColor);
+        drawLine(graphics, width - 70, height - 30, 27, 2);
+        renderInventoryAmmo(graphics, handCache, width, height, poseStack, mc.font);
 
         RenderSystem.enableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        renderFireModeIcon(graphics, handCache, width, height, font, currentAmmoCountText);
-        renderAmmoTypeIcon(graphics, handCache, width, height, font, currentAmmoCountText);
+        renderFireModeIcon(graphics, handCache, width, height, mc.font, currentAmmoCountText);
+        renderAmmoTypeIcon(graphics, handCache, width, height, mc.font, currentAmmoCountText);
     }
 
-    private static void drawLine(GuiGraphics graphics, int x, int y, int width, int height) {
+    protected static void drawLine(GuiGraphics graphics, int x, int y, int width, int height) {
         graphics.fill(x, y, x + width, y + height, 0xFFFFFFFF);
     }
 
-    private static void renderCurrentAmmo(GuiGraphics graphics, GunHudCache handCache, int width, int height, PoseStack poseStack, Font font, String currentAmmoCountText, int ammoCountColor) {
+    protected static void renderCurrentAmmo(GuiGraphics graphics, GunHudCache handCache, int width, int height, PoseStack poseStack, Font font, String currentAmmoCountText, int ammoCountColor) {
         poseStack.pushPose();
         {
             poseStack.scale(1.5f, 1.5f, 1);
@@ -106,7 +95,7 @@ public class GunHud implements IGuiOverlay {
         poseStack.popPose();
     }
 
-    private static void renderInventoryAmmo(GuiGraphics graphics, GunHudCache handCache, int width, int height, PoseStack poseStack, Font font) {
+    protected static void renderInventoryAmmo(GuiGraphics graphics, GunHudCache handCache, int width, int height, PoseStack poseStack, Font font) {
         poseStack.pushPose();
         {
             poseStack.scale(COUNTER_SCALE, COUNTER_SCALE, 1);
@@ -121,7 +110,7 @@ public class GunHud implements IGuiOverlay {
         poseStack.popPose();
     }
 
-    private static void renderFireModeIcon(GuiGraphics graphics, GunHudCache handCache, int width, int height,
+    protected static void renderFireModeIcon(GuiGraphics graphics, GunHudCache handCache, int width, int height,
                                            Font font, String currentAmmoCountText) {
         var fireMode = handCache.fireMode;
         var icon = fireMode.getIcon();
@@ -137,7 +126,7 @@ public class GunHud implements IGuiOverlay {
                 16, 16);
     }
 
-    private static void renderAmmoTypeIcon(GuiGraphics graphics, GunHudCache handCache, int width, int height, Font font, String currentAmmoCountText) {
+    protected static void renderAmmoTypeIcon(GuiGraphics graphics, GunHudCache handCache, int width, int height, Font font, String currentAmmoCountText) {
         var ammoType = handCache.ammoType;
         var icon = ammoType.getIcon();
         var textWidth =  font.width(currentAmmoCountText) * 1.5;
@@ -152,14 +141,14 @@ public class GunHud implements IGuiOverlay {
                 16, 16);
     }
 
-    private static int getIconX(GunHudCache handCache, double textWidth) {
+    protected static int getIconX(GunHudCache handCache, double textWidth) {
         if (handCache.hand == InteractionHand.OFF_HAND){
             return ICON_X - (int)textWidth - 20;
         }
         return ICON_X;
     }
 
-    private static void updateCache(GunHudCache handCache, LocalPlayer player, ItemStack stack) {
+    protected static void updateCache(GunHudCache handCache, LocalPlayer player, ItemStack stack) {
         if ((System.currentTimeMillis() - handCache.checkAmmoTimestamp) > 200) {
             var data = new GunData(stack, player);
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
@@ -176,7 +165,7 @@ public class GunHud implements IGuiOverlay {
         }
     }
 
-    private static int getInventoryAmmoCount(ItemStack stack, Inventory inventory) {
+    protected static int getInventoryAmmoCount(ItemStack stack, Inventory inventory) {
         var inventoryAmmoCount = 0;
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             var gunData = new GunData(stack, Minecraft.getInstance().player);
