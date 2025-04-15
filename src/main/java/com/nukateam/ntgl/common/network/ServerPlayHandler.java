@@ -236,7 +236,7 @@ public class ServerPlayHandler {
         if (fireSound != null) {
             return fireSound;
         }
-        return modifiedGun.getSounds().getFire();
+        return GunModifierHelper.getFireSound(data);
     }
 
     private static ResourceLocation getPreFireSound(ItemStack stack, Gun modifiedGun) {

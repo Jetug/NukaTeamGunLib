@@ -1,10 +1,9 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.client.util.BulletTrail;
-import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
+import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.client.render.GunRenderType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;

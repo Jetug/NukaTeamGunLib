@@ -32,6 +32,10 @@ public interface IGunModifier {
         return volume;
     }
 
+    default ResourceLocation modifyFireSound(ResourceLocation sound, GunData data) {
+        return sound;
+    }
+
     /**
      * Determines if the fire sound should be the silenced version. If at one attachment on the
      * weapon has this set to true, it will be silenced regardless if other attachments specify false.

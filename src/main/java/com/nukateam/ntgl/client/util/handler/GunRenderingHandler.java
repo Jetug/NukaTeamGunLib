@@ -6,11 +6,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.util.util.PropertyHelper;
-import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
+import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
-import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.base.properties.SightAnimation;
 import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItemBase;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -56,7 +54,6 @@ import java.util.*;
 
 import static com.nukateam.ntgl.client.util.util.PropertyHelper.*;
 import static com.nukateam.ntgl.client.event.InputEvents.*;
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canRenderInOffhand;
 import static com.nukateam.ntgl.common.util.util.GunModifierHelper.isOneHanded;
 
 public class GunRenderingHandler {

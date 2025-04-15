@@ -6,7 +6,7 @@ import com.mojang.math.Axis;
 import com.nukateam.ntgl.*;
 import com.nukateam.ntgl.client.event.InputEvents;
 import com.nukateam.ntgl.client.render.screen.widget.*;
-import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
+import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
@@ -31,8 +31,7 @@ import net.minecraftforge.fml.ModList;
 import org.lwjgl.glfw.GLFW;
 import java.util.*;
 
-import static com.nukateam.ntgl.client.util.util.ModelRenderUtil.*;
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
+import static com.nukateam.ntgl.client.util.util.render.ModelRenderUtil.*;
 import static net.minecraft.network.chat.Component.*;
 
 /**

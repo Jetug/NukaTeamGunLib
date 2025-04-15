@@ -108,6 +108,12 @@ public class GunModifierHelper {
         return autoReloading.get();
     }
 
+    public static ResourceLocation getFireSound(GunData data) {
+        var fireSound = new AtomicReference<>(getGun(data.gun).getSounds().getFire());
+        forEachAttachment(data, (modifier -> fireSound.set(modifier.modifyFireSound(fireSound.get(), data))));
+        return fireSound.get();
+    }
+
     public static boolean shouldRenderHud(GunData data) {
         var renderHud = new AtomicBoolean(getGeneral(getGun(data.gun)).shouldRenderHud());
         forEachAttachment(data, (modifier -> renderHud.set(modifier.modifyShouldRenderHud(renderHud.get(), data))));

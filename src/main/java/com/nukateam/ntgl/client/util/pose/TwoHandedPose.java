@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.util.pose;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
-import com.nukateam.ntgl.client.util.util.ModelRenderUtil;
+import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
