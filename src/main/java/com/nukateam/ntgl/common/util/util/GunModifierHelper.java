@@ -16,9 +16,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -74,9 +74,16 @@ public class GunModifierHelper {
         return gun.getGeneral();
     }
 
-    public static Map<AttachmentType, ArrayList<Modules.Attachment>> getGunAttachments(ItemStack data) {
-        var gun = getGun(data);
+    public static Map<AttachmentType, ArrayList<Modules.Attachment>> getAttachmentTypes(GunData data) {
+        var gun = getGun(data.gun);
         return gun.getModules().getAttachments();
+    }
+
+    public static ArrayList<AttachmentType> getSortedAttachmentTypes(GunData data) {
+        var attachments = getAttachmentTypes(data);
+        var sortedTypes = new ArrayList<>(attachments.keySet());
+        sortedTypes.sort(Comparator.comparing(AttachmentType::toString));
+        return sortedTypes;
     }
 
     public static int getMaxAmmo(GunData data) {
@@ -165,6 +172,22 @@ public class GunModifierHelper {
         var chargeTime = new AtomicInteger(getGeneral(getGun(data.gun)).getFireDelay());
         forEachAttachment(data, (modifier -> chargeTime.set(modifier.modifyFireDelay(chargeTime.get(), data))));
         return chargeTime.get();
+    }
+
+    public static Set<FuelType> getFuelTypes(GunData data) {
+        var keys = getGun(data.gun).getFuel().keySet();
+        var fuel = new AtomicReference<>(keys);
+        forEachAttachment(data, (modifier -> fuel.set(modifier.modifyFuel(fuel.get(), data))));
+        return fuel.get();
+    }
+
+    public static Integer getMaxFuel(GunData data, FuelType type) {
+        var fuel = getGun(data.gun).getFuel().get(type);
+        int max = fuel != null ? fuel.getMax() : 0;
+        var result = new AtomicReference<>(max);
+
+        forEachAttachment(data, (modifier -> result.set(modifier.modifyMaxFuel(result.get(), type, data))));
+        return result.get();
     }
 
     public static boolean needsFullCharge(GunData data) {

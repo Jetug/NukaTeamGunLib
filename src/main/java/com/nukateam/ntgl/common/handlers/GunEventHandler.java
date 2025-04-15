@@ -1,8 +1,9 @@
-package com.nukateam.ntgl.common.event;
+package com.nukateam.ntgl.common.handlers;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.utils.EquipTracker;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.sounds.SoundEvents;
@@ -15,7 +16,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class GunEventBus {
+public class GunEventHandler {
     @SubscribeEvent
     public static void preShoot(GunFireEvent.Pre event) {
         var entity = event.getEntity();
@@ -32,7 +33,7 @@ public class GunEventBus {
         }
     }
 
-    public GunEventBus() {}
+    public GunEventHandler() {}
 
     @SubscribeEvent
     public static void postShoot(GunFireEvent.Post event) {

@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
  */
 public class BackpackHelper {
     public static AmmoContext findAmmo(Player player, ResourceLocation id) {
-        var inventory = ((BackpackedInventoryAccess) player).getBackpackedInventory();
+        var inventory = ((BackpackedInventoryAccess) player).backpacked$GetBackpackInventory();
 
         if (inventory == null)
             return AmmoContext.NONE;
@@ -28,7 +28,7 @@ public class BackpackHelper {
     }
 
     public static AmmoContext findMagazine(Player player, ResourceLocation id) {
-        var inventory = ((BackpackedInventoryAccess) player).getBackpackedInventory();
+        var inventory = ((BackpackedInventoryAccess) player).backpacked$GetBackpackInventory();
 
         if (inventory == null)
             return AmmoContext.NONE;

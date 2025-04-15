@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.data.config.Fuel;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
@@ -55,7 +56,6 @@ import static com.nukateam.ntgl.client.event.ClientHandler.*;
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
     protected General general = new General();
-//    protected Sounds sounds = new Sounds();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected Display display = new Display();
     protected Modules modules = new Modules();
@@ -63,10 +63,23 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Ignored
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
     protected HashMap<ResourceLocation, Ammo> progectiles = new HashMap<>();
+    protected HashMap<FuelType, Fuel> fuel = new HashMap<>();
 
     public static boolean isAmmoIgnored(ItemStack stack) {
         var tag = stack.getOrCreateTag();
         return tag.contains("IgnoreAmmo", Tag.TAG_BYTE);
+    }
+
+    public HashMap<ResourceLocation, Ammo> getProgectiles() {
+        return progectiles;
+    }
+
+    public HashMap<FuelType, Fuel> getFuel() {
+        return fuel;
+    }
+
+    public Fuel getFuelConfig(FuelType type) {
+        return fuel.get(type);
     }
 
     public General getGeneral() {
@@ -123,22 +136,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
         tag.put("Textures", NbtUtils.serializeStringMap(this.textures));
+        tag.put("Projectiles", NbtUtils.serializeMap(this.progectiles));
+        tag.put("SecondaryAmmo", NbtUtils.serializeMap(this.fuel));
         return tag;
-    }
-
-    private HashMap<String, ResourceLocation> deserializeSounds(CompoundTag tag){
-        var result = new HashMap<String, ResourceLocation>();
-        for (var key: tag.getAllKeys()) {
-            if(tag.contains(key, Tag.TAG_STRING)) {
-                result.put(key, createSound(tag, key));
-            }
-        }
-        return result;
-    }
-
-    private ResourceLocation createSound(CompoundTag tag, String key) {
-        var sound = tag.getString(key);
-        return sound.isEmpty() ? null : new ResourceLocation(sound);
     }
 
     @Override
@@ -158,6 +158,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains("Textures", Tag.TAG_COMPOUND)) {
             this.textures = NbtUtils.deserializeRLMap(tag.getCompound("Textures"));
         }
+        if (tag.contains("Projectiles", Tag.TAG_COMPOUND)) {
+            this.progectiles = NbtUtils.deserializeProjectileMap(tag.getCompound("Projectiles"));
+        }
+        if (tag.contains("SecondaryAmmo", Tag.TAG_COMPOUND)) {
+            this.fuel = NbtUtils.deserializeFuelMap(tag.getCompound("SecondaryAmmo"));
+        }
     }
 
     public JsonObject toJsonObject() {
@@ -168,6 +174,21 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modules", this.modules.toJsonObject());
         return object;
+    }
+
+    private HashMap<String, ResourceLocation> deserializeSounds(CompoundTag tag){
+        var result = new HashMap<String, ResourceLocation>();
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_STRING)) {
+                result.put(key, createSound(tag, key));
+            }
+        }
+        return result;
+    }
+
+    private ResourceLocation createSound(CompoundTag tag, String key) {
+        var sound = tag.getString(key);
+        return sound.isEmpty() ? null : new ResourceLocation(sound);
     }
 
     public static Gun create(ResourceLocation id, CompoundTag tag) {
@@ -202,8 +223,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public Gun copy() {
         var gun = new Gun();
         gun.general = this.general.copy();
-        gun.sounds = (HashMap<String, ResourceLocation>) this.sounds.clone();
-        gun.textures = (HashMap<String, ResourceLocation>) this.textures.clone();
+        gun.sounds = (HashMap<String, ResourceLocation>)    this.sounds.clone();
+        gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
+        gun.progectiles = (HashMap<ResourceLocation, Ammo>) this.progectiles.clone();
+        gun.fuel = (HashMap<FuelType, Fuel>) this.fuel.clone();
         gun.display = this.display.copy();
         gun.modules = this.modules.copy();
         return gun;

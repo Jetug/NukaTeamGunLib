@@ -203,12 +203,12 @@ public class GunRenderingHandler {
             return;
 
         // Test if the gun has a scope
-        LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
-        ItemStack heldItem = player.getMainHandItem();
+        var player = Objects.requireNonNull(Minecraft.getInstance().player);
+        var heldItem = player.getMainHandItem();
         if (!(heldItem.getItem() instanceof GunItem gunItem))
             return;
 
-        Gun modifiedGun = gunItem.getModifiedGun(heldItem);
+        var modifiedGun = gunItem.getModifiedGun(heldItem);
         if (!modifiedGun.canAimDownSight())
             return;
 
@@ -218,12 +218,12 @@ public class GunRenderingHandler {
 
         // Calculate the time curve
         double time = AimingHandler.get().getNormalisedAdsProgress();
-        SightAnimation sightAnimation = PropertyHelper.getSightAnimations(heldItem, modifiedGun);
+        var sightAnimation = PropertyHelper.getSightAnimations(heldItem, modifiedGun);
         time = sightAnimation.getViewportCurve().apply(time);
 
         // Apply the new FOV
-        double viewportFov = PropertyHelper.getViewportFov(heldItem, modifiedGun);
-        double newFov = viewportFov > 0 ? viewportFov : event.getFOV(); // Backwards compatibility
+        var viewportFov = PropertyHelper.getViewportFov(heldItem, modifiedGun);
+        var newFov = viewportFov > 0 ? viewportFov : event.getFOV(); // Backwards compatibility
         event.setFOV(Mth.lerp(time, event.getFOV(), newFov));
     }
 
@@ -685,27 +685,30 @@ public class GunRenderingHandler {
         this.prevImmersiveRoll = this.immersiveRoll;
         this.prevFallSway = this.fallSway;
 
-        Minecraft mc = Minecraft.getInstance();
+        var mc = Minecraft.getInstance();
         if (mc.player == null)
             return;
 
-        ItemStack heldItem = mc.player.getMainHandItem();
-        float targetAngle = heldItem.getItem() instanceof GunItem || !Config.CLIENT.display.restrictCameraRollToWeapons.get() ? mc.player.input.leftImpulse : 0F;
-        float speed = mc.player.input.leftImpulse != 0 ? 0.1F : 0.15F;
+        var heldItem = mc.player.getMainHandItem();
+        var targetAngle = heldItem.getItem() instanceof GunItem || !Config.CLIENT.display.restrictCameraRollToWeapons.get() ? mc.player.input.leftImpulse : 0F;
+        var speed = mc.player.input.leftImpulse != 0 ? 0.1F : 0.15F;
         this.immersiveRoll = Mth.lerp(speed, this.immersiveRoll, targetAngle);
 
-        float deltaY = (float) Mth.clamp((mc.player.yo - mc.player.getY()), -1.0, 1.0);
+        var deltaY = (float) Mth.clamp((mc.player.yo - mc.player.getY()), -1.0, 1.0);
         deltaY *= 1.0 - AimingHandler.get().getNormalisedAdsProgress();
         deltaY *= 1.0 - (Mth.abs(mc.player.getXRot()) / 90.0F);
         this.fallSway = Mth.approach(this.fallSway, deltaY * 60F * Config.CLIENT.display.swaySensitivity.get().floatValue(), 10.0F);
 
-        float intensity = mc.player.isSprinting() ? 0.75F : 1.0F;
+        var intensity = mc.player.isSprinting() ? 0.75F : 1.0F;
         this.sprintIntensity = Mth.approach(this.sprintIntensity, intensity, 0.1F);
     }
 
     @SubscribeEvent
     public void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
-        if (Config.CLIENT.display.cameraRollEffect.get()) {
+        if (Config.CLIENT.display.cameraRollEffect.get()
+                && this.prevImmersiveRoll != 0
+                && this.immersiveRoll != 0
+        ){
             float roll = (float) Mth.lerp(event.getPartialTick(), this.prevImmersiveRoll, this.immersiveRoll);
             roll = (float) Math.sin((roll * Math.PI) / 2.0);
             roll *= Config.CLIENT.display.cameraRollAngle.get().floatValue();

@@ -143,17 +143,11 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 
 //        var attachments = getGunAttachments(getGun());
 
-        for(var i = 0; i < weaponInventory.getContainerSize(); i++){
+        for(int i = 0; i < weaponInventory.getContainerSize(); i++) {
             var slotPos = getAttachmentBgPos(i);
-
             var slot = this.menu.getSlot(i);
-            if(slot instanceof AttachmentSlot attachmentSlot && !attachmentSlot.hasItem()) {
-                graphics.blit(SLOT, slotPos.x, slotPos.y, 0, 0, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE);
-                graphics.blit(attachmentSlot.getType().getIcon(),
-                        slotPos.x + 1, slotPos.y + 1,
-                        0, 0,
-                        ICON_SIZE, ICON_SIZE,
-                        ICON_SIZE, ICON_SIZE);
+            if(slot instanceof AttachmentSlot attachmentSlot) {
+                renderAttachmentSlot(graphics, attachmentSlot, slotPos);
             }
         }
 //        var id = 0;
@@ -186,6 +180,19 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 //                graphics.renderItem(attachments.get(i), slotPos.x, slotPos.y);
 //            }
 //        }
+    }
+
+    private static void renderAttachmentSlot(GuiGraphics graphics, AttachmentSlot attachmentSlot, Pos2I slotPos) {
+        graphics.blit(SLOT, slotPos.x, slotPos.y, 0, 0, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE, SLOT_SIZE);
+        if (!attachmentSlot.hasItem()) {
+            graphics.blit(
+                    attachmentSlot.getType().getIcon(),
+                    slotPos.x + 1, slotPos.y + 1,
+                    0, 0,
+                    ICON_SIZE, ICON_SIZE,
+                    ICON_SIZE, ICON_SIZE
+            );
+        }
     }
 
     private final ArrayList<SlotButton> attachmentButtons = new ArrayList<>();

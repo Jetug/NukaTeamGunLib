@@ -18,5 +18,6 @@ public class JsonDeserializers {
     public static final JsonDeserializer<ResourceLocation> RESOURCE_LOCATION = (json, typeOfT, context) -> new ResourceLocation(json.getAsString());
     public static final JsonDeserializer<GripType> GRIP_TYPE = (json, typeOfT, context) -> GripType.getType(ResourceLocation.tryParse(json.getAsString()));
     public static final JsonDeserializer<LoadingType> LOADING_TYPE = (json, typeOfT, context) -> LoadingType.getType(json.getAsString());
+    public static final JsonDeserializer<FuelType> SECONDARY_AMMO_TYPE = (json, typeOfT, context) -> FuelType.getType(json.getAsString());
     public static final JsonDeserializer<Easings> EASING = (json, typeOfT, context) -> Easings.byName(json.getAsString());
 }

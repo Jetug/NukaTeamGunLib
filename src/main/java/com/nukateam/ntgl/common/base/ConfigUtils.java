@@ -33,10 +33,11 @@ public class ConfigUtils {
     private static final int FILE_TYPE_LENGTH_VALUE = ".json".length();
 
     public static final Gson GSON_INSTANCE = Util.make(() -> {
-        GsonBuilder builder = new GsonBuilder();
+        var builder = new GsonBuilder();
         builder.registerTypeAdapter(ResourceLocation.class, JsonDeserializers.RESOURCE_LOCATION);
         builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
         builder.registerTypeAdapter(LoadingType.class, JsonDeserializers.LOADING_TYPE);
+        builder.registerTypeAdapter(FuelType.class, JsonDeserializers.SECONDARY_AMMO_TYPE);
         builder.registerTypeAdapter(FireMode.class, JsonDeserializers.FIRE_MODE);
         builder.registerTypeAdapter(AttachmentType.class, JsonDeserializers.ATTACHMENT_TYPE);
         builder.registerTypeAdapter(AmmoType.class, JsonDeserializers.AMMO_TYPE);

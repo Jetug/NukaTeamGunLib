@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.foundation.item;
 import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.common.base.handlers.GunHandler;
+import com.nukateam.ntgl.common.base.utils.FuelUtils;
 import com.nukateam.ntgl.common.network.managers.NetworkManager;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.util.util.*;
@@ -126,43 +127,62 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
         var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmoId(data));
 
         if (ammo != null) {
-            tooltip.add(Component.translatable("info.ntgl.ammo_type", Component.translatable(ammo.getDescriptionId()).withStyle(ChatFormatting.WHITE)).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("info.ntgl.ammo_type",
+                            Component.translatable(ammo.getDescriptionId()).withStyle(ChatFormatting.WHITE))
+                    .withStyle(ChatFormatting.GRAY));
         }
 
+        var tagCompound = stack.getOrCreateTag();
+        addAditionalDamage(tooltip, tagCompound, data);
+        addAmmo(tooltip, tagCompound, data);
+        addFuel(tooltip, tagCompound, data);
+        //tooltip.add(Component.translatable("info.ntgl.attachment_help", new KeybindComponent("key.ntgl.attachments")
+        // .getString().toUpperCase(Locale.ENGLISH))
+        // .withStyle(ChatFormatting.YELLOW));
+    }
+
+    private static void addFuel(List<Component> tooltip, CompoundTag tagCompound, GunData gunData) {
+        var allFuel = GunModifierHelper.getFuelTypes(gunData);
+        for (var fuelType : allFuel) {
+            int fuelAmount = FuelUtils.getFuel(gunData.gun, fuelType);
+            tooltip.add(Component.translatable(fuelType.getDescriptionId(),
+                    ChatFormatting.WHITE.toString()
+                            + fuelAmount + "/"
+                            + GunModifierHelper.getMaxFuel(gunData, fuelType)).withStyle(ChatFormatting.GRAY));
+        }
+    }
+
+    private static void addAmmo(List<Component> tooltip, CompoundTag tagCompound, GunData gunData) {
+        if (tagCompound.getBoolean("IgnoreAmmo")) {
+            tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
+        } else {
+            int ammoCount = tagCompound.getInt(AMMO_COUNT);
+            tooltip.add(Component.translatable("info.ntgl.ammo",
+                    ChatFormatting.WHITE.toString()
+                            + ammoCount + "/"
+                            + GunEnchantmentHelper.getAmmoCapacity(gunData)).withStyle(ChatFormatting.GRAY));
+        }
+    }
+
+    private static void addAditionalDamage(List<Component> tooltip, CompoundTag tagCompound, GunData gunData) {
         var additionalDamageText = "";
-        var tagCompound = stack.getTag();
 
-        if (tagCompound != null) {
-            if (tagCompound.contains("AdditionalDamage", Tag.TAG_ANY_NUMERIC)) {
-                var additionalDamage = tagCompound.getFloat("AdditionalDamage");
-                additionalDamage += GunModifierHelper.getAdditionalDamage(data);
+        if (tagCompound.contains("AdditionalDamage", Tag.TAG_ANY_NUMERIC)) {
+            var additionalDamage = tagCompound.getFloat("AdditionalDamage");
+            additionalDamage += GunModifierHelper.getAdditionalDamage(gunData);
 
-                if (additionalDamage > 0) {
-                    additionalDamageText = ChatFormatting.GREEN + " +" + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
-                } else if (additionalDamage < 0) {
-                    additionalDamageText = ChatFormatting.RED + " " + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
-                }
+            if (additionalDamage > 0) {
+                additionalDamageText = ChatFormatting.GREEN + " +" + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
+            } else if (additionalDamage < 0) {
+                additionalDamageText = ChatFormatting.RED + " " + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
             }
         }
 
-        var damage = GunModifierHelper.getModifiedDamage(data);
-        damage = GunModifierHelper.getModifiedProjectileDamage(data, damage);
-        damage = GunEnchantmentHelper.getAcceleratorDamage(stack, damage);
+        var damage = GunModifierHelper.getModifiedDamage(gunData);
+        damage = GunModifierHelper.getModifiedProjectileDamage(gunData, damage);
+        damage = GunEnchantmentHelper.getAcceleratorDamage(gunData.gun, damage);
         tooltip.add(Component.translatable("info.ntgl.damage",
                 ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage) + additionalDamageText).withStyle(ChatFormatting.GRAY));
-
-        if (tagCompound != null) {
-            if (tagCompound.getBoolean("IgnoreAmmo")) {
-                tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
-            } else {
-                int ammoCount = tagCompound.getInt(AMMO_COUNT);
-                tooltip.add(Component.translatable("info.ntgl.ammo",
-                        ChatFormatting.WHITE.toString()
-                                + ammoCount + "/"
-                                + GunEnchantmentHelper.getAmmoCapacity(data)).withStyle(ChatFormatting.GRAY));
-            }
-        }
-        //tooltip.add(Component.translatable("info.ntgl.attachment_help", new KeybindComponent("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH)).withStyle(ChatFormatting.YELLOW));
     }
 
 //    @Override

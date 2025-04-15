@@ -4,10 +4,12 @@ import com.nukateam.ntgl.common.base.GunModifiers;
 import com.nukateam.ntgl.common.base.holders.FireMode;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.base.holders.LoadingType;
+import com.nukateam.ntgl.common.base.holders.FuelType;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
 import com.nukateam.ntgl.common.util.util.GunData;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -272,5 +274,13 @@ public interface IGunModifier {
 
     default LoadingType modifyLoadingType(LoadingType loadingType, GunData data) {
         return loadingType;
+    }
+
+    default Set<FuelType> modifyFuel(Set<FuelType> secondaryAmmo, GunData data) {
+        return secondaryAmmo;
+    }
+
+    default int modifyMaxFuel(int max, FuelType type, GunData data) {
+        return max;
     }
 }

@@ -19,6 +19,11 @@
       "minecraft:stick"
     ]
   },
+  "fuel": {
+    "ntgl:burnable":{
+      "max": 1000
+    }
+  },
   "textures": {
     "default" : "ntgl:classic10mm",
     "blue"    : "ntgl:classic10mm_blue",

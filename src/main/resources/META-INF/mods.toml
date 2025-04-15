@@ -46,7 +46,7 @@ side="CLIENT"
 [[dependencies.ntgl]]
 modId="backpacked"
 mandatory=false
-versionRange="[2.1.9,)"
+versionRange="[3.0.0-beta.9,)"
 ordering="AFTER"
 side="BOTH"
 [[dependencies.ntgl]]

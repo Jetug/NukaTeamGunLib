@@ -43,6 +43,8 @@
   "info.ntgl.ammo": "Боеприпасов: %s",
   "info.ntgl.ammo_type": "Тип боеприпасов: %s",
   "info.ntgl.attachment_help": "Нажмите %s в игре для изменения обвесов",
+  "info.ntgl.burnable": "Топливо: %s",
+  "info.ntgl.water": "Вода: %s",
   "key.categories.ntgl": "NTGL Weapons",
   "key.ntgl.reload": "Перезарядить",
   "key.ntgl.unload": "Разрядить",

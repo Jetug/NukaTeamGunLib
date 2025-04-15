@@ -60,6 +60,9 @@
   "info.ntgl.ammo": "Ammo: %s",
   "info.ntgl.ammo_type": "Ammo Type: %s",
   "info.ntgl.attachment_help": "Press %s in-game for Attachments",
+  "info.ntgl.burnable": "Fuel: %s",
+  "info.ntgl.water": "Water: %s",
+
   "key.categories.ntgl": "NTGL",
   "key.ntgl.reload": "Reload",
   "key.ntgl.unload": "Unload",
@@ -139,6 +142,7 @@
   "enchantment.ntgl.accelerator.desc": "Increases the speed of fired projectiles causing them to do more damage",
   "enchantment.ntgl.puncturing.desc": "Creates a chance that a bullet will deal critical damage",
   "enchantment.ntgl.fire_starter.desc": "Fired bullets will set blocks and entities on fire upon impact",
+
   "perk.ntgl.title": "Perks:",
   "perk.ntgl.entry.positive": "+ %s",
   "perk.ntgl.entry.negative": "- %s",

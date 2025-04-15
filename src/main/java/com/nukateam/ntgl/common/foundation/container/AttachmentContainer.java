@@ -16,12 +16,10 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 import static com.nukateam.ntgl.client.render.screen.AttachmentScreen.ATTACHMENT_Y;
 import static com.nukateam.ntgl.client.render.screen.AttachmentScreen.SLOT_SIZE;
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.getAttachmentTypes;
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.getSortedAttachmentTypes;
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
 
 /**
  * Author: MrCrayfish
@@ -38,11 +36,11 @@ public class AttachmentContainer extends AbstractContainerMenu {
     public AttachmentContainer(int windowId, Inventory playerInventory, ItemStack stack) {
         this(windowId, playerInventory);
         var gunData = new GunData(stack, playerInventory.player);
-        var attachments = getAttachmentTypes(gunData);
+        var sortedAttachments = getSortedAttachmentTypes(gunData);
         var attachmentItems = new ArrayList<ItemStack>();
 
-        for (var att : attachments.keySet()) {
-            attachmentItems.add(Gun.getAttachmentItem(att, stack));
+        for (var attachmentType : sortedAttachments) {
+            attachmentItems.add(Gun.getAttachmentItem(attachmentType, stack));
         }
         for (int i = 0; i < attachmentItems.size(); i++) {
             this.weaponInventory.setItem(i, attachmentItems.get(i));
