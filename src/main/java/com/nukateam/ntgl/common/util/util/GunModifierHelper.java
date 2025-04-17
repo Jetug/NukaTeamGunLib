@@ -13,6 +13,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +46,7 @@ public class GunModifierHelper {
         return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(data);
     }
 
-    public static boolean canRenderInOffhand(Player player){
+    public static boolean canRenderInOffhand(LivingEntity player){
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
 
