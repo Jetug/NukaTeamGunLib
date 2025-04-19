@@ -398,12 +398,6 @@ public class GunModifierHelper {
         return additionalDamage.get();
     }
 
-    public static float getModifiedProjectileDamage(GunData data, float damage) {
-        var finalDamage = new AtomicReference<>(damage);
-        forEachAttachment(data, (modifier -> finalDamage.set(modifier.modifyDamage(finalDamage.get(), data))));
-        return finalDamage.get();
-    }
-
     public static float getModifiedDamage(GunData data) {
         var gun = getGun(data.gun);
         var damage = getGeneral(gun).getDamage();

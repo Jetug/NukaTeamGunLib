@@ -4,7 +4,7 @@ import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.common.base.handlers.GunHandler;
 import com.nukateam.ntgl.common.base.utils.FuelUtils;
-import com.nukateam.ntgl.common.network.managers.NetworkManager;
+import com.nukateam.ntgl.common.base.NetworkManager;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
@@ -179,7 +179,6 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
         }
 
         var damage = GunModifierHelper.getModifiedDamage(gunData);
-        damage = GunModifierHelper.getModifiedProjectileDamage(gunData, damage);
         damage = GunEnchantmentHelper.getAcceleratorDamage(gunData.gun, damage);
         tooltip.add(Component.translatable("info.ntgl.damage",
                 ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage) + additionalDamageText).withStyle(ChatFormatting.GRAY));

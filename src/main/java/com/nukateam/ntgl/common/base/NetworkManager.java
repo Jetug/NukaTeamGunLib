@@ -1,8 +1,7 @@
-package com.nukateam.ntgl.common.network.managers;
+package com.nukateam.ntgl.common.base;
 
 import com.google.common.collect.ImmutableMap;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.ConfigUtils;
 import com.nukateam.ntgl.common.foundation.item.IConfigConsumer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;

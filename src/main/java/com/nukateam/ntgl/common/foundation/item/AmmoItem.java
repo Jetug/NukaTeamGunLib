@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.ntgl.common.network.managers.NetworkManager;
+import com.nukateam.ntgl.common.base.NetworkManager;
 import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
