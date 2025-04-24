@@ -14,6 +14,8 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
 import com.nukateam.ntgl.common.util.annotation.Ignored;
 import com.nukateam.ntgl.common.data.constants.Tags;
+import com.nukateam.ntgl.common.util.helpers.BackpackedHelper;
+import com.nukateam.ntgl.common.util.helpers.SophisticatedHelper;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunJsonUtil;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -437,10 +439,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (!context.equals(AmmoContext.NONE))
             return context;
 
-        if (Ntgl.backpackedLoaded) {
-            return BackpackHelper.findAmmo(player, id);
-        }
-        return AmmoContext.NONE;
+        return BackpackHelper.findAmmo(player, id);
     }
 
     public static AmmoContext findAmmo(Container inventory, ResourceLocation id){
@@ -463,11 +462,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (!context.equals(AmmoContext.NONE))
             return context;
 
-        if (Ntgl.backpackedLoaded) {
-            return BackpackHelper.findMagazine(player, id);
-        }
-
-        return AmmoContext.NONE;
+        return BackpackHelper.findMagazine(player, id);
     }
 
     public static AmmoContext findMagazine(Container inventory, ResourceLocation id){
