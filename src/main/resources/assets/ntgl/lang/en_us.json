@@ -47,7 +47,7 @@
   "item.minecraft.potion.effect.deafening": "Potion of Deafening",
   "item.minecraft.lingering_potion.effect.blinding": "Lingering Potion of Blinding",
   "item.minecraft.lingering_potion.effect.deafening": "Lingering Potion of Deafening",
-  "itemGroup.ntgl": "Guns",
+  "itemGroup.ntgl": "NTGL Example",
 
   "death.attack.ntgl.bullet.killed": "%1$s was taken down by %2$s",
   "death.attack.ntgl.bullet.eliminated": "%1$s was eliminated by %2$s",
@@ -67,6 +67,9 @@
   "key.ntgl.reload": "Reload",
   "key.ntgl.unload": "Unload",
   "key.ntgl.attachments": "Modify Attachments",
+  "key.ntgl.inspect": "Inspect",
+  "key.ntgl.fire_select": "Fire Select",
+  "key.ntgl.ammo_select": "Ammo Select",
 
   "subtitle.ntgl.stun.explosion": "Stun Grenade Explosion",
   "subtitle.ntgl.stun.ring": "Ringing",
@@ -169,11 +172,18 @@
   "perk.ntgl.rate.negative": "Reduced Fire Rate",
   "gui.ntgl.assemble": "Assemble",
   "gui.ntgl.show_remaining": "Show Remaining",
+
+  "button.controls.ntgl": "NTGL Weapons",
+  "button.categories.ntgl": "NTGL Weapons",
   "ntgl.button.shoot": "Shoot Weapon",
   "ntgl.button.aim": "Aim Down Sight",
   "ntgl.button.reload": "Reload / Unload",
   "ntgl.button.attachments": "Modify Attachments",
   "ntgl.button.steadyAim": "Steady Aim",
+  "ntgl.button.inspect": "Inspect",
+  "ntgl.button.fire_select": "Select Fire Mode",
+  "ntgl.button.ammo_select": "Select Ammo Type",
+
   "ntgl.category.workbench.title": "Assembling",
   "ntgl.category.workbench.materials": "Materials",
   "ntgl.action.aim": "Aim",
@@ -183,10 +193,6 @@
   "ntgl.button.config.tooltip": "Config Options",
   "ntgl.chat.open_curseforge_page": "Open CurseForge Page",
   "ntgl.chat.install_configured": "Install %s to access config options",
-  "key.open_map": "Open map",
-  "item.ntgl.acid_bucket": "Acid Bucket",
-  "gui.ntgl.marker.tomb": "Here lies %s",
-  "key.ntgl.inspect": "Inspect",
-  "key.ntgl.fire_select": "Fire Select",
-  "key.ntgl.ammo_select": "Ammo Select"
+
+  "gui.ntgl.marker.tomb": "Here lies %s"
 }

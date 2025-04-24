@@ -1,16 +1,11 @@
 package com.nukateam.ntgl.client.event;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.util.handler.ClientActions;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
-import com.nukateam.ntgl.common.network.HandAction;
-import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.S2CMessageHandAction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -21,7 +16,6 @@ import org.lwjgl.glfw.GLFW;
 
 import static com.nukateam.ntgl.client.input.KeyBinds.*;
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
-import static com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys.getReloadKey;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class InputEvents {
@@ -41,12 +35,10 @@ public class InputEvents {
         if(minecraft.player != null && minecraft.level != null && minecraft.isRunning() && !minecraft.isPaused()) {
             if (event.getAction() == GLFW.GLFW_RELEASE) {
                 if (event.getKey() == KEY_FIRE_SELECT.getKey().getValue()) {
-                    PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_FIRE_MODE));
+                    ClientActions.switchFireMode(hand);
                 }
                 else if (event.getKey() == KEY_AMMO_SELECT.getKey().getValue()) {
-                    if (!getReloadKey(hand).getValue(player)) {
-                        PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_AMMO));
-                    }
+                    ClientActions.switchAmmo(hand, player);
                 }
             }
         }

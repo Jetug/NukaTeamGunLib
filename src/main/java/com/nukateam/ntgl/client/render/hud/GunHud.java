@@ -59,11 +59,16 @@ public class GunHud implements IGuiOverlay {
         cache.forEach((hand, cache) -> {
             var heldItem = player.getItemInHand(hand);
             var x = hand == InteractionHand.OFF_HAND ? OFFHAND_X_OFFSET : width;
-            if(heldItem.getItem() instanceof GunItem) {
+
+            if (heldItem.getItem() instanceof GunItem && shouldRender(hand, player)) {
                 updateCache(cache, player, heldItem);
                 renderAmmoCounter(graphics, cache, heldItem, x, height);
             }
         });
+    }
+
+    private static boolean shouldRender(InteractionHand hand, LocalPlayer player) {
+        return hand == InteractionHand.MAIN_HAND || GunModifierHelper.canRenderInOffhand(player);
     }
 
     protected void renderAmmoCounter(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int x, int y) {

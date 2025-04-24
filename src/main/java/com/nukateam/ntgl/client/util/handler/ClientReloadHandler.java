@@ -1,11 +1,9 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.event.ClientHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.LoadingType;
-import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -17,7 +15,6 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -91,13 +88,7 @@ public class ClientReloadHandler {
                 unloadAmmo(InteractionHand.OFF_HAND);
             }
             if (KeyBinds.KEY_INSPECT.consumeClick()){
-                var mainGun = player.getMainHandItem();
-                var offGun = player.getOffhandItem();
-
-                if((mainGun.getItem() instanceof GunItem || offGun.getItem() instanceof GunItem)
-                        && !ClientHandler.isInspecting()){
-                    ClientHandler.resetInspectionTimer();
-                }
+                ClientActions.inspectWeapon(player);
             }
         }
     }

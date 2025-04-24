@@ -64,7 +64,8 @@ public class ClientHandler {
 
         /* Only register controller events if Controllable is loaded otherwise it will crash */
         if (Ntgl.controllableLoaded) {
-            MinecraftForge.EVENT_BUS.register(new ControllerHandler());
+            ControllerHandler.init();
+//            MinecraftForge.EVENT_BUS.register(new ControllerHandler());
             GunButtonBindings.register();
         }
 

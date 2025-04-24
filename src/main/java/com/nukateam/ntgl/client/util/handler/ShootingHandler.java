@@ -72,10 +72,6 @@ public class ShootingHandler {
         return mc.isWindowActive();
     }
 
-    public boolean isShooting() {
-        return shooting;
-    }
-
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onMouseClick(InputEvent.MouseButton event) {
         var mc = Minecraft.getInstance();
@@ -215,6 +211,9 @@ public class ShootingHandler {
                 var mainHandItem = player.getMainHandItem();
                 if (mainHandItem.getItem() instanceof GunItem && (Gun.hasAmmo(mainHandItem) || player.isCreative())) {
                     var shooting = isKeyAttackDown();
+                    if (Ntgl.controllableLoaded) {
+                        shooting |= ControllerHandler.isShooting();
+                    }
                     if (shooting ^ this.shooting) {
                         this.shooting = shooting;
                         PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(shooting));
@@ -236,7 +235,7 @@ public class ShootingHandler {
         return getCooldown(entity, arm) > 0;
     }
 
-    public float getCooldown(LivingEntity entity, InteractionHand hand) {
+    public int getCooldown(LivingEntity entity, InteractionHand hand) {
         return getCooldown(entity, convertHand(hand));
     }
 
@@ -247,7 +246,7 @@ public class ShootingHandler {
             var data = new GunData(heldItem, entity);
             var rate = GunModifierHelper.getRate(data);
             var cooldown = getCooldown(entity, convertHand(hand));
-            return cooldown / rate;
+            return cooldown / (float)rate;
         }
         return 0;
     }
@@ -256,14 +255,12 @@ public class ShootingHandler {
         entityShootGaps.put(Pair.of(arm, entity), cooldown);
     }
 
-    public float getCooldown(LivingEntity entity, HumanoidArm arm) {
+    public int getCooldown(LivingEntity entity, HumanoidArm arm) {
         return entityShootGaps.getOrDefault(Pair.of(arm, entity), 0);
     }
 
     public boolean isShooting(LivingEntity entity, HumanoidArm arm){
-        var value = entityShootGaps.get(Pair.of(arm, entity));
-        if (value != null) return value > 0;
-        return false;
+        return getCooldown(entity, arm) > 0;
     }
 
     public static float calcShootTickGap(int rpm) {
