@@ -2,12 +2,13 @@ package com.nukateam.ntgl.common.util.helpers;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
+import com.nukateam.ntgl.common.base.IAmmoContext;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 public class BackpackHelper {
-    public static AmmoContext findAmmo(Player player, ResourceLocation id) {
-        var context = AmmoContext.NONE;
+    public static IAmmoContext findAmmo(Player player, ResourceLocation id) {
+        var context = (IAmmoContext)AmmoContext.NONE;
 
         if (Ntgl.backpackedLoaded) {
             context = BackpackedHelper.findAmmo(player, id);
@@ -19,8 +20,8 @@ public class BackpackHelper {
         return context;
     }
 
-    public static AmmoContext findMagazine(Player player, ResourceLocation id) {
-        var context = AmmoContext.NONE;
+    public static IAmmoContext findMagazine(Player player, ResourceLocation id) {
+        var context = (IAmmoContext)AmmoContext.NONE;
 
         if (Ntgl.backpackedLoaded) {
             context = BackpackedHelper.findMagazine(player, id);

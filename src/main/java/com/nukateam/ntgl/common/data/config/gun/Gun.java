@@ -5,6 +5,7 @@ import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.AmmoContext;
+import com.nukateam.ntgl.common.base.IAmmoContext;
 import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.data.config.Ammo;
@@ -378,7 +379,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return Gun.findAmmo(player, weapon).stack().isEmpty();
     }
 
-    public static AmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
+    public static IAmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
         var data = new GunData(weapon, entity);
         var id = GunModifierHelper.getCurrentAmmoId(data);
 
@@ -404,7 +405,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return getCreativeAmmoContext(id);
     }
 
-    public static AmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {
+    public static IAmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {
         var data = new GunData(weapon, entity);
         var id = GunModifierHelper.getCurrentAmmoId(data);
 
@@ -431,7 +432,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return getCreativeAmmoContext(id);
     }
 
-    public static AmmoContext findPlayerAmmo(Player player, ResourceLocation id) {
+    public static IAmmoContext findPlayerAmmo(Player player, ResourceLocation id) {
         if (player.isCreative())
             return getCreativeAmmoContext(id);
 
@@ -453,7 +454,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return AmmoContext.NONE;
     }
 
-    public static AmmoContext findPlayerMagazine(Player player, ResourceLocation id) {
+    public static IAmmoContext findPlayerMagazine(Player player, ResourceLocation id) {
         if (player.isCreative()) {
             return getCreativeAmmoContext(id);
         }

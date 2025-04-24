@@ -267,13 +267,13 @@ public class ReloadTracker {
                 amount = Math.min(amount, maxAmmo - tag.getInt(Tags.AMMO_COUNT));
                 tag.putInt(Tags.AMMO_COUNT, tag.getInt(Tags.AMMO_COUNT) + amount);
             }
-            ammo.shrink(amount);
-
-            // Trigger that the container changed
-            var container = context.container();
-            if (container != null) {
-                container.setChanged();
-            }
+//            ammo.shrink(amount);
+            context.shrink(amount);
+//            // Trigger that the container changed
+//            var container = context.container();
+//            if (container != null) {
+//                container.setChanged();
+//            }
         }
 //        playReloadSound(player);
     }
@@ -314,13 +314,15 @@ public class ReloadTracker {
                 tag.putInt(Tags.AMMO_COUNT, amount);
             }
 
-            ammo.shrink(1);
+//            ammo.shrink(1);
 
-            // Trigger that the container changed
-            var container = context.container();
-            if (container != null) {
-                container.setChanged();
-            }
+            context.shrink(1);
+
+//            // Trigger that the container changed
+//            var container = context.container();
+//            if (container != null) {
+//                container.setChanged();
+//            }
         }
 //        playReloadSound(player);
     }
