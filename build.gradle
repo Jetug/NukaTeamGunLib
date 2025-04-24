@@ -102,6 +102,9 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
+    flatDir {
+        dirs 'libs'
+    }
     maven { url 'https://maven.azuredoom.com/mods' }
     maven {
         name "KosmX's maven"
@@ -114,14 +117,16 @@ dependencies {
     implementation fg.deobf("mod.azure.azurelib:azurelib-neo-1.20.1:2.0.41")
     implementation fg.deobf("curse.maven:framework-549225:5911986")
     implementation fg.deobf('curse.maven:backpacked-352835:5813547')
+    implementation fg.deobf("curse.maven:sophisticated-core-618298:6456062")
+    implementation fg.deobf("curse.maven:sophisticated-backpacks-422301:6456083")
+//    implementation fg.deobf("net.p3pp3rf1y.sophisticatedbackpacks:SophisticatedBackpacks:1.20.1-3.23.13.1230")
 //    implementation fg.deobf('curse.maven:cloth-config-348521:5729105')
-//    implementation fg.deobf('curse.maven:configured-457570:5180902')
 //    implementation fg.deobf('curse.maven:splasher-844451:5235730')
 
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}:api")
 
-    compileOnly fg.deobf('curse.maven:controllable-317269:4598985')
+    implementation fg.deobf('curse.maven:controllable-317269:4598985')
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:1.0.2-rc1+1.20")
 
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}")
