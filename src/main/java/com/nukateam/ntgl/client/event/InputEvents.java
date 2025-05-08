@@ -49,25 +49,31 @@ public class InputEvents {
     private static void handleDebugKeys(InputEvent.@NotNull Key event) {
         if (event.getAction() == GLFW.GLFW_PRESS || event.getAction() == GLFW.GLFW_REPEAT) {
             if (Ntgl.isDebugging()) {
-                switch (event.getKey()) {
-                    case GLFW.GLFW_KEY_KP_1 -> X += 1;
-                    case GLFW.GLFW_KEY_KP_2 -> Y += 1;
-                    case GLFW.GLFW_KEY_KP_3 -> Z += 1;
-                    case GLFW.GLFW_KEY_KP_4 -> X -= 1;
-                    case GLFW.GLFW_KEY_KP_5 -> Y -= 1;
-                    case GLFW.GLFW_KEY_KP_6 -> Z -= 1;
-                    case GLFW.GLFW_KEY_KP_MULTIPLY -> isHidden = !isHidden;
-                    case GLFW.GLFW_KEY_KP_ENTER -> {
-                        var level = Minecraft.getInstance().level;
-                        var entity = new FlyingGib(ModEntityTypes.FLYING_GIBS.get(), level);
+                int key = event.getKey();
+                if (key == KEY_DEBUG_X_ADD.getKey().getValue()) {
+                    X += 1;
+                } else if (key == KEY_DEBUG_Y_ADD.getKey().getValue()) {
+                    Y += 1;
+                } else if (key == KEY_DEBUG_Z_ADD.getKey().getValue()) {
+                    Z += 1;
+                } else if (key == KEY_DEBUG_X_SUB.getKey().getValue()) {
+                    X -= 1;
+                } else if (key == KEY_DEBUG_Y_SUB.getKey().getValue()) {
+                    Y -= 1;
+                } else if (key == KEY_DEBUG_Z_SUB.getKey().getValue()) {
+                    Z -= 1;
+                } else if (key == GLFW.GLFW_KEY_KP_MULTIPLY) {
+                    isHidden = !isHidden;
+                } else if (key == GLFW.GLFW_KEY_KP_ENTER) {
+                    var level = Minecraft.getInstance().level;
+                    var entity = new FlyingGib(ModEntityTypes.FLYING_GIBS.get(), level);
 
-                        entity.setPos(Minecraft.getInstance().player.position());
-                        addClientEntity(entity);
+                    entity.setPos(Minecraft.getInstance().player.position());
+                    addClientEntity(entity);
 
-                        X = 0;
-                        Y = 0;
-                        Z = 0;
-                    }
+                    X = 0;
+                    Y = 0;
+                    Z = 0;
                 }
             }
         }
