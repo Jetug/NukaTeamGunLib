@@ -29,6 +29,8 @@ public class KeyBinds {
     public static final KeyMapping KEY_DEBUG_X_SUB = new KeyMapping("key.ntgl.debug_x_sub", GLFW.GLFW_KEY_KP_2, "key.categories.ntgl");
     public static final KeyMapping KEY_DEBUG_Y_SUB = new KeyMapping("key.ntgl.debug_y_sub", GLFW.GLFW_KEY_KP_4, "key.categories.ntgl");
     public static final KeyMapping KEY_DEBUG_Z_SUB = new KeyMapping("key.ntgl.debug_z_sub", GLFW.GLFW_KEY_KP_6, "key.categories.ntgl");
+    public static final KeyMapping KEY_DEBUG_ZERO = new KeyMapping("key.ntgl.debug_zero", GLFW.GLFW_KEY_KP_ENTER, "key.categories.ntgl");
+    public static final KeyMapping KEY_DEBUG_SHOW = new KeyMapping("key.ntgl.debug_show", GLFW.GLFW_KEY_KP_MULTIPLY, "key.categories.ntgl");
 
 
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
@@ -46,6 +48,8 @@ public class KeyBinds {
             event.register(KEY_DEBUG_Y_SUB);
             event.register(KEY_DEBUG_Z_ADD);
             event.register(KEY_DEBUG_Z_SUB);
+            event.register(KEY_DEBUG_ZERO);
+            event.register(KEY_DEBUG_SHOW);
         }
     }
 

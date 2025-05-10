@@ -62,9 +62,9 @@ public class InputEvents {
                     Y -= 1;
                 } else if (key == KEY_DEBUG_Z_SUB.getKey().getValue()) {
                     Z -= 1;
-                } else if (key == GLFW.GLFW_KEY_KP_MULTIPLY) {
+                } else if (key == KEY_DEBUG_SHOW.getKey().getValue()) {
                     isHidden = !isHidden;
-                } else if (key == GLFW.GLFW_KEY_KP_ENTER) {
+                } else if (key == KEY_DEBUG_ZERO.getKey().getValue()) {
                     var level = Minecraft.getInstance().level;
                     var entity = new FlyingGib(ModEntityTypes.FLYING_GIBS.get(), level);
 
