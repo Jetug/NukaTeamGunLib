@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.event;
+package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.client.render.renderers.misc.AshPileRenderer;
 import com.nukateam.ntgl.client.render.renderers.misc.FlyingGibsRenderer;

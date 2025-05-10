@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.render.hud;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.event.InputEvents;
+import com.nukateam.ntgl.client.handlers.InputEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;

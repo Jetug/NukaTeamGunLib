@@ -1,13 +1,10 @@
-package com.nukateam.ntgl.client.event;
+package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
-import com.nukateam.ntgl.mixin.client.MinecraftMixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderArmEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

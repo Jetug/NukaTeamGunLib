@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.util.handler;
 
-import com.nukateam.ntgl.client.event.ClientHandler;
+import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;

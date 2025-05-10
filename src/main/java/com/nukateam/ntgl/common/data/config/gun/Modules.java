@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -28,7 +27,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-import static com.nukateam.ntgl.client.event.ClientHandler.createEditorScreen;
+import static com.nukateam.ntgl.client.handlers.ClientHandler.createEditorScreen;
 
 public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
     private transient Zoom cachedZoom;

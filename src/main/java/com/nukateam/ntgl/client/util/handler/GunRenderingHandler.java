@@ -53,7 +53,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import static com.nukateam.ntgl.client.util.util.PropertyHelper.*;
-import static com.nukateam.ntgl.client.event.InputEvents.*;
+import static com.nukateam.ntgl.client.handlers.InputEvents.*;
 import static com.nukateam.ntgl.common.util.util.GunModifierHelper.isOneHanded;
 
 public class GunRenderingHandler {

@@ -15,8 +15,6 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
 import com.nukateam.ntgl.common.util.annotation.Ignored;
 import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.util.helpers.BackpackedHelper;
-import com.nukateam.ntgl.common.util.helpers.SophisticatedHelper;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunJsonUtil;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -53,10 +51,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
-import static com.nukateam.ntgl.client.event.ClientHandler.*;
+import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";

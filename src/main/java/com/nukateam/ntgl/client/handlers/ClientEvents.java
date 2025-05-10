@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.event;
+package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.*;
 import com.nukateam.ntgl.client.render.hud.*;

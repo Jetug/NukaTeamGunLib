@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
-import com.nukateam.ntgl.client.event.ClientTickHandler;
+import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import static com.nukateam.ntgl.client.event.InputEvents.*;
+import static com.nukateam.ntgl.client.handlers.InputEvents.*;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderRightArm;
 
