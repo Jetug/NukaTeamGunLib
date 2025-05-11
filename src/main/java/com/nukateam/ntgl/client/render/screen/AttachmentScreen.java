@@ -4,8 +4,8 @@ package com.nukateam.ntgl.client.render.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.*;
-import com.nukateam.ntgl.client.handlers.InputEvents;
 import com.nukateam.ntgl.client.render.screen.widget.*;
+import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
@@ -266,9 +266,9 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
             poseStack.scale(50F, -50F, 50F);
             poseStack.pushPose();
             {
-                poseStack.mulPose(Axis.XP.rotation(0 + InputEvents.X / 10f));
-                poseStack.mulPose(Axis.YP.rotation(3.7f + InputEvents.Y / 10f));
-                poseStack.mulPose(Axis.ZP.rotation(-0.3f + InputEvents.Z / 10f));
+                poseStack.mulPose(Axis.XP.rotation(0 + ClientDebug.X / 10f));
+                poseStack.mulPose(Axis.YP.rotation(3.7f + ClientDebug.Y / 10f));
+                poseStack.mulPose(Axis.ZP.rotation(-0.3f + ClientDebug.Z / 10f));
                 RenderSystem.applyModelViewMatrix();
 
                 var buffer = minecraft.renderBuffers().bufferSource();

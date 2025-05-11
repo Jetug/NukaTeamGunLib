@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.render.hud;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.handlers.InputEvents;
+import com.nukateam.ntgl.client.util.ClientDebug;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
@@ -12,12 +12,12 @@ public class DebugHud {
 
     public static final IGuiOverlay DEBUG_HUD = ((gui, graphics, partialTick, width, height) -> {
         var minecraft = Minecraft.getInstance();
-        if(InputEvents.isHidden || !Ntgl.isDebugging() || minecraft.player == null) return;
+        if(ClientDebug.isHidden || !Ntgl.isDebugging() || minecraft.player == null) return;
         var x = width - 70;
 
-        renderAmmoCounter(graphics, "x", InputEvents.X, x, OFFSET_Y);
-        renderAmmoCounter(graphics, "y", InputEvents.Y, x, OFFSET_Y * 2);
-        renderAmmoCounter(graphics, "z", InputEvents.Z, x, OFFSET_Y * 3);
+        renderAmmoCounter(graphics, "x", ClientDebug.X, x, OFFSET_Y);
+        renderAmmoCounter(graphics, "y", ClientDebug.Y, x, OFFSET_Y * 2);
+        renderAmmoCounter(graphics, "z", ClientDebug.Z, x, OFFSET_Y * 3);
     });
 
     private static void renderAmmoCounter(GuiGraphics graphics, String label, float val, int x, int y) {

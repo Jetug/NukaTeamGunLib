@@ -69,7 +69,7 @@ public class Debug {
         @Override
         public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
+                var heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
                 if (heldItem.getItem() instanceof GunItem gunItem) {
                     widgets.add(Pair.of(Component.translatable(gunItem.getDescriptionId()), () -> new DebugButton(Component.literal("Edit"), btn -> {
                         Minecraft.getInstance().setScreen(ClientHandler.createEditorScreen(getGun(gunItem)));

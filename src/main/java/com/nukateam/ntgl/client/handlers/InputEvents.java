@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.ClientActions;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
@@ -19,10 +20,6 @@ import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.add
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class InputEvents {
-    public static int X = 0;
-    public static int Y = 0;
-    public static int Z = 0;
-    public static boolean isHidden = false;
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
@@ -51,19 +48,19 @@ public class InputEvents {
             if (Ntgl.isDebugging()) {
                 int key = event.getKey();
                 if (key == KEY_DEBUG_X_ADD.getKey().getValue()) {
-                    X += 1;
+                    ClientDebug.X += 1;
                 } else if (key == KEY_DEBUG_Y_ADD.getKey().getValue()) {
-                    Y += 1;
+                    ClientDebug.Y += 1;
                 } else if (key == KEY_DEBUG_Z_ADD.getKey().getValue()) {
-                    Z += 1;
+                    ClientDebug.Z += 1;
                 } else if (key == KEY_DEBUG_X_SUB.getKey().getValue()) {
-                    X -= 1;
+                    ClientDebug.X -= 1;
                 } else if (key == KEY_DEBUG_Y_SUB.getKey().getValue()) {
-                    Y -= 1;
+                    ClientDebug.Y -= 1;
                 } else if (key == KEY_DEBUG_Z_SUB.getKey().getValue()) {
-                    Z -= 1;
+                    ClientDebug.Z -= 1;
                 } else if (key == KEY_DEBUG_SHOW.getKey().getValue()) {
-                    isHidden = !isHidden;
+                    ClientDebug.isHidden = !ClientDebug.isHidden;
                 } else if (key == KEY_DEBUG_ZERO.getKey().getValue()) {
                     var level = Minecraft.getInstance().level;
                     var entity = new FlyingGib(ModEntityTypes.FLYING_GIBS.get(), level);
@@ -71,9 +68,9 @@ public class InputEvents {
                     entity.setPos(Minecraft.getInstance().player.position());
                     addClientEntity(entity);
 
-                    X = 0;
-                    Y = 0;
-                    Z = 0;
+                    ClientDebug.X = 0;
+                    ClientDebug.Y = 0;
+                    ClientDebug.Z = 0;
                 }
             }
         }

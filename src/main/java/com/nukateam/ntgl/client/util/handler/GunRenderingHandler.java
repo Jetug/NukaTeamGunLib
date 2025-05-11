@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.util.PropertyHelper;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
@@ -53,7 +54,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import static com.nukateam.ntgl.client.util.util.PropertyHelper.*;
-import static com.nukateam.ntgl.client.handlers.InputEvents.*;
 import static com.nukateam.ntgl.common.util.util.GunModifierHelper.isOneHanded;
 
 public class GunRenderingHandler {
@@ -378,9 +378,9 @@ public class GunRenderingHandler {
                 zOffset += 8 * 0.0625;
 
                 if(Ntgl.isDebugging()) {
-                    xOffset += (double) X / 10 * 0.0625;
-                    yOffset += (double) Y / 10 * 0.0625;
-                    zOffset += (double) Z / 10 * 0.0625;
+                    xOffset += (double) ClientDebug.X / 10 * 0.0625;
+                    yOffset += (double) ClientDebug.Y / 10 * 0.0625;
+                    zOffset += (double) ClientDebug.Z / 10 * 0.0625;
                 }
 
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */

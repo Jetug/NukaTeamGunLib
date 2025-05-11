@@ -7,6 +7,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
+import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
@@ -33,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import static com.nukateam.ntgl.client.handlers.InputEvents.*;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderRightArm;
 
@@ -209,7 +209,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         var length = barrelItem.getProperties().getLength();
         poseStack.translate(0, 0, -length / 16D);
         if (Ntgl.isDebugging())
-            poseStack.translate(-(double) X / 10 / 16D, (double) Y / 10 / 16D, (double) Z / 10 / 16D);
+            poseStack.translate(-(double) ClientDebug.X / 10 / 16D, (double) ClientDebug.Y / 10 / 16D, (double) ClientDebug.Z / 10 / 16D);
     }
 
     protected void prepareHiddenBones(ItemDisplayContext transformType) {
