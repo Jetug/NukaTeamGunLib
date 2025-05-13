@@ -1,9 +1,9 @@
 package com.nukateam.ntgl.client.animators;
 
 import com.nukateam.geo.render.*;
-import com.nukateam.ntgl.client.event.*;
+import com.nukateam.ntgl.client.handlers.*;
 import com.nukateam.ntgl.client.audio.GunShotSound;
-import com.nukateam.ntgl.client.event.ClientTickHandler;
+import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.model.gun.*;
 import com.nukateam.ntgl.client.render.renderers.gun.*;

@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.util.pose;
 
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
@@ -22,8 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Vector3f;
-
-import static com.nukateam.ntgl.client.event.InputEvents.*;
 
 /**
  * Author: MrCrayfish
@@ -172,7 +171,7 @@ public class TwoHandedPose extends WeaponPose {
         poseStack.translate(-9 * 0.0625 , -13 * 0.0625, -25 * 0.0625);
 
         var aim = AimingHandler.get().getAimProgress(entity, Minecraft.getInstance().getFrameTime());
-        poseStack.translate(X * 0.0625 * aim, Y * 0.0625 * aim, Z * 0.0625 * aim);
+        poseStack.translate(ClientDebug.X * 0.0625 * aim, ClientDebug.Y * 0.0625 * aim, ClientDebug.Z * 0.0625 * aim);
         poseStack.translate(-1 * 0.0625 * aim , 3 * 0.0625 * aim, 0);
     }
 

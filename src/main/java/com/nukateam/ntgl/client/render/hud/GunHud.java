@@ -2,10 +2,12 @@ package com.nukateam.ntgl.client.render.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.nukateam.ntgl.client.event.*;
 import com.nukateam.ntgl.client.util.util.render.Figures;
 import com.nukateam.ntgl.common.base.holders.FuelType;
 import com.nukateam.ntgl.common.base.utils.FuelUtils;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.event.GunProjectileHitEvent;
 import com.nukateam.ntgl.common.foundation.item.AmmoBoxItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -21,6 +23,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -62,7 +65,9 @@ public class GunHud implements IGuiOverlay {
 
             if (heldItem.getItem() instanceof GunItem && shouldRender(hand, player)) {
                 updateCache(cache, player, heldItem);
-                renderAmmoCounter(graphics, cache, heldItem, x, height);
+                if (!MinecraftForge.EVENT_BUS.post(new GunHudEvent(hand, cache))) {
+                    renderAmmoCounter(graphics, cache, heldItem, x, height);
+                }
             }
         });
     }

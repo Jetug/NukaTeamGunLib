@@ -16,8 +16,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Vector3f;
 
-import static com.nukateam.ntgl.client.event.InputEvents.*;
-
 /**
  * Author: MrCrayfish
  */

@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
-import com.nukateam.ntgl.client.event.ClientPlayHandler;
+import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.HumanoidArm;
 

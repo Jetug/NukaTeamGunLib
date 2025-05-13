@@ -50,9 +50,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-import static com.nukateam.ntgl.client.event.ClientHandler.*;
+import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
@@ -205,14 +206,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     private static void prepareTextures(String itemId, Gun gun) {
         if(FMLEnvironment.dist == Dist.CLIENT) {
-            var thread = new Thread(() ->
-                    gun.textures.forEach((variant, path) -> {
+            CompletableFuture.runAsync(() -> {
+                gun.textures.forEach((variant, path) -> {
 //                        var texture = resourceExists(path) ? path : getTexture(itemId, path);
-                        var texture = getTexture(itemId, path);
-                        gun.preparedTextures.put(variant, texture);
-                    })
-            );
-            thread.start();
+                    var texture = getTexture(itemId, path);
+                    gun.preparedTextures.put(variant, texture);
+                });
+            });
         }
     }
 
