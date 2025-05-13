@@ -1,5 +1,6 @@
 package com.nukateam.example.client;
 
+import com.nukateam.example.common.entities.Deathclaw;
 import com.nukateam.example.common.entities.Raider;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

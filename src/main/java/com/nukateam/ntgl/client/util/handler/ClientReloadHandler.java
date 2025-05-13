@@ -10,7 +10,7 @@ import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.util.helpers.PlayerAnimationHelper;
+import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerAnimationHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;

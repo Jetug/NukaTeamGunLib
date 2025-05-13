@@ -13,6 +13,8 @@ public class GeoRenderUtils {
         playerEntityModel.rightArm.setRotation(0, 0, 0);
         playerEntityModel.rightArm.render(poseStack, arm, packedLight, packedOverlay, 1, 1, 1, 1);
 
+
+
         playerEntityModel.rightSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         playerEntityModel.rightSleeve.setRotation(0, 0, 0);
         playerEntityModel.rightSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);

@@ -1,7 +1,5 @@
-package com.nukateam.ntgl.common.util.helpers;
+package com.nukateam.ntgl.common.util.helpers.compatibility;
 
-import com.mojang.datafixers.util.Pair;
-import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.base.IAmmoContext;
 import com.nukateam.ntgl.common.base.SophisticatedAmmoContext;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -10,17 +8,12 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import net.p3pp3rf1y.sophisticatedbackpacks.api.CapabilityBackpackWrapper;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackItem;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.wrapper.IBackpackWrapper;
-import net.p3pp3rf1y.sophisticatedbackpacks.common.gui.BackpackContainer;
-import net.p3pp3rf1y.sophisticatedbackpacks.common.gui.BackpackContext;
-import net.p3pp3rf1y.sophisticatedbackpacks.util.PlayerInventoryProvider;
 import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
-import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings({"UnstableApiUsage", "removal"})
 public class SophisticatedHelper {

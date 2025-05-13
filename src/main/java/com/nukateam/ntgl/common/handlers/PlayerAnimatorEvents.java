@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.handlers;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.util.helpers.PlayerAnimationHelper;
+import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerAnimationHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;

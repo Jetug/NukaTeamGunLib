@@ -12,6 +12,7 @@ import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.util.helpers.compatibility.ChassisHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.item.attachment.BarrelItem;
@@ -20,15 +21,19 @@ import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.util.ClientUtils;
 import mod.azure.azurelib.util.RenderUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -174,30 +179,46 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         }
 
         if (isRightHand || isLeftHand) {
-            var playerEntityRenderer = (PlayerRenderer) client.getEntityRenderDispatcher().getRenderer(client.player);
-            var playerEntityModel = playerEntityRenderer.getModel();
+            var playerEntityModel = getPlayerModel();
             poseStack.pushPose();
             {
                 RenderUtils.prepMatrixForBone(poseStack, bone);
                 poseStack.translate(0.01, -0.27, 0.05);
                 poseStack.scale(bone.getScaleX(), bone.getScaleY(), bone.getScaleZ());
 
-                var playerSkin = ((LocalPlayer) ClientUtils.getClientPlayer()).getSkinTextureLocation();
-                var arm = this.bufferSource.getBuffer(RenderType.entitySolid(playerSkin));
-                var sleeve = this.bufferSource.getBuffer(RenderType.entityTranslucent(playerSkin));
 
-                if(isRightHand) {
-                    if (bone.getName().equals(LEFT_ARM)) {
-                        renderLeftArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
-                    } else if (bone.getName().equals(RIGHT_ARM)) {
-                        renderRightArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                if(ChassisHelper.isPlayerInChassis()){
+                    if (isRightHand) {
+                        if (bone.getName().equals(LEFT_ARM)) {
+                            ChassisHelper.renderChassisHand(poseStack, isRightHand, HumanoidArm.LEFT, packedLight);
+                        } else if (bone.getName().equals(RIGHT_ARM)) {
+                            ChassisHelper.renderChassisHand(poseStack, isRightHand, HumanoidArm.RIGHT, packedLight);
+                        }
+                    } else {
+                        if (bone.getName().equals(LEFT_ARM)) {
+                            ChassisHelper.renderChassisHand(poseStack, isRightHand, HumanoidArm.RIGHT, packedLight);
+                        } else if (bone.getName().equals(RIGHT_ARM)) {
+                            ChassisHelper.renderChassisHand(poseStack, isRightHand, HumanoidArm.LEFT, packedLight);
+                        }
                     }
                 }
-                else{
-                    if (bone.getName().equals(LEFT_ARM)) {
-                        renderRightArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
-                    } else if (bone.getName().equals(RIGHT_ARM)) {
-                        renderLeftArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                else {
+                    var playerSkin = ((LocalPlayer) ClientUtils.getClientPlayer()).getSkinTextureLocation();
+                    var arm = this.bufferSource.getBuffer(RenderType.entitySolid(playerSkin));
+                    var sleeve = this.bufferSource.getBuffer(RenderType.entityTranslucent(playerSkin));
+
+                    if (isRightHand) {
+                        if (bone.getName().equals(LEFT_ARM)) {
+                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                        } else if (bone.getName().equals(RIGHT_ARM)) {
+                            renderRightArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                        }
+                    } else {
+                        if (bone.getName().equals(LEFT_ARM)) {
+                            renderRightArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                        } else if (bone.getName().equals(RIGHT_ARM)) {
+                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                        }
                     }
                 }
             }
@@ -205,11 +226,17 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         }
     }
 
+    public static PlayerModel<AbstractClientPlayer> getPlayerModel() {
+        var client = Minecraft.getInstance();
+        var playerEntityRenderer = (PlayerRenderer) client.getEntityRenderDispatcher().getRenderer(client.player);
+        return playerEntityRenderer.getModel();
+    }
+
     protected void renderMuzzleFlash(PoseStack poseStack) {
         var length = barrelItem.getProperties().getLength();
         poseStack.translate(0, 0, -length / 16D);
         if (Ntgl.isDebugging())
-            poseStack.translate(-(double) X / 10 / 16D, (double) Y / 10 / 16D, (double) Z / 10 / 16D);
+            poseStack.translate(-X / 10D / 16D, Y / 10D / 16D, Z / 10D / 16D);
     }
 
     protected void prepareHiddenBones(ItemDisplayContext transformType) {

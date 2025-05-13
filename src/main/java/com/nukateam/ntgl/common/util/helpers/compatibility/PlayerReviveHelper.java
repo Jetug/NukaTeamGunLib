@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.util.helpers;
+package com.nukateam.ntgl.common.util.helpers.compatibility;
 
 
 import com.nukateam.ntgl.Ntgl;

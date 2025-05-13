@@ -6,7 +6,7 @@
     "common.EndPortalBlockMixin",
     "common.LivingEntityMixin",
     "common.NarratorMixin",
-    "common.SittingPhaseMixin",
+    "common.SittingPhaseMixin"
   ],
   "client": [
     "client.GameRendererMixin",

@@ -2,6 +2,7 @@
 package com.nukateam.example.common;
 
 import com.nukateam.example.common.entities.Brahmin;
+import com.nukateam.example.common.entities.Deathclaw;
 import com.nukateam.example.common.entities.Raider;
 import com.nukateam.example.common.registery.EntityTypes;
 import com.nukateam.ntgl.Ntgl;
@@ -16,5 +17,6 @@ public class ModEventBusEvents {
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(EntityTypes.RAIDER.get(), Raider.createAttributes().build());
         event.put(EntityTypes.BRAHMIN.get(), Brahmin.createAttributes().build());
+        event.put(EntityTypes.DEATHCLAW.get(), Deathclaw.createAttributes().build());
     }
 }

@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.util.helpers;
+package com.nukateam.ntgl.common.util.helpers.compatibility;
 
 import com.nukateam.ntgl.common.base.AmmoContext;
 import com.nukateam.ntgl.common.data.config.gun.Gun;

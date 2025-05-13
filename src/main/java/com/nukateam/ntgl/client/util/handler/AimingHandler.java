@@ -2,7 +2,6 @@ package com.nukateam.ntgl.client.util.handler;
 
 
 import com.nukateam.ntgl.client.util.util.PropertyHelper;
-import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunEnchantmentHelper;
@@ -10,7 +9,7 @@ import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.util.helpers.PlayerReviveHelper;
+import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAim;
 import com.nukateam.ntgl.common.foundation.ModBlocks;

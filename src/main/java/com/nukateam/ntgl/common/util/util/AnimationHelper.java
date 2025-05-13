@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.util.util;
 
-import com.nukateam.geo.interfaces.IResourceProvider;
 import mod.azure.azurelib.cache.AzureLibCache;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.core.animation.Animation;
@@ -8,10 +7,9 @@ import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
-public class AnimationHelper<T extends IResourceProvider & GeoAnimatable> {
+public class AnimationHelper<T extends GeoAnimatable> {
     private final T animatable;
     private final GeoModel model;
 

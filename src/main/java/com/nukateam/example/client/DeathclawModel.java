@@ -1,6 +1,7 @@
 
 package com.nukateam.example.client;
 
+import com.nukateam.example.common.entities.Deathclaw;
 import com.nukateam.ntgl.Ntgl;
 import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;

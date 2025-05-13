@@ -50,6 +50,7 @@ public class Ntgl {
 
     public static boolean controllableLoaded = false;
     public static boolean backpackedLoaded = false;
+    public static boolean chassisCoreLoaded = false;
     public static boolean sophisticatedLoaded = false;
     public static boolean playerReviveLoaded = false;
     public static boolean playerAnimatorLoaded = false;
@@ -88,6 +89,7 @@ public class Ntgl {
 
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
+        chassisCoreLoaded = ModList.get().isLoaded("chassis_core");
         sophisticatedLoaded = ModList.get().isLoaded("sophisticatedbackpacks");
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
         playerAnimatorLoaded = ModList.get().isLoaded("playeranimator");

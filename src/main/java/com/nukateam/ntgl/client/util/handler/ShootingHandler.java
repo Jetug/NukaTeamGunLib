@@ -10,7 +10,7 @@ import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.util.helpers.PlayerReviveHelper;
+import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
@@ -261,6 +261,11 @@ public class ShootingHandler {
 
     public boolean isShooting(LivingEntity entity, HumanoidArm arm){
         return getCooldown(entity, arm) > 0;
+    }
+
+    @Deprecated
+    public boolean isShooting(){
+        return shooting;
     }
 
     public static float calcShootTickGap(int rpm) {
