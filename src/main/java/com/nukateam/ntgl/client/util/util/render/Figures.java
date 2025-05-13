@@ -18,6 +18,10 @@ public class Figures {
     }
 
     public static void drawLine(GuiGraphics graphics, int x, int y, int width, int height) {
-        graphics.fill(x, y, x + width, y + height, 0xFFFFFFFF);
+        drawLine(graphics, x, y, x + width, y + height, 0xFFFFFFFF);
+    }
+
+    public static void drawLine(GuiGraphics graphics, int x, int y, int width, int height, int color) {
+        graphics.fill(x, y, x + width, y + height, color);
     }
 }

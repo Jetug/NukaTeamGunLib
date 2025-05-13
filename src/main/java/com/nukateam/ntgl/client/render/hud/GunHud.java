@@ -7,7 +7,6 @@ import com.nukateam.ntgl.client.util.util.render.Figures;
 import com.nukateam.ntgl.common.base.holders.FuelType;
 import com.nukateam.ntgl.common.base.utils.FuelUtils;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.event.GunProjectileHitEvent;
 import com.nukateam.ntgl.common.foundation.item.AmmoBoxItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -30,28 +29,46 @@ import java.util.Map;
 
 public class GunHud implements IGuiOverlay {
     public static final float COUNTER_SCALE = 0.9f;
+    public static final int INVENTORY_AMMO_COUNT_COLOR = 0xAAAAAA;
     public static final int DEFAULT_AMMO_COLOR = 0xFFFFFF;
     public static final int LOW_AMMO_COLOR = 0xFF5555;
-    public static final int ICON_X = 115;
-    public static final int OFFHAND_X_OFFSET = 110;
-    public static final int BAR_WIDTH = 35;
-    public static final int BAR_HEIGHT = 6;
-    public static final int BAR_START_X = 70;
-    public static final int BAR_START_Y = 57;
-    public static final int INVENTORY_AMMO_COUNT_COLOR = 0xAAAAAA;
-    protected Minecraft minecraft = Minecraft.getInstance();
-
+    public static final Colors DEFAULT_COLORS = new Colors(DEFAULT_AMMO_COLOR, INVENTORY_AMMO_COUNT_COLOR, DEFAULT_AMMO_COLOR, LOW_AMMO_COLOR);
     protected static final DecimalFormat CURRENT_AMMO_FORMAT = new DecimalFormat("000");
     protected static final DecimalFormat INVENTORY_AMMO_FORMAT = new DecimalFormat("0000");
+    private static final int ICON_X = 115;
+    private static final int OFFHAND_X_OFFSET = 110;
+    private static final int BAR_WIDTH = 35;
+    private static final int BAR_HEIGHT = 6;
+    private static final int BAR_START_X = 70;
+    private static final int BAR_START_Y = 57;
     protected static final Map<InteractionHand, GunHudCache> cache = Map.of(
             InteractionHand.MAIN_HAND, new GunHudCache(InteractionHand.MAIN_HAND),
             InteractionHand.OFF_HAND, new GunHudCache(InteractionHand.OFF_HAND)
     );
 
+    protected final Minecraft minecraft = Minecraft.getInstance();
+    private Colors colors = DEFAULT_COLORS;
     public static final IGuiOverlay AMMO_HUD = new GunHud();
-    public static int hudColor = DEFAULT_AMMO_COLOR;
-    public static void setHudColor(int hudColor) {
-        GunHud.hudColor = hudColor;
+
+    public void setHudColor(Colors hudColor) {
+        colors = hudColor;
+    }
+
+    public void resetHudColor() {
+        colors = DEFAULT_COLORS;
+    }
+
+    public static int toRgba(int rgb){
+        int alpha = 0xFF;
+        return (alpha << 24) | rgb;
+    }
+
+    public static float[] rgbToFloatRgba(int rgb) {
+        float red   = ((rgb >> 16) & 0xFF) / 255.0f;
+        float green = ((rgb >> 8)  & 0xFF) / 255.0f;
+        float blue  =  (rgb        & 0xFF) / 255.0f;
+
+        return new float[] {red, green, blue, 1}; // Returns [R, G, B, A]
     }
 
     @Override
@@ -65,8 +82,9 @@ public class GunHud implements IGuiOverlay {
 
             if (heldItem.getItem() instanceof GunItem && shouldRender(hand, player)) {
                 updateCache(cache, player, heldItem);
-                if (!MinecraftForge.EVENT_BUS.post(new GunHudEvent(hand, cache))) {
+                if (!MinecraftForge.EVENT_BUS.post(new GunHudEvent(this, hand, graphics, cache, GunHudEvent.Phase.START))) {
                     renderAmmoCounter(graphics, cache, heldItem, x, height);
+                    MinecraftForge.EVENT_BUS.post(new GunHudEvent(this, hand, graphics, cache, GunHudEvent.Phase.END));
                 }
             }
         });
@@ -82,7 +100,7 @@ public class GunHud implements IGuiOverlay {
         var poseStack = graphics.pose();
 
         renderCurrentAmmo(graphics, handCache, x - 70, y - 43, poseStack, currentAmmoCountText);
-        Figures.drawLine(graphics, x - 70, y - 30, 27, 2);
+        Figures.drawLine(graphics, x - 70, y - 30, 27, 2, toRgba(colors.hud));
         renderInventoryAmmo(graphics, handCache, x - 67, y - 26, poseStack, minecraft.font);
 
         RenderSystem.enableDepthTest();
@@ -90,8 +108,12 @@ public class GunHud implements IGuiOverlay {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
+        var iconColor = rgbToFloatRgba(colors.hud);
+        RenderSystem.setShaderColor(iconColor[0], iconColor[1], iconColor[2], iconColor[3]);
         renderFireModeIcon(graphics, handCache, x, y, currentAmmoCountText);
         renderAmmoTypeIcon(graphics, handCache, x, y, currentAmmoCountText);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+
         renderFuelCounters(graphics, stack, x - BAR_START_X, y - BAR_START_Y);
     }
 
@@ -117,7 +139,7 @@ public class GunHud implements IGuiOverlay {
                                      int x, int y,
                                      PoseStack poseStack,
                                      String currentAmmoCountText) {
-        var ammoCountColor = handCache.ammoCount < (handCache.maxAmmoCount * 0.25) ? LOW_AMMO_COLOR : hudColor;
+        var ammoCountColor = handCache.ammoCount < (handCache.maxAmmoCount * 0.25) ? colors.lowAmmo : colors.currentAmmo;
         poseStack.pushPose();
         {
             var scale = 1.5f;
@@ -139,7 +161,7 @@ public class GunHud implements IGuiOverlay {
             graphics.drawString(font, inventoryAmmoCountText,
                     x / COUNTER_SCALE,
                     y / COUNTER_SCALE,
-                    INVENTORY_AMMO_COUNT_COLOR, true);
+                    colors.inventoryAmmo, true);
         }
         poseStack.popPose();
     }
@@ -151,7 +173,6 @@ public class GunHud implements IGuiOverlay {
         var textWidth = minecraft.font.width(currentAmmoCountText) * 1.5;
         var x = (int) (width - getIconX(handCache, textWidth) + textWidth);
 
-        RenderSystem.setShaderColor(1, 1, 1, 1);
         renderIcon(graphics, icon, x, height - 46);
     }
 
@@ -161,7 +182,6 @@ public class GunHud implements IGuiOverlay {
         var textWidth =  minecraft.font.width(currentAmmoCountText) * 1.5;
         var x = (int) (width - getIconX(handCache, textWidth) + textWidth);
 
-        RenderSystem.setShaderColor(1, 1, 1, 1);
         renderIcon(graphics, icon, x, height - 32);
     }
 
@@ -210,4 +230,6 @@ public class GunHud implements IGuiOverlay {
         }
         return inventoryAmmoCount;
     }
+
+    public record Colors(int hud, int inventoryAmmo, int currentAmmo, int lowAmmo){}
 }

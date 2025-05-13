@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
-import com.nukateam.ntgl.client.event.ClientTickHandler;
+import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
@@ -38,9 +38,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import static com.nukateam.ntgl.client.event.InputEvents.*;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderRightArm;
+import static com.nukateam.ntgl.client.util.ClientDebug.*;
 
 public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
     public static final String RIGHT_ARM = "right_arm";
@@ -179,7 +179,6 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
         }
 
         if (isRightHand || isLeftHand) {
-            var playerEntityModel = getPlayerModel();
             poseStack.pushPose();
             {
                 RenderUtils.prepMatrixForBone(poseStack, bone);
@@ -209,27 +208,21 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGe
 
                     if (isRightHand) {
                         if (bone.getName().equals(LEFT_ARM)) {
-                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
-                            renderRightArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                            renderRightArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve);
                         }
                     } else {
                         if (bone.getName().equals(LEFT_ARM)) {
-                            renderRightArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                            renderRightArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
-                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, playerEntityModel, arm, sleeve);
+                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve);
                         }
                     }
                 }
             }
             poseStack.popPose();
         }
-    }
-
-    public static PlayerModel<AbstractClientPlayer> getPlayerModel() {
-        var client = Minecraft.getInstance();
-        var playerEntityRenderer = (PlayerRenderer) client.getEntityRenderDispatcher().getRenderer(client.player);
-        return playerEntityRenderer.getModel();
     }
 
     protected void renderMuzzleFlash(PoseStack poseStack) {
