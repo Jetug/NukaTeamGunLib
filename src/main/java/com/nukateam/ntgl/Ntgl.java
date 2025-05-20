@@ -78,6 +78,7 @@ public class Ntgl {
         processArchives();
         registerWeapons();
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        GunPackModule.init(MOD_EVENT_BUS);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
@@ -157,7 +158,7 @@ public class Ntgl {
     private void registerWeapons() {
         MOD_CONFIGS.forEach((modId, configs) -> {
             configs.forEach(configName -> {
-                String weaponId = modId + "_" + configName.replace(".json", "");
+                String weaponId = configName.replace(".json", "");
                 ITEMS.register(weaponId, () -> new GunItem(
                         new Item.Properties().stacksTo(1)
                 ));
