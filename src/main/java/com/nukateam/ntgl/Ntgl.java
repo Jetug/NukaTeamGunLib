@@ -18,6 +18,8 @@ import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.modules.packs.GunPackModule;
+import com.nukateam.ntgl.modules.packs.NTGLPackManager;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -56,7 +58,7 @@ public class Ntgl {
     public static boolean playerAnimatorLoaded = false;
 
     public Ntgl() {
-//        AzureLib.initialize();
+        GunPackModule.init();
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
@@ -68,6 +70,7 @@ public class Ntgl {
         if(Ntgl.isDebugging()) {
             ModItemTabs.register(MOD_EVENT_BUS);
         }
+
         ModGuns.register(MOD_EVENT_BUS);
         ModBlocks.register(MOD_EVENT_BUS);
         ModRecipeType.REGISTER.register(MOD_EVENT_BUS);
@@ -86,6 +89,9 @@ public class Ntgl {
             MOD_EVENT_BUS.addListener(CrosshairHandler::onConfigReload);
             MOD_EVENT_BUS.addListener(ClientHandler::onRegisterReloadListener);
         });
+
+        GunPackModule.createItems(MOD_EVENT_BUS);
+
 
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
