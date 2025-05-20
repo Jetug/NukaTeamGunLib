@@ -17,12 +17,14 @@ import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.common.foundation.init.*;
+import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.modules.packs.GunPackModule;
 import com.nukateam.ntgl.modules.packs.NTGLPackManager;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -38,9 +40,20 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 
-import java.util.Set;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import static com.nukateam.example.common.registery.ModGuns.*;
 
@@ -57,8 +70,14 @@ public class Ntgl {
     public static boolean playerReviveLoaded = false;
     public static boolean playerAnimatorLoaded = false;
 
+    private static final Pattern CONFIG_PATTERN = Pattern.compile("^data/([^/]+)/guns/([^/]+\\.json)$");
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
+    private static final Map<String, Set<String>> MOD_CONFIGS = new HashMap<>();
+
     public Ntgl() {
-        GunPackModule.init();
+        processArchives();
+        registerWeapons();
+        ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
@@ -72,6 +91,8 @@ public class Ntgl {
         }
 
         ModGuns.register(MOD_EVENT_BUS);
+        GunPackModule.createItems(MOD_EVENT_BUS);
+
         ModBlocks.register(MOD_EVENT_BUS);
         ModRecipeType.REGISTER.register(MOD_EVENT_BUS);
         ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
@@ -90,9 +111,6 @@ public class Ntgl {
             MOD_EVENT_BUS.addListener(ClientHandler::onRegisterReloadListener);
         });
 
-        GunPackModule.createItems(MOD_EVENT_BUS);
-
-
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
         chassisCoreLoaded = ModList.get().isLoaded("chassis_core");
@@ -101,6 +119,50 @@ public class Ntgl {
         playerAnimatorLoaded = ModList.get().isLoaded("playeranimator");
 
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    private void processArchives() {
+        Path ntglPath = Paths.get("ntgl");
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(ntglPath, "*.zip")) {
+            for (Path zipFile : stream) {
+                processZipArchive(zipFile);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void processZipArchive(Path zipPath) {
+        try (ZipFile zip = new ZipFile(zipPath.toFile())) {
+            Enumeration<? extends ZipEntry> entries = zip.entries();
+
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                if (entry.isDirectory()) continue;
+
+                Matcher matcher = CONFIG_PATTERN.matcher(entry.getName());
+                if (matcher.matches()) {
+                    String modId = matcher.group(1);
+                    String configName = matcher.group(2);
+                    MOD_CONFIGS.computeIfAbsent(modId, k -> new HashSet<>()).add(configName);
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error processing archive: " + zipPath);
+            e.printStackTrace();
+        }
+    }
+
+    private void registerWeapons() {
+        MOD_CONFIGS.forEach((modId, configs) -> {
+            configs.forEach(configName -> {
+                String weaponId = modId + "_" + configName.replace(".json", "");
+                ITEMS.register(weaponId, () -> new GunItem(
+                        new Item.Properties().stacksTo(1)
+                ));
+            });
+        });
     }
 
     public static boolean isDebugging() {
