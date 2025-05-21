@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.base.holders;
 
+import com.google.gson.JsonParseException;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -7,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 
 public class AttachmentType {
@@ -45,7 +47,11 @@ public class AttachmentType {
     }
 
     public static AttachmentType getType(ResourceLocation id) {
-        return typeMap.getOrDefault(id, SCOPE);
+        var type = typeMap.get(id);
+        if(type == null){
+            throw new JsonParseException("Attachment type \"" + id.toString() + "\" doesn't exists");
+        }
+        return type;
     }
 
     public static AttachmentType getType(String path) {

@@ -12,7 +12,7 @@ import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.datagen.*;
-import com.nukateam.ntgl.common.foundation.ModBlocks;
+import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.foundation.entity.*;

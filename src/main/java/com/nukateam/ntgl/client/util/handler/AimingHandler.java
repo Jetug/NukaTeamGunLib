@@ -12,7 +12,7 @@ import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAim;
-import com.nukateam.ntgl.common.foundation.ModBlocks;
+import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;

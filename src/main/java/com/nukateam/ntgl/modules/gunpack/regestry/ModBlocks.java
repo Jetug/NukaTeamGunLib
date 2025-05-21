@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation;
+package com.nukateam.ntgl.modules.gunpack.regestry;
 
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.common.foundation.block.WorkbenchBlock;

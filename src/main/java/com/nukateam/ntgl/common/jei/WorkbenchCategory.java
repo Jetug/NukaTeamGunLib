@@ -4,7 +4,7 @@ import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.foundation.ModBlocks;
+import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

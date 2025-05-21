@@ -48,6 +48,7 @@
   "item.minecraft.lingering_potion.effect.blinding": "Lingering Potion of Blinding",
   "item.minecraft.lingering_potion.effect.deafening": "Lingering Potion of Deafening",
   "itemGroup.ntgl.example": "NTGL Example",
+  "itemGroup.ntgl.blocks": "NTGL blocks",
   "itemGroup.ntgl": "NTGL Guns",
 
   "death.attack.ntgl.bullet.killed": "%1$s was taken down by %2$s",

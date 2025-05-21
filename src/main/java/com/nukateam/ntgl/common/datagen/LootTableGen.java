@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 
 import com.nukateam.ntgl.Ntgl;
 
-import com.nukateam.ntgl.common.foundation.ModBlocks;
+import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.BlockLootSubProvider;

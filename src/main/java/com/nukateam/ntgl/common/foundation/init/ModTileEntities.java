@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.foundation.init;
 
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.foundation.ModBlocks;
+import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
