@@ -1,8 +1,14 @@
 {
   "itemGroup.weapons": "NTGL",
-  "item.ntgl.aimproccesor": "Circuit Board",
-  "item.ntgl.antisept": "Antiseptic",
-  "item.ntgl.alumicond": "Aluminium Radiator",
+
+  "effect.ntgl.blinded": "Ослеплён",
+  "effect.ntgl.deafened": "Оглушён",
+
+  "itemGroup.ntgl.example": "NTGL Пример",
+  "itemGroup.ntgl": "NTGL Оружие",
+
+  "block.ntgl.workbench": "Сборочный Верстак",
+
   "item.ntgl.round10mm": "10mm Round",
   "item.ntgl.round45": ".45 Round",
   "item.ntgl.powdergun": "Black Powder Rifle",
@@ -13,9 +19,7 @@
   "item.ntgl.round50": ".50 Round",
   "item.ntgl.round380": ".380 Round",
   "item.ntgl.round556": "5.56 Round",
-  "effect.ntgl.blinded": "Ослеплён",
-  "effect.ntgl.deafened": "Оглушён",
-  "block.ntgl.workbench": "Сборочный Верстак",
+
   "item.ntgl.pistol": "Пистолет",
   "item.ntgl.shotgun": "Дробовик",
   "item.ntgl.sniper_rifle": "Снайперская винтовка",
@@ -45,7 +49,7 @@
   "item.minecraft.potion.effect.deafening": "Зелье оглушения",
   "item.minecraft.lingering_potion.effect.blinding": "Туманное зелье ослепления",
   "item.minecraft.lingering_potion.effect.deafening": "Туманное зелье оглушения",
-  "itemGroup.ntgl": "NTGL Пример",
+
   "death.attack.ntgl.bullet.killed": "%1$s был(а) убит(а) %2$s",
   "death.attack.ntgl.bullet.eliminated": "%1$s был(а) устранен(а) %2$s",
   "death.attack.ntgl.bullet.executed": "%1$s был(а) казнен(а) %2$s",

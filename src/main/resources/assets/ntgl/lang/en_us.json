@@ -47,7 +47,8 @@
   "item.minecraft.potion.effect.deafening": "Potion of Deafening",
   "item.minecraft.lingering_potion.effect.blinding": "Lingering Potion of Blinding",
   "item.minecraft.lingering_potion.effect.deafening": "Lingering Potion of Deafening",
-  "itemGroup.ntgl": "NTGL Example",
+  "itemGroup.ntgl.example": "NTGL Example",
+  "itemGroup.ntgl": "NTGL Guns",
 
   "death.attack.ntgl.bullet.killed": "%1$s was taken down by %2$s",
   "death.attack.ntgl.bullet.eliminated": "%1$s was eliminated by %2$s",

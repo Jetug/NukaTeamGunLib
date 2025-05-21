@@ -33,7 +33,7 @@ public class ModItemTabs {
         if(Ntgl.isDebugging()) {
             return CREATIVE_MODE_TABS.register("ntgl_items",
                     () -> builder().icon(() -> new ItemStack(ModGuns.ROUND10MM.get()))
-                            .title(Component.translatable("itemGroup.ntgl"))
+                            .title(Component.translatable("itemGroup.ntgl.example"))
                             .displayItems((params, output) -> registerItems(output))
                             .build());
         }

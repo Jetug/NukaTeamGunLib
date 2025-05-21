@@ -1,12 +1,7 @@
-package com.nukateam.ntgl.modules.packs;
+package com.nukateam.ntgl.modules.gunpack.data;
 
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
-import com.nukateam.ntgl.common.util.util.GunData;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.Locale;
 
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 

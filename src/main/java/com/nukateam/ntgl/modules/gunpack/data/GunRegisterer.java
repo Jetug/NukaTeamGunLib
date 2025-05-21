@@ -1,12 +1,20 @@
-package com.nukateam.ntgl.modules.packs;
+package com.nukateam.ntgl.modules.gunpack.data;
 
+import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.util.helpers.RegistrationHelper;
+import com.nukateam.ntgl.modules.gunpack.GunPackModule;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
@@ -14,20 +22,46 @@ import java.util.regex.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static com.nukateam.example.common.registery.ModGuns.ITEMS;
+import static net.minecraft.world.item.CreativeModeTab.builder;
 
 public class GunRegisterer {
     private static final Pattern CONFIG_PATTERN = Pattern.compile("^data/([^/]+)/guns/([^/]+\\.json)$");
     private static final Map<String, DeferredRegister<Item>> ITEMS = new HashMap<>();
+    private static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, GunPackModule.MOD_ID);
     private static final Map<String, Set<String>> MOD_CONFIGS = new HashMap<>();
+    private static RegistryObject<CreativeModeTab> GUN_TAB = null;
 
     public static void init(IEventBus eventBus) {
         processArchives();
         registerWeapons();
+        registerGunTab();
 
         ITEMS.forEach((k, gunRegister)-> {
             gunRegister.register(eventBus);
         });
+        CREATIVE_MODE_TABS.register(eventBus);
+    }
+
+    private static void registerGunTab() {
+        ITEMS.forEach((id, gunRegister)-> {
+//            var gunTab = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, id);
+            createTab(CREATIVE_MODE_TABS, id, gunRegister);
+        });
+    }
+
+    @Nullable
+    private static void createTab(DeferredRegister<CreativeModeTab> creativeModeTabs, String namespace, DeferredRegister<Item> gunRegister) {
+        var items = gunRegister.getEntries();
+        if(!items.isEmpty()) {
+            creativeModeTabs.register(namespace,
+                    () -> builder().icon(() -> new ItemStack(items.stream().findFirst().get().get()))
+                            .title(Component.translatable("itemGroup." + namespace))
+                            .displayItems((params, output) -> {
+                                for (var entry : gunRegister.getEntries()) {
+                                    RegistrationHelper.registerGunOrDefault(output, entry.get());
+                                }
+                            }).build());
+        }
     }
 
     public static void processArchives() {

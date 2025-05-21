@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.modules.packs;
+package com.nukateam.ntgl.modules.gunpack.resource;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,9 +32,7 @@ public class NTGLPackManager {
             RESOURCE_PACKS.clear();
             DATA_PACKS.clear();
 
-            Files.list(packsDir)
-                    .filter(p -> p.toString().endsWith(".zip"))
-                    .forEach(NTGLPackManager::processPack);
+            Files.list(packsDir).forEach(NTGLPackManager::processPack);
 
         } catch (IOException e) {
             e.printStackTrace();
