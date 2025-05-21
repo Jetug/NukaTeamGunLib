@@ -9,11 +9,7 @@ public class GunPackModule {
     public static final Logger LOGGER = Ntgl.LOGGER;
 
     public static void init(IEventBus eventBus) {
-//        GeneratedGunItems.register(eventBus);
-//        WeaponConfigExtractor.findGuns();
+        GunRegisterer.init(eventBus);
         NTGLPackManager.scanPacks();
-    }
-
-    public static void createItems(IEventBus eventBus) {
     }
 }

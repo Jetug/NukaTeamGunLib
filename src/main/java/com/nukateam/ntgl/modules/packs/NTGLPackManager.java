@@ -35,20 +35,33 @@ public class NTGLPackManager {
 
             Files.list(packsDir)
                     .filter(p -> p.toString().endsWith(".zip"))
-                    .forEach(NTGLPackManager::processZip);
+                    .forEach(NTGLPackManager::processPack);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void processZip(Path zipPath) {
-        try (FileSystem fs = FileSystems.newFileSystem(zipPath, (ClassLoader) null)) {
-            boolean hasAssets = Files.exists(fs.getPath("assets"));
-            boolean hasData = Files.exists(fs.getPath("data"));
+    private static void processPack(Path packPath) {
+        try {
+            var isZip = Files.isRegularFile(packPath) && packPath.toString().endsWith(".zip");
+            var isFolder = Files.isDirectory(packPath);
 
-            if (hasAssets) RESOURCE_PACKS.add(zipPath);
-            if (hasData) DATA_PACKS.add(zipPath);
+            if (!isZip && !isFolder) return;
+
+            var fs = isZip ?
+                    FileSystems.newFileSystem(packPath, (ClassLoader) null) :
+                    FileSystems.getDefault();
+
+            var root = isZip ? fs.getPath("/") : packPath;
+
+            var hasAssets = Files.exists(root.resolve("assets"));
+            var hasData = Files.exists(root.resolve("data"));
+
+            if (hasAssets) RESOURCE_PACKS.add(packPath);
+            if (hasData) DATA_PACKS.add(packPath);
+
+            if (isZip) fs.close();
 
         } catch (IOException e) {
             e.printStackTrace();
