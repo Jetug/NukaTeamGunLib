@@ -20,9 +20,9 @@
     "client.MouseHandlerMixin",
     "client.RenderTypeLookupMixin",
     "client.SoundOptionsScreenMixin",
-    "common.AgeableListModelAccessor",
-    "common.QuadrupedModelAccessor",
-    "common.VillagerModelAccessor"
+    "client.AgeableListModelAccessor",
+    "client.QuadrupedModelAccessor",
+    "client.VillagerModelAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

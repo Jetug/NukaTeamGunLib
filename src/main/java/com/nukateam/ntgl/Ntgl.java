@@ -72,7 +72,6 @@ public class Ntgl {
 
         ModGuns.register(MOD_EVENT_BUS);
 
-        ModBlocks.register(MOD_EVENT_BUS);
         ModRecipeType.REGISTER.register(MOD_EVENT_BUS);
         ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
         ModRecipeSerializers.REGISTER.register(MOD_EVENT_BUS);

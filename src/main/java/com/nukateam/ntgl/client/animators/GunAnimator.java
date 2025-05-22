@@ -31,7 +31,7 @@ import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.event.TickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import static com.nukateam.example.common.util.constants.Animations.*;
+import static com.nukateam.ntgl.client.util.constants.Animations.*;
 import static com.nukateam.ntgl.client.util.util.TransformUtils.*;
 import static mod.azure.azurelib.core.animation.AnimatableManager.*;
 import static mod.azure.azurelib.core.animation.Animation.*;

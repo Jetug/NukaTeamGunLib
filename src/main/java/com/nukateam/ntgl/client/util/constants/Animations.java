@@ -1,4 +1,4 @@
-package com.nukateam.example.common.util.constants;
+package com.nukateam.ntgl.client.util.constants;
 
 public class Animations {
     public static final String SHOT = "shot";
