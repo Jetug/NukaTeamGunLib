@@ -148,49 +148,49 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     /**
-     * @return If this ammo should be visible when rendering
+     * @return If this projectile  should be visible when rendering
      */
     public boolean isVisible() {
         return this.visible;
     }
 
     /**
-     * @return The damage caused by this ammo
+     * @return The damage caused by this projectile
      */
     public float getDamage() {
         return this.damage;
     }
 
     /**
-     * @return The size of the ammo entity bounding box
+     * @return The size of the projectile  entity bounding box
      */
     public float getSize() {
         return this.size;
     }
 
     /**
-     * @return The speed the ammo moves every tick
+     * @return The speed the projectile  moves every tick
      */
     public double getSpeed() {
         return this.speed;
     }
 
     /**
-     * @return The amount of ticks before this ammo is removed
+     * @return The amount of ticks before this projectile is removed
      */
     public int getLife() {
         return this.life;
     }
 
     /**
-     * @return If gravity should be applied to the ammo
+     * @return If gravity should be applied to the projectile
      */
     public boolean isGravity() {
         return this.gravity;
     }
 
     /**
-     * @return If the damage should reduce the further the ammo travels
+     * @return If the damage should reduce the further the projectiletravels
      */
     public boolean isDamageReduceOverLife() {
         return this.damageReduceOverLife;
@@ -202,14 +202,14 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     /**
-     * @return The color of the ammo trail in rgba integer format
+     * @return The color of the projectile trail in rgba integer format
      */
     public int getTrailColor() {
         return this.trailColor;
     }
 
     /**
-     * @return The multiplier to change the length of the ammo trail
+     * @return The multiplier to change the length of the projectile  trail
      */
     public double getTrailLengthMultiplier() {
         return this.trailLengthMultiplier;
@@ -224,7 +224,7 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     /**
      * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
-     * the fired ammo.
+     * the fired projectile.
      */
     public float getSpread() {
         return this.spread;

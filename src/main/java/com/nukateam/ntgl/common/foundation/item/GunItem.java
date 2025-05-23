@@ -14,8 +14,9 @@ import com.nukateam.ntgl.client.render.renderers.gun.*;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.debug.Debug;
-import com.nukateam.ntgl.common.foundation.enchantment.*;
 import com.nukateam.ntgl.common.foundation.item.interfaces.*;
+import com.nukateam.ntgl.modules.enchantment.EnchantmentTypes;
+import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.*;
 import mod.azure.azurelib.core.animation.*;
@@ -221,13 +222,20 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        var data = new GunData(stack, null);
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+        return this.gun.getGeneral().isEnchantable() && super.isBookEnchantable(stack, book);
+    }
 
-        if (enchantment.category == EnchantmentTypes.SEMI_AUTO_GUN) {
-            return GunModifierHelper.isAuto(data);
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        if (this.gun.getGeneral().isEnchantable()) {
+            var data = new GunData(stack, null);
+            if (enchantment.category == EnchantmentTypes.SEMI_AUTO_GUN) {
+                return GunModifierHelper.isAuto(data);
+            }
+            return super.canApplyAtEnchantingTable(stack, enchantment);
         }
-        return super.canApplyAtEnchantingTable(stack, enchantment);
+        else return false;
     }
 
     @Override
@@ -247,12 +255,17 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
 
     @Override
     public boolean isEnchantable(ItemStack stack) {
-        return this.getMaxStackSize(stack) == 1;
+        return this.gun.getGeneral().isEnchantable() && this.getMaxStackSize(stack) == 1;
+    }
+
+    @Override
+    public int getEnchantmentValue(ItemStack stack) {
+        return this.gun.getGeneral().isEnchantable() ? 5 : 0;
     }
 
     @Override
     public int getEnchantmentValue() {
-        return 5;
+        return this.gun.getGeneral().isEnchantable() ? 5 : 0;
     }
 
     @Override
@@ -266,4 +279,6 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     private ResourceLocation getRegistryName() {
         return ForgeRegistries.ITEMS.getKey(this);
     }
+
+
 }

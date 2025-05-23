@@ -12,6 +12,7 @@
     "recoilKick": 0.4,
     "recoilAdsReduction": 0.15,
     "alwaysSpread": true,
+    "enchantable": false,
     "renderHud": true,
     "spread": 2.0,
     "movementModifier": 0.5,

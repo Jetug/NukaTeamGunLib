@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.block;
+package com.nukateam.ntgl.modules.gunpack.block;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;

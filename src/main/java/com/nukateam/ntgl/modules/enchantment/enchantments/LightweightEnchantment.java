@@ -1,27 +1,23 @@
-package com.nukateam.ntgl.common.foundation.enchantment;
+package com.nukateam.ntgl.modules.enchantment.enchantments;
 
+import com.nukateam.ntgl.modules.enchantment.EnchantmentTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 
 /**
  * Author: MrCrayfish
  */
-public class OverCapacityEnchantment extends GunEnchantment {
-    public OverCapacityEnchantment() {
+public class LightweightEnchantment extends GunEnchantment {
+    public LightweightEnchantment() {
         super(Rarity.RARE, EnchantmentTypes.GUN, new EquipmentSlot[]{EquipmentSlot.MAINHAND}, Type.WEAPON);
     }
 
     @Override
-    public int getMaxLevel() {
-        return 3;
-    }
-
-    @Override
     public int getMinCost(int level) {
-        return 5 + (level - 1) * 10;
+        return 15;
     }
 
     @Override
     public int getMaxCost(int level) {
-        return super.getMinCost(level) + 50;
+        return this.getMinCost(level) + 20;
     }
 }
