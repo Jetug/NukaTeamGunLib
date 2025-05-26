@@ -117,6 +117,10 @@ public class GripType extends ResourceHolder {
         return gripTypeMap.getOrDefault(id, ONE_HANDED);
     }
 
+    public static GripType getType(String id) {
+        return getType(ResourceLocation.tryParse(id));
+    }
+
     /** Gets the held animation get. Used for rendering. */
     public IHeldAnimation getHeldAnimation() {
         return this.heldAnimation;

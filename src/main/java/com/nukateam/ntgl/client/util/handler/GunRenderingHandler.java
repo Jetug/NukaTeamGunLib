@@ -10,7 +10,7 @@ import com.nukateam.ntgl.client.util.util.PropertyHelper;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItemBase;
+import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
@@ -629,7 +629,7 @@ public class GunRenderingHandler {
         var result = new ArrayList<String>();
 
         for (var attachmentStack : attachments){
-            if(attachmentStack.getItem() instanceof AttachmentItemBase attachmentItem){
+            if(attachmentStack.getItem() instanceof AttachmentItem<?> attachmentItem){
                 result.add(attachmentItem.getName());
             }
         }

@@ -4,7 +4,7 @@ import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
 import com.nukateam.ntgl.common.foundation.init.ModContainers;
-import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItemBase;
+import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItem;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.util.data.Pos2I;
@@ -128,7 +128,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
         for (int i = 0; i < this.getWeaponInventory().getContainerSize(); i++) {
             var itemStack = this.getSlot(i).getItem();
             if (itemStack.getItem() instanceof IAttachment attachment
-                    && itemStack.getItem() instanceof AttachmentItemBase) {
+                    && itemStack.getItem() instanceof AttachmentItem<?>) {
                 var tagKey = attachment.getType();
                 attachmentsTag.put(tagKey.toString(), itemStack.save(new CompoundTag()));
             }

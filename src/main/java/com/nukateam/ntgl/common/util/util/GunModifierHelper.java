@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
 import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.data.constants.Tags;
+import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItem;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
@@ -17,11 +18,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -439,7 +438,6 @@ public class GunModifierHelper {
         return Mth.clamp(chance.get(), 0F, 1F);
     }
 
-    ///PRIVATE______________
     private static void forEachAttachment(GunData data, Consumer<IGunModifier> consumer){
         var gun = data.gun;
         var config = getGun(gun);
@@ -457,9 +455,10 @@ public class GunModifierHelper {
     private static IGunModifier[] getAttachmentModifiers(ItemStack gun, AttachmentType type) {
         var attachmentItem = Gun.getAttachmentItem(type, gun);
 
-        if (!attachmentItem.isEmpty() && attachmentItem.getItem() instanceof IAttachment<?> attachment) {
+        if (!attachmentItem.isEmpty() && attachmentItem.getItem() instanceof AttachmentItem<?> attachment) {
             var modifiers = attachment.getProperties().getModifiers();
-            return modifiers;
+            var configModifiers = attachment.getConfig().getModifiers();
+            return ArrayUtils.add(modifiers, configModifiers);
         }
         return EMPTY;
     }
