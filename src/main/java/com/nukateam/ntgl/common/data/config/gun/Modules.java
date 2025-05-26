@@ -151,7 +151,7 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         @Override
         public CompoundTag serializeNBT() {
-            CompoundTag tag = super.serializeNBT();
+            var tag = super.serializeNBT();
             tag.putFloat("FovModifier", this.fovModifier);
             return tag;
         }
@@ -165,7 +165,7 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
 
         public JsonObject toJsonObject() {
-            JsonObject object = super.toJsonObject();
+            var object = super.toJsonObject();
             object.addProperty("fovModifier", this.fovModifier);
             return object;
         }
@@ -254,7 +254,7 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         @Override
         public CompoundTag serializeNBT() {
-            CompoundTag tag = super.serializeNBT();
+            var tag = super.serializeNBT();
 
             if (this.name != null) {
                 tag.putString("Name", this.name);
@@ -290,7 +290,7 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
 
         public JsonObject toJsonObject() {
-            JsonObject object = new JsonObject();
+            var object = new JsonObject();
             if (this.name != null) {
                 object.addProperty("Name", this.name);
             }

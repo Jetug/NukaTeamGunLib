@@ -38,7 +38,7 @@ public class Positioned implements INBTSerializable<CompoundTag> {
     }
 
     public JsonObject toJsonObject() {
-        JsonObject object = new JsonObject();
+        var object = new JsonObject();
         if (this.xOffset != 0) {
             object.addProperty("xOffset", this.xOffset);
         }
