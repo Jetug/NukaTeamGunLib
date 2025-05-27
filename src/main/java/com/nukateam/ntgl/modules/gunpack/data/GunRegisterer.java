@@ -32,14 +32,13 @@ import static net.minecraft.world.item.CreativeModeTab.builder;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class GunRegisterer {
+    private static final String REGISTRY_FILE = "registry.json";
     private static final Pattern CONFIG_PATTERN = Pattern.compile("^data/([^/]+)/guns/([^/]+\\.json)$");
     private static final Pattern RECIPE_PATTERN = Pattern.compile("^data/([^/]+)/recipes/([^/]+\\.json)$");
     private static final Map<String, DeferredRegister<Item>> ITEMS = new HashMap<>();
     private static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, GunPackModule.MOD_ID);
     private static final Map<String, Set<String>> MOD_CONFIGS = new HashMap<>();
-    public static final String REGISTRY_FILE = "registry.json";
     private static boolean hasValidRecipe = false;
-    private static RegistryObject<CreativeModeTab> GUN_TAB = null;
 
     public static void init(IEventBus eventBus) {
         processArchives();
