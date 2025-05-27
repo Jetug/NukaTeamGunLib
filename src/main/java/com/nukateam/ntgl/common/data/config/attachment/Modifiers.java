@@ -24,42 +24,39 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     @Optional String fireSound = "";
     @Optional boolean silencedFire = false;
     @Optional float additionalDamage = 0;
-    @Optional String modifyDamage = "";
-    @Optional String modifyProjectileSpeed = "";
-    @Optional String modifyProjectileSpread = "";
+    @Optional String damage = "";
+    @Optional String projectileSpeed = "";
+    @Optional String projectileSpread = "";
     @Optional String additionalProjectileGravity = "";
-    @Optional String modifyProjectileGravity = "";
-    @Optional String modifyProjectileLife = "";
+    @Optional String projectileGravity = "";
+    @Optional String projectileLife = "";
     @Optional float recoilModifier = 1;
     @Optional float kickModifier = 1;
-    @Optional String modifyMuzzleFlashSize = "";
-    @Optional String modifyMuzzleFlashScale = "";
-    @Optional String modifyAimDownSightSpeed = "";
-    @Optional String modifyFireRate = "";
+    @Optional String muzzleFlashSize = "";
+    @Optional String muzzleFlashScale = "";
+    @Optional String aimDownSightSpeed = "";
+    @Optional String fireRate = "";
     @Optional float criticalChance = 0;
-    @Optional String modifyMaxAmmo = "";
-    @Optional String modifyProjectileAmount = "";
-    @Optional String modifyFireDelay = "";
-    @Optional String modifyReloadStart = "";
-    @Optional String modifyReloadTime = "";
-    @Optional String modifyReloadEnd = "";
-    @Optional String modifyEquipTime = "";
-    @Optional String modifyAmmoPerShot = "";
-    @Optional HashMap<FuelType, Integer> modifyMaxFuel = new HashMap<>();
+    @Optional String maxAmmo = "";
+    @Optional String projectileAmount = "";
+    @Optional String fireDelay = "";
+    @Optional String reloadStart = "";
+    @Optional String reloadTime = "";
+    @Optional String reloadEnd = "";
+    @Optional String equipTime = "";
+    @Optional String ammoPerShot = "";
+    @Optional HashMap<FuelType, Integer> maxFuel = new HashMap<>();
 
     // Collections and enums
     @Optional Set<FireMode> fireModes = new HashSet<>();
-    @Optional
-    GripType gripType = null;
+    @Optional GripType gripType = null;
     @Optional boolean modifyNeedsFullCharge = false;
     @Optional boolean modifyIsOneTimeCharge = false;
-    @Optional
-    Set<ResourceLocation> ammoItems = new HashSet<>();
-    @Optional boolean modifyAutoReloading = false;
+    @Optional Set<ResourceLocation> ammoItems = new HashSet<>();
+    @Optional boolean autoReloading = false;
     @Optional boolean modifyShouldRenderHud = false;
-    @Optional
-    LoadingType loadingType = null;
-    @Optional Set<FuelType> modifyFuel = new HashSet<>();
+    @Optional LoadingType loadingType = null;
+    @Optional Set<FuelType> fuel = new HashSet<>();
 
     @Override
     public CompoundTag serializeNBT() {
@@ -71,27 +68,27 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
 
         // Numeric fields
         tag.putFloat("additionalDamage", this.additionalDamage);
-        tag.putString("modifyDamage", this.modifyDamage);
-        tag.putString("modifyProjectileSpeed", this.modifyProjectileSpeed);
-        tag.putString("modifyProjectileSpread", this.modifyProjectileSpread);
+        tag.putString("damage", this.damage);
+        tag.putString("projectileSpeed", this.projectileSpeed);
+        tag.putString("projectileSpread", this.projectileSpread);
         tag.putString("additionalProjectileGravity", this.additionalProjectileGravity);
-        tag.putString("modifyProjectileGravity", this.modifyProjectileGravity);
-        tag.putString("modifyProjectileLife", this.modifyProjectileLife);
+        tag.putString("projectileGravity", this.projectileGravity);
+        tag.putString("projectileLife", this.projectileLife);
         tag.putFloat("recoilModifier", this.recoilModifier);
         tag.putFloat("kickModifier", this.kickModifier);
-        tag.putString("modifyMuzzleFlashSize", this.modifyMuzzleFlashSize);
-        tag.putString("modifyMuzzleFlashScale", this.modifyMuzzleFlashScale);
-        tag.putString("modifyAimDownSightSpeed", this.modifyAimDownSightSpeed);
-        tag.putString("modifyFireRate", this.modifyFireRate);
+        tag.putString("muzzleFlashSize", this.muzzleFlashSize);
+        tag.putString("muzzleFlashScale", this.muzzleFlashScale);
+        tag.putString("aimDownSightSpeed", this.aimDownSightSpeed);
+        tag.putString("fireRate", this.fireRate);
         tag.putFloat("criticalChance", this.criticalChance);
-        tag.putString("modifyMaxAmmo", this.modifyMaxAmmo);
-        tag.putString("modifyProjectileAmount", this.modifyProjectileAmount);
-        tag.putString("modifyFireDelay", this.modifyFireDelay);
-        tag.putString("modifyReloadStart", this.modifyReloadStart);
-        tag.putString("modifyReloadTime", this.modifyReloadTime);
-        tag.putString("modifyReloadEnd", this.modifyReloadEnd);
-        tag.putString("modifyEquipTime", this.modifyEquipTime);
-        tag.putString("modifyAmmoPerShot", this.modifyAmmoPerShot);
+        tag.putString("maxAmmo", this.maxAmmo);
+        tag.putString("projectileAmount", this.projectileAmount);
+        tag.putString("fireDelay", this.fireDelay);
+        tag.putString("reloadStart", this.reloadStart);
+        tag.putString("reloadTime", this.reloadTime);
+        tag.putString("reloadEnd", this.reloadEnd);
+        tag.putString("equipTime", this.equipTime);
+        tag.putString("ammoPerShot", this.ammoPerShot);
 
         // Collections and enums
         writeFireModes(tag);
@@ -99,7 +96,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         tag.putBoolean("modifyNeedsFullCharge", this.modifyNeedsFullCharge);
         tag.putBoolean("modifyIsOneTimeCharge", this.modifyIsOneTimeCharge);
         writeAmmoItems(tag);
-        tag.putBoolean("modifyAutoReloading", this.modifyAutoReloading);
+        tag.putBoolean("autoReloading", this.autoReloading);
         tag.putBoolean("modifyShouldRenderHud", this.modifyShouldRenderHud);
         writeLoadingType(tag);
         writeFuelTypes(tag);
@@ -116,27 +113,27 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
 
         // Numeric fields
         if (tag.contains("additionalDamage", Tag.TAG_FLOAT)) this.additionalDamage = tag.getFloat("additionalDamage");
-        if (tag.contains("modifyDamage", Tag.TAG_STRING)) this.modifyDamage = tag.getString("modifyDamage");
-        if (tag.contains("modifyProjectileSpeed", Tag.TAG_STRING)) this.modifyProjectileSpeed = tag.getString("modifyProjectileSpeed");
-        if (tag.contains("modifyProjectileSpread", Tag.TAG_STRING)) this.modifyProjectileSpread = tag.getString("modifyProjectileSpread");
+        if (tag.contains("damage", Tag.TAG_STRING)) this.damage = tag.getString("damage");
+        if (tag.contains("projectileSpeed", Tag.TAG_STRING)) this.projectileSpeed = tag.getString("projectileSpeed");
+        if (tag.contains("projectileSpread", Tag.TAG_STRING)) this.projectileSpread = tag.getString("projectileSpread");
         if (tag.contains("additionalProjectileGravity", Tag.TAG_STRING)) this.additionalProjectileGravity = tag.getString("additionalProjectileGravity");
-        if (tag.contains("modifyProjectileGravity", Tag.TAG_STRING)) this.modifyProjectileGravity = tag.getString("modifyProjectileGravity");
-        if (tag.contains("modifyProjectileLife", Tag.TAG_STRING)) this.modifyProjectileLife = tag.getString("modifyProjectileLife");
+        if (tag.contains("projectileGravity", Tag.TAG_STRING)) this.projectileGravity = tag.getString("projectileGravity");
+        if (tag.contains("projectileLife", Tag.TAG_STRING)) this.projectileLife = tag.getString("projectileLife");
         if (tag.contains("recoilModifier", Tag.TAG_FLOAT)) this.recoilModifier = tag.getFloat("recoilModifier");
         if (tag.contains("kickModifier", Tag.TAG_FLOAT)) this.kickModifier = tag.getFloat("kickModifier");
-        if (tag.contains("modifyMuzzleFlashSize", Tag.TAG_STRING)) this.modifyMuzzleFlashSize = tag.getString("modifyMuzzleFlashSize");
-        if (tag.contains("modifyMuzzleFlashScale", Tag.TAG_STRING)) this.modifyMuzzleFlashScale = tag.getString("modifyMuzzleFlashScale");
-        if (tag.contains("modifyAimDownSightSpeed", Tag.TAG_STRING)) this.modifyAimDownSightSpeed = tag.getString("modifyAimDownSightSpeed");
-        if (tag.contains("modifyFireRate", Tag.TAG_STRING)) this.modifyFireRate = tag.getString("modifyFireRate");
+        if (tag.contains("muzzleFlashSize", Tag.TAG_STRING)) this.muzzleFlashSize = tag.getString("muzzleFlashSize");
+        if (tag.contains("muzzleFlashScale", Tag.TAG_STRING)) this.muzzleFlashScale = tag.getString("muzzleFlashScale");
+        if (tag.contains("aimDownSightSpeed", Tag.TAG_STRING)) this.aimDownSightSpeed = tag.getString("aimDownSightSpeed");
+        if (tag.contains("fireRate", Tag.TAG_STRING)) this.fireRate = tag.getString("fireRate");
         if (tag.contains("criticalChance", Tag.TAG_FLOAT)) this.criticalChance = tag.getFloat("criticalChance");
-        if (tag.contains("modifyMaxAmmo", Tag.TAG_STRING)) this.modifyMaxAmmo = tag.getString("modifyMaxAmmo");
-        if (tag.contains("modifyProjectileAmount", Tag.TAG_STRING)) this.modifyProjectileAmount = tag.getString("modifyProjectileAmount");
-        if (tag.contains("modifyFireDelay", Tag.TAG_STRING)) this.modifyFireDelay = tag.getString("modifyFireDelay");
-        if (tag.contains("modifyReloadStart", Tag.TAG_STRING)) this.modifyReloadStart = tag.getString("modifyReloadStart");
-        if (tag.contains("modifyReloadTime", Tag.TAG_STRING)) this.modifyReloadTime = tag.getString("modifyReloadTime");
-        if (tag.contains("modifyReloadEnd", Tag.TAG_STRING)) this.modifyReloadEnd = tag.getString("modifyReloadEnd");
-        if (tag.contains("modifyEquipTime", Tag.TAG_STRING)) this.modifyEquipTime = tag.getString("modifyEquipTime");
-        if (tag.contains("modifyAmmoPerShot", Tag.TAG_STRING)) this.modifyAmmoPerShot = tag.getString("modifyAmmoPerShot");
+        if (tag.contains("maxAmmo", Tag.TAG_STRING)) this.maxAmmo = tag.getString("maxAmmo");
+        if (tag.contains("projectileAmount", Tag.TAG_STRING)) this.projectileAmount = tag.getString("projectileAmount");
+        if (tag.contains("fireDelay", Tag.TAG_STRING)) this.fireDelay = tag.getString("fireDelay");
+        if (tag.contains("reloadStart", Tag.TAG_STRING)) this.reloadStart = tag.getString("reloadStart");
+        if (tag.contains("reloadTime", Tag.TAG_STRING)) this.reloadTime = tag.getString("reloadTime");
+        if (tag.contains("reloadEnd", Tag.TAG_STRING)) this.reloadEnd = tag.getString("reloadEnd");
+        if (tag.contains("equipTime", Tag.TAG_STRING)) this.equipTime = tag.getString("equipTime");
+        if (tag.contains("ammoPerShot", Tag.TAG_STRING)) this.ammoPerShot = tag.getString("ammoPerShot");
 
         // Collections and enums
         readFireModes(tag);
@@ -144,7 +141,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         if (tag.contains("modifyNeedsFullCharge", Tag.TAG_BYTE)) this.modifyNeedsFullCharge = tag.getBoolean("modifyNeedsFullCharge");
         if (tag.contains("modifyIsOneTimeCharge", Tag.TAG_BYTE)) this.modifyIsOneTimeCharge = tag.getBoolean("modifyIsOneTimeCharge");
         readAmmoItems(tag);
-        if (tag.contains("modifyAutoReloading", Tag.TAG_BYTE)) this.modifyAutoReloading = tag.getBoolean("modifyAutoReloading");
+        if (tag.contains("autoReloading", Tag.TAG_BYTE)) this.autoReloading = tag.getBoolean("autoReloading");
         if (tag.contains("modifyShouldRenderHud", Tag.TAG_BYTE)) this.modifyShouldRenderHud = tag.getBoolean("modifyShouldRenderHud");
         readLoadingType(tag);
         readFuelTypes(tag);
@@ -208,31 +205,31 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
 
     private void writeFuelTypes(CompoundTag tag) {
         ListTag list = new ListTag();
-        this.modifyFuel.forEach(type -> list.add(StringTag.valueOf(type.toString())));
-        tag.put("modifyFuel", list);
+        this.fuel.forEach(type -> list.add(StringTag.valueOf(type.toString())));
+        tag.put("fuel", list);
     }
 
     private void readFuelTypes(CompoundTag tag) {
-        if (tag.contains("modifyFuel", Tag.TAG_LIST)) {
-            this.modifyFuel.clear();
-            tag.getList("modifyFuel", Tag.TAG_STRING).forEach(t ->
-                    this.modifyFuel.add(FuelType.getType(t.getAsString()))
+        if (tag.contains("fuel", Tag.TAG_LIST)) {
+            this.fuel.clear();
+            tag.getList("fuel", Tag.TAG_STRING).forEach(t ->
+                    this.fuel.add(FuelType.getType(t.getAsString()))
             );
         }
     }
 
     private void writeFuelMax(CompoundTag tag) {
         CompoundTag fuelTag = new CompoundTag();
-        this.modifyMaxFuel.forEach((key, value) -> fuelTag.putInt(key.toString(), value));
-        tag.put("modifyMaxFuel", fuelTag);
+        this.maxFuel.forEach((key, value) -> fuelTag.putInt(key.toString(), value));
+        tag.put("maxFuel", fuelTag);
     }
 
     // В методе deserializeNBT
     private void readFuelMax(CompoundTag tag) {
-        if (tag.contains("modifyMaxFuel", Tag.TAG_COMPOUND)) {
-            CompoundTag fuelTag = tag.getCompound("modifyMaxFuel");
+        if (tag.contains("maxFuel", Tag.TAG_COMPOUND)) {
+            CompoundTag fuelTag = tag.getCompound("maxFuel");
             fuelTag.getAllKeys().forEach(key ->
-                    this.modifyMaxFuel.put(
+                    this.maxFuel.put(
                             FuelType.getType(key),
                             fuelTag.getInt(key)
                     )
@@ -250,28 +247,28 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
 
         // Numeric fields
         copy.additionalDamage = this.additionalDamage;
-        copy.modifyDamage = this.modifyDamage;
-        copy.modifyProjectileSpeed = this.modifyProjectileSpeed;
-        copy.modifyProjectileSpread = this.modifyProjectileSpread;
+        copy.damage = this.damage;
+        copy.projectileSpeed = this.projectileSpeed;
+        copy.projectileSpread = this.projectileSpread;
         copy.additionalProjectileGravity = this.additionalProjectileGravity;
-        copy.modifyProjectileGravity = this.modifyProjectileGravity;
-        copy.modifyProjectileLife = this.modifyProjectileLife;
+        copy.projectileGravity = this.projectileGravity;
+        copy.projectileLife = this.projectileLife;
         copy.recoilModifier = this.recoilModifier;
         copy.kickModifier = this.kickModifier;
-        copy.modifyMuzzleFlashSize = this.modifyMuzzleFlashSize;
-        copy.modifyMuzzleFlashScale = this.modifyMuzzleFlashScale;
-        copy.modifyAimDownSightSpeed = this.modifyAimDownSightSpeed;
-        copy.modifyFireRate = this.modifyFireRate;
+        copy.muzzleFlashSize = this.muzzleFlashSize;
+        copy.muzzleFlashScale = this.muzzleFlashScale;
+        copy.aimDownSightSpeed = this.aimDownSightSpeed;
+        copy.fireRate = this.fireRate;
         copy.criticalChance = this.criticalChance;
-        copy.modifyMaxAmmo = this.modifyMaxAmmo;
-        copy.modifyProjectileAmount = this.modifyProjectileAmount;
-        copy.modifyFireDelay = this.modifyFireDelay;
-        copy.modifyReloadStart = this.modifyReloadStart;
-        copy.modifyReloadTime = this.modifyReloadTime;
-        copy.modifyReloadEnd = this.modifyReloadEnd;
-        copy.modifyEquipTime = this.modifyEquipTime;
-        copy.modifyAmmoPerShot = this.modifyAmmoPerShot;
-        copy.modifyMaxFuel = new HashMap<>(this.modifyMaxFuel);
+        copy.maxAmmo = this.maxAmmo;
+        copy.projectileAmount = this.projectileAmount;
+        copy.fireDelay = this.fireDelay;
+        copy.reloadStart = this.reloadStart;
+        copy.reloadTime = this.reloadTime;
+        copy.reloadEnd = this.reloadEnd;
+        copy.equipTime = this.equipTime;
+        copy.ammoPerShot = this.ammoPerShot;
+        copy.maxFuel = new HashMap<>(this.maxFuel);
 
         // Collections and enums
         copy.fireModes = new HashSet<>(this.fireModes);
@@ -279,10 +276,10 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         copy.modifyNeedsFullCharge = this.modifyNeedsFullCharge;
         copy.modifyIsOneTimeCharge = this.modifyIsOneTimeCharge;
         copy.ammoItems = new HashSet<>(this.ammoItems);
-        copy.modifyAutoReloading = this.modifyAutoReloading;
+        copy.autoReloading = this.autoReloading;
         copy.modifyShouldRenderHud = this.modifyShouldRenderHud;
         copy.loadingType = this.loadingType;
-        copy.modifyFuel = new HashSet<>(this.modifyFuel);
+        copy.fuel = new HashSet<>(this.fuel);
 
         return copy;
     }
@@ -296,33 +293,33 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
 
         // Numeric fields
         json.addProperty("additionalDamage", this.additionalDamage);
-        json.addProperty("modifyDamage", this.modifyDamage);
-        json.addProperty("modifyProjectileSpeed", this.modifyProjectileSpeed);
-        json.addProperty("modifyProjectileSpread", this.modifyProjectileSpread);
+        json.addProperty("damage", this.damage);
+        json.addProperty("projectileSpeed", this.projectileSpeed);
+        json.addProperty("projectileSpread", this.projectileSpread);
         json.addProperty("additionalProjectileGravity", this.additionalProjectileGravity);
-        json.addProperty("modifyProjectileGravity", this.modifyProjectileGravity);
-        json.addProperty("modifyProjectileLife", this.modifyProjectileLife);
+        json.addProperty("projectileGravity", this.projectileGravity);
+        json.addProperty("projectileLife", this.projectileLife);
         json.addProperty("recoilModifier", this.recoilModifier);
         json.addProperty("kickModifier", this.kickModifier);
-        json.addProperty("modifyMuzzleFlashSize", this.modifyMuzzleFlashSize);
-        json.addProperty("modifyMuzzleFlashScale", this.modifyMuzzleFlashScale);
-        json.addProperty("modifyAimDownSightSpeed", this.modifyAimDownSightSpeed);
-        json.addProperty("modifyFireRate", this.modifyFireRate);
+        json.addProperty("muzzleFlashSize", this.muzzleFlashSize);
+        json.addProperty("muzzleFlashScale", this.muzzleFlashScale);
+        json.addProperty("aimDownSightSpeed", this.aimDownSightSpeed);
+        json.addProperty("fireRate", this.fireRate);
         json.addProperty("criticalChance", this.criticalChance);
-        json.addProperty("modifyMaxAmmo", this.modifyMaxAmmo);
-        json.addProperty("modifyProjectileAmount", this.modifyProjectileAmount);
-        json.addProperty("modifyFireDelay", this.modifyFireDelay);
-        json.addProperty("modifyReloadStart", this.modifyReloadStart);
-        json.addProperty("modifyReloadTime", this.modifyReloadTime);
-        json.addProperty("modifyReloadEnd", this.modifyReloadEnd);
-        json.addProperty("modifyEquipTime", this.modifyEquipTime);
-        json.addProperty("modifyAmmoPerShot", this.modifyAmmoPerShot);
+        json.addProperty("maxAmmo", this.maxAmmo);
+        json.addProperty("projectileAmount", this.projectileAmount);
+        json.addProperty("fireDelay", this.fireDelay);
+        json.addProperty("reloadStart", this.reloadStart);
+        json.addProperty("reloadTime", this.reloadTime);
+        json.addProperty("reloadEnd", this.reloadEnd);
+        json.addProperty("equipTime", this.equipTime);
+        json.addProperty("ammoPerShot", this.ammoPerShot);
         JsonObject fuelJson = new JsonObject();
-        this.modifyMaxFuel.forEach((key, value) ->
+        this.maxFuel.forEach((key, value) ->
                 fuelJson.addProperty(key.toString(), value)
         );
 
-        json.add("modifyMaxFuel", fuelJson);
+        json.add("maxFuel", fuelJson);
         var fireModesArray = new JsonArray();
         this.fireModes.forEach(mode -> fireModesArray.add(mode.toString()));
         json.add("fireModes", fireModesArray);
@@ -336,15 +333,15 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     }
 
     public float modifyDamage(float damage, GunData gunData) {
-        return calculate(damage, modifyDamage);
+        return calculate(damage, this.damage);
     }
 
     public double modifyProjectileSpeed(double speed, GunData gunData) {
-        return calculate((float) speed, modifyProjectileSpeed);
+        return calculate((float) speed, projectileSpeed);
     }
 
     public float modifyProjectileSpread(float spread, GunData gunData) {
-        return calculate(spread, modifyProjectileSpread);
+        return calculate(spread, projectileSpread);
     }
 
     public double getAdditionalProjectileGravity(double base, GunData gunData) {
@@ -352,11 +349,11 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     }
 
     public double modifyProjectileGravity(double gravity, GunData gunData) {
-        return calculate((float) gravity, modifyProjectileGravity);
+        return calculate((float) gravity, projectileGravity);
     }
 
     public int modifyProjectileLife(int life, GunData gunData) {
-        return (int) calculate(life, modifyProjectileLife);
+        return (int) calculate(life, projectileLife);
     }
 
     public float recoilModifier(GunData gunData) {
@@ -368,19 +365,19 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     }
 
     public double modifyMuzzleFlashSize(double size, GunData gunData) {
-        return calculate((float) size, modifyMuzzleFlashSize);
+        return calculate((float) size, muzzleFlashSize);
     }
 
     public double modifyMuzzleFlashScale(double scale, GunData gunData) {
-        return calculate((float) scale, modifyMuzzleFlashScale);
+        return calculate((float) scale, muzzleFlashScale);
     }
 
     public double modifyAimDownSightSpeed(double speed, GunData gunData) {
-        return calculate((float) speed, modifyAimDownSightSpeed);
+        return calculate((float) speed, aimDownSightSpeed);
     }
 
     public int modifyFireRate(int rate, GunData gunData) {
-        return (int) calculate(rate, modifyFireRate);
+        return (int) calculate(rate, fireRate);
     }
 
     public float criticalChance(GunData gunData) {
@@ -388,39 +385,39 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     }
 
     public int modifyMaxAmmo(int maxAmmo, GunData gunData) {
-        return (int) calculate(maxAmmo, modifyMaxAmmo);
+        return (int) calculate(maxAmmo, this.maxAmmo);
     }
 
     public int modifyProjectileAmount(int amount, GunData gunData) {
-        return (int) calculate(amount, modifyProjectileAmount);
+        return (int) calculate(amount, projectileAmount);
     }
 
     public int modifyFireDelay(int delay, GunData gunData) {
-        return (int) calculate(delay, modifyFireDelay);
+        return (int) calculate(delay, fireDelay);
     }
 
     public int modifyReloadStart(int time, GunData gunData) {
-        return (int) calculate(time, modifyReloadStart);
+        return (int) calculate(time, reloadStart);
     }
 
     public int modifyReloadTime(int time, GunData gunData) {
-        return (int) calculate(time, modifyReloadTime);
+        return (int) calculate(time, reloadTime);
     }
 
     public int modifyReloadEnd(int time, GunData gunData) {
-        return (int) calculate(time, modifyReloadEnd);
+        return (int) calculate(time, reloadEnd);
     }
 
     public int modifyEquipTime(int time, GunData gunData) {
-        return (int) calculate(time, modifyEquipTime);
+        return (int) calculate(time, equipTime);
     }
 
     public int modifyAmmoPerShot(int ammo, GunData gunData) {
-        return (int) calculate(ammo, modifyAmmoPerShot);
+        return (int) calculate(ammo, ammoPerShot);
     }
 
     public int modifyMaxFuel(int max, FuelType type, GunData gunData) {
-        return modifyMaxFuel.get(type);
+        return maxFuel.get(type);
     }
 
     public static float calculate(float num, String operation) {

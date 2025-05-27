@@ -1,0 +1,7 @@
+{
+  "type": "ntgl:barrel",
+  "modifiers": {
+    "damage" : "100",
+    "projectileAmount": "/4"
+  }
+}

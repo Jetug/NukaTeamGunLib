@@ -5,6 +5,7 @@ import com.nukateam.ntgl.*;
 import com.nukateam.ntgl.client.config.CustomAmmoManager;
 import com.nukateam.ntgl.client.config.CustomGunManager;
 import com.nukateam.ntgl.common.base.NetworkAmmoManager;
+import com.nukateam.ntgl.common.base.NetworkAttachmentManager;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.nukateam.ntgl.common.network.message.*;
 import com.mrcrayfish.framework.api.*;
@@ -18,7 +19,7 @@ public class PacketHandler {
     }
 
     public static void init() {
-        PLAY_CHANNEL = FrameworkAPI.createNetworkBuilder(new ResourceLocation(Ntgl.MOD_ID, "play"), 1)
+        PLAY_CHANNEL = FrameworkAPI.createNetworkBuilder(ResourceLocation.tryBuild(Ntgl.MOD_ID, "play"), 1)
                 .registerPlayMessage(C2SMessageAim.class, MessageDirection.PLAY_SERVER_BOUND)
                 .registerPlayMessage(C2SMessageReload.class, MessageDirection.PLAY_SERVER_BOUND)
                 .registerPlayMessage(C2SMessageShoot.class, MessageDirection.PLAY_SERVER_BOUND)
@@ -46,10 +47,11 @@ public class PacketHandler {
                 .registerPlayMessage(S2CMessageRemoveProjectile.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .build();
 
-        FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
-        FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "network_ammo_manager"), NetworkAmmoManager.LoginData::new)
-        ;
-        FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
-        FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "custom_ammo_manager"), CustomAmmoManager.LoginData::new);
+        FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
+        FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_ammo_manager"), NetworkAmmoManager.LoginData::new);
+        FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_attachment_manager"), NetworkAttachmentManager.LoginData::new);
+
+        FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
+        FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "custom_ammo_manager"), CustomAmmoManager.LoginData::new);
     }
 }

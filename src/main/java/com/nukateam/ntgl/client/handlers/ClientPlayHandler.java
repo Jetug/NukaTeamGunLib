@@ -6,6 +6,7 @@ import com.nukateam.ntgl.client.util.*;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.common.base.NetworkAmmoManager;
+import com.nukateam.ntgl.common.base.NetworkAttachmentManager;
 import com.nukateam.ntgl.common.base.NetworkGunManager;
 import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.common.foundation.init.*;
@@ -225,6 +226,10 @@ public class ClientPlayHandler {
     public static void handleUpdateAmmo(S2CMessageUpdateAmmo message) {
         NetworkAmmoManager.updateRegisteredAmmo(message);
         CustomAmmoManager.updateCustomAmmo(message);
+    }
+
+    public static void handleUpdateAttachments(S2CMessageUpdateAttachments message) {
+        NetworkAttachmentManager.updateRegisteredAttachments(message);
     }
 
     public static void handleReload(S2CMessageReload message) {

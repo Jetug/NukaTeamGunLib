@@ -26,9 +26,6 @@ import java.util.*;
 
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
-/**
- * Author: MrCrayfish
- */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, Ammo>> {
     private static List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
