@@ -11,6 +11,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -27,6 +28,7 @@ import java.util.zip.ZipFile;
 
 import static net.minecraft.world.item.CreativeModeTab.builder;
 
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class GunRegisterer {
     private static final Pattern CONFIG_PATTERN = Pattern.compile("^data/([^/]+)/guns/([^/]+\\.json)$");
     private static final Pattern RECIPE_PATTERN = Pattern.compile("^data/([^/]+)/recipes/([^/]+\\.json)$");
