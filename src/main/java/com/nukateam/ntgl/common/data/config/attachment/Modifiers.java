@@ -27,7 +27,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     @Optional String damage = "";
     @Optional String projectileSpeed = "";
     @Optional String projectileSpread = "";
-    @Optional String additionalProjectileGravity = "";
+    @Optional float additionalProjectileGravity = 0;
     @Optional String projectileGravity = "";
     @Optional String projectileLife = "";
     @Optional float recoilModifier = 1;
@@ -71,7 +71,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         tag.putString("damage", this.damage);
         tag.putString("projectileSpeed", this.projectileSpeed);
         tag.putString("projectileSpread", this.projectileSpread);
-        tag.putString("additionalProjectileGravity", this.additionalProjectileGravity);
+        tag.putFloat("additionalProjectileGravity", this.additionalProjectileGravity);
         tag.putString("projectileGravity", this.projectileGravity);
         tag.putString("projectileLife", this.projectileLife);
         tag.putFloat("recoilModifier", this.recoilModifier);
@@ -116,7 +116,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         if (tag.contains("damage", Tag.TAG_STRING)) this.damage = tag.getString("damage");
         if (tag.contains("projectileSpeed", Tag.TAG_STRING)) this.projectileSpeed = tag.getString("projectileSpeed");
         if (tag.contains("projectileSpread", Tag.TAG_STRING)) this.projectileSpread = tag.getString("projectileSpread");
-        if (tag.contains("additionalProjectileGravity", Tag.TAG_STRING)) this.additionalProjectileGravity = tag.getString("additionalProjectileGravity");
+        if (tag.contains("additionalProjectileGravity", Tag.TAG_FLOAT)) this.additionalProjectileGravity = tag.getFloat("additionalProjectileGravity");
         if (tag.contains("projectileGravity", Tag.TAG_STRING)) this.projectileGravity = tag.getString("projectileGravity");
         if (tag.contains("projectileLife", Tag.TAG_STRING)) this.projectileLife = tag.getString("projectileLife");
         if (tag.contains("recoilModifier", Tag.TAG_FLOAT)) this.recoilModifier = tag.getFloat("recoilModifier");
@@ -344,8 +344,8 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         return calculate(spread, projectileSpread);
     }
 
-    public double getAdditionalProjectileGravity(double base, GunData gunData) {
-        return calculate((float) base, additionalProjectileGravity);
+    public double additionalProjectileGravity(GunData gunData) {
+        return additionalProjectileGravity;
     }
 
     public double modifyProjectileGravity(double gravity, GunData gunData) {
@@ -422,8 +422,6 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
 
     public static float calculate(float num, String operation) {
         if (operation == null || operation.isEmpty()) {
-            var throwable = new IllegalArgumentException("Operation string cannot be null or empty");
-            Ntgl.LOGGER.error("Operation string cannot be null or empty", throwable);
             return num;
         }
 
@@ -463,7 +461,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
                 yield num / operand;
             }
             default -> {
-                Ntgl.LOGGER.error("Division by zero", new IllegalArgumentException("Unsupported operator: " + operator));
+                Ntgl.LOGGER.error("Unsupported operator: {}", operator, new IllegalArgumentException("Unsupported operator: " + operator));
                 yield num / operand;
             }
         };

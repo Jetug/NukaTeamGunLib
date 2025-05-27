@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
+import com.nukateam.ntgl.common.util.annotation.Ignored;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -21,7 +22,7 @@ public class AttachmentConfig implements INBTSerializable<CompoundTag>, IEditorM
     public static final String ATTACHMENT_TYPE = "AttachmentType";
     public static final String MODIFIERS = "modifiers";
 
-    private AttachmentType type;
+    @Ignored private AttachmentType type;
     @Optional private Modifiers modifiers = new Modifiers();
 
     @Override

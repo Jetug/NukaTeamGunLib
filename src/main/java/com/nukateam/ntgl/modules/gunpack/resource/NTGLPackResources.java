@@ -62,7 +62,7 @@ public class NTGLPackResources implements PackResources {
                 walk.filter(Files::isRegularFile)
                         .forEach(file -> {
                             String relative = root.relativize(file).toString().replace('\\', '/');
-                            ResourceLocation loc = new ResourceLocation(namespace, path + "/" + relative);
+                            ResourceLocation loc = ResourceLocation.tryBuild(namespace, path + "/" + relative);
                             output.accept(loc, () -> Files.newInputStream(file));
                         });
             } catch (IOException e) {
