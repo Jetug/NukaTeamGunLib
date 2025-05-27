@@ -57,7 +57,6 @@ public class Ntgl {
     public static boolean playerAnimatorLoaded = false;
 
     public Ntgl() {
-        GunPackModule.init(MOD_EVENT_BUS);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
@@ -89,6 +88,8 @@ public class Ntgl {
             MOD_EVENT_BUS.addListener(CrosshairHandler::onConfigReload);
             MOD_EVENT_BUS.addListener(ClientHandler::onRegisterReloadListener);
         });
+
+        GunPackModule.init(MOD_EVENT_BUS);
 
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");

@@ -11,7 +11,7 @@ public class GunPackModule {
     public static final Logger LOGGER = Ntgl.LOGGER;
 
     public static void init(IEventBus eventBus) {
-        GunRegisterer.init(eventBus);
+//        GunRegisterer.init(eventBus);
         NTGLPackManager.scanPacks();
     }
 }

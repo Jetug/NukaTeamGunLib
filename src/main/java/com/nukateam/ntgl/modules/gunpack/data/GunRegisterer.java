@@ -6,6 +6,7 @@ import com.nukateam.ntgl.modules.gunpack.GunPackModule;
 import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -51,7 +52,6 @@ public class GunRegisterer {
             createBlockTab(CREATIVE_MODE_TABS);
         }
         ITEMS.forEach((id, gunRegister)-> {
-//            var gunTab = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, id);
             createTab(CREATIVE_MODE_TABS, id, gunRegister);
         });
     }
@@ -146,11 +146,15 @@ public class GunRegisterer {
     private static void registerWeapons() {
         MOD_CONFIGS.forEach((modId, configs) -> {
             configs.forEach(configName -> {
-                var weaponId = configName.replace(".json", "");
-                var gunRegister = ITEMS.computeIfAbsent(modId, id -> DeferredRegister.create(ForgeRegistries.ITEMS, id));
-                gunRegister.register(weaponId, () -> new GunItem(
-                        new Item.Properties().stacksTo(1)
-                ));
+                var weaponName = configName.replace(".json", "");
+                var weaponId = ResourceLocation.tryBuild(modId, weaponName);
+
+                if(!ForgeRegistries.ITEMS.containsKey(weaponId)) {
+                    var gunRegister = ITEMS.computeIfAbsent(modId, id -> DeferredRegister.create(ForgeRegistries.ITEMS, id));
+                    gunRegister.register(weaponName, () -> new GunItem(
+                            new Item.Properties().stacksTo(1)
+                    ));
+                }
             });
         });
     }
