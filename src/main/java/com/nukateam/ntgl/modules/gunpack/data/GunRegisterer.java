@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.modules.gunpack.data;
 
+import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.helpers.RegistrationHelper;
 import com.nukateam.ntgl.modules.gunpack.GunPackModule;
@@ -26,6 +27,7 @@ import java.util.regex.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static net.minecraft.util.datafix.fixes.BlockEntitySignTextStrictJsonFix.GSON;
 import static net.minecraft.world.item.CreativeModeTab.builder;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -35,12 +37,13 @@ public class GunRegisterer {
     private static final Map<String, DeferredRegister<Item>> ITEMS = new HashMap<>();
     private static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, GunPackModule.MOD_ID);
     private static final Map<String, Set<String>> MOD_CONFIGS = new HashMap<>();
+    public static final String REGISTRY_FILE = "registry.json";
     private static boolean hasValidRecipe = false;
     private static RegistryObject<CreativeModeTab> GUN_TAB = null;
 
     public static void init(IEventBus eventBus) {
         processArchives();
-        registerWeapons();
+//        registerWeapons();
         registerGunTab();
 
         ITEMS.forEach((k, gunRegister)-> {
@@ -88,6 +91,7 @@ public class GunRegisterer {
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(ntglPath, "*.zip")) {
             for (Path zipFile : stream) {
+                processPack(zipFile);
                 processZipArchive(zipFile);
             }
         } catch (IOException e) {
@@ -97,20 +101,44 @@ public class GunRegisterer {
 
     private static void processZipArchive(Path zipPath) {
         try (ZipFile zip = new ZipFile(zipPath.toFile())) {
-            Enumeration<? extends ZipEntry> entries = zip.entries();
+            var entries = zip.entries();
 
             while (entries.hasMoreElements()) {
                 var entry = entries.nextElement();
                 if (entry.isDirectory()) continue;
 
-                checkConfig(entry);
+//                checkConfig(entry);
+
                 if(!hasValidRecipe && isValidRecipe(entry, zip)) {
                     hasValidRecipe = true;
                 }
 
             }
         } catch (IOException e) {
-            System.err.println("Error processing archive: " + zipPath);
+            GunPackModule.LOGGER.error("Error processing archive: {}", zipPath, e);
+        }
+    }
+
+    private static void processPack(Path packPath) {
+        try (var zip = new ZipFile(packPath.toFile())) {
+            var manifest = zip.getEntry(REGISTRY_FILE);
+            if (manifest == null) return;
+
+            var manifestJson = GSON.fromJson(
+                    new InputStreamReader(zip.getInputStream(manifest)),
+                    JsonObject.class
+            );
+
+            var items = manifestJson.getAsJsonArray("guns");
+            items.forEach(item -> {
+                var id = ResourceLocation.tryParse(item.getAsString());
+                if (id != null && !ForgeRegistries.ITEMS.containsKey(id)) {
+                    registerItem(id.getNamespace(), id.getPath());
+                }
+            });
+
+        } catch (Exception e) {
+            GunPackModule.LOGGER.error("Error processing pack: {}", packPath.getFileName(), e);
             e.printStackTrace();
         }
     }
@@ -122,6 +150,19 @@ public class GunRegisterer {
             String configName = matcher.group(2);
             MOD_CONFIGS.computeIfAbsent(modId, k -> new HashSet<>()).add(configName);
         }
+    }
+
+    private static void registerWeapons() {
+        MOD_CONFIGS.forEach((modId, configs) -> {
+            configs.forEach(configName -> {
+                var weaponName = configName.replace(".json", "");
+                var weaponId = ResourceLocation.tryBuild(modId, weaponName);
+
+                if(!ForgeRegistries.ITEMS.containsKey(weaponId)) {
+                    registerItem(modId, weaponName);
+                }
+            });
+        });
     }
 
     private static boolean isValidRecipe(ZipEntry entry, ZipFile zip) {
@@ -145,19 +186,10 @@ public class GunRegisterer {
         return false;
     }
 
-    private static void registerWeapons() {
-        MOD_CONFIGS.forEach((modId, configs) -> {
-            configs.forEach(configName -> {
-                var weaponName = configName.replace(".json", "");
-                var weaponId = ResourceLocation.tryBuild(modId, weaponName);
-
-                if(!ForgeRegistries.ITEMS.containsKey(weaponId)) {
-                    var gunRegister = ITEMS.computeIfAbsent(modId, id -> DeferredRegister.create(ForgeRegistries.ITEMS, id));
-                    gunRegister.register(weaponName, () -> new GunItem(
-                            new Item.Properties().stacksTo(1)
-                    ));
-                }
-            });
-        });
+    private static void registerItem(String namespace, String name) {
+        var gunRegister = ITEMS.computeIfAbsent(namespace, id -> DeferredRegister.create(ForgeRegistries.ITEMS, id));
+        gunRegister.register(name, () -> new GunItem(
+                new Item.Properties().stacksTo(1)
+        ));
     }
 }
