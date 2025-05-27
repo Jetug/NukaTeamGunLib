@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 
 public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Ntgl.MOD_ID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Ntgl.MOD_ID);
 
     public static final RegistryObject<Block> WORKBENCH = registerBlock("workbench",
             () -> new WorkbenchBlock(Block.Properties.of()
@@ -31,10 +32,11 @@ public class ModBlocks {
     }
 
     private static <T extends Block> void registerBlockItem(String name, RegistryObject<T> block) {
-        ModGuns.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()/*.tab(ModItemTabs.WEAPONS)*/));
+        ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()/*.tab(ModItemTabs.WEAPONS)*/));
     }
 
     public static void register(IEventBus eventBus) {
+        ITEMS.register(eventBus);
         BLOCKS.register(eventBus);
     }
 }

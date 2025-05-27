@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.mixin.common;
+package com.nukateam.ntgl.mixin.client;
 
 import com.nukateam.ntgl.common.util.interfaces.IAgeableAccessor;
 import com.nukateam.ntgl.common.util.interfaces.IModelAccessor;
