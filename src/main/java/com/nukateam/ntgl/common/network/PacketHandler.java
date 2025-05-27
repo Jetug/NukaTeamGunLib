@@ -47,9 +47,9 @@ public class PacketHandler {
                 .build();
 
         FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
+        FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "network_ammo_manager"), NetworkAmmoManager.LoginData::new)
+        ;
         FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
-
-        FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "network_ammo_manager"), NetworkAmmoManager.LoginData::new);
         FrameworkAPI.registerLoginData(new ResourceLocation(Ntgl.MOD_ID, "custom_ammo_manager"), CustomAmmoManager.LoginData::new);
     }
 }

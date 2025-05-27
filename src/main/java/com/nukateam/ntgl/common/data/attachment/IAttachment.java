@@ -2,6 +2,8 @@ package com.nukateam.ntgl.common.data.attachment;
 
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.impl.Attachment;
+import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
+import com.nukateam.ntgl.common.foundation.item.IConfigConsumer;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -9,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
  * <p>
  * Author: MrCrayfish
  */
-public interface IAttachment<T extends Attachment> {
+public interface IAttachment<T extends Attachment> extends IConfigConsumer<AttachmentConfig> {
     /**
      * @return The type of this attachment
      */

@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.data.attachment.impl;
 
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
-import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.attachment.IAttachment;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.util.util.GunData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -51,7 +51,7 @@ public class Attachment {
     public static void addInformationEvent(ItemTooltipEvent event) {
         var stack = event.getItemStack();
         var player = Minecraft.getInstance().player;
-        if(player == null) return;
+        if (player == null) return;
 
         var data = new GunData(stack, player);
 

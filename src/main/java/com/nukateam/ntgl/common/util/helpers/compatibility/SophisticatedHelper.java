@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.util.helpers.compatibility;
 
-import com.nukateam.ntgl.common.base.IAmmoContext;
-import com.nukateam.ntgl.common.base.SophisticatedAmmoContext;
+import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
+import com.nukateam.ntgl.common.util.helpers.context.SophisticatedAmmoContext;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;

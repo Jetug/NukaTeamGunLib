@@ -2,12 +2,12 @@ package com.nukateam.ntgl.client.util.util;
 
 import com.nukateam.ntgl.client.MetaLoader;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
+import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.properties.SightAnimation;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.util.data.ObjectCache;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
-import com.nukateam.ntgl.common.data.attachment.IScope;
 import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.mrcrayfish.framework.api.serialize.DataArray;
 import com.mrcrayfish.framework.api.serialize.DataNumber;
@@ -181,18 +181,18 @@ public final class PropertyHelper {
 
     public static int getReticleColor(ItemStack stack) {
         // Prioritise getting the reticle colour from the ItemStack tag
-        CompoundTag tag = stack.getTag();
+        var tag = stack.getTag();
         if (tag != null && tag.contains("ReticleColor", Tag.TAG_INT)) {
             return tag.getInt("ReticleColor");
         }
 
         // Attempt to get the colour from the item's meta
-        boolean isScope = stack.getItem() instanceof IScope;
-        DataObject object = isScope ? getObjectByPath(stack, SCOPE_KEY) : getObjectByPath(stack, WEAPON_KEY, "ironSight");
-        if (object.has("reticleColor", DataType.NUMBER)) {
-            return object.getDataNumber("reticleColor").asInt();
-        } else if (object.has("reticleColor", DataType.ARRAY)) {
-            DataArray array = object.getDataArray("reticleColor");
+        var isScope = stack.getItem() instanceof IAttachment<?> attachment && attachment.getType() == AttachmentType.SCOPE;
+        var dataObject = isScope ? getObjectByPath(stack, SCOPE_KEY) : getObjectByPath(stack, WEAPON_KEY, "ironSight");
+        if (dataObject.has("reticleColor", DataType.NUMBER)) {
+            return dataObject.getDataNumber("reticleColor").asInt();
+        } else if (dataObject.has("reticleColor", DataType.ARRAY)) {
+            DataArray array = dataObject.getDataArray("reticleColor");
             Vec3 color = arrayToVec3(array, RED);
             int a = 255;
             int r = Mth.clamp((int) color.x, 0, 255);
@@ -209,7 +209,7 @@ public final class PropertyHelper {
         // Try and get the animations from the scope
         if (Gun.hasAttachmentEquipped(weapon, modifiedGun, AttachmentType.SCOPE)) {
             var scopeStack = Gun.getScopeStack(weapon);
-            if (scopeStack.getItem() instanceof IScope) {
+            if (scopeStack.getItem() instanceof IAttachment<?> attachment && attachment.getType() == AttachmentType.SCOPE) {
                 DataObject scopeObject = getObjectByPath(scopeStack, SCOPE_KEY);
                 if (scopeObject.get("sightAnimation") instanceof DataObject sightObject) {
                     return objectToSightAnimation(sightObject);

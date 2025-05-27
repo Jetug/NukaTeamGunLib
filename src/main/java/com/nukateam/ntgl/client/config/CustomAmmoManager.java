@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.config;
 
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.CustomAmmoLoader;
+import com.nukateam.ntgl.common.base.utils.loaders.CustomAmmoLoader;
 import com.nukateam.ntgl.common.data.config.CustomAmmo;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAmmo;
 import net.minecraft.network.FriendlyByteBuf;

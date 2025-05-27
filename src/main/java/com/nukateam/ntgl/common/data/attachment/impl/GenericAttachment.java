@@ -14,6 +14,6 @@ public class GenericAttachment extends Attachment {
      * @return a barrel get
      */
     public static GenericAttachment create(IGunModifier... modifiers) {
-        return new GenericAttachment( modifiers);
+        return new GenericAttachment(modifiers);
     }
 }

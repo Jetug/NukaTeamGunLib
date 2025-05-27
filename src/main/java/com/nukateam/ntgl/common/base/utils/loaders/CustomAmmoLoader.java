@@ -1,9 +1,9 @@
-package com.nukateam.ntgl.common.base;
+package com.nukateam.ntgl.common.base.utils.loaders;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.config.gun.CustomGun;
+import com.nukateam.ntgl.common.data.config.CustomAmmo;
 import com.nukateam.ntgl.common.util.annotation.Validator;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -25,26 +25,27 @@ import static com.nukateam.ntgl.common.base.ConfigUtils.GSON_INSTANCE;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public class CustomGunLoader extends SimpleJsonResourceReloadListener {
-    private static CustomGunLoader instance;
+public class CustomAmmoLoader extends SimpleJsonResourceReloadListener {
+    private static CustomAmmoLoader instance;
 
-    private Map<ResourceLocation, CustomGun> customGunMap = new HashMap<>();
+    private Map<ResourceLocation, CustomAmmo> customAmmoMap = new HashMap<>();
 
-    public CustomGunLoader() {
-        super(GSON_INSTANCE, "custom_guns");
+    public CustomAmmoLoader() {
+        super(GSON_INSTANCE, "custom_ammo");
     }
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> objects, ResourceManager manager, ProfilerFiller profiler) {
-        var builder = ImmutableMap.<ResourceLocation, CustomGun>builder();
-
-        objects.forEach((resourceLocation, object) -> {
+        ImmutableMap.Builder<ResourceLocation, CustomAmmo> builder = ImmutableMap.builder();
+        objects.forEach((resourceLocation, object) ->
+        {
             try {
-                var customGun = GSON_INSTANCE.fromJson(object, CustomGun.class);
-                if (customGun != null && Validator.isValidObject(customGun))
-                    builder.put(resourceLocation, customGun);
-                else
+                var customAmmo = GSON_INSTANCE.fromJson(object, CustomAmmo.class);
+                if (customAmmo != null && Validator.isValidObject(customAmmo)) {
+                    builder.put(resourceLocation, customAmmo);
+                } else {
                     Ntgl.LOGGER.error("Couldn't load data file {} as it is missing or malformed", resourceLocation);
+                }
             } catch (InvalidObjectException e) {
                 Ntgl.LOGGER.error("Missing required properties for {}", resourceLocation);
                 e.printStackTrace();
@@ -52,8 +53,7 @@ public class CustomGunLoader extends SimpleJsonResourceReloadListener {
                 e.printStackTrace();
             }
         });
-
-        this.customGunMap = builder.build();
+        this.customAmmoMap = builder.build();
     }
 
     /**
@@ -61,9 +61,9 @@ public class CustomGunLoader extends SimpleJsonResourceReloadListener {
      *
      * @param buffer a packet buffer get
      */
-    public void writeCustomGuns(FriendlyByteBuf buffer) {
-        buffer.writeVarInt(this.customGunMap.size());
-        this.customGunMap.forEach((id, gun) -> {
+    public void writeCustomAmmo(FriendlyByteBuf buffer) {
+        buffer.writeVarInt(this.customAmmoMap.size());
+        this.customAmmoMap.forEach((id, gun) -> {
             buffer.writeResourceLocation(id);
             buffer.writeNbt(gun.serializeNBT());
         });
@@ -75,32 +75,30 @@ public class CustomGunLoader extends SimpleJsonResourceReloadListener {
      * @param buffer a packet buffer get
      * @return a map of registered guns from the server
      */
-    public static ImmutableMap<ResourceLocation, CustomGun> readCustomGuns(FriendlyByteBuf buffer) {
+    public static ImmutableMap<ResourceLocation, CustomAmmo> readCustomAmmo(FriendlyByteBuf buffer) {
         int size = buffer.readVarInt();
-
         if (size > 0) {
-            ImmutableMap.Builder<ResourceLocation, CustomGun> builder = ImmutableMap.builder();
+            ImmutableMap.Builder<ResourceLocation, CustomAmmo> builder = ImmutableMap.builder();
             for (int i = 0; i < size; i++) {
                 var id = buffer.readResourceLocation();
-                var customGun = new CustomGun();
-                customGun.deserializeNBT(buffer.readNbt());
-                builder.put(id, customGun);
+                var customAmmo = new CustomAmmo();
+                customAmmo.deserializeNBT(buffer.readNbt());
+                builder.put(id, customAmmo);
             }
             return builder.build();
         }
-
         return ImmutableMap.of();
     }
 
     @SubscribeEvent
     public static void addReloadListenerEvent(AddReloadListenerEvent event) {
-        var customGunLoader = new CustomGunLoader();
+        CustomAmmoLoader customGunLoader = new CustomAmmoLoader();
         event.addListener(customGunLoader);
-        CustomGunLoader.instance = customGunLoader;
+        CustomAmmoLoader.instance = customGunLoader;
     }
 
     @Nullable
-    public static CustomGunLoader get() {
+    public static CustomAmmoLoader get() {
         return instance;
     }
 }

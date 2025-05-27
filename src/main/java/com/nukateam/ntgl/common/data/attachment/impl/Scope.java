@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.common.data.attachment.impl;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugSlider;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -262,7 +262,7 @@ public class Scope extends Attachment implements IEditorMenu {
             return this;
         }
 
-        public Builder overlay( ResourceLocation overlayTexture) {
+        public Builder overlay(ResourceLocation overlayTexture) {
             this.overlayTexture = overlayTexture;
             return this;
         }

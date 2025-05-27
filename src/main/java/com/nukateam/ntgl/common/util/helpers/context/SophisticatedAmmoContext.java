@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.base;
+package com.nukateam.ntgl.common.util.helpers.context;
 
 import net.minecraftforge.items.IItemHandler;
 import net.minecraft.world.item.ItemStack;

@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.data.config.attachment;
 
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.util.annotation.Optional;
@@ -114,6 +115,10 @@ public class AttachmentConfig implements INBTSerializable<CompoundTag>, IEditorM
         public AttachmentConfig.Builder setType(AttachmentType type) {
             this.attachment.type = type;
             return this;
+        }
+
+        public AttachmentConfig build() {
+            return this.attachment.copy(); //Copy since the builder could be used again
         }
     }
 }

@@ -23,7 +23,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     @Optional String fireSoundVolume = "";
     @Optional String fireSound = "";
     @Optional boolean silencedFire = false;
-    @Optional String additionalDamage = "";
+    @Optional float additionalDamage = 0;
     @Optional String modifyDamage = "";
     @Optional String modifyProjectileSpeed = "";
     @Optional String modifyProjectileSpread = "";
@@ -70,7 +70,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         tag.putBoolean("silencedFire", this.silencedFire);
 
         // Numeric fields
-        tag.putString("additionalDamage", this.additionalDamage);
+        tag.putFloat("additionalDamage", this.additionalDamage);
         tag.putString("modifyDamage", this.modifyDamage);
         tag.putString("modifyProjectileSpeed", this.modifyProjectileSpeed);
         tag.putString("modifyProjectileSpread", this.modifyProjectileSpread);
@@ -115,7 +115,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         if (tag.contains("silencedFire", Tag.TAG_BYTE)) this.silencedFire = tag.getBoolean("silencedFire");
 
         // Numeric fields
-        if (tag.contains("additionalDamage", Tag.TAG_STRING)) this.additionalDamage = tag.getString("additionalDamage");
+        if (tag.contains("additionalDamage", Tag.TAG_FLOAT)) this.additionalDamage = tag.getFloat("additionalDamage");
         if (tag.contains("modifyDamage", Tag.TAG_STRING)) this.modifyDamage = tag.getString("modifyDamage");
         if (tag.contains("modifyProjectileSpeed", Tag.TAG_STRING)) this.modifyProjectileSpeed = tag.getString("modifyProjectileSpeed");
         if (tag.contains("modifyProjectileSpread", Tag.TAG_STRING)) this.modifyProjectileSpread = tag.getString("modifyProjectileSpread");
@@ -332,7 +332,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
 
     // Calculation methods for each numeric property
     public float additionalDamage(GunData gunData) {
-        return  parseOperand(additionalDamage);
+        return additionalDamage;
     }
 
     public float modifyDamage(float damage, GunData gunData) {

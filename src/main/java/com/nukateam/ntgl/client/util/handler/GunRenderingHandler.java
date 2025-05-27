@@ -56,6 +56,7 @@ import java.util.*;
 import static com.nukateam.ntgl.client.util.util.PropertyHelper.*;
 import static com.nukateam.ntgl.common.util.util.GunModifierHelper.isOneHanded;
 
+@SuppressWarnings("removal")
 public class GunRenderingHandler {
     private static GunRenderingHandler instance;
     public static final ResourceLocation GUI_ICONS_LOCATION = new ResourceLocation( "textures/gui/icons.png"); // Kinda hacky
@@ -624,35 +625,35 @@ public class GunRenderingHandler {
 //        } catch (Exception ignored) {}
 //    }
 
-    public static ArrayList<String> getAttachmentNames(ItemStack stack){
-        var attachments = getAttachments(stack);
-        var result = new ArrayList<String>();
-
-        for (var attachmentStack : attachments){
-            if(attachmentStack.getItem() instanceof AttachmentItem<?> attachmentItem){
-                result.add(attachmentItem.getName());
-            }
-        }
-
-        return result;
-    }
-
-    public static ArrayList<ItemStack> getAttachments(ItemStack stack){
-        var modifiedGun = ((GunItem) stack.getItem()).getModifiedGun(stack);
-        var gunTag = stack.getOrCreateTag();
-        var attachments = gunTag.getCompound("Attachments");
-        var result = new ArrayList<ItemStack>();
-
-        for (var tagKey : attachments.getAllKeys()) {
-            var type = AttachmentType.getType(tagKey);
-            if (type != null && modifiedGun.canAttachType(type, modifiedGun)) {
-                var attachmentStack = Gun.getAttachmentItem(type, stack);
-                result.add(attachmentStack);
-            }
-        }
-
-        return result;
-    }
+//    public static ArrayList<String> getAttachmentNames(ItemStack stack){
+//        var attachments = getAttachments(stack);
+//        var result = new ArrayList<String>();
+//
+//        for (var attachmentStack : attachments){
+//            if(attachmentStack.getItem() instanceof AttachmentItem<?> attachmentItem){
+//                result.add(attachmentItem.getName());
+//            }
+//        }
+//
+//        return result;
+//    }
+//
+//    public static ArrayList<ItemStack> getAttachments(ItemStack stack){
+//        var modifiedGun = ((GunItem) stack.getItem()).getModifiedGun(stack);
+//        var gunTag = stack.getOrCreateTag();
+//        var attachments = gunTag.getCompound("Attachments");
+//        var result = new ArrayList<ItemStack>();
+//
+//        for (var tagKey : attachments.getAllKeys()) {
+//            var type = AttachmentType.getType(tagKey);
+//            if (type != null && modifiedGun.canAttachType(type, modifiedGun)) {
+//                var attachmentStack = Gun.getAttachmentItem(type, stack);
+//                result.add(attachmentStack);
+//            }
+//        }
+//
+//        return result;
+//    }
 
     /**
      * A temporary hack to get the equip progress until Forge fixes the issue.

@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.util.helpers.compatibility;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.AmmoContext;
-import com.nukateam.ntgl.common.base.IAmmoContext;
+import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
+import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
