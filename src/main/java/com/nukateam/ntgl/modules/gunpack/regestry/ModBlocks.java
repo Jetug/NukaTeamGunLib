@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.modules.gunpack.regestry;
 
-import com.nukateam.example.common.registery.ModGuns;
-import com.nukateam.ntgl.common.foundation.block.WorkbenchBlock;
+import com.nukateam.ntgl.modules.gunpack.block.WorkbenchBlock;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;

@@ -1,5 +1,6 @@
-package com.nukateam.ntgl.common.foundation.enchantment;
+package com.nukateam.ntgl.modules.enchantment.enchantments;
 
+import com.nukateam.ntgl.modules.enchantment.EnchantmentTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 
 /**

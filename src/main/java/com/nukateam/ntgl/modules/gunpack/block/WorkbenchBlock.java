@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.block;
+package com.nukateam.ntgl.modules.gunpack.block;
 
 import com.nukateam.ntgl.common.util.util.VoxelShapeHelper;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;

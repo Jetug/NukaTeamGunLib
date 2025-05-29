@@ -19,6 +19,8 @@ import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
+import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
+import com.nukateam.ntgl.modules.enchantment.ModEnchantments;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

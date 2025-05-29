@@ -1,7 +1,7 @@
-package com.nukateam.ntgl.common.foundation.init;
+package com.nukateam.ntgl.modules.enchantment;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.foundation.enchantment.*;
+import com.nukateam.ntgl.modules.enchantment.enchantments.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

@@ -12,7 +12,8 @@ import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.datagen.*;
-import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
+import com.nukateam.ntgl.modules.enchantment.EnchantmentModule;
+import com.nukateam.ntgl.modules.enchantment.ModEnchantments;
 import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.foundation.entity.*;
@@ -63,7 +64,6 @@ public class Ntgl {
         //ModBlocks.REGISTER.register(bus);
         ModContainers.REGISTER.register(MOD_EVENT_BUS);
         ModEffects.REGISTER.register(MOD_EVENT_BUS);
-        ModEnchantments.REGISTER.register(MOD_EVENT_BUS);
         Projectiles.REGISTER.register(MOD_EVENT_BUS);
         if(Ntgl.isDebugging()) {
             ModItemTabs.register(MOD_EVENT_BUS);
@@ -89,6 +89,7 @@ public class Ntgl {
         });
 
         GunPackModule.init(MOD_EVENT_BUS);
+        EnchantmentModule.init(MOD_EVENT_BUS);
 
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");

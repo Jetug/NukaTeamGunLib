@@ -41,6 +41,7 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String MOVEMENT_MODIFIER = "MovementModifier";
     public static final String AMMO = "Ammo";
     public static final String FULL_CHARGE = "FullCharge";
+    public static final String ENCHANTABLE = "Enchantable";
     public static final String FIRE_TIMER = "FireTimer";
     public static final String FIRE_MODE = "FireMode";
     public static final String ONE_TIME_CHARGE = "OneTimeCharge";
@@ -52,6 +53,7 @@ public class General implements INBTSerializable<CompoundTag> {
     int maxAmmo;
     @Optional Set<FireMode> fireMode = new HashSet<>(List.of(FireMode.SEMI_AUTO));
     @Optional boolean fullCharge = false;
+    @Optional boolean enchantable = true;
     @Optional float damage;
     @Optional int reloadAmount = 1;
     @Optional int reloadStart = 0;
@@ -82,6 +84,7 @@ public class General implements INBTSerializable<CompoundTag> {
         CompoundTag tag = new CompoundTag();
         tag.putInt      (RATE, this.rate);
         tag.putBoolean  (FULL_CHARGE, this.fullCharge);
+        tag.putBoolean  (ENCHANTABLE, this.enchantable);
         tag.putInt      (FIRE_TIMER, this.fireTimer);
         tag.put         (FIRE_MODE, NbtUtils.serializeSet(this.fireMode));
         tag.putString   (GRIP_TYPE, this.gripType.getId().toString());
@@ -118,6 +121,9 @@ public class General implements INBTSerializable<CompoundTag> {
         }
         if (tag.contains(FULL_CHARGE, Tag.TAG_ANY_NUMERIC)) {
             this.fullCharge = tag.getBoolean(FULL_CHARGE);
+        }
+        if (tag.contains(ENCHANTABLE, Tag.TAG_ANY_NUMERIC)) {
+            this.enchantable = tag.getBoolean(ENCHANTABLE);
         }
         if (tag.contains(RATE, Tag.TAG_ANY_NUMERIC)) {
             this.rate = tag.getInt(RATE);
@@ -214,6 +220,7 @@ public class General implements INBTSerializable<CompoundTag> {
         Preconditions.checkArgument(this.movementModifier >= 0.0F, "Spread must be more than or equal to zero");
         JsonObject object = new JsonObject();
         if (this.fullCharge) object.addProperty("fullCharge", true);
+        object.addProperty("fullCharge", fullCharge);
         object.addProperty("rate", this.rate);
         if (this.fireTimer != 0) object.addProperty("fireTimer", this.fireTimer);
 //            object.addProperty("fireMode", this.fireMode.getId().toString());
@@ -251,6 +258,7 @@ public class General implements INBTSerializable<CompoundTag> {
         General general = new General();
         general.fireMode = this.fireMode;
         general.fullCharge = this.fullCharge;
+        general.enchantable = this.enchantable;
         general.rate = this.rate;
         general.fireTimer = this.fireTimer;
         general.gripType = this.gripType;
@@ -298,6 +306,10 @@ public class General implements INBTSerializable<CompoundTag> {
      */
     public boolean isFullCharge() {
         return this.fullCharge;
+    }
+
+    public boolean isEnchantable() {
+        return this.enchantable;
     }
 
     /**
@@ -398,7 +410,7 @@ public class General implements INBTSerializable<CompoundTag> {
     }
 
     /**
-     * @return The damage caused by this ammo
+     * @return The damage caused by this gun
      */
     public float getDamage() {
         return this.damage;
