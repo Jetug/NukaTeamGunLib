@@ -26,7 +26,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     @Optional float additionalDamage = 0;
     @Optional String damage = "";
     @Optional String projectileSpeed = "";
-    @Optional String projectileSpread = "";
+    @Optional String spread = "";
     @Optional float additionalProjectileGravity = 0;
     @Optional String projectileGravity = "";
     @Optional String projectileLife = "";
@@ -70,7 +70,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         tag.putFloat("additionalDamage", this.additionalDamage);
         tag.putString("damage", this.damage);
         tag.putString("projectileSpeed", this.projectileSpeed);
-        tag.putString("projectileSpread", this.projectileSpread);
+        tag.putString("spread", this.spread);
         tag.putFloat("additionalProjectileGravity", this.additionalProjectileGravity);
         tag.putString("projectileGravity", this.projectileGravity);
         tag.putString("projectileLife", this.projectileLife);
@@ -115,7 +115,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         if (tag.contains("additionalDamage", Tag.TAG_FLOAT)) this.additionalDamage = tag.getFloat("additionalDamage");
         if (tag.contains("damage", Tag.TAG_STRING)) this.damage = tag.getString("damage");
         if (tag.contains("projectileSpeed", Tag.TAG_STRING)) this.projectileSpeed = tag.getString("projectileSpeed");
-        if (tag.contains("projectileSpread", Tag.TAG_STRING)) this.projectileSpread = tag.getString("projectileSpread");
+        if (tag.contains("spread", Tag.TAG_STRING)) this.spread = tag.getString("spread");
         if (tag.contains("additionalProjectileGravity", Tag.TAG_FLOAT)) this.additionalProjectileGravity = tag.getFloat("additionalProjectileGravity");
         if (tag.contains("projectileGravity", Tag.TAG_STRING)) this.projectileGravity = tag.getString("projectileGravity");
         if (tag.contains("projectileLife", Tag.TAG_STRING)) this.projectileLife = tag.getString("projectileLife");
@@ -249,7 +249,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         copy.additionalDamage = this.additionalDamage;
         copy.damage = this.damage;
         copy.projectileSpeed = this.projectileSpeed;
-        copy.projectileSpread = this.projectileSpread;
+        copy.spread = this.spread;
         copy.additionalProjectileGravity = this.additionalProjectileGravity;
         copy.projectileGravity = this.projectileGravity;
         copy.projectileLife = this.projectileLife;
@@ -295,7 +295,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         json.addProperty("additionalDamage", this.additionalDamage);
         json.addProperty("damage", this.damage);
         json.addProperty("projectileSpeed", this.projectileSpeed);
-        json.addProperty("projectileSpread", this.projectileSpread);
+        json.addProperty("spread", this.spread);
         json.addProperty("additionalProjectileGravity", this.additionalProjectileGravity);
         json.addProperty("projectileGravity", this.projectileGravity);
         json.addProperty("projectileLife", this.projectileLife);
@@ -341,7 +341,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     }
 
     public float modifyProjectileSpread(float spread, GunData gunData) {
-        return calculate(spread, projectileSpread);
+        return calculate(spread, this.spread);
     }
 
     public double additionalProjectileGravity(GunData gunData) {

@@ -2,6 +2,8 @@ package com.nukateam.ntgl.modules.gunpack.data;
 
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItem;
+import com.nukateam.ntgl.common.foundation.item.attachment.GenericAttachmentItem;
 import com.nukateam.ntgl.common.util.helpers.RegistrationHelper;
 import com.nukateam.ntgl.modules.gunpack.GunPackModule;
 import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
@@ -15,7 +17,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
@@ -128,11 +129,19 @@ public class GunRegisterer {
                     JsonObject.class
             );
 
-            var items = manifestJson.getAsJsonArray("guns");
-            items.forEach(item -> {
+            var guns = manifestJson.getAsJsonArray("guns");
+            guns.forEach(item -> {
                 var id = ResourceLocation.tryParse(item.getAsString());
                 if (id != null && !ForgeRegistries.ITEMS.containsKey(id)) {
-                    registerItem(id.getNamespace(), id.getPath());
+                    registerGun(id.getNamespace(), id.getPath());
+                }
+            });
+
+            var attachments = manifestJson.getAsJsonArray("attachments");
+            attachments.forEach(item -> {
+                var id = ResourceLocation.tryParse(item.getAsString());
+                if (id != null && !ForgeRegistries.ITEMS.containsKey(id)) {
+                    registerAttachment(id.getNamespace(), id.getPath());
                 }
             });
 
@@ -158,7 +167,7 @@ public class GunRegisterer {
                 var weaponId = ResourceLocation.tryBuild(modId, weaponName);
 
                 if(!ForgeRegistries.ITEMS.containsKey(weaponId)) {
-                    registerItem(modId, weaponName);
+                    registerGun(modId, weaponName);
                 }
             });
         });
@@ -185,9 +194,16 @@ public class GunRegisterer {
         return false;
     }
 
-    private static void registerItem(String namespace, String name) {
+    private static void registerGun(String namespace, String name) {
         var gunRegister = ITEMS.computeIfAbsent(namespace, id -> DeferredRegister.create(ForgeRegistries.ITEMS, id));
         gunRegister.register(name, () -> new GunItem(
+                new Item.Properties().stacksTo(1)
+        ));
+    }
+
+    private static void registerAttachment(String namespace, String name) {
+        var register = ITEMS.computeIfAbsent(namespace, id -> DeferredRegister.create(ForgeRegistries.ITEMS, id));
+        register.register(name, () -> new GenericAttachmentItem(
                 new Item.Properties().stacksTo(1)
         ));
     }

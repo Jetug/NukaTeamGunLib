@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutionException;
 
 
 public class AttachmentType {
+    public static AttachmentType NONE        = new AttachmentType("none");
     public static AttachmentType SCOPE        = new AttachmentType("scope");
     public static AttachmentType BARREL       = new AttachmentType("barrel");
     public static AttachmentType STOCK        = new AttachmentType("stock");
@@ -23,6 +24,7 @@ public class AttachmentType {
     private static final Map<ResourceLocation, AttachmentType> typeMap = new HashMap<>();
     
     static {
+        registerType(NONE       );
         registerType(SCOPE       );
         registerType(BARREL      );
         registerType(STOCK       );
@@ -39,7 +41,7 @@ public class AttachmentType {
     }
 
     private AttachmentType(String name) {
-        this.id = new ResourceLocation(Ntgl.MOD_ID, name);
+        this.id = ResourceLocation.tryBuild(Ntgl.MOD_ID, name);
     }
 
     public static void registerType(AttachmentType mode) {
@@ -64,7 +66,7 @@ public class AttachmentType {
     }
 
     public ResourceLocation getIcon() {
-        return new ResourceLocation(getId().getNamespace(), "textures/gui/icons/" + getId().getPath() + ".png");
+        return ResourceLocation.tryBuild(getId().getNamespace(), "textures/gui/icons/" + getId().getPath() + ".png");
     }
 
     public String getTranslationKey(){
