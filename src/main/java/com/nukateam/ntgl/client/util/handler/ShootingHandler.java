@@ -167,18 +167,12 @@ public class ShootingHandler {
 
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
-
-        if (mainHandItem.getItem() instanceof GunItem){
-            if(isKeyAttackDown())
-                handleAutoFire(player, mainHandItem, HumanoidArm.RIGHT);
-//           else setupShootingData(mainHandItem, gunItem, HumanoidArm.RIGHT);
-        }
-
-        if (offhandItem.getItem() instanceof GunItem && canRenderInOffhand(player)){
-            if(isUseKeyDown())
-                handleAutoFire(player, offhandItem, HumanoidArm.LEFT);
-//            else setupShootingData(mainHandItem, gunItem, HumanoidArm.LEFT);
-        }
+        //            else setupShootingData(mainHandItem, gunItem, HumanoidArm.LEFT);
+        if (offhandItem.getItem() instanceof GunItem
+                && canRenderInOffhand(player)
+                && isUseKeyDown()
+                && ClientReloadHandler.get().isReloading(player, HumanoidArm.LEFT))
+            handleAutoFire(player, offhandItem, HumanoidArm.LEFT);
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -357,7 +351,6 @@ public class ShootingHandler {
         var key = arm == HumanoidArm.RIGHT ? mc.options.keyAttack : mc.options.keyUse;
         var data = shootingData.get(arm);
         var gunData = new GunData(heldItem, player);
-
         var fireMode =  GunModifierHelper.getCurrentFireMode(gunData);
         var maxChargeTime = GunModifierHelper.getFireDelay(gunData);
 

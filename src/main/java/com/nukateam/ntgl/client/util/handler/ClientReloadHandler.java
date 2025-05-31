@@ -79,7 +79,7 @@ public class ClientReloadHandler {
             return;
 
         if(event.getAction() == GLFW.GLFW_PRESS) {
-            if (KeyBinds.KEY_RELOAD.isDown()) {
+            if (KeyBinds.KEY_RELOAD.consumeClick()) {
 //                this.setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), ModSyncedDataKeys.RELOADING_RIGHT);
                 startReloading();
             }
@@ -105,14 +105,15 @@ public class ClientReloadHandler {
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
 
-
         if (mainHandItem.getItem() instanceof GunItem
-                && !GunModifierHelper.isWeaponFull(new GunData(mainHandItem, player))){
+                && !GunModifierHelper.isWeaponFull(new GunData(mainHandItem, player))
+                && !isReloading(player, HumanoidArm.RIGHT)){
             setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
         }
         else if (offhandItem.getItem() instanceof GunItem
                 && GunModifierHelper.canRenderInOffhand(player)
-                && !GunModifierHelper.isWeaponFull(new GunData(offhandItem, player))){
+                && !GunModifierHelper.isWeaponFull(new GunData(offhandItem, player))
+                && !isReloading(player, HumanoidArm.LEFT)){
             setReloading(!ModSyncedDataKeys.RELOADING_LEFT.getValue(player), InteractionHand.OFF_HAND);
         }
     }

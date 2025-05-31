@@ -86,6 +86,15 @@ public class ServerPlayHandler {
 
         var world = shooter.level();
         var hand = message.isMainHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+
+        var reloadKey = message.isMainHand() ?
+                ModSyncedDataKeys.RELOADING_RIGHT:
+                ModSyncedDataKeys.RELOADING_LEFT;
+
+        if(reloadKey.getValue(shooter)){
+            return;
+        }
+
         var heldItem = shooter.getItemInHand(hand);
 
         if (heldItem.getItem() instanceof GunItem gunItem

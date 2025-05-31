@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.modules.gunpack.data;
 
 import com.google.gson.JsonObject;
+import com.nukateam.ntgl.common.foundation.item.AmmoItem;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.GenericAttachmentItem;
 import com.nukateam.ntgl.common.util.helpers.RegistrationHelper;
 import com.nukateam.ntgl.modules.gunpack.GunPackModule;
@@ -17,6 +17,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.*;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -39,6 +41,9 @@ public class GunRegisterer {
     private static final Map<String, DeferredRegister<Item>> ITEMS = new HashMap<>();
     private static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, GunPackModule.MOD_ID);
     private static final Map<String, Set<String>> MOD_CONFIGS = new HashMap<>();
+    public static final String GUNS = "guns";
+    public static final String ATTACHMENTS = "attachments";
+    public static final String AMMO = "ammo";
     private static boolean hasValidRecipe = false;
 
     public static void init(IEventBus eventBus) {
@@ -129,21 +134,9 @@ public class GunRegisterer {
                     JsonObject.class
             );
 
-            var guns = manifestJson.getAsJsonArray("guns");
-            guns.forEach(item -> {
-                var id = ResourceLocation.tryParse(item.getAsString());
-                if (id != null && !ForgeRegistries.ITEMS.containsKey(id)) {
-                    registerGun(id.getNamespace(), id.getPath());
-                }
-            });
-
-            var attachments = manifestJson.getAsJsonArray("attachments");
-            attachments.forEach(item -> {
-                var id = ResourceLocation.tryParse(item.getAsString());
-                if (id != null && !ForgeRegistries.ITEMS.containsKey(id)) {
-                    registerAttachment(id.getNamespace(), id.getPath());
-                }
-            });
+            registerItems(manifestJson, GUNS, GunRegisterer::registerGun);
+            registerItems(manifestJson, ATTACHMENTS, GunRegisterer::registerAttachment);
+            registerItems(manifestJson, AMMO, GunRegisterer::registerAmmo);
 
         } catch (Exception e) {
             GunPackModule.LOGGER.error("Error processing pack: {}", packPath.getFileName(), e);
@@ -151,27 +144,37 @@ public class GunRegisterer {
         }
     }
 
-    private static void checkConfig(ZipEntry entry) {
-        var matcher = CONFIG_PATTERN.matcher(entry.getName());
-        if (matcher.matches()) {
-            String modId = matcher.group(1);
-            String configName = matcher.group(2);
-            MOD_CONFIGS.computeIfAbsent(modId, k -> new HashSet<>()).add(configName);
-        }
-    }
-
-    private static void registerWeapons() {
-        MOD_CONFIGS.forEach((modId, configs) -> {
-            configs.forEach(configName -> {
-                var weaponName = configName.replace(".json", "");
-                var weaponId = ResourceLocation.tryBuild(modId, weaponName);
-
-                if(!ForgeRegistries.ITEMS.containsKey(weaponId)) {
-                    registerGun(modId, weaponName);
-                }
-            });
+    private static void registerItems(JsonObject manifestJson, String name, Consumer<ResourceLocation> consumer) {
+        var guns = manifestJson.getAsJsonArray(name);
+        guns.forEach(item -> {
+            var id = ResourceLocation.tryParse(item.getAsString());
+            if (id != null && !ForgeRegistries.ITEMS.containsKey(id)) {
+                consumer.accept(id);
+            }
         });
     }
+
+//    private static void checkConfig(ZipEntry entry) {
+//        var matcher = CONFIG_PATTERN.matcher(entry.getName());
+//        if (matcher.matches()) {
+//            String modId = matcher.group(1);
+//            String configName = matcher.group(2);
+//            MOD_CONFIGS.computeIfAbsent(modId, k -> new HashSet<>()).add(configName);
+//        }
+//    }
+//
+//    private static void registerWeapons() {
+//        MOD_CONFIGS.forEach((modId, configs) -> {
+//            configs.forEach(configName -> {
+//                var weaponName = configName.replace(".json", "");
+//                var weaponId = ResourceLocation.tryBuild(modId, weaponName);
+//
+//                if(!ForgeRegistries.ITEMS.containsKey(weaponId)) {
+//                    registerGun(modId, weaponName);
+//                }
+//            });
+//        });
+//    }
 
     private static boolean isValidRecipe(ZipEntry entry, ZipFile zip) {
         try {
@@ -194,17 +197,23 @@ public class GunRegisterer {
         return false;
     }
 
-    private static void registerGun(String namespace, String name) {
-        var gunRegister = ITEMS.computeIfAbsent(namespace, id -> DeferredRegister.create(ForgeRegistries.ITEMS, id));
-        gunRegister.register(name, () -> new GunItem(
+    private static @NotNull DeferredRegister<Item> getItemRegister(ResourceLocation itemId) {
+        return ITEMS.computeIfAbsent(itemId.getNamespace(), id -> DeferredRegister.create(ForgeRegistries.ITEMS, id));
+    }
+
+    private static void registerGun(ResourceLocation itemId) {
+        getItemRegister(itemId).register(itemId.getPath(), () -> new GunItem(
                 new Item.Properties().stacksTo(1)
         ));
     }
 
-    private static void registerAttachment(String namespace, String name) {
-        var register = ITEMS.computeIfAbsent(namespace, id -> DeferredRegister.create(ForgeRegistries.ITEMS, id));
-        register.register(name, () -> new GenericAttachmentItem(
+    private static void registerAttachment(ResourceLocation itemId) {
+        getItemRegister(itemId).register(itemId.getPath(), () -> new GenericAttachmentItem(
                 new Item.Properties().stacksTo(1)
         ));
+    }
+
+    private static void registerAmmo(ResourceLocation itemId) {
+        getItemRegister(itemId).register(itemId.getPath(), () -> new AmmoItem(new Item.Properties()));
     }
 }
