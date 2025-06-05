@@ -167,12 +167,18 @@ public class ShootingHandler {
 
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
-        //            else setupShootingData(mainHandItem, gunItem, HumanoidArm.LEFT);
-        if (offhandItem.getItem() instanceof GunItem
-                && canRenderInOffhand(player)
-                && isUseKeyDown()
-                && ClientReloadHandler.get().isReloading(player, HumanoidArm.LEFT))
-            handleAutoFire(player, offhandItem, HumanoidArm.LEFT);
+
+        if (mainHandItem.getItem() instanceof GunItem){
+            if(isKeyAttackDown())
+                handleAutoFire(player, mainHandItem, HumanoidArm.RIGHT);
+//           else setupShootingData(mainHandItem, gunItem, HumanoidArm.RIGHT);
+        }
+
+        if (offhandItem.getItem() instanceof GunItem && canRenderInOffhand(player)){
+            if(isUseKeyDown())
+                handleAutoFire(player, offhandItem, HumanoidArm.LEFT);
+//            else setupShootingData(mainHandItem, gunItem, HumanoidArm.LEFT);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)

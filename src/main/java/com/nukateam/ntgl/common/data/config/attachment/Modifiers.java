@@ -20,9 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
-    @Optional String fireSoundVolume = "";
-    @Optional String fireSound = "";
-    @Optional String silencedFire = "";
+    @Optional Set<FireMode> fireModes = new HashSet<>();
     @Optional float additionalDamage = 0;
     @Optional String damage = "";
     @Optional String projectileSpeed = "";
@@ -32,11 +30,11 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     @Optional String projectileLife = "";
     @Optional float recoilModifier = 1;
     @Optional float kickModifier = 1;
+    @Optional float criticalChance = 0;
     @Optional String muzzleFlashSize = "";
     @Optional String muzzleFlashScale = "";
     @Optional String aimDownSightSpeed = "";
-    @Optional String fireRate = "";
-    @Optional float criticalChance = 0;
+    @Optional String rate = "";
     @Optional String maxAmmo = "";
     @Optional String projectileAmount = "";
     @Optional String fireDelay = "";
@@ -45,8 +43,10 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     @Optional String reloadEnd = "";
     @Optional String equipTime = "";
     @Optional String ammoPerShot = "";
+    @Optional String fireSoundVolume = "";
+    @Optional String fireSound = "";
+    @Optional String silencedFire = "";
     @Optional HashMap<FuelType, Integer> maxFuel = new HashMap<>();
-    @Optional Set<FireMode> fireModes = new HashSet<>();
     @Optional GripType gripType = null;
     @Optional String needsFullCharge = "";
     @Optional String oneTimeCharge = "";
@@ -77,7 +77,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         tag.putString("muzzleFlashSize", this.muzzleFlashSize);
         tag.putString("muzzleFlashScale", this.muzzleFlashScale);
         tag.putString("aimDownSightSpeed", this.aimDownSightSpeed);
-        tag.putString("fireRate", this.fireRate);
+        tag.putString("rate", this.rate);
         tag.putFloat("criticalChance", this.criticalChance);
         tag.putString("maxAmmo", this.maxAmmo);
         tag.putString("projectileAmount", this.projectileAmount);
@@ -122,7 +122,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         if (tag.contains("muzzleFlashSize", Tag.TAG_STRING)) this.muzzleFlashSize = tag.getString("muzzleFlashSize");
         if (tag.contains("muzzleFlashScale", Tag.TAG_STRING)) this.muzzleFlashScale = tag.getString("muzzleFlashScale");
         if (tag.contains("aimDownSightSpeed", Tag.TAG_STRING)) this.aimDownSightSpeed = tag.getString("aimDownSightSpeed");
-        if (tag.contains("fireRate", Tag.TAG_STRING)) this.fireRate = tag.getString("fireRate");
+        if (tag.contains("rate", Tag.TAG_STRING)) this.rate = tag.getString("rate");
         if (tag.contains("criticalChance", Tag.TAG_FLOAT)) this.criticalChance = tag.getFloat("criticalChance");
         if (tag.contains("maxAmmo", Tag.TAG_STRING)) this.maxAmmo = tag.getString("maxAmmo");
         if (tag.contains("projectileAmount", Tag.TAG_STRING)) this.projectileAmount = tag.getString("projectileAmount");
@@ -256,7 +256,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         copy.muzzleFlashSize = this.muzzleFlashSize;
         copy.muzzleFlashScale = this.muzzleFlashScale;
         copy.aimDownSightSpeed = this.aimDownSightSpeed;
-        copy.fireRate = this.fireRate;
+        copy.rate = this.rate;
         copy.criticalChance = this.criticalChance;
         copy.maxAmmo = this.maxAmmo;
         copy.projectileAmount = this.projectileAmount;
@@ -302,7 +302,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         json.addProperty("muzzleFlashSize", this.muzzleFlashSize);
         json.addProperty("muzzleFlashScale", this.muzzleFlashScale);
         json.addProperty("aimDownSightSpeed", this.aimDownSightSpeed);
-        json.addProperty("fireRate", this.fireRate);
+        json.addProperty("rate", this.rate);
         json.addProperty("criticalChance", this.criticalChance);
         json.addProperty("maxAmmo", this.maxAmmo);
         json.addProperty("projectileAmount", this.projectileAmount);
@@ -439,8 +439,8 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         return calculate((float) speed, aimDownSightSpeed);
     }
 
-    public int modifyFireRate(int rate, GunData gunData) {
-        return (int) calculate(rate, fireRate);
+    public int modifyFireRate(int base, GunData gunData) {
+        return (int) calculate(base, this.rate);
     }
 
     public float criticalChance(GunData gunData) {
