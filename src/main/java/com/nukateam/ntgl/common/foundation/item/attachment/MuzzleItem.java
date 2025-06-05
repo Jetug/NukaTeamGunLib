@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.data.attachment.impl.Attachment;
  * <p>
  * Author: Jetug
  */
+@Deprecated
 public class MuzzleItem extends AttachmentItem<Attachment> {
     public MuzzleItem(Attachment data, Properties properties) {
         super(AttachmentType.MUZZLE, data, properties);

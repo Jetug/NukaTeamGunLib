@@ -54,6 +54,7 @@ public class Ntgl {
     public static boolean backpackedLoaded = false;
     public static boolean chassisCoreLoaded = false;
     public static boolean sophisticatedLoaded = false;
+    public static boolean curiosLoaded = false;
     public static boolean playerReviveLoaded = false;
     public static boolean playerAnimatorLoaded = false;
 
@@ -97,6 +98,7 @@ public class Ntgl {
         sophisticatedLoaded = ModList.get().isLoaded("sophisticatedbackpacks");
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
         playerAnimatorLoaded = ModList.get().isLoaded("playeranimator");
+        curiosLoaded = ModList.get().isLoaded("curios");
 
         MinecraftForge.EVENT_BUS.register(this);
     }

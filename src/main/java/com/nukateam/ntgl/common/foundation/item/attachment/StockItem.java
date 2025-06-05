@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.data.attachment.impl.Stock;
  * <p>
  * Author: MrCrayfish
  */
+@Deprecated
 public class StockItem extends AttachmentItem<Stock> {
     public StockItem(Stock data, Properties properties) {
         super(AttachmentType.STOCK, data, properties);

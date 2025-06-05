@@ -22,7 +22,7 @@ import java.util.Set;
 public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     @Optional String fireSoundVolume = "";
     @Optional String fireSound = "";
-    @Optional boolean silencedFire = false;
+    @Optional String silencedFire = "";
     @Optional float additionalDamage = 0;
     @Optional String damage = "";
     @Optional String projectileSpeed = "";
@@ -46,15 +46,13 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     @Optional String equipTime = "";
     @Optional String ammoPerShot = "";
     @Optional HashMap<FuelType, Integer> maxFuel = new HashMap<>();
-
-    // Collections and enums
     @Optional Set<FireMode> fireModes = new HashSet<>();
     @Optional GripType gripType = null;
-    @Optional boolean modifyNeedsFullCharge = false;
-    @Optional boolean modifyIsOneTimeCharge = false;
+    @Optional String needsFullCharge = "";
+    @Optional String oneTimeCharge = "";
     @Optional Set<ResourceLocation> ammoItems = new HashSet<>();
-    @Optional boolean autoReloading = false;
-    @Optional boolean modifyShouldRenderHud = false;
+    @Optional String autoReload = "";
+    @Optional String renderHud = "";
     @Optional LoadingType loadingType = null;
     @Optional Set<FuelType> fuel = new HashSet<>();
 
@@ -64,7 +62,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         // Existing serialization
         tag.putString("fireSoundVolume", this.fireSoundVolume);
         tag.putString("fireSound", this.fireSound);
-        tag.putBoolean("silencedFire", this.silencedFire);
+        tag.putString("silencedFire", this.silencedFire);
 
         // Numeric fields
         tag.putFloat("additionalDamage", this.additionalDamage);
@@ -93,11 +91,11 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         // Collections and enums
         writeFireModes(tag);
         writeGripType(tag);
-        tag.putBoolean("modifyNeedsFullCharge", this.modifyNeedsFullCharge);
-        tag.putBoolean("modifyIsOneTimeCharge", this.modifyIsOneTimeCharge);
+        tag.putString("needsFullCharge", this.needsFullCharge);
+        tag.putString("oneTimeCharge", this.oneTimeCharge);
         writeAmmoItems(tag);
-        tag.putBoolean("autoReloading", this.autoReloading);
-        tag.putBoolean("modifyShouldRenderHud", this.modifyShouldRenderHud);
+        tag.putString("autoReload", this.autoReload);
+        tag.putString("renderHud", this.renderHud);
         writeLoadingType(tag);
         writeFuelTypes(tag);
         writeFuelMax(tag);
@@ -109,7 +107,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         // Existing deserialization
         if (tag.contains("fireSoundVolume", Tag.TAG_STRING)) this.fireSoundVolume = tag.getString("fireSoundVolume");
         if (tag.contains("fireSound", Tag.TAG_STRING)) this.fireSound = tag.getString("fireSound");
-        if (tag.contains("silencedFire", Tag.TAG_BYTE)) this.silencedFire = tag.getBoolean("silencedFire");
+        if (tag.contains("silencedFire", Tag.TAG_BYTE)) this.silencedFire = tag.getString("silencedFire");
 
         // Numeric fields
         if (tag.contains("additionalDamage", Tag.TAG_FLOAT)) this.additionalDamage = tag.getFloat("additionalDamage");
@@ -138,11 +136,11 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         // Collections and enums
         readFireModes(tag);
         readGripType(tag);
-        if (tag.contains("modifyNeedsFullCharge", Tag.TAG_BYTE)) this.modifyNeedsFullCharge = tag.getBoolean("modifyNeedsFullCharge");
-        if (tag.contains("modifyIsOneTimeCharge", Tag.TAG_BYTE)) this.modifyIsOneTimeCharge = tag.getBoolean("modifyIsOneTimeCharge");
+        if (tag.contains("needsFullCharge", Tag.TAG_BYTE)) this.needsFullCharge = tag.getString("needsFullCharge");
+        if (tag.contains("oneTimeCharge", Tag.TAG_BYTE)) this.oneTimeCharge = tag.getString("oneTimeCharge");
         readAmmoItems(tag);
-        if (tag.contains("autoReloading", Tag.TAG_BYTE)) this.autoReloading = tag.getBoolean("autoReloading");
-        if (tag.contains("modifyShouldRenderHud", Tag.TAG_BYTE)) this.modifyShouldRenderHud = tag.getBoolean("modifyShouldRenderHud");
+        if (tag.contains("autoReload", Tag.TAG_BYTE)) this.autoReload = tag.getString("autoReload");
+        if (tag.contains("renderHud", Tag.TAG_BYTE)) this.renderHud = tag.getString("renderHud");
         readLoadingType(tag);
         readFuelTypes(tag);
         readFuelMax(tag);
@@ -273,11 +271,11 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         // Collections and enums
         copy.fireModes = new HashSet<>(this.fireModes);
         copy.gripType = this.gripType;
-        copy.modifyNeedsFullCharge = this.modifyNeedsFullCharge;
-        copy.modifyIsOneTimeCharge = this.modifyIsOneTimeCharge;
+        copy.needsFullCharge = this.needsFullCharge;
+        copy.oneTimeCharge = this.oneTimeCharge;
         copy.ammoItems = new HashSet<>(this.ammoItems);
-        copy.autoReloading = this.autoReloading;
-        copy.modifyShouldRenderHud = this.modifyShouldRenderHud;
+        copy.autoReload = this.autoReload;
+        copy.renderHud = this.renderHud;
         copy.loadingType = this.loadingType;
         copy.fuel = new HashSet<>(this.fuel);
 
@@ -325,6 +323,71 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         json.add("fireModes", fireModesArray);
 
         return json;
+    }
+
+    @Override
+    public float modifyFireSoundVolume(float volume, GunData data) {
+        return IGunModifier.super.modifyFireSoundVolume(volume, data);
+    }
+
+    @Override
+    public ResourceLocation modifyFireSound(ResourceLocation sound, GunData data) {
+        return IGunModifier.super.modifyFireSound(sound, data);
+    }
+
+    @Override
+    public double modifyFireSoundRadius(double radius, GunData data) {
+        return IGunModifier.super.modifyFireSoundRadius(radius, data);
+    }
+
+    @Override
+    public boolean silencedFire(GunData data) {
+        return getBoolean(false, silencedFire);
+    }
+
+    @Override
+    public boolean modifyNeedsFullCharge(boolean base, GunData data) {
+        return getBoolean(base, this.needsFullCharge);
+    }
+
+    @Override
+    public boolean modifyIsOneTimeCharge(boolean base, GunData data) {
+        return getBoolean(base, oneTimeCharge);
+    }
+
+    @Override
+    public boolean modifyShouldRenderHud(boolean base, GunData data) {
+        return getBoolean(base, renderHud);
+    }
+
+    @Override
+    public Set<ResourceLocation> modifyAmmoItems(Set<ResourceLocation> baseValue, GunData data) {
+        return ammoItems != null && !ammoItems.isEmpty() ? this.ammoItems : baseValue;
+    }
+
+    @Override
+    public boolean modifyAutoReloading(boolean base, GunData data) {
+        return getBoolean(base, autoReload);
+    }
+
+    @Override
+    public LoadingType modifyLoadingType(LoadingType baseValue, GunData data) {
+        return loadingType != null ? this.loadingType : baseValue;
+    }
+
+    @Override
+    public Set<FuelType> modifyFuel(Set<FuelType> baseValue, GunData data) {
+        return fuel != null && !fuel.isEmpty() ? this.fuel : baseValue;
+    }
+
+    @Override
+    public Set<FireMode> modifyFireModes(Set<FireMode> baseValue, GunData data) {
+        return fireModes != null && !fireModes.isEmpty() ? this.fireModes : baseValue;
+    }
+
+    @Override
+    public GripType modifyGripType(GripType baseValue, GunData data) {
+        return this.gripType != null ? this.gripType :  baseValue;
     }
 
     // Calculation methods for each numeric property
@@ -417,7 +480,26 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     }
 
     public int modifyMaxFuel(int max, FuelType type, GunData gunData) {
-        return maxFuel.get(type);
+        return maxFuel != null && maxFuel.get(type) != null ? maxFuel.get(type) : max;
+    }
+
+    public static boolean getBoolean(boolean base, String mod) {
+        if (mod == null || mod.isEmpty()) {
+            return base;
+        }
+
+        switch (mod){
+            case "true" -> {
+                return true;
+            }
+            case "false" -> {
+                return false;
+            }
+            default -> {
+                Ntgl.LOGGER.error("Invalid boolean  {}", mod);
+                return base;
+            }
+        }
     }
 
     public static float calculate(float num, String operation) {

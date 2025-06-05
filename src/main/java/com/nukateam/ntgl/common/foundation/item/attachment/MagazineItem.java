@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.data.attachment.impl.Magazine;
  * <p>
  * Author: Jetug
  */
+@Deprecated
 public class MagazineItem extends AttachmentItem<Magazine> {
     public MagazineItem(Magazine data, Properties properties) {
         super(AttachmentType.MAGAZINE, data, properties);

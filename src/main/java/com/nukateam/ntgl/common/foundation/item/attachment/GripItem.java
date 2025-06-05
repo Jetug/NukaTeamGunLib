@@ -9,6 +9,7 @@ import com.nukateam.ntgl.common.data.attachment.impl.Grip;
  * <p>
  * Author: MrCrayfish
  */
+@Deprecated
 public class GripItem extends AttachmentItem<Grip> {
     public GripItem(Grip grip, Properties properties) {
         super(AttachmentType.GRIP, grip, properties);

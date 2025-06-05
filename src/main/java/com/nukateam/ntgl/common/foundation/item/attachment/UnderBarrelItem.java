@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.data.attachment.impl.UnderBarrel;
  * <p>
  * Author: MrCrayfish
  */
+@Deprecated
 public class UnderBarrelItem extends AttachmentItem<UnderBarrel> {
     public UnderBarrelItem(UnderBarrel data, Properties properties) {
         super(AttachmentType.UNDER_BARREL, data, properties);

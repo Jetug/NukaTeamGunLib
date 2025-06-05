@@ -13,7 +13,7 @@ public class BackpackHelper {
         if (Ntgl.backpackedLoaded) {
             context = BackpackedHelper.findAmmo(player, id);
         }
-        if(Ntgl.sophisticatedLoaded && context.equals(AmmoContext.NONE)){
+        if(Ntgl.sophisticatedLoaded && Ntgl.curiosLoaded && context.equals(AmmoContext.NONE)){
             context = SophisticatedHelper.findAmmo(player, id);
         }
 
@@ -23,7 +23,7 @@ public class BackpackHelper {
     public static IAmmoContext findMagazine(Player player, ResourceLocation id) {
         var context = (IAmmoContext)AmmoContext.NONE;
 
-        if (Ntgl.backpackedLoaded) {
+        if (Ntgl.backpackedLoaded && Ntgl.curiosLoaded) {
             context = BackpackedHelper.findMagazine(player, id);
         }
         if(Ntgl.sophisticatedLoaded && context.equals(AmmoContext.NONE)){
