@@ -28,7 +28,7 @@ public class ProxyAmmoItem extends Item implements IAmmo<Ammo>, IConfigConsumer<
         this.ammo = supplier.getConfig();
     }
 
-    public Ammo getAmmo() {
+    public Ammo getConfig() {
         return this.ammo;
     }
 

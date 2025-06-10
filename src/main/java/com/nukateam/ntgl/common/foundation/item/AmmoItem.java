@@ -33,7 +33,7 @@ public class AmmoItem extends Item implements IAmmo<Ammo>, IConfigConsumer<Ammo>
         this.ammo = supplier.getConfig();
     }
 
-    public Ammo getAmmo() {
+    public Ammo getConfig() {
         return this.ammo;
     }
 

@@ -13,6 +13,7 @@ import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
@@ -357,7 +358,7 @@ public class ShootingHandler {
         var key = arm == HumanoidArm.RIGHT ? mc.options.keyAttack : mc.options.keyUse;
         var data = shootingData.get(arm);
         var gunData = new GunData(heldItem, player);
-        var fireMode =  GunModifierHelper.getCurrentFireMode(gunData);
+        var fireMode =  GunStateHelper.getFireMode(gunData);
         var maxChargeTime = GunModifierHelper.getFireDelay(gunData);
 
         if (maxChargeTime != 0) {

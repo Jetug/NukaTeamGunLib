@@ -9,6 +9,7 @@ import com.nukateam.ntgl.common.base.utils.ShootTracker;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.util.StackUtils;
@@ -137,11 +138,11 @@ public class ServerPlayHandler {
                 }
 
                 var count = GunModifierHelper.getProjectileAmount(data);
-                var projectileProps = GunModifierHelper.getCurrentAmmo(data);
+                var projectileProps = GunStateHelper.getAmmoConfig(data);
                 var spawnedProjectiles = new ProjectileEntity[count];
 
                 for (int i = 0; i < count; i++) {
-                    var factory = ProjectileManager.getInstance().getFactory(GunModifierHelper.getCurrentAmmoId(data));
+                    var factory = ProjectileManager.getInstance().getFactory(GunStateHelper.getAmmoId(data));
                     var projectileEntity = factory.create(world, shooter, heldItem, gunItem, modifiedGun);
                     projectileEntity.setWeapon(heldItem);
                     projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
@@ -295,11 +296,15 @@ public class ServerPlayHandler {
     public static void handleUnload(ServerPlayer player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
         if (stack.getItem() instanceof GunItem) {
-            var data = new GunData(stack, player);
-            if (GunModifierHelper.getCurrentAmmo(data).isMagazineMode())
-                unloadMagazine(player, stack);
-            else unloadAmmo(player, stack);
+            unloadGun(player, stack);
         }
+    }
+
+    public static void unloadGun(ServerPlayer player, ItemStack stack) {
+        var data = new GunData(stack, player);
+        if (GunStateHelper.getAmmoConfig(data).isMagazineMode())
+            unloadMagazine(player, stack);
+        else unloadAmmo(player, stack);
     }
 
     private static void unloadAmmo(ServerPlayer player, ItemStack stack) {
@@ -309,7 +314,7 @@ public class ServerPlayHandler {
                 int count = tag.getInt(Tags.AMMO_COUNT);
                 tag.putInt(Tags.AMMO_COUNT, 0);
                 var data = new GunData(stack, player);
-                var id = GunModifierHelper.getCurrentAmmoId(data);
+                var id = GunStateHelper.getAmmoId(data);
                 var item = ForgeRegistries.ITEMS.getValue(id);
 
                 if (item != null && !player.isCreative()) {
@@ -328,7 +333,7 @@ public class ServerPlayHandler {
 
                 tag.putInt(Tags.AMMO_COUNT, 0);
                 var data = new GunData(stack, player);
-                var id = GunModifierHelper.getCurrentAmmoId(data);
+                var id = GunStateHelper.getAmmoId(data);
                 var item = ForgeRegistries.ITEMS.getValue(id);
 
                 if (item != null && !player.isCreative()) {
@@ -400,7 +405,7 @@ public class ServerPlayHandler {
 
     public static void handleFireModeSwitch(ServerPlayer player, ItemStack stack) {
         var data = new GunData(stack, player);
-        GunModifierHelper.switchFireMode(data);
+        GunStateHelper.switchFireMode(data);
         player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
     }
 
@@ -411,7 +416,7 @@ public class ServerPlayHandler {
         if (!isReloading.getValue(player) && GunModifierHelper.getAmmoItems(data).size() > 1){
             handleUnload(player, hand);
             reloadGun(hand, player);
-            GunModifierHelper.switchAmmo(data);
+            GunStateHelper.switchAmmo(data);
             player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
         }
     }

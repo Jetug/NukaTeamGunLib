@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.data.constants;
+package com.nukateam.example.common.util.constants;
 
 public class Animations {
     public static final String RELOAD_START = "reload_start";

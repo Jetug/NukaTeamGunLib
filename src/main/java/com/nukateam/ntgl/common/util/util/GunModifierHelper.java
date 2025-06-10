@@ -9,14 +9,10 @@ import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItem;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -36,7 +32,7 @@ public class GunModifierHelper {
     public static final Ammo AMMO = new Ammo();
 
     public static boolean isAuto(GunData itemStack) {
-        return getCurrentFireMode(itemStack) == FireMode.AUTO;
+        return GunStateHelper.getFireMode(itemStack) == FireMode.AUTO;
     }
 
     public static boolean isWeaponFull(GunData data) {
@@ -90,8 +86,8 @@ public class GunModifierHelper {
         var finalMaxAmmo = new AtomicInteger(getGeneral(getGun(data.gun)).getMaxAmmo());
 
         if (data != null && data.gun.getItem() instanceof GunItem) {
-            if (GunModifierHelper.getCurrentAmmo(data).isMagazineMode()) {
-                var id = GunModifierHelper.getCurrentAmmoId(data);
+            if (GunStateHelper.getAmmoConfig(data).isMagazineMode()) {
+                var id = GunStateHelper.getAmmoId(data);
                 var item = ITEMS.getValue(id);
 
                 finalMaxAmmo.set(item.getMaxDamage(new ItemStack(item)));
@@ -128,36 +124,11 @@ public class GunModifierHelper {
 
     public static int getProjectileAmount(GunData data) {
         var gunProjectileAmount = getGeneral(getGun(data.gun)).getProjectileAmount();
-        var ammoProjectileAmount = getCurrentAmmo(data).getProjectileAmount();
+        var ammoProjectileAmount = GunStateHelper.getAmmoConfig(data).getProjectileAmount();
 
         var finalProjectileAmount = new AtomicInteger(gunProjectileAmount * ammoProjectileAmount);
         forEachAttachment(data, (modifier -> finalProjectileAmount.set(modifier.modifyProjectileAmount(finalProjectileAmount.get(), data))));
         return finalProjectileAmount.get();
-    }
-
-    public static void switchFireMode(GunData data){
-        var fireModes = getFireModes(data);
-        var current = getCurrentFireMode(data);
-        var newFireMode = cycleSet(fireModes, current);
-        setCurrentFireMode(data, newFireMode);
-    }
-
-    public static void setCurrentFireMode(GunData data, FireMode fireMode) {
-        var tag = data.gun.getOrCreateTag();
-        tag.putString(Tags.FIRE_MODE, fireMode.toString());
-        data.gun.setTag(tag);
-    }
-
-    public static FireMode getCurrentFireMode(GunData data) {
-        var tag = data.gun.getOrCreateTag();
-        if (!tag.contains(Tags.FIRE_MODE, Tag.TAG_STRING)) {
-            var buff = new ArrayList<>(getFireModes(data).stream().toList());
-            var fireMode = buff.get(0);
-
-//            setCurrentFireMode(data, fireMode);
-            return fireMode;
-        }
-        return FireMode.getType(tag.getString(Tags.FIRE_MODE));
     }
 
     public static Set<FireMode> getFireModes(GunData data) {
@@ -206,54 +177,6 @@ public class GunModifierHelper {
         var oneTimeCharge = new AtomicBoolean(getGeneral(getGun(data.gun)).isOneTimeCharge());
         forEachAttachment(data, (modifier -> oneTimeCharge.set(modifier.modifyIsOneTimeCharge(oneTimeCharge.get(), data))));
         return oneTimeCharge.get();
-    }
-
-    public static void switchAmmo(GunData data){
-        var ammoItems = getAmmoItems(data);
-        var current = getCurrentAmmoId(data);
-        var newAmmo = cycleSet(ammoItems, current);
-
-        setCurrentAmmo(data, newAmmo);
-    }
-
-    public static void setCurrentAmmo(GunData data, ResourceLocation ammo) {
-        var tag = data.gun.getOrCreateTag();
-        tag.putString("Ammo", ammo.toString());
-        data.gun.setTag(tag);
-    }
-
-    public static ResourceLocation getCurrentAmmoId(GunData data) {
-        var tag = data.gun.getOrCreateTag();
-        if (tag.contains("Ammo", Tag.TAG_STRING)) {
-            return ResourceLocation.tryParse(tag.getString("Ammo"));
-        }
-        return getFirstAmmoItem(data);
-    }
-
-    public static boolean isCurrentAmmo(GunData gunData, Item item) {
-        return getCurrentAmmoId(gunData).equals(ITEMS.getKey(item));
-    }
-
-    public static Item getCurrentAmmoItem(GunData data) {
-        return ITEMS.getValue(getCurrentAmmoId(data));
-    }
-
-    public static AmmoType getCurrentAmmoType(GunData data) {
-        var ammo = getCurrentAmmo(data);
-        return ammo.getType();
-    }
-
-    public static Ammo getCurrentAmmo(GunData data) {
-        var gun = getGun(data.gun);
-        var ammoId = getCurrentAmmoId(data);
-
-        if(gun.hasAmmo(ammoId)) {
-            return gun.getAmmo(ammoId);
-        }
-        else if(getCurrentAmmoItem(data) instanceof IAmmo ammo) {
-            return ammo.getAmmo();
-        }
-        else return AMMO;
     }
 
     public static Set<ResourceLocation> getAmmoItems(GunData data) {
@@ -318,7 +241,7 @@ public class GunModifierHelper {
 
     public static float getModifiedSpread(GunData data) {
         var gunSpread = getGeneral(getGun(data.gun)).getSpread();
-        var ammoSpread = getCurrentAmmo(data).getSpread();
+        var ammoSpread = GunStateHelper.getAmmoConfig(data).getSpread();
         var spread = Math.max(gunSpread + ammoSpread, 0);
         var finalSpread = new AtomicReference<>(spread);
 
@@ -409,7 +332,7 @@ public class GunModifierHelper {
     }
 
     public static float getAmmoDamageMultiplier(GunData data){
-        return getCurrentAmmo(data).getDamage();
+        return GunStateHelper.getAmmoConfig(data).getDamage();
     }
 
     public static double getModifiedAimDownSightSpeed(GunData data, double speed) {
@@ -467,16 +390,5 @@ public class GunModifierHelper {
         for (var modifier : gunModifiers) {
             consumer.accept(modifier);
         }
-    }
-
-    private static <T> T cycleSet(Set<T> set, T value) {
-        var buff = new ArrayList<>(set.stream().toList());
-        var i = buff.indexOf(value);
-
-        if(i == set.size() - 1)
-            i = 0;
-        else i++;
-
-        return buff.get(i);
     }
 }

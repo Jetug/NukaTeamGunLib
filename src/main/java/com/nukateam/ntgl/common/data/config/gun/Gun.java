@@ -28,6 +28,7 @@ import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.util.helpers.compatibility.BackpackHelper;
 import com.google.gson.JsonObject;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -379,7 +380,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public static IAmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
         var data = new GunData(weapon, entity);
-        var id = GunModifierHelper.getCurrentAmmoId(data);
+        var id = GunStateHelper.getAmmoId(data);
 
         if (entity instanceof Player player) {
             var context = findPlayerAmmo(player, id);
@@ -391,7 +392,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                         id = value;
                         context = findPlayerAmmo(player, id);
                         if(context != AmmoContext.NONE) {
-                            GunModifierHelper.setCurrentAmmo(data, id);
+                            GunStateHelper.setCurrentAmmo(data, id);
                             return context;
                         }
                     }
@@ -405,7 +406,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public static IAmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {
         var data = new GunData(weapon, entity);
-        var id = GunModifierHelper.getCurrentAmmoId(data);
+        var id = GunStateHelper.getAmmoId(data);
 
         if (entity instanceof Player player) {
             var context = findPlayerMagazine(player, id);
@@ -417,7 +418,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                         id = value;
                         context = findPlayerMagazine(player, id);
                         if(context != AmmoContext.NONE) {
-                            GunModifierHelper.setCurrentAmmo(data, id);
+                            GunStateHelper.setCurrentAmmo(data, id);
                             return context;
                         }
                     }

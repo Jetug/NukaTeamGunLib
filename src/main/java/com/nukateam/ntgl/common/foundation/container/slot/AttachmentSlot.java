@@ -8,10 +8,9 @@ import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import net.minecraft.client.Minecraft;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -101,7 +100,7 @@ public class AttachmentSlot extends Slot {
         if(diff > 0){
             Gun.setAmmo(stack, maxAmmo);
 
-            var ammoItem = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmoId(gunData));
+            var ammoItem = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoId(gunData));
             var dropStack = new ItemStack(ammoItem, diff);
 
             if (entity instanceof Player player && !player.addItem(dropStack)) {

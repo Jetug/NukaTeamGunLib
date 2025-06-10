@@ -125,7 +125,7 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
         var data = new GunData(stack, null);
-        var ammo = ForgeRegistries.ITEMS.getValue(GunModifierHelper.getCurrentAmmoId(data));
+        var ammo = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoId(data));
 
         if (ammo != null) {
             tooltip.add(Component.translatable("info.ntgl.ammo_type",

@@ -11,6 +11,7 @@ import com.nukateam.ntgl.common.foundation.item.AmmoBoxItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -201,8 +202,8 @@ public class GunHud implements IGuiOverlay {
             var data = new GunData(stack, player);
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
             handCache.maxAmmoCount = GunModifierHelper.getMaxAmmo(data);
-            handCache.fireMode = GunModifierHelper.getCurrentFireMode(data);
-            handCache.ammoType = GunModifierHelper.getCurrentAmmoType(data);
+            handCache.fireMode = GunStateHelper.getFireMode(data);
+            handCache.ammoType = GunStateHelper.getAmmoType(data);
             handCache.ammoCount = Gun.getAmmo(stack);
 
             if (!player.isCreative()) {
@@ -220,11 +221,11 @@ public class GunHud implements IGuiOverlay {
             var inventoryStack = inventory.getItem(i);
             var inventoryItem = inventoryStack.getItem();
 
-            if (GunModifierHelper.isCurrentAmmo(gunData, inventoryItem)) {
+            if (GunStateHelper.isCurrentAmmo(gunData, inventoryItem)) {
                 inventoryAmmoCount += inventoryStack.getCount();
             }
             else if (inventoryItem instanceof AmmoBoxItem iAmmoBox) {
-                var currentAmmo = GunModifierHelper.getCurrentAmmoItem(gunData);
+                var currentAmmo = GunStateHelper.getAmmoItem(gunData);
                 inventoryAmmoCount += iAmmoBox.getAmmoCount(inventoryStack, currentAmmo);
             }
         }
