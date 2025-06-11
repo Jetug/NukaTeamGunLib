@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.INBTSerializable;
  * Author: MrCrayfish
  */
 public interface IAmmo <T extends INBTSerializable<CompoundTag>> extends IConfigConsumer<T> {
-    Ammo getConfig();
+    Ammo getAmmo();
 
     default IGunModifier[] getModifiers() {
         return new IGunModifier[0];

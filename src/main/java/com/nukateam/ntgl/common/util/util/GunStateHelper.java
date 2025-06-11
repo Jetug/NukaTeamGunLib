@@ -39,7 +39,7 @@ public class GunStateHelper {
         var ammoItems = GunModifierHelper.getAmmoItems(data);
         var currentAmmo = getAmmoId(tag);
 
-        if (currentAmmo == null || ammoItems.contains(currentAmmo)) {
+        if (currentAmmo == null) {
             return getFirst(ammoItems);
         }
         else return currentAmmo;
@@ -72,7 +72,7 @@ public class GunStateHelper {
             return gun.getAmmo(ammoId);
         }
         else if(getAmmoItem(data) instanceof IAmmo ammo) {
-            return ammo.getConfig();
+            return ammo.getAmmo();
         }
         else return GunModifierHelper.AMMO;
     }

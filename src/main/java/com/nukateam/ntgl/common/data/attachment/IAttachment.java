@@ -29,4 +29,6 @@ public interface IAttachment<T extends Attachment> extends IConfigConsumer<Attac
     default boolean canAttachTo(ItemStack stack) {
         return true;
     }
+
+    AttachmentConfig getAttachmentConfig();
 }

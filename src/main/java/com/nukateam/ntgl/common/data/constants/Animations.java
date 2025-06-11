@@ -1,6 +1,5 @@
-package com.nukateam.example.common.util.constants;
+package com.nukateam.ntgl.common.data.constants;
 
-@Deprecated
 public class Animations {
     public static final String SHOT = "shot";
     public static final String EQUIP = "equip";

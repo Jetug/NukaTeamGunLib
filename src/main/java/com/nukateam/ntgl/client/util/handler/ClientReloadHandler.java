@@ -70,29 +70,6 @@ public class ClientReloadHandler {
         }
     }
 
-    @SubscribeEvent
-    public void onKeyPressed(InputEvent.Key event) {
-        var minecraft = Minecraft.getInstance();
-        var player = minecraft.player;
-
-        if (player == null || !isInGame())
-            return;
-
-        if(event.getAction() == GLFW.GLFW_PRESS) {
-            if (KeyBinds.KEY_RELOAD.consumeClick()) {
-//                this.setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), ModSyncedDataKeys.RELOADING_RIGHT);
-                startReloading();
-            }
-            if (KeyBinds.KEY_UNLOAD.consumeClick()) {
-                unloadAmmo(InteractionHand.MAIN_HAND);
-                unloadAmmo(InteractionHand.OFF_HAND);
-            }
-            if (KeyBinds.KEY_INSPECT.consumeClick()){
-                ClientActions.inspectWeapon(player);
-            }
-        }
-    }
-
     public void unloadAmmo(InteractionHand hand) {
         this.setReloading(false, hand);
         PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload(hand));

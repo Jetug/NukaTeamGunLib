@@ -11,7 +11,7 @@ import net.minecraft.world.InteractionHand;
 import static com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys.getReloadKey;
 
 public class ClientActions {
-    static void inspectWeapon(LocalPlayer player) {
+    public static void inspectWeapon(LocalPlayer player) {
         var mainGun = player.getMainHandItem();
         var offGun = player.getOffhandItem();
 

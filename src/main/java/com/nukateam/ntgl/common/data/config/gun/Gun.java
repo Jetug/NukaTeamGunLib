@@ -73,6 +73,20 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return tag.contains("IgnoreAmmo", Tag.TAG_BYTE);
     }
 
+    public static void saveAttachments(ItemStack weapon, Iterable<ItemStack> attachments){
+        var attachmentsTag = new CompoundTag();
+
+        for (var itemStack : attachments) {
+            if (itemStack.getItem() instanceof IAttachment attachment) {
+                var tagKey = attachment.getType();
+                attachmentsTag.put(tagKey.toString(), itemStack.save(new CompoundTag()));
+            }
+        }
+
+        var tag = weapon.getOrCreateTag();
+        tag.put(Tags.ATTACHMENTS, attachmentsTag);
+    }
+
     public HashMap<ResourceLocation, Ammo> getProgectiles() {
         return progectiles;
     }

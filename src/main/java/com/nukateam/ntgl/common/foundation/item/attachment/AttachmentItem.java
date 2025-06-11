@@ -4,11 +4,9 @@ import com.nukateam.ntgl.common.base.NetworkManager;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.attachment.impl.Attachment;
-import com.nukateam.ntgl.common.data.attachment.impl.GenericAttachment;
 import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -24,6 +22,11 @@ public class AttachmentItem<T extends Attachment> extends Item implements IAttac
         this.config = AttachmentConfig.Builder.create().setType(type).build();
         this.attachmentData = attachmentData;
         this.colored = true;
+    }
+
+    @Override
+    public AttachmentConfig getAttachmentConfig() {
+        return config;
     }
 
     @Override
@@ -49,9 +52,5 @@ public class AttachmentItem<T extends Attachment> extends Item implements IAttac
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return enchantment == Enchantments.BINDING_CURSE || super.canApplyAtEnchantingTable(stack, enchantment);
-    }
-
-    public AttachmentConfig getConfig() {
-        return config;
     }
 }

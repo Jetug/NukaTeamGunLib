@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.util.util;
 
+import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -30,6 +31,11 @@ import static net.minecraftforge.registries.ForgeRegistries.*;
 public class GunModifierHelper {
     private static final IGunModifier[] EMPTY = {};
     public static final Ammo AMMO = new Ammo();
+
+    @Deprecated
+    public static Ammo getCurrentAmmo(GunData data) {
+        return GunStateHelper.getAmmoConfig(data);
+    }
 
     public static boolean isAuto(GunData itemStack) {
         return GunStateHelper.getFireMode(itemStack) == FireMode.AUTO;
@@ -378,9 +384,9 @@ public class GunModifierHelper {
     private static IGunModifier[] getAttachmentModifiers(ItemStack gun, AttachmentType type) {
         var attachmentItem = Gun.getAttachmentItem(type, gun);
 
-        if (!attachmentItem.isEmpty() && attachmentItem.getItem() instanceof AttachmentItem<?> attachment) {
+        if (!attachmentItem.isEmpty() && attachmentItem.getItem() instanceof IAttachment<?> attachment) {
             var modifiers = attachment.getProperties().getModifiers();
-            var configModifiers = attachment.getConfig().getModifiers();
+            var configModifiers = attachment.getAttachmentConfig().getModifiers();
             return ArrayUtils.add(modifiers, configModifiers);
         }
         return EMPTY;

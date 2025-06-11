@@ -12,14 +12,11 @@ import net.minecraft.world.InteractionHand;
 public class C2SMessageUnload extends PlayMessage<C2SMessageUnload> {
     private InteractionHand hand = InteractionHand.MAIN_HAND;
 
-    public C2SMessageUnload(){
-
-    }
+    public C2SMessageUnload(){}
 
     public C2SMessageUnload(InteractionHand hand) {
         this.hand = hand;
     }
-
 
     @Override
     public void encode(C2SMessageUnload message, FriendlyByteBuf buffer) {

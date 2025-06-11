@@ -1,19 +1,21 @@
 package com.nukateam.ntgl.common.foundation.container;
 
-import com.nukateam.ntgl.common.base.holders.AttachmentType;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
-import com.nukateam.ntgl.common.foundation.init.ModContainers;
-import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItem;
-import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.util.data.Pos2I;
-import com.nukateam.ntgl.common.util.util.GunData;
-import net.minecraft.nbt.*;
+import com.nukateam.ntgl.common.base.holders.*;
+import com.nukateam.ntgl.common.data.config.gun.*;
+import com.nukateam.ntgl.common.event.*;
+import com.nukateam.ntgl.common.event.GunFireEvent;
+import com.nukateam.ntgl.common.foundation.container.slot.*;
+import com.nukateam.ntgl.common.foundation.init.*;
+import com.nukateam.ntgl.common.util.data.*;
+import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
+import com.nukateam.ntgl.common.util.util.*;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.*;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.*;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.ArrayList;
 
@@ -31,6 +33,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
     private final ItemStack weapon;
     private final Container playerInventory;
     private final Container weaponInventory;
+    private final Player player;
     private boolean loaded = false;
 
     public AttachmentContainer(int windowId, Inventory playerInventory, ItemStack stack) {
@@ -83,6 +86,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
         super(ModContainers.ATTACHMENTS.get(), windowId);
         this.weapon = playerInventory.getSelected();
         this.playerInventory = playerInventory;
+        this.player = playerInventory.player;
         var gunData = new GunData(weapon, playerInventory.player);
         var sortedTypes = getSortedAttachmentTypes(gunData);
 
@@ -122,20 +126,21 @@ public class AttachmentContainer extends AbstractContainerMenu {
     }
 
     @Override
+    public void setItem(int pSlotId, int pStateId, ItemStack pStack) {
+        super.setItem(pSlotId, pStateId, pStack);
+    }
+
+    @Override
     public void slotsChanged(Container inventoryIn) {
-        var attachmentsTag = new CompoundTag();
+        var attachments = new ArrayList<ItemStack>();
+
+        MinecraftForge.EVENT_BUS.post(new AttachmentEvent(new GunData(this.weapon, this.player)));
 
         for (int i = 0; i < this.getWeaponInventory().getContainerSize(); i++) {
             var itemStack = this.getSlot(i).getItem();
-            if (itemStack.getItem() instanceof IAttachment attachment
-                    && itemStack.getItem() instanceof AttachmentItem<?>) {
-                var tagKey = attachment.getType();
-                attachmentsTag.put(tagKey.toString(), itemStack.save(new CompoundTag()));
-            }
+            attachments.add(itemStack);
         }
-
-        var tag = this.weapon.getOrCreateTag();
-        tag.put(Tags.ATTACHMENTS, attachmentsTag);
+        Gun.saveAttachments(this.weapon, attachments);
         super.broadcastChanges();
     }
 

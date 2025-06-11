@@ -3,9 +3,13 @@ package com.nukateam.ntgl.common.handlers;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.utils.EquipTracker;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
+import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,6 +21,18 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class GunEventHandler {
+
+    @SubscribeEvent
+    public static void attachmentsChanged(AttachmentEvent event) {
+        var gunData = event.getGunData();
+        var allAmmo = GunModifierHelper.getAmmoItems(gunData);
+        var currentAmmo = GunStateHelper.getAmmoId(gunData);
+
+        if (!allAmmo.contains(currentAmmo)) {
+            ServerPlayHandler.unloadGun((ServerPlayer)gunData.shooter, gunData.gun);
+        }
+    }
+
     @SubscribeEvent
     public static void preShoot(GunFireEvent.Pre event) {
         var entity = event.getEntity();
@@ -32,8 +48,6 @@ public class GunEventHandler {
             }
         }
     }
-
-    public GunEventHandler() {}
 
     @SubscribeEvent
     public static void postShoot(GunFireEvent.Post event) {

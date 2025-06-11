@@ -11,7 +11,7 @@ import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.base.utils.EquipTracker;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.GripType;
-import com.nukateam.example.common.util.constants.Animations;
+import com.nukateam.ntgl.common.data.constants.Animations;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.util.util.*;
@@ -31,8 +31,8 @@ import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.event.TickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import static com.nukateam.ntgl.client.util.constants.Animations.*;
 import static com.nukateam.ntgl.client.util.util.TransformUtils.*;
+import static com.nukateam.ntgl.common.data.constants.Animations.*;
 import static mod.azure.azurelib.core.animation.AnimatableManager.*;
 import static mod.azure.azurelib.core.animation.Animation.*;
 import static mod.azure.azurelib.core.animation.Animation.LoopType.*;

@@ -398,7 +398,7 @@ public class ServerPlayHandler {
         if(stack.getItem() instanceof GunItem) {
             switch (message.getHandAction()) {
                 case SWITCH_FIRE_MODE -> handleFireModeSwitch(player, stack);
-                case SWITCH_AMMO -> handleAmmoModeSwitch(message.getHand(), player, stack);
+                case SWITCH_AMMO -> handleAmmoSwitch(message.getHand(), player, stack);
             }
         }
     }
@@ -409,7 +409,7 @@ public class ServerPlayHandler {
         player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
     }
 
-    public static void handleAmmoModeSwitch(InteractionHand hand, ServerPlayer player, ItemStack weapon) {
+    public static void handleAmmoSwitch(InteractionHand hand, ServerPlayer player, ItemStack weapon) {
         var isReloading = getReloadKey(hand);
         var data = new GunData(weapon, player);
 
