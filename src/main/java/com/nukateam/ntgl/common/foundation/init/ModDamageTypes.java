@@ -28,8 +28,8 @@ public class ModDamageTypes {
     public static final ResourceKey<DamageType> FIRE = create("fire");
 
     @NotNull
-    private static ResourceKey<DamageType> create(String explosive) {
-        return ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(Ntgl.MOD_ID, explosive));
+    private static ResourceKey<DamageType> create(String name) {
+        return ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(Ntgl.MOD_ID, name));
     }
 
     public static void bootstrap(BootstapContext<DamageType> bootstapContext) {

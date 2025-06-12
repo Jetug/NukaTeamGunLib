@@ -255,24 +255,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return attachments.containsKey(type);
     }
 
-//    @Nullable
-//    public ScaledPositioned getAttachmentPosition(ResourceLocation type) {
-//        if (this.modules.attachments != null && this.modules.attachments.containsKey(type)) {
-//            if (type.equals(SCOPE)) {
-//                return this.modules.attachments.get(type);
-//            } else if (type.equals(BARREL)) {
-//                return this.modules.attachments.barrelItem;
-//            } else if (type.equals(STOCK)) {
-//                return this.modules.attachments.stock;
-//            } else if (type.equals(UNDER_BARREL)) {
-//                return this.modules.attachments.underBarrel;
-//            }
-//        }
-//        return null;
-//    }
-
     public boolean canAimDownSight() {
-        return /*this.canAttachType(SCOPE, ) || */this.modules.zoom != null;
+        return this.modules.zoom != null;
     }
 
     public static boolean hasScopeOverlay(ItemStack gun) {
@@ -541,9 +525,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return stack != null && Objects.equals(ForgeRegistries.ITEMS.getKey(stack.getItem()), id);
     }
 
+    @Deprecated
     public static int getAmmo(ItemStack gunStack) {
-        var tag = gunStack.getOrCreateTag();
-        return tag.getInt(Tags.AMMO_COUNT);
+        return GunStateHelper.getAmmo(gunStack);
     }
 
     public static boolean isMaxAmmo(GunData data) {
@@ -591,7 +575,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return progectiles.containsKey(ammo);
     }
 
-    public Ammo getAmmo(ResourceLocation ammo){
+    public Ammo getAmmoConfig(ResourceLocation ammo){
         return progectiles.get(ammo);
     }
 

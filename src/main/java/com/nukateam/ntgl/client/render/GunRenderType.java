@@ -18,7 +18,8 @@ public final class GunRenderType extends RenderType {
             true,
             RenderType.CompositeState.builder()
                     .setShaderState(RenderStateShard.POSITION_COLOR_LIGHTMAP_SHADER)
-                    .setCullState(NO_CULL).setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setCullState(NO_CULL)
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .createCompositeState(false));
 
     private static final RenderType MUZZLE_FLASH = RenderType.create(Ntgl.MOD_ID + ":muzzle_flash",

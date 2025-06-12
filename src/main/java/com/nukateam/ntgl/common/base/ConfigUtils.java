@@ -1,13 +1,8 @@
 package com.nukateam.ntgl.common.base;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.util.Easings;
-import com.nukateam.ntgl.common.base.holders.*;
-import com.nukateam.ntgl.common.base.utils.JsonDeserializers;
+import com.nukateam.ntgl.common.base.utils.json.JsonDeserializers;
 import com.nukateam.ntgl.common.util.annotation.Validator;
-import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -20,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InvalidObjectException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,20 +25,6 @@ import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
 public class ConfigUtils {
     private static final int FILE_TYPE_LENGTH_VALUE = ".json".length();
-
-    public static final Gson GSON_INSTANCE = Util.make(() -> {
-        var builder = new GsonBuilder();
-        builder.registerTypeAdapter(ResourceLocation.class, JsonDeserializers.RESOURCE_LOCATION);
-        builder.registerTypeAdapter(GripType.class, JsonDeserializers.GRIP_TYPE);
-        builder.registerTypeAdapter(LoadingType.class, JsonDeserializers.LOADING_TYPE);
-        builder.registerTypeAdapter(FuelType.class, JsonDeserializers.SECONDARY_AMMO_TYPE);
-        builder.registerTypeAdapter(FireMode.class, JsonDeserializers.FIRE_MODE);
-        builder.registerTypeAdapter(AttachmentType.class, JsonDeserializers.ATTACHMENT_TYPE);
-        builder.registerTypeAdapter(AmmoType.class, JsonDeserializers.AMMO_TYPE);
-        builder.registerTypeAdapter(Easings.class, JsonDeserializers.EASING);
-        builder.excludeFieldsWithModifiers(Modifier.TRANSIENT);
-        return builder.create();
-    });
 
     @NotNull
     private static Map<ResourceLocation, Resource> getJsonResources(ResourceManager manager, String path, ResourceLocation id) {
@@ -83,7 +63,7 @@ public class ConfigUtils {
                     manager.getResource(resourceLocation).ifPresent(resource ->
                     {
                         try (var reader = new BufferedReader(new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
-                            var gun = GsonHelper.fromJson(GSON_INSTANCE, reader, yClass);
+                            var gun = GsonHelper.fromJson(JsonDeserializers.GSON_INSTANCE, reader, yClass);
 
                             if (Validator.isValidObject(gun)) {
                                 map.put((T) item, gun);

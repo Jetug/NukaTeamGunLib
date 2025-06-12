@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-
 public class AttachmentType {
     public static AttachmentType NONE        = new AttachmentType("none");
     public static AttachmentType SCOPE        = new AttachmentType("scope");

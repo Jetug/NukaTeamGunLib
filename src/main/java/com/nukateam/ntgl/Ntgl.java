@@ -10,13 +10,11 @@ import com.nukateam.ntgl.client.settings.GunOptions;
 import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
-import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.datagen.*;
+import com.nukateam.ntgl.common.regestry.ProjectileRegistry;
 import com.nukateam.ntgl.modules.enchantment.EnchantmentModule;
-import com.nukateam.ntgl.modules.enchantment.ModEnchantments;
 import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
-import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.modules.gunpack.GunPackModule;
@@ -41,8 +39,6 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.slf4j.Logger;
 
 import java.util.*;
-
-import static com.nukateam.example.common.registery.ModGuns.*;
 
 @Mod(Ntgl.MOD_ID)
 public class Ntgl {
@@ -118,36 +114,12 @@ public class Ntgl {
             CraftingHelper.register(new ResourceLocation(MOD_ID, "workbench_ingredient"),
                     WorkbenchIngredient.Serializer.INSTANCE);
 
-            registerProjectiles();
+            ProjectileRegistry.registerProjectiles();
 
             if (Config.COMMON.gameplay.improvedHitboxes.get()) {
                 MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
             }
         });
-    }
-
-    private static void registerProjectiles() {
-        ProjectileManager.getInstance().registerFactory(GRENADE.get(),
-                (worldIn, entity, weapon, item, modifiedGun) -> new GrenadeEntity(Projectiles.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun));
-
-//        ProjectileManager.getInstance().registerFactory(MISSILE.get(),
-//                (worldIn, entity, weapon, item, modifiedGun) -> new MissileEntity(Projectiles.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun));
-
-        ProjectileManager.getInstance().registerFactory(ROUND10MM.get(),
-                (worldIn, entity, weapon, item, modifiedGun) ->
-                        new LaserProjectile(Projectiles.LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
-
-        ProjectileManager.getInstance().registerFactory(ROUND45.get(),
-                (worldIn, entity, weapon, item, modifiedGun) ->
-                        new TeslaProjectile(Projectiles.TESLA_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
-
-        ProjectileManager.getInstance().registerFactory(ROUND38.get(),
-                (worldIn, entity, weapon, item, modifiedGun) ->
-                        new ContinuousLaserProjectile(Projectiles.CONTINUOUS_LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
-
-        ProjectileManager.getInstance().registerFactory(FUEL.get(),
-                (worldIn, entity, weapon, item, modifiedGun) ->
-                        new FlameProjectile(Projectiles.FLAME_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun));
     }
 
     private void onClientSetup(FMLClientSetupEvent event) {

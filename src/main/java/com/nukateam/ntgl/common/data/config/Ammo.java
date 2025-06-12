@@ -3,46 +3,53 @@ package com.nukateam.ntgl.common.data.config;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.base.holders.AmmoType;
+import com.nukateam.ntgl.common.base.holders.ProjectileType;
+import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
-
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.nukateam.ntgl.common.base.utils.json.JsonDeserializers.getDamageTypeResourceKey;
 import static com.nukateam.ntgl.common.data.config.gun.General.PROJECTILE_AMOUNT;
 import static com.nukateam.ntgl.common.data.config.gun.General.SPREAD;
 
 public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
-    public static final String TYPE = "Type";
-    @Optional
-    private boolean visible;
     private float damage = 1;
     private float size;
     private double speed = 20;
-    private int life = 100;
+    private int life = 20;
+    @Optional private AmmoType type = AmmoType.STANDARD;
+    @Optional private ProjectileType projectile = ProjectileType.BULLET;
+    @Optional private ResourceKey<DamageType> damageType = ModDamageTypes.BULLET;
+    @Optional private boolean visible;
     @Optional private boolean gravity;
     @Optional private boolean damageReduceOverLife;
     @Optional private boolean magazineMode;
     @Optional private int trailColor = 0xFFD289;
     @Optional private double trailLengthMultiplier = 1.0;
-    @Optional private AmmoType type = AmmoType.STANDARD;
     @Optional int projectileAmount = 1;
     @Optional float spread;
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        tag.putBoolean("Visible", this.visible);
+        var tag = new CompoundTag();
+        tag.putString("Type", this.type.toString());
+        tag.putString("Projectile", this.projectile.toString());
+        tag.putString("DamageType", this.damageType.location().toString());
         tag.putFloat("Damage", this.damage);
+        tag.putBoolean("Visible", this.visible);
         tag.putFloat("Size", this.size);
         tag.putDouble("Speed", this.speed);
         tag.putInt("Life", this.life);
@@ -52,7 +59,6 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.putInt("TrailColor", this.trailColor);
         tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
         tag.putInt(PROJECTILE_AMOUNT, this.projectileAmount);
-        tag.putString(TYPE, this.type.toString());
         tag.putFloat(SPREAD, this.spread);
         return tag;
     }
@@ -61,6 +67,9 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     public void deserializeNBT(CompoundTag tag) {
         if (tag.contains("Visible", Tag.TAG_ANY_NUMERIC)) {
             this.visible = tag.getBoolean("Visible");
+        }
+        if (tag.contains("DamageType", Tag.TAG_STRING)) {
+            this.damageType = getDamageTypeResourceKey(tag.getString("DamageType"));
         }
         if (tag.contains("Damage", Tag.TAG_ANY_NUMERIC)) {
             this.damage = tag.getFloat("Damage");
@@ -89,8 +98,11 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains("TrailLengthMultiplier", Tag.TAG_ANY_NUMERIC)) {
             this.trailLengthMultiplier = tag.getDouble("TrailLengthMultiplier");
         }
-        if (tag.contains(TYPE, Tag.TAG_STRING)) {
-            this.type = AmmoType.getType(ResourceLocation.tryParse(tag.getString(TYPE)));
+        if (tag.contains("Type", Tag.TAG_STRING)) {
+            this.type = AmmoType.getType(tag.getString("Type"));
+        }
+        if (tag.contains("Projectile", Tag.TAG_STRING)) {
+            this.projectile = ProjectileType.getType(tag.getString("Projectile"));
         }
         if (tag.contains(PROJECTILE_AMOUNT, Tag.TAG_ANY_NUMERIC)) {
             this.projectileAmount = tag.getInt(PROJECTILE_AMOUNT);
@@ -98,25 +110,6 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains(SPREAD, Tag.TAG_ANY_NUMERIC)) {
             this.spread = tag.getFloat(SPREAD);
         }
-    }
-
-    public Ammo copy() {
-        var projectile = new Ammo();
-        projectile.visible = this.visible;
-        projectile.damage = this.damage;
-        projectile.size = this.size;
-        projectile.speed = this.speed;
-        projectile.life = this.life;
-        projectile.gravity = this.gravity;
-        projectile.damageReduceOverLife = this.damageReduceOverLife;
-        projectile.magazineMode = this.magazineMode;
-        projectile.trailColor = this.trailColor;
-        projectile.trailLengthMultiplier = this.trailLengthMultiplier;
-        projectile.type = this.type;
-        projectile.projectileAmount = this.projectileAmount;
-        projectile.spread = this.spread;
-
-        return projectile;
     }
 
     public JsonObject toJsonObject() {
@@ -136,6 +129,8 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         object.addProperty("speed", this.speed);
         object.addProperty("life", this.life);
         object.addProperty("type", this.type.toString());
+        object.addProperty("projectile", this.projectile.toString());
+        object.addProperty("damageType", this.damageType.location().toString());
 
         if (this.gravity) object.addProperty("gravity", true);
         if (this.damageReduceOverLife) object.addProperty("damageReduceOverLife", this.damageReduceOverLife);
@@ -145,6 +140,27 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
         if (this.spread != 0.0F) object.addProperty("spread", this.spread);
         return object;
+    }
+
+    public Ammo copy() {
+        var projectile = new Ammo();
+        projectile.visible = this.visible;
+        projectile.damage = this.damage;
+        projectile.size = this.size;
+        projectile.speed = this.speed;
+        projectile.life = this.life;
+        projectile.gravity = this.gravity;
+        projectile.damageReduceOverLife = this.damageReduceOverLife;
+        projectile.magazineMode = this.magazineMode;
+        projectile.trailColor = this.trailColor;
+        projectile.trailLengthMultiplier = this.trailLengthMultiplier;
+        projectile.type = this.type;
+        projectile.projectile = this.projectile;
+        projectile.damageType = this.damageType;
+        projectile.projectileAmount = this.projectileAmount;
+        projectile.spread = this.spread;
+
+        return projectile;
     }
 
     /**
@@ -232,6 +248,14 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public AmmoType getType() {
         return this.type;
+    }
+
+    public ProjectileType getProjectile() {
+        return this.projectile;
+    }
+
+    public ResourceKey<DamageType> getDamageType() {
+        return this.damageType;
     }
 
     public static Ammo create(CompoundTag tag) {

@@ -113,9 +113,10 @@ public class BulletTrailRenderingHandler {
 
         var motionVec = new Vec3(motion.x, motion.y, motion.z);
         var trailLength = (float) (motionVec.length() * trail.getTrailLengthMultiplier());
-        var red = (float) (trail.getTrailColor() >> 16 & 255) / 255.0F;
-        var green = (float) (trail.getTrailColor() >> 8 & 255) / 255.0F;
-        var blue = (float) (trail.getTrailColor() & 255) / 255.0F;
+        var trailColor = trail.getTrailColor();
+        var red = (float) (trailColor >> 16 & 255) / 255.0F;
+        var green = (float) (trailColor >> 8 & 255) / 255.0F;
+        var blue = (float) (trailColor & 255) / 255.0F;
         var alpha = 0.3F;
 
         // Prevents the trail length from being longer than the distance to shooter
@@ -128,7 +129,8 @@ public class BulletTrailRenderingHandler {
         MultiBufferSource.BufferSource renderTypeBuffer = mc.renderBuffers().bufferSource();
 
         if (trail.isTrailVisible()) {
-            RenderType bulletType = GunRenderType.getBulletTrail();
+            var bulletType = GunRenderType.getBulletTrail();
+//            var bulletType = RenderType.translucent();
             var builder = renderTypeBuffer.getBuffer(bulletType);
             builder.vertex(matrix4f, 0, 0, -0.035F).color(red, green, blue, alpha).uv2(15728880).endVertex();
             builder.vertex(matrix4f, 0, 0, 0.035F).color(red, green, blue, alpha).uv2(15728880).endVertex();

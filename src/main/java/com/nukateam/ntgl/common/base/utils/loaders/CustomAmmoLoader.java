@@ -19,7 +19,7 @@ import java.io.InvalidObjectException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.nukateam.ntgl.common.base.ConfigUtils.GSON_INSTANCE;
+import static com.nukateam.ntgl.common.base.utils.json.JsonDeserializers.GSON_INSTANCE;
 
 /**
  * Author: MrCrayfish

@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
 import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
@@ -396,5 +396,17 @@ public class GunModifierHelper {
         for (var modifier : gunModifiers) {
             consumer.accept(modifier);
         }
+    }
+
+    public static Ammo getAmmoConfig(ResourceLocation ammoId, GunData data) {
+        var gun = getGun(data.gun);
+
+        if(gun.hasAmmo(ammoId)) {
+            return gun.getAmmoConfig(ammoId);
+        }
+        else if(GunStateHelper.getAmmoItem(data) instanceof IAmmo ammo) {
+            return ammo.getAmmo();
+        }
+        else return new Ammo();
     }
 }

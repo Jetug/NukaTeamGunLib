@@ -19,7 +19,7 @@ import java.util.function.BiFunction;
 public class Projectiles {
     public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Ntgl.MOD_ID);
 
-    public static final RegistryObject<EntityType<ProjectileEntity>> PROJECTILE = registerProjectile("ammo", ProjectileEntity::new);
+    public static final RegistryObject<EntityType<ProjectileEntity>> PROJECTILE = registerProjectile("projectile", ProjectileEntity::new);
     public static final RegistryObject<EntityType<LaserProjectile>> LASER_PROJECTILE = registerBasic("laser_projectile", LaserProjectile::new);
     public static final RegistryObject<EntityType<ContinuousLaserProjectile>> CONTINUOUS_LASER_PROJECTILE = registerBasic("continuous_laser_projectile", ContinuousLaserProjectile::new);
     public static final RegistryObject<EntityType<TeslaProjectile>> TESLA_PROJECTILE = registerBasic("tesla_projectile", TeslaProjectile::new);
@@ -70,6 +70,7 @@ public class Projectiles {
                 .setTrackingRange(0)
                 .noSummon()
                 .fireImmune()
+//                .noSave()
                 .setShouldReceiveVelocityUpdates(false)
                 .setCustomClientFactory((spawnEntity, world) -> null)
                 .build(id));

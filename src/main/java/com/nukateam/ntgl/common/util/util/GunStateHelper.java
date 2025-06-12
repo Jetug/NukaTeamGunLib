@@ -3,10 +3,12 @@ package com.nukateam.ntgl.common.util.util;
 import com.nukateam.ntgl.common.base.holders.AmmoType;
 import com.nukateam.ntgl.common.base.holders.FireMode;
 import com.nukateam.ntgl.common.data.config.Ammo;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
+import com.nukateam.ntgl.common.data.constants.Tags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -20,12 +22,23 @@ public class GunStateHelper {
     public static final String AMMO_TAG = "Ammo";
     public static final String FIRE_MODE = "FireMode";
 
+    public static int getAmmo(ItemStack gunStack) {
+        var tag = gunStack.getOrCreateTag();
+        return tag.getInt(Tags.AMMO_COUNT);
+    }
+
+    //AMMO
     public static void switchAmmo(GunData data){
         var ammoItems = GunModifierHelper.getAmmoItems(data);
         var current = getAmmoId(data);
         var newAmmo = cycleSet(ammoItems, current);
 
         setCurrentAmmo(data, newAmmo);
+    }
+
+    public static ResourceKey<DamageType> getDamageType(GunData data){
+        var ammo = getAmmoConfig(data);
+        return ammo.getDamageType();
     }
 
     public static void setCurrentAmmo(GunData data, ResourceLocation ammo) {
@@ -65,16 +78,8 @@ public class GunStateHelper {
     }
 
     public static Ammo getAmmoConfig(GunData data) {
-        var gun = GunModifierHelper.getGun(data.gun);
         var ammoId = getAmmoId(data);
-
-        if(gun.hasAmmo(ammoId)) {
-            return gun.getAmmo(ammoId);
-        }
-        else if(getAmmoItem(data) instanceof IAmmo ammo) {
-            return ammo.getAmmo();
-        }
-        else return GunModifierHelper.AMMO;
+        return GunModifierHelper.getAmmoConfig(ammoId, data);
     }
 
     //FIRE MODE______________________________________
