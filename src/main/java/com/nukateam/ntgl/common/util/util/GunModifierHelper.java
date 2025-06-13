@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
@@ -30,10 +30,10 @@ import static net.minecraftforge.registries.ForgeRegistries.*;
  */
 public class GunModifierHelper {
     private static final IGunModifier[] EMPTY = {};
-    public static final Projectile PROJECTILE = new Projectile();
+    public static final Ammo PROJECTILE = new Ammo();
 
     @Deprecated
-    public static Projectile getCurrentAmmo(GunData data) {
+    public static Ammo getCurrentAmmo(GunData data) {
         return GunStateHelper.getAmmoConfig(data);
     }
 
@@ -90,8 +90,9 @@ public class GunModifierHelper {
 
     public static int getMaxAmmo(GunData data) {
         var finalMaxAmmo = new AtomicInteger(getGeneral(getGun(data.gun)).getMaxAmmo());
+        var config = GunStateHelper.getAmmoConfig(data);
 
-        if (data != null && data.gun.getItem() instanceof GunItem) {
+        if (data != null && config != null && data.gun.getItem() instanceof GunItem) {
             if (GunStateHelper.getAmmoConfig(data).isMagazineMode()) {
                 var id = GunStateHelper.getAmmoId(data);
                 var item = ITEMS.getValue(id);
@@ -398,7 +399,7 @@ public class GunModifierHelper {
         }
     }
 
-    public static Projectile getAmmoConfig(ResourceLocation ammoId, GunData data) {
+    public static Ammo getAmmoConfig(ResourceLocation ammoId, GunData data) {
         var gun = getGun(data.gun);
 
         if(gun.hasAmmo(ammoId)) {
@@ -407,6 +408,6 @@ public class GunModifierHelper {
         else if(GunStateHelper.getAmmoItem(data) instanceof IAmmo ammo) {
             return ammo.getAmmo();
         }
-        else return new Projectile();
+        else return new Ammo();
     }
 }

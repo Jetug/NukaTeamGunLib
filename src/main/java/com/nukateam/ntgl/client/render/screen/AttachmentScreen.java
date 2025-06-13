@@ -38,8 +38,8 @@ import static net.minecraft.network.chat.Component.*;
  * Author: MrCrayfish
  */
 public class AttachmentScreen extends AbstractContainerScreen<AttachmentContainer> {
-    private static final ResourceLocation GUI_TEXTURES = new ResourceLocation("ntgl:textures/gui/attachments.png");
-    private static final ResourceLocation SLOT = new ResourceLocation("ntgl:textures/gui/slot.png");
+    private static final ResourceLocation GUI_TEXTURES = new ResourceLocation(Ntgl.MOD_ID, "textures/gui/attachments.png");
+    private static final ResourceLocation SLOT = new ResourceLocation(Ntgl.MOD_ID, "textures/gui/slot.png");
     private static final Component CONFIG_TOOLTIP = translatable("ntgl.button.config.tooltip");
     public static final String ATTACHMENT_NOT_APPLICABLE = "slot.ntgl.attachment.not_applicable";
     public static final String ATTACHMENT_INCOMPATIBLE = "slot.ntgl.attachment.incompatible";

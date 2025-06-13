@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.base.holders.AmmoType;
 import com.nukateam.ntgl.common.base.holders.FireMode;
-import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -77,7 +77,8 @@ public class GunStateHelper {
         return ammo.getType();
     }
 
-    public static Projectile getAmmoConfig(GunData data) {
+    @Nullable
+    public static Ammo getAmmoConfig(GunData data) {
         var ammoId = getAmmoId(data);
         return GunModifierHelper.getAmmoConfig(ammoId, data);
     }

@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
-import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -28,7 +28,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -56,7 +55,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -71,7 +69,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected LivingEntity shooter;
     protected Gun modifiedGun;
     protected General general;
-    protected Projectile projectile;
+    protected Ammo projectile;
     protected ItemStack weapon = ItemStack.EMPTY;
     protected ItemStack item = ItemStack.EMPTY;
     protected float additionalDamage = 0.0F;
@@ -478,43 +476,44 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
-        float damage = this.getDamage();
-        float newDamage = this.getCriticalDamage(this.weapon, this.random, damage);
-        boolean critical = damage != newDamage;
+        var damage = this.getDamage();
+        var newDamage = this.getCriticalDamage(this.weapon, this.random, damage);
+        var critical = damage != newDamage;
         damage = newDamage;
-//        ResourceLocation advantage = this.getProjectile().getAdvantage();
-//        if (Config.COMMON.gameplay.gunAdvantage.get()) {
-//            damage *= advantageMultiplier(entity);
-//        }
 
-        if (headshot) {
-            damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
-        }
+        if (headshot) damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
 
-        DamageSource source = ModDamageTypes.Sources.projectile(this.level().registryAccess(), this, this.shooter);
+        var source = ModDamageTypes.Sources.source(this.level().registryAccess(), projectile.getDamageType(),this, this.shooter);
+        entity.hurt(source, damage);
 
+        if (this.shooter instanceof ServerPlayer playerShooter) {
+            var bodyHitType = headshot ? S2CMessageProjectileHitEntity.HitType.HEADSHOT : S2CMessageProjectileHitEntity.HitType.NORMAL;
+            var hitType = critical ? S2CMessageProjectileHitEntity.HitType.CRITICAL : bodyHitType;
 
-//        if (!(entity.getType().is(ModTags.Entities.GHOST) &&
-//                !advantage.equals(ModTags.Entities.UNDEAD.location()))) {
-            entity.hurt(source, damage);
-//        }
-
-        if (this.shooter instanceof Player) {
-            int hitType = critical ? S2CMessageProjectileHitEntity.HitType.CRITICAL : headshot ? S2CMessageProjectileHitEntity.HitType.HEADSHOT : S2CMessageProjectileHitEntity.HitType.NORMAL;
-            PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) this.shooter, new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
+            PacketHandler.getPlayChannel().sendToPlayer(() -> playerShooter,
+                    new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
         }
 
         /* Send blood particle to tracking clients. */
         PacketHandler.getPlayChannel().sendToTracking(() -> entity, new S2CMessageBlood(hitVec.x, hitVec.y, hitVec.z));
+
+        doImpactEffects(hitVec);
     }
 
     protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z) {
-        PacketHandler.getPlayChannel().sendToTrackingChunk(() -> this.level().getChunkAt(pos), new S2CMessageProjectileHitBlock(x, y, z, pos, face));
+        PacketHandler.getPlayChannel().sendToTrackingChunk(
+                () -> this.level().getChunkAt(pos),
+                new S2CMessageProjectileHitBlock(x, y, z, pos, face));
+        doImpactEffects(new Vec3(x, y, z));
+    }
+
+    protected void doImpactEffects(Vec3 hitVec) {
+
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        this.projectile = new Projectile();
+        this.projectile = new Ammo();
         this.projectile.deserializeNBT(compound.getCompound("Projectile"));
         this.general = new General();
         this.general.deserializeNBT(compound.getCompound("General"));
@@ -542,7 +541,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     @Override
     public void readSpawnData(FriendlyByteBuf buffer) {
-        this.projectile = new Projectile();
+        this.projectile = new Ammo();
         this.projectile.deserializeNBT(buffer.readNbt());
         this.general = new General();
         this.general.deserializeNBT(buffer.readNbt());
@@ -561,7 +560,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.xRotO = this.getXRot();
     }
 
-    public Projectile getProjectile() {
+    public Ammo getProjectile() {
         return this.projectile;
     }
 

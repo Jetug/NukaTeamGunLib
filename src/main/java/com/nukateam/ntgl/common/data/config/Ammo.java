@@ -25,7 +25,7 @@ import static com.nukateam.ntgl.common.base.utils.json.JsonDeserializers.getDama
 import static com.nukateam.ntgl.common.data.config.gun.General.PROJECTILE_AMOUNT;
 import static com.nukateam.ntgl.common.data.config.gun.General.SPREAD;
 
-public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     private float damage = 1;
     private float size;
     private double speed = 20;
@@ -142,8 +142,8 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
         return object;
     }
 
-    public Projectile copy() {
-        var projectile = new Projectile();
+    public Ammo copy() {
+        var projectile = new Ammo();
         projectile.visible = this.visible;
         projectile.damage = this.damage;
         projectile.size = this.size;
@@ -258,8 +258,8 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.damageType;
     }
 
-    public static Projectile create(CompoundTag tag) {
-        var ammo = new Projectile();
+    public static Ammo create(CompoundTag tag) {
+        var ammo = new Ammo();
         ammo.deserializeNBT(tag);
         return ammo;
     }
@@ -287,74 +287,74 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static class Builder {
-        private final Projectile projectile;
+        private final Ammo projectile;
 
         private Builder() {
-            this.projectile = new Projectile();
+            this.projectile = new Ammo();
         }
 
-        private Builder(Projectile projectile) {
+        private Builder(Ammo projectile) {
             this.projectile = projectile.copy();
         }
 
-        public static Projectile.Builder create() {
-            return new Projectile.Builder();
+        public static Ammo.Builder create() {
+            return new Ammo.Builder();
         }
 
-        public static Projectile.Builder create(Projectile projectile) {
-            return new Projectile.Builder(projectile);
+        public static Ammo.Builder create(Ammo projectile) {
+            return new Ammo.Builder(projectile);
         }
 
-        public Projectile build() {
+        public Ammo build() {
             return this.projectile.copy(); //Copy since the builder could be used again
         }
 
-        public Projectile.Builder setProjectileVisible(ResourceLocation id, boolean visible) {
+        public Ammo.Builder setProjectileVisible(ResourceLocation id, boolean visible) {
             this.projectile.visible = visible;
             return this;
         }
 
-        public Projectile.Builder setProjectileSize(ResourceLocation id, float size) {
+        public Ammo.Builder setProjectileSize(ResourceLocation id, float size) {
             this.projectile.size = size;
             return this;
         }
 
-        public Projectile.Builder setProjectileSpeed(ResourceLocation id, double speed) {
+        public Ammo.Builder setProjectileSpeed(ResourceLocation id, double speed) {
             this.projectile.speed = speed;
             return this;
         }
 
-        public Projectile.Builder setProjectileLife(ResourceLocation id, int life) {
+        public Ammo.Builder setProjectileLife(ResourceLocation id, int life) {
             this.projectile.life = life;
             return this;
         }
 
-        public Projectile.Builder setProjectileAffectedByGravity(ResourceLocation id, boolean gravity) {
+        public Ammo.Builder setProjectileAffectedByGravity(ResourceLocation id, boolean gravity) {
             this.projectile.gravity = gravity;
             return this;
         }
 
-        public Projectile.Builder setProjectileTrailColor(ResourceLocation id, int trailColor) {
+        public Ammo.Builder setProjectileTrailColor(ResourceLocation id, int trailColor) {
             this.projectile.trailColor = trailColor;
             return this;
         }
 
-        public Projectile.Builder setProjectileTrailLengthMultiplier(ResourceLocation id, int trailLengthMultiplier) {
+        public Ammo.Builder setProjectileTrailLengthMultiplier(ResourceLocation id, int trailLengthMultiplier) {
             this.projectile.trailLengthMultiplier = trailLengthMultiplier;
             return this;
         }
 
-        public Projectile.Builder setDamage(ResourceLocation id, float damage) {
+        public Ammo.Builder setDamage(ResourceLocation id, float damage) {
             this.projectile.damage = damage;
             return this;
         }
 
-        public Projectile.Builder setReduceDamageOverLife(ResourceLocation id, boolean damageReduceOverLife) {
+        public Ammo.Builder setReduceDamageOverLife(ResourceLocation id, boolean damageReduceOverLife) {
             this.projectile.damageReduceOverLife = damageReduceOverLife;
             return this;
         }
 
-        public Projectile.Builder setMagazineMode(ResourceLocation id, boolean magazineMode) {
+        public Ammo.Builder setMagazineMode(ResourceLocation id, boolean magazineMode) {
             this.projectile.magazineMode = magazineMode;
             return this;
         }
