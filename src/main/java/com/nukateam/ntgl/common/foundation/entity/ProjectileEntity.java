@@ -119,7 +119,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         getEntityData().set(ITEM, GunStateHelper.getAmmoId(data).toString());
         getEntityData().set(AMMO_CONFIG, ammo.serializeNBT());
 
-        /* Get speed and set motion */
         setupDirection(shooter, weapon, item, modifiedGun);
 
         /* Spawn the ammo halfway between the previous and current position */
@@ -146,15 +145,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
             this.ammoStack = ammoStack;
         }
-    }
-
-    protected void setupDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
-        var dir = this.getDirection(shooter, weapon, item, modifiedGun);
-        var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
-        var data = new GunData(weapon, shooter);
-        var speed = GunModifierHelper.getModifiedProjectileSpeed(data, this.ammo.getSpeed() * speedModifier);
-        this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
-        this.updateHeading();
     }
 
     @Override
@@ -229,58 +219,57 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.updateHeading();
         this.onProjectileTick();
 
-        if (shooter == null) {
-            return;
-        }
+        if (shooter != null) {
+            if (isServerSide) {
+                var startVec = this.position();
+                var endVec = startVec.add(this.getDeltaMovement());
+                HitResult result = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this), getBlockFilter());
 
-        if (isServerSide) {
-            var startVec = this.position();
-            var endVec = startVec.add(this.getDeltaMovement());
-            HitResult result = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this), getBlockFilter());
-
-            if (result.getType() != HitResult.Type.MISS) {
-                endVec = result.getLocation();
-            }
-
-            List<EntityResult> hitEntities = null;
-            int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.COLLATERAL.get(), this.weapon);
-
-            if (level == 0) {
-                var entityResult = this.findEntityOnPath(shooter, startVec, endVec);
-                if (entityResult != null) {
-                    hitEntities = Collections.singletonList(entityResult);
+                if (result.getType() != HitResult.Type.MISS) {
+                    endVec = result.getLocation();
                 }
-            } else {
-                hitEntities = this.findEntitiesOnPath(startVec, endVec);
-            }
 
-            if (hitEntities != null && hitEntities.size() > 0) {
-                for (var entityResult : hitEntities) {
-                    result = new ExtendedEntityRayTraceResult(entityResult);
-                    if (((EntityHitResult) result).getEntity() instanceof Player) {
-                        Player player = (Player) ((EntityHitResult) result).getEntity();
+                List<EntityResult> hitEntities = null;
+                int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.COLLATERAL.get(), this.weapon);
 
-                        if (this.shooter instanceof Player && !((Player) this.shooter).canHarmPlayer(player)) {
-                            result = null;
+                if (level == 0) {
+                    var entityResult = this.findEntityOnPath(shooter, startVec, endVec);
+                    if (entityResult != null) {
+                        hitEntities = Collections.singletonList(entityResult);
+                    }
+                } else {
+                    hitEntities = this.findEntitiesOnPath(startVec, endVec);
+                }
+
+                if (hitEntities != null && hitEntities.size() > 0) {
+                    for (var entityResult : hitEntities) {
+                        result = new ExtendedEntityRayTraceResult(entityResult);
+                        if (((EntityHitResult) result).getEntity() instanceof Player) {
+                            Player player = (Player) ((EntityHitResult) result).getEntity();
+
+                            if (this.shooter instanceof Player && !((Player) this.shooter).canHarmPlayer(player)) {
+                                result = null;
+                            }
+                        }
+                        if (result != null) {
+                            this.onHit(result, startVec, endVec);
                         }
                     }
-                    if (result != null) {
-                        this.onHit(result, startVec, endVec);
-                    }
+                } else {
+                    this.onHit(result, startVec, endVec);
                 }
-            } else {
-                this.onHit(result, startVec, endVec);
             }
-        }
 
-        double nextPosX = this.getX() + this.getDeltaMovement().x();
-        double nextPosY = this.getY() + this.getDeltaMovement().y();
-        double nextPosZ = this.getZ() + this.getDeltaMovement().z();
+            double nextPosX = this.getX() + this.getDeltaMovement().x();
+            double nextPosY = this.getY() + this.getDeltaMovement().y();
+            double nextPosZ = this.getZ() + this.getDeltaMovement().z();
 
-        this.setPos(nextPosX, nextPosY, nextPosZ);
+            this.setPos(nextPosX, nextPosY, nextPosZ);
 
-        if (this.ammo.isGravity()) {
-            this.setDeltaMovement(this.getDeltaMovement().add(0, this.modifiedGravity, 0));
+            if (this.ammo.isGravity()) {
+                this.setDeltaMovement(this.getDeltaMovement().add(0, this.modifiedGravity, 0));
+            }
+
         }
 
         if (this.tickCount >= this.life) {
@@ -403,7 +392,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     /**
-     * Creates a ammo explosion for the specified entity.
+     * Creates a projectile explosion for the specified entity.
      *
      * @param entity    The entity to explodeOnHit
      * @param radius    The amount of radius the entity should deal
@@ -511,6 +500,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
         }
         return hitEntities;
+    }
+
+    protected void setupDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
+        /* Get speed and set motion */
+        var dir = this.getDirection(shooter, weapon, item, modifiedGun);
+        var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
+        var data = new GunData(weapon, shooter);
+        var speed = GunModifierHelper.getModifiedProjectileSpeed(data, this.ammo.getSpeed() * speedModifier);
+        this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
+        this.updateHeading();
     }
 
     protected void onHit(HitResult result, Vec3 startVec, Vec3 endVec) {

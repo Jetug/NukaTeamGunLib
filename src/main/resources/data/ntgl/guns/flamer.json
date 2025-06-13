@@ -9,6 +9,7 @@
     "reloadTime": 40,
     "recoilAngle": 0.0,
     "alwaysSpread": true,
+    "projectileAmount": 6,
     "spread": 6.0,
     "ammo": [
       "ntgl:fuel"
