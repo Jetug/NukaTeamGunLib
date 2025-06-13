@@ -17,21 +17,21 @@ public class ModSyncedDataKeys {
 
     public static final SyncedDataKey<LivingEntity, Boolean> AIMING
             = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
-            .id(new ResourceLocation(Ntgl.MOD_ID, "aiming"))
+            .id(ResourceLocation.tryBuild(Ntgl.MOD_ID, "aiming"))
             .defaultValueSupplier(() -> false)
             .resetOnDeath()
             .build();
 
     public static final SyncedDataKey<LivingEntity, Boolean> SHOOTING_RIGHT
             = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
-            .id(new ResourceLocation(Ntgl.MOD_ID, "shooting_right"))
+            .id(ResourceLocation.tryBuild(Ntgl.MOD_ID, "shooting_right"))
             .defaultValueSupplier(() -> false)
             .resetOnDeath()
             .build();
 
     public static final SyncedDataKey<LivingEntity, Boolean> RELOADING_RIGHT
             = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
-            .id(new ResourceLocation(Ntgl.MOD_ID, "reloading_right"))
+            .id(ResourceLocation.tryBuild(Ntgl.MOD_ID, "reloading_right"))
             .defaultValueSupplier(() -> false)
             .resetOnDeath()
             .build();
@@ -70,7 +70,7 @@ public class ModSyncedDataKeys {
 
     private static SyncedDataKey<LivingEntity, Boolean> registerBooleanKey(String name) {
         return SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
-                .id(new ResourceLocation(Ntgl.MOD_ID, name))
+                .id(ResourceLocation.tryBuild(Ntgl.MOD_ID, name))
                 .defaultValueSupplier(() -> false)
                 .resetOnDeath()
                 .build();

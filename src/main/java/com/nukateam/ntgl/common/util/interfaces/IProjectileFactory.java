@@ -17,14 +17,14 @@ import net.minecraft.world.level.Level;
  */
 public interface IProjectileFactory {
     /**
-     * Creates a new ammo entity.
+     * Creates a new projectile entity.
      *
-     * @param worldIn     the world the ammo is going to be spawned into
+     * @param worldIn     the world the projectile is going to be spawned into
      * @param entity      the entity who fired the weapon
      * @param weapon      the item stack of the weapon
      * @param item        the gun item
      * @param modifiedGun the properties of the gun
-     * @return a ammo entity
+     * @return a projectile entity
      */
     ProjectileEntity create(Level worldIn, LivingEntity entity, ItemStack weapon, GunItem item, Gun modifiedGun);
 }

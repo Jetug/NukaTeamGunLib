@@ -29,7 +29,7 @@ public class ModDamageTypes {
 
     @NotNull
     private static ResourceKey<DamageType> create(String name) {
-        return ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(Ntgl.MOD_ID, name));
+        return ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.tryBuild(Ntgl.MOD_ID, name));
     }
 
     public static void bootstrap(BootstapContext<DamageType> bootstapContext) {

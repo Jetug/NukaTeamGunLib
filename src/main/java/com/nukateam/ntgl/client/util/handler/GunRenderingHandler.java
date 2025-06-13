@@ -68,7 +68,7 @@ public class GunRenderingHandler {
         return instance;
     }
 
-    public static final ResourceLocation MUZZLE_FLASH_TEXTURE = new ResourceLocation(Ntgl.MOD_ID, "textures/effect/muzzle_flash.png");
+    public static final ResourceLocation MUZZLE_FLASH_TEXTURE = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/effect/muzzle_flash.png");
 
     private final Random random = new Random();
     private final Set<Integer> entityIdForMuzzleFlash = new HashSet<>();

@@ -21,7 +21,7 @@ public class Sounds{
     @Nullable
     private ResourceLocation createSound(CompoundTag tag, String key) {
         var sound = tag.getString(key);
-        return sound.isEmpty() ? null : new ResourceLocation(sound);
+        return sound.isEmpty() ? null : ResourceLocation.parse(sound);
     }
 
     /**

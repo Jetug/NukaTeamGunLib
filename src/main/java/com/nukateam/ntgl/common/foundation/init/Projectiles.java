@@ -32,7 +32,7 @@ public class Projectiles {
 //    public static final RegistryObject<EntityType<FlyingGib>> FLYING_GIBS = register("flying_gibs", FlyingGib::new);
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerEntity(String entityName, EntityType.Builder<T> builder) {
-        return REGISTER.register(entityName, () -> builder.build(new ResourceLocation(Ntgl.MOD_ID, entityName).toString()));
+        return REGISTER.register(entityName, () -> builder.build(ResourceLocation.tryBuild(Ntgl.MOD_ID, entityName).toString()));
     }
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function) {
@@ -59,9 +59,9 @@ public class Projectiles {
      * in the world and are spawned many times a tick. There is no reason to send unnecessary packets
      * when it can be avoided to drastically improve the performance of the game.
      *
-     * @param id       the id of the ammo
-     * @param function the factory to spawn the ammo for the server
-     * @param <T>      an entity that is a ammo entity
+     * @param id       the id of the projectile
+     * @param function the factory to spawn the projectile for the server
+     * @param <T>      an entity that is a projectile entity
      * @return A registry object containing the new entity type
      */
     private static <T extends ProjectileEntity> RegistryObject<EntityType<T>> registerProjectile(String id, BiFunction<EntityType<T>, Level, T> function) {

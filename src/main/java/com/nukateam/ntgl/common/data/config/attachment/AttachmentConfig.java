@@ -80,7 +80,7 @@ public class AttachmentConfig implements INBTSerializable<CompoundTag>, IEditorM
     public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 //            ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
-//            ItemStack scope = Ammo.getScopeStack(heldItem);
+//            ItemStack scope = Projectile.getScopeStack(heldItem);
 //            if (scope.getItem() instanceof ScopeItem scopeItem) {
 //                widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(Component.literal("Edit"), btn -> {
 //                    Minecraft.getInstance().setScreen(createEditorScreen(Debug.getScope(scopeItem)));

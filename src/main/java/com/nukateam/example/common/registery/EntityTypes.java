@@ -29,7 +29,7 @@ public class EntityTypes {
                     .sized(1.5f, 1.5f));
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerEntity(String entityName, Builder<T> builder) {
-        return ENTITY_TYPES.register(entityName, () -> builder.build(new ResourceLocation(Ntgl.MOD_ID, entityName).toString()));
+        return ENTITY_TYPES.register(entityName, () -> builder.build(ResourceLocation.tryBuild(Ntgl.MOD_ID, entityName).toString()));
     }
 
     public static void register(IEventBus eventBus) {

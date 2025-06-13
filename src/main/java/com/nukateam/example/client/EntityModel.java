@@ -21,7 +21,7 @@ public class EntityModel<T extends LivingEntity & GeoAnimatable> extends GeoMode
         var name = getResourceName(ForgeRegistries.ENTITY_TYPES.getKey(animatable.getType()));
         var modId = ForgeRegistries.ENTITY_TYPES.getKey(animatable.getType()).getNamespace();
 
-        return new ResourceLocation(modId, path + name + extension);
+        return ResourceLocation.tryBuild(modId, path + name + extension);
     }
 
     @Override

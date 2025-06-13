@@ -264,7 +264,7 @@ public class ReloadTracker {
                 amount = Math.min(amount, maxAmmo - tag.getInt(Tags.AMMO_COUNT));
                 tag.putInt(Tags.AMMO_COUNT, tag.getInt(Tags.AMMO_COUNT) + amount);
             }
-//            ammo.shrink(amount);
+//            projectile.shrink(amount);
             context.shrink(amount);
 //            // Trigger that the container changed
 //            var container = context.container();
@@ -311,7 +311,7 @@ public class ReloadTracker {
                 tag.putInt(Tags.AMMO_COUNT, amount);
             }
 
-//            ammo.shrink(1);
+//            projectile.shrink(1);
 
             context.shrink(1);
 

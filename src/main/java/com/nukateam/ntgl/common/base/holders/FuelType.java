@@ -25,7 +25,7 @@ public class FuelType extends ResourceHolder {
     private Function<ItemStack, Boolean> isAcceptable = (i) -> false;
 
     private FuelType(String id, Function<ItemStack, Boolean> isAcceptable) {
-        super(new ResourceLocation(Ntgl.MOD_ID, id));
+        super(ResourceLocation.tryBuild(Ntgl.MOD_ID, id));
         this.isAcceptable = isAcceptable;
     }
 
@@ -39,7 +39,7 @@ public class FuelType extends ResourceHolder {
     }
 
     public ResourceLocation getIcon() {
-        return new ResourceLocation(id.getNamespace(), "textures/hud/ammo_type/" + id.getPath() + ".png");
+        return ResourceLocation.tryBuild(id.getNamespace(), "textures/hud/ammo_type/" + id.getPath() + ".png");
     }
 
     public static void registerType(FuelType mode) {

@@ -143,9 +143,9 @@ public class AmmoBoxItem extends Item {
 
 //    public int getAmmoCount(GunData gunData, ItemStack ammoBox, Item item) {
 //        var result = 0;
-//        for(var ammo : getContents(ammoBox).toList()){
+//        for(var projectile : getContents(ammoBox).toList()){
 //            if(GunModifierHelper.isCurrentAmmo(gunData, item))
-//                result += ammo.getCount();
+//                result += projectile.getCount();
 //        }
 //        return result;
 //    }

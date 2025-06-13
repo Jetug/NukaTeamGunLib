@@ -70,29 +70,29 @@ public interface IGunModifier {
     }
 
     /**
-     * Modify the damage of the ammo. This is called before critical logic is
+     * Modify the damage of the projectile. This is called before critical logic is
      *
-     * @param damage the current ammo damage
+     * @param damage the current projectile damage
      * @param data
-     * @return a new damage for the ammo
+     * @return a new damage for the projectile
      */
     default float modifyDamage(float damage, GunData data) {
         return damage;
     }
 
     /**
-     * Modify the speed of the ammo.
+     * Modify the speed of the projectile.
      *
-     * @param speed the current ammo speed
+     * @param speed the current projectile speed
      * @param data
-     * @return a new speed for the ammo
+     * @return a new speed for the projectile
      */
     default double modifyProjectileSpeed(double speed, GunData data) {
         return speed;
     }
 
     /**
-     * Modify the spread when firing a ammo. This will affect the accuracy of weapons and only
+     * Modify the spread when firing a projectile. This will affect the accuracy of weapons and only
      * applies to weapons that have spread enabled.
      *
      * @param spread the current weapon spread
@@ -104,34 +104,34 @@ public interface IGunModifier {
     }
 
     /**
-     * Add additional gravity to the ammo without changing the base gravity.
+     * Add additional gravity to the projectile without changing the base gravity.
      *
-     * @return additional gravity to add to the ammo
+     * @return additional gravity to add to the projectile
      */
     default double additionalProjectileGravity(GunData data) {
         return 0;
     }
 
     /**
-     * Change the gravity of the ammo. The higher the value, the quicker the ammo will
+     * Change the gravity of the projectile. The higher the value, the quicker the projectile will
      * fall to the ground.
      *
      * @param gravity the current gravity
      * @param data
-     * @return a new gravity for the ammo
+     * @return a new gravity for the projectile
      */
     default double modifyProjectileGravity(double gravity, GunData data) {
         return gravity;
     }
 
     /**
-     * Changes the life of the ammo. This is the maximum age before the ammo is removed
+     * Changes the life of the projectile. This is the maximum age before the projectile is removed
      * from the world. The higher the number, the longer it will be in the world (assuming it doesn't
      * collide).
      *
-     * @param life the current ammo life
+     * @param life the current projectile life
      * @param data
-     * @return a new life for the ammo
+     * @return a new life for the projectile
      */
     default int modifyProjectileLife(int life, GunData data) {
         return life;
@@ -207,7 +207,7 @@ public interface IGunModifier {
     }
 
     /**
-     * Adds chance that critical damage will occur when hitting an entity with a ammo. This
+     * Adds chance that critical damage will occur when hitting an entity with a projectile. This
      * can be positive or negative number, with negative reducing the chance of a critical hit.
      *
      * @return additional chance to include when determining critical hit

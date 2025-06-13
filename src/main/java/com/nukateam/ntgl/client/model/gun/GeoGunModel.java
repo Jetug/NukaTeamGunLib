@@ -41,13 +41,13 @@ public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements I
     public ResourceLocation getGlowingTextureResource(T animator) {
         var name = animator.getName();
         var modId = animator.getNamespace();
-        return new ResourceLocation(modId, "textures/guns/" + name + "/" + name + "_glowmask" + ".png");
+        return ResourceLocation.tryBuild(modId, "textures/guns/" + name + "/" + name + "_glowmask" + ".png");
     }
 
     public static ResourceLocation getGunResource(IResourceProvider animator, String path, String extension) {
         var name = animator.getName();
         var modId = animator.getNamespace();
 
-        return new ResourceLocation(modId, path + name + extension);
+        return ResourceLocation.tryBuild(modId, path + name + extension);
     }
 }

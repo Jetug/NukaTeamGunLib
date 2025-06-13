@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
@@ -30,10 +30,10 @@ import static net.minecraftforge.registries.ForgeRegistries.*;
  */
 public class GunModifierHelper {
     private static final IGunModifier[] EMPTY = {};
-    public static final Ammo AMMO = new Ammo();
+    public static final Projectile PROJECTILE = new Projectile();
 
     @Deprecated
-    public static Ammo getCurrentAmmo(GunData data) {
+    public static Projectile getCurrentAmmo(GunData data) {
         return GunStateHelper.getAmmoConfig(data);
     }
 
@@ -398,7 +398,7 @@ public class GunModifierHelper {
         }
     }
 
-    public static Ammo getAmmoConfig(ResourceLocation ammoId, GunData data) {
+    public static Projectile getAmmoConfig(ResourceLocation ammoId, GunData data) {
         var gun = getGun(data.gun);
 
         if(gun.hasAmmo(ammoId)) {
@@ -407,6 +407,6 @@ public class GunModifierHelper {
         else if(GunStateHelper.getAmmoItem(data) instanceof IAmmo ammo) {
             return ammo.getAmmo();
         }
-        else return new Ammo();
+        else return new Projectile();
     }
 }

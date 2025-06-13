@@ -39,7 +39,7 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String SPREAD = "Spread";
     public static final String CATEGORY = "category";
     public static final String MOVEMENT_MODIFIER = "MovementModifier";
-    public static final String AMMO = "Ammo";
+    public static final String AMMO = "Projectile";
     public static final String FULL_CHARGE = "FullCharge";
     public static final String ENCHANTABLE = "Enchantable";
     public static final String FIRE_TIMER = "FireTimer";
@@ -62,7 +62,7 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional int equipTime = 1;
     @Optional int ammoPerShot = 1;
     @Ignored GripType gripType = GripType.ONE_HANDED;
-    @Ignored ResourceLocation reloadType = new ResourceLocation(Ntgl.MOD_ID, "gun_reload");
+    @Ignored ResourceLocation reloadType = ResourceLocation.tryBuild(Ntgl.MOD_ID, "gun_reload");
     @Optional LoadingType loadingType = LoadingType.MAGAZINE;
     @Optional String category = "pistol";
     @Optional boolean autoReload = false;
@@ -207,7 +207,7 @@ public class General implements INBTSerializable<CompoundTag> {
 
     public JsonObject toJsonObject() {
         Preconditions.checkArgument(this.rate > 0, "Rate must be more than zero");
-        Preconditions.checkArgument(this.maxAmmo > 0, "Max ammo must be more than zero");
+        Preconditions.checkArgument(this.maxAmmo > 0, "Max projectile must be more than zero");
         Preconditions.checkArgument(this.reloadAmount >= 1, "Reload amount must be more than or equal to zero");
         Preconditions.checkArgument(this.reloadTime >= 1, "Reload time must be more than or equal to zero");
         Preconditions.checkArgument(this.recoilAngle >= 0.0F, "Recoil angle must be more than or equal to zero");
@@ -338,14 +338,14 @@ public class General implements INBTSerializable<CompoundTag> {
     }
 
     /**
-     * @return The maximum amount of ammo this weapon can hold
+     * @return The maximum amount of projectile this weapon can hold
      */
     public int getMaxAmmo() {
         return this.maxAmmo;
     }
 
     /**
-     * @return The amount of ammo to add to the weapon each reload cycle
+     * @return The amount of projectile to add to the weapon each reload cycle
      */
     public int getReloadAmount() {
         return this.reloadAmount;
@@ -457,7 +457,7 @@ public class General implements INBTSerializable<CompoundTag> {
 
     /**
      * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
-     * the fired ammo.
+     * the fired projectile.
      */
     public float getSpread() {
         return this.spread;

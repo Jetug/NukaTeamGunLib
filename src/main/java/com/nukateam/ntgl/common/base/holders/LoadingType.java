@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoadingType extends ResourceHolder {
-    public static final LoadingType MAGAZINE = new LoadingType(new ResourceLocation(Ntgl.MOD_ID, "magazine"));
-    public static final LoadingType PER_CARTRIDGE = new LoadingType(new ResourceLocation(Ntgl.MOD_ID, "per_cartridge"));
+    public static final LoadingType MAGAZINE = new LoadingType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "magazine"));
+    public static final LoadingType PER_CARTRIDGE = new LoadingType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "per_cartridge"));
 
     private static final Map<ResourceLocation, LoadingType> loadingTypeMap = new HashMap<>();
 

@@ -11,27 +11,27 @@ import net.minecraftforge.common.util.INBTSerializable;
 public class CustomAmmo implements INBTSerializable<CompoundTag> {
     @Ignored
     public ItemStack model;
-    public Ammo ammo;
+    public Projectile projectile;
 
     public ItemStack getModel() {
         return this.model;
     }
 
-    public Ammo getAmmo() {
-        return this.ammo;
+    public Projectile getAmmo() {
+        return this.projectile;
     }
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag compound = new CompoundTag();
         compound.put("Model", this.model.save(new CompoundTag()));
-        compound.put("Ammo", this.ammo.serializeNBT());
+        compound.put("Projectile", this.projectile.serializeNBT());
         return compound;
     }
 
     @Override
     public void deserializeNBT(CompoundTag compound) {
         this.model = ItemStack.of(compound.getCompound("Model"));
-        this.ammo = Ammo.create(compound.getCompound("Ammo"));
+        this.projectile = Projectile.create(compound.getCompound("Projectile"));
     }
 }

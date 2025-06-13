@@ -23,7 +23,7 @@ public class TexturedCrosshair extends Crosshair {
 
     public TexturedCrosshair(ResourceLocation id, boolean blend) {
         super(id);
-        this.texture = new ResourceLocation(id.getNamespace(), "textures/crosshair/" + id.getPath() + ".png");
+        this.texture = ResourceLocation.tryBuild(id.getNamespace(), "textures/crosshair/" + id.getPath() + ".png");
         this.blend = blend;
     }
 

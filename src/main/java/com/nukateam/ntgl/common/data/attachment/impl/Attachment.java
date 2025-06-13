@@ -135,7 +135,7 @@ public class Attachment {
                 addPerk(negativePerks, false, "perk.ntgl.projectile_speed.negative");
             }
 
-            /* Test for modified ammo spread */
+            /* Test for modified projectile spread */
             float inputSpread = 10.0F;
             float outputSpread = inputSpread;
             for (IGunModifier modifier : modifiers) {
@@ -147,7 +147,7 @@ public class Attachment {
                 addPerk(positivePerks, true, "perk.ntgl.projectile_spread.positive");
             }
 
-            /* Test for modified ammo life */
+            /* Test for modified projectile life */
             int inputLife = 100;
             int outputLife = inputLife;
             for (IGunModifier modifier : modifiers) {

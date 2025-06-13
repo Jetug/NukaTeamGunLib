@@ -37,7 +37,7 @@ public class RecipeGen extends RecipeProvider
             @Override
             public ResourceLocation getId()
             {
-                return new ResourceLocation(Ntgl.MOD_ID, "dye_item");
+                return ResourceLocation.tryBuild(Ntgl.MOD_ID, "dye_item");
             }
 
             @Override
@@ -105,7 +105,7 @@ public class RecipeGen extends RecipeProvider
 //                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
 //                .build(consumer);
 //
-//        // Ammo
+//        // Projectile
 //        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ModGuns.ROUND10MM.get(), 64)
 //                .addIngredient(WorkbenchIngredient.of(Items.COPPER_INGOT, 4))
 //                .addIngredient(WorkbenchIngredient.of(Tags.Items.GUNPOWDER, 1))

@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A class to manage custom ammo factories
+ * A class to manage custom projectile factories
  * <p>
  * Author: MrCrayfish
  */

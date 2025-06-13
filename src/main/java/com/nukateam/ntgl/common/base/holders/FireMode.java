@@ -8,13 +8,13 @@ import java.util.Map;
 
 public class FireMode extends ResourceHolder {
     /** A fire mode that shoots once per trigger press*/
-    public static final FireMode SEMI_AUTO = new FireMode(new ResourceLocation(Ntgl.MOD_ID, "semi"));
+    public static final FireMode SEMI_AUTO = new FireMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "semi"));
 
     /** A fire mode that shoots as long as the trigger is held down*/
-    public static final FireMode AUTO = new FireMode(new ResourceLocation(Ntgl.MOD_ID, "auto"));
+    public static final FireMode AUTO = new FireMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "auto"));
 
     /** A fire mode that shoots in bursts*/
-    public static final FireMode BURST = new FireMode(new ResourceLocation(Ntgl.MOD_ID, "burst"));
+    public static final FireMode BURST = new FireMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "burst"));
 
     private static final Map<ResourceLocation, FireMode> fireModeMap = new HashMap<>();
 
@@ -30,7 +30,7 @@ public class FireMode extends ResourceHolder {
     }
 
     public ResourceLocation getIcon() {
-        return new ResourceLocation(id.getNamespace(), "textures/hud/fire_mode/" + id.getPath() + ".png");
+        return ResourceLocation.tryBuild(id.getNamespace(), "textures/hud/fire_mode/" + id.getPath() + ".png");
     }
 
     public static void registerType(FireMode mode) {

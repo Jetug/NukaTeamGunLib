@@ -7,7 +7,7 @@ import org.apache.commons.io.FilenameUtils;
 
 public class ResourceUtils {
     public static ResourceLocation modResource(String path) {
-        return new ResourceLocation(Ntgl.MOD_ID, path);
+        return ResourceLocation.tryBuild(Ntgl.MOD_ID, path);
     }
 
     public static String getResourceName(ResourceLocation resourceLocation) {

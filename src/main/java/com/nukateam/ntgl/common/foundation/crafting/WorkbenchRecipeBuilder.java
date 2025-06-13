@@ -88,7 +88,7 @@ public class WorkbenchRecipeBuilder {
     public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
         this.validate(id);
         this.advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(RequirementsStrategy.OR);
-        consumer.accept(new Result(id, this.result, this.count, this.ingredients, this.conditions, this.advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + (this.category != null ? this.category.getFolderName() : "") + "/" + id.getPath())));
+        consumer.accept(new Result(id, this.result, this.count, this.ingredients, this.conditions, this.advancementBuilder, ResourceLocation.tryBuild(id.getNamespace(), "recipes/" + (this.category != null ? this.category.getFolderName() : "") + "/" + id.getPath())));
     }
 
     /**

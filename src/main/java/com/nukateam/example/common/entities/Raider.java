@@ -106,7 +106,7 @@ public class Raider extends PathfinderMob implements IGunUser {
     }
 
     public ResourceLocation getTexture() {
-        return new ResourceLocation(Ntgl.MOD_ID, "textures/entity/raider.png");
+        return ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/entity/raider.png");
     }
 
     @Override

@@ -36,7 +36,7 @@ public class ModEntityTypes {
                     .sized(0.5f, 0.5f));
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerEntity(String entityName, EntityType.Builder<T> builder) {
-        return ENTITY_TYPES.register(entityName, () -> builder.build(new ResourceLocation(Ntgl.MOD_ID, entityName).toString()));
+        return ENTITY_TYPES.register(entityName, () -> builder.build(ResourceLocation.tryBuild(Ntgl.MOD_ID, entityName).toString()));
     }
 
     public static void register(IEventBus eventBus) {

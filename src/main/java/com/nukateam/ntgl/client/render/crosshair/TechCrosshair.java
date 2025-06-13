@@ -18,8 +18,8 @@ import org.joml.Matrix4f;
  * Author: MrCrayfish
  */
 public class TechCrosshair extends Crosshair {
-    private static final ResourceLocation TECH_CROSSHAIR = new ResourceLocation(Ntgl.MOD_ID, "textures/crosshair/tech.png");
-    private static final ResourceLocation DOT_CROSSHAIR = new ResourceLocation(Ntgl.MOD_ID, "textures/crosshair/dot.png");
+    private static final ResourceLocation TECH_CROSSHAIR = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/crosshair/tech.png");
+    private static final ResourceLocation DOT_CROSSHAIR = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/crosshair/dot.png");
 
     private float scale;
     private float prevScale;
@@ -27,7 +27,7 @@ public class TechCrosshair extends Crosshair {
     private float prevRotation;
 
     public TechCrosshair() {
-        super(new ResourceLocation(Ntgl.MOD_ID, "tech"));
+        super(ResourceLocation.tryBuild(Ntgl.MOD_ID, "tech"));
     }
 
     @Override

@@ -48,7 +48,7 @@ public class AmmoType extends ResourceHolder {
     }
 
     public ResourceLocation getIcon() {
-        return new ResourceLocation(id.getNamespace(), "textures/hud/ammo_type/" + id.getPath() + ".png");
+        return ResourceLocation.tryBuild(id.getNamespace(), "textures/hud/ammo_type/" + id.getPath() + ".png");
     }
 
     public static void registerType(AmmoType mode) {

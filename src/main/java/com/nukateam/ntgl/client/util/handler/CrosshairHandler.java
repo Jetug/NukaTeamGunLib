@@ -43,18 +43,18 @@ public class CrosshairHandler {
     private Crosshair currentCrosshair = null;
 
     private CrosshairHandler() {
-        this.register(new TexturedCrosshair(new ResourceLocation(Ntgl.MOD_ID, "better_default")));
-        this.register(new TexturedCrosshair(new ResourceLocation(Ntgl.MOD_ID, "circle")));
-        this.register(new TexturedCrosshair(new ResourceLocation(Ntgl.MOD_ID, "filled_circle"), false));
-        this.register(new TexturedCrosshair(new ResourceLocation(Ntgl.MOD_ID, "square")));
-        this.register(new TexturedCrosshair(new ResourceLocation(Ntgl.MOD_ID, "round")));
-        this.register(new TexturedCrosshair(new ResourceLocation(Ntgl.MOD_ID, "arrow")));
-        this.register(new TexturedCrosshair(new ResourceLocation(Ntgl.MOD_ID, "dot")));
-        this.register(new TexturedCrosshair(new ResourceLocation(Ntgl.MOD_ID, "box")));
-        this.register(new TexturedCrosshair(new ResourceLocation(Ntgl.MOD_ID, "hit_marker")));
-        this.register(new TexturedCrosshair(new ResourceLocation(Ntgl.MOD_ID, "line")));
-        this.register(new TexturedCrosshair(new ResourceLocation(Ntgl.MOD_ID, "t")));
-        this.register(new TexturedCrosshair(new ResourceLocation(Ntgl.MOD_ID, "smiley")));
+        this.register(new TexturedCrosshair(ResourceLocation.tryBuild(Ntgl.MOD_ID, "better_default")));
+        this.register(new TexturedCrosshair(ResourceLocation.tryBuild(Ntgl.MOD_ID, "circle")));
+        this.register(new TexturedCrosshair(ResourceLocation.tryBuild(Ntgl.MOD_ID, "filled_circle"), false));
+        this.register(new TexturedCrosshair(ResourceLocation.tryBuild(Ntgl.MOD_ID, "square")));
+        this.register(new TexturedCrosshair(ResourceLocation.tryBuild(Ntgl.MOD_ID, "round")));
+        this.register(new TexturedCrosshair(ResourceLocation.tryBuild(Ntgl.MOD_ID, "arrow")));
+        this.register(new TexturedCrosshair(ResourceLocation.tryBuild(Ntgl.MOD_ID, "dot")));
+        this.register(new TexturedCrosshair(ResourceLocation.tryBuild(Ntgl.MOD_ID, "box")));
+        this.register(new TexturedCrosshair(ResourceLocation.tryBuild(Ntgl.MOD_ID, "hit_marker")));
+        this.register(new TexturedCrosshair(ResourceLocation.tryBuild(Ntgl.MOD_ID, "line")));
+        this.register(new TexturedCrosshair(ResourceLocation.tryBuild(Ntgl.MOD_ID, "t")));
+        this.register(new TexturedCrosshair(ResourceLocation.tryBuild(Ntgl.MOD_ID, "smiley")));
         this.register(new TechCrosshair());
     }
 

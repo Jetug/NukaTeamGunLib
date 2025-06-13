@@ -43,8 +43,8 @@ import java.util.stream.Stream;
  * Author: MrCrayfish
  */
 public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
-    public static final ResourceLocation ID = new ResourceLocation(Ntgl.MOD_ID, "workbench");
-    public static final ResourceLocation BACKGROUND = new ResourceLocation(Ntgl.MOD_ID, "textures/gui/workbench.png");
+    public static final ResourceLocation ID = ResourceLocation.tryBuild(Ntgl.MOD_ID, "workbench");
+    public static final ResourceLocation BACKGROUND = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/gui/workbench.png");
     public static final String TITLE_KEY = Ntgl.MOD_ID + ".category.workbench.title";
     public static final String MATERIALS_KEY = Ntgl.MOD_ID + ".category.workbench.materials";
 

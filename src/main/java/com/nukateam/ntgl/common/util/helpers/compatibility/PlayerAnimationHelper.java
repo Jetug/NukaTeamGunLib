@@ -19,8 +19,8 @@ import static dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory.ANIMATION
 
 @OnlyIn(Dist.CLIENT)
 public class PlayerAnimationHelper {
-    public static final ResourceLocation ANIMATION = new ResourceLocation(Ntgl.MOD_ID, "animation");
-    public static final ResourceLocation MIRROR_ANIMATION = new ResourceLocation(Ntgl.MOD_ID, "mirror_animation");
+    public static final ResourceLocation ANIMATION = ResourceLocation.tryBuild(Ntgl.MOD_ID, "animation");
+    public static final ResourceLocation MIRROR_ANIMATION = ResourceLocation.tryBuild(Ntgl.MOD_ID, "mirror_animation");
     public static final SpeedModifier SPEED_NORMAL = new SpeedModifier(1);
     public static final SpeedModifier SPEED_MIRROR = new SpeedModifier(1);
 

@@ -500,8 +500,8 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         if (!ammo.isEmpty()) {
             var item = ammo.get(0).getItem().getItem();
             var icon = new ItemStack(item);
-//            this.tabs.add(new Tab(new ItemStack(ModGuns.ROUND10MM.get()), "ammo", ammo));
-            this.tabs.add(new Tab(icon, "ammo", ammo));
+//            this.tabs.add(new Tab(new ItemStack(ModGuns.ROUND10MM.get()), "projectile", projectile));
+            this.tabs.add(new Tab(icon, "projectile", ammo));
         }
 
         if (!misc.isEmpty()) {

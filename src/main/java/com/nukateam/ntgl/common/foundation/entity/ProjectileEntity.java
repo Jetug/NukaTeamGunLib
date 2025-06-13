@@ -1,9 +1,8 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
-import com.nukateam.ntgl.common.util.interfaces.IExplosiveOnHit;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
@@ -23,13 +22,12 @@ import com.nukateam.ntgl.modules.enchantment.ModEnchantments;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,124 +35,111 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.nukateam.ntgl.common.network.message.S2CMessageProjectileHitEntity.HitType;
-import static net.minecraft.network.syncher.SynchedEntityData.defineId;
-
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData {
-    public static final String PROJECTILE = "Projectile";
-    public static final String GENERAL = "General";
-    public static final String MODIFIED_GRAVITY = "ModifiedGravity";
-    public static final String MAX_LIFE = "MaxLife";
-    public static final String SHOOTER_ID = "ShooterId";
-
-    protected static final Predicate<Entity> PROJECTILE_TARGETS = input ->
-            input != null && input.isPickable() && !input.isSpectator();
-    protected static final Predicate<BlockState> IGNORE_LEAVES = input ->
-            input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
-
-    public static final EntityDataAccessor<Integer> SHOOTER         = defineId(ProjectileEntity.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Integer> LIFE            = defineId(ProjectileEntity.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<Boolean> IS_RIGHT        = defineId(ProjectileEntity.class, EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<Boolean> IS_VISIBLE      = defineId(ProjectileEntity.class, EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<String>  ITEM            = defineId(ProjectileEntity.class, EntityDataSerializers.STRING);
-    public static final EntityDataAccessor<CompoundTag> AMMO_CONFIG = defineId(ProjectileEntity.class, EntityDataSerializers.COMPOUND_TAG);
-
-    private boolean hasClientData = false;
+    protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
+    protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
     protected boolean isServerSide = !level().isClientSide();
+
+    protected boolean isRightHand;
+    protected int shooterId;
     protected LivingEntity shooter;
     protected Gun modifiedGun;
     protected General general;
-    protected Ammo ammo;
+    protected Projectile projectile;
     protected ItemStack weapon = ItemStack.EMPTY;
-    protected ItemStack ammoStack = ItemStack.EMPTY;
+    protected ItemStack item = ItemStack.EMPTY;
     protected float additionalDamage = 0.0F;
     protected EntityDimensions entitySize;
     protected double modifiedGravity;
     protected int life;
-    protected boolean isRightHand;
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
+    protected Predicate<BlockState> getBlockFilter() {
+        return (value) -> false;
+    }
 
-    public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn, LivingEntity shooter,
-                            ItemStack weapon, GunItem item, Gun modifiedGun) {
+    public boolean isVisible(){
+       return projectile.isVisible();
+    }
+
+    public boolean isRightHand(){
+       return true;
+    }
+
+    public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
         this(entityType, worldIn);
+        this.shooterId = shooter.getId();
         this.shooter = shooter;
         this.modifiedGun = modifiedGun;
         this.general = modifiedGun.getGeneral();
         var data = new GunData(weapon, shooter);
-
-        this.ammo = GunStateHelper.getAmmoConfig(data);
-        this.entitySize = new EntityDimensions(this.ammo.getSize(), this.ammo.getSize(), false);
-        this.modifiedGravity = GunStateHelper.getAmmoConfig(data).isGravity() ? GunModifierHelper.getModifiedProjectileGravity(data, -0.04) : 0.0;
-        this.life = GunModifierHelper.getModifiedProjectileLife(data, this.ammo.getLife());
+        this.projectile = GunStateHelper.getAmmoConfig(data);
+        this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
+        this.modifiedGravity = projectile.isGravity() ? GunModifierHelper.getModifiedProjectileGravity(data, -0.04) : 0.0;
+        this.life = GunModifierHelper.getModifiedProjectileLife(data, this.projectile.getLife());
         this.isRightHand = shooter.getItemInHand(InteractionHand.MAIN_HAND) == weapon;
-        this.weapon = weapon;
-
-        getEntityData().set(LIFE    , life);
-        getEntityData().set(SHOOTER , shooter.getId());
-        getEntityData().set(IS_RIGHT, isRightHand);
-        getEntityData().set(IS_VISIBLE, ammo.isVisible());
-        getEntityData().set(ITEM, GunStateHelper.getAmmoId(data).toString());
-        getEntityData().set(AMMO_CONFIG, ammo.serializeNBT());
-
+        /* Get speed and set motion */
+        Vec3 dir = this.getDirection(shooter, weapon, item, modifiedGun);
+        double speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
+        double speed = GunModifierHelper.getModifiedProjectileSpeed(data, this.projectile.getSpeed() * speedModifier);
+        this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
+        this.updateHeading();
         setupDirection(shooter, weapon, item, modifiedGun);
-
-        /* Spawn the ammo halfway between the previous and current position */
-        var posX = shooter.xOld + (shooter.getX() - shooter.xOld) / 2.0;
-        var posY = shooter.yOld + (shooter.getY() - shooter.yOld) / 2.0 + shooter.getEyeHeight();
-        var posZ = shooter.zOld + (shooter.getZ() - shooter.zOld) / 2.0;
+        /* Spawn the projectile halfway between the previous and current position */
+        double posX = shooter.xOld + (shooter.getX() - shooter.xOld) / 2.0;
+        double posY = shooter.yOld + (shooter.getY() - shooter.yOld) / 2.0 + shooter.getEyeHeight();
+        double posZ = shooter.zOld + (shooter.getZ() - shooter.zOld) / 2.0;
         this.setPos(posX, posY, posZ);
 
-        var ammo = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoId(data));
-
+        Item ammo = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoId(data));
         if (ammo != null) {
             int customModelData = -1;
             if (weapon.getTag() != null) {
                 if (weapon.getTag().contains("Model", Tag.TAG_COMPOUND)) {
-                    var model = ItemStack.of(weapon.getTag().getCompound("Model"));
+                    ItemStack model = ItemStack.of(weapon.getTag().getCompound("Model"));
                     if (model.getTag() != null && model.getTag().contains("CustomModelData")) {
                         customModelData = model.getTag().getInt("CustomModelData");
                     }
                 }
             }
-            var ammoStack = new ItemStack(ammo);
+            ItemStack ammoStack = new ItemStack(ammo);
             if (customModelData != -1) {
                 ammoStack.getOrCreateTag().putInt("CustomModelData", customModelData);
             }
-            this.ammoStack = ammoStack;
+            this.item = ammoStack;
         }
     }
 
     @Override
     protected void defineSynchedData() {
-        entityData.define(SHOOTER, -1);
-        entityData.define(LIFE, 0);
-        entityData.define(IS_RIGHT, true);
-        entityData.define(IS_VISIBLE, false);
-        entityData.define(ITEM, "");
-        entityData.define(AMMO_CONFIG, new Ammo().serializeNBT());
     }
 
     @Override
@@ -162,55 +147,49 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return this.entitySize;
     }
 
-    @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        compound.put(PROJECTILE, this.ammo.serializeNBT());
-        compound.put(GENERAL, this.general.serializeNBT());
-        compound.putDouble(MODIFIED_GRAVITY, this.modifiedGravity);
-        compound.putInt(MAX_LIFE, this.life);
-        compound.putInt(SHOOTER_ID, this.shooter.getId());
+    private Vec3 getDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
+        var data = new GunData(weapon, shooter);
+        float gunSpread = GunModifierHelper.getModifiedSpread(data);
+
+        if (gunSpread == 0F) {
+            return this.getVectorFromRotation(shooter.getXRot(), shooter.getYRot());
+        }
+
+        if (shooter instanceof Player) {
+            if (!modifiedGun.getGeneral().isAlwaysSpread()) {
+                gunSpread *= SpreadTracker.get((Player) shooter).getSpread(item);
+            }
+
+            if (ModSyncedDataKeys.AIMING.getValue((Player) shooter)) {
+                gunSpread *= 0.5F;
+            }
+        }
+
+        return this.getVectorFromRotation(shooter.getXRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread, shooter.getYHeadRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread);
     }
 
-    @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        this.ammo = new Ammo();
-        this.ammo.deserializeNBT(compound.getCompound(PROJECTILE));
-        this.general = new General();
-        this.general.deserializeNBT(compound.getCompound(GENERAL));
-        this.modifiedGravity = compound.getDouble(MODIFIED_GRAVITY);
-        this.life = compound.getInt(MAX_LIFE);
-        this.shooter = (LivingEntity)level().getEntity(compound.getInt(SHOOTER_ID));
-
-//        entityData.set(SHOOTER    ,   ;
-        entityData.set(LIFE       ,   this.life);
-//        entityData.set(IS_RIGHT   ,   ;
-//        entityData.set(IS_VISIBLE ,   ;
-//        entityData.set(ITEM       ,   ;
-//        entityData.set(AMMO_TYPE  ,   ;
+    public void setWeapon(ItemStack weapon) {
+        this.weapon = weapon.copy();
     }
 
-    @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-        buffer.writeNbt(this.ammo.serializeNBT());
-        buffer.writeNbt(this.general.serializeNBT());
-        buffer.writeInt(this.shooter.getId());
-        BufferUtil.writeItemStackToBufIgnoreTag(buffer, this.ammoStack);
-        buffer.writeDouble(this.modifiedGravity);
-        buffer.writeVarInt(this.life);
-        buffer.writeBoolean(this.isRightHand);
+    public ItemStack getWeapon() {
+        return this.weapon;
     }
 
-    @Override
-    public void readSpawnData(FriendlyByteBuf buffer) {
-        this.ammo = Ammo.create(buffer.readNbt());
-        this.general = new General();
-        this.general.deserializeNBT(buffer.readNbt());
-        this.shooter = (LivingEntity)level().getEntity(buffer.readInt());
-        this.ammoStack = BufferUtil.readItemStackFromBufIgnoreTag(buffer);
-        this.modifiedGravity = buffer.readDouble();
-        this.life = buffer.readVarInt();
-        this.entitySize = new EntityDimensions(this.ammo.getSize(), this.ammo.getSize(), false);
-        this.isRightHand = buffer.readBoolean();
+    public void setItem(ItemStack item) {
+        this.item = item;
+    }
+
+    public ItemStack getItem() {
+        return this.item;
+    }
+
+    public void setAdditionalDamage(float additionalDamage) {
+        this.additionalDamage = additionalDamage;
+    }
+
+    public double getModifiedGravity() {
+        return this.modifiedGravity;
     }
 
     @Override
@@ -266,7 +245,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             this.setPos(nextPosX, nextPosY, nextPosZ);
 
-            if (this.ammo.isGravity()) {
+            if (this.projectile.isGravity()) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0, this.modifiedGravity, 0));
             }
 
@@ -280,182 +259,19 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    @Override
-    public boolean shouldRenderAtSqrDistance(double distance) {
-        return true;
-    }
-
-    @Override
-    public void onRemovedFromWorld() {
-        if (isServerSide) {
-            PacketHandler.getPlayChannel().sendToNearbyPlayers(this::getDeathTargetPoint, new S2CMessageRemoveProjectile(this.getId()));
-        }
-    }
-
-    public void setWeapon(ItemStack weapon) {
-        this.weapon = weapon.copy();
-    }
-
-    public ItemStack getWeapon() {
-        return this.weapon;
-    }
-
-    public void setItem(ItemStack item) {
-        this.ammoStack = item;
-    }
-
-    public ItemStack getItem(){
-        if (!ammoStack.isEmpty())
-            return ammoStack;
-
-        var name = getEntityData().get(ITEM);
-        var item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(name));
-        return new ItemStack(item);
-    }
-
-    public boolean isRightHand() {
-        isRightHand = getEntityData().get(IS_RIGHT);
-        return isRightHand;
-    }
-
-    public boolean isVisible() {
-        return getEntityData().get(IS_VISIBLE);
-    }
-
-    public void setAdditionalDamage(float additionalDamage) {
-        this.additionalDamage = additionalDamage;
-    }
-
-    public double getModifiedGravity() {
-        return this.modifiedGravity;
-    }
-
-    private Ammo getAmmoType(){
-        var nbt = getEntityData().get(AMMO_CONFIG);
-        return Ammo.create(nbt);
-    }
-
-
-    public void updateClient() {
-        if(isServerSide) {
-            var tag = new CompoundTag();
-            addAdditionalSaveData(tag);
-            sendS2CData(tag);
-        }
-    }
-
-    public void updateHeading() {
-        double horizontalDistance = this.getDeltaMovement().horizontalDistance();
-        this.setYRot((float) (Mth.atan2(this.getDeltaMovement().x(), this.getDeltaMovement().z()) * (180D / Math.PI)));
-        this.setXRot((float) (Mth.atan2(this.getDeltaMovement().y(), horizontalDistance) * (180D / Math.PI)));
-        this.yRotO = this.getYRot();
-        this.xRotO = this.getXRot();
-    }
-
-    public Ammo getAmmo() {
-        return this.ammo;
-    }
 
     /**
-     * Gets the entity who spawned the ammo
-     */
-    public LivingEntity getShooter() {
-        return this.shooter;
-    }
-
-    /**
-     * Gets the id of the entity who spawned the ammo
-     */
-    public int getShooterId() {
-        return getEntityData().get(SHOOTER);
-    }
-
-    public float getDamage() {
-        var data = new GunData(this.weapon, this.shooter);
-
-        float initialDamage = GunModifierHelper.getModifiedDamage(data)  + this.additionalDamage;
-
-        if (this.ammo.isDamageReduceOverLife()) {
-            float modifier = ((float) this.ammo.getLife() - (float) (this.tickCount - 1)) / (float) this.ammo.getLife();
-            initialDamage *= modifier;
-        }
-
-        var projectileAmount = GunModifierHelper.getProjectileAmount(data);
-        var damage = initialDamage / projectileAmount;
-        damage = GunEnchantmentHelper.getAcceleratorDamage(this.weapon, damage);
-
-        return Math.max(0F, damage);
-    }
-
-    public int getLife(){
-        return entityData.get(LIFE);
-    }
-
-    /**
-     * Creates a projectile explosion for the specified entity.
-     *
-     * @param entity    The entity to explodeOnHit
-     * @param radius    The amount of radius the entity should deal
-     * @param forceNone If true, forces the explosion mode to be NONE instead of config value
-     */
-    public static void createExplosion(Entity entity, float radius, boolean forceNone) {
-        var world = entity.level();
-        if (world.isClientSide())
-            return;
-
-        var source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
-        var mode = forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
-        var explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
-
-        if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
-            return;
-
-        // Do explosion logic
-        explosion.explode();
-        explosion.finalizeExplosion(true);
-
-        // Send event to blocks that are exploded (none if mode is none)
-        explosion.getToBlow().forEach(pos ->
-        {
-            if (world.getBlockState(pos).getBlock() instanceof IExplosionDamageable) {
-                ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
-            }
-        });
-
-        // Clears the affected blocks if mode is none
-        if (!explosion.interactsWithBlocks()) {
-            explosion.clearToBlow();
-        }
-
-        for (var player : ((ServerLevel) world).players()) {
-            if (player.distanceToSqr(entity.getX(), entity.getY(), entity.getZ()) < 4096) {
-                player.connection.send(new ClientboundExplodePacket(entity.getX(), entity.getY(), entity.getZ(), radius, explosion.getToBlow(), explosion.getHitPlayers().get(player)));
-            }
-        }
-    }
-
-    /**
-     * A simple method to perform logic on each tick of the ammo. This method is appropriate
+     * A simple method to perform logic on each tick of the projectile. This method is appropriate
      * for spawning particles. Override {@link #tick()} to make changes to physics
      */
-    protected void onProjectileTick() {}
+    protected void onProjectileTick() {
+    }
 
     /**
-     * Called when the ammo has run out of it's life. In other words, the ammo managed
-     * to not hit any blocks and instead aged. The grenade uses this to explodeOnHit in the air.
+     * Called when the projectile has run out of it's life. In other words, the projectile managed
+     * to not hit any blocks and instead aged. The grenade uses this to explode in the air.
      */
-    protected void onExpired() {}
-
-    protected Predicate<BlockState> getBlockFilter() {
-        return IGNORE_LEAVES;
-    }
-
-    protected boolean removeOnHit() {
-        return true;
-    }
-
-    protected void doImpactEffects(Vec3 hitVec) {
-
+    protected void onExpired() {
     }
 
     @Nullable
@@ -500,149 +316,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
         }
         return hitEntities;
-    }
-
-    protected void setupDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
-        /* Get speed and set motion */
-        var dir = this.getDirection(shooter, weapon, item, modifiedGun);
-        var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
-        var data = new GunData(weapon, shooter);
-        var speed = GunModifierHelper.getModifiedProjectileSpeed(data, this.ammo.getSpeed() * speedModifier);
-        this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
-        this.updateHeading();
-    }
-
-    protected void onHit(HitResult result, Vec3 startVec, Vec3 endVec) {
-        if (MinecraftForge.EVENT_BUS.post(new GunProjectileHitEvent(result, this))) {
-            return;
-        }
-
-        if (result instanceof BlockHitResult blockHitResult) {
-            if (blockHitResult.getType() == HitResult.Type.MISS) {
-                return;
-            }
-
-            var hitVec = result.getLocation();
-            var pos = blockHitResult.getBlockPos();
-            var state = this.level().getBlockState(pos);
-            var block = state.getBlock();
-
-            handleBlockBreaking(pos, state);
-
-            if (!state.canBeReplaced() && removeOnHit()) {
-                this.remove(RemovalReason.KILLED);
-            }
-
-            if (block instanceof IDamageable) {
-                ((IDamageable) block).onBlockDamaged(this.level(), state, pos, this, this.getDamage(), (int) Math.ceil(this.getDamage() / 2.0) + 1);
-            }
-
-            this.onHitBlock(state, pos, blockHitResult.getDirection(), hitVec.x, hitVec.y, hitVec.z);
-
-            if (block instanceof TargetBlock targetBlock) {
-                int power = ReflectionUtil.updateTargetBlock(targetBlock, this.level(), state, blockHitResult, this);
-                if (this.shooter instanceof ServerPlayer serverPlayer) {
-                    serverPlayer.awardStat(Stats.TARGET_HIT);
-                    CriteriaTriggers.TARGET_BLOCK_HIT.trigger(serverPlayer, this, blockHitResult.getLocation(), power);
-                }
-            }
-
-            if (block instanceof BellBlock bell) {
-                bell.attemptToRing(this.level(), pos, blockHitResult.getDirection());
-            }
-
-            if (block instanceof IExplosiveOnHit explosive) {
-                explosive.explodeOnHit(this.level(), blockHitResult.getBlockPos());
-            }
-
-//            if (block instanceof LandMineBlock mine) {
-//                mine.explodeRand(this.level(), blockHitResult.getBlockPos());
-//            }
-//
-//            if (block instanceof ExplosiveBarrel barrelItem) {
-//                barrelItem.explosive(this.level(), pos);
-//            }
-
-            int fireStarterLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
-            if (fireStarterLevel > 0 && Config.COMMON.gameplay.griefing.setFireToBlocks.get()) {
-                BlockPos offsetPos = pos.relative(blockHitResult.getDirection());
-                if (BaseFireBlock.canBePlacedAt(this.level(), offsetPos, blockHitResult.getDirection())) {
-                    BlockState fireState = BaseFireBlock.getState(this.level(), offsetPos);
-                    this.level().setBlock(offsetPos, fireState, 11);
-                    ((ServerLevel) this.level()).sendParticles(ParticleTypes.LAVA, hitVec.x - 1.0 + this.random.nextDouble() * 2.0, hitVec.y, hitVec.z - 1.0 + this.random.nextDouble() * 2.0, 4, 0, 0, 0, 0);
-                }
-            }
-            return;
-        }
-
-        if (result instanceof ExtendedEntityRayTraceResult entityHitResult) {
-            Entity entity = entityHitResult.getEntity();
-            if (entity.getId() == this.shooter.getId()) {
-                return;
-            }
-
-            if (this.shooter instanceof Player player) {
-                if (entity.hasIndirectPassenger(player)) {
-                    return;
-                }
-            }
-
-            int fireStarterLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
-            if (fireStarterLevel > 0) {
-                entity.setSecondsOnFire(2);
-            }
-
-            this.onHitEntity(entity, result.getLocation(), startVec, endVec, entityHitResult.isHeadshot());
-
-            int collateralLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.COLLATERAL.get(), weapon);
-            if (collateralLevel == 0 && removeOnHit()) {
-                this.remove(RemovalReason.KILLED);
-            }
-
-            entity.invulnerableTime = 0;
-        }
-    }
-
-    protected void handleBlockBreaking(BlockPos pos, BlockState state) {
-        if (Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && state.is(ModTags.Blocks.FRAGILE)) {
-            float destroySpeed = state.getDestroySpeed(this.level(), pos);
-            if (destroySpeed >= 0) {
-                float chance = Config.COMMON.gameplay.griefing.fragileBaseBreakChance.get().floatValue() / (destroySpeed + 1);
-                if (this.random.nextFloat() < chance) {
-                    this.level().destroyBlock(pos, Config.COMMON.gameplay.griefing.fragileBlockDrops.get());
-                }
-            }
-        }
-    }
-
-    protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
-        var damage = this.getDamage();
-        var newDamage = this.getCriticalDamage(this.weapon, this.random, damage);
-        var critical = damage != newDamage;
-        damage = newDamage;
-
-        if (headshot) damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
-
-        var source = ModDamageTypes.Sources.source(this.level().registryAccess(), getAmmoType().getDamageType(),this, this.shooter);
-        entity.hurt(source, damage);
-
-        if (this.shooter instanceof ServerPlayer playerShooter) {
-            var bodyHitType = headshot ? HitType.HEADSHOT : HitType.NORMAL;
-            var hitType = critical ? HitType.CRITICAL : bodyHitType;
-
-            PacketHandler.getPlayChannel().sendToPlayer(() -> playerShooter,
-                    new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
-        }
-
-        /* Send blood particle to tracking clients. */
-        PacketHandler.getPlayChannel().sendToTracking(() -> entity, new S2CMessageBlood(hitVec.x, hitVec.y, hitVec.z));
-
-        doImpactEffects(hitVec);
-    }
-
-    protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z) {
-        PacketHandler.getPlayChannel().sendToTrackingChunk(() -> this.level().getChunkAt(pos), new S2CMessageProjectileHitBlock(x, y, z, pos, face));
-        doImpactEffects(new Vec3(x, y, z));
     }
 
     @Nullable
@@ -705,47 +378,263 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return new EntityResult(entity, hitPos, headshot);
     }
 
+    protected void onHit(HitResult result, Vec3 startVec, Vec3 endVec) {
+        if (MinecraftForge.EVENT_BUS.post(new GunProjectileHitEvent(result, this))) {
+            return;
+        }
+
+        if (result instanceof BlockHitResult blockHitResult) {
+            if (blockHitResult.getType() == HitResult.Type.MISS) {
+                return;
+            }
+
+            var hitVec = result.getLocation();
+            var pos = blockHitResult.getBlockPos();
+            var state = this.level().getBlockState(pos);
+            var block = state.getBlock();
+
+            handleBlockBreaking(pos, state);
+
+            if (!state.canBeReplaced() && removeOnHit()) {
+                this.remove(RemovalReason.KILLED);
+            }
+
+            if (block instanceof IDamageable) {
+                ((IDamageable) block).onBlockDamaged(this.level(), state, pos, this, this.getDamage(), (int) Math.ceil(this.getDamage() / 2.0) + 1);
+            }
+
+            this.onHitBlock(state, pos, blockHitResult.getDirection(), hitVec.x, hitVec.y, hitVec.z);
+
+
+            if (block instanceof TargetBlock targetBlock) {
+                int power = ReflectionUtil.updateTargetBlock(targetBlock, this.level(), state, blockHitResult, this);
+                if (this.shooter instanceof ServerPlayer serverPlayer) {
+                    serverPlayer.awardStat(Stats.TARGET_HIT);
+                    CriteriaTriggers.TARGET_BLOCK_HIT.trigger(serverPlayer, this, blockHitResult.getLocation(), power);
+                }
+            }
+
+            if (block instanceof BellBlock bell) {
+                bell.attemptToRing(this.level(), pos, blockHitResult.getDirection());
+            }
+
+            // Fire
+            /*int fireStarterLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
+            if(fireStarterLevel > 0 && Config.COMMON.gameplay.griefing.setFireToBlocks.get())
+            {
+                BlockPos offsetPos = pos.relative(blockHitResult.getDirection());
+                if(BaseFireBlock.canBePlacedAt(this.level(), offsetPos, blockHitResult.getDirection()))
+                {
+                    BlockState fireState = BaseFireBlock.getState(this.level(), offsetPos);
+                    this.level().setBlock(offsetPos, fireState, 11);
+                    ((ServerLevel) this.level()).sendParticles(ParticleTypes.LAVA, hitVec.x - 1.0 + this.random.nextDouble() * 2.0, hitVec.y, hitVec.z - 1.0 + this.random.nextDouble() * 2.0, 4, 0, 0, 0, 0);
+                }
+            }*/
+            return;
+        }
+
+        if (result instanceof ExtendedEntityRayTraceResult entityHitResult) {
+            Entity entity = entityHitResult.getEntity();
+            if (entity.getId() == this.shooter.getId()) {
+                return;
+            }
+
+            if (this.shooter instanceof Player player) {
+                if (entity.hasIndirectPassenger(player)) {
+                    return;
+                }
+            }
+
+            int fireStarterLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
+            if (fireStarterLevel > 0) {
+                entity.setSecondsOnFire(2);
+            }
+
+            this.onHitEntity(entity, result.getLocation(), startVec, endVec, entityHitResult.isHeadshot());
+
+            int collateralLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.COLLATERAL.get(), weapon);
+            if (collateralLevel == 0 && removeOnHit()) {
+                this.remove(RemovalReason.KILLED);
+            }
+
+            entity.invulnerableTime = 0;
+        }
+    }
+
+    public int getLife(){
+        return projectile.getLife();
+    }
+
+    protected void handleBlockBreaking(BlockPos pos, BlockState state) {
+        if (Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && state.is(ModTags.Blocks.FRAGILE)) {
+            float destroySpeed = state.getDestroySpeed(this.level(), pos);
+            if (destroySpeed >= 0) {
+                float chance = Config.COMMON.gameplay.griefing.fragileBaseBreakChance.get().floatValue() / (destroySpeed + 1);
+                if (this.random.nextFloat() < chance) {
+                    this.level().destroyBlock(pos, Config.COMMON.gameplay.griefing.fragileBlockDrops.get());
+                }
+            }
+        }
+    }
+
+    protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
+        float damage = this.getDamage();
+        float newDamage = this.getCriticalDamage(this.weapon, this.random, damage);
+        boolean critical = damage != newDamage;
+        damage = newDamage;
+//        ResourceLocation advantage = this.getProjectile().getAdvantage();
+//        if (Config.COMMON.gameplay.gunAdvantage.get()) {
+//            damage *= advantageMultiplier(entity);
+//        }
+
+        if (headshot) {
+            damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
+        }
+
+        DamageSource source = ModDamageTypes.Sources.projectile(this.level().registryAccess(), this, this.shooter);
+
+
+//        if (!(entity.getType().is(ModTags.Entities.GHOST) &&
+//                !advantage.equals(ModTags.Entities.UNDEAD.location()))) {
+            entity.hurt(source, damage);
+//        }
+
+        if (this.shooter instanceof Player) {
+            int hitType = critical ? S2CMessageProjectileHitEntity.HitType.CRITICAL : headshot ? S2CMessageProjectileHitEntity.HitType.HEADSHOT : S2CMessageProjectileHitEntity.HitType.NORMAL;
+            PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) this.shooter, new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
+        }
+
+        /* Send blood particle to tracking clients. */
+        PacketHandler.getPlayChannel().sendToTracking(() -> entity, new S2CMessageBlood(hitVec.x, hitVec.y, hitVec.z));
+    }
+
+    protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z) {
+        PacketHandler.getPlayChannel().sendToTrackingChunk(() -> this.level().getChunkAt(pos), new S2CMessageProjectileHitBlock(x, y, z, pos, face));
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag compound) {
+        this.projectile = new Projectile();
+        this.projectile.deserializeNBT(compound.getCompound("Projectile"));
+        this.general = new General();
+        this.general.deserializeNBT(compound.getCompound("General"));
+        this.modifiedGravity = compound.getDouble("ModifiedGravity");
+        this.life = compound.getInt("MaxLife");
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag compound) {
+        compound.put("Projectile", this.projectile.serializeNBT());
+        compound.put("General", this.general.serializeNBT());
+        compound.putDouble("ModifiedGravity", this.modifiedGravity);
+        compound.putInt("MaxLife", this.life);
+    }
+
+    @Override
+    public void writeSpawnData(FriendlyByteBuf buffer) {
+        buffer.writeNbt(this.projectile.serializeNBT());
+        buffer.writeNbt(this.general.serializeNBT());
+        buffer.writeInt(this.shooterId);
+        BufferUtil.writeItemStackToBufIgnoreTag(buffer, this.item);
+        buffer.writeDouble(this.modifiedGravity);
+        buffer.writeVarInt(this.life);
+    }
+
+    @Override
+    public void readSpawnData(FriendlyByteBuf buffer) {
+        this.projectile = new Projectile();
+        this.projectile.deserializeNBT(buffer.readNbt());
+        this.general = new General();
+        this.general.deserializeNBT(buffer.readNbt());
+        this.shooterId = buffer.readInt();
+        this.item = BufferUtil.readItemStackFromBufIgnoreTag(buffer);
+        this.modifiedGravity = buffer.readDouble();
+        this.life = buffer.readVarInt();
+        this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
+    }
+
+    public void updateHeading() {
+        double horizontalDistance = this.getDeltaMovement().horizontalDistance();
+        this.setYRot((float) (Mth.atan2(this.getDeltaMovement().x(), this.getDeltaMovement().z()) * (180D / Math.PI)));
+        this.setXRot((float) (Mth.atan2(this.getDeltaMovement().y(), horizontalDistance) * (180D / Math.PI)));
+        this.yRotO = this.getYRot();
+        this.xRotO = this.getXRot();
+    }
+
+    public Projectile getProjectile() {
+        return this.projectile;
+    }
+
     private Vec3 getVectorFromRotation(float pitch, float yaw) {
-        var f = Mth.cos(-yaw * 0.017453292F - (float) Math.PI);
-        var f1 = Mth.sin(-yaw * 0.017453292F - (float) Math.PI);
-        var f2 = -Mth.cos(-pitch * 0.017453292F);
-        var f3 = Mth.sin(-pitch * 0.017453292F);
+        float f = Mth.cos(-yaw * 0.017453292F - (float) Math.PI);
+        float f1 = Mth.sin(-yaw * 0.017453292F - (float) Math.PI);
+        float f2 = -Mth.cos(-pitch * 0.017453292F);
+        float f3 = Mth.sin(-pitch * 0.017453292F);
         return new Vec3(f1 * f2, f3, f * f2);
+    }
+
+    /**
+     * Gets the entity who spawned the projectile
+     */
+    public LivingEntity getShooter() {
+        return this.shooter;
+    }
+
+    /**
+     * Gets the id of the entity who spawned the projectile
+     */
+    public int getShooterId() {
+        return this.shooterId;
+    }
+
+    public float getDamage() {
+        if(weapon.isEmpty())
+            return 0;
+
+        var data = new GunData(this.weapon, this.shooter);
+
+        float initialDamage = GunModifierHelper.getModifiedDamage(data)  + this.additionalDamage;
+
+        if (this.projectile.isDamageReduceOverLife()) {
+            float modifier = ((float) this.projectile.getLife() - (float) (this.tickCount - 1)) / (float) this.projectile.getLife();
+            initialDamage *= modifier;
+        }
+
+        var projectileAmount = GunModifierHelper.getProjectileAmount(data);
+        var damage = initialDamage / projectileAmount;
+        damage = GunEnchantmentHelper.getAcceleratorDamage(this.weapon, damage);
+
+        return Math.max(0F, damage);
     }
 
     private float getCriticalDamage(ItemStack weapon, RandomSource rand, float damage) {
         var data = new GunData(weapon, shooter);
-        var chance = GunModifierHelper.getCriticalChance(data);
+        float chance = GunModifierHelper.getCriticalChance(data);
         if (rand.nextFloat() < chance) {
             return (float) (damage * Config.COMMON.gameplay.criticalDamageMultiplier.get());
         }
         return damage;
     }
 
-    private void sendS2CData(CompoundTag data) {
-        PacketHandler.getPlayChannel().sendToAll(new S2CMessageEntityData(this.getId(), data));
+    @Override
+    public boolean shouldRenderAtSqrDistance(double distance) {
+        return true;
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        if (!this.level().isClientSide) {
+            PacketHandler.getPlayChannel().sendToNearbyPlayers(this::getDeathTargetPoint, new S2CMessageRemoveProjectile(this.getId()));
+        }
     }
 
     private LevelLocation getDeathTargetPoint() {
         return LevelLocation.create(this.level(), this.getX(), this.getY(), this.getZ(), 256);
     }
 
-    private Vec3 getDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
-        var data = new GunData(weapon, shooter);
-        var gunSpread = GunModifierHelper.getModifiedSpread(data);
-
-        if (gunSpread == 0F)
-            return this.getVectorFromRotation(shooter.getXRot(), shooter.getYRot());
-
-        if (!modifiedGun.getGeneral().isAlwaysSpread())
-            gunSpread *= SpreadTracker.get(shooter).getSpread(item);
-
-        if (ModSyncedDataKeys.AIMING.getValue(shooter))
-            gunSpread *= 0.5F;
-
-        return this.getVectorFromRotation(
-                shooter.getXRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread,
-                shooter.getYHeadRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread);
+    @Override
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     /**
@@ -757,22 +646,22 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
      * @param ignorePredicate the block state predicate
      * @return a result of the raytrace
      */
-    protected static BlockHitResult rayTraceBlocks(Level world, ClipContext context, Predicate<BlockState> ignorePredicate) {
+    public static BlockHitResult rayTraceBlocks(Level world, ClipContext context, Predicate<BlockState> ignorePredicate) {
         return performRayTrace(context, (rayTraceContext, blockPos) -> {
-            var blockState = world.getBlockState(blockPos);
+            BlockState blockState = world.getBlockState(blockPos);
             if (ignorePredicate.test(blockState)) return null;
-            var fluidState = world.getFluidState(blockPos);
-            var startVec = rayTraceContext.getFrom();
-            var endVec = rayTraceContext.getTo();
-            var blockShape = rayTraceContext.getBlockShape(blockState, world, blockPos);
-            var blockResult = world.clipWithInteractionOverride(startVec, endVec, blockPos, blockShape, blockState);
-            var fluidShape = rayTraceContext.getFluidShape(fluidState, world, blockPos);
-            var fluidResult = fluidShape.clip(startVec, endVec, blockPos);
-            var blockDistance = blockResult == null ? Double.MAX_VALUE : rayTraceContext.getFrom().distanceToSqr(blockResult.getLocation());
-            var fluidDistance = fluidResult == null ? Double.MAX_VALUE : rayTraceContext.getFrom().distanceToSqr(fluidResult.getLocation());
+            FluidState fluidState = world.getFluidState(blockPos);
+            Vec3 startVec = rayTraceContext.getFrom();
+            Vec3 endVec = rayTraceContext.getTo();
+            VoxelShape blockShape = rayTraceContext.getBlockShape(blockState, world, blockPos);
+            BlockHitResult blockResult = world.clipWithInteractionOverride(startVec, endVec, blockPos, blockShape, blockState);
+            VoxelShape fluidShape = rayTraceContext.getFluidShape(fluidState, world, blockPos);
+            BlockHitResult fluidResult = fluidShape.clip(startVec, endVec, blockPos);
+            double blockDistance = blockResult == null ? Double.MAX_VALUE : rayTraceContext.getFrom().distanceToSqr(blockResult.getLocation());
+            double fluidDistance = fluidResult == null ? Double.MAX_VALUE : rayTraceContext.getFrom().distanceToSqr(fluidResult.getLocation());
             return blockDistance <= fluidDistance ? blockResult : fluidResult;
         }, (rayTraceContext) -> {
-            var Vector3d = rayTraceContext.getFrom().subtract(rayTraceContext.getTo());
+            Vec3 Vector3d = rayTraceContext.getFrom().subtract(rayTraceContext.getTo());
             return BlockHitResult.miss(rayTraceContext.getTo(), Direction.getNearest(Vector3d.x, Vector3d.y, Vector3d.z), BlockPos.containing(rayTraceContext.getTo()));
         });
     }
@@ -840,21 +729,88 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return onFinish.apply(context);
     }
 
-    public boolean isClientUpdated() {
-        return hasClientData;
+    protected void setupDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
+        /* Get speed and set motion */
+        var dir = this.getDirection(shooter, weapon, item, modifiedGun);
+        var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
+        var data = new GunData(weapon, shooter);
+        var speed = GunModifierHelper.getModifiedProjectileSpeed(data, this.projectile.getSpeed() * speedModifier);
+        this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
+        this.updateHeading();
     }
 
-    public void setClientUpdated() {
-        this.hasClientData = true;
+    protected boolean removeOnHit() {
+        return true;
+    }
+
+    /**
+     * Creates a projectile explosion for the specified entity.
+     *
+     * @param entity    The entity to explode
+     * @param radius    The amount of radius the entity should deal
+     * @param forceNone If true, forces the explosion mode to be NONE instead of config value
+     */
+    public static void createExplosion(Entity entity, float radius, boolean forceNone) {
+        Level world = entity.level();
+        if (world.isClientSide())
+            return;
+
+        DamageSource source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
+//        Explosion.BlockInteraction mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
+        Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, Explosion.BlockInteraction.DESTROY_WITH_DECAY);
+
+        if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
+            return;
+
+        // Do explosion logic
+        explosion.explode();
+        explosion.finalizeExplosion(true);
+
+        // Send event to blocks that are exploded (none if mode is none)
+        explosion.getToBlow().forEach(pos ->
+        {
+            if (world.getBlockState(pos).getBlock() instanceof IExplosionDamageable) {
+                ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
+            }
+        });
+
+        // Clears the affected blocks if mode is none
+        if (!explosion.interactsWithBlocks()) {
+            explosion.clearToBlow();
+        }
+
+        for (ServerPlayer player : ((ServerLevel) world).players()) {
+            if (player.distanceToSqr(entity.getX(), entity.getY(), entity.getZ()) < 4096) {
+                player.connection.send(new ClientboundExplodePacket(entity.getX(), entity.getY(), entity.getZ(), radius, explosion.getToBlow(), explosion.getHitPlayers().get(player)));
+            }
+        }
+    }
+
+    public static void createFireExplosion(Entity entity, float radius, boolean forceNone) {
+        Level world = entity.level();
+        if (world.isClientSide())
+            return;
+
+        DamageSource source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
+        Explosion.BlockInteraction mode = Explosion.BlockInteraction.KEEP;
+        Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, true, mode);
+
+        if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
+            return;
+
+        // Do explosion logic
+        explosion.explode();
+        explosion.finalizeExplosion(true);
+
     }
 
     /**
      * Author: MrCrayfish
      */
     public static class EntityResult {
-        private Entity entity;
-        private Vec3 hitVec;
-        private boolean headshot;
+        private final Entity entity;
+        private final Vec3 hitVec;
+        private final boolean headshot;
 
         public EntityResult(Entity entity, Vec3 hitVec, boolean headshot) {
             this.entity = entity;
@@ -863,14 +819,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
 
         /**
-         * Gets the entity that was hit by the ammo
+         * Gets the entity that was hit by the projectile
          */
         public Entity getEntity() {
             return this.entity;
         }
 
         /**
-         * Gets the position the ammo hit
+         * Gets the position the projectile hit
          */
         public Vec3 getHitPos() {
             return this.hitVec;

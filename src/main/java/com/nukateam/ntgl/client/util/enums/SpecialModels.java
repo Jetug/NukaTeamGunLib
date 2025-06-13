@@ -43,7 +43,7 @@ public enum SpecialModels {
      * @param modelName name of the model file
      */
     SpecialModels(String modelName) {
-        this.modelLocation = new ResourceLocation(Ntgl.MOD_ID, "special/" + modelName);
+        this.modelLocation = ResourceLocation.tryBuild(Ntgl.MOD_ID, "special/" + modelName);
     }
 
     /**

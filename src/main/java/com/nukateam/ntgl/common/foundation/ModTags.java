@@ -11,7 +11,7 @@ public class ModTags {
         public static final TagKey<Block> FRAGILE = tag("fragile");
 
         private static TagKey<Block> tag(String name) {
-            return BlockTags.create(new ResourceLocation(Ntgl.MOD_ID, name));
+            return BlockTags.create(ResourceLocation.tryBuild(Ntgl.MOD_ID, name));
         }
     }
 }

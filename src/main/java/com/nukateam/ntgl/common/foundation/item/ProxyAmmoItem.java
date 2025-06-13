@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.common.base.NetworkManager;
-import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import net.minecraft.ChatFormatting;
@@ -14,9 +14,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ProxyAmmoItem extends Item implements IAmmo<Ammo>, IConfigConsumer<Ammo> {
+public class ProxyAmmoItem extends Item implements IAmmo<Projectile>, IConfigConsumer<Projectile> {
     private final IGunModifier[] modifiers;
-    private Ammo ammo = new Ammo();
+    private Projectile projectile = new Projectile();
 
     public ProxyAmmoItem(Properties properties, IGunModifier... modifiers) {
         super(properties);
@@ -24,12 +24,12 @@ public class ProxyAmmoItem extends Item implements IAmmo<Ammo>, IConfigConsumer<
     }
 
     @Override
-    public void setConfig(NetworkManager.Supplier<Ammo> supplier) {
-        this.ammo = supplier.getConfig();
+    public void setConfig(NetworkManager.Supplier<Projectile> supplier) {
+        this.projectile = supplier.getConfig();
     }
 
-    public Ammo getAmmo() {
-        return this.ammo;
+    public Projectile getAmmo() {
+        return this.projectile;
     }
 
     public IGunModifier[] getModifiers() {
@@ -42,7 +42,7 @@ public class ProxyAmmoItem extends Item implements IAmmo<Ammo>, IConfigConsumer<
 
         if(maxDamage > 0){
             int ammoCount = maxDamage - getDamage(stack);
-            tooltip.add(Component.translatable("info.ntgl.ammo",
+            tooltip.add(Component.translatable("info.ntgl.projectile",
                     ChatFormatting.WHITE.toString() + ammoCount + "/" + maxDamage).withStyle(ChatFormatting.GRAY));
         }
     }

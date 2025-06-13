@@ -22,7 +22,7 @@ import java.util.function.Supplier;
  * Author: MrCrayfish
  */
 public class Scope extends Attachment implements IEditorMenu {
-    public static final ResourceLocation SCOPE_LOCATION = new ResourceLocation(Ntgl.MOD_ID, "textures/hud/overlay/scope_long_overlay.png");
+    public static final ResourceLocation SCOPE_LOCATION = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/hud/overlay/scope_long_overlay.png");
 
     protected float aimFovModifier;
     protected float additionalZoom;

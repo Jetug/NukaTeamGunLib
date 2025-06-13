@@ -96,14 +96,14 @@
 //    }
 //
 //    /**
-//     * @return The maximum amount of ammo this weapon can hold
+//     * @return The maximum amount of projectile this weapon can hold
 //     */
 //    public int getMaxAmmo() {
 //        return this.maxAmmo;
 //    }
 //
 //    /**
-//     * @return The amount of ammo to add to the weapon each reload cycle
+//     * @return The amount of projectile to add to the weapon each reload cycle
 //     */
 //    public int getReloadAmount() {
 //        return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER
@@ -113,7 +113,7 @@
 //    }
 //
 //    /**
-//     * @return The amount of ammo to add to the weapon each reload cycle
+//     * @return The amount of projectile to add to the weapon each reload cycle
 //     */
 //    public int getReloadMagTimer() {
 //        return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER
@@ -122,7 +122,7 @@
 //    }
 //
 //    /**
-//     * @return The amount of ammo to add to the weapon each reload cycle
+//     * @return The amount of projectile to add to the weapon each reload cycle
 //     */
 //    public int getAdditionalReloadEmptyMagTimer() {
 //        return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER &&
@@ -133,21 +133,21 @@
 //    }
 //
 //    /**
-//     * @return The amount of ammo to add to the weapon each reload cycle
+//     * @return The amount of projectile to add to the weapon each reload cycle
 //     */
 //    public int[] getMaxAdditionalAmmoPerOC() {
 //        return this.maxAdditionalAmmoPerOC;
 //    }
 //
 //    /**
-//     * @return The amount of ammo to add to the weapon each reload cycle
+//     * @return The amount of projectile to add to the weapon each reload cycle
 //     */
 //    public int getPreReloadPauseTicks() {
 //        return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.reloads) ? (int) (this.preReloadPauseTicks + GunEditor.get().getPreReloadPauseTicksMod()) : this.preReloadPauseTicks;
 //    }
 //
 //    /**
-//     * @return The amount of ammo to add to the weapon each reload cycle
+//     * @return The amount of projectile to add to the weapon each reload cycle
 //     */
 //    public int getinterReloadPauseTicks() {
 //        return (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && Config.COMMON.development.enableTDev.get() && GunEditor.get().getMode() == GunEditor.TaCWeaponDevModes.reloads) ? (int) (this.interReloadPauseTicks + GunEditor.get().getInterReloadPauseTicksMod()) : this.interReloadPauseTicks;

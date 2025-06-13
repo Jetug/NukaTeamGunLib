@@ -25,7 +25,7 @@ import static com.nukateam.ntgl.common.base.utils.json.JsonDeserializers.getDama
 import static com.nukateam.ntgl.common.data.config.gun.General.PROJECTILE_AMOUNT;
 import static com.nukateam.ntgl.common.data.config.gun.General.SPREAD;
 
-public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
     private float damage = 1;
     private float size;
     private double speed = 20;
@@ -142,8 +142,8 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         return object;
     }
 
-    public Ammo copy() {
-        var projectile = new Ammo();
+    public Projectile copy() {
+        var projectile = new Projectile();
         projectile.visible = this.visible;
         projectile.damage = this.damage;
         projectile.size = this.size;
@@ -258,22 +258,22 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.damageType;
     }
 
-    public static Ammo create(CompoundTag tag) {
-        var ammo = new Ammo();
+    public static Projectile create(CompoundTag tag) {
+        var ammo = new Projectile();
         ammo.deserializeNBT(tag);
         return ammo;
     }
 
     @Override
     public Component getEditorLabel() {
-        return Component.literal("Ammo");
+        return Component.literal("Projectile");
     }
 
     @Override
     public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 //            ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
-//            ItemStack scope = Ammo.getScopeStack(heldItem);
+//            ItemStack scope = Projectile.getScopeStack(heldItem);
 //            if (scope.getItem() instanceof ScopeItem scopeItem) {
 //                widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(Component.literal("Edit"), btn -> {
 //                    Minecraft.getInstance().setScreen(createEditorScreen(Debug.getScope(scopeItem)));
@@ -287,75 +287,75 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static class Builder {
-        private final Ammo ammo;
+        private final Projectile projectile;
 
         private Builder() {
-            this.ammo = new Ammo();
+            this.projectile = new Projectile();
         }
 
-        private Builder(Ammo ammo) {
-            this.ammo = ammo.copy();
+        private Builder(Projectile projectile) {
+            this.projectile = projectile.copy();
         }
 
-        public static Ammo.Builder create() {
-            return new Ammo.Builder();
+        public static Projectile.Builder create() {
+            return new Projectile.Builder();
         }
 
-        public static Ammo.Builder create(Ammo ammo) {
-            return new Ammo.Builder(ammo);
+        public static Projectile.Builder create(Projectile projectile) {
+            return new Projectile.Builder(projectile);
         }
 
-        public Ammo build() {
-            return this.ammo.copy(); //Copy since the builder could be used again
+        public Projectile build() {
+            return this.projectile.copy(); //Copy since the builder could be used again
         }
 
-        public Ammo.Builder setProjectileVisible(ResourceLocation id, boolean visible) {
-            this.ammo.visible = visible;
+        public Projectile.Builder setProjectileVisible(ResourceLocation id, boolean visible) {
+            this.projectile.visible = visible;
             return this;
         }
 
-        public Ammo.Builder setProjectileSize(ResourceLocation id, float size) {
-            this.ammo.size = size;
+        public Projectile.Builder setProjectileSize(ResourceLocation id, float size) {
+            this.projectile.size = size;
             return this;
         }
 
-        public Ammo.Builder setProjectileSpeed(ResourceLocation id, double speed) {
-            this.ammo.speed = speed;
+        public Projectile.Builder setProjectileSpeed(ResourceLocation id, double speed) {
+            this.projectile.speed = speed;
             return this;
         }
 
-        public Ammo.Builder setProjectileLife(ResourceLocation id, int life) {
-            this.ammo.life = life;
+        public Projectile.Builder setProjectileLife(ResourceLocation id, int life) {
+            this.projectile.life = life;
             return this;
         }
 
-        public Ammo.Builder setProjectileAffectedByGravity(ResourceLocation id, boolean gravity) {
-            this.ammo.gravity = gravity;
+        public Projectile.Builder setProjectileAffectedByGravity(ResourceLocation id, boolean gravity) {
+            this.projectile.gravity = gravity;
             return this;
         }
 
-        public Ammo.Builder setProjectileTrailColor(ResourceLocation id, int trailColor) {
-            this.ammo.trailColor = trailColor;
+        public Projectile.Builder setProjectileTrailColor(ResourceLocation id, int trailColor) {
+            this.projectile.trailColor = trailColor;
             return this;
         }
 
-        public Ammo.Builder setProjectileTrailLengthMultiplier(ResourceLocation id, int trailLengthMultiplier) {
-            this.ammo.trailLengthMultiplier = trailLengthMultiplier;
+        public Projectile.Builder setProjectileTrailLengthMultiplier(ResourceLocation id, int trailLengthMultiplier) {
+            this.projectile.trailLengthMultiplier = trailLengthMultiplier;
             return this;
         }
 
-        public Ammo.Builder setDamage(ResourceLocation id, float damage) {
-            this.ammo.damage = damage;
+        public Projectile.Builder setDamage(ResourceLocation id, float damage) {
+            this.projectile.damage = damage;
             return this;
         }
 
-        public Ammo.Builder setReduceDamageOverLife(ResourceLocation id, boolean damageReduceOverLife) {
-            this.ammo.damageReduceOverLife = damageReduceOverLife;
+        public Projectile.Builder setReduceDamageOverLife(ResourceLocation id, boolean damageReduceOverLife) {
+            this.projectile.damageReduceOverLife = damageReduceOverLife;
             return this;
         }
 
-        public Ammo.Builder setMagazineMode(ResourceLocation id, boolean magazineMode) {
-            this.ammo.magazineMode = magazineMode;
+        public Projectile.Builder setMagazineMode(ResourceLocation id, boolean magazineMode) {
+            this.projectile.magazineMode = magazineMode;
             return this;
         }
     }

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAmmo;
@@ -27,20 +27,20 @@ import java.util.*;
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, Ammo>> {
+public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, Projectile>> {
     private static List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
     private static NetworkAmmoManager instance;
 
-    private Map<ResourceLocation, Ammo> registeredAmmo = new HashMap<>();
+    private Map<ResourceLocation, Projectile> registeredAmmo = new HashMap<>();
 
     @Override
-    protected Map<IAmmo, Ammo> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, Ammo.class, "ammo");
+    protected Map<IAmmo, Projectile> prepare(ResourceManager manager, ProfilerFiller profiler) {
+        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, Projectile.class, "projectile");
     }
 
     @Override
-    protected void apply(Map<IAmmo, Ammo> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
-        ImmutableMap.Builder<ResourceLocation, Ammo> builder = ImmutableMap.builder();
+    protected void apply(Map<IAmmo, Projectile> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
+        ImmutableMap.Builder<ResourceLocation, Projectile> builder = ImmutableMap.builder();
 
         objects.forEach((item, ammo) -> {
             Validate.notNull(ITEMS.getKey((Item)item));
@@ -52,7 +52,7 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
     }
 
     /**
-     * Writes all registered ammo into the provided packet buffer
+     * Writes all registered projectile into the provided packet buffer
      *
      * @param buffer a packet buffer get
      */
@@ -65,20 +65,20 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
     }
 
     /**
-     * Reads all registered ammo from the provided packet buffer
+     * Reads all registered projectile from the provided packet buffer
      *
      * @param buffer a packet buffer get
-     * @return a map of registered ammo from the server
+     * @return a map of registered projectile from the server
      */
-    public static ImmutableMap<ResourceLocation, Ammo> readRegisteredAmmo(FriendlyByteBuf buffer) {
+    public static ImmutableMap<ResourceLocation, Projectile> readRegisteredAmmo(FriendlyByteBuf buffer) {
         var size = buffer.readVarInt();
 
         if (size > 0) {
-            ImmutableMap.Builder<ResourceLocation, Ammo> builder = ImmutableMap.builder();
+            ImmutableMap.Builder<ResourceLocation, Projectile> builder = ImmutableMap.builder();
 
             for (int i = 0; i < size; i++) {
                 var id = buffer.readResourceLocation();
-                var ammo = Ammo.create(buffer.readNbt());
+                var ammo = Projectile.create(buffer.readNbt());
                 builder.put(id, ammo);
             }
             return builder.build();
@@ -91,14 +91,14 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
     }
 
     /**
-     * Updates registered ammo from data provided by the server
+     * Updates registered projectile from data provided by the server
      *
-     * @return true if all registered ammo were able to update their corresponding ammo item
+     * @return true if all registered projectile were able to update their corresponding projectile item
      */
-    private static boolean updateRegisteredAmmo(Map<ResourceLocation, Ammo> registeredAmmo) {
+    private static boolean updateRegisteredAmmo(Map<ResourceLocation, Projectile> registeredAmmo) {
         clientRegisteredAmmo.clear();
         if (registeredAmmo != null) {
-            for (Map.Entry<ResourceLocation, Ammo> entry : registeredAmmo.entrySet()) {
+            for (Map.Entry<ResourceLocation, Projectile> entry : registeredAmmo.entrySet()) {
                 Item item = ITEMS.getValue(entry.getKey());
                 if (!(item instanceof IAmmo)) {
                     return false;
@@ -112,18 +112,18 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
     }
 
     /**
-     * Gets a map of all the registered ammo objects. Note, this is an immutable map.
+     * Gets a map of all the registered projectile objects. Note, this is an immutable map.
      *
-     * @return a map of registered ammo objects
+     * @return a map of registered projectile objects
      */
-    public Map<ResourceLocation, Ammo> getRegisteredAmmo() {
+    public Map<ResourceLocation, Projectile> getRegisteredAmmo() {
         return this.registeredAmmo;
     }
 
     /**
-     * Gets a list of all the ammo registered on the client side. Note, this is an immutable list.
+     * Gets a list of all the projectile registered on the client side. Note, this is an immutable list.
      *
-     * @return a map of ammo registered on the client
+     * @return a map of projectile registered on the client
      */
     public static List<IAmmo> getClientRegisteredAmmo() {
         return ImmutableList.copyOf(clientRegisteredAmmo);
@@ -149,10 +149,10 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
     }
 
     /**
-     * Gets the network ammo manager. This will be null if the client isn't running an integrated
+     * Gets the network projectile manager. This will be null if the client isn't running an integrated
      * server or the client is connected to a dedicated server.
      *
-     * @return the network ammo manager
+     * @return the network projectile manager
      */
     @Nullable
     public static NetworkAmmoManager get() {
@@ -160,19 +160,19 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
     }
 
     /**
-     * A simple wrapper for a ammo object to pass to IAmmo. This is to indicate to developers that
-     * Ammo instances shouldn't be changed on GunItems as they are controlled by NetworkAmmoManager.
-     * Changes to ammo properties should be made through the JSON file.
+     * A simple wrapper for a projectile object to pass to IAmmo. This is to indicate to developers that
+     * Projectile instances shouldn't be changed on GunItems as they are controlled by NetworkAmmoManager.
+     * Changes to projectile properties should be made through the JSON file.
      */
     public static class Supplier {
-        private Ammo ammo;
+        private Projectile projectile;
 
-        private Supplier(Ammo ammo) {
-            this.ammo = ammo;
+        private Supplier(Projectile projectile) {
+            this.projectile = projectile;
         }
 
-        public Ammo getAmmo() {
-            return this.ammo;
+        public Projectile getAmmo() {
+            return this.projectile;
         }
     }
 

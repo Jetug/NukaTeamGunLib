@@ -32,6 +32,6 @@ public class GunPlaceholderModel<T extends IResourceProvider & GeoAnimatable> ex
         var name = gunItem.getName();
         var modId = gunItem.getNamespace();
 
-        return new ResourceLocation(modId, path + name + extension);
+        return ResourceLocation.tryBuild(modId, path + name + extension);
     }
 }

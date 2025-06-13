@@ -158,7 +158,7 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
             tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
         } else {
             int ammoCount = tagCompound.getInt(AMMO_COUNT);
-            tooltip.add(Component.translatable("info.ntgl.ammo",
+            tooltip.add(Component.translatable("info.ntgl.projectile",
                     ChatFormatting.WHITE.toString()
                             + ammoCount + "/"
                             + GunEnchantmentHelper.getAmmoCapacity(gunData)).withStyle(ChatFormatting.GRAY));

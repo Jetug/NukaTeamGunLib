@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.base.holders.AmmoType;
 import com.nukateam.ntgl.common.base.holders.FireMode;
-import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -19,15 +19,15 @@ import java.util.Set;
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
 public class GunStateHelper {
-    public static final String AMMO_TAG = "Ammo";
+    public static final String AMMO_TAG = "Projectile";
     public static final String FIRE_MODE = "FireMode";
 
-    public static int getAmmo(ItemStack gunStack) {
+    public static int getAmmoCount(ItemStack gunStack) {
         var tag = gunStack.getOrCreateTag();
         return tag.getInt(Tags.AMMO_COUNT);
     }
 
-    //AMMO
+    //PROJECTILE
     public static void switchAmmo(GunData data){
         var ammoItems = GunModifierHelper.getAmmoItems(data);
         var current = getAmmoId(data);
@@ -77,7 +77,7 @@ public class GunStateHelper {
         return ammo.getType();
     }
 
-    public static Ammo getAmmoConfig(GunData data) {
+    public static Projectile getAmmoConfig(GunData data) {
         var ammoId = getAmmoId(data);
         return GunModifierHelper.getAmmoConfig(ammoId, data);
     }

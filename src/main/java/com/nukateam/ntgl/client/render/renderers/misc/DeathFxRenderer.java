@@ -27,13 +27,13 @@ import static com.nukateam.ntgl.ClientProxy.*;
 
 @OnlyIn(Dist.CLIENT)
 public class DeathFxRenderer {
-    private static final ResourceLocation RES_BURN_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/death/burn.png");
-    private static final ResourceLocation RES_LASER_EFFECT = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/death/laser.png");
+    private static final ResourceLocation RES_BURN_EFFECT = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/fx/death/burn.png");
+    private static final ResourceLocation RES_LASER_EFFECT = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/fx/death/laser.png");
 
     private static GoreData genericGore;
     static {
         genericGore = (new GoreData(null, 160, 21, 31))
-                .setTexture(new ResourceLocation(Ntgl.MOD_ID, "textures/entity/gore.png"));
+                .setTexture(ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/entity/gore.png"));
         genericGore.setRandomScale(0.5f, 0.8f);
     }
 

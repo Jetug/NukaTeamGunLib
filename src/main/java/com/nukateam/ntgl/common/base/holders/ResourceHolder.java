@@ -11,7 +11,7 @@ public class ResourceHolder {
     }
 
     public ResourceHolder(String name) {
-        this.id = new ResourceLocation(Ntgl.MOD_ID, name);
+        this.id = ResourceLocation.tryBuild(Ntgl.MOD_ID, name);
     }
 
     public ResourceLocation getId() {
