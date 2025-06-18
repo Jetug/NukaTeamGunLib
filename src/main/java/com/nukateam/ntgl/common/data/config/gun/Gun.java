@@ -65,7 +65,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     @Ignored
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
-    protected HashMap<ResourceLocation, Ammo> progectiles = new HashMap<>();
+    protected HashMap<ResourceLocation, Ammo> projectiles = new HashMap<>();
     protected HashMap<FuelType, Fuel> fuel = new HashMap<>();
 
     public static boolean isAmmoIgnored(ItemStack stack) {
@@ -87,8 +87,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.put(Tags.ATTACHMENTS, attachmentsTag);
     }
 
-    public HashMap<ResourceLocation, Ammo> getProgectiles() {
-        return progectiles;
+    public HashMap<ResourceLocation, Ammo> getProjectiles() {
+        return projectiles;
     }
 
     public HashMap<FuelType, Fuel> getFuel() {
@@ -153,7 +153,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
         tag.put("Textures", NbtUtils.serializeStringMap(this.textures));
-        tag.put("Projectiles", NbtUtils.serializeMap(this.progectiles));
+        tag.put("Projectiles", NbtUtils.serializeMap(this.projectiles));
         tag.put("SecondaryAmmo", NbtUtils.serializeMap(this.fuel));
         return tag;
     }
@@ -176,7 +176,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             this.textures = NbtUtils.deserializeRLMap(tag.getCompound("Textures"));
         }
         if (tag.contains("Projectiles", Tag.TAG_COMPOUND)) {
-            this.progectiles = NbtUtils.deserializeProjectileMap(tag.getCompound("Projectiles"));
+            this.projectiles = NbtUtils.deserializeProjectileMap(tag.getCompound("Projectiles"));
         }
         if (tag.contains("SecondaryAmmo", Tag.TAG_COMPOUND)) {
             this.fuel = NbtUtils.deserializeFuelMap(tag.getCompound("SecondaryAmmo"));
@@ -241,7 +241,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         gun.general = this.general.copy();
         gun.sounds = (HashMap<String, ResourceLocation>)    this.sounds.clone();
         gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
-        gun.progectiles = (HashMap<ResourceLocation, Ammo>) this.progectiles.clone();
+        gun.projectiles = (HashMap<ResourceLocation, Ammo>) this.projectiles.clone();
         gun.fuel = (HashMap<FuelType, Fuel>) this.fuel.clone();
         gun.display = this.display.copy();
         gun.modules = this.modules.copy();
@@ -572,11 +572,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public boolean hasAmmo(ResourceLocation ammo){
-        return progectiles.containsKey(ammo);
+        return projectiles.containsKey(ammo);
     }
 
     public Ammo getAmmoConfig(ResourceLocation ammo){
-        return progectiles.get(ammo);
+        return projectiles.get(ammo);
     }
 
     public static class Builder {

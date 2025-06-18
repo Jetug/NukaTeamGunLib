@@ -5,7 +5,6 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.holders.FireMode;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.util.interfaces.CurrentFpsGetter;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
@@ -387,7 +386,7 @@ public class ShootingHandler {
     }
 
     private static float visualCooldownMultiplier() {
-        int fps = ((CurrentFpsGetter) Minecraft.getInstance()).getCurrentFps();
+        int fps = Minecraft.getInstance().getFps();
         if (fps < 11)
             return 8f;
         else if (fps < 21)

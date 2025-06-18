@@ -4,7 +4,7 @@
   "damage": 1.0,
   "size": 1.0,
   "gravity": true,
-  "speed": 3.0,
+  "speed": 0.05,
   "life": 10,
   "type": "ntgl:fire"
 }

@@ -15,6 +15,20 @@
       "ntgl:fuel"
     ]
   },
+  "projectiles": {
+    "ntgl:fuel": {
+      "type": "ntgl:fire",
+      "damageType": "ntgl:fire",
+      "projectile": "ntgl:fire",
+      "magazineMode" : true,
+      "visible": true,
+      "damage": 1.0,
+      "size": 1.0,
+      "gravity": true,
+      "speed": 1.0,
+      "life": 30
+    }
+  },
   "sounds": {
     "fire": "ntgl:item.flamer.fire",
     "reload": "ntgl:item.military_flamer.reload",

@@ -28,7 +28,7 @@ import static com.nukateam.ntgl.common.data.config.gun.General.SPREAD;
 public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     private float damage = 1;
     private float size;
-    private double speed = 20;
+    @Optional private float speed = 20;
     private int life = 20;
     @Optional private AmmoType type = AmmoType.STANDARD;
     @Optional private ProjectileType projectile = ProjectileType.BULLET;
@@ -51,7 +51,7 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.putFloat("Damage", this.damage);
         tag.putBoolean("Visible", this.visible);
         tag.putFloat("Size", this.size);
-        tag.putDouble("Speed", this.speed);
+        tag.putFloat("Speed", this.speed);
         tag.putInt("Life", this.life);
         tag.putBoolean("Gravity", this.gravity);
         tag.putBoolean("DamageReduceOverLife", this.damageReduceOverLife);
@@ -78,7 +78,7 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
             this.size = tag.getFloat("Size");
         }
         if (tag.contains("Speed", Tag.TAG_ANY_NUMERIC)) {
-            this.speed = tag.getDouble("Speed");
+            this.speed = tag.getFloat("Speed");
         }
         if (tag.contains("Life", Tag.TAG_ANY_NUMERIC)) {
             this.life = tag.getInt("Life");
@@ -187,7 +187,7 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     /**
      * @return The speed the projectile  moves every tick
      */
-    public double getSpeed() {
+    public float getSpeed() {
         return this.speed;
     }
 
@@ -319,7 +319,7 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this;
         }
 
-        public Ammo.Builder setProjectileSpeed(ResourceLocation id, double speed) {
+        public Ammo.Builder setProjectileSpeed(ResourceLocation id, float speed) {
             this.projectile.speed = speed;
             return this;
         }

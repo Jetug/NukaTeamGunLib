@@ -7,12 +7,15 @@ import com.nukateam.ntgl.client.util.handler.ClientActions;
 import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
+import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.lwjgl.glfw.GLFW;
 
 import static com.nukateam.ntgl.client.input.KeyBinds.*;
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
@@ -36,6 +39,9 @@ public class InputEvents {
         if (player == null || !isInGame())
             return;
 
+        if (KeyBinds.KEY_ATTACHMENTS.consumeClick()) {
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
+        }
         if (KeyBinds.KEY_RELOAD.consumeClick()) {
             ClientReloadHandler.get().startReloading();
         }

@@ -40,6 +40,7 @@ public class ProjectileRegistry {
         ProjectileManager.getInstance().registerFactory(ProjectileType.CONTINUOUS_LASER, CONTINUOUS_LASER);
 
         ProjectileManager.getInstance().registerFactory(ModGuns.GRENADE.get()   , GRENADE);
+        ProjectileManager.getInstance().registerFactory(ModGuns.ROUND10MM.get() , LASER);
         ProjectileManager.getInstance().registerFactory(ModGuns.ROUND5MM.get() , LASER);
         ProjectileManager.getInstance().registerFactory(ModGuns.ROUND45.get()   , TESLA);
         ProjectileManager.getInstance().registerFactory(ModGuns.ROUND38.get()   , CONTINUOUS_LASER);

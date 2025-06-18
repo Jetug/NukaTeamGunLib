@@ -16,7 +16,6 @@
     "client.LevelRendererMixin",
     "client.LivingEntityModelMixin",
     "client.MinecraftMixin",
-    "client.MinecraftStaticMixin",
     "client.MouseHandlerMixin",
     "client.RenderTypeLookupMixin",
     "client.SoundOptionsScreenMixin",

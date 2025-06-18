@@ -401,13 +401,15 @@ public class GunModifierHelper {
 
     public static Ammo getAmmoConfig(ResourceLocation ammoId, GunData data) {
         var gun = getGun(data.gun);
+        Ammo config = null;
 
         if(gun.hasAmmo(ammoId)) {
-            return gun.getAmmoConfig(ammoId);
+            config = gun.getAmmoConfig(ammoId);
         }
         else if(GunStateHelper.getAmmoItem(data) instanceof IAmmo ammo) {
-            return ammo.getAmmo();
+            config = ammo.getAmmo();
         }
-        else return new Ammo();
+
+        return config != null ? config : new Ammo();
     }
 }
