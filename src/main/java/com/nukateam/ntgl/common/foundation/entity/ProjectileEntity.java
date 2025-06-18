@@ -96,6 +96,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this(entityType, worldIn);
         this.shooterId = shooter.getId();
         this.shooter = shooter;
+        this.weapon = weapon;
         this.modifiedGun = modifiedGun;
         this.general = modifiedGun.getGeneral();
         var data = new GunData(weapon, shooter);
@@ -117,7 +118,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         double posZ = shooter.zOld + (shooter.getZ() - shooter.zOld) / 2.0;
         this.setPos(posX, posY, posZ);
 
-        Item ammo = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoId(data));
+        var ammo = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoId(data));
         if (ammo != null) {
             int customModelData = -1;
             if (weapon.getTag() != null) {
@@ -242,6 +243,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             double nextPosZ = this.getZ() + this.getDeltaMovement().z();
 
             this.setPos(nextPosX, nextPosY, nextPosZ);
+
+//            if(isInWater()){
+//                this.setDeltaMovement(this.getDeltaMovement().subtract());
+//            }
 
             if (this.projectile.isGravity()) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0, this.modifiedGravity, 0));
@@ -512,21 +517,21 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        this.projectile = new Ammo();
-        this.projectile.deserializeNBT(compound.getCompound("Projectile"));
-        this.general = new General();
-        this.general.deserializeNBT(compound.getCompound("General"));
-        this.modifiedGravity = compound.getDouble("ModifiedGravity");
-        this.life = compound.getInt("MaxLife");
-    }
-
-    @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
+        compound.put("Weapon", weapon.save(new CompoundTag()));
         compound.put("Projectile", this.projectile.serializeNBT());
         compound.put("General", this.general.serializeNBT());
         compound.putDouble("ModifiedGravity", this.modifiedGravity);
         compound.putInt("MaxLife", this.life);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag compound) {
+        this.weapon = ItemStack.of(compound.getCompound("Weapon"));
+        this.projectile = Ammo.create(compound.getCompound("Projectile"));
+        this.general = General.create(compound.getCompound("General"));
+        this.modifiedGravity = compound.getDouble("ModifiedGravity");
+        this.life = compound.getInt("MaxLife");
     }
 
     @Override

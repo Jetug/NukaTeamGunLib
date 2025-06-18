@@ -402,12 +402,12 @@ public class GunModifierHelper {
     public static Ammo getAmmoConfig(ResourceLocation ammoId, GunData data) {
         var gun = getGun(data.gun);
         Ammo config = null;
-
+        var item = GunStateHelper.getAmmoItem(data);
         if(gun.hasAmmo(ammoId)) {
             config = gun.getAmmoConfig(ammoId);
         }
-        else if(GunStateHelper.getAmmoItem(data) instanceof IAmmo ammo) {
-            config = ammo.getAmmo();
+        else if(item instanceof IAmmo ammoItem) {
+            config = ammoItem.getAmmo();
         }
 
         return config != null ? config : new Ammo();

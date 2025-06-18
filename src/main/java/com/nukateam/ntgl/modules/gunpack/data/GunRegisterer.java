@@ -43,7 +43,7 @@ public class GunRegisterer {
     private static final Map<String, Set<String>> MOD_CONFIGS = new HashMap<>();
     public static final String GUNS = "guns";
     public static final String ATTACHMENTS = "attachments";
-    public static final String AMMO = "projectile";
+    public static final String AMMO = "ammo";
     private static boolean hasValidRecipe = false;
 
     public static void init(IEventBus eventBus) {

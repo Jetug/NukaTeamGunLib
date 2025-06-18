@@ -87,6 +87,14 @@ public class FlameProjectile extends ProjectileEntity {
         }
     }
 
+    @Override
+    public void tick() {
+        if(isInWater()) {
+            this.remove(RemovalReason.KILLED);
+        }
+        super.tick();
+    }
+
     //
 //    @Override
 //    public void onExpired() {

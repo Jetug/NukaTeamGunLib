@@ -28,6 +28,7 @@ import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, Ammo>> {
+    public static final String PATH = "ammo";
     private static List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
     private static NetworkAmmoManager instance;
 
@@ -35,7 +36,7 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
 
     @Override
     protected Map<IAmmo, Ammo> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, Ammo.class, "projectile");
+        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, Ammo.class, PATH);
     }
 
     @Override

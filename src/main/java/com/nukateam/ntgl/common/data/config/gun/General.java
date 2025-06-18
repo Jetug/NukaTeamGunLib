@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.base.holders.FireMode;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.base.holders.LoadingType;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
+import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.util.annotation.Ignored;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import net.minecraft.nbt.CompoundTag;
@@ -287,6 +288,13 @@ public class General implements INBTSerializable<CompoundTag> {
         general.ammo = new HashSet<>(this.ammo);
         return general;
     }
+
+    public static General create(CompoundTag tag) {
+        var general = new General();
+        general.deserializeNBT(tag);
+        return general;
+    }
+
 
     public Set<ResourceLocation> getAmmo() {
         return this.ammo;
