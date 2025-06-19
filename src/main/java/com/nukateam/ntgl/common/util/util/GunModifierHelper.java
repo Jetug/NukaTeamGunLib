@@ -72,7 +72,7 @@ public class GunModifierHelper {
         return gunItem.getModifiedGun(stack);
     }
 
-    private static General getGeneral(Gun gun) {
+    public static General getGeneral(Gun gun) {
         return gun.getGeneral();
     }
 
@@ -86,6 +86,11 @@ public class GunModifierHelper {
         var sortedTypes = new ArrayList<>(attachments.keySet());
         sortedTypes.sort(Comparator.comparing(AttachmentType::toString));
         return sortedTypes;
+    }
+
+    public static boolean isAlwaysSpread(GunData data) {
+        var isAlwaysSpread = new AtomicBoolean(getGeneral(getGun(data.gun)).isAlwaysSpread());
+        return isAlwaysSpread.get();
     }
 
     public static int getMaxAmmo(GunData data) {

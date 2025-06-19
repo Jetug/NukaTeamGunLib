@@ -91,29 +91,33 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
        return true;
     }
 
-    public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
-        this(entityType, worldIn);
+    public ProjectileEntity(EntityType<? extends Entity> entityType, Level level, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
+        this(entityType, level);
         var data = new GunData(weapon, shooter);
         this.shooterId = shooter.getId();
         this.shooter = shooter;
         this.weapon = weapon;
-        this.modifiedGun = modifiedGun;
-        this.general = modifiedGun.getGeneral();
+        this.general = GunModifierHelper.getGeneral(GunModifierHelper.getGun(weapon));
         this.projectile = GunStateHelper.getAmmoConfig(data);
         this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
         this.modifiedGravity = projectile.isGravity() ? GunModifierHelper.getModifiedProjectileGravity(data, -0.04) : 0.0;
         this.life = GunModifierHelper.getModifiedProjectileLife(data, this.projectile.getLife());
         this.isRightHand = shooter.getItemInHand(InteractionHand.MAIN_HAND) == weapon;
+        this.ammo = setupAmmo(data);
+
         /* Get speed and set motion */
-        var dir = this.getDirection(shooter, weapon, item, modifiedGun);
+        var dir = this.getDirection(shooter, weapon, item);
         var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
         var speed = GunModifierHelper.getModifiedProjectileSpeed(data, this.projectile.getSpeed() * speedModifier);
 
         this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
-        this.setupDirection(shooter, weapon, item, modifiedGun);
+        this.setupDirection(shooter, weapon, item);
         this.setupStartPosition(shooter);
+    }
 
+    private ItemStack setupAmmo(GunData data) {
+        var weapon = data.gun;
         var ammo = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoId(data));
         if (ammo != null) {
             int customModelData = -1;
@@ -129,8 +133,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             if (customModelData != -1) {
                 ammoStack.getOrCreateTag().putInt("CustomModelData", customModelData);
             }
-            this.ammo = ammoStack;
+            return ammoStack;
         }
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -139,6 +144,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         compound.put("Weapon", weapon.save(new CompoundTag()));
+        compound.put("Ammo", ammo.save(new CompoundTag()));
         compound.put("Projectile", this.projectile.serializeNBT());
         compound.put("General", this.general.serializeNBT());
         compound.putDouble("ModifiedGravity", this.modifiedGravity);
@@ -148,6 +154,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         this.weapon = ItemStack.of(compound.getCompound("Weapon"));
+        this.ammo = ItemStack.of(compound.getCompound("Ammo"));
         this.projectile = Ammo.create(compound.getCompound("Projectile"));
         this.general = General.create(compound.getCompound("General"));
         this.modifiedGravity = compound.getDouble("ModifiedGravity");
@@ -593,8 +600,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     }
 
-
-
     /**
      * A custom implementation of ray tracing that allows you to pass a predicate to ignore certain
      * blocks when checking for collisions.
@@ -699,9 +704,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return onFinish.apply(context);
     }
 
-    protected void setupDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
+    protected void setupDirection(LivingEntity shooter, ItemStack weapon, GunItem item) {
         /* Get speed and set motion */
-        var dir = this.getDirection(shooter, weapon, item, modifiedGun);
+        var dir = this.getDirection(shooter, weapon, item);
         var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
         var data = new GunData(weapon, shooter);
         var speed = GunModifierHelper.getModifiedProjectileSpeed(data, this.projectile.getSpeed() * speedModifier);
@@ -718,7 +723,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return damage;
     }
 
-    protected Vec3 getDirection(LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
+    protected Vec3 getDirection(LivingEntity shooter, ItemStack weapon, GunItem item) {
         var data = new GunData(weapon, shooter);
         float gunSpread = GunModifierHelper.getModifiedSpread(data);
 
@@ -727,7 +732,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
 
 //        if (shooter instanceof LivingEntity) {
-        if (!modifiedGun.getGeneral().isAlwaysSpread()) {
+
+        if (!GunModifierHelper.isAlwaysSpread(data)) {
             gunSpread *= SpreadTracker.get(shooter).getSpread(item);
         }
 

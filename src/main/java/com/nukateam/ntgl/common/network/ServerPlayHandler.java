@@ -133,7 +133,7 @@ public class ServerPlayHandler {
                 var data = new GunData(heldItem, shooter);
                 var gunSpread = GunModifierHelper.getModifiedSpread(data);
 
-                if (!modifiedGun.getGeneral().isAlwaysSpread() && gunSpread > 0.0F) {
+                if (!GunModifierHelper.isAlwaysSpread(data) && gunSpread > 0.0F) {
                     SpreadTracker.get(shooter).update(shooter, gunItem);
                 }
 

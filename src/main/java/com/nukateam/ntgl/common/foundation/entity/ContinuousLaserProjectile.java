@@ -34,7 +34,7 @@ public class ContinuousLaserProjectile extends LaserProjectile {
     @Override
     public void trace() {
         if(shooter != null && isServerSide) {
-            setupDirection(shooter, weapon, (GunItem) weapon.getItem(), modifiedGun);
+            setupDirection(shooter, weapon, (GunItem) weapon.getItem());
             setPos(shooter.getEyePosition());
         }
         super.trace();
