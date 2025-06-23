@@ -46,28 +46,47 @@ public class NbtUtils {
         return tag;
     }
 
-    public static Set<FireMode> deserializeFireMode(CompoundTag tag){
-        var array = new HashSet<FireMode>();
+    public static <R> LinkedHashSet<R> deserializeSet(CompoundTag tag, Function<String, R> deserializer){
+        var set = new LinkedHashSet<R>();
 
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_STRING)) {
-                array.add(FireMode.getType(ResourceLocation.tryParse(tag.getString(key))));
+                set.add(deserializer.apply(tag.getString(key)));
             }
         }
 
-        return array;
+        return set;
     }
 
-    public static Set<ResourceLocation> deserializeAmmoSet(CompoundTag tag){
-        var array = new HashSet<ResourceLocation>();
 
-        for (var key: tag.getAllKeys()) {
-            if(tag.contains(key, Tag.TAG_STRING)) {
-                array.add(ResourceLocation.tryParse(tag.getString(key)));
-            }
-        }
 
-        return array;
+    public static LinkedHashSet<FireMode> deserializeFireMode(CompoundTag tag){
+        return deserializeSet(tag, (FireMode::getType));
+//
+//        var array = new HashSet<FireMode>();
+//
+//        for (var key: tag.getAllKeys()) {
+//            if(tag.contains(key, Tag.TAG_STRING)) {
+//                array.add(FireMode.getType(tag.getString(key)));
+//            }
+//        }
+//
+//        return array;
+    }
+
+    public static LinkedHashSet<ResourceLocation> deserializeResourceLocationSet(CompoundTag tag){
+        return deserializeSet(tag, ResourceLocation::tryParse);
+
+
+//        var array = new HashSet<ResourceLocation>();
+//
+//        for (var key: tag.getAllKeys()) {
+//            if(tag.contains(key, Tag.TAG_STRING)) {
+//                array.add(ResourceLocation.tryParse(tag.getString(key)));
+//            }
+//        }
+//
+//        return array;
     }
 
     public static <T extends INBTSerializable> CompoundTag serializeArray(ArrayList<T> array){

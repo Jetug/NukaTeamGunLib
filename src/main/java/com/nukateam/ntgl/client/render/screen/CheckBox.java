@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.render.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -16,7 +17,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 @OnlyIn(Dist.CLIENT)
 public class CheckBox extends AbstractWidget {
-    private static final ResourceLocation GUI = ResourceLocation.parse("ntgl:textures/gui/components.png");
+//    private static final ResourceLocation GUI = ResourceLocation.parse("ntgl:textures/gui/components.png");
+    private static final ResourceLocation GUI = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/gui/components.png");
 
     private boolean toggled = false;
 

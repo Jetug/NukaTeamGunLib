@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +49,8 @@ public class General implements INBTSerializable<CompoundTag> {
 
     int rate;
     int maxAmmo;
-    @Optional Set<FireMode> fireMode = new HashSet<>(List.of(FireMode.SEMI_AUTO));
+    @Optional
+    LinkedHashSet<FireMode> fireMode = new LinkedHashSet<>(List.of(FireMode.SEMI_AUTO));
     @Optional boolean fullCharge = false;
     @Optional boolean enchantable = true;
     @Optional float damage;
@@ -198,7 +200,7 @@ public class General implements INBTSerializable<CompoundTag> {
             this.movementModifier = tag.getFloat(MOVEMENT_MODIFIER);
         }
         if (tag.contains(AMMO, Tag.TAG_COMPOUND)) {
-            this.ammo = NbtUtils.deserializeAmmoSet(tag.getCompound(AMMO));
+            this.ammo = NbtUtils.deserializeResourceLocationSet(tag.getCompound(AMMO));
         }
     }
 
