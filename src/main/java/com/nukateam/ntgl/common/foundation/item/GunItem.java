@@ -2,9 +2,9 @@ package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.animators.GunAnimator;
+import com.nukateam.ntgl.common.base.ConfigSupplier;
 import com.nukateam.ntgl.common.base.handlers.GunHandler;
 import com.nukateam.ntgl.common.base.utils.FuelUtils;
-import com.nukateam.ntgl.common.base.NetworkManager;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
@@ -71,7 +71,7 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     }
 
     @Override
-    public void setConfig(NetworkManager.Supplier<Gun> supplier) {
+    public void setConfig(ConfigSupplier<Gun> supplier) {
         this.gun = supplier.getConfig();
         gun.onCreated(getName());
     }

@@ -31,7 +31,7 @@ import static net.minecraftforge.registries.ForgeRegistries.*;
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunItem, Gun>> {
-    private static List<GunItem> clientRegisteredGuns = new ArrayList<>();
+    private static final List<GunItem> clientRegisteredGuns = new ArrayList<>();
     private static NetworkGunManager instance;
 
     private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
@@ -48,7 +48,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
         objects.forEach((item, gun) -> {
             Validate.notNull(ITEMS.getKey(item));
             builder.put(ITEMS.getKey(item), gun);
-            item.setConfig(new NetworkManager.Supplier<>(gun));
+            item.setConfig(new ConfigSupplier<>(gun));
         });
 
         this.registeredGuns = builder.build();
@@ -106,7 +106,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
                 if (!(item instanceof GunItem)) {
                     return false;
                 }
-                ((GunItem) item).setConfig(new NetworkManager.Supplier<>(entry.getValue()));
+                ((GunItem) item).setConfig(new ConfigSupplier<>(entry.getValue()));
                 clientRegisteredGuns.add((GunItem) item);
             }
             return true;
@@ -160,23 +160,6 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
     @Nullable
     public static NetworkGunManager get() {
         return instance;
-    }
-
-    /**
-     * A simple wrapper for a gun object to pass to GunItem. This is to indicate to developers that
-     * Gun instances shouldn't be changed on GunItems as they are controlled by NetworkGunManager.
-     * Changes to gun properties should be made through the JSON file.
-     */
-    public static class Supplier {
-        private Gun gun;
-
-        private Supplier(Gun gun) {
-            this.gun = gun;
-        }
-
-        public Gun getGun() {
-            return this.gun;
-        }
     }
 
     public static class LoginData implements ILoginData {

@@ -158,19 +158,6 @@ public class ClientPlayHandler {
         }
     }
 
-    public static void handleEntityData(S2CMessageEntityData message) {
-//        var mc = Minecraft.getInstance();
-//        var level = mc.level;
-//
-//        if (level != null) {
-//            var entity = level.getEntity(message.getEntityId());
-//            if(entity instanceof ProjectileEntity projectile) {
-//                projectile.readAdditionalSaveData(message.getData());
-//                projectile.setClientUpdated();
-//            }
-//        }
-    }
-
     public static void handleEntityDeathFx(S2CMessageEntityDeathFx message) {
         var mc = Minecraft.getInstance();
         var level = mc.level;
@@ -225,7 +212,6 @@ public class ClientPlayHandler {
 
     public static void handleUpdateAmmo(S2CMessageUpdateAmmo message) {
         NetworkAmmoManager.updateRegisteredAmmo(message);
-        CustomAmmoManager.updateCustomAmmo(message);
     }
 
     public static void handleUpdateAttachments(S2CMessageUpdateAttachments message) {

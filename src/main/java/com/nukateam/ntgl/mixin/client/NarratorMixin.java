@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.mixin.common;
+package com.nukateam.ntgl.mixin.client;
 
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.client.GameNarrator;

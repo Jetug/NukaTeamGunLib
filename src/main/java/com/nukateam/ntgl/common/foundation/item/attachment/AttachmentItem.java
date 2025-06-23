@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.attachment;
 
-import com.nukateam.ntgl.common.base.NetworkManager;
+import com.nukateam.ntgl.common.base.ConfigSupplier;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.attachment.impl.Attachment;
@@ -30,7 +30,7 @@ public class AttachmentItem<T extends Attachment> extends Item implements IAttac
     }
 
     @Override
-    public void setConfig(NetworkManager.Supplier<AttachmentConfig> supplier) {
+    public void setConfig(ConfigSupplier<AttachmentConfig> supplier) {
         this.config = supplier.getConfig();
     }
 

@@ -547,13 +547,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
      * @param forceNone If true, forces the explosion mode to be NONE instead of config value
      */
     public static void createExplosion(Entity entity, float radius, boolean forceNone) {
-        Level world = entity.level();
+        var world = entity.level();
         if (world.isClientSide())
             return;
 
-        DamageSource source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
-//        Explosion.BlockInteraction mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
-        Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, Explosion.BlockInteraction.DESTROY_WITH_DECAY);
+        var source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
+        var mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
+        var explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
 
         if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
             return;

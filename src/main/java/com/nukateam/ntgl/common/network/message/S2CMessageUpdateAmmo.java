@@ -4,8 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
-import com.nukateam.ntgl.common.base.utils.loaders.CustomAmmoLoader;
-import com.nukateam.ntgl.common.base.utils.loaders.CustomGunLoader;
+import com.nukateam.ntgl.common.base.utils.loaders.*;
 import com.nukateam.ntgl.common.base.NetworkAmmoManager;
 import com.nukateam.ntgl.common.data.config.Ammo;
 import com.nukateam.ntgl.common.data.config.CustomAmmo;
@@ -18,7 +17,6 @@ import org.apache.commons.lang3.Validate;
  */
 public class S2CMessageUpdateAmmo extends PlayMessage<S2CMessageUpdateAmmo> {
     private ImmutableMap<ResourceLocation, Ammo> registeredGuns;
-    private ImmutableMap<ResourceLocation, CustomAmmo> customGuns;
 
     public S2CMessageUpdateAmmo() {
     }
@@ -26,16 +24,13 @@ public class S2CMessageUpdateAmmo extends PlayMessage<S2CMessageUpdateAmmo> {
     @Override
     public void encode(S2CMessageUpdateAmmo message, FriendlyByteBuf buffer) {
         Validate.notNull(NetworkAmmoManager.get());
-        Validate.notNull(CustomGunLoader.get());
         NetworkAmmoManager.get().writeRegisteredAmmo(buffer);
-        CustomGunLoader.get().writeCustomGuns(buffer);
     }
 
     @Override
     public S2CMessageUpdateAmmo decode(FriendlyByteBuf buffer) {
         S2CMessageUpdateAmmo message = new S2CMessageUpdateAmmo();
         message.registeredGuns = NetworkAmmoManager.readRegisteredAmmo(buffer);
-        message.customGuns = CustomAmmoLoader.readCustomAmmo(buffer);
         return message;
     }
 
@@ -47,9 +42,5 @@ public class S2CMessageUpdateAmmo extends PlayMessage<S2CMessageUpdateAmmo> {
 
     public ImmutableMap<ResourceLocation, Ammo> getRegisteredAmmo() {
         return this.registeredGuns;
-    }
-
-    public ImmutableMap<ResourceLocation, CustomAmmo> getCustomAmmo() {
-        return this.customGuns;
     }
 }

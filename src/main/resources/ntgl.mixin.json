@@ -5,10 +5,10 @@
   "mixins": [
     "common.EndPortalBlockMixin",
     "common.LivingEntityMixin",
-    "common.NarratorMixin",
     "common.SittingPhaseMixin"
   ],
   "client": [
+    "client.AgeableListModelAccessor",
     "client.GameRendererMixin",
     "client.GeoEntityRendererMixin",
     "client.ItemInHandLayerMixin",
@@ -17,11 +17,11 @@
     "client.LivingEntityModelMixin",
     "client.MinecraftMixin",
     "client.MouseHandlerMixin",
+    "client.QuadrupedModelAccessor",
     "client.RenderTypeLookupMixin",
     "client.SoundOptionsScreenMixin",
-    "client.AgeableListModelAccessor",
-    "client.QuadrupedModelAccessor",
-    "client.VillagerModelAccessor"
+    "client.VillagerModelAccessor",
+    "client.NarratorMixin"
   ],
   "injectors": {
     "defaultRequire": 1

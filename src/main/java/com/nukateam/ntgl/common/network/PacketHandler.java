@@ -2,11 +2,8 @@ package com.nukateam.ntgl.common.network;
 
 import com.mrcrayfish.framework.api.network.*;
 import com.nukateam.ntgl.*;
-import com.nukateam.ntgl.client.config.CustomAmmoManager;
-import com.nukateam.ntgl.client.config.CustomGunManager;
-import com.nukateam.ntgl.common.base.NetworkAmmoManager;
-import com.nukateam.ntgl.common.base.NetworkAttachmentManager;
-import com.nukateam.ntgl.common.base.NetworkGunManager;
+import com.nukateam.ntgl.client.config.*;
+import com.nukateam.ntgl.common.base.*;
 import com.nukateam.ntgl.common.network.message.*;
 import com.mrcrayfish.framework.api.*;
 import net.minecraft.resources.*;
@@ -32,7 +29,6 @@ public class PacketHandler {
 
                 .registerPlayMessage(S2CMessageEntityDeath.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageEntityDeathFx.class, MessageDirection.PLAY_CLIENT_BOUND)
-                .registerPlayMessage(S2CMessageEntityData.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageReload.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageStunGrenade.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageBulletTrail.class, MessageDirection.PLAY_CLIENT_BOUND)
@@ -50,6 +46,5 @@ public class PacketHandler {
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_attachment_manager"), NetworkAttachmentManager.LoginData::new);
 
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
-        FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "custom_ammo_manager"), CustomAmmoManager.LoginData::new);
     }
 }

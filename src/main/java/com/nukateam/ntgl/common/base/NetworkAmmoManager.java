@@ -29,7 +29,7 @@ import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, Ammo>> {
     public static final String PATH = "ammo";
-    private static List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
+    private static final List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
     private static NetworkAmmoManager instance;
 
     private Map<ResourceLocation, Ammo> registeredAmmo = new HashMap<>();
@@ -46,7 +46,7 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
         objects.forEach((item, ammo) -> {
             Validate.notNull(ITEMS.getKey((Item)item));
             builder.put(ITEMS.getKey((Item)item), ammo);
-            item.setConfig(new NetworkManager.Supplier<>(ammo));
+            item.setConfig(new ConfigSupplier<>(ammo));
         });
 
         this.registeredAmmo = builder.build();
@@ -104,7 +104,7 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
                 if (!(item instanceof IAmmo)) {
                     return false;
                 }
-                ((IAmmo) item).setConfig(new NetworkManager.Supplier<>(entry.getValue()));
+                ((IAmmo) item).setConfig(new ConfigSupplier<>(entry.getValue()));
                 clientRegisteredAmmo.add((IAmmo) item);
             }
             return true;

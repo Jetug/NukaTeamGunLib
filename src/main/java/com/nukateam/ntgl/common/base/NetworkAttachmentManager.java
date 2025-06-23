@@ -49,7 +49,7 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
             if(abstractItem instanceof Item item) {
                 Validate.notNull(ITEMS.getKey(item));
                 builder.put(ITEMS.getKey(item), config);
-                abstractItem.setConfig(new NetworkManager.Supplier<>(config));
+                abstractItem.setConfig(new ConfigSupplier<>(config));
             }
         });
 
@@ -92,7 +92,7 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
                 if (!(item instanceof IAttachment<?>)) {
                     return false;
                 }
-                ((IAttachment<?>) item).setConfig(new NetworkManager.Supplier<>(entry.getValue()));
+                ((IAttachment<?>) item).setConfig(new ConfigSupplier<>(entry.getValue()));
                 clientRegisteredAttachments.add((IAttachment<?>) item);
             }
             return true;

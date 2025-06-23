@@ -65,7 +65,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
     private WorkbenchBlockEntity workbench;
     private Button btnCraft;
     private CheckBox checkBoxMaterials;
-    private ItemStack displayStack;
+    private ItemStack displayStack = ItemStack.EMPTY;
 
     public WorkbenchScreen(WorkbenchContainer container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
@@ -363,7 +363,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
     }
 
     private void loadItem(int index) {
-        WorkbenchRecipe recipe = this.currentTab.getRecipes().get(index);
+        var recipe = this.currentTab.getRecipes().get(index);
         this.displayStack = recipe.getItem().copy();
         this.updateColor();
 
@@ -440,7 +440,9 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         List<WorkbenchRecipe> misc = new ArrayList<>();
 
         for (var recipe : recipes) {
-            ItemStack output = recipe.getItem();
+            var output = recipe.getItem();
+            if(output == null) continue;
+
             if (output.getItem() instanceof GunItem) {
                 weapons.add(recipe);
             } else if (output.getItem() instanceof IAttachment) {
@@ -514,7 +516,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
     }
 
     private boolean isAmmo(ItemStack stack) {
-        if (stack.getItem() instanceof IAmmo)
+        if (stack != null && stack.getItem() instanceof IAmmo)
             return true;
         var player = Minecraft.getInstance().player;
         var gunData = new GunData(stack, player);
@@ -523,7 +525,9 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         Objects.requireNonNull(id);
 
         for (var gunItem : NetworkGunManager.getClientRegisteredGuns()) {
-            if (id.equals(GunModifierHelper.getFirstAmmoItem(gunData))) {
+            var ammo = gunItem.getModifiedGun(stack).getGeneral().getAmmo();
+
+            if (ammo.contains(id)) {
                 return true;
             }
         }
