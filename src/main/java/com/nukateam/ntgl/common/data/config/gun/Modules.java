@@ -20,10 +20,7 @@ import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -38,7 +35,7 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Optional
     boolean attachmentScreen = true;
     @Optional
-    private Map<AttachmentType, ArrayList<Attachment>> attachments = new HashMap<>();
+    private LinkedHashMap<AttachmentType, ArrayList<Attachment>> attachments = new LinkedHashMap<>();
 
     @Nullable
     public Zoom getZoom() {
@@ -49,7 +46,7 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.attachmentScreen;
     }
 
-    public Map<AttachmentType, ArrayList<Attachment>> getAttachments() {
+    public LinkedHashMap<AttachmentType, ArrayList<Attachment>> getAttachments() {
         return this.attachments;
     }
 
@@ -138,7 +135,7 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public Modules copy() {
         Modules modules = new Modules();
-        modules.attachments = new HashMap<>(this.attachments);
+        modules.attachments = new LinkedHashMap<>(this.attachments);
         if (this.zoom != null) {
             modules.zoom = this.zoom.copy();
         }

@@ -239,8 +239,8 @@ public class NbtUtils {
         return tag;
     }
 
-    public static Map<AttachmentType, ArrayList<Modules.Attachment>> deserializeAttachmentMap(CompoundTag tag){
-        var array = new HashMap<AttachmentType, ArrayList<Modules.Attachment>>();
+    public static LinkedHashMap<AttachmentType, ArrayList<Modules.Attachment>> deserializeAttachmentMap(CompoundTag tag){
+        var array = new LinkedHashMap<AttachmentType, ArrayList<Modules.Attachment>>();
 
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {
