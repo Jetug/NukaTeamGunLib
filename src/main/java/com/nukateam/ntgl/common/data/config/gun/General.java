@@ -76,7 +76,7 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional float spread;
     @Optional int fireTimer;
     @Optional float movementModifier = 1.0f;
-    @Optional protected Set<ResourceLocation> ammo = new HashSet<>(List.of(new ResourceLocation(Ntgl.MOD_ID, "round10mm")));
+    @Optional protected LinkedHashSet<ResourceLocation> ammo = new LinkedHashSet<>(List.of(new ResourceLocation(Ntgl.MOD_ID, "round10mm")));
 
     @Override
     public CompoundTag serializeNBT() {
@@ -283,7 +283,7 @@ public class General implements INBTSerializable<CompoundTag> {
         general.spread = this.spread;
         general.oneTimeCharge = this.oneTimeCharge;
         general.movementModifier = this.movementModifier;
-        general.ammo = new HashSet<>(this.ammo);
+        general.ammo = new LinkedHashSet<>(this.ammo);
         return general;
     }
 
