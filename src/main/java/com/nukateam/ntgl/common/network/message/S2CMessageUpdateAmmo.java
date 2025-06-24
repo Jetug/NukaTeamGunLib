@@ -18,8 +18,7 @@ import org.apache.commons.lang3.Validate;
 public class S2CMessageUpdateAmmo extends PlayMessage<S2CMessageUpdateAmmo> {
     private ImmutableMap<ResourceLocation, Ammo> registeredGuns;
 
-    public S2CMessageUpdateAmmo() {
-    }
+    public S2CMessageUpdateAmmo() {}
 
     @Override
     public void encode(S2CMessageUpdateAmmo message, FriendlyByteBuf buffer) {

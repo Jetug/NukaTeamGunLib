@@ -112,24 +112,6 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
         return false;
     }
 
-    /**
-     * Gets a map of all the registered projectile objects. Note, this is an immutable map.
-     *
-     * @return a map of registered projectile objects
-     */
-    public Map<ResourceLocation, Ammo> getRegisteredAmmo() {
-        return this.registeredAmmo;
-    }
-
-    /**
-     * Gets a list of all the projectile registered on the client side. Note, this is an immutable list.
-     *
-     * @return a map of projectile registered on the client
-     */
-    public static List<IAmmo> getClientRegisteredAmmo() {
-        return ImmutableList.copyOf(clientRegisteredAmmo);
-    }
-
     @SubscribeEvent
     public static void onServerStopped(ServerStoppedEvent event) {
         NetworkAmmoManager.instance = null;
