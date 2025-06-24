@@ -18,12 +18,6 @@ public class Sounds{
         this.gun = gun;
     }
 
-    @Nullable
-    private ResourceLocation createSound(CompoundTag tag, String key) {
-        var sound = tag.getString(key);
-        return sound.isEmpty() ? null : ResourceLocation.parse(sound);
-    }
-
     /**
      * @return The registry id of the sound event when firing this weapon
      */
