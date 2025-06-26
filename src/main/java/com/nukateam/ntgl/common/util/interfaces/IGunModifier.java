@@ -287,4 +287,12 @@ public interface IGunModifier {
     default int modifyMaxFuel(int max, FuelType type, GunData data) {
         return max;
     }
+
+    default int modifyMeleeDuration(int time, GunData data) {
+        return time;
+    }
+
+    default int modifyMeleeDelay(int time, GunData data) {
+        return time;
+    }
 }

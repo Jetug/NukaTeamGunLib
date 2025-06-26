@@ -196,5 +196,6 @@
   "ntgl.chat.open_curseforge_page": "Open CurseForge Page",
   "ntgl.chat.install_configured": "Install %s to access config options",
 
-  "gui.ntgl.marker.tomb": "Here lies %s"
+  "gui.ntgl.marker.tomb": "Here lies %s",
+  "key.ntgl.melee": "Melee Attack"
 }

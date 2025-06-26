@@ -26,6 +26,7 @@ public class PacketHandler {
                 .registerPlayMessage(C2SMessageShooting.class, MessageDirection.PLAY_SERVER_BOUND)
                 .registerPlayMessage(C2SMessagePreFireSound.class, MessageDirection.PLAY_SERVER_BOUND)
                 .registerPlayMessage(S2CMessageHandAction.class, MessageDirection.PLAY_SERVER_BOUND)
+                .registerPlayMessage(S2CMessageMeleeAttack.class, MessageDirection.PLAY_SERVER_BOUND)
 
                 .registerPlayMessage(S2CMessageEntityDeath.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageEntityDeathFx.class, MessageDirection.PLAY_CLIENT_BOUND)
@@ -44,7 +45,6 @@ public class PacketHandler {
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_ammo_manager"), NetworkAmmoManager.LoginData::new);
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_attachment_manager"), NetworkAttachmentManager.LoginData::new);
-
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
     }
 }

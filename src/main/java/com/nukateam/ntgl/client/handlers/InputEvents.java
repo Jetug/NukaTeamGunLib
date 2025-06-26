@@ -25,7 +25,7 @@ import static com.nukateam.ntgl.client.util.handler.ShootingHandler.isInGame;
 public class InputEvents {
 
     @SubscribeEvent
-    public static void onKeyPressed(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
         handleKeys();
         handleDebugKeys();
     }
@@ -57,6 +57,9 @@ public class InputEvents {
         }
         if(KeyBinds.KEY_AMMO_SELECT.consumeClick()){
             ClientActions.switchAmmo(hand, player);
+        }
+        if(KeyBinds.KEY_MELEE.consumeClick()){
+            ClientActions.meleeAttack(player);
         }
     }
 

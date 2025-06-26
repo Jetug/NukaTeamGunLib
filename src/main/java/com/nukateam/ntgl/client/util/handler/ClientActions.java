@@ -5,6 +5,7 @@ import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageHandAction;
+import com.nukateam.ntgl.common.network.message.S2CMessageMeleeAttack;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 
@@ -28,6 +29,12 @@ public class ClientActions {
     public static void switchAmmo(InteractionHand hand, LocalPlayer player) {
         if (!getReloadKey(hand).getValue(player)) {
             PacketHandler.getPlayChannel().sendToServer(new S2CMessageHandAction(hand, HandAction.SWITCH_AMMO));
+        }
+    }
+
+    public static void meleeAttack(LocalPlayer player) {
+        if(player.getMainHandItem().getItem() instanceof GunItem){
+            PacketHandler.getPlayChannel().sendToServer(new S2CMessageMeleeAttack());
         }
     }
 }

@@ -59,6 +59,7 @@ import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
     protected General general = new General();
+    protected Melee melee = new Melee();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected Display display = new Display();
     protected Modules modules = new Modules();
@@ -101,6 +102,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public General getGeneral() {
         return this.general;
+    }
+
+    public Melee getMelee() {
+        return this.melee;
     }
 
     public Sounds getSounds() {
@@ -149,6 +154,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.put("General", this.general.serializeNBT());
+        tag.put("Melee", this.melee.serializeNBT());
         tag.put("Sounds", NbtUtils.serializeStringMap(this.sounds));
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
@@ -162,6 +168,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public void deserializeNBT(CompoundTag tag) {
         if (tag.contains("General", Tag.TAG_COMPOUND)) {
             this.general.deserializeNBT(tag.getCompound("General"));
+        }
+        if (tag.contains("Melee", Tag.TAG_COMPOUND)) {
+            this.melee.deserializeNBT(tag.getCompound("Melee"));
         }
         if (tag.contains("Sounds", Tag.TAG_COMPOUND)) {
             this.sounds = deserializeSounds(tag.getCompound("Sounds"));
@@ -187,6 +196,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         var gson = new Gson();
         var object = new JsonObject();
         object.add("general", this.general.toJsonObject());
+        GunJsonUtil.addObjectIfNotEmpty(object,"melee", this.melee.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object,"sounds", gson.toJsonTree(this).getAsJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modules", this.modules.toJsonObject());
@@ -239,6 +249,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public Gun copy() {
         var gun = new Gun();
         gun.general = this.general.copy();
+        gun.melee = this.melee.copy();
         gun.sounds = (HashMap<String, ResourceLocation>)    this.sounds.clone();
         gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
         gun.projectiles = (HashMap<ResourceLocation, Ammo>) this.projectiles.clone();

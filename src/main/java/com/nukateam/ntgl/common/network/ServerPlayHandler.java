@@ -403,6 +403,14 @@ public class ServerPlayHandler {
         }
     }
 
+    public static void handleMeleeAttack(S2CMessageMeleeAttack message, ServerPlayer player) {
+        var stack = player.getItemInHand(InteractionHand.MAIN_HAND);
+
+        if(stack.getItem() instanceof GunItem) {
+            ModSyncedDataKeys.MELEE_RIGHT.setValue(player, true);
+        }
+    }
+
     public static void handleFireModeSwitch(ServerPlayer player, ItemStack stack) {
         var data = new GunData(stack, player);
         GunStateHelper.switchFireMode(data);
