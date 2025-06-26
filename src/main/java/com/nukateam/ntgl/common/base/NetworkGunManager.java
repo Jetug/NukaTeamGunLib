@@ -126,7 +126,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
     /**
      * Gets a list of all the guns registered on the client side. Note, this is an immutable list.
      *
-     * @return a map of guns registered on the client
+     * @return a list of guns registered on the client
      */
     public static List<GunItem> getClientRegisteredGuns() {
         return ImmutableList.copyOf(clientRegisteredGuns);

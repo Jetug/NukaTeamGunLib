@@ -6,10 +6,11 @@ import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.util.*;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,9 +22,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 import static com.nukateam.ntgl.common.util.util.LivingEntityUtils.getInteractionHand;
 
@@ -142,35 +141,41 @@ public class MeleeTracker {
     }
 
     // Метод ближней атаки
-    private boolean tryMeleeAttack(LivingEntity player, ItemStack stack) {
+    private boolean tryMeleeAttack(LivingEntity shooter, ItemStack stack) {
         // Параметры атаки
         double reach = 3.0; // Дистанция атаки
         float damage = 6.0F; // Урон
         float knockback = 0.4F; // Отбрасывание
+        int maxTargets = 1;
 
-        // Ищем все сущности в радиусе
-        AABB area = player.getBoundingBox().inflate(reach);
-        List<Entity> entities = player.level().getEntities(player, area);
+        AABB area = shooter.getBoundingBox().inflate(reach);
+        List<Entity> entities = shooter.level().getEntities(shooter, area);
 
-        Entity target = null;
-        double closest = reach * reach; // Квадрат дистанции
-
-        // Выбираем ближайшую цель
+        // Фильтруем только атакуемые цели
+        List<LivingEntity> targets = new ArrayList<>();
         for(Entity entity : entities) {
-            if(entity.isAttackable() && !entity.isAlliedTo(player)) {
-                double distanceSq = player.distanceToSqr(entity);
-
-                if(distanceSq < closest) {
-                    target = entity;
-                    closest = distanceSq;
-                }
+            if(entity instanceof LivingEntity living && entity.isAttackable() && !entity.isAlliedTo(shooter)) {
+                targets.add(living);
             }
         }
 
-        // Если цель найдена - атакуем
-        if(target != null) {
-            performMeleeAttack(player, target, damage, knockback);
-            stack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
+        // Сортируем по расстоянию (ближайшие первые)
+        targets.sort(Comparator.comparingDouble(e -> shooter.distanceToSqr(e)));
+
+        // Ограничиваем количество целей если нужно
+        if(maxTargets > 0 && targets.size() > maxTargets) {
+            targets = targets.subList(0, maxTargets);
+        }
+
+        if(!targets.isEmpty()) {
+            // Атакуем все подходящие цели
+            for(LivingEntity target : targets) {
+                performMeleeAttack(shooter, target, damage, knockback);
+            }
+
+            playAttackSound(shooter);
+            spawnAttackParticles(shooter, targets);
+
             return true;
         }
         return false;
@@ -200,6 +205,45 @@ public class MeleeTracker {
                 0.8F,
                 0.9F + shooter.getRandom().nextFloat() * 0.2F
         );
+    }
+
+    private void playAttackSound(LivingEntity shooter) {
+        shooter.level().playSound(
+                null,
+                shooter.getX(), shooter.getY(), shooter.getZ(),
+                SoundEvents.PLAYER_ATTACK_SWEEP,
+                SoundSource.PLAYERS,
+                0.8F,
+                0.9F + shooter.getRandom().nextFloat() * 0.2F
+        );
+    }
+
+    private void spawnAttackParticles(LivingEntity shooter, List<LivingEntity> targets) {
+        if(shooter.level() instanceof ServerLevel serverLevel) {
+            // Эффекты вокруг игрока
+            serverLevel.sendParticles(
+                    ParticleTypes.SWEEP_ATTACK,
+                    shooter.getX(),
+                    shooter.getY() + 1.0,
+                    shooter.getZ(),
+                    5,
+                    0.5, 0.5, 0.5,
+                    0.0
+            );
+
+            // Эффекты на каждой цели
+            for(LivingEntity target : targets) {
+                serverLevel.sendParticles(
+                        ParticleTypes.CRIT,
+                        target.getX(),
+                        target.getY() + target.getBbHeight() / 2,
+                        target.getZ(),
+                        8,
+                        0.1, 0.1, 0.1,
+                        0.2
+                );
+            }
+        }
     }
 
     private static void resetTracker(MeleeTracker tracker, GunData data) {

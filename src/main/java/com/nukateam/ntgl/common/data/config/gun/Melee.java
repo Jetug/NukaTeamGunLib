@@ -22,6 +22,8 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
     private int delay = 0;
     private int distance = 0;
     private int knockback = 0;
+    private int maxTargets = 0;
+    private int attackRadius = 0;
 
     @Override
     public CompoundTag serializeNBT() {
