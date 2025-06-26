@@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -40,6 +41,12 @@ public class MeleeTracker {
     public int meleeTick;
     public int attackDelay;
     public boolean isEnd = false;
+
+    private final float meleeDamage = 6;
+    private final float knockback = 0.2f;
+    private final double attackDistance = 3;
+    private final double attackAngle = 180;
+    private final int maxTargets = 6;
 
     private MeleeTracker(LivingEntity entity, HumanoidArm arm) {
         this.startTick = entity.tickCount;
@@ -140,71 +147,86 @@ public class MeleeTracker {
         }
     }
 
-    // Метод ближней атаки
-    private boolean tryMeleeAttack(LivingEntity shooter, ItemStack stack) {
-        // Параметры атаки
-        double reach = 3.0; // Дистанция атаки
-        float damage = 6.0F; // Урон
-        float knockback = 0.4F; // Отбрасывание
-        int maxTargets = 1;
+    private boolean tryMeleeAttack(LivingEntity player, ItemStack stack) {
+        // Получаем все сущности в радиусе атаки
+        AABB area = player.getBoundingBox().inflate(attackDistance);
+        List<Entity> entities = player.level().getEntities(player, area);
 
-        AABB area = shooter.getBoundingBox().inflate(reach);
-        List<Entity> entities = shooter.level().getEntities(shooter, area);
-
-        // Фильтруем только атакуемые цели
         List<LivingEntity> targets = new ArrayList<>();
+        double coneAngleCos = Math.cos(Math.toRadians(attackAngle / 2)); // Косинус половины угла
+
         for(Entity entity : entities) {
-            if(entity instanceof LivingEntity living && entity.isAttackable() && !entity.isAlliedTo(shooter)) {
-                targets.add(living);
+            if(entity instanceof LivingEntity living &&
+                    entity.isAttackable() &&
+                    !entity.isAlliedTo(player)) {
+
+                // Проверяем дистанцию
+                double distanceSq = player.distanceToSqr(entity);
+                if(distanceSq > attackDistance * attackDistance) continue;
+
+                // Проверяем нахождение в конусе атаки
+                if(isInAttackCone(player, entity, coneAngleCos)) {
+                    targets.add(living);
+                }
             }
         }
 
-        // Сортируем по расстоянию (ближайшие первые)
-        targets.sort(Comparator.comparingDouble(e -> shooter.distanceToSqr(e)));
+        // Сортируем по расстоянию (ближе -> дальше)
+        targets.sort(Comparator.comparingDouble(e -> player.distanceToSqr(e)));
 
-        // Ограничиваем количество целей если нужно
+        // Ограничиваем количество целей
         if(maxTargets > 0 && targets.size() > maxTargets) {
             targets = targets.subList(0, maxTargets);
         }
 
         if(!targets.isEmpty()) {
-            // Атакуем все подходящие цели
             for(LivingEntity target : targets) {
-                performMeleeAttack(shooter, target, damage, knockback);
+                performMeleeAttack(player, target);
             }
 
-            playAttackSound(shooter);
-            spawnAttackParticles(shooter, targets);
+            playAttackSound(player);
+            spawnAttackEffects(player, targets);
 
             return true;
         }
         return false;
     }
 
+    // Проверка нахождения сущности в конусе атаки
+    private boolean isInAttackCone(LivingEntity player, Entity target, double coneAngleCos) {
+        // Вектор от игрока к цели
+        Vec3 toTarget = new Vec3(
+                target.getX() - player.getX(),
+                0,
+                target.getZ() - player.getZ()
+        ).normalize();
+
+        // Вектор взгляда игрока (только горизонтальная составляющая)
+        Vec3 lookVec = player.getLookAngle();
+        lookVec = new Vec3(lookVec.x, 0, lookVec.z).normalize();
+
+        // Косинус угла между вектором взгляда и направлением на цель
+        double dotProduct = toTarget.dot(lookVec);
+
+        // Если косинус угла больше порогового - цель в конусе
+        return dotProduct >= coneAngleCos;
+    }
+
     // Нанесение урона
-    private void performMeleeAttack(LivingEntity shooter, Entity target, float damage, float knockback) {
+    private void performMeleeAttack(LivingEntity shooter, Entity target) {
         if(shooter instanceof Player player) {
-            target.hurt(shooter.damageSources().playerAttack(player), damage);
+            target.hurt(shooter.damageSources().playerAttack(player), meleeDamage);
         }
-        else target.hurt(shooter.damageSources().mobAttack(shooter), damage);
+        else target.hurt(shooter.damageSources().mobAttack(shooter), meleeDamage);
 
-        // Добавляем отбрасывание
-        if(target instanceof LivingEntity livingTarget) {
-            livingTarget.knockback(
-                    knockback,
-                    shooter.getX() - target.getX(),
-                    shooter.getZ() - target.getZ()
-            );
-        }
+        Vec3 knockbackVec = new Vec3(
+                target.getX() - shooter.getX(),
+                0,
+                target.getZ() - shooter.getZ()
+        ).normalize().scale(knockback);
 
-        shooter.level().playSound(
-                null,
-                shooter.getX(), shooter.getY(), shooter.getZ(),
-                SoundEvents.PLAYER_ATTACK_STRONG,
-                SoundSource.PLAYERS,
-                0.8F,
-                0.9F + shooter.getRandom().nextFloat() * 0.2F
-        );
+        target.push(knockbackVec.x, knockbackVec.y + 0.2, knockbackVec.z);
+        target.hurtMarked = true;
     }
 
     private void playAttackSound(LivingEntity shooter) {
@@ -218,29 +240,30 @@ public class MeleeTracker {
         );
     }
 
-    private void spawnAttackParticles(LivingEntity shooter, List<LivingEntity> targets) {
-        if(shooter.level() instanceof ServerLevel serverLevel) {
-            // Эффекты вокруг игрока
+    private void spawnAttackEffects(LivingEntity player, List<LivingEntity> targets) {
+        if(player.level() instanceof ServerLevel serverLevel) {
+            // Эффекты атаки перед игроком
+            Vec3 lookVec = player.getLookAngle().scale(attackDistance / 2);
             serverLevel.sendParticles(
                     ParticleTypes.SWEEP_ATTACK,
-                    shooter.getX(),
-                    shooter.getY() + 1.0,
-                    shooter.getZ(),
-                    5,
+                    player.getX() + lookVec.x,
+                    player.getY() + 1.0,
+                    player.getZ() + lookVec.z,
+                    10,
                     0.5, 0.5, 0.5,
                     0.0
             );
 
-            // Эффекты на каждой цели
+            // Эффекты на целях
             for(LivingEntity target : targets) {
                 serverLevel.sendParticles(
                         ParticleTypes.CRIT,
                         target.getX(),
                         target.getY() + target.getBbHeight() / 2,
                         target.getZ(),
-                        8,
-                        0.1, 0.1, 0.1,
-                        0.2
+                        5,
+                        0.2, 0.2, 0.2,
+                        0.1
                 );
             }
         }
