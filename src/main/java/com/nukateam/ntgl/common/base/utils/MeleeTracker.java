@@ -11,8 +11,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,51 +21,48 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.*;
 
-import static com.nukateam.ntgl.common.util.util.LivingEntityUtils.getInteractionHand;
-
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class MeleeTracker {
-    private static final Map<LivingEntity, MeleeTracker> TRACKER_MAP = new WeakHashMap<>();
+    private static final Map<LivingEntity, MeleeTracker> TRACKER_MAP = new HashMap<>();
 
     private final int startTick;
     private final LivingEntity shooter;
-    private final HumanoidArm arm;
+    private final InteractionHand arm;
     private final ItemStack stack;
     private final GunItem gunItem;
     private final Gun gun;
 
-    public int meleeTick;
-    public int attackDelay;
-    public boolean isEnd = false;
+    private int duration = 5;
+    private int meleeTick = 5;
+    private int attackDelay = 4;
+    private float meleeDamage = 6;
+    private float knockback = 0.2f;
+    private double attackDistance = 3;
+    private double attackAngle = 180;
+    private int maxTargets = 6;
 
-    private final float meleeDamage = 6;
-    private final float knockback = 0.2f;
-    private final double attackDistance = 3;
-    private final double attackAngle = 180;
-    private final int maxTargets = 6;
-
-    private MeleeTracker(LivingEntity entity, HumanoidArm arm) {
+    private MeleeTracker(LivingEntity entity, InteractionHand arm) {
         this.startTick = entity.tickCount;
         this.arm = arm;
-        this.stack = entity.getItemInHand(getInteractionHand(arm));
+        this.stack = entity.getItemInHand(arm);
         this.gunItem = ((GunItem) stack.getItem());
         this.gun = gunItem.getModifiedGun(stack);
         this.shooter = entity;
 
         var data = new GunData(stack, entity);
-        meleeTick = GunModifierHelper.getMeleeDuration(data);
-        attackDelay = GunModifierHelper.getMeleeDelay(data);
-
-//        var loadingType = GunModifierHelper.getLoadingType(data);
-//        if(loadingType == LoadingType.PER_CARTRIDGE){
-//            ModSyncedDataKeys.RELOAD_START.setValue(entity, true);
-//            meleeTick = GunModifierHelper.getReloadStart(data);
-//            isStart = true;
-//        }
+        this.duration = GunModifierHelper.getMeleeDuration(data);
+        this.meleeTick = duration;
+        this.attackDelay = GunModifierHelper.getMeleeDelay(data);
+        this.meleeDamage = GunModifierHelper.getMeleeDamage(data);
+        this.attackDistance = GunModifierHelper.getMeleeDistance(data);
+        this.attackAngle = GunModifierHelper.getMeleeAngle(data);
+        this.knockback = GunModifierHelper.getMeleeKnockback(data);
+        this.maxTargets = GunModifierHelper.getMeleeMaxTargets(data);
     }
 
     @SubscribeEvent
@@ -73,7 +70,7 @@ public class MeleeTracker {
         try {
             if (event.phase == TickEvent.Phase.START && !event.player.level().isClientSide) {
                 var player = event.player;
-                handTick(player);
+                onEntityTick(player);
             }
         }
         catch (Exception e){
@@ -84,10 +81,10 @@ public class MeleeTracker {
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {
         try {
-            if (event.phase == TickEvent.Phase.START) {
+            if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
                 for (var entity: TRACKER_MAP.keySet()) {
                     if(entity instanceof Player) continue;
-                    handTick(entity);
+                    onEntityTick(entity);
                 }
             }
         }
@@ -105,31 +102,26 @@ public class MeleeTracker {
     }
 
     private boolean isSameWeapon(LivingEntity entity) {
-        if(arm == HumanoidArm.RIGHT)
-            return !this.stack.isEmpty() && entity.getMainHandItem() == this.stack;
-        else return !this.stack.isEmpty() && entity.getOffhandItem() == this.stack;
+        return !this.stack.isEmpty() && entity.getItemInHand(arm) == this.stack;
     }
 
-    private static void handTick(LivingEntity entity) {
+    private static void onEntityTick(LivingEntity entity) {
         if (ModSyncedDataKeys.MELEE_RIGHT.getValue(entity)) {
-            handTick(entity, HumanoidArm.RIGHT);
+            handTick(entity, InteractionHand.MAIN_HAND);
         }
         else if (ModSyncedDataKeys.MELEE_LEFT.getValue(entity)) {
-            handTick(entity, HumanoidArm.LEFT);
+            handTick(entity, InteractionHand.OFF_HAND);
         }
         else if (TRACKER_MAP.containsKey(entity)) {
             TRACKER_MAP.remove(entity);
         }
     }
 
-    private static void handTick(LivingEntity shooter, HumanoidArm arm) {
-        if (addTracker(shooter, arm)) return;
-
+    private static void handTick(LivingEntity shooter, InteractionHand arm) {
         var tracker = TRACKER_MAP.get(shooter);
-        var data = new GunData(tracker.stack, shooter);
         var isSameWeapon = !tracker.isSameWeapon(shooter);
 
-        if (isSameWeapon || (!tracker.isEnd)) {
+        if (isSameWeapon) {
             TRACKER_MAP.remove(shooter);
             var reloadKey = getDataKey(arm);
             reloadKey.setValue(shooter, false);
@@ -138,7 +130,8 @@ public class MeleeTracker {
         if(tracker.meleeTick > 0)
             tracker.meleeTick--;
 
-        if(tracker.meleeTick == tracker.attackDelay){
+        var delay = tracker.duration - tracker.attackDelay;
+        if(tracker.meleeTick == delay){
             tracker.tryMeleeAttack(shooter, tracker.stack);
         }
 
@@ -269,27 +262,25 @@ public class MeleeTracker {
         }
     }
 
-    private static void resetTracker(MeleeTracker tracker, GunData data) {
-        tracker.meleeTick = GunModifierHelper.getReloadTime(data);
-    }
+//    private static void resetTracker(MeleeTracker tracker, GunData data) {
+//        tracker.meleeTick = GunModifierHelper.getReloadTime(data);
+//    }
 
-    public static void startReloading(LivingEntity entity, HumanoidArm arm){
+    public static void start(LivingEntity entity, InteractionHand arm){
         var reloadKey = getDataKey(arm);
         reloadKey.setValue(entity, true);
         addTracker(entity, arm);
     }
 
-    private static SyncedDataKey<LivingEntity, Boolean> getDataKey(HumanoidArm arm) {
-        return arm == HumanoidArm.RIGHT ?
+    private static SyncedDataKey<LivingEntity, Boolean> getDataKey(InteractionHand arm) {
+        return arm == InteractionHand.MAIN_HAND ?
                 ModSyncedDataKeys.MELEE_RIGHT : ModSyncedDataKeys.MELEE_LEFT;
     }
 
-    private static boolean addTracker(LivingEntity entity, HumanoidArm arm) {
+    private static boolean addTracker(LivingEntity entity, InteractionHand arm) {
         var reloadKey = getDataKey(arm);
 
-        var gunItem = arm == HumanoidArm.RIGHT ?
-                entity.getMainHandItem().getItem():
-                entity.getOffhandItem().getItem();
+        var gunItem = entity.getItemInHand(arm).getItem();
 
         if (!TRACKER_MAP.containsKey(entity)) {
             if (!(gunItem instanceof GunItem)) {
@@ -301,9 +292,8 @@ public class MeleeTracker {
         return false;
     }
 
-    private static void stopMelee(LivingEntity entity, HumanoidArm arm) {
+    private static void stopMelee(LivingEntity entity, InteractionHand arm) {
         var dataKey = getDataKey(arm);
-
         TRACKER_MAP.remove(entity);
         dataKey.setValue(entity, false);
     }

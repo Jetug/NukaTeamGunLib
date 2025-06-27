@@ -387,6 +387,42 @@ public class GunModifierHelper {
         return finalTime.get();
     }
 
+    public static int getMeleeMaxTargets(GunData data) {
+        var time = getGun(data.gun).getMelee().getMaxTargets();
+        var finalTime = new AtomicInteger(time);
+        forEachAttachment(data, (modifier -> finalTime.set(modifier.modifyMeleeMaxTargets(finalTime.get(), data))));
+        return finalTime.get();
+    }
+
+    public static float getMeleeDamage(GunData data) {
+        var value = getGun(data.gun).getMelee().getDamage();
+        var finalValue = new AtomicReference<Float>(value);
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMeleeDamage(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+    public static float getMeleeDistance(GunData data) {
+        var value = getGun(data.gun).getMelee().getDistance();
+        var finalValue = new AtomicReference<Float>(value);
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMeleeDistance(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+    public static float getMeleeAngle(GunData data) {
+        var value = getGun(data.gun).getMelee().getAngle();
+        var finalValue = new AtomicReference<Float>(value);
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMeleeAngle(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+
+    public static float getMeleeKnockback(GunData data) {
+        var value = getGun(data.gun).getMelee().getKnockback();
+        var finalValue = new AtomicReference<Float>(value);
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMeleeKnockback(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
     private static void forEachAttachment(GunData data, Consumer<IGunModifier> consumer){
         var gun = data.gun;
         var config = getGun(gun);

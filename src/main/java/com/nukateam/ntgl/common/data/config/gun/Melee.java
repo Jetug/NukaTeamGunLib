@@ -17,13 +17,13 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
-    private float damage = 0;
+    private float damage = 1;
     private int time = 0;
     private int delay = 0;
-    private int distance = 0;
-    private int knockback = 0;
+    private float distance = 1;
+    private float knockback = 0;
     private int maxTargets = 0;
-    private int attackRadius = 0;
+    private float angle = 10;
 
     @Override
     public CompoundTag serializeNBT() {
@@ -31,6 +31,10 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.putFloat("Damage", this.damage);
         tag.putInt("time", this.time);
         tag.putInt("delay", this.delay);
+        tag.putFloat("distance", this.distance);
+        tag.putFloat("attackRadius", this.angle);
+        tag.putFloat("knockback", this.knockback);
+        tag.putInt("maxTargets", this.maxTargets);
         return tag;
     }
 
@@ -45,6 +49,18 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains("delay", Tag.TAG_ANY_NUMERIC)) {
             this.delay = tag.getInt("delay");
         }
+        if (tag.contains("distance", Tag.TAG_ANY_NUMERIC)) {
+            this.distance = tag.getFloat("distance");
+        }
+        if (tag.contains("attackRadius", Tag.TAG_ANY_NUMERIC)) {
+            this.angle = tag.getFloat("attackRadius");
+        }
+        if (tag.contains("knockback", Tag.TAG_ANY_NUMERIC)) {
+            this.knockback = tag.getFloat("knockback");
+        }
+        if (tag.contains("maxTargets", Tag.TAG_ANY_NUMERIC)) {
+            this.maxTargets = tag.getInt("maxTargets");
+        }
     }
 
     public JsonObject toJsonObject() {
@@ -53,6 +69,10 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
         object.addProperty("damage", this.damage);
         object.addProperty("time", this.time);
         object.addProperty("delay", this.delay);
+        object.addProperty("distance", this.distance);
+        object.addProperty("knockback", this.knockback);
+        object.addProperty("maxTargets", this.maxTargets);
+        object.addProperty("attackRadius", this.angle);
         return object;
     }
 
@@ -61,7 +81,10 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
         projectile.damage = this.damage;
         projectile.time = this.time;
         projectile.delay = this.delay;
-
+        projectile.distance = this.distance;
+        projectile.knockback = this.knockback;
+        projectile.maxTargets = this.maxTargets;
+        projectile.angle = this.angle;
         return projectile;
     }
 
@@ -79,6 +102,22 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public int getDelay() {
         return delay;
+    }
+
+    public float getDistance() {
+        return distance;
+    }
+
+    public float getKnockback() {
+        return knockback;
+    }
+
+    public int getMaxTargets() {
+        return maxTargets;
+    }
+
+    public float getAngle() {
+        return angle;
     }
 
     @Override
@@ -128,6 +167,26 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         public Melee.Builder setDamage(ResourceLocation id, float damage) {
             this.projectile.damage = damage;
+            return this;
+        }
+
+        public Melee.Builder setDistance(float distance) {
+            this.projectile.distance = distance;
+            return this;
+        }
+
+        public Melee.Builder setKnockback(float knockback) {
+            this.projectile.knockback = knockback;
+            return this;
+        }
+
+        public Melee.Builder setMaxTargets(int maxTargets) {
+            this.projectile.maxTargets = maxTargets;
+            return this;
+        }
+
+        public Melee.Builder setAttackRadius(float attackRadius) {
+            this.projectile.angle = attackRadius;
             return this;
         }
     }

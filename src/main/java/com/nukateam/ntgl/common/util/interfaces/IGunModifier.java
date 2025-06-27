@@ -9,7 +9,6 @@ import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
 import com.nukateam.ntgl.common.util.util.GunData;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 /**
@@ -294,5 +293,25 @@ public interface IGunModifier {
 
     default int modifyMeleeDelay(int time, GunData data) {
         return time;
+    }
+
+    default float modifyMeleeDamage (float value, GunData data) {
+        return value;
+    }
+
+    default float modifyMeleeDistance (float value, GunData data) {
+        return value;
+    }
+
+    default float modifyMeleeAngle(float value, GunData data) {
+        return value;
+    }
+
+    default float modifyMeleeKnockback(float value, GunData data) {
+        return value;
+    }
+
+    default int modifyMeleeMaxTargets(int value, GunData data) {
+        return value;
     }
 }

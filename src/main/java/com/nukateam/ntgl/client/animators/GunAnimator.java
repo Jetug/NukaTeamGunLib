@@ -58,6 +58,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected GunItem currentGun = null;
     protected int rate;
     protected int equipTime;
+    protected int meleeDuration;
     protected int fireDelay;
 
     public GunAnimator(ItemDisplayContext transformType, DynamicGeoItemRenderer<GunAnimator> renderer) {
@@ -105,6 +106,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         var data = getGunData();
         this.rate = GunModifierHelper.getRate(data);
         this.equipTime = GunModifierHelper.getEquipTime(data);
+        this.meleeDuration = GunModifierHelper.getMeleeDuration(data);
         this.fireDelay = GunModifierHelper.getFireDelay(data);
 
         setupCycledAnimations();
@@ -144,25 +146,28 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             try {
                 var controller = event.getController();
                 controller.setAnimationSpeed(1);
-                var entity = getEntity();
+                var shooter = getEntity();
                 var holdAnimation = getHoldAnimation(event);
 
                 if (!isHandTransform(transformType))
                     return event.setAndContinue(holdAnimation);
 
-                var isShooting = shootingHandler.isShooting(entity, arm);
+                var isShooting = shootingHandler.isShooting(shooter, arm);
                 var data = shootingHandler.getShootingData(arm);
                 var animation = begin();
 
-                if(equipTime > 0 && entity instanceof Player player && EquipTracker.isEquiping(player, getArm())) {
+                if(equipTime > 0 && shooter instanceof Player player && EquipTracker.isEquiping(player, getArm())) {
                     animation = getEquipAnimation(event);
+                }
+                else if(ClientMeleeHandler.isDoingMelee(shooter, arm)){
+                    animation = getMeleeAnimation(event);
                 } else if (fireDelay > 0 && data.fireTimer > 0 && fireDelay != data.fireTimer) {
                     animation = getChargingAnimation(event, data);
-                } else if (reloadHandler.isReloading(entity, arm) && isFirstPerson(transformType)) {
+                } else if (reloadHandler.isReloading(shooter, arm) && isFirstPerson(transformType)) {
                     animation = getReloadingAnimation(event);
                 } else if (isShooting) {
                     animation = getShootingAnimation(event);
-                } else if (reloadHandler.isReloading(entity, arm.getOpposite()) && isFirstPerson(transformType)) {
+                } else if (reloadHandler.isReloading(shooter, arm.getOpposite()) && isFirstPerson(transformType)) {
                     animation = getHideAnimation();
                 } else if (ClientHandler.getInspectionTicks(getArm()) > 0) {
                     animation = getInspectionAnimation(event);
@@ -237,6 +242,11 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return animation;
     }
 
+    protected RawAnimation getMeleeAnimation(AnimationState<GunAnimator> event) {
+        var animation = playGunAnim(MELEE, LOOP);
+        animationHelper.syncAnimation(event, MELEE, meleeDuration);
+        return animation;
+    }
     protected RawAnimation getEquipAnimation(AnimationState<GunAnimator> event) {
         var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);
         animationHelper.syncAnimation(event, EQUIP, equipTime);

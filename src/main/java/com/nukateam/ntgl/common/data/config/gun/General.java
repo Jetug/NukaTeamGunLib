@@ -76,6 +76,7 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional float spread;
     @Optional int fireTimer;
     @Optional float movementModifier = 1.0f;
+    @Optional boolean melee = false;
     @Optional protected LinkedHashSet<ResourceLocation> ammo = new LinkedHashSet<>(List.of(new ResourceLocation(Ntgl.MOD_ID, "round10mm")));
 
     @Override

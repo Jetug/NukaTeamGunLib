@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.network;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.base.utils.MeleeTracker;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.base.utils.ShootTracker;
@@ -407,7 +408,8 @@ public class ServerPlayHandler {
         var stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
         if(stack.getItem() instanceof GunItem) {
-            ModSyncedDataKeys.MELEE_RIGHT.setValue(player, true);
+            MeleeTracker.start(player, InteractionHand.MAIN_HAND);
+//            ModSyncedDataKeys.MELEE_RIGHT.setValue(player, true);
         }
     }
 
