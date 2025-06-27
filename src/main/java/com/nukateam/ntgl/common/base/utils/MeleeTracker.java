@@ -140,72 +140,123 @@ public class MeleeTracker {
         }
     }
 
-    private boolean tryMeleeAttack(LivingEntity player, ItemStack stack) {
-        // Получаем все сущности в радиусе атаки
-        AABB area = player.getBoundingBox().inflate(attackDistance);
-        List<Entity> entities = player.level().getEntities(player, area);
+    private boolean tryMeleeAttack(LivingEntity shooter, ItemStack stack) {
+        AABB area = shooter.getBoundingBox().inflate(attackDistance);
+        List<Entity> entities = shooter.level().getEntities(shooter, area);
 
         List<LivingEntity> targets = new ArrayList<>();
-        double coneAngleCos = Math.cos(Math.toRadians(attackAngle / 2)); // Косинус половины угла
 
         for(Entity entity : entities) {
             if(entity instanceof LivingEntity living &&
                     entity.isAttackable() &&
-                    !entity.isAlliedTo(player)) {
+                    !entity.isAlliedTo(shooter)) {
 
-                // Проверяем дистанцию
-                double distanceSq = player.distanceToSqr(entity);
-                if(distanceSq > attackDistance * attackDistance) continue;
-
-                // Проверяем нахождение в конусе атаки
-                if(isInAttackCone(player, entity, coneAngleCos)) {
+                if(isHitboxInAttackCone(shooter, living)) {
                     targets.add(living);
                 }
             }
         }
 
-        // Сортируем по расстоянию (ближе -> дальше)
-        targets.sort(Comparator.comparingDouble(e -> player.distanceToSqr(e)));
-
-        // Ограничиваем количество целей
+        targets.sort(Comparator.comparingDouble(e -> shooter.distanceToSqr(e)));
+        Collections.reverse(targets);
         if(maxTargets > 0 && targets.size() > maxTargets) {
             targets = targets.subList(0, maxTargets);
         }
 
         if(!targets.isEmpty()) {
             for(LivingEntity target : targets) {
-                performMeleeAttack(player, target);
+                performMeleeAttack(shooter, target);
             }
 
-            playAttackSound(player);
-            spawnAttackEffects(player, targets);
+            playAttackSound(shooter);
+            spawnAttackEffects(shooter, targets);
 
             return true;
         }
         return false;
     }
 
-    // Проверка нахождения сущности в конусе атаки
+    private boolean isHitboxInAttackCone(LivingEntity player, LivingEntity target) {
+
+        Vec3 playerPos = player.getEyePosition(1.0F);
+
+
+        Vec3 targetCenter = target.getBoundingBox().getCenter();
+        double distanceToCenter = playerPos.distanceTo(targetCenter);
+
+
+        if(distanceToCenter - target.getBbWidth()/2 > attackDistance) {
+            return false;
+        }
+
+
+        Vec3 lookVec = player.getLookAngle();
+        double coneAngleCos = Math.cos(Math.toRadians(attackAngle / 2));
+
+
+        double entityRadius = target.getBbWidth() / 2;
+        double maxAngle = Math.toDegrees(Math.atan2(entityRadius, distanceToCenter));
+        double expandedAngle = attackAngle / 2 + maxAngle;
+        double expandedAngleCos = Math.cos(Math.toRadians(expandedAngle));
+
+
+        Vec3 toCenter = targetCenter.subtract(playerPos).normalize();
+        double centerDot = lookVec.dot(toCenter);
+
+
+        if(centerDot >= expandedAngleCos) {
+            return true;
+        }
+
+
+        if(centerDot >= coneAngleCos - 0.2) {
+            AABB targetBB = target.getBoundingBox();
+            Vec3[] corners = {
+                    new Vec3(targetBB.minX, targetBB.minY, targetBB.minZ),
+                    new Vec3(targetBB.minX, targetBB.minY, targetBB.maxZ),
+                    new Vec3(targetBB.maxX, targetBB.minY, targetBB.minZ),
+                    new Vec3(targetBB.maxX, targetBB.minY, targetBB.maxZ),
+                    new Vec3(targetBB.minX, targetBB.maxY, targetBB.minZ),
+                    new Vec3(targetBB.minX, targetBB.maxY, targetBB.maxZ),
+                    new Vec3(targetBB.maxX, targetBB.maxY, targetBB.minZ),
+                    new Vec3(targetBB.maxX, targetBB.maxY, targetBB.maxZ)
+            };
+
+            for(Vec3 corner : corners) {
+                double distance = playerPos.distanceTo(corner);
+                if(distance > attackDistance) continue;
+
+                Vec3 toCorner = corner.subtract(playerPos).normalize();
+                if(lookVec.dot(toCorner) >= coneAngleCos) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
     private boolean isInAttackCone(LivingEntity player, Entity target, double coneAngleCos) {
-        // Вектор от игрока к цели
+
         Vec3 toTarget = new Vec3(
                 target.getX() - player.getX(),
                 0,
                 target.getZ() - player.getZ()
         ).normalize();
 
-        // Вектор взгляда игрока (только горизонтальная составляющая)
+
         Vec3 lookVec = player.getLookAngle();
         lookVec = new Vec3(lookVec.x, 0, lookVec.z).normalize();
 
-        // Косинус угла между вектором взгляда и направлением на цель
+
         double dotProduct = toTarget.dot(lookVec);
 
-        // Если косинус угла больше порогового - цель в конусе
+
         return dotProduct >= coneAngleCos;
     }
 
-    // Нанесение урона
+
     private void performMeleeAttack(LivingEntity shooter, Entity target) {
         if(shooter instanceof Player player) {
             target.hurt(shooter.damageSources().playerAttack(player), meleeDamage);
@@ -235,7 +286,7 @@ public class MeleeTracker {
 
     private void spawnAttackEffects(LivingEntity player, List<LivingEntity> targets) {
         if(player.level() instanceof ServerLevel serverLevel) {
-            // Эффекты атаки перед игроком
+
             Vec3 lookVec = player.getLookAngle().scale(attackDistance / 2);
             serverLevel.sendParticles(
                     ParticleTypes.SWEEP_ATTACK,
@@ -247,7 +298,7 @@ public class MeleeTracker {
                     0.0
             );
 
-            // Эффекты на целях
+
             for(LivingEntity target : targets) {
                 serverLevel.sendParticles(
                         ParticleTypes.CRIT,

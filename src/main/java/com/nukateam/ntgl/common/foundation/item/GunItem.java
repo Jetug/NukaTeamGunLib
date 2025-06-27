@@ -137,9 +137,9 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
         addAditionalDamage(tooltip, tagCompound, data);
         addAmmo(tooltip, tagCompound, data);
         addFuel(tooltip, tagCompound, data);
-        //tooltip.add(Component.translatable("info.ntgl.attachment_help", new KeybindComponent("key.ntgl.attachments")
-        // .getString().toUpperCase(Locale.ENGLISH))
-        // .withStyle(ChatFormatting.YELLOW));
+        tooltip.add(Component.translatable("info.ntgl.attachment_help", Component.keybind("key.ntgl.attachments")
+         .getString().toUpperCase(Locale.ENGLISH))
+         .withStyle(ChatFormatting.YELLOW));
     }
 
     private static void addFuel(List<Component> tooltip, CompoundTag tagCompound, GunData gunData) {
