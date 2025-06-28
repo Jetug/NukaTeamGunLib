@@ -24,6 +24,7 @@ import mod.azure.azurelib.core.keyframe.event.SoundKeyframeEvent;
 import mod.azure.azurelib.core.object.PlayState;
 import net.minecraft.client.*;
 import net.minecraft.sounds.*;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -50,7 +51,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected final AnimationController<GunAnimator> MAIN_CONTROLLER;
     protected final AnimationController<GunAnimator> REVOLVER_CONTROLLER;
     protected final AnimationController<GunAnimator> BARREL_CONTROLLER;
-    protected final HumanoidArm arm;
+    protected final InteractionHand arm;
 
     protected Cycler barrelCycler = new Cycler(1, getBarrelAmount());
     protected Cycler chamberCycler = null;
@@ -139,8 +140,8 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return new AnimationController<>(this, name, 0, animate);
     }
 
-    protected HumanoidArm getArm() {
-        return isRightHand(transformType) ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
+    protected InteractionHand getArm() {
+        return isRightHand(transformType) ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
     }
 
     protected AnimationStateHandler<GunAnimator> animate() {
@@ -161,10 +162,10 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 if(equipTime > 0 && shooter instanceof Player player && EquipTracker.isEquiping(player, getArm())) {
                     animation = getEquipAnimation(event);
                 }
-                else if(ClientMeleeHandler.isOnDelay(shooter, PlayerHelper.convertHand(arm)) && TransformUtils.isFirstPerson(transformType)){
+                else if(ClientMeleeHandler.isOnDelay(shooter, arm) && TransformUtils.isFirstPerson(transformType)){
                     animation = getMeleeDelayAnimation(event);
                 }
-                else if(ClientMeleeHandler.isOnCooldown(shooter, PlayerHelper.convertHand(arm)) && TransformUtils.isFirstPerson(transformType)){
+                else if(ClientMeleeHandler.isOnCooldown(shooter, arm) && TransformUtils.isFirstPerson(transformType)){
                     animation = getMeleeCooldownAnimation(event);
                 }
                 else if (fireDelay > 0 && data.fireTimer > 0 && fireDelay != data.fireTimer) {
@@ -176,7 +177,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 else if (isShooting) {
                     animation = getShootingAnimation(event);
                 }
-                else if (reloadHandler.isReloading(shooter, arm.getOpposite()) && isFirstPerson(transformType)) {
+                else if (reloadHandler.isReloading(shooter, PlayerHelper.getOpposite(arm)) && isFirstPerson(transformType)) {
                     animation = getHideAnimation();
                 }
                 else if (ClientHandler.getInspectionTicks(getArm()) > 0) {
@@ -356,9 +357,9 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     protected String getGunAnim(String name){
         var entity = getEntity();
-        var currentItem = entity.getItemInHand(PlayerHelper.convertHand(arm));
-        var oppositeItem = entity.getItemInHand(PlayerHelper.convertHand(arm.getOpposite()));
-        var isOneHanded = isOneHanded(currentItem) && isOneHanded(oppositeItem) || arm == HumanoidArm.LEFT;
+        var currentItem = entity.getItemInHand(arm);
+        var oppositeItem = entity.getItemInHand(PlayerHelper.getOpposite(arm));
+        var isOneHanded = isOneHanded(currentItem) && isOneHanded(oppositeItem) || arm == InteractionHand.OFF_HAND;
         var hasShield = isOneHanded(currentItem) && oppositeItem.getItem() instanceof ShieldItem;
         if ((hasShield || isOneHanded) && animationHelper.hasAnimation(name + Animations.ONE_HAND_SUFFIX))
             return name + Animations.ONE_HAND_SUFFIX;

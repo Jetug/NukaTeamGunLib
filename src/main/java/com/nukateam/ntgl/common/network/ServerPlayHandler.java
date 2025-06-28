@@ -103,7 +103,7 @@ public class ServerPlayHandler {
             var tag = heldItem.getOrCreateTag();
 
             if (modifiedGun != null) {
-                if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, PlayerHelper.convertHand(hand))))
+                if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand)))
                     return;
 
                 /* Updates the yaw and pitch with the clients current yaw and pitch */
@@ -160,7 +160,7 @@ public class ServerPlayHandler {
                     PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(shooter.level(), spawnX, spawnY, spawnZ, radius), messageBulletTrail);
                 }
 
-                MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, PlayerHelper.convertHand(hand)));
+                MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
 
                 if (Config.COMMON.aggroMobs.enabled.get()) {
                     double radius = GunModifierHelper.getModifiedFireSoundRadius(data, Config.COMMON.aggroMobs.unsilencedRange.get());
@@ -407,7 +407,7 @@ public class ServerPlayHandler {
         var gunData = new GunData(stack, player);
         if(stack.getItem() instanceof GunItem
                 && GunModifierHelper.canMelee(gunData)
-                && !EquipTracker.isEquiping(player, HumanoidArm.RIGHT)) {
+                && !EquipTracker.isEquiping(player,InteractionHand.MAIN_HAND)) {
             MeleeTracker.start(player, InteractionHand.MAIN_HAND);
 //            ModSyncedDataKeys.MELEE_RIGHT.setValue(player, true);
         }

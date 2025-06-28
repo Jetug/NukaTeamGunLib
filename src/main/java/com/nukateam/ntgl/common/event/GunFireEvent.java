@@ -15,9 +15,9 @@ import net.minecraftforge.eventbus.api.Cancelable;
  */
 public class GunFireEvent extends LivingEvent {
     private final ItemStack stack;
-    private final HumanoidArm arm;
+    private final InteractionHand arm;
 
-    public GunFireEvent(LivingEntity entity, ItemStack stack, HumanoidArm arm) {
+    public GunFireEvent(LivingEntity entity, ItemStack stack, InteractionHand arm) {
         super(entity);
         this.stack = stack;
         this.arm = arm;
@@ -30,15 +30,9 @@ public class GunFireEvent extends LivingEvent {
         return stack;
     }
 
-    /**
-     * @return The stack the player was holding when firing the gun
-     */
-    public HumanoidArm getArm() {
-        return arm;
-    }
 
     public InteractionHand getHand() {
-        return PlayerHelper.convertHand(arm);
+        return arm;
     }
 
     /**
@@ -55,7 +49,7 @@ public class GunFireEvent extends LivingEvent {
      */
     @Cancelable
     public static class Pre extends GunFireEvent {
-        public Pre(LivingEntity entity, ItemStack stack, HumanoidArm hand) {
+        public Pre(LivingEntity entity, ItemStack stack, InteractionHand hand) {
             super(entity, stack, hand);
         }
     }
@@ -66,7 +60,7 @@ public class GunFireEvent extends LivingEvent {
      * @author Ocelot
      */
     public static class Post extends GunFireEvent {
-        public Post(LivingEntity entity, ItemStack stack, HumanoidArm hand) {
+        public Post(LivingEntity entity, ItemStack stack, InteractionHand hand) {
             super(entity, stack, hand);
         }
     }

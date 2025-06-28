@@ -17,7 +17,6 @@ import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -87,13 +86,13 @@ public class ClientReloadHandler {
 
         if (mainHandItem.getItem() instanceof GunItem
                 && !GunModifierHelper.isWeaponFull(new GunData(mainHandItem, player))
-                && !isReloading(player, HumanoidArm.RIGHT)){
+                && !isReloading(player, InteractionHand.MAIN_HAND)){
             setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
         }
         else if (offhandItem.getItem() instanceof GunItem
                 && GunModifierHelper.canRenderInOffhand(player)
                 && !GunModifierHelper.isWeaponFull(new GunData(offhandItem, player))
-                && !isReloading(player, HumanoidArm.LEFT)){
+                && !isReloading(player, InteractionHand.OFF_HAND)){
             setReloading(!ModSyncedDataKeys.RELOADING_LEFT.getValue(player), InteractionHand.OFF_HAND);
         }
     }
@@ -201,10 +200,10 @@ public class ClientReloadHandler {
         return this.reloadTimer;
     }
 
-    public boolean isReloading(LivingEntity entity, HumanoidArm arm) {
+    public boolean isReloading(LivingEntity entity, InteractionHand arm) {
         return switch (arm) {
-            case RIGHT -> isReloadingRight(entity);
-            case LEFT -> isReloadingLeft(entity);
+            case MAIN_HAND -> isReloadingRight(entity);
+            case OFF_HAND -> isReloadingLeft(entity);
         };
     }
 

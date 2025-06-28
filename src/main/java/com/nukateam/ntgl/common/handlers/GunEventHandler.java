@@ -39,7 +39,7 @@ public class GunEventHandler {
         var heldItem = entity.getItemInHand(event.getHand());
 
         if (heldItem.getItem() instanceof GunItem) {
-            if(event.getEntity() instanceof Player player && EquipTracker.isEquiping(player, event.getArm())){
+            if(event.getEntity() instanceof Player player && EquipTracker.isEquiping(player, event.getHand())){
                 event.setCanceled(true);
             }
 

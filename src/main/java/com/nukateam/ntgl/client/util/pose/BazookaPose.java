@@ -3,6 +3,7 @@ package com.nukateam.ntgl.client.util.pose;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.base.holders.GripType;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -51,7 +52,7 @@ public class BazookaPose extends WeaponPose {
     public void applyHumanoidModelRotation(LivingEntity entity, ModelPart rightArm, ModelPart leftArm, ModelPart head, InteractionHand hand, float aimProgress) {
         if(hand == InteractionHand.OFF_HAND) return;
         if (Config.CLIENT.display.oldAnimations.get()) {
-            boolean right = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT ? hand == InteractionHand.MAIN_HAND : hand == InteractionHand.OFF_HAND;
+            boolean right = PlayerHelper.isRight(hand);
             ModelPart mainArm = right ? rightArm : leftArm;
             ModelPart secondaryArm = right ? leftArm : rightArm;
             mainArm.xRot = (float) Math.toRadians(-90F);

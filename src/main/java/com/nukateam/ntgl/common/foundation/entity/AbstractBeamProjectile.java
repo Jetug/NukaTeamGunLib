@@ -48,7 +48,6 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn,
 								  LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
 		super(entityType, worldIn, shooter, weapon, item, modifiedGun);
-//		this.startVec = new Vec3(this.getX(), this.getY(), this.getZ());
 	}
 
 	@Override
@@ -120,21 +119,6 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		}
 
 		if (raytraceresult != null) {
-//			if (raytraceresult instanceof BlockHitResult blockHitResult &&
-//					blockHitResult.getType() != HitResult.Type.MISS) {
-//				var	blockPos = blockHitResult.getBlockPos();
-//				Vec3 hitVec = blockHitResult.getLocation();
-//
-//				onHitBlock(level.getBlockState(blockPos),
-//						blockPos,
-//						blockHitResult.getDirection(),
-//						hitVec.x, hitVec.y, hitVec.z
-//				);
-//			}
-//			else if(raytraceresult instanceof ExtendedEntityRayTraceResult result){
-//				this.onHitEntity(result.getEntity(), result.getLocation(), startVec, endVec, result.isHeadshot());
-//			}
-
 			this.onHit(raytraceresult, startVec, endVec);
 			var hitVec = raytraceresult.getLocation();
 			distance = (float) startVec.distanceTo(hitVec);
@@ -143,7 +127,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		laserPitch = this.getXRot();
 		laserYaw = this.getYRot();
 		if (distance <= 0) {
-			distance = (float) this.projectile.getSpeed();
+			distance = this.projectile.getSpeed();
 		}
 
 		this.startVec  	= startVec;
@@ -158,7 +142,6 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		this.entityData.set(END_Z  , (float)endVec.z);
 
 		this.entityData.set(DISTANCE  , distance);
-//		this.setPos(endVec);
 	}
 
 	@Override

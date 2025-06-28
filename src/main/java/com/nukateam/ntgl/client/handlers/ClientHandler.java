@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
@@ -118,8 +119,8 @@ public class ClientHandler {
         inspectionTimerRight = INSPECTION_DURATION;
     }
 
-    public static int getInspectionTicks(HumanoidArm arm) {
-        return arm == HumanoidArm.RIGHT ? inspectionTimerRight : inspectionTimerLeft;
+    public static int getInspectionTicks(InteractionHand arm) {
+        return arm == InteractionHand.MAIN_HAND ? inspectionTimerRight : inspectionTimerLeft;
     }
 
     public static boolean isInspecting() {
