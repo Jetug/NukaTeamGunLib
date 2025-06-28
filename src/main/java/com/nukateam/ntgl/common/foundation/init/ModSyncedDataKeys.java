@@ -8,13 +8,11 @@ import com.mrcrayfish.framework.api.FrameworkAPI;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 
 /**
  * Author: MrCrayfish
  */
 public class ModSyncedDataKeys {
-
     public static final SyncedDataKey<LivingEntity, Boolean> AIMING
             = SyncedDataKey.builder(SyncedClassKey.LIVING_ENTITY, Serializers.BOOLEAN)
             .id(ResourceLocation.tryBuild(Ntgl.MOD_ID, "aiming"))
@@ -49,6 +47,12 @@ public class ModSyncedDataKeys {
 
     public static final SyncedDataKey<LivingEntity, Boolean> MELEE_RIGHT  = registerBooleanKey("melee_right" );
     public static final SyncedDataKey<LivingEntity, Boolean> MELEE_LEFT   = registerBooleanKey("melee_left" );
+
+    public static SyncedDataKey<LivingEntity, Boolean> getDoMelee(InteractionHand hand){
+        return hand == InteractionHand.MAIN_HAND ?
+                MELEE_RIGHT :
+                MELEE_LEFT;
+    }
 
     public static SyncedDataKey<LivingEntity, Boolean> getReloadKey(InteractionHand hand){
         return switch (hand){

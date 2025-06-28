@@ -391,7 +391,7 @@ public class ServerPlayHandler {
         MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, gun));
     }
 
-    public static void handleHandAction(S2CMessageHandAction message, ServerPlayer player) {
+    public static void handleHandAction(C2SMessageHandAction message, ServerPlayer player) {
         var stack = player.getItemInHand(message.getHand());
 
         if(stack.getItem() instanceof GunItem) {
@@ -402,7 +402,7 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void handleMeleeAttack(S2CMessageMeleeAttack message, ServerPlayer player) {
+    public static void handleMeleeAttack(C2SMessageMeleeAttack message, ServerPlayer player) {
         var stack = player.getItemInHand(InteractionHand.MAIN_HAND);
         var gunData = new GunData(stack, player);
         if(stack.getItem() instanceof GunItem

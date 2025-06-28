@@ -88,7 +88,6 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
         return projectile;
     }
 
-
     /**
      * @return The damage caused by melee attack
      */

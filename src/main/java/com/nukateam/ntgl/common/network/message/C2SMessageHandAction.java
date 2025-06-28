@@ -7,30 +7,30 @@ import com.nukateam.ntgl.common.network.HandAction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 
-public class S2CMessageHandAction extends PlayMessage<S2CMessageHandAction> {
+public class C2SMessageHandAction extends PlayMessage<C2SMessageHandAction> {
     private InteractionHand hand = InteractionHand.MAIN_HAND;
     private HandAction handAction;
 
-    public S2CMessageHandAction() {}
+    public C2SMessageHandAction() {}
 
-    public S2CMessageHandAction(InteractionHand hand, HandAction handAction) {
+    public C2SMessageHandAction(InteractionHand hand, HandAction handAction) {
         this.hand = hand;
         this.handAction = handAction;
     }
 
     @Override
-    public void encode(S2CMessageHandAction message, FriendlyByteBuf buffer) {
+    public void encode(C2SMessageHandAction message, FriendlyByteBuf buffer) {
         buffer.writeEnum(message.hand);
         buffer.writeEnum(message.handAction);
     }
 
     @Override
-    public S2CMessageHandAction decode(FriendlyByteBuf buffer) {
-        return new S2CMessageHandAction(buffer.readEnum(InteractionHand.class), buffer.readEnum(HandAction.class));
+    public C2SMessageHandAction decode(FriendlyByteBuf buffer) {
+        return new C2SMessageHandAction(buffer.readEnum(InteractionHand.class), buffer.readEnum(HandAction.class));
     }
 
     @Override
-    public void handle(S2CMessageHandAction message, MessageContext context) {
+    public void handle(C2SMessageHandAction message, MessageContext context) {
         context.execute(() -> {
             var player = context.getPlayer();
             if (player != null) {

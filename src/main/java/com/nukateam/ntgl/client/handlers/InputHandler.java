@@ -15,14 +15,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.lwjgl.glfw.GLFW;
 
 import static com.nukateam.ntgl.client.input.KeyBinds.*;
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
 import static com.nukateam.ntgl.client.util.handler.ShootingHandler.isInGame;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
-public class InputEvents {
+public class InputHandler {
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {

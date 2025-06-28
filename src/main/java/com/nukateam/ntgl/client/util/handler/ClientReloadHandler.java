@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.KeyBinds;
+import com.nukateam.ntgl.common.base.utils.MeleeTracker;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.LoadingType;
 import com.nukateam.ntgl.common.util.util.GunData;
@@ -25,6 +26,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.nukateam.ntgl.client.util.handler.ShootingHandler.isInGame;
 
@@ -57,7 +61,7 @@ public class ClientReloadHandler {
 
         this.prevReloadTimer = this.reloadTimer;
 
-        Player player = Minecraft.getInstance().player;
+        var player = Minecraft.getInstance().player;
         if (player != null) {
             if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(player)) {
                 if (this.reloadingSlot != player.getInventory().selected) {
