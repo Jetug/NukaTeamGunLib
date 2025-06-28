@@ -88,7 +88,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     public boolean isRightHand(){
-       return true;
+       return isRightHand;
     }
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level level, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
@@ -149,6 +149,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         compound.put("General", this.general.serializeNBT());
         compound.putDouble("ModifiedGravity", this.modifiedGravity);
         compound.putInt("MaxLife", this.life);
+        compound.putBoolean("IsRightHand", this.isRightHand);
     }
 
     @Override
@@ -159,6 +160,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.general = General.create(compound.getCompound("General"));
         this.modifiedGravity = compound.getDouble("ModifiedGravity");
         this.life = compound.getInt("MaxLife");
+        this.isRightHand = compound.getBoolean("IsRightHand");
     }
 
     @Override
@@ -169,18 +171,18 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         BufferUtil.writeItemStackToBufIgnoreTag(buffer, this.ammo);
         buffer.writeDouble(this.modifiedGravity);
         buffer.writeVarInt(this.life);
+        buffer.writeBoolean(this.isRightHand);
     }
 
     @Override
     public void readSpawnData(FriendlyByteBuf buffer) {
-        this.projectile = new Ammo();
-        this.projectile.deserializeNBT(buffer.readNbt());
-        this.general = new General();
-        this.general.deserializeNBT(buffer.readNbt());
+        this.projectile = Ammo.create(buffer.readNbt());
+        this.general = General.create(buffer.readNbt());
         this.shooterId = buffer.readInt();
         this.ammo = BufferUtil.readItemStackFromBufIgnoreTag(buffer);
         this.modifiedGravity = buffer.readDouble();
         this.life = buffer.readVarInt();
+        this.isRightHand = buffer.readBoolean();
         this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
     }
 
