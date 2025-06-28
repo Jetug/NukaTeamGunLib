@@ -11,7 +11,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -469,7 +468,7 @@ public class General implements INBTSerializable<CompoundTag> {
         return this.oneTimeCharge;
     }
 
-    public boolean isMelee() {
+    public boolean canMelee() {
         return melee;
     }
 

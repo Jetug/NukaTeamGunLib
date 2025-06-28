@@ -191,6 +191,12 @@ public class GunModifierHelper {
         return oneTimeCharge.get();
     }
 
+    public static boolean canMelee(GunData data) {
+        var value = new AtomicBoolean(getGeneral(getGun(data.gun)).canMelee());
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyCanMelee(value.get(), data))));
+        return value.get();
+    }
+
     public static Set<ResourceLocation> getAmmoItems(GunData data) {
         var items = getGeneral(getGun(data.gun)).getAmmo();
         var ammoItem = new AtomicReference<>(items);

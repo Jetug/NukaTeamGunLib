@@ -134,8 +134,7 @@ public class MeleeTracker {
         if(tracker.meleeTick > 0)
             tracker.meleeTick--;
 
-//        var delay = tracker.cooldown - tracker.attackDelay;
-        if(tracker.meleeTick == tracker.attackDelay){
+        if(tracker.meleeTick == tracker.cooldown){
             tracker.tryMeleeAttack(shooter, tracker.stack);
         }
 
@@ -149,7 +148,7 @@ public class MeleeTracker {
         Vec3 lookVec = player.getLookAngle().normalize();
         double coneAngleCos = Math.cos(Math.toRadians(attackAngle / 2));
 
-        // Собираем все подходящие цели с информацией о расстоянии
+
         List<TargetInfo> visibleTargets = new ArrayList<>();
 
         AABB area = player.getBoundingBox().inflate(attackDistance);
@@ -158,25 +157,25 @@ public class MeleeTracker {
                     !entity.isAttackable() ||
                     entity.isAlliedTo(player)) continue;
 
-            // Находим ближайшую точку на хитбоксе сущности к линии взгляда
+
             Vec3 closestPoint = findClosestPointOnHitbox(playerPos, lookVec, living);
             double distance = playerPos.distanceTo(closestPoint);
 
-            // Проверяем что цель в радиусе и конусе атаки
+
             if (distance > attackDistance || !isInAttackCone(playerPos, lookVec, closestPoint, coneAngleCos))
                 continue;
 
-            // Проверяем видимость (нет препятствий)
+
             if (!isVisible(playerPos, closestPoint, player.level()))
                 continue;
 
             visibleTargets.add(new TargetInfo(living, distance, closestPoint));
         }
 
-        // Сортируем по расстоянию (ближние цели первыми)
+
         visibleTargets.sort(Comparator.comparingDouble(t -> t.distance));
 
-        // Выбираем цели с учетом ограничения maxTargets
+
         List<LivingEntity> targetsToAttack = new ArrayList<>();
         int limit = maxTargets > 0 ? maxTargets : Integer.MAX_VALUE;
         for (int i = 0; i < Math.min(limit, visibleTargets.size()); i++) {
@@ -195,17 +194,17 @@ public class MeleeTracker {
         return false;
     }
 
-    // Находит ближайшую точку на хитбоксе к линии взгляда
+
     private Vec3 findClosestPointOnHitbox(Vec3 start, Vec3 direction, LivingEntity target) {
         AABB hitbox = target.getBoundingBox();
 
-        // Проецируем центр хитбокса на линию взгляда
+
         Vec3 center = hitbox.getCenter();
         Vec3 toCenter = center.subtract(start);
         double projectionLength = toCenter.dot(direction);
         Vec3 projectedPoint = start.add(direction.scale(projectionLength));
 
-        // Ограничиваем точку границами хитбокса
+
         double x = Mth.clamp(projectedPoint.x, hitbox.minX, hitbox.maxX);
         double y = Mth.clamp(projectedPoint.y, hitbox.minY, hitbox.maxY);
         double z = Mth.clamp(projectedPoint.z, hitbox.minZ, hitbox.maxZ);
@@ -213,13 +212,13 @@ public class MeleeTracker {
         return new Vec3(x, y, z);
     }
 
-    // Проверка нахождения точки в конусе атаки
+
     private boolean isInAttackCone(Vec3 playerPos, Vec3 lookVec, Vec3 point, double coneAngleCos) {
         Vec3 toPoint = point.subtract(playerPos).normalize();
         return lookVec.dot(toPoint) >= coneAngleCos;
     }
 
-    // Проверка видимости точки
+
     private boolean isVisible(Vec3 start, Vec3 end, Level level) {
         if (level.isClientSide()) return true;
 
@@ -230,7 +229,7 @@ public class MeleeTracker {
         return level.clip(context).getType() == HitResult.Type.MISS;
     }
 
-    // Вспомогательный класс для хранения информации о цели
+
     private static class TargetInfo {
         final LivingEntity entity;
         final double distance;
@@ -242,88 +241,6 @@ public class MeleeTracker {
             this.hitPoint = hitPoint;
         }
     }
-
-
-    private boolean isHitboxInAttackCone(LivingEntity player, LivingEntity target) {
-
-        Vec3 playerPos = player.getEyePosition(1.0F);
-
-
-        Vec3 targetCenter = target.getBoundingBox().getCenter();
-        double distanceToCenter = playerPos.distanceTo(targetCenter);
-
-
-        if(distanceToCenter - target.getBbWidth()/2 > attackDistance) {
-            return false;
-        }
-
-
-        Vec3 lookVec = player.getLookAngle();
-        double coneAngleCos = Math.cos(Math.toRadians(attackAngle / 2));
-
-
-        double entityRadius = target.getBbWidth() / 2;
-        double maxAngle = Math.toDegrees(Math.atan2(entityRadius, distanceToCenter));
-        double expandedAngle = attackAngle / 2 + maxAngle;
-        double expandedAngleCos = Math.cos(Math.toRadians(expandedAngle));
-
-
-        Vec3 toCenter = targetCenter.subtract(playerPos).normalize();
-        double centerDot = lookVec.dot(toCenter);
-
-
-        if(centerDot >= expandedAngleCos) {
-            return true;
-        }
-
-
-        if(centerDot >= coneAngleCos - 0.2) {
-            AABB targetBB = target.getBoundingBox();
-            Vec3[] corners = {
-                    new Vec3(targetBB.minX, targetBB.minY, targetBB.minZ),
-                    new Vec3(targetBB.minX, targetBB.minY, targetBB.maxZ),
-                    new Vec3(targetBB.maxX, targetBB.minY, targetBB.minZ),
-                    new Vec3(targetBB.maxX, targetBB.minY, targetBB.maxZ),
-                    new Vec3(targetBB.minX, targetBB.maxY, targetBB.minZ),
-                    new Vec3(targetBB.minX, targetBB.maxY, targetBB.maxZ),
-                    new Vec3(targetBB.maxX, targetBB.maxY, targetBB.minZ),
-                    new Vec3(targetBB.maxX, targetBB.maxY, targetBB.maxZ)
-            };
-
-            for(Vec3 corner : corners) {
-                double distance = playerPos.distanceTo(corner);
-                if(distance > attackDistance) continue;
-
-                Vec3 toCorner = corner.subtract(playerPos).normalize();
-                if(lookVec.dot(toCorner) >= coneAngleCos) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-
-    private boolean isInAttackCone(LivingEntity player, Entity target, double coneAngleCos) {
-
-        Vec3 toTarget = new Vec3(
-                target.getX() - player.getX(),
-                0,
-                target.getZ() - player.getZ()
-        ).normalize();
-
-
-        Vec3 lookVec = player.getLookAngle();
-        lookVec = new Vec3(lookVec.x, 0, lookVec.z).normalize();
-
-
-        double dotProduct = toTarget.dot(lookVec);
-
-
-        return dotProduct >= coneAngleCos;
-    }
-
 
     private void performMeleeAttack(LivingEntity shooter, Entity target) {
         if(shooter instanceof Player player) {

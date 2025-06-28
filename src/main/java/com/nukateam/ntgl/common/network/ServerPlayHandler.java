@@ -404,8 +404,10 @@ public class ServerPlayHandler {
 
     public static void handleMeleeAttack(S2CMessageMeleeAttack message, ServerPlayer player) {
         var stack = player.getItemInHand(InteractionHand.MAIN_HAND);
-
-        if(stack.getItem() instanceof GunItem && !EquipTracker.isEquiping(player, HumanoidArm.RIGHT)) {
+        var gunData = new GunData(stack, player);
+        if(stack.getItem() instanceof GunItem
+                && GunModifierHelper.canMelee(gunData)
+                && !EquipTracker.isEquiping(player, HumanoidArm.RIGHT)) {
             MeleeTracker.start(player, InteractionHand.MAIN_HAND);
 //            ModSyncedDataKeys.MELEE_RIGHT.setValue(player, true);
         }

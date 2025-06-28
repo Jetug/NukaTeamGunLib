@@ -16,6 +16,7 @@
     "renderHud": true,
     "spread": 2.0,
     "movementModifier": 0.5,
+    "melee": true,
     "ammo": [
       "minecraft:stick"
     ]
@@ -23,7 +24,7 @@
   "melee": {
     "damage": 10,
     "delay": 4,
-    "cooldown": 6,
+    "cooldown": 20,
     "distance": 6,
     "angle": 20,
     "maxTargets": 1,

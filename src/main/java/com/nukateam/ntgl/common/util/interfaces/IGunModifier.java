@@ -243,6 +243,10 @@ public interface IGunModifier {
         return oneTimeCharge;
     }
 
+    default boolean modifyCanMelee(boolean value, GunData data) {
+        return value;
+    }
+
     default Set<ResourceLocation> modifyAmmoItems(Set<ResourceLocation> item, GunData data) {
         return item;
     }
