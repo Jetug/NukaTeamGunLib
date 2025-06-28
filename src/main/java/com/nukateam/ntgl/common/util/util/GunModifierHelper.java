@@ -373,10 +373,10 @@ public class GunModifierHelper {
         return Mth.clamp(chance.get(), 0F, 1F);
     }
 
-    public static int getMeleeDuration(GunData data) {
-        var time = getGun(data.gun).getMelee().getTime();
+    public static int getMeleeCooldown(GunData data) {
+        var time = getGun(data.gun).getMelee().getCooldown();
         var finalTime = new AtomicInteger(time);
-        forEachAttachment(data, (modifier -> finalTime.set(modifier.modifyMeleeDuration(finalTime.get(), data))));
+        forEachAttachment(data, (modifier -> finalTime.set(modifier.modifyMeleeCooldown(finalTime.get(), data))));
         return finalTime.get();
     }
 

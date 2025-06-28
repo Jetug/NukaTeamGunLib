@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 
 public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
     private float damage = 1;
-    private int time = 0;
+    private int cooldown = 0;
     private int delay = 0;
     private float distance = 1;
     private float knockback = 0;
@@ -29,7 +29,7 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.putFloat("Damage", this.damage);
-        tag.putInt("time", this.time);
+        tag.putInt("cooldown", this.cooldown);
         tag.putInt("delay", this.delay);
         tag.putFloat("distance", this.distance);
         tag.putFloat("attackRadius", this.angle);
@@ -43,8 +43,8 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains("Damage", Tag.TAG_ANY_NUMERIC)) {
             this.damage = tag.getFloat("Damage");
         }
-        if (tag.contains("time", Tag.TAG_ANY_NUMERIC)) {
-            this.time = tag.getInt("time");
+        if (tag.contains("cooldown", Tag.TAG_ANY_NUMERIC)) {
+            this.cooldown = tag.getInt("cooldown");
         }
         if (tag.contains("delay", Tag.TAG_ANY_NUMERIC)) {
             this.delay = tag.getInt("delay");
@@ -67,7 +67,7 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
         Preconditions.checkArgument(this.damage >= 0.0F, "Damage must be more than or equal to zero");
         var object = new JsonObject();
         object.addProperty("damage", this.damage);
-        object.addProperty("time", this.time);
+        object.addProperty("cooldown", this.cooldown);
         object.addProperty("delay", this.delay);
         object.addProperty("distance", this.distance);
         object.addProperty("knockback", this.knockback);
@@ -79,7 +79,7 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
     public Melee copy() {
         var projectile = new Melee();
         projectile.damage = this.damage;
-        projectile.time = this.time;
+        projectile.cooldown = this.cooldown;
         projectile.delay = this.delay;
         projectile.distance = this.distance;
         projectile.knockback = this.knockback;
@@ -96,8 +96,8 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.damage;
     }
 
-    public int getTime() {
-        return time;
+    public int getCooldown() {
+        return cooldown;
     }
 
     public int getDelay() {

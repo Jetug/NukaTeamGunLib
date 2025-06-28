@@ -287,7 +287,7 @@ public interface IGunModifier {
         return max;
     }
 
-    default int modifyMeleeDuration(int time, GunData data) {
+    default int modifyMeleeCooldown(int time, GunData data) {
         return time;
     }
 

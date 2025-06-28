@@ -22,8 +22,8 @@
   },
   "melee": {
     "damage": 10,
+    "time": 6,
     "delay": 4,
-    "cooldown": 6,
     "distance": 6,
     "angle": 20,
     "maxTargets": 1,
@@ -46,11 +46,9 @@
     "rust"    : "ntgl:classic10mm_rust"
   },
   "sounds": {
-    "fire": "ntgl:item.pistol10mm.fire",
+    "hit": "ntgl:item.pistol10mm.fire",
     "reload": "ntgl:item.pistol45mm.reload",
-    "cock": "ntgl:item.pistol45mm.cock",
-    "silencedFire": "ntgl:item.pistol10mm.silenced_fire",
-    "enchantedFire": "ntgl:item.pistol10mm.enchanted_fire"
+    "cock": "ntgl:item.pistol45mm.cock"
   },
   "modules": {
     "attachmentScreen": false,

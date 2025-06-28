@@ -18,6 +18,15 @@
       "ntgl:round45"
     ]
   },
+  "melee": {
+    "damage": 5,
+    "delay": 5,
+    "cooldown": 1,
+    "distance": 6,
+    "angle": 180,
+    "maxTargets": 0,
+    "knockback": 0.6
+  },
   "sounds": {
     "fire": "ntgl:item.pistol10mm.fire",
     "reload": "ntgl:item.pistol10mm.reload",

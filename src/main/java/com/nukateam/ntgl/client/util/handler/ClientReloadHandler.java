@@ -34,7 +34,6 @@ import static com.nukateam.ntgl.client.util.handler.ShootingHandler.isInGame;
 public class ClientReloadHandler {
     private static ClientReloadHandler instance;
 
-    private int startReloadTick;
     private int reloadTimer;
     private int prevReloadTimer;
     private int reloadingSlot;
@@ -192,10 +191,6 @@ public class ClientReloadHandler {
 //                this.reloadTimer--;
 //            }
 //        }
-    }
-
-    public int getStartReloadTick() {
-        return this.startReloadTick;
     }
 
     public int getReloadTimer() {

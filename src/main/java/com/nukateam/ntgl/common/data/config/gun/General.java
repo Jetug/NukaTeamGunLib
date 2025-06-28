@@ -43,6 +43,7 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String FIRE_TIMER = "FireTimer";
     public static final String FIRE_MODE = "FireMode";
     public static final String ONE_TIME_CHARGE = "OneTimeCharge";
+    public static final String MELEE = "melee";
     public static final String EQUIP_TIME = "EquipTime";
     public static final String AMMO_PER_SHOT = "AmmoPerShot";
     public static final String RENDER_HUD = "RenderHud";
@@ -110,6 +111,7 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putFloat    (MOVEMENT_MODIFIER, this.movementModifier);
         tag.putBoolean  (ALWAYS_SPREAD, this.alwaysSpread);
         tag.putBoolean  (ONE_TIME_CHARGE, this.oneTimeCharge);
+        tag.putBoolean  (MELEE, this.melee);
         tag.put         (AMMO, NbtUtils.serializeSet(this.ammo));
         return tag;
     }
@@ -191,6 +193,9 @@ public class General implements INBTSerializable<CompoundTag> {
         if (tag.contains(ONE_TIME_CHARGE)) {
             this.oneTimeCharge = tag.getBoolean(ONE_TIME_CHARGE);
         }
+        if (tag.contains(MELEE)) {
+            this.melee = tag.getBoolean(MELEE);
+        }
         if (tag.contains(ALWAYS_SPREAD)) {
             this.alwaysSpread = tag.getBoolean(ALWAYS_SPREAD);
         }
@@ -245,6 +250,7 @@ public class General implements INBTSerializable<CompoundTag> {
         if (this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
         object.addProperty("alwaysSpread", this.alwaysSpread);
         object.addProperty("oneTimeCharge", this.oneTimeCharge);
+        object.addProperty("melee", this.melee);
         if (this.movementModifier != 1.0F) object.addProperty("movementModifier", true);
         if (this.spread != 0.0F) object.addProperty("spread", this.spread);
 //            object.add("", new JsonArray());
@@ -283,6 +289,7 @@ public class General implements INBTSerializable<CompoundTag> {
         general.alwaysSpread = this.alwaysSpread;
         general.spread = this.spread;
         general.oneTimeCharge = this.oneTimeCharge;
+        general.melee = this.melee;
         general.movementModifier = this.movementModifier;
         general.ammo = new LinkedHashSet<>(this.ammo);
         return general;
@@ -460,6 +467,10 @@ public class General implements INBTSerializable<CompoundTag> {
 
     public boolean isOneTimeCharge() {
         return this.oneTimeCharge;
+    }
+
+    public boolean isMelee() {
+        return melee;
     }
 
     /**

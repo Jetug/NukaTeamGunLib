@@ -4,6 +4,7 @@ public class Animations {
     public static final String SHOT = "shot";
     public static final String EQUIP = "equip";
     public static final String MELEE = "melee";
+    public static final String MELEE_END = "melee_end";
     public static final String RELOAD = "reload";
     public static final String HOLD = "hold";
     public static final String RELOAD_START = "reload_start";

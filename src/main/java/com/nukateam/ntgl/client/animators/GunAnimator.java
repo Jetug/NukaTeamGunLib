@@ -58,7 +58,8 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected GunItem currentGun = null;
     protected int rate;
     protected int equipTime;
-    protected int meleeDuration;
+    protected int meleeDelay;
+    protected int meleeCooldown;
     protected int fireDelay;
 
     public GunAnimator(ItemDisplayContext transformType, DynamicGeoItemRenderer<GunAnimator> renderer) {
@@ -106,7 +107,8 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         var data = getGunData();
         this.rate = GunModifierHelper.getRate(data);
         this.equipTime = GunModifierHelper.getEquipTime(data);
-        this.meleeDuration = GunModifierHelper.getMeleeDuration(data);
+        this.meleeDelay = GunModifierHelper.getMeleeDelay(data);
+        this.meleeCooldown = GunModifierHelper.getMeleeCooldown(data);
         this.fireDelay = GunModifierHelper.getFireDelay(data);
 
         setupCycledAnimations();
@@ -158,8 +160,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
                 if(equipTime > 0 && shooter instanceof Player player && EquipTracker.isEquiping(player, getArm())) {
                     animation = getEquipAnimation(event);
-                }
-                else if(ClientMeleeHandler.isDoingMelee(shooter, arm)){
+                } else if(ClientMeleeHandler.isDoingMelee(shooter, arm) && TransformUtils.isFirstPerson(transformType)){
                     animation = getMeleeAnimation(event);
                 } else if (fireDelay > 0 && data.fireTimer > 0 && fireDelay != data.fireTimer) {
                     animation = getChargingAnimation(event, data);
@@ -243,9 +244,18 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected RawAnimation getMeleeAnimation(AnimationState<GunAnimator> event) {
-        var animation = playGunAnim(MELEE, LOOP);
-        animationHelper.syncAnimation(event, MELEE, meleeDuration);
-        return animation;
+        if(animationHelper.hasAnimation(MELEE_END)){
+            var animation = begin()
+                    .then(getGunAnim(MELEE), PLAY_ONCE)
+                    .then(getGunAnim(MELEE_END), LOOP);
+            animationHelper.syncAnimation(event, meleeDelay + meleeCooldown, MELEE, MELEE_END);
+            return animation;
+        }
+        else {
+            var animation = begin().then(getGunAnim(MELEE), HOLD_ON_LAST_FRAME);
+            animationHelper.syncAnimation(event, MELEE, meleeDelay);
+            return animation;
+        }
     }
     protected RawAnimation getEquipAnimation(AnimationState<GunAnimator> event) {
         var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);

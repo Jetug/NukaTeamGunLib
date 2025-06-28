@@ -3,11 +3,8 @@ package com.nukateam.ntgl.common.network;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.utils.MeleeTracker;
+import com.nukateam.ntgl.common.base.utils.*;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.base.utils.ProjectileManager;
-import com.nukateam.ntgl.common.base.utils.ShootTracker;
-import com.nukateam.ntgl.common.base.utils.SpreadTracker;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
@@ -45,6 +42,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -407,7 +405,7 @@ public class ServerPlayHandler {
     public static void handleMeleeAttack(S2CMessageMeleeAttack message, ServerPlayer player) {
         var stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-        if(stack.getItem() instanceof GunItem) {
+        if(stack.getItem() instanceof GunItem && !EquipTracker.isEquiping(player, HumanoidArm.RIGHT)) {
             MeleeTracker.start(player, InteractionHand.MAIN_HAND);
 //            ModSyncedDataKeys.MELEE_RIGHT.setValue(player, true);
         }
