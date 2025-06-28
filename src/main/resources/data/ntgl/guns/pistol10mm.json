@@ -13,6 +13,7 @@
     "recoilAdsReduction": 0.25,
     "alwaysSpread": true,
     "spread": 1.0,
+    "melee": true,
     "ammo": [
       "ntgl:round10mm",
       "ntgl:round45"

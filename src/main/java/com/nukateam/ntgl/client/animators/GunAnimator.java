@@ -160,19 +160,29 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
                 if(equipTime > 0 && shooter instanceof Player player && EquipTracker.isEquiping(player, getArm())) {
                     animation = getEquipAnimation(event);
-                } else if(ClientMeleeHandler.isDoingMelee(shooter, arm) && TransformUtils.isFirstPerson(transformType)){
-                    animation = getMeleeAnimation(event);
-                } else if (fireDelay > 0 && data.fireTimer > 0 && fireDelay != data.fireTimer) {
+                }
+                else if(ClientMeleeHandler.isOnDelay(shooter, PlayerHelper.convertHand(arm)) && TransformUtils.isFirstPerson(transformType)){
+                    animation = getMeleeDelayAnimation(event);
+                }
+                else if(ClientMeleeHandler.isOnCooldown(shooter, PlayerHelper.convertHand(arm)) && TransformUtils.isFirstPerson(transformType)){
+                    animation = getMeleeCooldownAnimation(event);
+                }
+                else if (fireDelay > 0 && data.fireTimer > 0 && fireDelay != data.fireTimer) {
                     animation = getChargingAnimation(event, data);
-                } else if (reloadHandler.isReloading(shooter, arm) && isFirstPerson(transformType)) {
+                }
+                else if (reloadHandler.isReloading(shooter, arm) && isFirstPerson(transformType)) {
                     animation = getReloadingAnimation(event);
-                } else if (isShooting) {
+                }
+                else if (isShooting) {
                     animation = getShootingAnimation(event);
-                } else if (reloadHandler.isReloading(shooter, arm.getOpposite()) && isFirstPerson(transformType)) {
+                }
+                else if (reloadHandler.isReloading(shooter, arm.getOpposite()) && isFirstPerson(transformType)) {
                     animation = getHideAnimation();
-                } else if (ClientHandler.getInspectionTicks(getArm()) > 0) {
+                }
+                else if (ClientHandler.getInspectionTicks(getArm()) > 0) {
                     animation = getInspectionAnimation(event);
-                } else {
+                }
+                else {
                     if (currentGun == getGunItem())
                         animation = holdAnimation;
                     else {
@@ -243,27 +253,35 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return animation;
     }
 
-    protected RawAnimation getMeleeAnimation(AnimationState<GunAnimator> event) {
-        if(animationHelper.hasAnimation(MELEE_END)){
-            var animation = begin()
-                    .then(getGunAnim(MELEE), PLAY_ONCE)
-                    .then(getGunAnim(MELEE_END), LOOP);
-            animationHelper.syncAnimation(event, meleeDelay + meleeCooldown, MELEE, MELEE_END);
-            return animation;
-        }
-        else {
-            var animation = begin().then(getGunAnim(MELEE), HOLD_ON_LAST_FRAME);
-            animationHelper.syncAnimation(event, MELEE, meleeDelay);
-            return animation;
-        }
-    }
-
-//    protected RawAnimation getMeleeDelayAnimation(AnimationState<GunAnimator> event) {
-//
-//            var animation = playGunAnim(MELEE, LOOP);
+//    protected RawAnimation getMeleeAnimation(AnimationState<GunAnimator> event) {
+//        if(animationHelper.hasAnimation(MELEE_END)){
+//            var animation = begin()
+//                    .then(getGunAnim(MELEE), PLAY_ONCE)
+//                    .then(getGunAnim(MELEE_END), LOOP);
+//            animationHelper.syncAnimation(event, meleeDelay + meleeCooldown, MELEE, MELEE_END);
+//            return animation;
+//        }
+//        else {
+//            var animation = begin().then(getGunAnim(MELEE), HOLD_ON_LAST_FRAME);
 //            animationHelper.syncAnimation(event, MELEE, meleeDelay);
 //            return animation;
+//        }
 //    }
+
+    protected RawAnimation getMeleeDelayAnimation(AnimationState<GunAnimator> event) {
+        var animation = playGunAnim(MELEE, LOOP);
+        animationHelper.syncAnimation(event, MELEE, meleeDelay);
+        return animation;
+    }
+
+    protected RawAnimation getMeleeCooldownAnimation(AnimationState<GunAnimator> event) {
+        if(!animationHelper.hasAnimation(MELEE_END))
+            return getHoldAnimation(event);
+
+        var animation = playGunAnim(MELEE_END, LOOP);
+        animationHelper.syncAnimation(event, MELEE_END, meleeCooldown);
+        return animation;
+    }
 
     protected RawAnimation getEquipAnimation(AnimationState<GunAnimator> event) {
         var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);

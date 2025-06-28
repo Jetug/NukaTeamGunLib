@@ -94,10 +94,12 @@ public class ClientMeleeHandler {
     }
 
     public static boolean isOnDelay(LivingEntity shooter, InteractionHand hand){
-        return TRACKER_MAP.get(Pair.of(shooter, hand)).meleeTick > 0;
+        var key = Pair.of(shooter, hand);
+        return TRACKER_MAP.containsKey(key) && TRACKER_MAP.get(key).meleeTick > 0;
     }
 
     public static boolean isOnCooldown(LivingEntity shooter, InteractionHand hand){
-        return TRACKER_MAP.get(Pair.of(shooter, hand)).cooldownTick > 0;
+        var key = Pair.of(shooter, hand);
+        return TRACKER_MAP.containsKey(key) && TRACKER_MAP.get(key).cooldownTick > 0;
     }
 }
