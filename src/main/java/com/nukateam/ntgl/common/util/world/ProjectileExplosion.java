@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.util.world;
 
 import com.google.common.collect.Sets;
+import com.nukateam.ntgl.common.data.config.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.Projectile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -40,7 +41,7 @@ public class ProjectileExplosion extends Explosion {
 
     public ProjectileExplosion(Level world, Entity exploder,
                                @Nullable DamageSource source,
-                               @Nullable ExplosionDamageCalculator context, Projectile projectile,
+                               @Nullable ExplosionDamageCalculator context, ExplosionConfig projectile,
                                Vec3 pos, float size, boolean causesFire, BlockInteraction mode) {
         super(world, exploder, source, context, pos.x, pos.y, pos.z, size, causesFire, mode);
         this.world = world;

@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.data.config;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.base.holders.AmmoType;
 import com.nukateam.ntgl.common.base.holders.ProjectileType;
@@ -8,12 +9,14 @@ import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
+import com.nukateam.ntgl.common.util.util.GunJsonUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.level.Explosion;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
@@ -27,7 +30,6 @@ import static com.nukateam.ntgl.common.data.config.gun.General.SPREAD;
 
 public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
     private float damage = 1;
-    private float explosionDamage = 0;
     private float size;
     @Optional private float speed = 20;
     private int life = 20;
@@ -37,14 +39,13 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Optional private boolean visible;
     @Optional private boolean gravity;
     @Optional private boolean damageReduceOverLife;
-    @Optional private boolean damageReduceOverDistance = true;
-    @Optional private boolean causeFire = false;
-    @Optional private float explosionRadius;
     @Optional private boolean magazineMode;
     @Optional private int trailColor = 0xFFD289;
     @Optional private double trailLengthMultiplier = 1.0;
     @Optional int projectileAmount = 1;
     @Optional float spread;
+    @Optional
+    ExplosionConfig explosion = new ExplosionConfig();
 
     @Override
     public CompoundTag serializeNBT() {
@@ -53,7 +54,6 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.putString("Projectile", this.projectile.toString());
         tag.putString("DamageType", this.damageType.location().toString());
         tag.putFloat("Damage", this.damage);
-        tag.putFloat("ExplosionDamage", this.explosionDamage);
         tag.putBoolean("Visible", this.visible);
         tag.putFloat("Size", this.size);
         tag.putFloat("Speed", this.speed);
@@ -65,9 +65,7 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
         tag.putInt(PROJECTILE_AMOUNT, this.projectileAmount);
         tag.putFloat(SPREAD, this.spread);
-        tag.putBoolean("DamageReduceOverDistance", this.damageReduceOverDistance);
-        tag.putBoolean("CauseFire", this.causeFire);
-        tag.putFloat("ExplosionRadius", this.explosionRadius);
+        tag.put("explosion", this.explosion.serializeNBT());
         return tag;
     }
 
@@ -81,9 +79,6 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
         if (tag.contains("Damage", Tag.TAG_ANY_NUMERIC)) {
             this.damage = tag.getFloat("Damage");
-        }
-        if (tag.contains("ExplosionDamage", Tag.TAG_ANY_NUMERIC)) {
-            this.explosionDamage = tag.getFloat("ExplosionDamage");
         }
         if (tag.contains("Size", Tag.TAG_ANY_NUMERIC)) {
             this.size = tag.getFloat("Size");
@@ -121,14 +116,8 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains(SPREAD, Tag.TAG_ANY_NUMERIC)) {
             this.spread = tag.getFloat(SPREAD);
         }
-        if (tag.contains("DamageReduceOverDistance", Tag.TAG_ANY_NUMERIC)) {
-            this.damageReduceOverDistance = tag.getBoolean("DamageReduceOverDistance");
-        }
-        if (tag.contains("CauseFire", Tag.TAG_ANY_NUMERIC)) {
-            this.causeFire = tag.getBoolean("CauseFire");
-        }
-        if (tag.contains("ExplosionRadius", Tag.TAG_ANY_NUMERIC)) {
-            this.explosionRadius = tag.getFloat("ExplosionRadius");
+        if (tag.contains("explosion", Tag.TAG_COMPOUND)) {
+            this.explosion = ExplosionConfig.create(tag.getCompound("explosion"));
         }
     }
 
@@ -145,17 +134,14 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         if (this.visible) object.addProperty("visible", true);
         object.addProperty("damage", this.damage);
-        object.addProperty("explosionDamage", this.explosionDamage);
         object.addProperty("size", this.size);
         object.addProperty("speed", this.speed);
         object.addProperty("life", this.life);
         object.addProperty("type", this.type.toString());
         object.addProperty("projectile", this.projectile.toString());
         object.addProperty("damageType", this.damageType.location().toString());
-        if (this.damageReduceOverDistance) object.addProperty("damageReduceOverDistance", true);
+        GunJsonUtil.addObjectIfNotEmpty(object,"explosion", this.explosion.toJsonObject());
 
-        object.addProperty("causeFire", causeFire);
-        if (this.explosionRadius > 0) object.addProperty("explosionRadius", this.explosionRadius);
         if (this.gravity) object.addProperty("gravity", true);
         object.addProperty("damageReduceOverLife", this.damageReduceOverLife);
         object.addProperty("magazineMode", this.magazineMode);
@@ -170,7 +156,6 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
         var projectile = new Projectile();
         projectile.visible = this.visible;
         projectile.damage = this.damage;
-        projectile.explosionDamage = this.explosionDamage;
         projectile.size = this.size;
         projectile.speed = this.speed;
         projectile.life = this.life;
@@ -184,10 +169,12 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
         projectile.damageType = this.damageType;
         projectile.projectileAmount = this.projectileAmount;
         projectile.spread = this.spread;
-        projectile.damageReduceOverDistance = this.damageReduceOverDistance;
-        projectile.causeFire = this.causeFire;
-        projectile.explosionRadius = this.explosionRadius;
+        projectile.explosion = this.explosion;
         return projectile;
+    }
+
+    public ExplosionConfig getExplosion() {
+        return explosion;
     }
 
     /**
@@ -202,10 +189,6 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
      */
     public float getDamage() {
         return this.damage;
-    }
-
-    public float getExplosionDamage() {
-        return this.explosionDamage;
     }
 
     /**
@@ -275,21 +258,6 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
      */
     public float getSpread() {
         return this.spread;
-    }
-
-    public boolean isDamageReduceOverDistance() {
-        return this.damageReduceOverDistance;
-    }
-
-    public boolean isCauseFire() {
-        return causeFire;
-    }
-
-    /**
-     * @return The radius of explosion caused by this projectile (0 if no explosion)
-     */
-    public float getExplosionRadius() {
-        return this.explosionRadius;
     }
 
     public AmmoType getType() {

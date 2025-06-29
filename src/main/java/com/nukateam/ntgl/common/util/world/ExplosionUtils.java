@@ -1,7 +1,8 @@
 package com.nukateam.ntgl.common.util.world;
 
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.ExplosionConfig;
+import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.util.interfaces.IExplosionDamageable;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
@@ -18,22 +19,27 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 public class ExplosionUtils {
     /**
      * Creates a projectile explosion for the specified entity.
      *
-     * @param entity    The entity to explode
+     * @param entity The entity to explode
      */
-    public void createExplosion(Entity entity, Projectile projectile) {
+    public void createExplosion(Entity entity, ExplosionConfig config) {
         var world = entity.level();
         if (world.isClientSide())
             return;
 
-//        var source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
-//        var mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
-        var explosion = new ProjectileExplosion(world, entity, source, null, projectile, entity.position(), radius, false, mode);
+        var source = entity instanceof ProjectileEntity projectileEntity ? entity.damageSources().explosion(entity, projectileEntity.getShooter()) : null;
+        var mode = config.isDestroyBlocks() && Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() ?
+                Explosion.BlockInteraction.DESTROY :
+                Explosion.BlockInteraction.KEEP;
+
+        var explosion = new ProjectileExplosion(world,
+                entity, source, null,
+                config, entity.position(),
+                config.getRadius(), config.isCauseFire(), mode);
 
         if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
             return;
@@ -57,7 +63,7 @@ public class ExplosionUtils {
 
         for (ServerPlayer player : ((ServerLevel) world).players()) {
             if (player.distanceToSqr(entity.getX(), entity.getY(), entity.getZ()) < 4096) {
-                player.connection.send(new ClientboundExplodePacket(entity.getX(), entity.getY(), entity.getZ(), radius, explosion.getToBlow(), explosion.getHitPlayers().get(player)));
+                player.connection.send(new ClientboundExplodePacket(entity.getX(), entity.getY(), entity.getZ(), config.getRadius(), explosion.getToBlow(), explosion.getHitPlayers().get(player)));
             }
         }
     }
