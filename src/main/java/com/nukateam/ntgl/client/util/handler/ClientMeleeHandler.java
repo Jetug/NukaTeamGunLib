@@ -87,12 +87,6 @@ public class ClientMeleeHandler {
         TRACKER_MAP.remove(Pair.of(entity, arm));
     }
 
-    public static boolean isDoingMelee(LivingEntity shooter, HumanoidArm arm) {
-        return arm == HumanoidArm.RIGHT ?
-                ModSyncedDataKeys.MELEE_RIGHT.getValue(shooter) :
-                ModSyncedDataKeys.MELEE_LEFT.getValue(shooter);
-    }
-
     public static boolean isOnDelay(LivingEntity shooter, InteractionHand hand){
         var key = Pair.of(shooter, hand);
         return TRACKER_MAP.containsKey(key) && TRACKER_MAP.get(key).meleeTick > 0;
