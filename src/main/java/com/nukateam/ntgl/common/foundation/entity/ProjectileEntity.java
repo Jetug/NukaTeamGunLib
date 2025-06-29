@@ -552,48 +552,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.xRotO = this.getXRot();
     }
 
-    /**
-     * Creates a projectile explosion for the specified entity.
-     *
-     * @param entity    The entity to explode
-     * @param radius    The amount of radius the entity should deal
-     * @param forceNone If true, forces the explosion mode to be NONE instead of config value
-     */
-    public static void createExplosion(Entity entity, float radius, boolean forceNone) {
-        var world = entity.level();
-        if (world.isClientSide())
-            return;
 
-        var source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
-        var mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
-        var explosion = new ProjectileExplosion(world, entity, source, null, entity.position(), radius, false, mode);
-
-        if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
-            return;
-
-        // Do explosion logic
-        explosion.explode();
-        explosion.finalizeExplosion(true);
-
-        // Send event to blocks that are exploded (none if mode is none)
-        explosion.getToBlow().forEach(pos ->
-        {
-            if (world.getBlockState(pos).getBlock() instanceof IExplosionDamageable) {
-                ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
-            }
-        });
-
-        // Clears the affected blocks if mode is none
-        if (!explosion.interactsWithBlocks()) {
-            explosion.clearToBlow();
-        }
-
-        for (ServerPlayer player : ((ServerLevel) world).players()) {
-            if (player.distanceToSqr(entity.getX(), entity.getY(), entity.getZ()) < 4096) {
-                player.connection.send(new ClientboundExplodePacket(entity.getX(), entity.getY(), entity.getZ(), radius, explosion.getToBlow(), explosion.getHitPlayers().get(player)));
-            }
-        }
-    }
 
     public static void createFireExplosion(Entity entity, float radius, boolean forceNone) {
         Level world = entity.level();

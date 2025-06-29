@@ -1,8 +1,12 @@
 package com.nukateam.ntgl.common.util.world;
 
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.util.interfaces.IExplosionDamageable;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -17,6 +21,47 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ExplosionUtils {
+    /**
+     * Creates a projectile explosion for the specified entity.
+     *
+     * @param entity    The entity to explode
+     */
+    public void createExplosion(Entity entity, Projectile projectile) {
+        var world = entity.level();
+        if (world.isClientSide())
+            return;
+
+//        var source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
+//        var mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
+        var explosion = new ProjectileExplosion(world, entity, source, null, projectile, entity.position(), radius, false, mode);
+
+        if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
+            return;
+
+        // Do explosion logic
+        explosion.explode();
+        explosion.finalizeExplosion(true);
+
+        // Send event to blocks that are exploded (none if mode is none)
+        explosion.getToBlow().forEach(pos ->
+        {
+            if (world.getBlockState(pos).getBlock() instanceof IExplosionDamageable) {
+                ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
+            }
+        });
+
+        // Clears the affected blocks if mode is none
+        if (!explosion.interactsWithBlocks()) {
+            explosion.clearToBlow();
+        }
+
+        for (ServerPlayer player : ((ServerLevel) world).players()) {
+            if (player.distanceToSqr(entity.getX(), entity.getY(), entity.getZ()) < 4096) {
+                player.connection.send(new ClientboundExplodePacket(entity.getX(), entity.getY(), entity.getZ(), radius, explosion.getToBlow(), explosion.getHitPlayers().get(player)));
+            }
+        }
+    }
+
     public static void createCustomExplosion(
             Level level,
             Vec3 pos,

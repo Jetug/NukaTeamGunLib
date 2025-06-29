@@ -59,7 +59,7 @@ import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
     protected General general = new General();
-    protected Melee melee = new Melee();
+    protected MeleeGeneral melee = new MeleeGeneral();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected Display display = new Display();
     protected Modules modules = new Modules();
@@ -104,7 +104,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.general;
     }
 
-    public Melee getMelee() {
+    public MeleeGeneral getMelee() {
         return this.melee;
     }
 

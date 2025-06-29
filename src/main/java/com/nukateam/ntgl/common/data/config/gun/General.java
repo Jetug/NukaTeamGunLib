@@ -300,7 +300,6 @@ public class General implements INBTSerializable<CompoundTag> {
         return general;
     }
 
-
     public Set<ResourceLocation> getAmmo() {
         return this.ammo;
     }

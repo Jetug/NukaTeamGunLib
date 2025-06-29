@@ -16,7 +16,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class MeleeGeneral implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String DAMAGE = "Damage";
     public static final String COOLDOWN = "cooldown";
     public static final String DELAY = "delay";
@@ -84,8 +84,8 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
         return object;
     }
 
-    public Melee copy() {
-        var projectile = new Melee();
+    public MeleeGeneral copy() {
+        var projectile = new MeleeGeneral();
         projectile.damage = this.damage;
         projectile.cooldown = this.cooldown;
         projectile.delay = this.delay;
@@ -127,6 +127,12 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
         return angle;
     }
 
+    public static MeleeGeneral create(CompoundTag tag) {
+        var general = new MeleeGeneral();
+        general.deserializeNBT(tag);
+        return general;
+    }
+
     @Override
     public Component getEditorLabel() {
         return Component.literal("Projectile");
@@ -150,49 +156,49 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static class Builder {
-        private final Melee projectile;
+        private final MeleeGeneral projectile;
 
         private Builder() {
-            this.projectile = new Melee();
+            this.projectile = new MeleeGeneral();
         }
 
-        private Builder(Melee projectile) {
+        private Builder(MeleeGeneral projectile) {
             this.projectile = projectile.copy();
         }
 
-        public static Melee.Builder create() {
-            return new Melee.Builder();
+        public static MeleeGeneral.Builder create() {
+            return new MeleeGeneral.Builder();
         }
 
-        public static Melee.Builder create(Melee projectile) {
-            return new Melee.Builder(projectile);
+        public static MeleeGeneral.Builder create(MeleeGeneral projectile) {
+            return new MeleeGeneral.Builder(projectile);
         }
 
-        public Melee build() {
+        public MeleeGeneral build() {
             return this.projectile.copy(); //Copy since the builder could be used again
         }
 
-        public Melee.Builder setDamage(ResourceLocation id, float damage) {
+        public MeleeGeneral.Builder setDamage(ResourceLocation id, float damage) {
             this.projectile.damage = damage;
             return this;
         }
 
-        public Melee.Builder setDistance(float distance) {
+        public MeleeGeneral.Builder setDistance(float distance) {
             this.projectile.distance = distance;
             return this;
         }
 
-        public Melee.Builder setKnockback(float knockback) {
+        public MeleeGeneral.Builder setKnockback(float knockback) {
             this.projectile.knockback = knockback;
             return this;
         }
 
-        public Melee.Builder setMaxTargets(int maxTargets) {
+        public MeleeGeneral.Builder setMaxTargets(int maxTargets) {
             this.projectile.maxTargets = maxTargets;
             return this;
         }
 
-        public Melee.Builder setAttackRadius(float attackRadius) {
+        public MeleeGeneral.Builder setAttackRadius(float attackRadius) {
             this.projectile.angle = attackRadius;
             return this;
         }
