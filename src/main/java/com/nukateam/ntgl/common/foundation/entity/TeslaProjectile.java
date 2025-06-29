@@ -67,15 +67,13 @@ public class TeslaProjectile extends AbstractBeamProjectile {
                 source.getY() + source.getEyeHeight() * 0.5f,
                 source.getZ());
 
-        Vec3 src = position();
-        Vec3 tgt = new Vec3(target.getX(), target.getY() + target.getEyeHeight() * 0.5f, target.getZ());
-        Vec3 dir = tgt.subtract(src).normalize();
+        var src = position();
+        var tgt = new Vec3(target.getX(), target.getY() + target.getEyeHeight() * 0.5f, target.getZ());
+        var dir = tgt.subtract(src).normalize();
 
         this.distance = (float) src.distanceTo(tgt);
         this.laserPitch = (float) (Math.asin(-dir.y) * R2D);
         this.laserYaw = (float) (Math.atan2(dir.x, dir.z) * R2D);
-
-        //System.out.printf("pitch : %.3f,  yaw : %.3f,  distance : %.3f\n", laserPitch, laserYaw, distance);
 
         this.setXRot(laserPitch);
         this.setYRot(laserYaw);
@@ -88,7 +86,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
         trace();
 
         if (distance <= 0) {
-            distance = (float) projectile.getSpeed();
+            distance = projectile.getSpeed();
         }
     }
 

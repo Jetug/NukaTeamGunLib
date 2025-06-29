@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
+import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
 import com.nukateam.ntgl.common.util.interfaces.*;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
@@ -102,7 +103,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
         this.modifiedGravity = projectile.isGravity() ? GunModifierHelper.getModifiedProjectileGravity(data, -0.04) : 0.0;
         this.life = GunModifierHelper.getModifiedProjectileLife(data, this.projectile.getLife());
-        this.isRightHand = shooter.getItemInHand(InteractionHand.MAIN_HAND) == weapon;
+        var hand = shooter.getMainHandItem() == weapon ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        this.isRightHand = PlayerHelper.isRight(hand); //shooter.getItemInHand(InteractionHand.MAIN_HAND) == weapon;
         this.ammo = setupAmmo(data);
 
         /* Get speed and set motion */

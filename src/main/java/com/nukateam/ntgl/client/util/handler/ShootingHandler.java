@@ -44,10 +44,10 @@ public class ShootingHandler {
     private static ShootingHandler instance;
     public static float shootMsGap = 0F;
 
-    private final HashMap<Pair<HumanoidArm, LivingEntity>, Integer> entityShootGaps = new HashMap<>();
-    private final Map<HumanoidArm, ShootingData> shootingData = Map.of(
-            HumanoidArm.RIGHT, new ShootingData(0, null),
-            HumanoidArm.LEFT, new ShootingData(0, null)
+    private final HashMap<Pair<InteractionHand, LivingEntity>, Integer> entityShootGaps = new HashMap<>();
+    private final Map<InteractionHand, ShootingData> shootingData = Map.of(
+            InteractionHand.MAIN_HAND, new ShootingData(0, null),
+            InteractionHand.OFF_HAND, new ShootingData(0, null)
     );
 
     private boolean shooting;
@@ -89,17 +89,17 @@ public class ShootingHandler {
         if (heldItem.getItem() instanceof GunItem gunItem) {
             if (event.getAction() == GLFW.GLFW_PRESS) {
                 if (isRightHand) {
-                    setupShootingData(heldItem, player, HumanoidArm.RIGHT);
+                    setupShootingData(heldItem, player, InteractionHand.MAIN_HAND);
                 }
                 if (isLeftHand) {
-                    setupShootingData(heldItem, player, HumanoidArm.LEFT);
+                    setupShootingData(heldItem, player, InteractionHand.OFF_HAND);
                 }
             } else if(event.getAction() == GLFW.GLFW_RELEASE) {
                 if (isRightHand) {
-                    resetShootingData(heldItem, player, HumanoidArm.RIGHT);
+                    resetShootingData(heldItem, player, InteractionHand.MAIN_HAND);
                 }
                 if (isLeftHand) {
-                    resetShootingData(heldItem, player, HumanoidArm.LEFT);
+                    resetShootingData(heldItem, player, InteractionHand.OFF_HAND);
                 }
             }
         }
@@ -120,7 +120,7 @@ public class ShootingHandler {
             var heldItem = player.getMainHandItem();
 
             if (heldItem.getItem() instanceof GunItem) {
-//                setupShootingData(heldItem, gunItem, HumanoidArm.RIGHT);
+//                setupShootingData(heldItem, gunItem, InteractionHand.MAIN_HAND);
                 handleGunInput(event);
             }
         } else if (event.isUseItem()) {
@@ -128,7 +128,7 @@ public class ShootingHandler {
             var offhandItem = player.getOffhandItem();
 
             if (offhandItem.getItem() instanceof GunItem && canRenderInOffhand(player)) {
-//                setupShootingData(offhandItem, gunItem, HumanoidArm.LEFT);
+//                setupShootingData(offhandItem, gunItem, InteractionHand.OFF_HAND);
                 handleGunInput(event);
                 return;
             }
@@ -170,14 +170,14 @@ public class ShootingHandler {
 
         if (mainHandItem.getItem() instanceof GunItem){
             if(isKeyAttackDown())
-                handleAutoFire(player, mainHandItem, HumanoidArm.RIGHT);
-//           else setupShootingData(mainHandItem, gunItem, HumanoidArm.RIGHT);
+                handleAutoFire(player, mainHandItem, InteractionHand.MAIN_HAND);
+//           else setupShootingData(mainHandItem, gunItem, InteractionHand.MAIN_HAND);
         }
 
         if (offhandItem.getItem() instanceof GunItem && canRenderInOffhand(player)){
             if(isUseKeyDown())
-                handleAutoFire(player, offhandItem, HumanoidArm.LEFT);
-//            else setupShootingData(mainHandItem, gunItem, HumanoidArm.LEFT);
+                handleAutoFire(player, offhandItem, InteractionHand.OFF_HAND);
+//            else setupShootingData(mainHandItem, gunItem, InteractionHand.OFF_HAND);
         }
     }
 
@@ -227,16 +227,12 @@ public class ShootingHandler {
         }
     }
 
-    public ShootingData getShootingData(HumanoidArm arm){
+    public ShootingData getShootingData(InteractionHand arm){
         return shootingData.get(arm);
     }
 
-    public boolean isOnCooldown(LivingEntity entity, HumanoidArm arm){
+    public boolean isOnCooldown(LivingEntity entity, InteractionHand arm){
         return getCooldown(entity, arm) > 0;
-    }
-
-    public int getCooldown(LivingEntity entity, InteractionHand hand) {
-        return getCooldown(entity, convertHand(hand));
     }
 
     public float getCooldownPercent(LivingEntity entity, InteractionHand hand) {
@@ -245,21 +241,21 @@ public class ShootingHandler {
         if (heldItem.getItem() instanceof GunItem gunItem) {
             var data = new GunData(heldItem, entity);
             var rate = GunModifierHelper.getRate(data);
-            var cooldown = getCooldown(entity, convertHand(hand));
+            var cooldown = getCooldown(entity, hand);
             return cooldown / (float)rate;
         }
         return 0;
     }
 
-    public void setCooldown(LivingEntity entity, HumanoidArm arm, int cooldown) {
+    public void setCooldown(LivingEntity entity, InteractionHand arm, int cooldown) {
         entityShootGaps.put(Pair.of(arm, entity), cooldown);
     }
 
-    public int getCooldown(LivingEntity entity, HumanoidArm arm) {
+    public int getCooldown(LivingEntity entity, InteractionHand arm) {
         return entityShootGaps.getOrDefault(Pair.of(arm, entity), 0);
     }
 
-    public boolean isShooting(LivingEntity entity, HumanoidArm arm){
+    public boolean isShooting(LivingEntity entity, InteractionHand arm){
         return getCooldown(entity, arm) > 0;
     }
 
@@ -282,7 +278,7 @@ public class ShootingHandler {
         // CHECK HERE: Restrict the fire rate
 
         var isMainHand = shooter.getMainHandItem() == heldItem;
-        var hand = isMainHand ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
+        var hand = isMainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         var shootGap = entityShootGaps.getOrDefault(Pair.of(hand, shooter), 0);
         var data = shootingData.get(hand);
 
@@ -332,7 +328,7 @@ public class ShootingHandler {
         } );
     }
 
-    private void setupShootingData(ItemStack stack, Player player, HumanoidArm arm) {
+    private void setupShootingData(ItemStack stack, Player player, InteractionHand arm) {
         if(!Gun.hasAmmo(stack)) return;
         var data = shootingData.get(arm);
         var gunData = new GunData(stack, player);
@@ -341,7 +337,7 @@ public class ShootingHandler {
         data.gun = (GunItem) stack.getItem();
     }
 
-    private void resetShootingData(ItemStack stack, Player player, HumanoidArm arm) {
+    private void resetShootingData(ItemStack stack, Player player, InteractionHand arm) {
         var data = shootingData.get(arm);
         var gunData = new GunData(stack, player);
         if(data.fireTimer != 0 && ! GunModifierHelper.needsFullCharge(gunData)){
@@ -352,9 +348,9 @@ public class ShootingHandler {
         data.gun = null;
     }
 
-    private void handleAutoFire(LocalPlayer player, ItemStack heldItem, HumanoidArm arm) {
+    private void handleAutoFire(LocalPlayer player, ItemStack heldItem, InteractionHand arm) {
         var mc = Minecraft.getInstance();
-        var key = arm == HumanoidArm.RIGHT ? mc.options.keyAttack : mc.options.keyUse;
+        var key = arm == InteractionHand.MAIN_HAND ? mc.options.keyAttack : mc.options.keyUse;
         var data = shootingData.get(arm);
         var gunData = new GunData(heldItem, player);
         var fireMode =  GunStateHelper.getFireMode(gunData);
