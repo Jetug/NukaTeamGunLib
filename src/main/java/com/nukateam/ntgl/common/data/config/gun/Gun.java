@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import com.nukateam.ntgl.common.base.holders.*;
@@ -66,7 +66,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     @Ignored
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
-    protected HashMap<ResourceLocation, Ammo> projectiles = new HashMap<>();
+    protected HashMap<ResourceLocation, Projectile> projectiles = new HashMap<>();
     protected HashMap<FuelType, Fuel> fuel = new HashMap<>();
 
     public static boolean isAmmoIgnored(ItemStack stack) {
@@ -88,7 +88,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.put(Tags.ATTACHMENTS, attachmentsTag);
     }
 
-    public HashMap<ResourceLocation, Ammo> getProjectiles() {
+    public HashMap<ResourceLocation, Projectile> getProjectiles() {
         return projectiles;
     }
 
@@ -252,7 +252,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         gun.melee = this.melee.copy();
         gun.sounds = (HashMap<String, ResourceLocation>)    this.sounds.clone();
         gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
-        gun.projectiles = (HashMap<ResourceLocation, Ammo>) this.projectiles.clone();
+        gun.projectiles = (HashMap<ResourceLocation, Projectile>) this.projectiles.clone();
         gun.fuel = (HashMap<FuelType, Fuel>) this.fuel.clone();
         gun.display = this.display.copy();
         gun.modules = this.modules.copy();
@@ -586,7 +586,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return projectiles.containsKey(ammo);
     }
 
-    public Ammo getAmmoConfig(ResourceLocation ammo){
+    public Projectile getAmmoConfig(ResourceLocation ammo){
         return projectiles.get(ammo);
     }
 

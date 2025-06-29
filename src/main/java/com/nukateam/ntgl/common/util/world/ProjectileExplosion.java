@@ -37,14 +37,15 @@ public class ProjectileExplosion extends Explosion {
     private final Entity exploder;
     private final ExplosionDamageCalculator context;
 
-    public ProjectileExplosion(Level world, Entity exploder, @Nullable DamageSource source,
+    public ProjectileExplosion(Level world, Entity exploder,
+                               @Nullable DamageSource source,
                                @Nullable ExplosionDamageCalculator context,
-                               double x, double y, double z, float size, boolean causesFire, BlockInteraction mode) {
-        super(world, exploder, source, context, x, y, z, size, causesFire, mode);
+                               Vec3 pos, float size, boolean causesFire, BlockInteraction mode) {
+        super(world, exploder, source, context, pos.x, pos.y, pos.z, size, causesFire, mode);
         this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.x = pos.x;
+        this.y = pos.y;
+        this.z = pos.z;
         this.size = size;
         this.exploder = exploder;
         this.context = context == null ? DEFAULT_CONTEXT : context;
@@ -52,7 +53,7 @@ public class ProjectileExplosion extends Explosion {
 
     @Override
     public void explode() {
-        Set<BlockPos> set = Sets.newHashSet();
+        var set = Sets.<BlockPos>newHashSet();
 
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
@@ -103,12 +104,12 @@ public class ProjectileExplosion extends Explosion {
         int minZ = Mth.floor(this.z - (double) radius - 1.0D);
         int maxZ = Mth.floor(this.z + (double) radius + 1.0D);
 
-        var entities = this.world.getEntities(this.exploder, new AABB((double) minX, (double) minY, (double) minZ, (double) maxX, (double) maxY, (double) maxZ));
+        var entities = this.world.getEntities(this.exploder, new AABB(minX, minY, minZ, maxX, maxY, maxZ));
 
         ForgeEventFactory.onExplosionDetonate(this.world, this, entities, radius);
 
         var explosionPos = new Vec3(this.x, this.y, this.z);
-        for (Entity entity : entities) {
+        for (var entity : entities) {
             if (entity.ignoreExplosion())
                 continue;
 
@@ -126,7 +127,6 @@ public class ProjectileExplosion extends Explosion {
                 deltaY /= distanceToExplosion;
                 deltaZ /= distanceToExplosion;
             } else {
-                // Fixes an issue where explosion exactly on the player would cause no damage
                 deltaX = 0.0;
                 deltaY = 1.0;
                 deltaZ = 0.0;

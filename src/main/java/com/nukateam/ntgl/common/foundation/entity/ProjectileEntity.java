@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
-import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -69,7 +69,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected LivingEntity shooter;
     protected Gun modifiedGun;
     protected General general;
-    protected Ammo projectile;
+    protected Projectile projectile;
     protected ItemStack weapon = ItemStack.EMPTY;
     protected ItemStack ammo = ItemStack.EMPTY;
     protected float additionalDamage = 0.0F;
@@ -158,7 +158,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void readAdditionalSaveData(CompoundTag compound) {
         this.weapon = ItemStack.of(compound.getCompound("Weapon"));
         this.ammo = ItemStack.of(compound.getCompound("Ammo"));
-        this.projectile = Ammo.create(compound.getCompound("Projectile"));
+        this.projectile = Projectile.create(compound.getCompound("Projectile"));
         this.general = General.create(compound.getCompound("General"));
         this.modifiedGravity = compound.getDouble("ModifiedGravity");
         this.life = compound.getInt("MaxLife");
@@ -178,7 +178,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     @Override
     public void readSpawnData(FriendlyByteBuf buffer) {
-        this.projectile = Ammo.create(buffer.readNbt());
+        this.projectile = Projectile.create(buffer.readNbt());
         this.general = General.create(buffer.readNbt());
         this.shooterId = buffer.readInt();
         this.ammo = BufferUtil.readItemStackFromBufIgnoreTag(buffer);
@@ -238,7 +238,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return projectile.getLife();
     }
 
-    public Ammo getProjectile() {
+    public Projectile getProjectile() {
         return this.projectile;
     }
 
@@ -357,7 +357,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
      * Called when the projectile has run out of it's life. In other words, the projectile managed
      * to not hit any blocks and instead aged. The grenade uses this to explode in the air.
      */
-    protected void onExpired() {}
+    protected void onExpired() {
+        onProjectileDistroy(position());
+    }
 
     protected void doImpactEffects(Vec3 hitVec) {}
 
@@ -514,13 +516,20 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         PacketHandler.getPlayChannel().sendToTracking(() -> entity, new S2CMessageBlood(hitVec.x, hitVec.y, hitVec.z));
 
         doImpactEffects(hitVec);
+        onProjectileDistroy(hitVec);
     }
 
     protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z) {
         PacketHandler.getPlayChannel().sendToTrackingChunk(
                 () -> this.level().getChunkAt(pos),
                 new S2CMessageProjectileHitBlock(x, y, z, pos, face));
-        doImpactEffects(new Vec3(x, y, z));
+        var hitVec = new Vec3(x, y, z);
+        doImpactEffects(hitVec);
+        onProjectileDistroy(hitVec);
+    }
+
+    protected void onProjectileDistroy(Vec3 hitVec) {
+
     }
 
     protected void handleBlockBreaking(BlockPos pos, BlockState state) {
@@ -557,7 +566,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         var source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
         var mode = Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() && !forceNone ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.KEEP;
-        var explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, false, mode);
+        var explosion = new ProjectileExplosion(world, entity, source, null, entity.position(), radius, false, mode);
 
         if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
             return;
@@ -593,15 +602,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         DamageSource source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
         Explosion.BlockInteraction mode = Explosion.BlockInteraction.KEEP;
-        Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.getX(), entity.getY(), entity.getZ(), radius, true, mode);
+        Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.position(), radius, true, mode);
 
         if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
             return;
 
-        // Do explosion logic
         explosion.explode();
         explosion.finalizeExplosion(true);
-
     }
 
     /**

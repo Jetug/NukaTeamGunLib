@@ -4,10 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
-import com.nukateam.ntgl.common.base.utils.loaders.*;
 import com.nukateam.ntgl.common.base.NetworkAmmoManager;
-import com.nukateam.ntgl.common.data.config.Ammo;
-import com.nukateam.ntgl.common.data.config.CustomAmmo;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.Validate;
@@ -16,7 +14,7 @@ import org.apache.commons.lang3.Validate;
  * Author: MrCrayfish
  */
 public class S2CMessageUpdateAmmo extends PlayMessage<S2CMessageUpdateAmmo> {
-    private ImmutableMap<ResourceLocation, Ammo> registeredGuns;
+    private ImmutableMap<ResourceLocation, Projectile> registeredGuns;
 
     public S2CMessageUpdateAmmo() {}
 
@@ -39,7 +37,7 @@ public class S2CMessageUpdateAmmo extends PlayMessage<S2CMessageUpdateAmmo> {
         supplier.setHandled(true);
     }
 
-    public ImmutableMap<ResourceLocation, Ammo> getRegisteredAmmo() {
+    public ImmutableMap<ResourceLocation, Projectile> getRegisteredAmmo() {
         return this.registeredGuns;
     }
 }

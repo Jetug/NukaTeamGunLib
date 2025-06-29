@@ -1,10 +1,9 @@
 package com.nukateam.ntgl.common.base;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAmmo;
@@ -27,21 +26,21 @@ import java.util.*;
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, Ammo>> {
+public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, Projectile>> {
     public static final String PATH = "ammo";
     private static final List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
     private static NetworkAmmoManager instance;
 
-    private Map<ResourceLocation, Ammo> registeredAmmo = new HashMap<>();
+    private Map<ResourceLocation, Projectile> registeredAmmo = new HashMap<>();
 
     @Override
-    protected Map<IAmmo, Ammo> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, Ammo.class, PATH);
+    protected Map<IAmmo, Projectile> prepare(ResourceManager manager, ProfilerFiller profiler) {
+        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, Projectile.class, PATH);
     }
 
     @Override
-    protected void apply(Map<IAmmo, Ammo> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
-        ImmutableMap.Builder<ResourceLocation, Ammo> builder = ImmutableMap.builder();
+    protected void apply(Map<IAmmo, Projectile> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
+        ImmutableMap.Builder<ResourceLocation, Projectile> builder = ImmutableMap.builder();
 
         objects.forEach((item, ammo) -> {
             Validate.notNull(ITEMS.getKey((Item)item));
@@ -71,15 +70,15 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
      * @param buffer a packet buffer get
      * @return a map of registered projectile from the server
      */
-    public static ImmutableMap<ResourceLocation, Ammo> readRegisteredAmmo(FriendlyByteBuf buffer) {
+    public static ImmutableMap<ResourceLocation, Projectile> readRegisteredAmmo(FriendlyByteBuf buffer) {
         var size = buffer.readVarInt();
 
         if (size > 0) {
-            ImmutableMap.Builder<ResourceLocation, Ammo> builder = ImmutableMap.builder();
+            ImmutableMap.Builder<ResourceLocation, Projectile> builder = ImmutableMap.builder();
 
             for (int i = 0; i < size; i++) {
                 var id = buffer.readResourceLocation();
-                var ammo = Ammo.create(buffer.readNbt());
+                var ammo = Projectile.create(buffer.readNbt());
                 builder.put(id, ammo);
             }
             return builder.build();
@@ -96,10 +95,10 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
      *
      * @return true if all registered projectile were able to update their corresponding projectile item
      */
-    private static boolean updateRegisteredAmmo(Map<ResourceLocation, Ammo> registeredAmmo) {
+    private static boolean updateRegisteredAmmo(Map<ResourceLocation, Projectile> registeredAmmo) {
         clientRegisteredAmmo.clear();
         if (registeredAmmo != null) {
-            for (Map.Entry<ResourceLocation, Ammo> entry : registeredAmmo.entrySet()) {
+            for (Map.Entry<ResourceLocation, Projectile> entry : registeredAmmo.entrySet()) {
                 Item item = ITEMS.getValue(entry.getKey());
                 if (!(item instanceof IAmmo)) {
                     return false;
@@ -148,13 +147,13 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
      * Changes to projectile properties should be made through the JSON file.
      */
     public static class Supplier {
-        private Ammo projectile;
+        private Projectile projectile;
 
-        private Supplier(Ammo projectile) {
+        private Supplier(Projectile projectile) {
             this.projectile = projectile;
         }
 
-        public Ammo getAmmo() {
+        public Projectile getAmmo() {
             return this.projectile;
         }
     }

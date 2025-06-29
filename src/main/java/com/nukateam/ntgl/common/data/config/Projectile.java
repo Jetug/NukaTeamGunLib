@@ -25,8 +25,9 @@ import static com.nukateam.ntgl.common.base.utils.json.JsonDeserializers.getDama
 import static com.nukateam.ntgl.common.data.config.gun.General.PROJECTILE_AMOUNT;
 import static com.nukateam.ntgl.common.data.config.gun.General.SPREAD;
 
-public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
     private float damage = 1;
+    private float explosionDamage = 0;
     private float size;
     @Optional private float speed = 20;
     private int life = 20;
@@ -36,6 +37,9 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Optional private boolean visible;
     @Optional private boolean gravity;
     @Optional private boolean damageReduceOverLife;
+    @Optional private boolean damageReduceOverDistance = true;
+    @Optional private boolean causeFire = false;
+    @Optional private float explosionRadius;
     @Optional private boolean magazineMode;
     @Optional private int trailColor = 0xFFD289;
     @Optional private double trailLengthMultiplier = 1.0;
@@ -49,6 +53,7 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.putString("Projectile", this.projectile.toString());
         tag.putString("DamageType", this.damageType.location().toString());
         tag.putFloat("Damage", this.damage);
+        tag.putFloat("ExplosionDamage", this.explosionDamage);
         tag.putBoolean("Visible", this.visible);
         tag.putFloat("Size", this.size);
         tag.putFloat("Speed", this.speed);
@@ -60,6 +65,9 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
         tag.putInt(PROJECTILE_AMOUNT, this.projectileAmount);
         tag.putFloat(SPREAD, this.spread);
+        tag.putBoolean("DamageReduceOverDistance", this.damageReduceOverDistance);
+        tag.putBoolean("CauseFire", this.causeFire);
+        tag.putFloat("ExplosionRadius", this.explosionRadius);
         return tag;
     }
 
@@ -73,6 +81,9 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
         if (tag.contains("Damage", Tag.TAG_ANY_NUMERIC)) {
             this.damage = tag.getFloat("Damage");
+        }
+        if (tag.contains("ExplosionDamage", Tag.TAG_ANY_NUMERIC)) {
+            this.explosionDamage = tag.getFloat("ExplosionDamage");
         }
         if (tag.contains("Size", Tag.TAG_ANY_NUMERIC)) {
             this.size = tag.getFloat("Size");
@@ -110,6 +121,15 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains(SPREAD, Tag.TAG_ANY_NUMERIC)) {
             this.spread = tag.getFloat(SPREAD);
         }
+        if (tag.contains("DamageReduceOverDistance", Tag.TAG_ANY_NUMERIC)) {
+            this.damageReduceOverDistance = tag.getBoolean("DamageReduceOverDistance");
+        }
+        if (tag.contains("CauseFire", Tag.TAG_ANY_NUMERIC)) {
+            this.causeFire = tag.getBoolean("CauseFire");
+        }
+        if (tag.contains("ExplosionRadius", Tag.TAG_ANY_NUMERIC)) {
+            this.explosionRadius = tag.getFloat("ExplosionRadius");
+        }
     }
 
     public JsonObject toJsonObject() {
@@ -125,16 +145,20 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         if (this.visible) object.addProperty("visible", true);
         object.addProperty("damage", this.damage);
+        object.addProperty("explosionDamage", this.explosionDamage);
         object.addProperty("size", this.size);
         object.addProperty("speed", this.speed);
         object.addProperty("life", this.life);
         object.addProperty("type", this.type.toString());
         object.addProperty("projectile", this.projectile.toString());
         object.addProperty("damageType", this.damageType.location().toString());
+        if (this.damageReduceOverDistance) object.addProperty("damageReduceOverDistance", true);
 
+        object.addProperty("causeFire", causeFire);
+        if (this.explosionRadius > 0) object.addProperty("explosionRadius", this.explosionRadius);
         if (this.gravity) object.addProperty("gravity", true);
-        if (this.damageReduceOverLife) object.addProperty("damageReduceOverLife", this.damageReduceOverLife);
-        if (this.magazineMode) object.addProperty("magazineMode", this.magazineMode);
+        object.addProperty("damageReduceOverLife", this.damageReduceOverLife);
+        object.addProperty("magazineMode", this.magazineMode);
         if (this.trailColor != 0xFFD289) object.addProperty("trailColor", this.trailColor);
         if (this.trailLengthMultiplier != 1.0) object.addProperty("trailLengthMultiplier", this.trailLengthMultiplier);
         if (this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
@@ -142,10 +166,11 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         return object;
     }
 
-    public Ammo copy() {
-        var projectile = new Ammo();
+    public Projectile copy() {
+        var projectile = new Projectile();
         projectile.visible = this.visible;
         projectile.damage = this.damage;
+        projectile.explosionDamage = this.explosionDamage;
         projectile.size = this.size;
         projectile.speed = this.speed;
         projectile.life = this.life;
@@ -159,12 +184,14 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         projectile.damageType = this.damageType;
         projectile.projectileAmount = this.projectileAmount;
         projectile.spread = this.spread;
-
+        projectile.damageReduceOverDistance = this.damageReduceOverDistance;
+        projectile.causeFire = this.causeFire;
+        projectile.explosionRadius = this.explosionRadius;
         return projectile;
     }
 
     /**
-     * @return If this projectile  should be visible when rendering
+     * @return If this projectile should be visible when rendering
      */
     public boolean isVisible() {
         return this.visible;
@@ -177,15 +204,19 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.damage;
     }
 
+    public float getExplosionDamage() {
+        return this.explosionDamage;
+    }
+
     /**
-     * @return The size of the projectile  entity bounding box
+     * @return The size of the projectile entity bounding box
      */
     public float getSize() {
         return this.size;
     }
 
     /**
-     * @return The speed the projectile  moves every tick
+     * @return The speed the projectile moves every tick
      */
     public float getSpeed() {
         return this.speed;
@@ -225,7 +256,7 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     /**
-     * @return The multiplier to change the length of the projectile  trail
+     * @return The multiplier to change the length of the projectile trail
      */
     public double getTrailLengthMultiplier() {
         return this.trailLengthMultiplier;
@@ -240,10 +271,25 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     /**
      * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
-     * the fired projectile.
+     * the fired projectile
      */
     public float getSpread() {
         return this.spread;
+    }
+
+    public boolean isDamageReduceOverDistance() {
+        return this.damageReduceOverDistance;
+    }
+
+    public boolean isCauseFire() {
+        return causeFire;
+    }
+
+    /**
+     * @return The radius of explosion caused by this projectile (0 if no explosion)
+     */
+    public float getExplosionRadius() {
+        return this.explosionRadius;
     }
 
     public AmmoType getType() {
@@ -258,8 +304,8 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.damageType;
     }
 
-    public static Ammo create(CompoundTag tag) {
-        var ammo = new Ammo();
+    public static Projectile create(CompoundTag tag) {
+        var ammo = new Projectile();
         ammo.deserializeNBT(tag);
         return ammo;
     }
@@ -287,74 +333,74 @@ public class Ammo implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static class Builder {
-        private final Ammo projectile;
+        private final Projectile projectile;
 
         private Builder() {
-            this.projectile = new Ammo();
+            this.projectile = new Projectile();
         }
 
-        private Builder(Ammo projectile) {
+        private Builder(Projectile projectile) {
             this.projectile = projectile.copy();
         }
 
-        public static Ammo.Builder create() {
-            return new Ammo.Builder();
+        public static Projectile.Builder create() {
+            return new Projectile.Builder();
         }
 
-        public static Ammo.Builder create(Ammo projectile) {
-            return new Ammo.Builder(projectile);
+        public static Projectile.Builder create(Projectile projectile) {
+            return new Projectile.Builder(projectile);
         }
 
-        public Ammo build() {
+        public Projectile build() {
             return this.projectile.copy(); //Copy since the builder could be used again
         }
 
-        public Ammo.Builder setProjectileVisible(ResourceLocation id, boolean visible) {
+        public Projectile.Builder setProjectileVisible(ResourceLocation id, boolean visible) {
             this.projectile.visible = visible;
             return this;
         }
 
-        public Ammo.Builder setProjectileSize(ResourceLocation id, float size) {
+        public Projectile.Builder setProjectileSize(ResourceLocation id, float size) {
             this.projectile.size = size;
             return this;
         }
 
-        public Ammo.Builder setProjectileSpeed(ResourceLocation id, float speed) {
+        public Projectile.Builder setProjectileSpeed(ResourceLocation id, float speed) {
             this.projectile.speed = speed;
             return this;
         }
 
-        public Ammo.Builder setProjectileLife(ResourceLocation id, int life) {
+        public Projectile.Builder setProjectileLife(ResourceLocation id, int life) {
             this.projectile.life = life;
             return this;
         }
 
-        public Ammo.Builder setProjectileAffectedByGravity(ResourceLocation id, boolean gravity) {
+        public Projectile.Builder setProjectileAffectedByGravity(ResourceLocation id, boolean gravity) {
             this.projectile.gravity = gravity;
             return this;
         }
 
-        public Ammo.Builder setProjectileTrailColor(ResourceLocation id, int trailColor) {
+        public Projectile.Builder setProjectileTrailColor(ResourceLocation id, int trailColor) {
             this.projectile.trailColor = trailColor;
             return this;
         }
 
-        public Ammo.Builder setProjectileTrailLengthMultiplier(ResourceLocation id, int trailLengthMultiplier) {
+        public Projectile.Builder setProjectileTrailLengthMultiplier(ResourceLocation id, int trailLengthMultiplier) {
             this.projectile.trailLengthMultiplier = trailLengthMultiplier;
             return this;
         }
 
-        public Ammo.Builder setDamage(ResourceLocation id, float damage) {
+        public Projectile.Builder setDamage(ResourceLocation id, float damage) {
             this.projectile.damage = damage;
             return this;
         }
 
-        public Ammo.Builder setReduceDamageOverLife(ResourceLocation id, boolean damageReduceOverLife) {
+        public Projectile.Builder setReduceDamageOverLife(ResourceLocation id, boolean damageReduceOverLife) {
             this.projectile.damageReduceOverLife = damageReduceOverLife;
             return this;
         }
 
-        public Ammo.Builder setMagazineMode(ResourceLocation id, boolean magazineMode) {
+        public Projectile.Builder setMagazineMode(ResourceLocation id, boolean magazineMode) {
             this.projectile.magazineMode = magazineMode;
             return this;
         }

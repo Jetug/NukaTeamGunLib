@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.interfaces;
 
-import com.nukateam.ntgl.common.data.config.Ammo;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.IConfigConsumer;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.INBTSerializable;
  * Author: MrCrayfish
  */
 public interface IAmmo <T extends INBTSerializable<CompoundTag>> extends IConfigConsumer<T> {
-    Ammo getAmmo();
+    Projectile getAmmo();
 
     default IGunModifier[] getModifiers() {
         return new IGunModifier[0];

@@ -318,4 +318,12 @@ public interface IGunModifier {
     default int modifyMeleeMaxTargets(int value, GunData data) {
         return value;
     }
+
+//    default boolean modifyDamageReduceOverDistance(boolean reduceOverDistance, GunData data) {
+//        return reduceOverDistance;
+//    }
+//
+//    default float modifyExplosionRadius(float radius, GunData data) {
+//        return radius;
+//    }
 }

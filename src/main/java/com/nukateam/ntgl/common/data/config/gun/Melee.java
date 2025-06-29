@@ -17,6 +17,14 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
+    public static final String DAMAGE = "Damage";
+    public static final String COOLDOWN = "cooldown";
+    public static final String DELAY = "delay";
+    public static final String DISTANCE = "distance";
+    public static final String ATTACK_RADIUS = "attackRadius";
+    public static final String KNOCKBACK = "knockback";
+    public static final String MAX_TARGETS = "maxTargets";
+
     private float damage = 1;
     private int cooldown = 0;
     private int delay = 0;
@@ -28,38 +36,38 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
-        tag.putFloat("Damage", this.damage);
-        tag.putInt("cooldown", this.cooldown);
-        tag.putInt("delay", this.delay);
-        tag.putFloat("distance", this.distance);
-        tag.putFloat("attackRadius", this.angle);
-        tag.putFloat("knockback", this.knockback);
-        tag.putInt("maxTargets", this.maxTargets);
+        tag.putFloat(DAMAGE, this.damage);
+        tag.putInt(COOLDOWN, this.cooldown);
+        tag.putInt(DELAY, this.delay);
+        tag.putFloat(DISTANCE, this.distance);
+        tag.putFloat(ATTACK_RADIUS, this.angle);
+        tag.putFloat(KNOCKBACK, this.knockback);
+        tag.putInt(MAX_TARGETS, this.maxTargets);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        if (tag.contains("Damage", Tag.TAG_ANY_NUMERIC)) {
-            this.damage = tag.getFloat("Damage");
+        if (tag.contains(DAMAGE, Tag.TAG_ANY_NUMERIC)) {
+            this.damage = tag.getFloat(DAMAGE);
         }
-        if (tag.contains("cooldown", Tag.TAG_ANY_NUMERIC)) {
-            this.cooldown = tag.getInt("cooldown");
+        if (tag.contains(COOLDOWN, Tag.TAG_ANY_NUMERIC)) {
+            this.cooldown = tag.getInt(COOLDOWN);
         }
-        if (tag.contains("delay", Tag.TAG_ANY_NUMERIC)) {
-            this.delay = tag.getInt("delay");
+        if (tag.contains(DELAY, Tag.TAG_ANY_NUMERIC)) {
+            this.delay = tag.getInt(DELAY);
         }
-        if (tag.contains("distance", Tag.TAG_ANY_NUMERIC)) {
-            this.distance = tag.getFloat("distance");
+        if (tag.contains(DISTANCE, Tag.TAG_ANY_NUMERIC)) {
+            this.distance = tag.getFloat(DISTANCE);
         }
-        if (tag.contains("attackRadius", Tag.TAG_ANY_NUMERIC)) {
-            this.angle = tag.getFloat("attackRadius");
+        if (tag.contains(ATTACK_RADIUS, Tag.TAG_ANY_NUMERIC)) {
+            this.angle = tag.getFloat(ATTACK_RADIUS);
         }
-        if (tag.contains("knockback", Tag.TAG_ANY_NUMERIC)) {
-            this.knockback = tag.getFloat("knockback");
+        if (tag.contains(KNOCKBACK, Tag.TAG_ANY_NUMERIC)) {
+            this.knockback = tag.getFloat(KNOCKBACK);
         }
-        if (tag.contains("maxTargets", Tag.TAG_ANY_NUMERIC)) {
-            this.maxTargets = tag.getInt("maxTargets");
+        if (tag.contains(MAX_TARGETS, Tag.TAG_ANY_NUMERIC)) {
+            this.maxTargets = tag.getInt(MAX_TARGETS);
         }
     }
 
@@ -67,12 +75,12 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
         Preconditions.checkArgument(this.damage >= 0.0F, "Damage must be more than or equal to zero");
         var object = new JsonObject();
         object.addProperty("damage", this.damage);
-        object.addProperty("cooldown", this.cooldown);
-        object.addProperty("delay", this.delay);
-        object.addProperty("distance", this.distance);
-        object.addProperty("knockback", this.knockback);
-        object.addProperty("maxTargets", this.maxTargets);
-        object.addProperty("attackRadius", this.angle);
+        object.addProperty(COOLDOWN, this.cooldown);
+        object.addProperty(DELAY, this.delay);
+        object.addProperty(DISTANCE, this.distance);
+        object.addProperty(KNOCKBACK, this.knockback);
+        object.addProperty(MAX_TARGETS, this.maxTargets);
+        object.addProperty(ATTACK_RADIUS, this.angle);
         return object;
     }
 

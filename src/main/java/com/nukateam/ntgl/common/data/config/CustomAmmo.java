@@ -11,13 +11,13 @@ import net.minecraftforge.common.util.INBTSerializable;
 public class CustomAmmo implements INBTSerializable<CompoundTag> {
     @Ignored
     public ItemStack model;
-    public Ammo projectile;
+    public Projectile projectile;
 
     public ItemStack getModel() {
         return this.model;
     }
 
-    public Ammo getAmmo() {
+    public Projectile getAmmo() {
         return this.projectile;
     }
 
@@ -32,6 +32,6 @@ public class CustomAmmo implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(CompoundTag compound) {
         this.model = ItemStack.of(compound.getCompound("Model"));
-        this.projectile = Ammo.create(compound.getCompound("Projectile"));
+        this.projectile = Projectile.create(compound.getCompound("Projectile"));
     }
 }
