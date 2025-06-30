@@ -9,5 +9,10 @@
   "speed": 30,
   "life": 7,
   "spread": 10.0,
-  "projectileAmount": 6
+  "projectileAmount": 6,
+
+  "explosion": {
+    "damage": 20,
+    "radius": 10.5
+  }
 }

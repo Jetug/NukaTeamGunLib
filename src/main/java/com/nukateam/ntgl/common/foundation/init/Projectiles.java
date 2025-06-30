@@ -26,6 +26,7 @@ public class Projectiles {
     public static final RegistryObject<EntityType<FlameProjectile>> FLAME_PROJECTILE = registerBasic("flame_projectile", FlameProjectile::new);
     public static final RegistryObject<EntityType<GrenadeEntity>> GRENADE = registerBasic("grenade", GrenadeEntity::new);
     public static final RegistryObject<EntityType<MissileEntity>> MISSILE = registerBasic("missile", MissileEntity::new);
+//    public static final RegistryObject<EntityType<ThrowableEntity>> THROWABLE = registerBasic("throwable", ThrowableEntity::new);
     public static final RegistryObject<EntityType<ThrowableGrenadeEntity>> THROWABLE_GRENADE = registerBasic("throwable_grenade", ThrowableGrenadeEntity::new);
     public static final RegistryObject<EntityType<StunGrenadeEntity>> THROWABLE_STUN_GRENADE = registerBasic("throwable_stun_grenade", StunGrenadeEntity::new);
 

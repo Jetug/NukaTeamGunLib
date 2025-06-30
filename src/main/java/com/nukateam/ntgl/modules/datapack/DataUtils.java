@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.base;
+package com.nukateam.ntgl.modules.datapack;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.utils.json.JsonDeserializers;
@@ -23,13 +23,8 @@ import java.util.function.Function;
 
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
-public class ConfigUtils {
+public class DataUtils {
     private static final int FILE_TYPE_LENGTH_VALUE = ".json".length();
-
-    @NotNull
-    private static Map<ResourceLocation, Resource> getJsonResources(ResourceManager manager, String path, ResourceLocation id) {
-        return manager.listResources(path, (fileName) -> fileName.getPath().endsWith(id.getPath() + ".json"));
-    }
 
     @NotNull
     public static<T, Y> Map<T, Y> getConfigMap(ResourceManager manager, Function<Item, Boolean> tClass, Class<Y> yClass, String resourcePath) {
@@ -90,4 +85,8 @@ public class ConfigUtils {
         return map;
     }
 
+    @NotNull
+    private static Map<ResourceLocation, Resource> getJsonResources(ResourceManager manager, String path, ResourceLocation id) {
+        return manager.listResources(path, (fileName) -> fileName.getPath().endsWith(id.getPath() + ".json"));
+    }
 }

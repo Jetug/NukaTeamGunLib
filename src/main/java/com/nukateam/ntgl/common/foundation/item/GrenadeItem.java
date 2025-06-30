@@ -1,6 +1,9 @@
 package com.nukateam.ntgl.common.foundation.item;
 
+import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.foundation.entity.ThrowableGrenadeEntity;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -11,12 +14,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
-public class GrenadeItem extends AmmoItem {
+public class GrenadeItem extends Item implements IThrowable {
     protected int maxCookTime;
+    private Projectile projectile = new Projectile();
 
     public GrenadeItem(Item.Properties properties, int maxCookTime) {
         super(properties);
         this.maxCookTime = maxCookTime;
+    }
+
+    @Override
+    public Projectile getConfig() {
+        return projectile;
+    }
+
+    @Override
+    public void setConfig(ConfigSupplier<Projectile> supplier) {
+        projectile = supplier.getConfig();
     }
 
     @Override
@@ -56,7 +70,7 @@ public class GrenadeItem extends AmmoItem {
         if (this.canCook() && !worldIn.isClientSide()) {
             if (!(entityLiving instanceof Player) || !((Player) entityLiving).isCreative())
                 stack.shrink(1);
-            ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, 0);
+            var grenade = this.create(worldIn, entityLiving, 0);
             grenade.onDeath();
             if (entityLiving instanceof Player) {
                 ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
@@ -72,7 +86,7 @@ public class GrenadeItem extends AmmoItem {
             if (duration >= 10) {
                 if (!(entityLiving instanceof Player) || !((Player) entityLiving).isCreative())
                     stack.shrink(1);
-                ThrowableGrenadeEntity grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
+                var grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
                 grenade.shootFromRotation(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
                 worldIn.addFreshEntity(grenade);
                 this.onThrown(worldIn, grenade);
@@ -84,7 +98,7 @@ public class GrenadeItem extends AmmoItem {
     }
 
     public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft) {
-        return new ThrowableGrenadeEntity(world, entity, timeLeft);
+        return new ThrowableGrenadeEntity(world, entity, getConfig(), timeLeft);
     }
 
     public boolean canCook() {

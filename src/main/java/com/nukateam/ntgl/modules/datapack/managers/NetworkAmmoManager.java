@@ -1,11 +1,11 @@
-package com.nukateam.ntgl.common.base;
+package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
-import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
+import com.nukateam.ntgl.modules.datapack.DataUtils;
 import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
-import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAmmo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -14,10 +14,6 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
@@ -25,7 +21,6 @@ import java.util.*;
 
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, Projectile>> {
     public static final String PATH = "ammo";
     private static final List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
@@ -33,14 +28,25 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
 
     private Map<ResourceLocation, Projectile> registeredAmmo = new HashMap<>();
 
+
+    public static void register(AddReloadListenerEvent event) {
+        NetworkAmmoManager networkGunManager = new NetworkAmmoManager();
+        event.addListener(networkGunManager);
+        NetworkAmmoManager.instance = networkGunManager;
+    }
+
+    public static void onServerStopped() {
+        NetworkAmmoManager.instance = null;
+    }
+
     @Override
     protected Map<IAmmo, Projectile> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, Projectile.class, PATH);
+        return DataUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, Projectile.class, PATH);
     }
 
     @Override
     protected void apply(Map<IAmmo, Projectile> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
-        ImmutableMap.Builder<ResourceLocation, Projectile> builder = ImmutableMap.builder();
+        var builder = ImmutableMap.<ResourceLocation, Projectile>builder();
 
         objects.forEach((item, ammo) -> {
             Validate.notNull(ITEMS.getKey((Item)item));
@@ -74,7 +80,7 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
         var size = buffer.readVarInt();
 
         if (size > 0) {
-            ImmutableMap.Builder<ResourceLocation, Projectile> builder = ImmutableMap.builder();
+            var builder = ImmutableMap.<ResourceLocation, Projectile>builder();
 
             for (int i = 0; i < size; i++) {
                 var id = buffer.readResourceLocation();
@@ -98,7 +104,7 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
     private static boolean updateRegisteredAmmo(Map<ResourceLocation, Projectile> registeredAmmo) {
         clientRegisteredAmmo.clear();
         if (registeredAmmo != null) {
-            for (Map.Entry<ResourceLocation, Projectile> entry : registeredAmmo.entrySet()) {
+            for (var entry : registeredAmmo.entrySet()) {
                 Item item = ITEMS.getValue(entry.getKey());
                 if (!(item instanceof IAmmo)) {
                     return false;
@@ -110,26 +116,6 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
         }
         return false;
     }
-
-    @SubscribeEvent
-    public static void onServerStopped(ServerStoppedEvent event) {
-        NetworkAmmoManager.instance = null;
-    }
-
-    @SubscribeEvent
-    public static void addReloadListenerEvent(AddReloadListenerEvent event) {
-        NetworkAmmoManager networkGunManager = new NetworkAmmoManager();
-        event.addListener(networkGunManager);
-        NetworkAmmoManager.instance = networkGunManager;
-    }
-
-    @SubscribeEvent
-    public static void onDatapackSync(OnDatapackSyncEvent event) {
-        if (event.getPlayer() == null) {
-            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateAmmo());
-        }
-    }
-
     /**
      * Gets the network projectile manager. This will be null if the client isn't running an integrated
      * server or the client is connected to a dedicated server.

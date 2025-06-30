@@ -1,12 +1,12 @@
-package com.nukateam.ntgl.common.base;
+package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
-import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
+import com.nukateam.ntgl.modules.datapack.DataUtils;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
-import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAttachments;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -15,10 +15,6 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
@@ -26,19 +22,25 @@ import java.util.*;
 
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
-/**
- * Author: MrCrayfish
- */
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map<IAttachment<?>, AttachmentConfig>> {
     private static List<IAttachment<?>> clientRegisteredAttachments = new ArrayList<>();
     private static NetworkAttachmentManager instance;
 
     private Map<ResourceLocation, AttachmentConfig> registeredAttachments = new HashMap<>();
 
+    public static void onServerStopped() {
+        NetworkAttachmentManager.instance = null;
+    }
+
+    public static void register(AddReloadListenerEvent event) {
+        NetworkAttachmentManager networkManager = new NetworkAttachmentManager();
+        event.addListener(networkManager);
+        NetworkAttachmentManager.instance = networkManager;
+    }
+
     @Override
     protected Map<IAttachment<?>, AttachmentConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof IAttachment<?>, AttachmentConfig.class, "attachments");
+        return DataUtils.getConfigMap(manager, (v) -> v instanceof IAttachment<?>, AttachmentConfig.class, "attachments");
     }
 
     @Override
@@ -106,25 +108,6 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
 
     public static List<IAttachment<?>> getClientRegisteredAttachments() {
         return ImmutableList.copyOf(clientRegisteredAttachments);
-    }
-
-    @SubscribeEvent
-    public static void onServerStopped(ServerStoppedEvent event) {
-        NetworkAttachmentManager.instance = null;
-    }
-
-    @SubscribeEvent
-    public static void addReloadListenerEvent(AddReloadListenerEvent event) {
-        NetworkAttachmentManager networkManager = new NetworkAttachmentManager();
-        event.addListener(networkManager);
-        NetworkAttachmentManager.instance = networkManager;
-    }
-
-    @SubscribeEvent
-    public static void onDatapackSync(OnDatapackSyncEvent event) {
-        if (event.getPlayer() == null) {
-            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateAttachments());
-        }
     }
 
     @Nullable

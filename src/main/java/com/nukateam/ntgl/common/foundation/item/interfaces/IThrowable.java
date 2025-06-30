@@ -1,0 +1,10 @@
+package com.nukateam.ntgl.common.foundation.item.interfaces;
+
+import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraftforge.common.util.INBTSerializable;
+
+public interface IThrowable extends IConfigConsumer<Projectile> {
+    Projectile getConfig();
+}

@@ -1,13 +1,15 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.gun.General;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,6 +28,7 @@ import net.minecraftforge.network.NetworkHooks;
  * Author: MrCrayfish
  */
 public abstract class ThrowableItemEntity extends ThrowableProjectile implements IEntityAdditionalSpawnData {
+    private Projectile projectile;
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
     private float gravityVelocity = 0.03F;
@@ -37,12 +40,9 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
         super(entityType, worldIn);
     }
 
-    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity player) {
-        super(entityType, player, world);
-    }
-
-    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, double x, double y, double z) {
-        super(entityType, x, y, z, world);
+    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity thrower, Projectile projectile) {
+        super(entityType, thrower, world);
+        this.projectile = projectile;
     }
 
     public void setItem(ItemStack item) {
@@ -145,7 +145,22 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
     }
 
     @Override
+    protected void addAdditionalSaveData(CompoundTag compound) {
+        compound.put("Projectile", this.projectile.serializeNBT());
+        compound.putBoolean("shouldBounce", shouldBounce);
+        compound.putFloat("gravityVelocity", gravityVelocity);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag compound) {
+        this.projectile = Projectile.create(compound.getCompound("Projectile"));
+        this.shouldBounce = compound.getBoolean("shouldBounce");
+        this.gravityVelocity = compound.getFloat("gravityVelocity");
+    }
+
+    @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {
+        buffer.writeNbt(this.projectile.serializeNBT());
         buffer.writeBoolean(this.shouldBounce);
         buffer.writeFloat(this.gravityVelocity);
         buffer.writeItem(this.item);
@@ -153,6 +168,7 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
 
     @Override
     public void readSpawnData(FriendlyByteBuf buffer) {
+        this.projectile = Projectile.create(buffer.readNbt());
         this.shouldBounce = buffer.readBoolean();
         this.gravityVelocity = buffer.readFloat();
         this.item = buffer.readItem();

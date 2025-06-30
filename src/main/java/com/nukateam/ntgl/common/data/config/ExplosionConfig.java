@@ -23,21 +23,24 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
     public static final String CAUSE_FIRE = "CauseFire";
     public static final String EXPLOSION_RADIUS = "ExplosionRadius";
     public static final String DESTROY_BLOCKS = "DestroyBlocks";
+    public static final String EXPLODE_ON_CONTACT = "explodeOnContact";
 
     @Optional private float damage = 0;
     @Optional private boolean damageReduceOverDistance = true;
     @Optional private boolean causeFire = false;
     @Optional private boolean destroyBlocks = false;
+    @Optional private boolean explodeOnContact = true;
     @Optional private float radius;
 
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.putFloat(DAMAGE, this.damage);
+        tag.putFloat(EXPLOSION_RADIUS, this.radius);
         tag.putBoolean(DISTANCE, this.damageReduceOverDistance);
         tag.putBoolean(CAUSE_FIRE, this.causeFire);
         tag.putBoolean(DESTROY_BLOCKS, this.destroyBlocks);
-        tag.putFloat(EXPLOSION_RADIUS, this.radius);
+        tag.putBoolean(EXPLODE_ON_CONTACT, this.explodeOnContact);
         return tag;
     }
 
@@ -46,17 +49,20 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
         if (tag.contains(DAMAGE, Tag.TAG_ANY_NUMERIC)) {
             this.damage = tag.getFloat(DAMAGE);
         }
+        if (tag.contains(EXPLOSION_RADIUS, Tag.TAG_ANY_NUMERIC)) {
+            this.radius = tag.getFloat(EXPLOSION_RADIUS);
+        }
         if (tag.contains(DISTANCE, Tag.TAG_ANY_NUMERIC)) {
             this.damageReduceOverDistance = tag.getBoolean(DISTANCE);
         }
-        if (tag.contains(DESTROY_BLOCKS, Tag.TAG_ANY_NUMERIC)) {
+        if (tag.contains(CAUSE_FIRE, Tag.TAG_ANY_NUMERIC)) {
             this.causeFire = tag.getBoolean(CAUSE_FIRE);
         }
-        if (tag.contains(CAUSE_FIRE, Tag.TAG_ANY_NUMERIC)) {
+        if (tag.contains(DESTROY_BLOCKS, Tag.TAG_ANY_NUMERIC)) {
             this.destroyBlocks = tag.getBoolean(DESTROY_BLOCKS);
         }
-        if (tag.contains(EXPLOSION_RADIUS, Tag.TAG_ANY_NUMERIC)) {
-            this.radius = tag.getFloat(EXPLOSION_RADIUS);
+        if (tag.contains(EXPLODE_ON_CONTACT, Tag.TAG_ANY_NUMERIC)) {
+            this.explodeOnContact = tag.getBoolean(EXPLODE_ON_CONTACT);
         }
     }
 
@@ -64,10 +70,11 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
         Preconditions.checkArgument(this.damage >= 0.0F, "Damage must be more than or equal to zero");
         var object = new JsonObject();
         object.addProperty("damage", this.damage);
-        object.addProperty("damageReduceOverDistance", damageReduceOverDistance);
-        object.addProperty("causeFire", causeFire);
         object.addProperty("radius", this.radius);
+        object.addProperty("damageReduceOverDistance", this.damageReduceOverDistance);
+        object.addProperty("causeFire", causeFire);
         object.addProperty("destroyBlocks", this.destroyBlocks);
+        object.addProperty("explodeOnContact", this.explodeOnContact);
         return object;
     }
 
@@ -78,9 +85,9 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
         projectile.causeFire = this.causeFire;
         projectile.radius = this.radius;
         projectile.destroyBlocks = this.destroyBlocks;
+        projectile.explodeOnContact = this.explodeOnContact;
         return projectile;
     }
-
 
     /**
      * @return The damage caused by the projectile explosion
@@ -95,6 +102,10 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
 
     public boolean isCauseFire() {
         return causeFire;
+    }
+
+    public boolean isExplodeOnContact() {
+        return explodeOnContact;
     }
 
     /**

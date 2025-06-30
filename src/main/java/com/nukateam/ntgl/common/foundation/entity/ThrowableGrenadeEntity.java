@@ -1,8 +1,9 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.nukateam.example.common.registery.ModGuns;
-import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
+import com.nukateam.ntgl.common.util.world.ExplosionUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class ThrowableGrenadeEntity extends ThrowableItemEntity {
+    private Projectile projectile = new Projectile();
     public float rotation;
     public float prevRotation;
 
@@ -17,25 +19,22 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity {
         super(entityType, worldIn);
     }
 
-    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity entity) {
-        super(entityType, world, entity);
-        this.setShouldBounce(true);
-        this.setGravityVelocity(0.05F);
-        this.setItem(new ItemStack(ModGuns.GRENADE.get()));
-        this.setMaxLife(20 * 3);
-    }
-
-    public ThrowableGrenadeEntity(Level world, LivingEntity entity, int timeLeft) {
-        super(Projectiles.THROWABLE_GRENADE.get(), world, entity);
+    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity thrower, Projectile projectile, int timeLeft) {
+        super(entityType, world, thrower, projectile);
         this.setShouldBounce(true);
         this.setGravityVelocity(0.05F);
         this.setItem(new ItemStack(ModGuns.GRENADE.get()));
         this.setMaxLife(timeLeft);
     }
 
-    @Override
-    protected void defineSynchedData() {
+    public ThrowableGrenadeEntity(Level world, LivingEntity entity, Projectile projectile, int timeLeft) {
+        this(Projectiles.THROWABLE_GRENADE.get(), world, entity, projectile, timeLeft);
+        this.projectile = projectile;
+        this.setItem(new ItemStack(ModGuns.GRENADE.get()));
     }
+
+    @Override
+    protected void defineSynchedData() {}
 
     @Override
     public void tick() {
@@ -52,7 +51,7 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity {
 
     @Override
     public void onDeath() {
-        GrenadeEntity.createExplosion(this, Config.COMMON.grenades.explosionRadius.get().floatValue(), Config.COMMON.grenades.enableBlockRemoval.get());
+        ExplosionUtils.createExplosion(this, projectile.getExplosion());
     }
 
     @Override

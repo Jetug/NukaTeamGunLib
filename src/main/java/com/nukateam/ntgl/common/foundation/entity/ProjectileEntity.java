@@ -15,7 +15,7 @@ import com.nukateam.ntgl.common.event.GunProjectileHitEvent;
 import com.nukateam.ntgl.common.foundation.ModTags;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
+import com.nukateam.ntgl.common.util.world.ExplosionUtils;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
@@ -28,14 +28,11 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundExplodePacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -63,7 +60,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
     protected boolean isServerSide = !level().isClientSide();
-
     protected boolean isRightHand;
     protected int shooterId;
     protected LivingEntity shooter;
@@ -116,28 +112,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.updateHeading();
         this.setupDirection(shooter, weapon, item);
         this.setupStartPosition(shooter);
-    }
-
-    private ItemStack setupAmmo(GunData data) {
-        var weapon = data.gun;
-        var ammo = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoId(data));
-        if (ammo != null) {
-            int customModelData = -1;
-            if (weapon.getTag() != null) {
-                if (weapon.getTag().contains("Model", Tag.TAG_COMPOUND)) {
-                    ItemStack model = ItemStack.of(weapon.getTag().getCompound("Model"));
-                    if (model.getTag() != null && model.getTag().contains("CustomModelData")) {
-                        customModelData = model.getTag().getInt("CustomModelData");
-                    }
-                }
-            }
-            var ammoStack = new ItemStack(ammo);
-            if (customModelData != -1) {
-                ammoStack.getOrCreateTag().putInt("CustomModelData", customModelData);
-            }
-            return ammoStack;
-        }
-        return ItemStack.EMPTY;
     }
 
     @Override
@@ -354,11 +328,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void onProjectileTick() {}
 
     /**
-     * Called when the projectile has run out of it's life. In other words, the projectile managed
+     * Called when the projectile has run out of its life. In other words, the projectile managed
      * to not hit any blocks and instead aged. The grenade uses this to explode in the air.
      */
     protected void onExpired() {
-        onProjectileDistroy(position());
+        if(ExplosionUtils.isExplosive(projectile.getExplosion())){
+            ExplosionUtils.createExplosion(this, projectile.getExplosion());
+        }
     }
 
     protected void doImpactEffects(Vec3 hitVec) {}
@@ -516,7 +492,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         PacketHandler.getPlayChannel().sendToTracking(() -> entity, new S2CMessageBlood(hitVec.x, hitVec.y, hitVec.z));
 
         doImpactEffects(hitVec);
-        onProjectileDistroy(hitVec);
+        onContact();
     }
 
     protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z) {
@@ -525,11 +501,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 new S2CMessageProjectileHitBlock(x, y, z, pos, face));
         var hitVec = new Vec3(x, y, z);
         doImpactEffects(hitVec);
-        onProjectileDistroy(hitVec);
+        onContact();
     }
 
-    protected void onProjectileDistroy(Vec3 hitVec) {
-
+    protected void onContact() {
+        if(projectile.getExplosion().isExplodeOnContact() && ExplosionUtils.isExplosive(projectile.getExplosion())){
+            ExplosionUtils.createExplosion(this, projectile.getExplosion());
+        }
     }
 
     protected void handleBlockBreaking(BlockPos pos, BlockState state) {
@@ -550,24 +528,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.setXRot((float) (Mth.atan2(this.getDeltaMovement().y(), horizontalDistance) * (180D / Math.PI)));
         this.yRotO = this.getYRot();
         this.xRotO = this.getXRot();
-    }
-
-
-
-    public static void createFireExplosion(Entity entity, float radius, boolean forceNone) {
-        Level world = entity.level();
-        if (world.isClientSide())
-            return;
-
-        DamageSource source = entity instanceof ProjectileEntity projectile ? entity.damageSources().explosion(entity, projectile.getShooter()) : null;
-        Explosion.BlockInteraction mode = Explosion.BlockInteraction.KEEP;
-        Explosion explosion = new ProjectileExplosion(world, entity, source, null, entity.position(), radius, true, mode);
-
-        if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
-            return;
-
-        explosion.explode();
-        explosion.finalizeExplosion(true);
     }
 
     /**
@@ -672,6 +632,28 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         }
         return onFinish.apply(context);
+    }
+
+    private ItemStack setupAmmo(GunData data) {
+        var weapon = data.gun;
+        var ammo = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoId(data));
+        if (ammo != null) {
+            int customModelData = -1;
+            if (weapon.getTag() != null) {
+                if (weapon.getTag().contains("Model", Tag.TAG_COMPOUND)) {
+                    ItemStack model = ItemStack.of(weapon.getTag().getCompound("Model"));
+                    if (model.getTag() != null && model.getTag().contains("CustomModelData")) {
+                        customModelData = model.getTag().getInt("CustomModelData");
+                    }
+                }
+            }
+            var ammoStack = new ItemStack(ammo);
+            if (customModelData != -1) {
+                ammoStack.getOrCreateTag().putInt("CustomModelData", customModelData);
+            }
+            return ammoStack;
+        }
+        return ItemStack.EMPTY;
     }
 
     protected void setupDirection(LivingEntity shooter, ItemStack weapon, GunItem item) {

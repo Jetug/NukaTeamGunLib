@@ -1,6 +1,6 @@
-package com.nukateam.ntgl.common.foundation.item;
+package com.nukateam.ntgl.common.foundation.item.interfaces;
 
-import com.nukateam.ntgl.common.base.ConfigSupplier;
+import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 

@@ -38,6 +38,8 @@ public class ProjectileExplosion extends Explosion {
     private final float size;
     private final Entity exploder;
     private final ExplosionDamageCalculator context;
+    private final float damage;
+    private final boolean damageDecreaseWithDistance;
 
     public ProjectileExplosion(Level world, Entity exploder,
                                @Nullable DamageSource source,
@@ -51,6 +53,8 @@ public class ProjectileExplosion extends Explosion {
         this.size = size;
         this.exploder = exploder;
         this.context = context == null ? DEFAULT_CONTEXT : context;
+        this.damage = projectile.getDamage();
+        this.damageDecreaseWithDistance = projectile.isDamageReduceOverDistance();
     }
 
     @Override
@@ -133,9 +137,14 @@ public class ProjectileExplosion extends Explosion {
                 deltaY = 1.0;
                 deltaZ = 0.0;
             }
-
+            
             var blockDensity = (double) getSeenPercent(explosionPos, entity);
-            var damage = (1.0D - strength) * blockDensity;
+            var damage = this.damage * blockDensity;
+
+            if (damageDecreaseWithDistance) {
+                damage *= (1 - strength);
+            }
+
             entity.hurt(this.getDamageSource(), (float) ((int) ((damage * damage + damage) / 2.0D * 7.0D * (double) radius + 1.0D)));
 
             var blastDamage = damage;

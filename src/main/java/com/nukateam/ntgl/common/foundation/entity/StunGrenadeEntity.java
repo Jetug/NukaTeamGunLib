@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.foundation.entity;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.foundation.init.ModEffects;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
@@ -44,15 +45,9 @@ public class StunGrenadeEntity extends ThrowableGrenadeEntity {
         super(entityType, world);
     }
 
-    public StunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world, LivingEntity player) {
-        super(entityType, world, player);
+    public StunGrenadeEntity(Level world, LivingEntity player, Projectile projectile, int maxCookTime) {
+        super(Projectiles.THROWABLE_STUN_GRENADE.get(), world, player, projectile, maxCookTime);
         this.setItem(new ItemStack(ModGuns.STUN_GRENADE.get()));
-    }
-
-    public StunGrenadeEntity(Level world, LivingEntity player, int maxCookTime) {
-        super(Projectiles.THROWABLE_STUN_GRENADE.get(), world, player);
-        this.setItem(new ItemStack(ModGuns.STUN_GRENADE.get()));
-        this.setMaxLife(maxCookTime);
     }
 
     @SubscribeEvent

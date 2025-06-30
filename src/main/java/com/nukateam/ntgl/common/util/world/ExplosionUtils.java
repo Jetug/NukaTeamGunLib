@@ -21,12 +21,11 @@ import net.minecraftforge.event.ForgeEventFactory;
 import javax.annotation.Nullable;
 
 public class ExplosionUtils {
-    /**
-     * Creates a projectile explosion for the specified entity.
-     *
-     * @param entity The entity to explode
-     */
-    public void createExplosion(Entity entity, ExplosionConfig config) {
+    public static boolean isExplosive(ExplosionConfig config) {
+        return config.getRadius() > 0;
+    }
+
+    public static void createExplosion(Entity entity, ExplosionConfig config) {
         var world = entity.level();
         if (world.isClientSide())
             return;
@@ -44,11 +43,9 @@ public class ExplosionUtils {
         if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
             return;
 
-        // Do explosion logic
         explosion.explode();
         explosion.finalizeExplosion(true);
 
-        // Send event to blocks that are exploded (none if mode is none)
         explosion.getToBlow().forEach(pos ->
         {
             if (world.getBlockState(pos).getBlock() instanceof IExplosionDamageable) {
@@ -56,7 +53,6 @@ public class ExplosionUtils {
             }
         });
 
-        // Clears the affected blocks if mode is none
         if (!explosion.interactsWithBlocks()) {
             explosion.clearToBlow();
         }

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
-import com.nukateam.ntgl.common.base.NetworkAttachmentManager;
+import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
 import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

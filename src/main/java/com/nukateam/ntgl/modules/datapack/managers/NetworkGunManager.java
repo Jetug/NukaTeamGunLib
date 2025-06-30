@@ -1,9 +1,10 @@
-package com.nukateam.ntgl.common.base;
+package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
+import com.nukateam.ntgl.modules.datapack.DataUtils;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -15,9 +16,6 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.Validate;
 
@@ -36,9 +34,19 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
 
     private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
 
+    public static void onServerStopped() {
+        NetworkGunManager.instance = null;
+    }
+
+    public static void register(AddReloadListenerEvent event) {
+        NetworkGunManager networkGunManager = new NetworkGunManager();
+        event.addListener(networkGunManager);
+        NetworkGunManager.instance = networkGunManager;
+    }
+
     @Override
     protected Map<GunItem, Gun> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, (v) -> v instanceof GunItem, Gun.class, "guns");
+        return DataUtils.getConfigMap(manager, (v) -> v instanceof GunItem, Gun.class, "guns");
     }
 
     @Override
@@ -132,24 +140,6 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<GunIte
         return ImmutableList.copyOf(clientRegisteredGuns);
     }
 
-    @SubscribeEvent
-    public static void onServerStopped(ServerStoppedEvent event) {
-        NetworkGunManager.instance = null;
-    }
-
-    @SubscribeEvent
-    public static void addReloadListenerEvent(AddReloadListenerEvent event) {
-        NetworkGunManager networkGunManager = new NetworkGunManager();
-        event.addListener(networkGunManager);
-        NetworkGunManager.instance = networkGunManager;
-    }
-
-    @SubscribeEvent
-    public static void onDatapackSync(OnDatapackSyncEvent event) {
-        if (event.getPlayer() == null) {
-            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateGuns());
-        }
-    }
 
     /**
      * Gets the network gun manager. This will be null if the client isn't running an integrated

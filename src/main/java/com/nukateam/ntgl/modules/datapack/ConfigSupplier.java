@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.base;
+package com.nukateam.ntgl.modules.datapack;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -11,7 +11,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 public class ConfigSupplier<S extends INBTSerializable<CompoundTag>> {
     private final S config;
 
-    ConfigSupplier(S config) {
+    public ConfigSupplier(S config) {
         this.config = config;
     }
 
