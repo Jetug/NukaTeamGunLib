@@ -24,6 +24,7 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
     public static final String EXPLOSION_RADIUS = "ExplosionRadius";
     public static final String DESTROY_BLOCKS = "DestroyBlocks";
     public static final String EXPLODE_ON_CONTACT = "explodeOnContact";
+    public static final String KNOCKBACK = "knockback";
 
     @Optional private float damage = 0;
     @Optional private boolean damageReduceOverDistance = true;
@@ -31,12 +32,14 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
     @Optional private boolean destroyBlocks = false;
     @Optional private boolean explodeOnContact = true;
     @Optional private float radius;
+    @Optional private float knockback;
 
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.putFloat(DAMAGE, this.damage);
         tag.putFloat(EXPLOSION_RADIUS, this.radius);
+        tag.putFloat(KNOCKBACK, this.knockback);
         tag.putBoolean(DISTANCE, this.damageReduceOverDistance);
         tag.putBoolean(CAUSE_FIRE, this.causeFire);
         tag.putBoolean(DESTROY_BLOCKS, this.destroyBlocks);
@@ -51,6 +54,9 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
         }
         if (tag.contains(EXPLOSION_RADIUS, Tag.TAG_ANY_NUMERIC)) {
             this.radius = tag.getFloat(EXPLOSION_RADIUS);
+        }
+        if (tag.contains(KNOCKBACK, Tag.TAG_ANY_NUMERIC)) {
+            this.knockback = tag.getFloat(KNOCKBACK);
         }
         if (tag.contains(DISTANCE, Tag.TAG_ANY_NUMERIC)) {
             this.damageReduceOverDistance = tag.getBoolean(DISTANCE);
@@ -71,6 +77,7 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
         var object = new JsonObject();
         object.addProperty("damage", this.damage);
         object.addProperty("radius", this.radius);
+        object.addProperty("knockback", this.knockback);
         object.addProperty("damageReduceOverDistance", this.damageReduceOverDistance);
         object.addProperty("causeFire", causeFire);
         object.addProperty("destroyBlocks", this.destroyBlocks);
@@ -81,6 +88,7 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
     public ExplosionConfig copy() {
         var projectile = new ExplosionConfig();
         projectile.damage = this.damage;
+        projectile.knockback = this.knockback;
         projectile.damageReduceOverDistance = this.damageReduceOverDistance;
         projectile.causeFire = this.causeFire;
         projectile.radius = this.radius;
@@ -106,6 +114,10 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
 
     public boolean isExplodeOnContact() {
         return explodeOnContact;
+    }
+
+    public float getKnockback() {
+        return knockback;
     }
 
     /**

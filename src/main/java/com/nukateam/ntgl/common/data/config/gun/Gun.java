@@ -196,7 +196,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         var gson = new Gson();
         var object = new JsonObject();
         object.add("general", this.general.toJsonObject());
-        GunJsonUtil.addObjectIfNotEmpty(object,"melee", this.melee.toJsonObject());
+        object.add("melee", this.melee.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object,"sounds", gson.toJsonTree(this).getAsJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modules", this.modules.toJsonObject());

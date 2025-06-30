@@ -16,7 +16,7 @@ public class StunGrenadeItem extends GrenadeItem {
 
     @Override
     public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft) {
-        return new StunGrenadeEntity(world, entity, getConfig(), 20 * 2);
+        return new StunGrenadeEntity(world, entity, getConfig().getProjectile(), 20 * 2);
     }
 
     @Override

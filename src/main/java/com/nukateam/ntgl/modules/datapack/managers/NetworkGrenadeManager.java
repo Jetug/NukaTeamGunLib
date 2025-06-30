@@ -3,11 +3,11 @@ package com.nukateam.ntgl.modules.datapack.managers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
+import com.nukateam.ntgl.common.data.config.ThrowableConfig;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import com.nukateam.ntgl.common.network.message.S2CMessageUpdateThrowable;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
-import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAttachments;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -22,31 +22,31 @@ import java.util.*;
 
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
-public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map<IAttachment<?>, AttachmentConfig>> {
-    public static final String PATH = "attachments";
-    private static List<IAttachment<?>> clientRegisteredAttachments = new ArrayList<>();
-    private static NetworkAttachmentManager instance;
+public class NetworkGrenadeManager extends SimplePreparableReloadListener<Map<IThrowable, ThrowableConfig>> {
+    public static final String PATH = "throwable";
+    private static final List<IThrowable> clientRegisteredAttachments = new ArrayList<>();
+    private static NetworkGrenadeManager instance;
 
-    private Map<ResourceLocation, AttachmentConfig> registeredAttachments = new HashMap<>();
+    private Map<ResourceLocation, ThrowableConfig> registeredAttachments = new HashMap<>();
 
     public static void onServerStopped() {
-        NetworkAttachmentManager.instance = null;
+        NetworkGrenadeManager.instance = null;
     }
 
     public static void register(AddReloadListenerEvent event) {
-        NetworkAttachmentManager networkManager = new NetworkAttachmentManager();
+        NetworkGrenadeManager networkManager = new NetworkGrenadeManager();
         event.addListener(networkManager);
-        NetworkAttachmentManager.instance = networkManager;
+        NetworkGrenadeManager.instance = networkManager;
     }
 
     @Override
-    protected Map<IAttachment<?>, AttachmentConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return DataUtils.getConfigMap(manager, (v) -> v instanceof IAttachment<?>, AttachmentConfig.class, PATH);
+    protected Map<IThrowable, ThrowableConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
+        return DataUtils.getConfigMap(manager, (v) -> v instanceof IThrowable, ThrowableConfig.class, PATH);
     }
 
     @Override
-    protected void apply(Map<IAttachment<?>, AttachmentConfig> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
-        ImmutableMap.Builder<ResourceLocation, AttachmentConfig> builder = ImmutableMap.builder();
+    protected void apply(Map<IThrowable, ThrowableConfig> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
+        ImmutableMap.Builder<ResourceLocation, ThrowableConfig> builder = ImmutableMap.builder();
 
         objects.forEach((abstractItem, config) -> {
             if(abstractItem instanceof Item item) {
@@ -67,15 +67,15 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
         });
     }
 
-    public static ImmutableMap<ResourceLocation, AttachmentConfig> readRegistered(FriendlyByteBuf buffer) {
+    public static ImmutableMap<ResourceLocation, ThrowableConfig> readRegistered(FriendlyByteBuf buffer) {
         var size = buffer.readVarInt();
 
         if (size > 0) {
-            var builder = ImmutableMap.<ResourceLocation, AttachmentConfig>builder();
+            var builder = ImmutableMap.<ResourceLocation, ThrowableConfig>builder();
 
             for (int i = 0; i < size; i++) {
                 var id = buffer.readResourceLocation();
-                AttachmentConfig config = AttachmentConfig.create(id, buffer.readNbt());
+                ThrowableConfig config = ThrowableConfig.create(id, buffer.readNbt());
                 builder.put(id, config);
             }
             return builder.build();
@@ -83,47 +83,47 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
         return ImmutableMap.of();
     }
 
-    public static boolean updateRegisteredAttachments(S2CMessageUpdateAttachments message) {
-        return updateRegisteredAttachments(message.getRegistered());
+    public static boolean updateRegisteredConfigs(S2CMessageUpdateThrowable message) {
+        return updateRegisteredConfigs(message.getRegistered());
     }
 
-    private static boolean updateRegisteredAttachments(Map<ResourceLocation, AttachmentConfig> registered) {
+    private static boolean updateRegisteredConfigs(Map<ResourceLocation, ThrowableConfig> registered) {
         clientRegisteredAttachments.clear();
         if (registered != null) {
-            for (Map.Entry<ResourceLocation, AttachmentConfig> entry : registered.entrySet()) {
+            for (Map.Entry<ResourceLocation, ThrowableConfig> entry : registered.entrySet()) {
                 Item item = ITEMS.getValue(entry.getKey());
-                if (!(item instanceof IAttachment<?>)) {
+                if (!(item instanceof IThrowable)) {
                     return false;
                 }
-                ((IAttachment<?>) item).setConfig(new ConfigSupplier<>(entry.getValue()));
-                clientRegisteredAttachments.add((IAttachment<?>) item);
+                ((IThrowable) item).setConfig(new ConfigSupplier<>(entry.getValue()));
+                clientRegisteredAttachments.add((IThrowable) item);
             }
             return true;
         }
         return false;
     }
 
-    public Map<ResourceLocation, AttachmentConfig> getRegisteredAttachments() {
+    public Map<ResourceLocation, ThrowableConfig> getRegisteredAttachments() {
         return this.registeredAttachments;
     }
 
-    public static List<IAttachment<?>> getClientRegisteredAttachments() {
+    public static List<IThrowable> getClientRegisteredAttachments() {
         return ImmutableList.copyOf(clientRegisteredAttachments);
     }
 
     @Nullable
-    public static NetworkAttachmentManager get() {
+    public static NetworkGrenadeManager get() {
         return instance;
     }
 
     public static class Supplier {
-        private final AttachmentConfig config;
+        private final ThrowableConfig config;
 
-        private Supplier(AttachmentConfig config) {
+        private Supplier(ThrowableConfig config) {
             this.config = config;
         }
 
-        public AttachmentConfig getConfig() {
+        public ThrowableConfig getConfig() {
             return this.config;
         }
     }
@@ -131,14 +131,14 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
     public static class LoginData implements ILoginData {
         @Override
         public void writeData(FriendlyByteBuf buffer) {
-            Validate.notNull(NetworkAttachmentManager.get());
-            NetworkAttachmentManager.get().writeRegistered(buffer);
+            Validate.notNull(NetworkGrenadeManager.get());
+            NetworkGrenadeManager.get().writeRegistered(buffer);
         }
 
         @Override
         public Optional<String> readData(FriendlyByteBuf buffer) {
-            var registered = NetworkAttachmentManager.readRegistered(buffer);
-            NetworkAttachmentManager.updateRegisteredAttachments(registered);
+            var registered = NetworkGrenadeManager.readRegistered(buffer);
+            NetworkGrenadeManager.updateRegisteredConfigs(registered);
             return Optional.empty();
         }
     }

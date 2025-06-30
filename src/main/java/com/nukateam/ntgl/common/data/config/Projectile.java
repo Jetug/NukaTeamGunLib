@@ -44,8 +44,7 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Optional private double trailLengthMultiplier = 1.0;
     @Optional int projectileAmount = 1;
     @Optional float spread;
-    @Optional
-    ExplosionConfig explosion = new ExplosionConfig();
+    @Optional ExplosionConfig explosion = new ExplosionConfig();
 
     @Override
     public CompoundTag serializeNBT() {

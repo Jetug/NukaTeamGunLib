@@ -39,6 +39,7 @@ public class ProjectileExplosion extends Explosion {
     private final Entity exploder;
     private final ExplosionDamageCalculator context;
     private final float damage;
+    private final float knockback;
     private final boolean damageDecreaseWithDistance;
 
     public ProjectileExplosion(Level world, Entity exploder,
@@ -54,6 +55,7 @@ public class ProjectileExplosion extends Explosion {
         this.exploder = exploder;
         this.context = context == null ? DEFAULT_CONTEXT : context;
         this.damage = projectile.getDamage();
+        this.knockback = projectile.getKnockback();
         this.damageDecreaseWithDistance = projectile.isDamageReduceOverDistance();
     }
 
@@ -137,7 +139,7 @@ public class ProjectileExplosion extends Explosion {
                 deltaY = 1.0;
                 deltaZ = 0.0;
             }
-            
+
             var blockDensity = (double) getSeenPercent(explosionPos, entity);
             var damage = this.damage * blockDensity;
 
@@ -152,11 +154,25 @@ public class ProjectileExplosion extends Explosion {
             if (entity instanceof LivingEntity)
                 blastDamage = ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity) entity, damage);
 
-            entity.setDeltaMovement(entity.getDeltaMovement().add(deltaX * blastDamage, deltaY * blastDamage, deltaZ * blastDamage));
+
+//            double baseForce = (1.0 - distance / this.size);
+//
+//            double force = baseForce * knockback;
+//
+//            entity.setDeltaMovement(
+//                    entity.getDeltaMovement().add(
+//                            normalizedX * force,
+//                            normalizedY * force,
+//                            normalizedZ * force
+//                    )
+//            );
+
+
+            entity.setDeltaMovement(entity.getDeltaMovement().add(deltaX, deltaY, deltaZ));
 
             if (entity instanceof Player player) {
                 if (!player.isSpectator() && (!player.isCreative() || !player.getAbilities().flying)) {
-                    this.getHitPlayers().put(player, new Vec3(deltaX * damage, deltaY * damage, deltaZ * damage));
+                    this.getHitPlayers().put(player, new Vec3(deltaX, deltaY, deltaZ));
                 }
             }
         }

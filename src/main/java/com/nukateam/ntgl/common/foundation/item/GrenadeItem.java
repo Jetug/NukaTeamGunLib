@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
+import com.nukateam.ntgl.common.data.config.ThrowableConfig;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.foundation.entity.ThrowableGrenadeEntity;
@@ -16,7 +17,7 @@ import net.minecraft.world.level.Level;
 
 public class GrenadeItem extends Item implements IThrowable {
     protected int maxCookTime;
-    private Projectile projectile = new Projectile();
+    private ThrowableConfig projectile = new ThrowableConfig();
 
     public GrenadeItem(Item.Properties properties, int maxCookTime) {
         super(properties);
@@ -24,12 +25,12 @@ public class GrenadeItem extends Item implements IThrowable {
     }
 
     @Override
-    public Projectile getConfig() {
+    public ThrowableConfig getConfig() {
         return projectile;
     }
 
     @Override
-    public void setConfig(ConfigSupplier<Projectile> supplier) {
+    public void setConfig(ConfigSupplier<ThrowableConfig> supplier) {
         projectile = supplier.getConfig();
     }
 
@@ -98,7 +99,7 @@ public class GrenadeItem extends Item implements IThrowable {
     }
 
     public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft) {
-        return new ThrowableGrenadeEntity(world, entity, getConfig(), timeLeft);
+        return new ThrowableGrenadeEntity(world, entity, getConfig().getProjectile(), timeLeft);
     }
 
     public boolean canCook() {
