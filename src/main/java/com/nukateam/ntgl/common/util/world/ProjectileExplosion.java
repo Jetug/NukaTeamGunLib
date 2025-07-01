@@ -147,25 +147,15 @@ public class ProjectileExplosion extends Explosion {
                 damage *= (1 - strength);
             }
 
-            entity.hurt(this.getDamageSource(), (float) ((int) ((damage * damage + damage) / 2.0D * 7.0D * (double) radius + 1.0D)));
-
-            var blastDamage = damage;
+            entity.hurt(this.getDamageSource(), (float)damage);
 
             if (entity instanceof LivingEntity)
-                blastDamage = ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity) entity, damage);
+                damage = ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity) entity, damage);
 
+            deltaX *= knockback;
+            deltaY *= knockback;
+            deltaZ *= knockback;
 
-//            double baseForce = (1.0 - distance / this.size);
-//
-//            double force = baseForce * knockback;
-//
-//            entity.setDeltaMovement(
-//                    entity.getDeltaMovement().add(
-//                            normalizedX * force,
-//                            normalizedY * force,
-//                            normalizedZ * force
-//                    )
-//            );
 
 
             entity.setDeltaMovement(entity.getDeltaMovement().add(deltaX, deltaY, deltaZ));

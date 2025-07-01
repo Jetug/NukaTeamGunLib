@@ -29,7 +29,8 @@
 
       "explosion": {
         "damage": 2,
-        "radius": 2
+        "radius": 2,
+        "knockback": 1
       }
     }
   },
