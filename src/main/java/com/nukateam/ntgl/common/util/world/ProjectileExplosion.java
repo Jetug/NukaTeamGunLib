@@ -35,7 +35,7 @@ public class ProjectileExplosion extends Explosion {
     private final double x;
     private final double y;
     private final double z;
-    private final float size;
+    private final float radius;
     private final Entity exploder;
     private final ExplosionDamageCalculator context;
     private final float damage;
@@ -45,13 +45,13 @@ public class ProjectileExplosion extends Explosion {
     public ProjectileExplosion(Level world, Entity exploder,
                                @Nullable DamageSource source,
                                @Nullable ExplosionDamageCalculator context, ExplosionConfig projectile,
-                               Vec3 pos, float size, boolean causesFire, BlockInteraction mode) {
-        super(world, exploder, source, context, pos.x, pos.y, pos.z, size, causesFire, mode);
+                               Vec3 pos, float radius, boolean causesFire, BlockInteraction mode) {
+        super(world, exploder, source, context, pos.x, pos.y, pos.z, radius, causesFire, mode);
         this.world = world;
         this.x = pos.x;
         this.y = pos.y;
         this.z = pos.z;
-        this.size = size;
+        this.radius = radius;
         this.exploder = exploder;
         this.context = context == null ? DEFAULT_CONTEXT : context;
         this.damage = projectile.getDamage();
@@ -61,50 +61,9 @@ public class ProjectileExplosion extends Explosion {
 
     @Override
     public void explode() {
-        var set = Sets.<BlockPos>newHashSet();
+        blowBlocks();
 
-        for (int x = 0; x < 16; x++) {
-            for (int y = 0; y < 16; y++) {
-                for (int z = 0; z < 16; z++) {
-                    if (x == 0 || x == 15 || y == 0 || y == 15 || z == 0 || z == 15) {
-                        var d0 = (double) ((float) x / 15.0F * 2.0F - 1.0F);
-                        var d1 = (double) ((float) y / 15.0F * 2.0F - 1.0F);
-                        var d2 = (double) ((float) z / 15.0F * 2.0F - 1.0F);
-                        var d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
-                        d0 = d0 / d3;
-                        d1 = d1 / d3;
-                        d2 = d2 / d3;
-                        var f = this.size * (0.7F + this.world.random.nextFloat() * 0.6F);
-                        var blockX = this.x;
-                        var blockY = this.y;
-                        var blockZ = this.z;
-
-                        for (; f > 0.0F; f -= 0.225F) {
-                            var pos = BlockPos.containing(blockX, blockY, blockZ);
-                            var blockState = this.world.getBlockState(pos);
-                            var fluidState = this.world.getFluidState(pos);
-                            var optional = this.context.getBlockExplosionResistance(this, this.world, pos, blockState, fluidState);
-
-                            if (optional.isPresent()) {
-                                f -= (optional.get() + 0.3F) * 0.3F;
-                            }
-
-                            if (f > 0.0F && this.context.shouldBlockExplode(this, this.world, pos, blockState, f)) {
-                                set.add(pos);
-                            }
-
-                            blockX += d0 * (double) 0.3F;
-                            blockY += d1 * (double) 0.3F;
-                            blockZ += d2 * (double) 0.3F;
-                        }
-                    }
-                }
-            }
-        }
-
-        this.getToBlow().addAll(set);
-
-        var radius = this.size * 2.0F;
+        var radius = this.radius * 2.0F;
         int minX = Mth.floor(this.x - (double) radius - 1.0D);
         int maxX = Mth.floor(this.x + (double) radius + 1.0D);
         int minY = Mth.floor(this.y - (double) radius - 1.0D);
@@ -144,19 +103,24 @@ public class ProjectileExplosion extends Explosion {
             var damage = this.damage * blockDensity;
 
             if (damageDecreaseWithDistance) {
-                damage *= (1 - strength);
+                damage *= (1.0 - (distanceToExplosion / this.radius));
             }
 
             entity.hurt(this.getDamageSource(), (float)damage);
 
-            if (entity instanceof LivingEntity)
-                damage = ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity) entity, damage);
+            var baseForce = this.knockback * blockDensity;
 
-            deltaX *= knockback;
-            deltaY *= knockback;
-            deltaZ *= knockback;
+            if (entity instanceof LivingEntity) {
+                baseForce *= ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity) entity, damage);
+            }
 
+//            if (damageDecreaseWithDistance) {
+//                baseForce *= (1.0 - (distanceToExplosion / this.radius));
+//            }
 
+            deltaX *= baseForce;
+            deltaY *= baseForce;
+            deltaZ *= baseForce;
 
             entity.setDeltaMovement(entity.getDeltaMovement().add(deltaX, deltaY, deltaZ));
 
@@ -166,5 +130,50 @@ public class ProjectileExplosion extends Explosion {
                 }
             }
         }
+    }
+
+    private void blowBlocks() {
+        var set = Sets.<BlockPos>newHashSet();
+
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
+                    if (x == 0 || x == 15 || y == 0 || y == 15 || z == 0 || z == 15) {
+                        var d0 = (double) ((float) x / 15.0F * 2.0F - 1.0F);
+                        var d1 = (double) ((float) y / 15.0F * 2.0F - 1.0F);
+                        var d2 = (double) ((float) z / 15.0F * 2.0F - 1.0F);
+                        var d3 = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+                        d0 = d0 / d3;
+                        d1 = d1 / d3;
+                        d2 = d2 / d3;
+                        var f = this.radius * (0.7F + this.world.random.nextFloat() * 0.6F);
+                        var blockX = this.x;
+                        var blockY = this.y;
+                        var blockZ = this.z;
+
+                        for (; f > 0.0F; f -= 0.225F) {
+                            var pos = BlockPos.containing(blockX, blockY, blockZ);
+                            var blockState = this.world.getBlockState(pos);
+                            var fluidState = this.world.getFluidState(pos);
+                            var optional = this.context.getBlockExplosionResistance(this, this.world, pos, blockState, fluidState);
+
+                            if (optional.isPresent()) {
+                                f -= (optional.get() + 0.3F) * 0.3F;
+                            }
+
+                            if (f > 0.0F && this.context.shouldBlockExplode(this, this.world, pos, blockState, f)) {
+                                set.add(pos);
+                            }
+
+                            blockX += d0 * (double) 0.3F;
+                            blockY += d1 * (double) 0.3F;
+                            blockZ += d2 * (double) 0.3F;
+                        }
+                    }
+                }
+            }
+        }
+
+        this.getToBlow().addAll(set);
     }
 }
