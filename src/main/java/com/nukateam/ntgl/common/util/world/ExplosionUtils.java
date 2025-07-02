@@ -24,41 +24,44 @@ public class ExplosionUtils {
         return config.getRadius() > 0;
     }
 
-    public static void createExplosion(Entity entity, ExplosionConfig config) {
+    public static void createExplosion(Entity entity, ExplosionConfig config, Vec3 hitPos) {
         var world = entity.level();
         if (world.isClientSide())
             return;
 
-        var source = entity instanceof ProjectileEntity projectileEntity ? entity.damageSources().explosion(entity, projectileEntity.getShooter()) : null;
+        var source = entity instanceof ProjectileEntity projectileEntity ?
+                entity.damageSources().explosion(entity, projectileEntity.getShooter()) :
+                null;
+
         var mode = config.isDestroyBlocks() && Config.COMMON.gameplay.griefing.enableBlockRemovalOnExplosions.get() ?
                 Explosion.BlockInteraction.DESTROY :
                 Explosion.BlockInteraction.KEEP;
 
         var explosion = new ProjectileExplosion(world,
                 entity, source, null,
-                config, entity.position(),
+                config, hitPos,
                 config.getRadius(), config.isCauseFire(), mode);
 
-        if (net.minecraftforge.event.ForgeEventFactory.onExplosionStart(world, explosion))
+        if (ForgeEventFactory.onExplosionStart(world, explosion))
             return;
 
         explosion.explode();
         explosion.finalizeExplosion(true);
 
-        explosion.getToBlow().forEach(pos ->
-        {
-            if (world.getBlockState(pos).getBlock() instanceof IExplosionDamageable) {
-                ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
-            }
-        });
+//        explosion.getToBlow().forEach(pos ->
+//        {
+//            if (world.getBlockState(pos).getBlock() instanceof IExplosionDamageable) {
+//                ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
+//            }
+//        });
 
         if (!explosion.interactsWithBlocks()) {
             explosion.clearToBlow();
         }
 
-        for (ServerPlayer player : ((ServerLevel) world).players()) {
-            if (player.distanceToSqr(entity.getX(), entity.getY(), entity.getZ()) < 4096) {
-                player.connection.send(new ClientboundExplodePacket(entity.getX(), entity.getY(), entity.getZ(), config.getRadius(), explosion.getToBlow(), explosion.getHitPlayers().get(player)));
+        for (var player : ((ServerLevel) world).players()) {
+            if (player.distanceToSqr(hitPos) < 4096) {
+                player.connection.send(new ClientboundExplodePacket(hitPos.x(), hitPos.y(), hitPos.z(), config.getRadius(), explosion.getToBlow(), explosion.getHitPlayers().get(player)));
             }
         }
     }

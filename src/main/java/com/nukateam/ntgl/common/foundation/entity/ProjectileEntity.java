@@ -333,7 +333,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
      */
     protected void onExpired() {
         if(ExplosionUtils.isExplosive(projectile.getExplosion())){
-            ExplosionUtils.createExplosion(this, projectile.getExplosion());
+            ExplosionUtils.createExplosion(this, projectile.getExplosion(), position());
         }
     }
 
@@ -492,7 +492,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         PacketHandler.getPlayChannel().sendToTracking(() -> entity, new S2CMessageBlood(hitVec.x, hitVec.y, hitVec.z));
 
         doImpactEffects(hitVec);
-        onContact();
+        onContact(hitVec);
     }
 
     protected void onHitBlock(BlockState state, BlockPos pos, Direction face, double x, double y, double z) {
@@ -501,12 +501,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 new S2CMessageProjectileHitBlock(x, y, z, pos, face));
         var hitVec = new Vec3(x, y, z);
         doImpactEffects(hitVec);
-        onContact();
+        onContact(hitVec);
     }
 
-    protected void onContact() {
+    protected void onContact(Vec3 hitVec) {
         if(projectile.getExplosion().isExplodeOnContact() && ExplosionUtils.isExplosive(projectile.getExplosion())){
-            ExplosionUtils.createExplosion(this, projectile.getExplosion());
+            ExplosionUtils.createExplosion(this, projectile.getExplosion(), hitVec);
         }
     }
 

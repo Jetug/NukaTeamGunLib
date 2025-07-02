@@ -51,7 +51,7 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity {
 
     @Override
     public void onDeath() {
-        ExplosionUtils.createExplosion(this, projectile.getExplosion());
+        ExplosionUtils.createExplosion(this, projectile.getExplosion(), position());
     }
 
     @Override
