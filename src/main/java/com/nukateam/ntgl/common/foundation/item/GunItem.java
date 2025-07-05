@@ -66,7 +66,7 @@ public class GunItem extends Item implements DynamicGeoItem, IColored, IMeta, IR
     }
 
     @Override
-    public BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<GunAnimator>, GunAnimator> getAnimatorFactory() {
+    public BiFunction<ItemDisplayContext, DynamicGunRenderer<GunAnimator>, GunAnimator> getAnimatorFactory() {
         return GunAnimator::new;
     }
 

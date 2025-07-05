@@ -8,4 +8,8 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public interface IThrowable extends IConfigConsumer<ThrowableConfig> {
     ThrowableConfig getConfig();
+
+    boolean isPreparing();
+
+    int getPrepareTime();
 }

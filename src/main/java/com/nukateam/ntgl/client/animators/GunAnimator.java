@@ -63,9 +63,9 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected int meleeCooldown;
     protected int fireDelay;
 
-    public GunAnimator(ItemDisplayContext transformType, DynamicGeoItemRenderer<GunAnimator> renderer) {
+    public GunAnimator(ItemDisplayContext transformType, DynamicGunRenderer<GunAnimator> renderer) {
         super(transformType);
-        this.renderer = (DynamicGunRenderer<GunAnimator>) renderer;
+        this.renderer = renderer;
         this.arm = getArm();
 
         ClientTickHandler.addTicker(this, this::tick);

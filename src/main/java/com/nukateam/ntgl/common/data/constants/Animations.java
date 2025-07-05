@@ -17,4 +17,5 @@ public class Animations {
     public static final String HIDE = "hide";
     public static final String CHAMBER = "chamber";
     public static final String BARREL = "barrel";
+
 }

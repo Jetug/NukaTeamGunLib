@@ -11,7 +11,6 @@ import mod.azure.azurelib.model.data.EntityModelData;
 import mod.azure.azurelib.renderer.GeoObjectRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -122,7 +121,6 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
 
         animationState.setData(DataTickets.ITEM_RENDER_PERSPECTIVE, this.currentTransform);
         animationState.setData(DataTickets.ITEMSTACK, this.currentStack);
-//            animatable.getAnimatableInstanceCache().getManagerForId(instanceId).setData(DataTickets.ITEM_RENDER_PERSPECTIVE, this.currentTransform);
         animationState.setData(DataTickets.TICK, animatable.getTick(animatable));
         animationState.setData(DataTickets.ENTITY, currentEntity);
         animationState.setData(DataTickets.ENTITY_MODEL_DATA, new EntityModelData(shouldSit, false, -netHeadYaw, -headPitch));

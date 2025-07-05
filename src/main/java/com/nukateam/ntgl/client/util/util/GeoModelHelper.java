@@ -1,0 +1,13 @@
+package com.nukateam.ntgl.client.util.util;
+
+import com.nukateam.geo.interfaces.IResourceProvider;
+import net.minecraft.resources.ResourceLocation;
+
+public class GeoModelHelper {
+    public static ResourceLocation getGunResource(IResourceProvider animator, String path, String extension) {
+        var name = animator.getName();
+        var modId = animator.getNamespace();
+
+        return ResourceLocation.tryBuild(modId, path + name + extension);
+    }
+}

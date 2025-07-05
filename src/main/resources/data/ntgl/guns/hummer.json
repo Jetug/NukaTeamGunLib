@@ -1,29 +1,8 @@
 {
-  "general": {
-    "rate": 10,
-    "gripType": "ntgl:one_handed",
-    "loadingType": "magazine",
-    "maxAmmo": 6,
-    "damage": 12.0,
-    "reloadTime": 50,
-    "equipTime": 20,
-    "reloadAmount": 1,
-    "recoilAngle": 7.0,
-    "recoilKick": 0.4,
-    "recoilAdsReduction": 0.15,
-    "alwaysSpread": true,
-    "enchantable": false,
-    "renderHud": true,
-    "spread": 2.0,
-    "movementModifier": 0.5,
-    "ammo": [
-      "minecraft:stick"
-    ]
-  },
   "melee": {
     "damage": 10,
-    "time": 6,
     "delay": 4,
+    "cooldown": 20,
     "distance": 6,
     "angle": 20,
     "maxTargets": 1,
@@ -31,6 +10,7 @@
 
     "reloadTime": 50,
     "enchantable": false,
+    "renderHud": true,
     "equipTime": 20,
     "movementModifier": 0.5,
     "ammo": [

@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.client.model.gun;
 
-import com.nukateam.geo.interfaces.IResourceProvider;
-import com.nukateam.ntgl.client.animators.GunAnimator;
+import com.nukateam.ntgl.client.animators.GrenadeAnimator;
 import com.nukateam.ntgl.client.model.IGlowingModel;
 import com.nukateam.ntgl.client.util.util.GeoModelHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -9,12 +8,12 @@ import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
-public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements IGlowingModel<T> {
-    public static final GeoGunModel<GunAnimator> INSTANCE = new GeoGunModel<>();
+public class GeoGrenadeModel<T extends GrenadeAnimator> extends GeoModel<T> implements IGlowingModel<T> {
+    public static final GeoGrenadeModel<GrenadeAnimator> INSTANCE = new GeoGrenadeModel<>();
 
     @Override
     public ResourceLocation getModelResource(T animator) {
-        return GeoModelHelper.getGunResource(animator, "geo/guns/", ".geo.json");
+        return GeoModelHelper.getGunResource(animator, "geo/throwable/", ".geo.json");
     }
 
     @Override
@@ -23,14 +22,14 @@ public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements I
         var variant = GunItem.getVariant(animator.getStack());
         var resource = textures.containsKey(variant) ?
                 textures.get(variant) :
-                GeoModelHelper.getGunResource(animator, "textures/guns/" + animator.getName() + "/", ".png".formatted());
+                GeoModelHelper.getGunResource(animator, "textures/throwable/" + animator.getName() + "/", ".png");
 
         return resource;
     }
 
     @Override
     public ResourceLocation getAnimationResource(T animator) {
-        return GeoModelHelper.getGunResource(animator, "animations/guns/", ".animation.json");
+        return GeoModelHelper.getGunResource(animator, "animations/throwable/", ".animation.json");
     }
 
     @Override
@@ -42,6 +41,6 @@ public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements I
     public ResourceLocation getGlowingTextureResource(T animator) {
         var name = animator.getName();
         var modId = animator.getNamespace();
-        return ResourceLocation.tryBuild(modId, "textures/guns/" + name + "/" + name + "_glowmask" + ".png");
+        return ResourceLocation.tryBuild(modId, "textures/throwable/" + name + "/" + name + "_glowmask" + ".png");
     }
 }

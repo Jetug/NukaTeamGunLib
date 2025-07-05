@@ -1,23 +1,44 @@
 package com.nukateam.ntgl.common.foundation.item;
 
+import com.nukateam.geo.interfaces.DynamicGeoItem;
+import com.nukateam.geo.render.DynamicGeoItemRenderer;
+import com.nukateam.ntgl.client.animators.GrenadeAnimator;
+import com.nukateam.ntgl.client.model.gun.GeoGrenadeModel;
+import com.nukateam.ntgl.client.render.renderers.gun.DynamicGrenadeRenderer;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
+import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
-import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.foundation.entity.ThrowableGrenadeEntity;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
+import mod.azure.azurelib.core.animation.AnimatableManager;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Lazy;
 
-public class GrenadeItem extends Item implements IThrowable {
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
+
+import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
+
+public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     protected int maxCookTime;
     private ThrowableConfig projectile = new ThrowableConfig();
+    private final Lazy<DynamicGrenadeRenderer> RENDERER = Lazy.of(() -> new DynamicGrenadeRenderer(new GeoGrenadeModel()));
+    protected final AnimatableInstanceCache cache = createInstanceCache(this);
+    private boolean isPreparing = false;
 
     public GrenadeItem(Item.Properties properties, int maxCookTime) {
         super(properties);
@@ -34,9 +55,32 @@ public class GrenadeItem extends Item implements IThrowable {
         projectile = supplier.getConfig();
     }
 
+    private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
+
+    @Override
+    public Supplier<Object> getRenderProvider() {
+        return renderProvider;
+    }
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public DynamicGeoItemRenderer getRenderer() {
+        return RENDERER.get();
+    }
+
+    @Override
+    public BiFunction<ItemDisplayContext, DynamicGrenadeRenderer<GrenadeAnimator>, GrenadeAnimator> getAnimatorFactory() {
+        return GrenadeAnimator::new;
+    }
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
+
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+        return UseAnim.NONE;
     }
 
     @Override
@@ -48,26 +92,34 @@ public class GrenadeItem extends Item implements IThrowable {
     public void onUseTick(Level level, LivingEntity player, ItemStack stack, int count) {
         if (!this.canCook()) return;
 
-//        int duration = this.getUseDuration(stack) - count;
-//        if (duration == 10)
-//            player.level().playLocalSound(
-//                    player.getX(),
-//                    player.getY(),
-//                    player.getZ(),
-//                    ModSounds.ITEM_GRENADE_PIN.get(),
-//                    SoundSource.PLAYERS,
-//                    1.0F, 1.0F, false);
+        int duration = this.getUseDuration(stack) - count;
+        if(duration < getPrepareTime()) {
+            isPreparing = true;
+        }
+        else {
+            isPreparing = false;
+        }
+        if (duration == getPrepareTime())
+            player.level().playLocalSound(
+                    player.getX(),
+                    player.getY(),
+                    player.getZ(),
+                    ModSounds.ITEM_GRENADE_PIN.get(),
+                    SoundSource.PLAYERS,
+                    1.0F, 1.0F, false);
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-        ItemStack stack = playerIn.getItemInHand(handIn);
+        var stack = playerIn.getItemInHand(handIn);
         playerIn.startUsingItem(handIn);
         return InteractionResultHolder.consume(stack);
     }
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
+        isPreparing = false;
+
         if (this.canCook() && !worldIn.isClientSide()) {
             if (!(entityLiving instanceof Player) || !((Player) entityLiving).isCreative())
                 stack.shrink(1);
@@ -82,9 +134,11 @@ public class GrenadeItem extends Item implements IThrowable {
 
     @Override
     public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+        isPreparing = false;
+
         if (!worldIn.isClientSide()) {
             int duration = this.getUseDuration(stack) - timeLeft;
-            if (duration >= 10) {
+            if (duration >= getPrepareTime()) {
                 if (!(entityLiving instanceof Player) || !((Player) entityLiving).isCreative())
                     stack.shrink(1);
                 var grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
@@ -96,6 +150,14 @@ public class GrenadeItem extends Item implements IThrowable {
                 }
             }
         }
+    }
+
+    public boolean isPreparing(){
+        return this.isPreparing;
+    }
+
+    public int getPrepareTime() {
+        return 10;
     }
 
     public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft) {
