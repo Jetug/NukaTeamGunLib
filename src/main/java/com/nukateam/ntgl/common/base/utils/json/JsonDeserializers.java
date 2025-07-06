@@ -27,6 +27,7 @@ public class JsonDeserializers {
     public static final JsonDeserializer<ResourceLocation> RESOURCE_LOCATION = (json, typeOfT, context) -> ResourceLocation.tryParse(json.getAsString());
     public static final JsonDeserializer<GripType> GRIP_TYPE = (json, typeOfT, context) -> GripType.getType(ResourceLocation.tryParse(json.getAsString()));
     public static final JsonDeserializer<LoadingType> LOADING_TYPE = (json, typeOfT, context) -> LoadingType.getType(json.getAsString());
+    public static final JsonDeserializer<WeaponMode> WEAPON_MODE = (json, typeOfT, context) -> WeaponMode.getType(json.getAsString());
     public static final JsonDeserializer<FuelType> SECONDARY_AMMO_TYPE = (json, typeOfT, context) -> FuelType.getType(json.getAsString());
     public static final JsonDeserializer<ResourceKey<DamageType>> DAMAGE_TYPE = (json, typeOfT, context) -> getDamageTypeResourceKey(json.getAsString());
 
@@ -41,6 +42,7 @@ public class JsonDeserializers {
         builder.registerTypeAdapter(ResourceLocation.class, RESOURCE_LOCATION);
         builder.registerTypeAdapter(GripType.class, GRIP_TYPE);
         builder.registerTypeAdapter(LoadingType.class, LOADING_TYPE);
+        builder.registerTypeAdapter(WeaponMode.class, WEAPON_MODE);
         builder.registerTypeAdapter(FuelType.class, SECONDARY_AMMO_TYPE);
         builder.registerTypeAdapter(FireMode.class, FIRE_MODE);
         builder.registerTypeAdapter(AttachmentType.class, ATTACHMENT_TYPE);

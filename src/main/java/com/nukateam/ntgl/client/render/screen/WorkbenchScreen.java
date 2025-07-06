@@ -1,8 +1,9 @@
 package com.nukateam.ntgl.client.render.screen;
 
-import com.nukateam.ntgl.common.util.interfaces.IMeleeWeapon;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IMelee;
+import com.nukateam.ntgl.common.util.interfaces.IMeleeWeapon;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -447,7 +448,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 weapons.add(recipe);
             } else if (output.getItem() instanceof IAttachment) {
                 attachments.add(recipe);
-            } else if(output.getItem() instanceof IMeleeWeapon){
+            } else if(output.getItem() instanceof IMeleeWeapon || output.getItem() instanceof IMelee){
                 melee.add(recipe);
             } else if (this.isAmmo(output)) {
                 ammo.add(recipe);
