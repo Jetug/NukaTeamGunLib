@@ -1,7 +1,8 @@
-package com.nukateam.ntgl.common.data.config.gun;
+package com.nukateam.ntgl.common.data.config;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+import com.nukateam.ntgl.common.base.holders.MeleeMode;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import net.minecraft.nbt.CompoundTag;
@@ -16,8 +17,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class MeleeGeneral implements INBTSerializable<CompoundTag>, IEditorMenu {
-    public static final String DAMAGE = "Damage";
+public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
+    public static final String DAMAGE = "damage";
+    public static final String MODE = "mode";
     public static final String COOLDOWN = "cooldown";
     public static final String DELAY = "delay";
     public static final String DISTANCE = "distance";
@@ -25,6 +27,7 @@ public class MeleeGeneral implements INBTSerializable<CompoundTag>, IEditorMenu 
     public static final String KNOCKBACK = "knockback";
     public static final String MAX_TARGETS = "maxTargets";
 
+    private MeleeMode mode = MeleeMode.SINGLE;
     private float damage = 1;
     private int cooldown = 0;
     private int delay = 0;
@@ -37,6 +40,7 @@ public class MeleeGeneral implements INBTSerializable<CompoundTag>, IEditorMenu 
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.putFloat(DAMAGE, this.damage);
+        tag.putString(MODE, this.mode.toString());
         tag.putInt(COOLDOWN, this.cooldown);
         tag.putInt(DELAY, this.delay);
         tag.putFloat(DISTANCE, this.distance);
@@ -48,6 +52,9 @@ public class MeleeGeneral implements INBTSerializable<CompoundTag>, IEditorMenu 
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
+        if (tag.contains(MODE, Tag.TAG_STRING)) {
+            this.mode = MeleeMode.getType(tag.getString(MODE));
+        }
         if (tag.contains(DAMAGE, Tag.TAG_ANY_NUMERIC)) {
             this.damage = tag.getFloat(DAMAGE);
         }
@@ -74,7 +81,8 @@ public class MeleeGeneral implements INBTSerializable<CompoundTag>, IEditorMenu 
     public JsonObject toJsonObject() {
         Preconditions.checkArgument(this.damage >= 0.0F, "Damage must be more than or equal to zero");
         var object = new JsonObject();
-        object.addProperty("damage", this.damage);
+        object.addProperty(DAMAGE, this.damage);
+        object.addProperty(MODE, this.mode.toString());
         object.addProperty(COOLDOWN, this.cooldown);
         object.addProperty(DELAY, this.delay);
         object.addProperty(DISTANCE, this.distance);
@@ -84,9 +92,10 @@ public class MeleeGeneral implements INBTSerializable<CompoundTag>, IEditorMenu 
         return object;
     }
 
-    public MeleeGeneral copy() {
-        var projectile = new MeleeGeneral();
+    public Melee copy() {
+        var projectile = new Melee();
         projectile.damage = this.damage;
+        projectile.mode = this.mode;
         projectile.cooldown = this.cooldown;
         projectile.delay = this.delay;
         projectile.distance = this.distance;
@@ -101,6 +110,10 @@ public class MeleeGeneral implements INBTSerializable<CompoundTag>, IEditorMenu 
      */
     public float getDamage() {
         return this.damage;
+    }
+
+    public MeleeMode getMode() {
+        return mode;
     }
 
     public int getCooldown() {
@@ -127,8 +140,8 @@ public class MeleeGeneral implements INBTSerializable<CompoundTag>, IEditorMenu 
         return angle;
     }
 
-    public static MeleeGeneral create(CompoundTag tag) {
-        var general = new MeleeGeneral();
+    public static Melee create(CompoundTag tag) {
+        var general = new Melee();
         general.deserializeNBT(tag);
         return general;
     }
@@ -156,49 +169,49 @@ public class MeleeGeneral implements INBTSerializable<CompoundTag>, IEditorMenu 
     }
 
     public static class Builder {
-        private final MeleeGeneral projectile;
+        private final Melee projectile;
 
         private Builder() {
-            this.projectile = new MeleeGeneral();
+            this.projectile = new Melee();
         }
 
-        private Builder(MeleeGeneral projectile) {
+        private Builder(Melee projectile) {
             this.projectile = projectile.copy();
         }
 
-        public static MeleeGeneral.Builder create() {
-            return new MeleeGeneral.Builder();
+        public static Melee.Builder create() {
+            return new Melee.Builder();
         }
 
-        public static MeleeGeneral.Builder create(MeleeGeneral projectile) {
-            return new MeleeGeneral.Builder(projectile);
+        public static Melee.Builder create(Melee projectile) {
+            return new Melee.Builder(projectile);
         }
 
-        public MeleeGeneral build() {
+        public Melee build() {
             return this.projectile.copy(); //Copy since the builder could be used again
         }
 
-        public MeleeGeneral.Builder setDamage(ResourceLocation id, float damage) {
+        public Melee.Builder setDamage(ResourceLocation id, float damage) {
             this.projectile.damage = damage;
             return this;
         }
 
-        public MeleeGeneral.Builder setDistance(float distance) {
+        public Melee.Builder setDistance(float distance) {
             this.projectile.distance = distance;
             return this;
         }
 
-        public MeleeGeneral.Builder setKnockback(float knockback) {
+        public Melee.Builder setKnockback(float knockback) {
             this.projectile.knockback = knockback;
             return this;
         }
 
-        public MeleeGeneral.Builder setMaxTargets(int maxTargets) {
+        public Melee.Builder setMaxTargets(int maxTargets) {
             this.projectile.maxTargets = maxTargets;
             return this;
         }
 
-        public MeleeGeneral.Builder setAttackRadius(float attackRadius) {
+        public Melee.Builder setAttackRadius(float attackRadius) {
             this.projectile.angle = attackRadius;
             return this;
         }

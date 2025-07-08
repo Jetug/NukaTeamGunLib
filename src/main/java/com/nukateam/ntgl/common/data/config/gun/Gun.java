@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.config.Melee;
 import com.nukateam.ntgl.common.data.config.Projectile;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
@@ -59,7 +60,7 @@ import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String ATTACHMENTS = "Attachments";
     protected General general = new General();
-    protected MeleeGeneral melee = new MeleeGeneral();
+    protected Melee melee = new Melee();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected Display display = new Display();
     protected Modules modules = new Modules();
@@ -104,7 +105,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.general;
     }
 
-    public MeleeGeneral getMelee() {
+    public Melee getMelee() {
         return this.melee;
     }
 

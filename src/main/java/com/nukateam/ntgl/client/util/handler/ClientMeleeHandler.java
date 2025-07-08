@@ -2,15 +2,22 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.base.holders.MeleeMode;
+import com.nukateam.ntgl.common.base.holders.WeaponMode;
+import com.nukateam.ntgl.common.event.MeleeAttackEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageMeleeAttack;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,12 +25,15 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.nukateam.ntgl.client.util.handler.ShootingHandler.isInGame;
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canRenderInOffhand;
+
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientMeleeHandler {
     private static final Map<Pair<LivingEntity, InteractionHand>, ClientMeleeHandler> TRACKER_MAP = new HashMap<>();
     private final InteractionHand arm;
-    private int meleeTick;
+    private int delayTick;
     private int cooldownTick;
 
     private ClientMeleeHandler(LivingEntity entity, InteractionHand arm) {
@@ -31,7 +41,7 @@ public class ClientMeleeHandler {
         var stack = entity.getItemInHand(arm);
         var data = new GunData(stack, entity);
         this.cooldownTick = GunModifierHelper.getMeleeCooldown(data);
-        this.meleeTick = GunModifierHelper.getMeleeDelay(data);
+        this.delayTick = GunModifierHelper.getMeleeDelay(data);
     }
 
     public static void addTracker(LivingEntity entity, InteractionHand arm) {
@@ -50,11 +60,81 @@ public class ClientMeleeHandler {
     }
 
     @SubscribeEvent
+    public static void onPostClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END)
+            return;
+
+        if (!isInGame()) return;
+
+        var mc = Minecraft.getInstance();
+        var player = mc.player;
+
+        assert player != null;
+        var mainHandItem = player.getMainHandItem();
+        var offhandItem = player.getOffhandItem();
+
+        if (mainHandItem.getItem() instanceof GunItem){
+            if(isKeyAttackDown()){
+                handleAutoFire(player, mainHandItem, InteractionHand.MAIN_HAND);
+            }
+        }
+
+        if (offhandItem.getItem() instanceof GunItem && canRenderInOffhand(player)){
+            if(isUseKeyDown()) {
+                handleAutoFire(player, offhandItem, InteractionHand.OFF_HAND);
+            }
+        }
+    }
+
+    private static void handleAutoFire(LocalPlayer player, ItemStack heldItem, InteractionHand arm) {
+        var mc = Minecraft.getInstance();
+        var key = arm == InteractionHand.MAIN_HAND ?
+                mc.options.keyAttack :
+                mc.options.keyUse;
+
+        attack(player, heldItem);
+
+        if(heldItem.getItem() instanceof GunItem gunItem){
+            var mode = gunItem.getGun().getMelee().getMode();
+            if (mode == MeleeMode.SINGLE) {
+                key.setDown(false);
+            }
+        }
+    }
+
+    private static void attack(LivingEntity shooter, ItemStack heldItem) {
+        if (heldItem.getItem() instanceof GunItem gunItem
+                && gunItem.getGun().getGeneral().getWeaponMode() == WeaponMode.MELEE
+                && !shooter.isSpectator()) {
+
+            var isMainHand = shooter.getMainHandItem() == heldItem;
+            var hand = isMainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+
+            if (MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(shooter, heldItem, hand)))
+                return;
+
+            var key = new Pair<>(shooter, hand);
+
+            if(!TRACKER_MAP.containsKey(key)) {
+                addTracker(shooter, hand);
+            }
+        }
+    }
+
+    private static boolean isKeyAttackDown() {
+        return Minecraft.getInstance().options.keyAttack.isDown();
+    }
+
+    private static boolean isUseKeyDown() {
+        return Minecraft.getInstance().options.keyUse.isDown();
+    }
+
+    @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         try {
             if (event.phase == TickEvent.Phase.START) {
                 for (var pair: TRACKER_MAP.keySet()) {
-                    onEntityTick(pair.getFirst());
+                    onEntityTick(pair.getFirst(), pair.getSecond());
                 }
             }
         }
@@ -63,23 +143,14 @@ public class ClientMeleeHandler {
         }
     }
 
-    private static void onEntityTick(LivingEntity entity) {
-//        if (ModSyncedDataKeys.MELEE_RIGHT.getValue(entity)) {
-            handTick(entity, InteractionHand.MAIN_HAND);
-//        }
-//        if (ModSyncedDataKeys.MELEE_LEFT.getValue(entity)) {
-            handTick(entity, InteractionHand.OFF_HAND);
-//        }
-    }
-
-    private static void handTick(LivingEntity shooter, InteractionHand arm) {
-        var tracker = TRACKER_MAP.get(Pair.of(shooter, arm));
-        if(tracker.meleeTick > 0) {
-            tracker.meleeTick--;
+    private static void onEntityTick(LivingEntity shooter, InteractionHand hand) {
+        var tracker = TRACKER_MAP.get(Pair.of(shooter, hand));
+        if(tracker.delayTick > 0) {
+            tracker.delayTick--;
         } else if(tracker.cooldownTick > 0){
             tracker.cooldownTick--;
         } else if(tracker.cooldownTick == 0){
-            stopMelee(shooter, arm);
+            stopMelee(shooter, hand);
         }
     }
 
@@ -89,7 +160,7 @@ public class ClientMeleeHandler {
 
     public static boolean isOnDelay(LivingEntity shooter, InteractionHand hand){
         var key = Pair.of(shooter, hand);
-        return TRACKER_MAP.containsKey(key) && TRACKER_MAP.get(key).meleeTick > 0;
+        return TRACKER_MAP.containsKey(key) && TRACKER_MAP.get(key).delayTick > 0;
     }
 
     public static boolean isOnCooldown(LivingEntity shooter, InteractionHand hand){

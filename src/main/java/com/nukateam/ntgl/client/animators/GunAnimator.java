@@ -131,8 +131,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected boolean isOneHanded(ItemStack stack) {
-        return stack.getItem() instanceof GunItem
-                && GunModifierHelper.getGripType(getGunData()) == GripType.ONE_HANDED;
+        return stack.getItem() instanceof GunItem && GunModifierHelper.getGripType(getGunData()).isOneHanded();
     }
 
     @NotNull

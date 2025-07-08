@@ -4,7 +4,6 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.IHeldAnimation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
@@ -34,10 +33,10 @@ public class OneHandedPose implements IHeldAnimation {
         var flip = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT;
         var stack = entity.getItemInHand(InteractionHand.MAIN_HAND);
         var right = hand == InteractionHand.MAIN_HAND;
-        var isOneHanded = stack.getItem() instanceof GunItem
-                && GunModifierHelper.getGripType(new GunData(stack, entity)) != GripType.ONE_HANDED;
+        var isNotOneHanded = stack.getItem() instanceof GunItem
+                && !GunModifierHelper.getGripType(new GunData(stack, entity)).isOneHanded();
 
-        if(!right && isOneHanded)
+        if(!right && isNotOneHanded)
             return;
 
         var arm = right ? rightArm : leftArm;

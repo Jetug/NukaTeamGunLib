@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.data.config.gun.General;
-import com.nukateam.ntgl.common.data.config.gun.MeleeGeneral;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.util.annotation.Ignored;
@@ -27,7 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public class MeleeWeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
-    protected MeleeGeneral melee = new MeleeGeneral();
+    protected Melee melee = new Melee();
     protected General general = new General();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
@@ -60,7 +59,7 @@ public class MeleeWeaponConfig implements INBTSerializable<CompoundTag>, IEditor
             this.general = General.create(tag.getCompound("General"));
         }
         if (tag.contains("Melee", Tag.TAG_COMPOUND)) {
-            this.melee = MeleeGeneral.create(tag.getCompound("Melee"));
+            this.melee = Melee.create(tag.getCompound("Melee"));
         }
         if (tag.contains("Sounds", Tag.TAG_COMPOUND)) {
             this.sounds = deserializeSounds(tag.getCompound("Sounds"));
@@ -93,7 +92,7 @@ public class MeleeWeaponConfig implements INBTSerializable<CompoundTag>, IEditor
         return general;
     }
 
-    public MeleeGeneral getMelee() {
+    public Melee getMelee() {
         return melee;
     }
 

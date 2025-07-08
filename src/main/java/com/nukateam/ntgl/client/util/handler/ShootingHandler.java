@@ -4,6 +4,7 @@ import com.ibm.icu.impl.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.holders.FireMode;
 import com.nukateam.ntgl.common.base.holders.GripType;
+import com.nukateam.ntgl.common.base.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -43,14 +44,13 @@ import static net.minecraftforge.event.TickEvent.Type.RENDER;
 public class ShootingHandler {
     private static ShootingHandler instance;
     public static float shootMsGap = 0F;
+    private boolean shooting;
 
     private final HashMap<Pair<InteractionHand, LivingEntity>, Integer> entityShootGaps = new HashMap<>();
     private final Map<InteractionHand, ShootingData> shootingData = Map.of(
             InteractionHand.MAIN_HAND, new ShootingData(0, null),
             InteractionHand.OFF_HAND, new ShootingData(0, null)
     );
-
-    private boolean shooting;
 
     private ShootingHandler() {}
 
@@ -86,7 +86,7 @@ public class ShootingHandler {
                 player.getMainHandItem() :
                 player.getOffhandItem();
 
-        if (heldItem.getItem() instanceof GunItem gunItem) {
+        if (heldItem.getItem() instanceof GunItem) {
             if (event.getAction() == GLFW.GLFW_PRESS) {
                 if (isRightHand) {
                     setupShootingData(heldItem, player, InteractionHand.MAIN_HAND);
@@ -120,7 +120,6 @@ public class ShootingHandler {
             var heldItem = player.getMainHandItem();
 
             if (heldItem.getItem() instanceof GunItem) {
-//                setupShootingData(heldItem, gunItem, InteractionHand.MAIN_HAND);
                 handleGunInput(event);
             }
         } else if (event.isUseItem()) {
@@ -128,7 +127,6 @@ public class ShootingHandler {
             var offhandItem = player.getOffhandItem();
 
             if (offhandItem.getItem() instanceof GunItem && canRenderInOffhand(player)) {
-//                setupShootingData(offhandItem, gunItem, InteractionHand.OFF_HAND);
                 handleGunInput(event);
                 return;
             }
@@ -137,7 +135,7 @@ public class ShootingHandler {
                 if (event.getHand() == InteractionHand.OFF_HAND) {
                     // Allow shields to be used if weapon is one-handed
                     if (offhandItem.getItem() == Items.SHIELD) {
-                        if (GunModifierHelper.getGripType(new GunData(mainHandItem, player)) == GripType.ONE_HANDED) {
+                        if (GunModifierHelper.getGripType(new GunData(mainHandItem, player)).isOneHanded()) {
                             return;
                         }
                     }
@@ -171,13 +169,11 @@ public class ShootingHandler {
         if (mainHandItem.getItem() instanceof GunItem){
             if(isKeyAttackDown())
                 handleAutoFire(player, mainHandItem, InteractionHand.MAIN_HAND);
-//           else setupShootingData(mainHandItem, gunItem, InteractionHand.MAIN_HAND);
         }
 
         if (offhandItem.getItem() instanceof GunItem && canRenderInOffhand(player)){
             if(isUseKeyDown())
                 handleAutoFire(player, offhandItem, InteractionHand.OFF_HAND);
-//            else setupShootingData(mainHandItem, gunItem, InteractionHand.OFF_HAND);
         }
     }
 
@@ -259,57 +255,46 @@ public class ShootingHandler {
         return getCooldown(entity, arm) > 0;
     }
 
-    @Deprecated
-    public boolean isShooting(){
-        return shooting;
-    }
-
     public static float calcShootTickGap(int rpm) {
         float shootTickGap = 60F / rpm * 20F;
         return shootTickGap;
     }
 
     public void fire(LivingEntity shooter, ItemStack heldItem) {
-        if (!(heldItem.getItem() instanceof GunItem)) return;
-        if (!Gun.hasAmmo(heldItem)) return;
-        if (!Gun.hasAmmo(heldItem) && shooter instanceof Player player && !player.isCreative()) return;
-        if (shooter.isSpectator()) return;
+        if (heldItem.getItem() instanceof GunItem gunItem
+                && (Gun.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))
+                && gunItem.getGun().getGeneral().getWeaponMode() == WeaponMode.GUN
+                && !shooter.isSpectator()) {
+            var isMainHand = shooter.getMainHandItem() == heldItem;
+            var hand = isMainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+            var shootGap = entityShootGaps.getOrDefault(Pair.of(hand, shooter), 0);
 
-        // CHECK HERE: Restrict the fire rate
+            if (shootGap <= 0) {
+                if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand)))
+                    return;
 
-        var isMainHand = shooter.getMainHandItem() == heldItem;
-        var hand = isMainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-        var shootGap = entityShootGaps.getOrDefault(Pair.of(hand, shooter), 0);
-        var data = shootingData.get(hand);
+                // CHECK HERE: Change this to test different rpm settings.
+                // TODO: Test serverside, possible issues 0.3.4-alpha
+                var gunData = new GunData(heldItem, shooter);
+                final var rpm = GunModifierHelper.getRate(gunData); // Rounds per sec. Should come from gun properties in the end.
+                shootGap += rpm;
+                entityShootGaps.put(Pair.of(hand, shooter), shootGap);
+                shootMsGap = calcShootTickGap(rpm);
+                RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
+                RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
 
-        if (shootGap <= 0) {
-            var gunItem = (GunItem) heldItem.getItem();
-            var modifiedGun = gunItem.getModifiedGun(heldItem);
+                try {
+                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
+                            shooter.getViewXRot(1),
+                            RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, isMainHand));
+                } catch (NullPointerException e) {
+                    Ntgl.LOGGER.error(e.getMessage(), e);
+                }
 
-            if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand)))
-                return;
-
-            // CHECK HERE: Change this to test different rpm settings.
-            // TODO: Test serverside, possible issues 0.3.4-alpha
-            var gunData = new GunData(heldItem, shooter);
-            final var rpm = GunModifierHelper.getRate(gunData); // Rounds per sec. Should come from gun properties in the end.
-            shootGap += rpm;
-            entityShootGaps.put(Pair.of(hand, shooter), shootGap);
-            shootMsGap = calcShootTickGap(rpm);
-            RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
-            RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
-
-            try{
-                PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
-                        shooter.getViewXRot(1),
-                        RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, isMainHand));
+                MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
             }
-            catch (NullPointerException e){
-                Ntgl.LOGGER.error(e.getMessage(), e);
-            }
-//            if (Config.CLIENT.controls.burstPress.get()) this.burstTracker--;
-//            else this.burstTracker++;
-            MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
+        } else {
+            return;
         }
     }
 
@@ -356,6 +341,10 @@ public class ShootingHandler {
         var fireMode =  GunStateHelper.getFireMode(gunData);
         var maxChargeTime = GunModifierHelper.getFireDelay(gunData);
 
+        if (!(heldItem.getItem() instanceof GunItem gunItem) || gunItem.getGun().getGeneral().getWeaponMode() != WeaponMode.GUN) {
+            return;
+        }
+
         if (maxChargeTime != 0) {
             var isOnCooldown = ShootingHandler.get().isOnCooldown(player, arm);
 
@@ -366,10 +355,10 @@ public class ShootingHandler {
                 data.fireTimer--;
             } else {
                 this.fire(player, heldItem);
-                if(data.fireTimer == 0 && !GunModifierHelper.isOneTimeCharge(gunData))
+                if (data.fireTimer == 0 && !GunModifierHelper.isOneTimeCharge(gunData))
                     setupShootingData(heldItem, player, arm);
                 if (maxChargeTime > 0) {
-                    if(fireMode != FireMode.AUTO)
+                    if (fireMode != FireMode.AUTO)
                         key.setDown(false);
                 }
             }
