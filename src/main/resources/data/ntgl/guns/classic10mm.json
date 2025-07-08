@@ -16,13 +16,14 @@
     "enchantable": false,
     "renderHud": true,
     "spread": 2.0,
-    "movementModifier": 0.5,
+    "movementModifier": -0.5,
     "melee": true,
     "ammo": [
       "minecraft:stick"
     ]
   },
   "melee": {
+    "mode": "ntgl:single",
     "damage": 10,
     "delay": 4,
     "cooldown": 20,

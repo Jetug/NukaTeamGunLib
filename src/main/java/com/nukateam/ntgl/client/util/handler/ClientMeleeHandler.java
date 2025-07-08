@@ -44,6 +44,16 @@ public class ClientMeleeHandler {
         this.delayTick = GunModifierHelper.getMeleeDelay(data);
     }
 
+    public static boolean isOnDelay(LivingEntity shooter, InteractionHand hand){
+        var key = Pair.of(shooter, hand);
+        return TRACKER_MAP.containsKey(key) && TRACKER_MAP.get(key).delayTick > 0;
+    }
+
+    public static boolean isOnCooldown(LivingEntity shooter, InteractionHand hand){
+        var key = Pair.of(shooter, hand);
+        return TRACKER_MAP.containsKey(key) && TRACKER_MAP.get(key).cooldownTick > 0;
+    }
+
     public static void addTracker(LivingEntity entity, InteractionHand arm) {
         var doMelee = ModSyncedDataKeys.getDoMelee(arm);
         var gun = entity.getItemInHand(arm);
@@ -86,6 +96,20 @@ public class ClientMeleeHandler {
         }
     }
 
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        try {
+            if (event.phase == TickEvent.Phase.START) {
+                for (var pair: TRACKER_MAP.keySet()) {
+                    onEntityTick(pair.getFirst(), pair.getSecond());
+                }
+            }
+        }
+        catch (Exception e){
+            Ntgl.LOGGER.error(e.getMessage(), e);
+        }
+    }
+
     private static void handleAutoFire(LocalPlayer player, ItemStack heldItem, InteractionHand arm) {
         var mc = Minecraft.getInstance();
         var key = arm == InteractionHand.MAIN_HAND ?
@@ -94,7 +118,7 @@ public class ClientMeleeHandler {
 
         attack(player, heldItem);
 
-        if(heldItem.getItem() instanceof GunItem gunItem){
+        if(heldItem.getItem() instanceof GunItem gunItem && isMelee(heldItem, player)){
             var mode = gunItem.getGun().getMelee().getMode();
             if (mode == MeleeMode.SINGLE) {
                 key.setDown(false);
@@ -103,8 +127,8 @@ public class ClientMeleeHandler {
     }
 
     private static void attack(LivingEntity shooter, ItemStack heldItem) {
-        if (heldItem.getItem() instanceof GunItem gunItem
-                && gunItem.getGun().getGeneral().getWeaponMode() == WeaponMode.MELEE
+        if (heldItem.getItem() instanceof GunItem
+                && isMelee(heldItem, shooter)
                 && !shooter.isSpectator()) {
 
             var isMainHand = shooter.getMainHandItem() == heldItem;
@@ -129,20 +153,6 @@ public class ClientMeleeHandler {
         return Minecraft.getInstance().options.keyUse.isDown();
     }
 
-    @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
-        try {
-            if (event.phase == TickEvent.Phase.START) {
-                for (var pair: TRACKER_MAP.keySet()) {
-                    onEntityTick(pair.getFirst(), pair.getSecond());
-                }
-            }
-        }
-        catch (Exception e){
-            Ntgl.LOGGER.error(e.getMessage(), e);
-        }
-    }
-
     private static void onEntityTick(LivingEntity shooter, InteractionHand hand) {
         var tracker = TRACKER_MAP.get(Pair.of(shooter, hand));
         if(tracker.delayTick > 0) {
@@ -154,17 +164,12 @@ public class ClientMeleeHandler {
         }
     }
 
+
     private static void stopMelee(LivingEntity entity, InteractionHand arm) {
         TRACKER_MAP.remove(Pair.of(entity, arm));
     }
 
-    public static boolean isOnDelay(LivingEntity shooter, InteractionHand hand){
-        var key = Pair.of(shooter, hand);
-        return TRACKER_MAP.containsKey(key) && TRACKER_MAP.get(key).delayTick > 0;
-    }
-
-    public static boolean isOnCooldown(LivingEntity shooter, InteractionHand hand){
-        var key = Pair.of(shooter, hand);
-        return TRACKER_MAP.containsKey(key) && TRACKER_MAP.get(key).cooldownTick > 0;
+    private static boolean isMelee(ItemStack heldItem, LivingEntity entity) {
+        return GunModifierHelper.getWeaponMode(new GunData(heldItem, entity)) == WeaponMode.MELEE;
     }
 }

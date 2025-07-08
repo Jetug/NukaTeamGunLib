@@ -4,7 +4,12 @@ import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.utils.EquipTracker;
 import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
@@ -16,30 +21,48 @@ import java.util.*;
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class PlayerEventHandler {
     private static final Map<Pair<InteractionHand, Player>, ItemStack> lastSelectedSlots = new HashMap<>();
+    public static final UUID SPEED_MODIFIER_ID = UUID.fromString("a1b2c3d4-5e6f-7890-1234-567890abcdef");
+    public static final String MOVEMENT_SPEED = "custom_movement_speed";
+
+    @SubscribeEvent
+    public static void onPlayerTick2(TickEvent.PlayerTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
+            var player = event.player;
+            var heldItem = player.getMainHandItem();
+            var movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+
+            if (movementSpeed != null) {
+                movementSpeed.removeModifier(SPEED_MODIFIER_ID);
+
+                if (heldItem.getItem() instanceof GunItem) {
+                    movementSpeed.removeModifier(SPEED_MODIFIER_ID);
+                    movementSpeed.addTransientModifier(new AttributeModifier(
+                            SPEED_MODIFIER_ID,
+                            MOVEMENT_SPEED,
+                            GunModifierHelper.getModifiedMovementSpeed(new GunData(heldItem, player)),
+                            AttributeModifier.Operation.MULTIPLY_BASE
+                    ));
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if(event.phase == TickEvent.Phase.START || event.side == LogicalSide.CLIENT) return;
-
-        var player = event.player;
-        var mainHandKey = new Pair<>(InteractionHand.MAIN_HAND, player);
-        var offHandKey  = new Pair<>(InteractionHand.OFF_HAND , player);
-
-        tryEquip(mainHandKey, player.getMainHandItem());
-        tryEquip(offHandKey , player.getOffhandItem ());
+        if (event.phase == TickEvent.Phase.END && event.side == LogicalSide.SERVER) {
+            tryEquip(event.player, InteractionHand.MAIN_HAND);
+            tryEquip(event.player, InteractionHand.OFF_HAND);
+        }
     }
 
-    private static void tryEquip(Pair<InteractionHand, Player> key, ItemStack newItem) {
+    private static void tryEquip(Player player, InteractionHand hand) {
+        var key = new Pair<>(hand, player);
         var lastSlot = lastSelectedSlots.getOrDefault(key, ItemStack.EMPTY);
-        var arm = key.getFirst();
-        var player = key.getSecond();
+        var newItem = player.getItemInHand(hand);
 
         if (newItem != lastSlot) {
             if (newItem.getItem() instanceof GunItem) {
-                EquipTracker.startEquip(player, arm);
-//                if (!player.getCooldowns().isOnCooldown(newItem.getItem())) {
-//                    player.getCooldowns().addCooldown(newItem.getItem(), 20);
-//                }
+                EquipTracker.startEquip(player, hand);
             }
 
             lastSelectedSlots.put(key, newItem);

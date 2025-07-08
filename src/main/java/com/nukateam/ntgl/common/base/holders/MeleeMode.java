@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MeleeMode extends ResourceHolder {
-    public static final MeleeMode SINGLE = new MeleeMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "gun"));
-    public static final MeleeMode AUTO = new MeleeMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "melee"));
+    public static final MeleeMode SINGLE = new MeleeMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "single"));
+    public static final MeleeMode AUTO = new MeleeMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "auto"));
 
     private static final Map<ResourceLocation, MeleeMode> loadingTypeMap = new HashMap<>();
 

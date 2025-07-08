@@ -134,6 +134,12 @@ public class GunModifierHelper {
         return loadingType.get();
     }
 
+    public static WeaponMode getWeaponMode(GunData data) {
+        var loadingType = new AtomicReference<>(getGeneral(getGun(data.gun)).getWeaponMode());
+        forEachAttachment(data, (modifier -> loadingType.set(modifier.modifyWeaponMode(loadingType.get(), data))));
+        return loadingType.get();
+    }
+
     public static int getProjectileAmount(GunData data) {
         var gunProjectileAmount = getGeneral(getGun(data.gun)).getProjectileAmount();
         var ammoProjectileAmount = GunStateHelper.getAmmoConfig(data).getProjectileAmount();
@@ -265,6 +271,14 @@ public class GunModifierHelper {
 
         forEachAttachment(data, (modifier -> finalSpread.set(modifier.modifyProjectileSpread(finalSpread.get(), data))));
         return finalSpread.get();
+    }
+
+    public static float getModifiedMovementSpeed(GunData data) {
+        var gunSpread = getGeneral(getGun(data.gun)).getMovementModifier();
+        var finalValue = new AtomicReference<>(gunSpread);
+
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMovementSpeed(finalValue.get(), data))));
+        return finalValue.get();
     }
 
     public static double getModifiedProjectileSpeed(GunData data, double speed) {

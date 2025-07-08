@@ -260,10 +260,14 @@ public class ShootingHandler {
         return shootTickGap;
     }
 
+    private static boolean isGun(ItemStack heldItem, LivingEntity entity) {
+        return GunModifierHelper.getWeaponMode(new GunData(heldItem, entity)) == WeaponMode.GUN;
+    }
+
     public void fire(LivingEntity shooter, ItemStack heldItem) {
-        if (heldItem.getItem() instanceof GunItem gunItem
+        if (heldItem.getItem() instanceof GunItem
                 && (Gun.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))
-                && gunItem.getGun().getGeneral().getWeaponMode() == WeaponMode.GUN
+                && isGun(heldItem, shooter)
                 && !shooter.isSpectator()) {
             var isMainHand = shooter.getMainHandItem() == heldItem;
             var hand = isMainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
@@ -341,7 +345,7 @@ public class ShootingHandler {
         var fireMode =  GunStateHelper.getFireMode(gunData);
         var maxChargeTime = GunModifierHelper.getFireDelay(gunData);
 
-        if (!(heldItem.getItem() instanceof GunItem gunItem) || gunItem.getGun().getGeneral().getWeaponMode() != WeaponMode.GUN) {
+        if (!(heldItem.getItem() instanceof GunItem gunItem) || !isGun(heldItem, player)) {
             return;
         }
 

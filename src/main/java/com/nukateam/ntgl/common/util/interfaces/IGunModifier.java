@@ -1,10 +1,7 @@
 package com.nukateam.ntgl.common.util.interfaces;
 
 import com.nukateam.ntgl.common.base.GunModifiers;
-import com.nukateam.ntgl.common.base.holders.FireMode;
-import com.nukateam.ntgl.common.base.holders.GripType;
-import com.nukateam.ntgl.common.base.holders.LoadingType;
-import com.nukateam.ntgl.common.base.holders.FuelType;
+import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
 import com.nukateam.ntgl.common.util.util.GunData;
 import net.minecraft.resources.ResourceLocation;
@@ -277,6 +274,14 @@ public interface IGunModifier {
 
     default boolean modifyShouldRenderHud(boolean isRenderHud, GunData data) {
         return isRenderHud;
+    }
+
+    default float modifyMovementSpeed(float value, GunData data) {
+        return value;
+    }
+
+    default WeaponMode modifyWeaponMode(WeaponMode value, GunData data) {
+        return value;
     }
 
     default LoadingType modifyLoadingType(LoadingType loadingType, GunData data) {
