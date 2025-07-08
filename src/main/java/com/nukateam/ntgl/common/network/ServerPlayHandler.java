@@ -6,6 +6,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.utils.*;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
@@ -22,9 +23,7 @@ import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.modules.enchantment.ModEnchantments;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
-import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
 import com.nukateam.ntgl.common.network.message.C2SMessagePreFireSound;
 import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
 import com.nukateam.ntgl.common.network.message.S2CMessageBulletTrail;
@@ -42,7 +41,6 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -97,9 +95,9 @@ public class ServerPlayHandler {
 
         var heldItem = shooter.getItemInHand(hand);
 
-        if (heldItem.getItem() instanceof GunItem gunItem
+        if (heldItem.getItem() instanceof WeaponItem weaponItem
                 && (Gun.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
-            var modifiedGun = gunItem.getModifiedGun(heldItem);
+            var modifiedGun = weaponItem.getModifiedGun(heldItem);
             var tag = heldItem.getOrCreateTag();
 
             if (modifiedGun != null) {
@@ -133,7 +131,7 @@ public class ServerPlayHandler {
                 var gunSpread = GunModifierHelper.getModifiedSpread(data);
 
                 if (!GunModifierHelper.isAlwaysSpread(data) && gunSpread > 0.0F) {
-                    SpreadTracker.get(shooter).update(shooter, gunItem);
+                    SpreadTracker.get(shooter).update(shooter, weaponItem);
                 }
 
                 var count = GunModifierHelper.getProjectileAmount(data);
@@ -142,7 +140,7 @@ public class ServerPlayHandler {
 
                 for (int i = 0; i < count; i++) {
                     var factory = ProjectileManager.getInstance().getFactory(data);
-                    var projectileEntity = factory.create(world, shooter, heldItem, gunItem, modifiedGun);
+                    var projectileEntity = factory.create(world, shooter, heldItem, weaponItem, modifiedGun);
                     projectileEntity.setWeapon(heldItem);
                     projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
                     world.addFreshEntity(projectileEntity);
@@ -201,13 +199,13 @@ public class ServerPlayHandler {
                     if (!Gun.isAmmoIgnored(heldItem)) {
                         int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.RECLAIMED.get(), heldItem);
                         if (level == 0 || shooter.level().random.nextInt(4 - Mth.clamp(level, 1, 2)) != 0) {
-                            gunItem.getGunHandler().handleAmmoAfterShoot(data);
+                            weaponItem.getGunHandler().handleAmmoAfterShoot(data);
                         }
                     }
                 }
 
                 if (shooter instanceof Player player)
-                    player.awardStat(Stats.ITEM_USED.get(gunItem));
+                    player.awardStat(Stats.ITEM_USED.get(weaponItem));
             }
         } else {
             world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(),
@@ -218,7 +216,7 @@ public class ServerPlayHandler {
     public static void handlePreFireSound(C2SMessagePreFireSound message, ServerPlayer player) {
         Level world = player.level();
         ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
-        if (heldItem.getItem() instanceof GunItem item && (Gun.hasAmmo(heldItem) || player.isCreative())) {
+        if (heldItem.getItem() instanceof WeaponItem item && (Gun.hasAmmo(heldItem) || player.isCreative())) {
             Gun modifiedGun = item.getModifiedGun(heldItem);
             ResourceLocation fireSound = getPreFireSound(heldItem, modifiedGun);
             if (fireSound != null) {
@@ -294,7 +292,7 @@ public class ServerPlayHandler {
 
     public static void handleUnload(ServerPlayer player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
-        if (stack.getItem() instanceof GunItem) {
+        if (stack.getItem() instanceof WeaponItem) {
             unloadGun(player, stack);
         }
     }
@@ -307,7 +305,7 @@ public class ServerPlayHandler {
     }
 
     private static void unloadAmmo(ServerPlayer player, ItemStack stack) {
-        if (stack.getItem() instanceof GunItem) {
+        if (stack.getItem() instanceof WeaponItem) {
             var tag = stack.getTag();
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
                 int count = tag.getInt(Tags.AMMO_COUNT);
@@ -324,7 +322,7 @@ public class ServerPlayHandler {
     }
 
     private static void unloadMagazine(ServerPlayer player, ItemStack stack) {
-        if (stack.getItem() instanceof GunItem) {
+        if (stack.getItem() instanceof WeaponItem) {
             var tag = stack.getTag();
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
                 int count = tag.getInt(Tags.AMMO_COUNT);
@@ -367,7 +365,7 @@ public class ServerPlayHandler {
 
     public static void handleAttachments(ServerPlayer player) {
         var heldItem = player.getMainHandItem();
-        if (heldItem.getItem() instanceof GunItem && ((GunItem)heldItem.getItem()).getModifiedGun(heldItem).getModules().attachmentScreen()) {
+        if (heldItem.getItem() instanceof WeaponItem && ((WeaponItem)heldItem.getItem()).getModifiedGun(heldItem).getModules().attachmentScreen()) {
             NetworkHooks.openScreen(player, new SimpleMenuProvider((windowId, playerInventory, player1) ->
                     new AttachmentContainer(windowId, playerInventory, heldItem), Component.translatable("container.ntgl.attachments")));
         }
@@ -394,7 +392,7 @@ public class ServerPlayHandler {
     public static void handleHandAction(C2SMessageHandAction message, ServerPlayer player) {
         var stack = player.getItemInHand(message.getHand());
 
-        if(stack.getItem() instanceof GunItem) {
+        if(stack.getItem() instanceof WeaponItem) {
             switch (message.getHandAction()) {
                 case SWITCH_FIRE_MODE -> handleFireModeSwitch(player, stack);
                 case SWITCH_AMMO -> handleAmmoSwitch(message.getHand(), player, stack);
@@ -405,7 +403,7 @@ public class ServerPlayHandler {
     public static void handleMeleeAttack(C2SMessageMeleeAttack message, ServerPlayer player) {
         var stack = player.getItemInHand(InteractionHand.MAIN_HAND);
         var gunData = new GunData(stack, player);
-        if(stack.getItem() instanceof GunItem
+        if(stack.getItem() instanceof WeaponItem
                 && GunModifierHelper.canMelee(gunData)
                 && !EquipTracker.isEquiping(player,InteractionHand.MAIN_HAND)) {
             MeleeTracker.start(player, InteractionHand.MAIN_HAND);

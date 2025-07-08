@@ -2,7 +2,7 @@ package com.nukateam.ntgl.modules.gunpack.data;
 
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.foundation.item.AmmoItem;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.GenericAttachmentItem;
 import com.nukateam.ntgl.common.util.helpers.RegistrationHelper;
 import com.nukateam.ntgl.modules.gunpack.GunPackModule;
@@ -202,7 +202,7 @@ public class GunRegisterer {
     }
 
     private static void registerGun(ResourceLocation itemId) {
-        getItemRegister(itemId).register(itemId.getPath(), () -> new GunItem(
+        getItemRegister(itemId).register(itemId.getPath(), () -> new WeaponItem(
                 new Item.Properties().stacksTo(1)
         ));
     }

@@ -7,9 +7,9 @@ import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
 import com.nukateam.ntgl.common.base.holders.*;
 import com.nukateam.ntgl.common.data.constants.Tags;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -43,7 +43,7 @@ public class GunModifierHelper {
 
     public static boolean isWeaponFull(GunData data) {
         var tag = data.gun.getOrCreateTag();
-        var gun = ((GunItem)data.gun.getItem()).getModifiedGun(data.gun);
+        var gun = ((WeaponItem)data.gun.getItem()).getModifiedGun(data.gun);
         return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(data);
     }
 
@@ -56,7 +56,7 @@ public class GunModifierHelper {
     }
 
     public static boolean isOneHanded(GunData data){
-        if(data.gun.getItem() instanceof GunItem){
+        if(data.gun.getItem() instanceof WeaponItem){
             return GunModifierHelper.getGripType(data).isOneHanded();
         }
         return true;
@@ -64,11 +64,11 @@ public class GunModifierHelper {
 
     public static boolean isGun(ItemStack data){
         var gunItem = data.getItem();
-        return gunItem instanceof GunItem;
+        return gunItem instanceof WeaponItem;
     }
 
     public static Gun getGun(ItemStack stack) {
-        var gunItem = (GunItem) stack.getItem();
+        var gunItem = (WeaponItem) stack.getItem();
         return gunItem.getModifiedGun(stack);
     }
 
@@ -97,7 +97,7 @@ public class GunModifierHelper {
         var finalMaxAmmo = new AtomicInteger(getGeneral(getGun(data.gun)).getMaxAmmo());
         var config = GunStateHelper.getAmmoConfig(data);
 
-        if (data != null && config != null && data.gun.getItem() instanceof GunItem) {
+        if (data != null && config != null && data.gun.getItem() instanceof WeaponItem) {
             if (GunStateHelper.getAmmoConfig(data).isMagazineMode()) {
                 var id = GunStateHelper.getAmmoId(data);
                 var item = ITEMS.getValue(id);
@@ -453,7 +453,7 @@ public class GunModifierHelper {
             applyModifiers(consumer, modifiers);
         }
 
-        var gunItem = (GunItem) gun.getItem();
+        var gunItem = (WeaponItem) gun.getItem();
         applyModifiers(consumer, gunItem.getGunModifiers());
     }
 

@@ -1,10 +1,9 @@
 package com.nukateam.ntgl.client.model.gun;
 
-import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.client.model.IGlowingModel;
 import com.nukateam.ntgl.client.util.util.GeoModelHelper;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +19,7 @@ public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements I
     @Override
     public ResourceLocation getTextureResource(T animator) {
         var textures = animator.getConfig().getTextures();
-        var variant = GunItem.getVariant(animator.getStack());
+        var variant = WeaponItem.getVariant(animator.getStack());
         var resource = textures.containsKey(variant) ?
                 textures.get(variant) :
                 GeoModelHelper.getGunResource(animator, "textures/guns/" + animator.getName() + "/", ".png".formatted());

@@ -8,9 +8,9 @@ import com.nukateam.ntgl.common.base.holders.FuelType;
 import com.nukateam.ntgl.common.base.utils.FuelUtils;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.AmmoBoxItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -81,7 +81,7 @@ public class GunHud implements IGuiOverlay {
             var heldItem = player.getItemInHand(hand);
             var x = hand == InteractionHand.OFF_HAND ? OFFHAND_X_OFFSET : width;
 
-            if (heldItem.getItem() instanceof GunItem && shouldRender(hand, player)) {
+            if (heldItem.getItem() instanceof WeaponItem && shouldRender(hand, player)) {
                 updateCache(cache, player, heldItem);
                 if (!MinecraftForge.EVENT_BUS.post(new GunHudEvent(this, hand, graphics, cache, GunHudEvent.Phase.START))) {
                     renderAmmoCounter(graphics, cache, heldItem, x, height);

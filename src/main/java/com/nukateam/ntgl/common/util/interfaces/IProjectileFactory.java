@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.util.interfaces;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.utils.ProjectileManager;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -26,5 +26,5 @@ public interface IProjectileFactory {
      * @param modifiedGun the properties of the gun
      * @return a projectile entity
      */
-    ProjectileEntity create(Level worldIn, LivingEntity entity, ItemStack weapon, GunItem item, Gun modifiedGun);
+    ProjectileEntity create(Level worldIn, LivingEntity entity, ItemStack weapon, WeaponItem item, Gun modifiedGun);
 }

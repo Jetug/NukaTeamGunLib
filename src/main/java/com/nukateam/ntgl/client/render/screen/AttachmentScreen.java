@@ -11,7 +11,7 @@ import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.data.Pos2I;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -93,7 +93,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     public void containerTick() {
         super.containerTick();
         if (this.minecraft != null && this.minecraft.player != null) {
-            if (!(this.minecraft.player.getMainHandItem().getItem() instanceof GunItem)) {
+            if (!(this.minecraft.player.getMainHandItem().getItem() instanceof WeaponItem)) {
                 Minecraft.getInstance().setScreen(null);
             }
         }
@@ -304,7 +304,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 ////                    false, graphics.pose(), buffer, 15728880,
 ////                    OverlayTexture.NO_OVERLAY, ModelRenderUtil.getModel(currentItem));
 //
-//            var gun = (GunItem)currentItem.getItem();
+//            var gun = (WeaponItem)currentItem.getItem();
 //
 //            Minecraft.getInstance().getItemRenderer().renderStatic(currentItem, ItemDisplayContext.NONE, OverlayTexture.NO_OVERLAY,
 //                    15728880, poseStack, buffer, minecraft.level, 0);

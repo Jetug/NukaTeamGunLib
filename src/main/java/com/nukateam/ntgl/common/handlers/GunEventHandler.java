@@ -5,9 +5,9 @@ import com.nukateam.ntgl.common.base.utils.EquipTracker;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -38,7 +38,7 @@ public class GunEventHandler {
         var entity = event.getEntity();
         var heldItem = entity.getItemInHand(event.getHand());
 
-        if (heldItem.getItem() instanceof GunItem) {
+        if (heldItem.getItem() instanceof WeaponItem) {
             if(event.getEntity() instanceof Player player && EquipTracker.isEquiping(player, event.getHand())){
                 event.setCanceled(true);
             }
@@ -56,7 +56,7 @@ public class GunEventHandler {
         var heldItem = entity.getItemInHand(event.getHand());
         var tag = heldItem.getTag();
 
-        if (heldItem.getItem() instanceof GunItem) {
+        if (heldItem.getItem() instanceof WeaponItem) {
             if (heldItem.isDamageableItem() && tag != null) {
                 if (Gun.hasAmmo(heldItem)) {
                     damageGun(heldItem, level, entity);
@@ -111,7 +111,7 @@ public class GunEventHandler {
 
 //    public static void ejectCasing(Level level, LivingEntity livingEntity) {
 //        var heldItem = livingEntity.getMainHandItem();
-//        var gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
+//        var gun = ((WeaponItem) heldItem.getItem()).getModifiedGun(heldItem);
 //
 //        var lookVec = livingEntity.getLookAngle(); //Get the player's look vector
 //        var rightVec = new Vec3(-lookVec.z, 0, lookVec.x).normalize();

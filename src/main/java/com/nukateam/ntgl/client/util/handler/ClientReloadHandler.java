@@ -1,16 +1,14 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.input.KeyBinds;
-import com.nukateam.ntgl.common.base.utils.MeleeTracker;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.LoadingType;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerAnimationHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
@@ -20,16 +18,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.lwjgl.glfw.GLFW;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.nukateam.ntgl.client.util.handler.ShootingHandler.isInGame;
 
 /**
  * Author: MrCrayfish
@@ -84,12 +75,12 @@ public class ClientReloadHandler {
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
 
-        if (mainHandItem.getItem() instanceof GunItem
+        if (mainHandItem.getItem() instanceof WeaponItem
                 && !GunModifierHelper.isWeaponFull(new GunData(mainHandItem, player))
                 && !isReloading(player, InteractionHand.MAIN_HAND)){
             setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
         }
-        else if (offhandItem.getItem() instanceof GunItem
+        else if (offhandItem.getItem() instanceof WeaponItem
                 && GunModifierHelper.canRenderInOffhand(player)
                 && !GunModifierHelper.isWeaponFull(new GunData(offhandItem, player))
                 && !isReloading(player, InteractionHand.OFF_HAND)){
@@ -110,14 +101,14 @@ public class ClientReloadHandler {
                 player.getOffhandItem();
 
         if (reloading) {
-            if (stack.getItem() instanceof GunItem) {
+            if (stack.getItem() instanceof WeaponItem) {
                 var isAmmoIgnored = Gun.isAmmoIgnored(stack);
                 var hasAmmo = Gun.hasNoAmmo(player, stack);
                 var data = new GunData(stack, player);
                 var isMaxAmmo = Gun.isMaxAmmo(data);
 
                 if (!isAmmoIgnored && !hasAmmo && !isMaxAmmo) {
-                    var gun = ((GunItem) stack.getItem()).getModifiedGun(stack);
+                    var gun = ((WeaponItem) stack.getItem()).getModifiedGun(stack);
                     reloadTicks = GunModifierHelper.getReloadTime(data);
 
                     if (Gun.getAmmo(stack) >= GunEnchantmentHelper.getAmmoCapacity(data))

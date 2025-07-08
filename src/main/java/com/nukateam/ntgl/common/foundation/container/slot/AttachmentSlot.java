@@ -2,11 +2,11 @@ package com.nukateam.ntgl.common.foundation.container.slot;
 
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.sounds.SoundSource;
@@ -43,19 +43,19 @@ public class AttachmentSlot extends Slot {
 
     @Override
     public boolean isActive() {
-        if (!(this.weapon.getItem() instanceof GunItem)) {
+        if (!(this.weapon.getItem() instanceof WeaponItem)) {
             return false;
         }
 
         var gun = getGun(weapon);
-        var item = (GunItem) this.weapon.getItem();
+        var item = (WeaponItem) this.weapon.getItem();
         var modifiedGun = item.getModifiedGun(this.weapon);
         return modifiedGun.canAttachType(this.type, gun);
     }
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        if (!(this.weapon.getItem() instanceof GunItem item)) {
+        if (!(this.weapon.getItem() instanceof WeaponItem item)) {
             return false;
         }
 

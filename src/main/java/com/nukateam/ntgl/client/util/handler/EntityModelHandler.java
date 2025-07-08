@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -21,10 +21,10 @@ public class EntityModelHandler {
         PoseStack poseStack = event.getPoseStack();
         Player player = event.getPlayer();
         ItemStack heldItem = player.getOffhandItem();
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof GunItem)
+        if(!heldItem.isEmpty() && heldItem.getItem() instanceof WeaponItem)
         {
             poseStack.pushPose();
-            Gun gun = ((GunItem) heldItem.getItem()).getModifiedGun(heldItem);
+            Gun gun = ((WeaponItem) heldItem.getItem()).getModifiedGun(heldItem);
             if(gun.getGeneral().getGripType().getHeldAnimation().applyOffhandTransforms(player, event.getPlayerModel(), heldItem, poseStack, event.getDeltaTicks()))
             {
                 MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
@@ -40,7 +40,7 @@ public class EntityModelHandler {
         var heldItem = entity.getMainHandItem();
         var isHumanoidModel = true;//event.getRenderer().getModel() instanceof HumanoidModel<LivingEntity>;
 
-        if (heldItem.getItem() instanceof GunItem) {
+        if (heldItem.getItem() instanceof WeaponItem) {
             var heldAnimation = GunModifierHelper
                     .getGripType(new GunData(heldItem, entity))
                     .getHeldAnimation();

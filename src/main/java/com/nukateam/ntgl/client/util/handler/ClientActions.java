@@ -1,11 +1,10 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.client.handlers.ClientHandler;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageHandAction;
-import com.nukateam.ntgl.common.network.message.C2SMessageMeleeAttack;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 
@@ -16,7 +15,7 @@ public class ClientActions {
         var mainGun = player.getMainHandItem();
         var offGun = player.getOffhandItem();
 
-        if((mainGun.getItem() instanceof GunItem || offGun.getItem() instanceof GunItem)
+        if((mainGun.getItem() instanceof WeaponItem || offGun.getItem() instanceof WeaponItem)
                 && !ClientHandler.isInspecting()){
             ClientHandler.resetInspectionTimer();
         }
@@ -33,7 +32,7 @@ public class ClientActions {
     }
 
     public static void meleeAttack(LocalPlayer player) {
-        if(player.getMainHandItem().getItem() instanceof GunItem){
+        if(player.getMainHandItem().getItem() instanceof WeaponItem){
             ClientMeleeHandler.addTracker(player, InteractionHand.MAIN_HAND);
 //            PacketHandler.getPlayChannel().sendToServer(new C2SMessageMeleeAttack());
         }

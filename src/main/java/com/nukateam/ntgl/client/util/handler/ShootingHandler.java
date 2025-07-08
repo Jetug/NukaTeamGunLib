@@ -3,13 +3,12 @@ package com.nukateam.ntgl.client.util.handler;
 import com.ibm.icu.impl.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.holders.FireMode;
-import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.base.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
@@ -17,7 +16,6 @@ import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +33,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
-import static com.nukateam.ntgl.common.util.helpers.PlayerHelper.*;
 import static net.minecraftforge.event.TickEvent.Type.RENDER;
 
 /**
@@ -86,7 +83,7 @@ public class ShootingHandler {
                 player.getMainHandItem() :
                 player.getOffhandItem();
 
-        if (heldItem.getItem() instanceof GunItem) {
+        if (heldItem.getItem() instanceof WeaponItem) {
             if (event.getAction() == GLFW.GLFW_PRESS) {
                 if (isRightHand) {
                     setupShootingData(heldItem, player, InteractionHand.MAIN_HAND);
@@ -119,19 +116,19 @@ public class ShootingHandler {
         if (event.isAttack()) {
             var heldItem = player.getMainHandItem();
 
-            if (heldItem.getItem() instanceof GunItem) {
+            if (heldItem.getItem() instanceof WeaponItem) {
                 handleGunInput(event);
             }
         } else if (event.isUseItem()) {
             var mainHandItem = player.getMainHandItem();
             var offhandItem = player.getOffhandItem();
 
-            if (offhandItem.getItem() instanceof GunItem && canRenderInOffhand(player)) {
+            if (offhandItem.getItem() instanceof WeaponItem && canRenderInOffhand(player)) {
                 handleGunInput(event);
                 return;
             }
 
-            if (mainHandItem.getItem() instanceof GunItem) {
+            if (mainHandItem.getItem() instanceof WeaponItem) {
                 if (event.getHand() == InteractionHand.OFF_HAND) {
                     // Allow shields to be used if weapon is one-handed
                     if (offhandItem.getItem() == Items.SHIELD) {
@@ -166,12 +163,12 @@ public class ShootingHandler {
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
 
-        if (mainHandItem.getItem() instanceof GunItem){
+        if (mainHandItem.getItem() instanceof WeaponItem){
             if(isKeyAttackDown())
                 handleAutoFire(player, mainHandItem, InteractionHand.MAIN_HAND);
         }
 
-        if (offhandItem.getItem() instanceof GunItem && canRenderInOffhand(player)){
+        if (offhandItem.getItem() instanceof WeaponItem && canRenderInOffhand(player)){
             if(isUseKeyDown())
                 handleAutoFire(player, offhandItem, InteractionHand.OFF_HAND);
         }
@@ -205,7 +202,7 @@ public class ShootingHandler {
 
             if (player != null) {
                 var mainHandItem = player.getMainHandItem();
-                if (mainHandItem.getItem() instanceof GunItem && (Gun.hasAmmo(mainHandItem) || player.isCreative())) {
+                if (mainHandItem.getItem() instanceof WeaponItem && (Gun.hasAmmo(mainHandItem) || player.isCreative())) {
                     var shooting = isKeyAttackDown();
                     if (Ntgl.controllableLoaded) {
                         shooting |= ControllerHandler.isShooting();
@@ -234,7 +231,7 @@ public class ShootingHandler {
     public float getCooldownPercent(LivingEntity entity, InteractionHand hand) {
         var heldItem = entity.getItemInHand(hand);
 
-        if (heldItem.getItem() instanceof GunItem gunItem) {
+        if (heldItem.getItem() instanceof WeaponItem weaponItem) {
             var data = new GunData(heldItem, entity);
             var rate = GunModifierHelper.getRate(data);
             var cooldown = getCooldown(entity, hand);
@@ -265,7 +262,7 @@ public class ShootingHandler {
     }
 
     public void fire(LivingEntity shooter, ItemStack heldItem) {
-        if (heldItem.getItem() instanceof GunItem
+        if (heldItem.getItem() instanceof WeaponItem
                 && (Gun.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))
                 && isGun(heldItem, shooter)
                 && !shooter.isSpectator()) {
@@ -323,7 +320,7 @@ public class ShootingHandler {
         var gunData = new GunData(stack, player);
 
         data.fireTimer = GunModifierHelper.getFireDelay(gunData);
-        data.gun = (GunItem) stack.getItem();
+        data.gun = (WeaponItem) stack.getItem();
     }
 
     private void resetShootingData(ItemStack stack, Player player, InteractionHand arm) {
@@ -345,7 +342,7 @@ public class ShootingHandler {
         var fireMode =  GunStateHelper.getFireMode(gunData);
         var maxChargeTime = GunModifierHelper.getFireDelay(gunData);
 
-        if (!(heldItem.getItem() instanceof GunItem gunItem) || !isGun(heldItem, player)) {
+        if (!(heldItem.getItem() instanceof WeaponItem weaponItem) || !isGun(heldItem, player)) {
             return;
         }
 
@@ -398,7 +395,7 @@ public class ShootingHandler {
 //    public void renderTick(TickEvent.RenderTickEvent evt) {
 //        // Upper is to handle rendering, bellow is handling animation calls and burst tracking
 //
-//        if (Minecraft.getInstance().player == null || !Minecraft.getInstance().player.isAlive() || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof GunItem)
+//        if (Minecraft.getInstance().player == null || !Minecraft.getInstance().player.isAlive() || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof WeaponItem)
 //            return;
 //        GunAnimationController controller = GunAnimationController.fromItem(Minecraft.getInstance().player.getMainHandItem().getItem());
 //        if (controller == null)

@@ -2,13 +2,12 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -50,7 +49,7 @@ public class RecoilHandler {
             return;
 
         var heldItem = event.getStack();
-        var gunItem = (GunItem) heldItem.getItem();
+        var gunItem = (WeaponItem) heldItem.getItem();
         var modifiedGun = gunItem.getModifiedGun(heldItem);
         var data = new GunData(heldItem, event.getEntity());
         var recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(data);
@@ -100,10 +99,10 @@ public class RecoilHandler {
             return;
 
         var heldItem = event.getItemStack();
-        if (!(heldItem.getItem() instanceof GunItem gunItem))
+        if (!(heldItem.getItem() instanceof WeaponItem weaponItem))
             return;
 
-        var modifiedGun = gunItem.getModifiedGun(heldItem);
+        var modifiedGun = weaponItem.getModifiedGun(heldItem);
         var cooldown = ShootingHandler.get().getCooldownPercent(Minecraft.getInstance().player, event.getHand());
         var recoilDurationOffset = modifiedGun.getGeneral().getRecoilDurationOffset();
 

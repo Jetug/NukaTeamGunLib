@@ -8,7 +8,7 @@ import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAim;
@@ -68,7 +68,7 @@ public class AimingHandler {
     public static boolean isAiming(ItemStack gun) {
         var minecraft = Minecraft.getInstance();
         var progress = get().getAimProgress(minecraft.player, minecraft.getFrameTime());
-        return gun.getItem() instanceof GunItem
+        return gun.getItem() instanceof WeaponItem
                 && get().isAiming()
                 && progress == 1;
     }
@@ -153,7 +153,7 @@ public class AimingHandler {
             return;
 
         var heldItem = mc.player.getMainHandItem();
-        if (!(heldItem.getItem() instanceof GunItem gunItem))
+        if (!(heldItem.getItem() instanceof WeaponItem weaponItem))
             return;
 
         if (AimingHandler.get().getNormalisedAdsProgress() == 0)
@@ -162,7 +162,7 @@ public class AimingHandler {
         if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player))
             return;
 
-        var modifiedGun = gunItem.getModifiedGun(heldItem);
+        var modifiedGun = weaponItem.getModifiedGun(heldItem);
 
         if (modifiedGun.getModules().getZoom() == null)
             return;
@@ -199,7 +199,7 @@ public class AimingHandler {
         var mainHandItem = mc.player.getMainHandItem();
         var offhandItem = mc.player.getOffhandItem();
 
-        if (!(mainHandItem.getItem() instanceof GunItem))
+        if (!(mainHandItem.getItem() instanceof WeaponItem))
             return false;
 
         var mainOneHanded = isOneHanded(new GunData(mainHandItem, mc.player));
@@ -208,7 +208,7 @@ public class AimingHandler {
         if(!mainHandItem.isEmpty() && !offhandItem.isEmpty() && mainOneHanded && offOneHanded)
             return false;
 
-        var gun = ((GunItem) mainHandItem.getItem()).getModifiedGun(mainHandItem);
+        var gun = ((WeaponItem) mainHandItem.getItem()).getModifiedGun(mainHandItem);
 
         if (!gun.canAimDownSight())
             return false;
@@ -223,7 +223,7 @@ public class AimingHandler {
         if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player))
             return false;
 
-        if(mainHandItem.getItem() instanceof GunItem && offhandItem.getItem() instanceof GunItem) {
+        if(mainHandItem.getItem() instanceof WeaponItem && offhandItem.getItem() instanceof WeaponItem) {
             var off =  GunModifierHelper.getGripType(new GunData(offhandItem, mc.player));
             if(off.isOneHanded()) {
                 return false;
@@ -264,7 +264,7 @@ public class AimingHandler {
         private double previousAim;
 
         private void handleAiming(Player player, ItemStack heldItem) {
-            if(!(heldItem.getItem() instanceof GunItem))
+            if(!(heldItem.getItem() instanceof WeaponItem))
                 return;
             var gunData = new GunData(heldItem, player);
             this.previousAim = this.currentAim;

@@ -2,9 +2,8 @@ package com.nukateam.ntgl.common.base.utils;
 
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.util.*;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
@@ -26,7 +25,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-import org.openjdk.nashorn.internal.runtime.regexp.joni.constants.TargetInfo;
 
 import java.util.*;
 
@@ -82,7 +80,7 @@ public class MeleeTracker {
         var gunItem = entity.getItemInHand(arm).getItem();
 
         if (!TRACKER_MAP.containsKey(entity)) {
-            if (!(gunItem instanceof GunItem)) {
+            if (!(gunItem instanceof WeaponItem)) {
                 reloadKey.setValue(entity, false);
                 return true;
             }
@@ -139,7 +137,7 @@ public class MeleeTracker {
     private static class Tracker{
         private final InteractionHand arm;
         private final ItemStack stack;
-        private final GunItem gunItem;
+        private final WeaponItem weaponItem;
 
         private final int cooldown;
         private int meleeTick;
@@ -153,7 +151,7 @@ public class MeleeTracker {
         private Tracker(LivingEntity entity, InteractionHand arm) {
             this.arm = arm;
             this.stack = entity.getItemInHand(arm);
-            this.gunItem = ((GunItem) stack.getItem());
+            this.weaponItem = ((WeaponItem) stack.getItem());
             var data = new GunData(stack, entity);
             this.cooldown = GunModifierHelper.getMeleeCooldown(data);
             this.attackDelay = GunModifierHelper.getMeleeDelay(data);

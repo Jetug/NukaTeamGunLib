@@ -11,23 +11,21 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.*;
 
-import java.util.function.Supplier;
-
 public class ModGuns {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Ntgl.MOD_ID);
     ///GUNS
-    public static final RegistryObject<GunItem> PISTOL10MM = registerGun("pistol10mm", new TestModifier());
-    public static final RegistryObject<GunItem> PIPE_PISTOL = registerGun("pipepistol");
-    public static final RegistryObject<GunItem> CLASSIC10MM = registerGun("classic10mm", 10);
-    public static final RegistryObject<GunItem> SCOUT10MM = registerGun("scout10mm");
-    public static final RegistryObject<GunItem> PIPE_REVOLVER = registerGun("piperevolver");
-    public static final RegistryObject<GunItem> FATMAN = registerGun("fatman");
-    public static final RegistryObject<GunItem> MINIGUN = registerGun("minigun", new MinigunModifier());
-    public static final RegistryObject<GunItem> POWDERGUN = registerGun("powdergun");
-    public static final RegistryObject<GunItem> SHOTGUN = registerGun("shotgun");
-    public static final RegistryObject<GunItem> FLAMER = registerGun("flamer");
-    public static final RegistryObject<GunItem> GATLING = registerGun("gatling");
-    public static final RegistryObject<GunItem> REVOLVER = registerGun("revolver");
+    public static final RegistryObject<WeaponItem> PISTOL10MM = registerGun("pistol10mm", new TestModifier());
+    public static final RegistryObject<WeaponItem> PIPE_PISTOL = registerGun("pipepistol");
+    public static final RegistryObject<WeaponItem> CLASSIC10MM = registerGun("classic10mm", 10);
+    public static final RegistryObject<WeaponItem> SCOUT10MM = registerGun("scout10mm");
+    public static final RegistryObject<WeaponItem> PIPE_REVOLVER = registerGun("piperevolver");
+    public static final RegistryObject<WeaponItem> FATMAN = registerGun("fatman");
+    public static final RegistryObject<WeaponItem> MINIGUN = registerGun("minigun", new MinigunModifier());
+    public static final RegistryObject<WeaponItem> POWDERGUN = registerGun("powdergun");
+    public static final RegistryObject<WeaponItem> SHOTGUN = registerGun("shotgun");
+    public static final RegistryObject<WeaponItem> FLAMER = registerGun("flamer");
+    public static final RegistryObject<WeaponItem> GATLING = registerGun("gatling");
+    public static final RegistryObject<WeaponItem> REVOLVER = registerGun("revolver");
 
     public static final RegistryObject<Item> GRENADE = ITEMS.register("grenade",
             () -> new GrenadeItem(new Item.Properties(), 20 * 4));
@@ -94,12 +92,12 @@ public class ModGuns {
     public static final RegistryObject<Item> AMMO_BOX = ITEMS.register("ammo_box", () ->
             new AmmoBoxItem(new Item.Properties().stacksTo(1), 100));
 
-    public static RegistryObject<GunItem> registerGun(String name, IGunModifier... modifiers) {
-        return ITEMS.register(name, () -> new GunItem(new Item.Properties().stacksTo(1), modifiers));
+    public static RegistryObject<WeaponItem> registerGun(String name, IGunModifier... modifiers) {
+        return ITEMS.register(name, () -> new WeaponItem(new Item.Properties().stacksTo(1), modifiers));
     }
 
-    public static RegistryObject<GunItem> registerGun(String name, int durability) {
-        return ITEMS.register(name, () -> new GunItem(new Item.Properties().durability(durability)));
+    public static RegistryObject<WeaponItem> registerGun(String name, int durability) {
+        return ITEMS.register(name, () -> new WeaponItem(new Item.Properties().durability(durability)));
     }
 
     public static RegistryObject<Item> registerAmmo(String name) {

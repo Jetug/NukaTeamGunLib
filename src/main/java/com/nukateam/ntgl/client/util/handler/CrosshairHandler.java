@@ -6,7 +6,7 @@ import com.nukateam.ntgl.client.render.crosshair.Crosshair;
 import com.nukateam.ntgl.client.render.crosshair.TechCrosshair;
 import com.nukateam.ntgl.client.render.crosshair.TexturedCrosshair;
 import com.nukateam.ntgl.common.event.GunFireEvent;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -118,7 +118,7 @@ public class CrosshairHandler {
             return;
 
         ItemStack heldItem = mc.player.getMainHandItem();
-        if (!(heldItem.getItem() instanceof GunItem))
+        if (!(heldItem.getItem() instanceof WeaponItem))
             return;
 
         event.setCanceled(true);

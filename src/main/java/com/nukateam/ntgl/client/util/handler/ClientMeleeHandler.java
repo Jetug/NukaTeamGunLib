@@ -6,7 +6,7 @@ import com.nukateam.ntgl.common.base.holders.MeleeMode;
 import com.nukateam.ntgl.common.base.holders.WeaponMode;
 import com.nukateam.ntgl.common.event.MeleeAttackEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageMeleeAttack;
 import com.nukateam.ntgl.common.util.util.GunData;
@@ -59,7 +59,7 @@ public class ClientMeleeHandler {
         var gun = entity.getItemInHand(arm);
         var data = new GunData(gun, entity);
 
-        if (gun.getItem() instanceof GunItem
+        if (gun.getItem() instanceof WeaponItem
                 && GunModifierHelper.canMelee(data)
                 && !TRACKER_MAP.containsKey(Pair.of(entity, arm))
                 && !doMelee.getValue(entity))
@@ -83,13 +83,13 @@ public class ClientMeleeHandler {
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
 
-        if (mainHandItem.getItem() instanceof GunItem){
+        if (mainHandItem.getItem() instanceof WeaponItem){
             if(isKeyAttackDown()){
                 handleAutoFire(player, mainHandItem, InteractionHand.MAIN_HAND);
             }
         }
 
-        if (offhandItem.getItem() instanceof GunItem && canRenderInOffhand(player)){
+        if (offhandItem.getItem() instanceof WeaponItem && canRenderInOffhand(player)){
             if(isUseKeyDown()) {
                 handleAutoFire(player, offhandItem, InteractionHand.OFF_HAND);
             }
@@ -118,8 +118,8 @@ public class ClientMeleeHandler {
 
         attack(player, heldItem);
 
-        if(heldItem.getItem() instanceof GunItem gunItem && isMelee(heldItem, player)){
-            var mode = gunItem.getGun().getMelee().getMode();
+        if(heldItem.getItem() instanceof WeaponItem weaponItem && isMelee(heldItem, player)){
+            var mode = weaponItem.getGun().getMelee().getMode();
             if (mode == MeleeMode.SINGLE) {
                 key.setDown(false);
             }
@@ -127,7 +127,7 @@ public class ClientMeleeHandler {
     }
 
     private static void attack(LivingEntity shooter, ItemStack heldItem) {
-        if (heldItem.getItem() instanceof GunItem
+        if (heldItem.getItem() instanceof WeaponItem
                 && isMelee(heldItem, shooter)
                 && !shooter.isSpectator()) {
 

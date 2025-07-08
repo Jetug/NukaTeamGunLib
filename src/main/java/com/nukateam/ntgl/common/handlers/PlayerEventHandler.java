@@ -3,11 +3,10 @@ package com.nukateam.ntgl.common.handlers;
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.utils.EquipTracker;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +33,7 @@ public class PlayerEventHandler {
             if (movementSpeed != null) {
                 movementSpeed.removeModifier(SPEED_MODIFIER_ID);
 
-                if (heldItem.getItem() instanceof GunItem) {
+                if (heldItem.getItem() instanceof WeaponItem) {
                     movementSpeed.removeModifier(SPEED_MODIFIER_ID);
                     movementSpeed.addTransientModifier(new AttributeModifier(
                             SPEED_MODIFIER_ID,
@@ -61,7 +60,7 @@ public class PlayerEventHandler {
         var newItem = player.getItemInHand(hand);
 
         if (newItem != lastSlot) {
-            if (newItem.getItem() instanceof GunItem) {
+            if (newItem.getItem() instanceof WeaponItem) {
                 EquipTracker.startEquip(player, hand);
             }
 

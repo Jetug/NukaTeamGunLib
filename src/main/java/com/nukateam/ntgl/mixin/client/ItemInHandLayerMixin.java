@@ -1,11 +1,10 @@
 package com.nukateam.ntgl.mixin.client;
 
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
-import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -62,7 +61,7 @@ public class ItemInHandLayerMixin {
 //            return;
 //        }
 
-        if (stack.getItem() instanceof GunItem) {
+        if (stack.getItem() instanceof WeaponItem) {
             ci.cancel();
             var layer = (ItemInHandLayer<?, ?>) (Object) this;
             renderArmWithGun(layer, entity, stack, transformType, hand, arm,

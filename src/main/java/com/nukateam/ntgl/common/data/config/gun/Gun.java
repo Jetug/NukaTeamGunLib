@@ -6,6 +6,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.Melee;
 import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import com.nukateam.ntgl.common.base.holders.*;
@@ -23,7 +24,6 @@ import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugButton;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
@@ -559,9 +559,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static void fillAmmo(GunData data) {
-        if (data.gun.getItem() instanceof GunItem gunItem) {
+        if (data.gun.getItem() instanceof WeaponItem weaponItem) {
             var tag = data.gun.getOrCreateTag();
-//            var maxAmmo = gunItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo(gunStack);
+//            var maxAmmo = weaponItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo(gunStack);
             var maxAmmo = GunModifierHelper.getMaxAmmo(data);
 
             tag.putInt(Tags.AMMO_COUNT, maxAmmo);

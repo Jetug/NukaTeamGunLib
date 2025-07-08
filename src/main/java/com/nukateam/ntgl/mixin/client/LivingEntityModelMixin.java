@@ -2,9 +2,9 @@ package com.nukateam.ntgl.mixin.client;
 
 
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
@@ -36,7 +36,7 @@ public class LivingEntityModelMixin<T extends LivingEntity> {
     private void setupForArm(T entity, float animationPos, HumanoidModel<T> model, InteractionHand interactionHand) {
         var heldItem = entity.getItemInHand(interactionHand);
 
-        if (heldItem.getItem() instanceof GunItem) {
+        if (heldItem.getItem() instanceof WeaponItem) {
             if (animationPos == 0.0F) {
                 model.rightArm.xRot = 0;
                 model.rightArm.yRot = 0;

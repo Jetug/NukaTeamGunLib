@@ -10,7 +10,6 @@ import com.nukateam.ntgl.client.util.util.PropertyHelper;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.foundation.item.attachment.AttachmentItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
@@ -159,7 +158,7 @@ public class GunRenderingHandler {
 
         boolean down = false;
         ItemStack heldItem = mc.player.getMainHandItem();
-        if (heldItem.getItem() instanceof GunItem) {
+        if (heldItem.getItem() instanceof WeaponItem) {
             down = GunModifierHelper.getGripType(new GunData(heldItem, mc.player)).getHeldAnimation().canRenderOffhandItem();
         }
 
@@ -176,7 +175,7 @@ public class GunRenderingHandler {
         this.sprintCooldown = 20; //TODO make a config option
 
         var heldItem = event.getStack();
-        var gunItem = (GunItem) heldItem.getItem();
+        var gunItem = (WeaponItem) heldItem.getItem();
         var modifiedGun = gunItem.getModifiedGun(heldItem);
         if (modifiedGun.getDisplay().getFlash() != null) {
             this.showMuzzleFlashForPlayer(Minecraft.getInstance().player.getId());
@@ -203,10 +202,10 @@ public class GunRenderingHandler {
         // Test if the gun has a scope
         var player = Objects.requireNonNull(Minecraft.getInstance().player);
         var heldItem = player.getMainHandItem();
-        if (!(heldItem.getItem() instanceof GunItem gunItem))
+        if (!(heldItem.getItem() instanceof WeaponItem weaponItem))
             return;
 
-        var modifiedGun = gunItem.getModifiedGun(heldItem);
+        var modifiedGun = weaponItem.getModifiedGun(heldItem);
         if (!modifiedGun.canAimDownSight())
             return;
 
@@ -244,7 +243,7 @@ public class GunRenderingHandler {
             }
         }
 
-        if (!(heldItem.getItem() instanceof GunItem gunItem)) {
+        if (!(heldItem.getItem() instanceof WeaponItem weaponItem)) {
             return;
         }
         /* Cancel it because we are doing our own custom render */
@@ -263,7 +262,7 @@ public class GunRenderingHandler {
 
         poseStack.pushPose();
         {
-            var modifiedGun = gunItem.getModifiedGun(heldItem);
+            var modifiedGun = weaponItem.getModifiedGun(heldItem);
             this.applyIronSightTransforms(event, poseStack, model, isRight, heldItem, modifiedGun);
             this.applyBobbingTransforms(poseStack, event.getPartialTick());
 
@@ -572,7 +571,7 @@ public class GunRenderingHandler {
     public void renderWeapon(@Nullable LivingEntity entity, ItemStack renderStack,
                              ItemDisplayContext transformType, PoseStack poseStack,
                              MultiBufferSource bufferSource, int packedLight) {
-        if (renderStack.getItem() instanceof GunItem gunItem) {
+        if (renderStack.getItem() instanceof WeaponItem weaponItem) {
             poseStack.pushPose();
             {
                 var model = ItemStack.EMPTY;
@@ -586,7 +585,7 @@ public class GunRenderingHandler {
 
                 this.renderingWeapon = renderStack;
 
-                gunItem.getRenderer().render(
+                weaponItem.getRenderer().render(
                         entity,
                         model.isEmpty() ? renderStack : model,
                         transformType,
@@ -606,7 +605,7 @@ public class GunRenderingHandler {
 //                           PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks) {
 //
 //        try {
-//            var gun = (GunItem) stack.getItem();
+//            var gun = (WeaponItem) stack.getItem();
 //            if (!bannedTransforms.contains(transformType))
 //                animatedGunRenderer.renderByItem(
 //                        stack,
@@ -639,7 +638,7 @@ public class GunRenderingHandler {
 //    }
 //
 //    public static ArrayList<ItemStack> getAttachments(ItemStack stack){
-//        var modifiedGun = ((GunItem) stack.getItem()).getModifiedGun(stack);
+//        var modifiedGun = ((WeaponItem) stack.getItem()).getModifiedGun(stack);
 //        var gunTag = stack.getOrCreateTag();
 //        var attachments = gunTag.getCompound("Attachments");
 //        var result = new ArrayList<ItemStack>();
@@ -688,7 +687,7 @@ public class GunRenderingHandler {
             return;
 
         var heldItem = mc.player.getMainHandItem();
-        var targetAngle = heldItem.getItem() instanceof GunItem || !Config.CLIENT.display.restrictCameraRollToWeapons.get() ? mc.player.input.leftImpulse : 0F;
+        var targetAngle = heldItem.getItem() instanceof WeaponItem || !Config.CLIENT.display.restrictCameraRollToWeapons.get() ? mc.player.input.leftImpulse : 0F;
         var speed = mc.player.input.leftImpulse != 0 ? 0.1F : 0.15F;
         this.immersiveRoll = Mth.lerp(speed, this.immersiveRoll, targetAngle);
 

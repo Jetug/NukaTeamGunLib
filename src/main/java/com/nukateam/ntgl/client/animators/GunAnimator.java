@@ -10,12 +10,11 @@ import com.nukateam.ntgl.client.render.renderers.gun.*;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.base.utils.EquipTracker;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.base.holders.GripType;
 import com.nukateam.ntgl.common.data.constants.Animations;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.util.util.*;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
 import mod.azure.azurelib.core.animation.*;
 import mod.azure.azurelib.core.animation.AnimationController.*;
@@ -56,7 +55,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected Cycler barrelCycler = new Cycler(1, getBarrelAmount());
     protected Cycler chamberCycler = null;
 
-    protected GunItem currentGun = null;
+    protected WeaponItem currentGun = null;
     protected int rate;
     protected int equipTime;
     protected int meleeDelay;
@@ -103,7 +102,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected void tickStart() {
-        if (!(getStack().getItem() instanceof GunItem))
+        if (!(getStack().getItem() instanceof WeaponItem))
             return;
         var data = getGunData();
         this.rate = GunModifierHelper.getRate(data);
@@ -126,12 +125,12 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return renderer.getRenderEntity();
     }
 
-    protected GunItem getGunItem() {
-        return (GunItem) getStack().getItem();
+    protected WeaponItem getGunItem() {
+        return (WeaponItem) getStack().getItem();
     }
 
     protected boolean isOneHanded(ItemStack stack) {
-        return stack.getItem() instanceof GunItem && GunModifierHelper.getGripType(getGunData()).isOneHanded();
+        return stack.getItem() instanceof WeaponItem && GunModifierHelper.getGripType(getGunData()).isOneHanded();
     }
 
     @NotNull

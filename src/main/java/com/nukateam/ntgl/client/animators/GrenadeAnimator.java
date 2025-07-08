@@ -1,23 +1,17 @@
 package com.nukateam.ntgl.client.animators;
 
-import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.model.gun.GeoGrenadeModel;
-import com.nukateam.ntgl.client.model.gun.GeoGunModel;
 import com.nukateam.ntgl.client.render.renderers.gun.DynamicGrenadeRenderer;
-import com.nukateam.ntgl.client.render.renderers.gun.DynamicGunRenderer;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Animations;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.util.util.AnimationHelper;
-import com.nukateam.ntgl.common.util.util.Cycler;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.AnimationController.AnimationStateHandler;
 import mod.azure.azurelib.core.animation.AnimationState;

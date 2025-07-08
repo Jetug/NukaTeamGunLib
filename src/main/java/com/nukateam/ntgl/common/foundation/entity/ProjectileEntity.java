@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.SpreadTracker;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
 import com.nukateam.ntgl.common.util.interfaces.*;
 import com.nukateam.ntgl.common.util.util.*;
@@ -14,7 +15,6 @@ import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 import com.nukateam.ntgl.common.event.GunProjectileHitEvent;
 import com.nukateam.ntgl.common.foundation.ModTags;
 import com.nukateam.ntgl.common.foundation.init.*;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.util.world.ExplosionUtils;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
@@ -88,7 +88,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
        return isRightHand;
     }
 
-    public ProjectileEntity(EntityType<? extends Entity> entityType, Level level, LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
+    public ProjectileEntity(EntityType<? extends Entity> entityType, Level level, LivingEntity shooter, ItemStack weapon, WeaponItem item, Gun modifiedGun) {
         this(entityType, level);
         var data = new GunData(weapon, shooter);
         this.shooterId = shooter.getId();
@@ -656,7 +656,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return ItemStack.EMPTY;
     }
 
-    protected void setupDirection(LivingEntity shooter, ItemStack weapon, GunItem item) {
+    protected void setupDirection(LivingEntity shooter, ItemStack weapon, WeaponItem item) {
         /* Get speed and set motion */
         var dir = this.getDirection(shooter, weapon, item);
         var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
@@ -675,7 +675,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return damage;
     }
 
-    protected Vec3 getDirection(LivingEntity shooter, ItemStack weapon, GunItem item) {
+    protected Vec3 getDirection(LivingEntity shooter, ItemStack weapon, WeaponItem item) {
         var data = new GunData(weapon, shooter);
         float gunSpread = GunModifierHelper.getModifiedSpread(data);
 

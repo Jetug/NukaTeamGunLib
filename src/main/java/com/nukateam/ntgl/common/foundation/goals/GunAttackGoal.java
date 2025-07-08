@@ -1,11 +1,11 @@
 package com.nukateam.ntgl.common.foundation.goals;
 
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.base.utils.EntityReloadTracker;
 import com.nukateam.ntgl.common.util.interfaces.IGunUser;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -43,7 +43,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
     }
 
     private boolean isHoldingGun() {
-        return this.mob.isHolding(is -> is.getItem() instanceof GunItem);
+        return this.mob.isHolding(is -> is.getItem() instanceof WeaponItem);
     }
 
     /**

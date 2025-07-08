@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.foundation.entity;
 
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -46,7 +46,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	}
 
 	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn,
-								  LivingEntity shooter, ItemStack weapon, GunItem item, Gun modifiedGun) {
+                                  LivingEntity shooter, ItemStack weapon, WeaponItem item, Gun modifiedGun) {
 		super(entityType, worldIn, shooter, weapon, item, modifiedGun);
 	}
 
@@ -94,7 +94,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	public void trace() {
 		if (shooter == null || level().isClientSide)
 			return;
-//		setupDirection(shooter, weapon, (GunItem)weapon.getItem(), modifiedGun);
+//		setupDirection(shooter, weapon, (WeaponItem)weapon.getItem(), modifiedGun);
 
 		var startVec = new Vec3(this.getX(), this.getY(), this.getZ());
 		var endVec = startVec.add(this.getDeltaMovement());

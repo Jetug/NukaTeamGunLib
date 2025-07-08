@@ -444,7 +444,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             var output = recipe.getItem();
             if(output == null) continue;
 
-            if (output.getItem() instanceof GunItem) {
+            if (output.getItem() instanceof WeaponItem) {
                 weapons.add(recipe);
             } else if (output.getItem() instanceof IAttachment) {
                 attachments.add(recipe);
@@ -466,7 +466,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
 
             for (var recipe : weapons){
                 var weaponStack = recipe.getItem();
-                var gunItem = (GunItem)weaponStack.getItem();
+                var gunItem = (WeaponItem)weaponStack.getItem();
                 var category = gunItem.getModifiedGun(weaponStack).getGeneral().getCategory();
                 var buff = categoryRecipes.getOrDefault(category, new ArrayList<>());
 
@@ -479,7 +479,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 var category = entry.getKey();
 
                 if (!recipeList.isEmpty()) {
-                    var item = (GunItem)recipeList.get(0).getItem().getItem();
+                    var item = (WeaponItem)recipeList.get(0).getItem().getItem();
                     var icon = new ItemStack(item);
                     var player = Minecraft.getInstance().player;
                     var gunData = new GunData(icon, player);

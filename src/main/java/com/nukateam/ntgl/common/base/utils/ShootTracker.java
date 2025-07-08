@@ -1,9 +1,8 @@
 package com.nukateam.ntgl.common.base.utils;
 
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
-import com.google.common.collect.Maps;
 import net.minecraft.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +24,7 @@ public class ShootTracker {
      * an awkward experience as the cooldown applies to the item after the packet has traveled to the
      * server then back to the client. To fix this and still apply security, we just handle the
      * cooldown tracker quietly and not send cooldown packet back to client. The cooldown is still
-     * applied on the client in {@link GunItem#onItemUseFirst(ItemStack, UseOnContext)} and {@link GunItem#onUsingTick}.
+     * applied on the client in {@link WeaponItem#onItemUseFirst(ItemStack, UseOnContext)} and {@link WeaponItem#onUsingTick}.
      */
     private static final Map<Pair<LivingEntity, InteractionHand>, ShootTracker> SHOOT_TRACKER_MAP = new WeakHashMap<>();
 

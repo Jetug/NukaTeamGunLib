@@ -6,9 +6,9 @@ import com.nukateam.ntgl.common.base.DelayedTask;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.base.holders.LoadingType;
 import com.nukateam.ntgl.common.data.constants.Tags;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageReload;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
@@ -43,7 +43,7 @@ public class ReloadTracker {
     private int slot = 0;
     private final HumanoidArm arm;
     private final ItemStack stack;
-    private final GunItem gunItem;
+    private final WeaponItem weaponItem;
     private final Gun gun;
 
     public int reloadTick;
@@ -54,8 +54,8 @@ public class ReloadTracker {
         this.startTick = entity.tickCount;
         this.arm = arm;
         this.stack = entity.getItemInHand(getInteractionHand(arm));
-        this.gunItem = ((GunItem) stack.getItem());
-        this.gun = gunItem.getModifiedGun(stack);
+        this.weaponItem = ((WeaponItem) stack.getItem());
+        this.gun = weaponItem.getModifiedGun(stack);
         this.shooter = entity;
 
         if(entity instanceof Player player) {
@@ -348,7 +348,7 @@ public class ReloadTracker {
                 entity.getOffhandItem().getItem();
 
         if (!RELOAD_TRACKER_MAP.containsKey(entity)) {
-            if (!(gunItem instanceof GunItem)) {
+            if (!(gunItem instanceof WeaponItem)) {
                 reloadKey.setValue(entity, false);
                 return true;
             }
@@ -367,7 +367,7 @@ public class ReloadTracker {
         var oppositeStack = LivingEntityUtils.getItemInHand(entity, arm.getOpposite());
         var data = new GunData(oppositeStack, entity);
 
-        if (arm == HumanoidArm.RIGHT && oppositeStack.getItem() instanceof GunItem && !GunModifierHelper.isWeaponFull(data)) {
+        if (arm == HumanoidArm.RIGHT && oppositeStack.getItem() instanceof WeaponItem && !GunModifierHelper.isWeaponFull(data)) {
             PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) entity, new S2CMessageReload(true, arm.getOpposite()));
         }
     }

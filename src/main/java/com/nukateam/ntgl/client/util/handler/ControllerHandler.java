@@ -17,7 +17,7 @@ import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
@@ -79,7 +79,7 @@ public class ControllerHandler {
         var player = Minecraft.getInstance().player;
         if (player != null) {
             var heldItem = player.getMainHandItem();
-            if (heldItem.getItem() instanceof GunItem) {
+            if (heldItem.getItem() instanceof WeaponItem) {
                 actions.put(GunButtonBindings.AIM, new Action(Component.translatable("ntgl.action.aim"), Action.Side.RIGHT));
                 actions.put(GunButtonBindings.SHOOT, new Action(Component.translatable("ntgl.action.shoot"), Action.Side.RIGHT));
 
@@ -102,7 +102,7 @@ public class ControllerHandler {
         var player = Minecraft.getInstance().player;
         if (player != null) {
             var heldItem = player.getMainHandItem();
-            if (heldItem.getItem() instanceof GunItem && AimingHandler.get().isAiming()) {
+            if (heldItem.getItem() instanceof WeaponItem && AimingHandler.get().isAiming()) {
                 double adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
                 yawSpeed.set(10.0F * (float) adsSensitivity);
                 pitchSpeed.set(7.5F * (float) adsSensitivity);
@@ -128,7 +128,7 @@ public class ControllerHandler {
         if (player != null && world != null && Minecraft.getInstance().screen == null) {
             var heldItem = player.getMainHandItem();
 
-            if (!(heldItem.getItem() instanceof GunItem)) return false;
+            if (!(heldItem.getItem() instanceof WeaponItem)) return false;
 
             if (isEquals(originalButton, GunButtonBindings.SHOOT)) {
                 shouldCancel = true;
@@ -184,7 +184,7 @@ public class ControllerHandler {
             var heldItem = player.getMainHandItem();
             var gunData = new GunData(heldItem, player);
 
-            if (heldItem.getItem() instanceof GunItem) {
+            if (heldItem.getItem() instanceof WeaponItem) {
                 if (GunModifierHelper.isAuto(gunData)) {
                     ShootingHandler.get().fire(player, heldItem);
                 }

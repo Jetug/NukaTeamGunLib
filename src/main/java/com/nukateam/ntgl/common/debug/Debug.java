@@ -4,14 +4,13 @@ import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugButton;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugToggle;
-import com.nukateam.ntgl.common.foundation.item.GunItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -44,7 +43,7 @@ public class Debug {
         });
     }
 
-    public static Gun getGun(GunItem item) {
+    public static Gun getGun(WeaponItem item) {
         return GUNS.computeIfAbsent(item, item1 -> item.getGun().copy());
     }
 
@@ -70,9 +69,9 @@ public class Debug {
         public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                 var heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
-                if (heldItem.getItem() instanceof GunItem gunItem) {
-                    widgets.add(Pair.of(Component.translatable(gunItem.getDescriptionId()), () -> new DebugButton(Component.literal("Edit"), btn -> {
-                        Minecraft.getInstance().setScreen(ClientHandler.createEditorScreen(getGun(gunItem)));
+                if (heldItem.getItem() instanceof WeaponItem weaponItem) {
+                    widgets.add(Pair.of(Component.translatable(weaponItem.getDescriptionId()), () -> new DebugButton(Component.literal("Edit"), btn -> {
+                        Minecraft.getInstance().setScreen(ClientHandler.createEditorScreen(getGun(weaponItem)));
                     })));
                 }
                 widgets.add(Pair.of(Component.literal("Settings"), () -> new DebugButton(Component.literal(">"), btn -> {
