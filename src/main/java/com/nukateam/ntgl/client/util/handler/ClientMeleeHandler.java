@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.holders.MeleeMode;
 import com.nukateam.ntgl.common.base.holders.WeaponMode;
+import com.nukateam.ntgl.common.base.utils.EquipTracker;
 import com.nukateam.ntgl.common.event.MeleeAttackEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -68,29 +69,21 @@ public class ClientMeleeHandler {
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageMeleeAttack());
         }
     }
-
+ 
     @SubscribeEvent
     public static void onPostClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END)
-            return;
+        if (event.phase == TickEvent.Phase.END && isInGame()) {
+            var player = Minecraft.getInstance().player;
+            assert player != null;
 
-        if (!isInGame()) return;
+            var mainHandItem = player.getMainHandItem();
+            var offhandItem = player.getOffhandItem();
 
-        var mc = Minecraft.getInstance();
-        var player = mc.player;
-
-        assert player != null;
-        var mainHandItem = player.getMainHandItem();
-        var offhandItem = player.getOffhandItem();
-
-        if (mainHandItem.getItem() instanceof WeaponItem){
-            if(isKeyAttackDown()){
+            if (mainHandItem.getItem() instanceof WeaponItem && isKeyAttackDown()) {
                 handleAutoFire(player, mainHandItem, InteractionHand.MAIN_HAND);
             }
-        }
 
-        if (offhandItem.getItem() instanceof WeaponItem && canRenderInOffhand(player)){
-            if(isUseKeyDown()) {
+            if (offhandItem.getItem() instanceof WeaponItem && canRenderInOffhand(player) && isUseKeyDown()) {
                 handleAutoFire(player, offhandItem, InteractionHand.OFF_HAND);
             }
         }
@@ -110,13 +103,13 @@ public class ClientMeleeHandler {
         }
     }
 
-    private static void handleAutoFire(LocalPlayer player, ItemStack heldItem, InteractionHand arm) {
+    private static void handleAutoFire(LocalPlayer player, ItemStack heldItem, InteractionHand hand) {
         var mc = Minecraft.getInstance();
-        var key = arm == InteractionHand.MAIN_HAND ?
+        var key = hand == InteractionHand.MAIN_HAND ?
                 mc.options.keyAttack :
                 mc.options.keyUse;
 
-        attack(player, heldItem);
+        attack(player, heldItem, hand);
 
         if(heldItem.getItem() instanceof WeaponItem weaponItem && isMelee(heldItem, player)){
             var mode = weaponItem.getGun().getMelee().getMode();
@@ -126,13 +119,11 @@ public class ClientMeleeHandler {
         }
     }
 
-    private static void attack(LivingEntity shooter, ItemStack heldItem) {
+    private static void attack(LivingEntity shooter, ItemStack heldItem, InteractionHand hand) {
         if (heldItem.getItem() instanceof WeaponItem
                 && isMelee(heldItem, shooter)
+                && !EquipTracker.isEquiping(shooter, hand)
                 && !shooter.isSpectator()) {
-
-            var isMainHand = shooter.getMainHandItem() == heldItem;
-            var hand = isMainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
 
             if (MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(shooter, heldItem, hand)))
                 return;

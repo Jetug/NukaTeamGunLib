@@ -82,7 +82,7 @@ public class EquipTracker {
         return dataKey;
     }
 
-    public static boolean isEquiping(Player entity, InteractionHand arm){
+    public static boolean isEquiping(LivingEntity entity, InteractionHand arm){
         var isEquiping = getDataKey(arm).getValue(entity);
         return isEquiping;
 //        var key = new Pair<>(arm, entity);
