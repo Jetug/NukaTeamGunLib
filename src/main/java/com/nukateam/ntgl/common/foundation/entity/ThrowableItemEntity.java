@@ -45,29 +45,34 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
         this.projectile = projectile;
     }
 
-    public void setItem(ItemStack item) {
-        this.item = item;
-    }
-
-    public ItemStack getItem() {
-        return this.item;
-    }
-
-    protected void setShouldBounce(boolean shouldBounce) {
-        this.shouldBounce = shouldBounce;
-    }
-
-    protected void setGravityVelocity(float gravity) {
-        this.gravityVelocity = gravity;
+    @Override
+    protected void addAdditionalSaveData(CompoundTag compound) {
+        compound.put("Projectile", this.projectile.serializeNBT());
+        compound.putBoolean("shouldBounce", shouldBounce);
+        compound.putFloat("gravityVelocity", gravityVelocity);
     }
 
     @Override
-    protected float getGravity() {
-        return this.gravityVelocity;
+    protected void readAdditionalSaveData(CompoundTag compound) {
+        this.projectile = Projectile.create(compound.getCompound("Projectile"));
+        this.shouldBounce = compound.getBoolean("shouldBounce");
+        this.gravityVelocity = compound.getFloat("gravityVelocity");
     }
 
-    public void setMaxLife(int maxLife) {
-        this.maxLife = maxLife;
+    @Override
+    public void writeSpawnData(FriendlyByteBuf buffer) {
+        buffer.writeNbt(this.projectile.serializeNBT());
+        buffer.writeBoolean(this.shouldBounce);
+        buffer.writeFloat(this.gravityVelocity);
+        buffer.writeItem(this.item);
+    }
+
+    @Override
+    public void readSpawnData(FriendlyByteBuf buffer) {
+        this.projectile = Projectile.create(buffer.readNbt());
+        this.shouldBounce = buffer.readBoolean();
+        this.gravityVelocity = buffer.readFloat();
+        this.item = buffer.readItem();
     }
 
     @Override
@@ -77,9 +82,6 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
             this.remove(RemovalReason.KILLED);
             this.onDeath();
         }
-    }
-
-    public void onDeath() {
     }
 
     @Override
@@ -122,6 +124,43 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
         }
     }
 
+    @Override
+    protected float getGravity() {
+        return this.gravityVelocity;
+    }
+
+    @Override
+    public boolean isNoGravity() {
+        return false;
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    public ItemStack getItem() {
+        return this.item;
+    }
+
+    public void setItem(ItemStack item) {
+        this.item = item;
+    }
+
+    public void setMaxLife(int maxLife) {
+        this.maxLife = maxLife;
+    }
+
+    protected void setShouldBounce(boolean shouldBounce) {
+        this.shouldBounce = shouldBounce;
+    }
+
+    protected void setGravityVelocity(float gravity) {
+        this.gravityVelocity = gravity;
+    }
+
+    protected void onDeath() {}
+
     private void bounce(Direction direction) {
         switch (direction.getAxis()) {
             case X:
@@ -137,45 +176,5 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
                 this.setDeltaMovement(this.getDeltaMovement().multiply(0.75, 0.75, -0.5));
                 break;
         }
-    }
-
-    @Override
-    public boolean isNoGravity() {
-        return false;
-    }
-
-    @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("Projectile", this.projectile.serializeNBT());
-        compound.putBoolean("shouldBounce", shouldBounce);
-        compound.putFloat("gravityVelocity", gravityVelocity);
-    }
-
-    @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        this.projectile = Projectile.create(compound.getCompound("Projectile"));
-        this.shouldBounce = compound.getBoolean("shouldBounce");
-        this.gravityVelocity = compound.getFloat("gravityVelocity");
-    }
-
-    @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-        buffer.writeNbt(this.projectile.serializeNBT());
-        buffer.writeBoolean(this.shouldBounce);
-        buffer.writeFloat(this.gravityVelocity);
-        buffer.writeItem(this.item);
-    }
-
-    @Override
-    public void readSpawnData(FriendlyByteBuf buffer) {
-        this.projectile = Projectile.create(buffer.readNbt());
-        this.shouldBounce = buffer.readBoolean();
-        this.gravityVelocity = buffer.readFloat();
-        this.item = buffer.readItem();
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }
