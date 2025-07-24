@@ -27,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Lazy;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -117,12 +118,14 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     }
 
     @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
+    public @NotNull ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
         isPreparing = false;
 
         if (this.canCook() && !worldIn.isClientSide()) {
-            if (!(entityLiving instanceof Player) || !((Player) entityLiving).isCreative())
+            if (!(entityLiving instanceof Player player) || !player.isCreative()) {
                 stack.shrink(1);
+            }
+
             var grenade = this.create(worldIn, entityLiving, 0);
             grenade.onDeath();
             if (entityLiving instanceof Player) {
@@ -137,17 +140,21 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
         isPreparing = false;
 
         if (!worldIn.isClientSide()) {
-            int duration = this.getUseDuration(stack) - timeLeft;
-            if (duration >= getPrepareTime()) {
-                if (!(entityLiving instanceof Player) || !((Player) entityLiving).isCreative())
-                    stack.shrink(1);
-                var grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
-                grenade.shootFromRotation(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
-                worldIn.addFreshEntity(grenade);
-                this.onThrown(worldIn, grenade);
-                if (entityLiving instanceof Player) {
-                    ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
-                }
+            throwGrenade(stack, worldIn, entityLiving, timeLeft);
+        }
+    }
+
+    private void throwGrenade(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+        int duration = this.getUseDuration(stack) - timeLeft;
+        if (duration >= getPrepareTime()) {
+            if (!(entityLiving instanceof Player player) || !player.isCreative())
+                stack.shrink(1);
+            var grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
+            grenade.shootFromRotation(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
+            worldIn.addFreshEntity(grenade);
+            this.onThrown(worldIn, grenade);
+            if (entityLiving instanceof Player) {
+                ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
             }
         }
     }

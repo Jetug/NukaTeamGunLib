@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.util.annotation.Ignored;
+import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.util.util.GunJsonUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -23,6 +24,21 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
+    class General implements INBTSerializable<CompoundTag>{
+        @Optional
+        private int prepareTime = 20;
+
+        @Override
+        public CompoundTag serializeNBT() {
+            return null;
+        }
+
+        @Override
+        public void deserializeNBT(CompoundTag nbt) {
+
+        }
+    }
+
     protected Projectile projectile = new Projectile();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
