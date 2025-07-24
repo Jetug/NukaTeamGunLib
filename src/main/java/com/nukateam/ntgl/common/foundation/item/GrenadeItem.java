@@ -40,6 +40,7 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     private final Lazy<DynamicGrenadeRenderer> RENDERER = Lazy.of(() -> new DynamicGrenadeRenderer(new GeoGrenadeModel()));
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     private boolean isPreparing = false;
+    private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
     public GrenadeItem(Item.Properties properties, int maxCookTime) {
         super(properties);
@@ -56,12 +57,21 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
         projectile = supplier.getConfig();
     }
 
-    private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
+    @Override
+    public boolean isPreparing(){
+        return this.isPreparing;
+    }
+
+    @Override
+    public int getPrepareTime() {
+        return 10;
+    }
 
     @Override
     public Supplier<Object> getRenderProvider() {
         return renderProvider;
     }
+
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
@@ -111,22 +121,22 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
         var stack = playerIn.getItemInHand(handIn);
         playerIn.startUsingItem(handIn);
         return InteractionResultHolder.consume(stack);
     }
 
     @Override
-    public @NotNull ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
+    public @NotNull ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entityLiving) {
         isPreparing = false;
 
-        if (this.canCook() && !worldIn.isClientSide()) {
+        if (this.canCook() && !level.isClientSide()) {
             if (!(entityLiving instanceof Player player) || !player.isCreative()) {
                 stack.shrink(1);
             }
 
-            var grenade = this.create(worldIn, entityLiving, 0);
+            var grenade = this.create(level, entityLiving, 0);
             grenade.onDeath();
             if (entityLiving instanceof Player) {
                 ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
@@ -136,35 +146,30 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         isPreparing = false;
 
-        if (!worldIn.isClientSide()) {
-            throwGrenade(stack, worldIn, entityLiving, timeLeft);
+        if (!level.isClientSide()) {
+            throwItem(stack, level, entityLiving, timeLeft);
         }
     }
 
-    private void throwGrenade(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
+    private void throwItem(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         int duration = this.getUseDuration(stack) - timeLeft;
         if (duration >= getPrepareTime()) {
-            if (!(entityLiving instanceof Player player) || !player.isCreative())
+            if (!(entityLiving instanceof Player player) || !player.isCreative()) {
                 stack.shrink(1);
-            var grenade = this.create(worldIn, entityLiving, this.maxCookTime - duration);
+            }
+
+            var grenade = this.create(level, entityLiving, this.maxCookTime - duration);
             grenade.shootFromRotation(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
-            worldIn.addFreshEntity(grenade);
-            this.onThrown(worldIn, grenade);
+            level.addFreshEntity(grenade);
+            this.onThrown(level, grenade);
+
             if (entityLiving instanceof Player) {
                 ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
             }
         }
-    }
-
-    public boolean isPreparing(){
-        return this.isPreparing;
-    }
-
-    public int getPrepareTime() {
-        return 10;
     }
 
     public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft) {
