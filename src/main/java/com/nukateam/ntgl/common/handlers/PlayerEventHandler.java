@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.handlers;
 
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.utils.EquipTracker;
+import com.nukateam.ntgl.common.base.utils.trackers.EquipTracker;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;

@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.base.utils;
+package com.nukateam.ntgl.common.base.utils.trackers;
 
 import com.mojang.datafixers.util.Pair;
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;

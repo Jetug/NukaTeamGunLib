@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.handlers;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.utils.EquipTracker;
+import com.nukateam.ntgl.common.base.utils.trackers.EquipTracker;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;

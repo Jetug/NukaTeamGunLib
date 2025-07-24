@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.holders.MeleeMode;
 import com.nukateam.ntgl.common.base.holders.WeaponMode;
-import com.nukateam.ntgl.common.base.utils.EquipTracker;
+import com.nukateam.ntgl.common.base.utils.trackers.EquipTracker;
 import com.nukateam.ntgl.common.event.MeleeAttackEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;

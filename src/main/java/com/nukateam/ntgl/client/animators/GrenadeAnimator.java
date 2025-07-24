@@ -6,7 +6,7 @@ import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.model.gun.GeoGrenadeModel;
 import com.nukateam.ntgl.client.render.renderers.gun.DynamicGrenadeRenderer;
-import com.nukateam.ntgl.common.base.utils.EquipTracker;
+import com.nukateam.ntgl.common.base.utils.trackers.EquipTracker;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
 import com.nukateam.ntgl.common.data.constants.Animations;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;

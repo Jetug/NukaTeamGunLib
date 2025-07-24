@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
-import static com.nukateam.ntgl.common.base.utils.ShootTracker.*;
+import static com.nukateam.ntgl.common.base.utils.trackers.ShootTracker.*;
 import static com.nukateam.ntgl.common.network.ServerPlayHandler.*;
 import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
 
