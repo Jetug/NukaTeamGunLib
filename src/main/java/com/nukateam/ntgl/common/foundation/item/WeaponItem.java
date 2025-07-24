@@ -38,7 +38,7 @@ import java.util.function.*;
 import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
-public class WeaponItem extends Item implements DynamicGeoItem, IColored, IMeta, IResourceProvider, IConfigConsumer<Gun>, IConfigProvider<Gun> {
+public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColored, IMeta{
     public static final String VARIANT = "variant";
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();

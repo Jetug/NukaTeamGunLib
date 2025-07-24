@@ -4,6 +4,8 @@ import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.utils.EquipTracker;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.world.InteractionHand;
@@ -60,7 +62,7 @@ public class PlayerEventHandler {
         var newItem = player.getItemInHand(hand);
 
         if (newItem != lastSlot) {
-            if (newItem.getItem() instanceof WeaponItem) {
+            if (newItem.getItem() instanceof IWeapon || newItem.getItem() instanceof IThrowable) {
                 EquipTracker.startEquip(player, hand);
             }
 

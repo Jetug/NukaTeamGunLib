@@ -106,7 +106,7 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
 
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.NONE;
+        return UseAnim.BOW;
     }
 
     @Override
@@ -173,13 +173,23 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
             timeLeft--;
         if(throwTick > 0)
             throwTick--;
-        else {
+        else if(isThrowing) {
             isThrowing = false;
             if(!level.isClientSide){
                 throwItem(stack, level, (LivingEntity)entity, timeLeft);
             }
         }
     }
+
+    public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft) {
+        return new ThrowableGrenadeEntity(world, entity, getConfig().getProjectile(), timeLeft);
+    }
+
+    public boolean canCook() {
+        return true;
+    }
+
+    protected void onThrown(Level world, ThrowableGrenadeEntity entity) {}
 
     private void throwItem(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         int duration = this.getUseDuration(stack) - timeLeft;
@@ -198,14 +208,4 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
             }
         }
     }
-
-    public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft) {
-        return new ThrowableGrenadeEntity(world, entity, getConfig().getProjectile(), timeLeft);
-    }
-
-    public boolean canCook() {
-        return true;
-    }
-
-    protected void onThrown(Level world, ThrowableGrenadeEntity entity) {}
 }

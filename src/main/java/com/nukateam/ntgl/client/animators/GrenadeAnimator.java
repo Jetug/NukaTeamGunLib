@@ -61,7 +61,7 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
         ClientTickHandler.addTicker(this, this::tick);
         TRIGGER_CONTROLLER = createController("triggerController", event -> PlayState.CONTINUE);
         MAIN_CONTROLLER = createController("mainController", animate()).setSoundKeyframeHandler(this::handleSoundEvent);
-        TICKING_CONTROLLER = createController("tickingController", animate());
+        TICKING_CONTROLLER = createController("tickingController", animateTick());
         animationHelper = new AnimationHelper<>(this, GeoGrenadeModel.INSTANCE);
     }
 

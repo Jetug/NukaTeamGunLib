@@ -5,6 +5,7 @@ import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
@@ -107,13 +108,11 @@ public class EquipTracker {
 
     private static boolean addTracker(Player entity, InteractionHand arm, boolean switchGuns) {
         var reloadKey = getDataKey(arm);
-
         var gunItem = entity.getItemInHand(arm).getItem();
-
         var key = new Pair<>(arm, entity);
 
         if (!TRACKER_MAP.containsKey(key)) {
-            if (!(gunItem instanceof WeaponItem)) {
+            if (!(gunItem instanceof IWeapon)) {
                 reloadKey.setValue(entity, false);
                 return true;
             }
@@ -121,6 +120,4 @@ public class EquipTracker {
         }
         return false;
     }
-
-
 }
