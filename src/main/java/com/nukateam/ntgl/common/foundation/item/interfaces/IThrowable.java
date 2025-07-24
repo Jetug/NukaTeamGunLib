@@ -11,5 +11,9 @@ public interface IThrowable extends IConfigConsumer<ThrowableConfig> {
 
     boolean isPreparing();
 
+    boolean isThrowing();
+
     int getPrepareTime();
+
+    int getThrowTime();
 }

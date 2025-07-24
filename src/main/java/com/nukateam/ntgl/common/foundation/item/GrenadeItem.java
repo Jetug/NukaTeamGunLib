@@ -17,6 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -39,8 +40,12 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     private ThrowableConfig projectile = new ThrowableConfig();
     private final Lazy<DynamicGrenadeRenderer> RENDERER = Lazy.of(() -> new DynamicGrenadeRenderer(new GeoGrenadeModel()));
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
-    private boolean isPreparing = false;
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
+
+    private int throwTick = 0;
+    private int timeLeft = 0;
+    private boolean isPreparing = false;
+    private boolean isThrowing = false;
 
     public GrenadeItem(Item.Properties properties, int maxCookTime) {
         super(properties);
@@ -63,8 +68,18 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     }
 
     @Override
+    public boolean isThrowing(){
+        return this.isThrowing;
+    }
+
+    @Override
     public int getPrepareTime() {
-        return 10;
+        return getConfig().getGeneral().getPrepareTime();
+    }
+
+    @Override
+    public int getThrowTime() {
+        return getConfig().getGeneral().getThrowTime();
     }
 
     @Override
@@ -148,9 +163,21 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         isPreparing = false;
+        this.timeLeft = timeLeft;
+        this.isThrowing = true;
+    }
 
-        if (!level.isClientSide()) {
-            throwItem(stack, level, entityLiving, timeLeft);
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        if(timeLeft > 0)
+            timeLeft--;
+        if(throwTick > 0)
+            throwTick--;
+        else {
+            isThrowing = false;
+            if(!level.isClientSide){
+                throwItem(stack, level, (LivingEntity)entity, timeLeft);
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.data.config;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.nukateam.ntgl.common.base.holders.GrenadeMode;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -24,21 +25,87 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
-    class General implements INBTSerializable<CompoundTag>{
+
+    public static final String EQUIP_TIME = "equipTime";
+    public static final String PREPARE_TIME = "prepareTime";
+    public static final String THROW_TIME = "throwTime";
+
+    public static class General implements INBTSerializable<CompoundTag>{
         @Optional
-        private int prepareTime = 20;
+        private GrenadeMode mode = GrenadeMode.SAFE;
+        @Optional
+        private int equipTime = 0;
+        private int prepareTime = 0;
+        private int throwTime = 1;
+
+        public static General create(CompoundTag tag) {
+            var config = new General();
+            config.deserializeNBT(tag);
+            return config;
+        }
 
         @Override
         public CompoundTag serializeNBT() {
-            return null;
+            var tag = new CompoundTag();
+            tag.putString("mode", mode.toString());
+            tag.putInt(EQUIP_TIME, equipTime);
+            tag.putInt(PREPARE_TIME, prepareTime);
+            tag.putInt(THROW_TIME, throwTime);
+            return tag;
         }
 
         @Override
-        public void deserializeNBT(CompoundTag nbt) {
+        public void deserializeNBT(CompoundTag tag) {
+            if (tag.contains("mode", Tag.TAG_STRING)) {
+                this.mode = GrenadeMode.getType(tag.getString("mode"));
+            }
+            if (tag.contains(EQUIP_TIME, Tag.TAG_INT)) {
+                this.equipTime = tag.getInt(EQUIP_TIME);
+            }
+            if (tag.contains(PREPARE_TIME, Tag.TAG_INT)) {
+                this.prepareTime = tag.getInt(PREPARE_TIME);
+            }
+            if (tag.contains(THROW_TIME, Tag.TAG_INT)) {
+                this.throwTime = tag.getInt(THROW_TIME);
+            }
+        }
 
+        public JsonObject toJsonObject() {
+            var object = new JsonObject();
+            object.addProperty("mode", this.mode.toString());
+            object.addProperty("equipTime", this.equipTime);
+            object.addProperty("prepareTime", this.prepareTime);
+            object.addProperty("throwTime", this.throwTime);
+            return object;
+        }
+
+        public General copy() {
+            var gun = new General();
+            gun.mode = mode;
+            gun.equipTime = equipTime;
+            gun.prepareTime = prepareTime;
+            gun.throwTime = throwTime;
+            return gun;
+        }
+
+        public GrenadeMode getMode() {
+            return mode;
+        }
+
+        public int getEquipTime() {
+            return equipTime;
+        }
+
+        public int getPrepareTime() {
+            return prepareTime;
+        }
+
+        public int getThrowTime() {
+            return throwTime;
         }
     }
 
+    protected General general = new General();
     protected Projectile projectile = new Projectile();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
@@ -58,6 +125,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
+        tag.put("general", general.serializeNBT());
         tag.put("Projectile", projectile.serializeNBT());
         tag.put("Sounds", NbtUtils.serializeStringMap(this.sounds));
         tag.put("Textures", NbtUtils.serializeStringMap(this.textures));
@@ -66,6 +134,9 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
+        if (tag.contains("general", Tag.TAG_COMPOUND)) {
+            this.general = General.create(tag.getCompound("general"));
+        }
         if (tag.contains("Projectile", Tag.TAG_COMPOUND)) {
             this.projectile = Projectile.create(tag.getCompound("Projectile"));
         }
@@ -81,6 +152,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         var gson = new Gson();
         var object = new JsonObject();
         object.add("projectile", this.projectile.toJsonObject());
+        object.add("general", this.general.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object,"sounds", gson.toJsonTree(sounds).getAsJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object,"textures", gson.toJsonTree(textures).getAsJsonObject());
         return object;
@@ -88,10 +160,15 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
 
     public ThrowableConfig copy() {
         var gun = new ThrowableConfig();
+        gun.general = general;
         gun.projectile = projectile;
         gun.sounds = (HashMap<String, ResourceLocation>) this.sounds.clone();
         gun.textures = (HashMap<String, ResourceLocation>) this.textures.clone();
         return gun;
+    }
+
+    public General getGeneral() {
+        return general;
     }
 
     public Projectile getProjectile() {
