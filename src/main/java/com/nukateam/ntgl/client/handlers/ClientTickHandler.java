@@ -16,8 +16,7 @@ public class ClientTickHandler {
     private static final Map<ItemAnimator, Runnable> tickingAnimators = new HashMap();
     private static final Map<Object, Consumer<TickEvent>> tickers = new HashMap();
 
-    public ClientTickHandler() {
-    }
+    public ClientTickHandler() {}
 
     public static void addTicker(ItemAnimator animator, Runnable onTick) {
         tickingAnimators.put(animator, onTick);

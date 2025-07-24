@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.core.particles.ParticleTypes;
@@ -135,171 +136,36 @@ public class GrenadeTracker {
                 ModSyncedDataKeys.MELEE_RIGHT : ModSyncedDataKeys.MELEE_LEFT;
     }
 
-    private static class Tracker{
+    private static class Tracker {
         private final InteractionHand arm;
         private final ItemStack stack;
-        private final WeaponItem weaponItem;
+        private final IThrowable throwable;
+        private final int maxPrepare;
+        private final int maxThrow;
+        private final int maxLife;
 
-        private final int cooldown;
-        private int meleeTick;
-        private final int attackDelay;
-        private final float meleeDamage;
-        private final float knockback;
-        private final double attackDistance;
-        private final double attackAngle;
-        private final int maxTargets;
+        private int throwTick = 0;
+        private int timeLeft = 0;
+        private int lifeTick = 0;
+
+        private boolean isPreparing = false;
+        private boolean isThrowing = false;
 
         private Tracker(LivingEntity entity, InteractionHand arm) {
             this.arm = arm;
             this.stack = entity.getItemInHand(arm);
-            this.weaponItem = ((WeaponItem) stack.getItem());
-            var data = new GunData(stack, entity);
-            this.cooldown = GunModifierHelper.getMeleeCooldown(data);
-            this.attackDelay = GunModifierHelper.getMeleeDelay(data);
-            this.meleeTick = attackDelay + cooldown;
-            this.meleeDamage = GunModifierHelper.getMeleeDamage(data);
-            this.attackDistance = GunModifierHelper.getMeleeDistance(data);
-            this.attackAngle = GunModifierHelper.getMeleeAngle(data);
-            this.knockback = GunModifierHelper.getMeleeKnockback(data);
-            this.maxTargets = GunModifierHelper.getMeleeMaxTargets(data);
+            this.throwable = (IThrowable) stack.getItem();
+            this.maxPrepare = throwable.getConfig().getGeneral().getPrepareTime();
+            this.maxThrow = throwable.getConfig().getGeneral().getThrowTime();
+            this.maxLife = throwable.getConfig().getProjectile().getLife();
         }
 
-        private boolean tryMeleeAttack(LivingEntity player, ItemStack stack) {
-            var playerPos = player.getEyePosition(1.0F);
-            var lookVec = player.getLookAngle().normalize();
-            var coneAngleCos = Math.cos(Math.toRadians(attackAngle / 2));
-            var visibleTargets = new ArrayList<GrenadeTracker.TargetInfo>();
-            var area = player.getBoundingBox().inflate(attackDistance);
-
-            for (var entity : player.level().getEntities(player, area)) {
-                if (!(entity instanceof LivingEntity living) ||
-                        !entity.isAttackable() ||
-                        entity.isAlliedTo(player)) continue;
-
-                var closestPoint = findClosestPointOnHitbox(playerPos, lookVec, living);
-                var distance = playerPos.distanceTo(closestPoint);
-
-                if (distance > attackDistance || !isInAttackCone(playerPos, lookVec, closestPoint, coneAngleCos))
-                    continue;
-
-                if (!isVisible(playerPos, closestPoint, player.level()))
-                    continue;
-
-                visibleTargets.add(new GrenadeTracker.TargetInfo(living, distance, closestPoint));
-            }
-
-            visibleTargets.sort(Comparator.comparingDouble(t -> t.distance));
-
-            var targetsToAttack = new ArrayList<LivingEntity>();
-            var limit = maxTargets > 0 ? maxTargets : Integer.MAX_VALUE;
-
-            for (int i = 0; i < Math.min(limit, visibleTargets.size()); i++) {
-                targetsToAttack.add(visibleTargets.get(i).entity);
-            }
-
-            if (!targetsToAttack.isEmpty()) {
-                for (LivingEntity target : targetsToAttack) {
-                    performMeleeAttack(player, target);
-                }
-
-                playAttackSound(player);
-                spawnAttackEffects(player, targetsToAttack);
-                return true;
-            }
-            return false;
-        }
-
-        private Vec3 findClosestPointOnHitbox(Vec3 start, Vec3 direction, LivingEntity target) {
-            var hitbox = target.getBoundingBox();
-            var center = hitbox.getCenter();
-            var toCenter = center.subtract(start);
-            var projectionLength = toCenter.dot(direction);
-            var projectedPoint = start.add(direction.scale(projectionLength));
-
-            var x = Mth.clamp(projectedPoint.x, hitbox.minX, hitbox.maxX);
-            var y = Mth.clamp(projectedPoint.y, hitbox.minY, hitbox.maxY);
-            var z = Mth.clamp(projectedPoint.z, hitbox.minZ, hitbox.maxZ);
-
-            return new Vec3(x, y, z);
-        }
+//        public void tick(){
+//            if()
+//        }
 
         private boolean isSameWeapon(LivingEntity entity) {
             return !this.stack.isEmpty() && entity.getItemInHand(arm) == this.stack;
         }
-
-        private boolean isInAttackCone(Vec3 playerPos, Vec3 lookVec, Vec3 point, double coneAngleCos) {
-            var toPoint = point.subtract(playerPos).normalize();
-            return lookVec.dot(toPoint) >= coneAngleCos;
-        }
-
-        private boolean isVisible(Vec3 start, Vec3 end, Level level) {
-            if (level.isClientSide()) return true;
-
-            var context = new ClipContext(start, end,
-                    ClipContext.Block.COLLIDER,
-                    ClipContext.Fluid.NONE,
-                    null);
-
-            return level.clip(context).getType() == HitResult.Type.MISS;
-        }
-
-
-        private void performMeleeAttack(LivingEntity shooter, Entity target) {
-            if(shooter instanceof Player player) {
-                target.hurt(shooter.damageSources().playerAttack(player), meleeDamage);
-            }
-            else target.hurt(shooter.damageSources().mobAttack(shooter), meleeDamage);
-
-            Vec3 knockbackVec = new Vec3(
-                    target.getX() - shooter.getX(),
-                    0,
-                    target.getZ() - shooter.getZ()
-            ).normalize().scale(knockback);
-
-            target.push(knockbackVec.x, knockbackVec.y + 0.2, knockbackVec.z);
-            target.hurtMarked = true;
-        }
-
-        private void playAttackSound(LivingEntity shooter) {
-            shooter.level().playSound(
-                    null,
-                    shooter.getX(), shooter.getY(), shooter.getZ(),
-                    SoundEvents.PLAYER_ATTACK_SWEEP,
-                    SoundSource.PLAYERS,
-                    0.8F,
-                    0.9F + shooter.getRandom().nextFloat() * 0.2F
-            );
-        }
-
-        private void spawnAttackEffects(LivingEntity player, List<LivingEntity> targets) {
-            if(player.level() instanceof ServerLevel serverLevel) {
-
-                Vec3 lookVec = player.getLookAngle().scale(attackDistance / 2);
-                serverLevel.sendParticles(
-                        ParticleTypes.SWEEP_ATTACK,
-                        player.getX() + lookVec.x,
-                        player.getY() + 1.0,
-                        player.getZ() + lookVec.z,
-                        10,
-                        0.5, 0.5, 0.5,
-                        0.0
-                );
-
-
-                for(LivingEntity target : targets) {
-                    serverLevel.sendParticles(
-                            ParticleTypes.CRIT,
-                            target.getX(),
-                            target.getY() + target.getBbHeight() / 2,
-                            target.getZ(),
-                            5,
-                            0.2, 0.2, 0.2,
-                            0.1
-                    );
-                }
-            }
-        }
     }
-
-    private record TargetInfo(LivingEntity entity, double distance, Vec3 hitPoint) {}
 }
