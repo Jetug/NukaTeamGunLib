@@ -391,15 +391,13 @@ public class ServerPlayHandler {
     }
 
     public static void handleGrenade(C2SMessageGrenade message, ServerPlayer player) {
-        var dataKey = message.getHand() == InteractionHand.MAIN_HAND ?
-                ModSyncedDataKeys.PREPARE_RIGHT:
-                ModSyncedDataKeys.PREPARE_LEFT;
-
-        var stack = player.getItemInHand(message.getHand());
         var action = message.getAction();
 
         if(action == KeyAction.HOLD){
             GrenadeTracker.start(player, message.getHand());
+        }
+        else if(action == KeyAction.RELEASE){
+            GrenadeTracker.onRelease(player, message.getHand());
         }
     }
 

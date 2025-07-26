@@ -14,12 +14,15 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import com.mojang.datafixers.util.Pair;
 
 import java.util.*;
 
+import static com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys.*;
+
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class GrenadeTracker {
-    private static final Map<LivingEntity, Tracker> TRACKER_MAP = new HashMap<>();
+    private static final Map<Pair<InteractionHand, LivingEntity>, Tracker> TRACKER_MAP = new HashMap<>();
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
@@ -38,7 +41,8 @@ public class GrenadeTracker {
     public static void onServerTick(TickEvent.ServerTickEvent event) {
         try {
             if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
-                for (var entity: TRACKER_MAP.keySet()) {
+                for (var key: TRACKER_MAP.keySet()) {
+                    var entity = key.getSecond();
                     if(entity instanceof Player) continue;
                     onEntityTick(entity);
                 }
@@ -53,33 +57,37 @@ public class GrenadeTracker {
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         MinecraftServer server = event.getEntity().getServer();
         if (server != null) {
-            server.execute(() -> TRACKER_MAP.remove(event.getEntity()));
+            server.execute(() -> {
+                TRACKER_MAP.remove(Pair.of(InteractionHand.MAIN_HAND, event.getEntity()));
+                TRACKER_MAP.remove(Pair.of(InteractionHand.OFF_HAND, event.getEntity()));
+            });
         }
     }
 
     public static void start(LivingEntity entity, InteractionHand arm){
-        var dataKey = getDataKey(arm);
-        dataKey.setValue(entity, true);
         addTracker(entity, arm);
     }
 
+    public static void onRelease(LivingEntity entity, InteractionHand arm){
+        var tracker = TRACKER_MAP.get(Pair.of(arm, entity));
+        tracker.onRelease();
+    }
+
     private static boolean addTracker(LivingEntity entity, InteractionHand arm) {
-        var dataKey = getDataKey(arm);
-
         var gunItem = entity.getItemInHand(arm).getItem();
+        var key = Pair.of(arm, entity);
 
-        if (!TRACKER_MAP.containsKey(entity)) {
+        if (!TRACKER_MAP.containsKey(key)) {
             if (!(gunItem instanceof IThrowable)) {
-                dataKey.setValue(entity, false);
                 return true;
             }
-            TRACKER_MAP.put(entity, new Tracker(entity, arm));
+            TRACKER_MAP.put(key, new Tracker(entity, arm));
         }
         return false;
     }
 
     private static void stop(LivingEntity entity, InteractionHand arm) {
-        var dataKey = getDataKey(arm);
+        var dataKey = getPreparingDataKey(arm);
         TRACKER_MAP.remove(entity);
         dataKey.setValue(entity, false);
     }
@@ -98,19 +106,13 @@ public class GrenadeTracker {
 
     private static void handTick(LivingEntity shooter, InteractionHand arm) {
         var tracker = TRACKER_MAP.get(shooter);
-        var isSameWeapon = !tracker.isSameWeapon(shooter);
+        var isSameWeapon = !tracker.isSameWeapon();
 
         if (isSameWeapon) {
             TRACKER_MAP.remove(shooter);
-            var dataKey = getDataKey(arm);
+            var dataKey = getPreparingDataKey(arm);
             dataKey.setValue(shooter, false);
         }
-
-    }
-
-    private static SyncedDataKey<LivingEntity, Boolean> getDataKey(InteractionHand arm) {
-        return arm == InteractionHand.MAIN_HAND ?
-                ModSyncedDataKeys.PREPARE_RIGHT : ModSyncedDataKeys.PREPARE_LEFT;
     }
 
     private static class Tracker {
@@ -126,9 +128,6 @@ public class GrenadeTracker {
         private int throwTick = 0;
         private int lifeTick = 0;
 
-        private boolean isPreparing = true;
-        private boolean isThrowing = false;
-
         private Tracker(LivingEntity entity, InteractionHand arm) {
             this.arm = arm;
             this.entity = entity;
@@ -141,6 +140,25 @@ public class GrenadeTracker {
             prepareTick = maxPrepare;
             throwTick = maxThrow;
             lifeTick = maxLife;
+
+            setPreparing(true);
+            setThrowing(false);
+        }
+
+        public boolean isPreparing() {
+            return getPreparingDataKey(arm).getValue(entity);
+        }
+
+        public boolean isThrowing() {
+            return getThrowingDataKey(arm).getValue(entity);
+        }
+
+        public void setThrowing(boolean value) {
+            getThrowingDataKey(arm).setValue(entity, value);
+        }
+
+        public void setPreparing(boolean value) {
+            getPreparingDataKey(arm).setValue(entity, value);
         }
 
         public void tick(){
@@ -149,33 +167,25 @@ public class GrenadeTracker {
             prepareTick = Math.max(prepareTick - 1, 0);
 
             if(prepareTick == 0){
-                isPreparing = false;
+                setPreparing(false);
                 lifeTick = Math.max(lifeTick - 1, 0);
 
                 if(lifeTick == 0){
                     explode();
                 }
 
-                if (isThrowing){
+                if (isThrowing()){
                     throwTick = Math.max(throwTick - 1, 0);
                 }
             }
-//            throwTick = Math.max(prepareTick - 1, 0);
-        }
-
-        public boolean isPreparing() {
-            return isPreparing;
-        }
-
-        public boolean isThrowing() {
-            return isThrowing;
         }
 
         public void onRelease(){
             if(prepareTick == 0){
-                isThrowing = true;
+                setThrowing(true);
                 throwItem();
             }
+            else stop();
         }
 
         private void throwItem(){
@@ -190,6 +200,8 @@ public class GrenadeTracker {
 
         private void stop() {
             TRACKER_MAP.remove(arm);
+            setPreparing(false);
+            setThrowing(false);
         }
 
         private boolean isSameWeapon() {

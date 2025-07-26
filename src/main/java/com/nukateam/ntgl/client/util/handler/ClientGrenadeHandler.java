@@ -1,6 +1,12 @@
 package com.nukateam.ntgl.client.util.handler;
 
+import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.base.utils.trackers.GrenadeTracker;
+import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import com.nukateam.ntgl.common.network.KeyAction;
+import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.C2SMessageGrenade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,7 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.HashMap;
 import java.util.Map;
 
-@Mod.EventBusSubscriber(Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientGrenadeHandler {
     private static final Map<InteractionHand, Tracker> TRACKER_MAP = new HashMap<>();
 
@@ -26,20 +32,24 @@ public class ClientGrenadeHandler {
             if(minecraft.options.keyAttack.isDown()){
                 var stack = minecraft.player.getItemInHand(hand);
                 if(stack.getItem() instanceof IThrowable && !TRACKER_MAP.containsKey(hand)){
-
-                }
-                else{
-
+                    TRACKER_MAP.put(hand, new Tracker(minecraft.player, hand));
+                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.HOLD, hand));
                 }
             }
-            else if(TRACKER_MAP.containsKey(hand)){
-                TRACKER_MAP.get(hand).onRelease();
+            else {
+                if(TRACKER_MAP.containsKey(hand)) {
+                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.RELEASE, hand));
+                    TRACKER_MAP.remove(hand);
+                }
             }
 
-            TRACKER_MAP.forEach((k, v) ->{
-                v.tick();
-            });
+//            TRACKER_MAP.forEach((k, v) -> v.tick());
         }
+    }
+
+    private static boolean isTracking(Minecraft minecraft, InteractionHand hand) {
+        return ModSyncedDataKeys.getPreparingDataKey(hand).getValue(minecraft.player)
+                || ModSyncedDataKeys.getThrowingDataKey(hand).getValue(minecraft.player);
     }
 
     public static boolean isPreparing(InteractionHand hand) {
@@ -51,7 +61,6 @@ public class ClientGrenadeHandler {
         var tracker = TRACKER_MAP.get(hand);
         return tracker != null && tracker.isThrowing();
     }
-
 
     private static class Tracker {
         private final InteractionHand arm;

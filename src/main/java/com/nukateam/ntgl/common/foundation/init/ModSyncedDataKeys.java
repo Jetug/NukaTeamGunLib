@@ -51,18 +51,29 @@ public class ModSyncedDataKeys {
     public static final SyncedDataKey<LivingEntity, Boolean> PREPARE_RIGHT  = registerBooleanKey("prepare_right" );
     public static final SyncedDataKey<LivingEntity, Boolean> PREPARE_LEFT   = registerBooleanKey("prepare_left" );
 
+    public static final SyncedDataKey<LivingEntity, Boolean> THROW_RIGHT  = registerBooleanKey("throw_right" );
+    public static final SyncedDataKey<LivingEntity, Boolean> THROW_LEFT   = registerBooleanKey("throw_left" );
+
     public static SyncedDataKey<LivingEntity, Boolean> getDoMelee(InteractionHand hand){
-        return hand == InteractionHand.MAIN_HAND ?
-                MELEE_RIGHT :
-                MELEE_LEFT;
+        return getHandObject(hand, MELEE_RIGHT, MELEE_LEFT);
     }
 
     public static SyncedDataKey<LivingEntity, Boolean> getReloadKey(InteractionHand hand){
-        return switch (hand){
-            case MAIN_HAND -> RELOADING_RIGHT;
-            case OFF_HAND -> RELOADING_LEFT;
-        };
+        return getHandObject(hand, RELOADING_RIGHT, RELOADING_LEFT);
     }
+
+    public static SyncedDataKey<LivingEntity, Boolean> getPreparingDataKey(InteractionHand arm) {
+        return getHandObject(arm, PREPARE_RIGHT, PREPARE_LEFT);
+    }
+
+    public static SyncedDataKey<LivingEntity, Boolean> getThrowingDataKey(InteractionHand arm) {
+        return getHandObject(arm, THROW_RIGHT, THROW_LEFT);
+    }
+
+    private static <T> T getHandObject(InteractionHand hand, T right, T left) {
+        return hand == InteractionHand.MAIN_HAND ? right : left;
+    }
+
 
     public static void register() {
         FrameworkAPI.registerSyncedDataKey(AIMING);
@@ -80,6 +91,8 @@ public class ModSyncedDataKeys {
         FrameworkAPI.registerSyncedDataKey(MELEE_LEFT );
         FrameworkAPI.registerSyncedDataKey(PREPARE_RIGHT);
         FrameworkAPI.registerSyncedDataKey(PREPARE_LEFT );
+        FrameworkAPI.registerSyncedDataKey(THROW_RIGHT);
+        FrameworkAPI.registerSyncedDataKey(THROW_LEFT );
     }
 
     private static SyncedDataKey<LivingEntity, Boolean> registerBooleanKey(String name) {
