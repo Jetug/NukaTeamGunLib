@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.client.util.handler;
 
-import com.nukateam.ntgl.common.base.utils.trackers.GrenadeTracker;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
@@ -22,19 +21,37 @@ public class ClientGrenadeHandler {
     public static void tick(TickEvent.ClientTickEvent event){
         var minecraft = Minecraft.getInstance();
         if(event.phase == TickEvent.Phase.START){
+            var hand = InteractionHand.MAIN_HAND;
+
             if(minecraft.options.keyAttack.isDown()){
-                var mainHand = minecraft.player.getMainHandItem();
-                var offHand = minecraft.player.getOffhandItem();
-                if(mainHand.getItem() instanceof IThrowable && !TRACKER_MAP.containsKey(InteractionHand.MAIN_HAND)){
+                var stack = minecraft.player.getItemInHand(hand);
+                if(stack.getItem() instanceof IThrowable && !TRACKER_MAP.containsKey(hand)){
 
                 }
-                else
+                else{
+
+                }
             }
+            else if(TRACKER_MAP.containsKey(hand)){
+                TRACKER_MAP.get(hand).onRelease();
+            }
+
             TRACKER_MAP.forEach((k, v) ->{
                 v.tick();
             });
         }
     }
+
+    public static boolean isPreparing(InteractionHand hand) {
+        var tracker = TRACKER_MAP.get(hand);
+        return tracker != null && tracker.isPreparing();
+    }
+
+    public static boolean isThrowing(InteractionHand hand) {
+        var tracker = TRACKER_MAP.get(hand);
+        return tracker != null && tracker.isThrowing();
+    }
+
 
     private static class Tracker {
         private final InteractionHand arm;
@@ -43,6 +60,7 @@ public class ClientGrenadeHandler {
         private final int maxPrepare;
         private final int maxThrow;
         private final int maxLife;
+        private final LivingEntity entity;
 
         private int prepareTick = 0;
         private int throwTick = 0;
@@ -53,6 +71,7 @@ public class ClientGrenadeHandler {
 
         private Tracker(LivingEntity entity, InteractionHand arm) {
             this.arm = arm;
+            this.entity = entity;
             this.stack = entity.getItemInHand(arm);
             this.throwable = (IThrowable) stack.getItem();
             this.maxPrepare = throwable.getConfig().getGeneral().getPrepareTime();
@@ -65,6 +84,8 @@ public class ClientGrenadeHandler {
         }
 
         public void tick(){
+            if(!isSameWeapon()) stop();
+
             prepareTick = Math.max(prepareTick - 1, 0);
 
             if(prepareTick == 0){
@@ -79,9 +100,15 @@ public class ClientGrenadeHandler {
                     throwTick = Math.max(throwTick - 1, 0);
                 }
             }
-
-
 //            throwTick = Math.max(prepareTick - 1, 0);
+        }
+
+        public boolean isPreparing() {
+            return isPreparing;
+        }
+
+        public boolean isThrowing() {
+            return isThrowing;
         }
 
         public void onRelease(){
@@ -92,14 +119,18 @@ public class ClientGrenadeHandler {
         }
 
         private void throwItem(){
-
+            stop();
         }
 
         private void explode() {
-
+            stop();
         }
 
-        private boolean isSameWeapon(LivingEntity entity) {
+        private void stop() {
+            TRACKER_MAP.remove(arm);
+        }
+
+        private boolean isSameWeapon() {
             return !this.stack.isEmpty() && entity.getItemInHand(arm) == this.stack;
         }
     }

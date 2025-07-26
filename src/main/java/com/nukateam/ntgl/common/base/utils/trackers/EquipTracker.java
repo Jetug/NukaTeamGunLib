@@ -4,7 +4,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.*;
 import net.minecraft.server.MinecraftServer;
@@ -27,7 +26,6 @@ public class EquipTracker {
 
     private final InteractionHand arm;
     private final ItemStack stack;
-    private final WeaponItem weaponItem;
     private final int slot;
 
     public int equipTick;
@@ -35,7 +33,6 @@ public class EquipTracker {
     private EquipTracker(Player player, InteractionHand arm, boolean switchGuns) {
         this.arm = arm;
         this.stack = player.getItemInHand(arm);
-        this.weaponItem = ((WeaponItem) stack.getItem());
         this.slot = arm == InteractionHand.MAIN_HAND ? player.getInventory().selected : Inventory.SLOT_OFFHAND;
 
         var data = new GunData(stack, player);
@@ -108,11 +105,11 @@ public class EquipTracker {
 
     private static boolean addTracker(Player entity, InteractionHand arm, boolean switchGuns) {
         var reloadKey = getDataKey(arm);
-        var gunItem = entity.getItemInHand(arm).getItem();
+        var heldItem = entity.getItemInHand(arm).getItem();
         var key = new Pair<>(arm, entity);
 
         if (!TRACKER_MAP.containsKey(key)) {
-            if (!(gunItem instanceof IWeapon)) {
+            if (!(heldItem instanceof IWeapon)) {
                 reloadKey.setValue(entity, false);
                 return true;
             }

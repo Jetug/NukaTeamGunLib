@@ -48,6 +48,9 @@ public class ModSyncedDataKeys {
     public static final SyncedDataKey<LivingEntity, Boolean> MELEE_RIGHT  = registerBooleanKey("melee_right" );
     public static final SyncedDataKey<LivingEntity, Boolean> MELEE_LEFT   = registerBooleanKey("melee_left" );
 
+    public static final SyncedDataKey<LivingEntity, Boolean> PREPARE_RIGHT  = registerBooleanKey("prepare_right" );
+    public static final SyncedDataKey<LivingEntity, Boolean> PREPARE_LEFT   = registerBooleanKey("prepare_left" );
+
     public static SyncedDataKey<LivingEntity, Boolean> getDoMelee(InteractionHand hand){
         return hand == InteractionHand.MAIN_HAND ?
                 MELEE_RIGHT :
@@ -75,6 +78,8 @@ public class ModSyncedDataKeys {
         FrameworkAPI.registerSyncedDataKey(EQUIP_LEFT );
         FrameworkAPI.registerSyncedDataKey(MELEE_RIGHT);
         FrameworkAPI.registerSyncedDataKey(MELEE_LEFT );
+        FrameworkAPI.registerSyncedDataKey(PREPARE_RIGHT);
+        FrameworkAPI.registerSyncedDataKey(PREPARE_LEFT );
     }
 
     private static SyncedDataKey<LivingEntity, Boolean> registerBooleanKey(String name) {

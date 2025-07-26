@@ -3,25 +3,12 @@ package com.nukateam.ntgl.common.base.utils.trackers;
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
-import com.nukateam.ntgl.common.util.util.GunData;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -71,19 +58,19 @@ public class GrenadeTracker {
     }
 
     public static void start(LivingEntity entity, InteractionHand arm){
-        var reloadKey = getDataKey(arm);
-        reloadKey.setValue(entity, true);
+        var dataKey = getDataKey(arm);
+        dataKey.setValue(entity, true);
         addTracker(entity, arm);
     }
 
     private static boolean addTracker(LivingEntity entity, InteractionHand arm) {
-        var reloadKey = getDataKey(arm);
+        var dataKey = getDataKey(arm);
 
         var gunItem = entity.getItemInHand(arm).getItem();
 
         if (!TRACKER_MAP.containsKey(entity)) {
-            if (!(gunItem instanceof WeaponItem)) {
-                reloadKey.setValue(entity, false);
+            if (!(gunItem instanceof IThrowable)) {
+                dataKey.setValue(entity, false);
                 return true;
             }
             TRACKER_MAP.put(entity, new Tracker(entity, arm));
@@ -91,7 +78,7 @@ public class GrenadeTracker {
         return false;
     }
 
-    private static void stopMelee(LivingEntity entity, InteractionHand arm) {
+    private static void stop(LivingEntity entity, InteractionHand arm) {
         var dataKey = getDataKey(arm);
         TRACKER_MAP.remove(entity);
         dataKey.setValue(entity, false);
@@ -115,25 +102,15 @@ public class GrenadeTracker {
 
         if (isSameWeapon) {
             TRACKER_MAP.remove(shooter);
-            var reloadKey = getDataKey(arm);
-            reloadKey.setValue(shooter, false);
+            var dataKey = getDataKey(arm);
+            dataKey.setValue(shooter, false);
         }
 
-        if(tracker.meleeTick > 0)
-            tracker.meleeTick--;
-
-        if(tracker.meleeTick == tracker.cooldown){
-            tracker.tryMeleeAttack(shooter, tracker.stack);
-        }
-
-        if(tracker.meleeTick == 0){
-            stopMelee(shooter, arm);
-        }
     }
 
     private static SyncedDataKey<LivingEntity, Boolean> getDataKey(InteractionHand arm) {
         return arm == InteractionHand.MAIN_HAND ?
-                ModSyncedDataKeys.MELEE_RIGHT : ModSyncedDataKeys.MELEE_LEFT;
+                ModSyncedDataKeys.PREPARE_RIGHT : ModSyncedDataKeys.PREPARE_LEFT;
     }
 
     private static class Tracker {
@@ -143,28 +120,79 @@ public class GrenadeTracker {
         private final int maxPrepare;
         private final int maxThrow;
         private final int maxLife;
+        private final LivingEntity entity;
 
+        private int prepareTick = 0;
         private int throwTick = 0;
-        private int timeLeft = 0;
         private int lifeTick = 0;
 
-        private boolean isPreparing = false;
+        private boolean isPreparing = true;
         private boolean isThrowing = false;
 
         private Tracker(LivingEntity entity, InteractionHand arm) {
             this.arm = arm;
+            this.entity = entity;
             this.stack = entity.getItemInHand(arm);
             this.throwable = (IThrowable) stack.getItem();
             this.maxPrepare = throwable.getConfig().getGeneral().getPrepareTime();
             this.maxThrow = throwable.getConfig().getGeneral().getThrowTime();
             this.maxLife = throwable.getConfig().getProjectile().getLife();
+
+            prepareTick = maxPrepare;
+            throwTick = maxThrow;
+            lifeTick = maxLife;
         }
 
-//        public void tick(){
-//            if()
-//        }
+        public void tick(){
+            if(!isSameWeapon()) stop();
 
-        private boolean isSameWeapon(LivingEntity entity) {
+            prepareTick = Math.max(prepareTick - 1, 0);
+
+            if(prepareTick == 0){
+                isPreparing = false;
+                lifeTick = Math.max(lifeTick - 1, 0);
+
+                if(lifeTick == 0){
+                    explode();
+                }
+
+                if (isThrowing){
+                    throwTick = Math.max(throwTick - 1, 0);
+                }
+            }
+//            throwTick = Math.max(prepareTick - 1, 0);
+        }
+
+        public boolean isPreparing() {
+            return isPreparing;
+        }
+
+        public boolean isThrowing() {
+            return isThrowing;
+        }
+
+        public void onRelease(){
+            if(prepareTick == 0){
+                isThrowing = true;
+                throwItem();
+            }
+        }
+
+        private void throwItem(){
+            throwable.throwItem(stack, entity, lifeTick);
+            stop();
+        }
+
+        private void explode() {
+            throwable.explode(entity);
+            stop();
+        }
+
+        private void stop() {
+            TRACKER_MAP.remove(arm);
+        }
+
+        private boolean isSameWeapon() {
             return !this.stack.isEmpty() && entity.getItemInHand(arm) == this.stack;
         }
     }

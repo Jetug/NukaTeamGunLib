@@ -4,10 +4,7 @@ import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.utils.*;
-import com.nukateam.ntgl.common.base.utils.trackers.EquipTracker;
-import com.nukateam.ntgl.common.base.utils.trackers.MeleeTracker;
-import com.nukateam.ntgl.common.base.utils.trackers.ShootTracker;
-import com.nukateam.ntgl.common.base.utils.trackers.SpreadTracker;
+import com.nukateam.ntgl.common.base.utils.trackers.*;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -391,6 +388,19 @@ public class ServerPlayHandler {
             return;
         }
         MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, gun));
+    }
+
+    public static void handleGrenade(C2SMessageGrenade message, ServerPlayer player) {
+        var dataKey = message.getHand() == InteractionHand.MAIN_HAND ?
+                ModSyncedDataKeys.PREPARE_RIGHT:
+                ModSyncedDataKeys.PREPARE_LEFT;
+
+        var stack = player.getItemInHand(message.getHand());
+        var action = message.getAction();
+
+        if(action == KeyAction.HOLD){
+            GrenadeTracker.start(player, message.getHand());
+        }
     }
 
     public static void handleHandAction(C2SMessageHandAction message, ServerPlayer player) {

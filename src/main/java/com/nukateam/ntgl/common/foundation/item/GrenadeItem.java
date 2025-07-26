@@ -62,22 +62,18 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
         projectile = supplier.getConfig();
     }
 
-    @Override
     public boolean isPreparing(){
         return this.isPreparing;
     }
 
-    @Override
     public boolean isThrowing(){
         return this.isThrowing;
     }
 
-    @Override
     public int getPrepareTime() {
         return getConfig().getGeneral().getPrepareTime();
     }
 
-    @Override
     public int getThrowTime() {
         return getConfig().getGeneral().getThrowTime();
     }
@@ -105,11 +101,6 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
-    }
-
-    @Override
     public int getUseDuration(ItemStack stack) {
         return this.maxCookTime;
     }
@@ -119,12 +110,15 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
         if (!this.canCook()) return;
 
         int duration = this.getUseDuration(stack) - count;
+
         if(duration < getPrepareTime()) {
             isPreparing = true;
         }
+
         else {
             isPreparing = false;
         }
+
         if (duration == getPrepareTime())
             player.level().playLocalSound(
                     player.getX(),
@@ -151,13 +145,19 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
                 stack.shrink(1);
             }
 
-            var grenade = this.create(level, entityLiving, 0);
-            grenade.onDeath();
+            explode(entityLiving);
+
             if (entityLiving instanceof Player) {
                 ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
             }
         }
         return stack;
+    }
+
+    @Override
+    public void explode(LivingEntity entityLiving) {
+        var grenade = this.create(entityLiving.level(), entityLiving, 0);
+        grenade.onDeath();
     }
 
     @Override
@@ -176,7 +176,7 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
         else if(isThrowing) {
             isThrowing = false;
             if(!level.isClientSide){
-                throwItem(stack, level, (LivingEntity)entity, timeLeft);
+                throwItem(stack, (LivingEntity)entity, timeLeft);
             }
         }
     }
@@ -191,7 +191,9 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
 
     protected void onThrown(Level world, ThrowableGrenadeEntity entity) {}
 
-    private void throwItem(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
+    @Override
+    public void throwItem(ItemStack stack, LivingEntity entityLiving, int timeLeft) {
+        var level = entityLiving.level();
         int duration = this.getUseDuration(stack) - timeLeft;
         if (duration >= getPrepareTime()) {
             if (!(entityLiving instanceof Player player) || !player.isCreative()) {

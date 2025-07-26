@@ -113,8 +113,8 @@ public class MeleeTracker {
 
         if (isSameWeapon) {
             TRACKER_MAP.remove(shooter);
-            var reloadKey = getDataKey(arm);
-            reloadKey.setValue(shooter, false);
+            var dataKey = getDataKey(arm);
+            dataKey.setValue(shooter, false);
         }
 
         if(tracker.meleeTick > 0)

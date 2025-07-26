@@ -6,6 +6,7 @@ import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.model.gun.GeoGrenadeModel;
 import com.nukateam.ntgl.client.render.renderers.gun.DynamicGrenadeRenderer;
+import com.nukateam.ntgl.client.util.handler.ClientGrenadeHandler;
 import com.nukateam.ntgl.common.base.utils.trackers.EquipTracker;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
 import com.nukateam.ntgl.common.data.constants.Animations;
@@ -90,7 +91,7 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
 
     protected void tickStart() {
         if (getStack().getItem() instanceof IThrowable throwable) {
-            prepareTime = throwable.getPrepareTime();
+            prepareTime = throwable.getConfig().getGeneral().getPrepareTime();
         }
     }
 
@@ -125,12 +126,15 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
                     return event.setAndContinue(holdAnimation);
 
                 var animation = begin();
-                var item = (IThrowable)getStack().getItem();
+
                 if(equipTime > 0 && shooter instanceof Player player && EquipTracker.isEquiping(player, getArm())) {
                     animation = getEquipAnimation(event);
                 }
-                else if(item.isPreparing()){
+                else if(ClientGrenadeHandler.isPreparing(getArm())){
                     animation = getPrepareAnimation(event);
+                }
+                else if(ClientGrenadeHandler.isThrowing(getArm())){
+                    animation = getThrowingAnimation(event);
                 }
                 else {
                     animation = holdAnimation;
@@ -142,7 +146,6 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
             }
         };
     }
-
 
     protected AnimationStateHandler<GrenadeAnimator> animateTick() {
         return event -> {
@@ -197,6 +200,12 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
     protected RawAnimation getPrepareAnimation(AnimationState<GrenadeAnimator> event) {
         var animation = playGunAnim("pin", LOOP);
         animationHelper.syncAnimation(event, prepareTime, "pin");
+        return animation;
+    }
+
+    protected RawAnimation getThrowingAnimation(AnimationState<GrenadeAnimator> event) {
+        var animation = playGunAnim("throwing", LOOP);
+        animationHelper.syncAnimation(event, prepareTime, "throwing");
         return animation;
     }
 
