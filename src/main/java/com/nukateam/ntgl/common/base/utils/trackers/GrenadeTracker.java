@@ -81,37 +81,24 @@ public class GrenadeTracker {
             if (!(gunItem instanceof IThrowable)) {
                 return true;
             }
-            TRACKER_MAP.put(key, new Tracker(entity, arm));
+            TRACKER_MAP.put(key, new Tracker(entity, arm, () -> TRACKER_MAP.remove(Pair.of(arm, entity))));
         }
         return false;
     }
 
-    private static void stop(LivingEntity entity, InteractionHand arm) {
-        var dataKey = getPreparingDataKey(arm);
-        TRACKER_MAP.remove(entity);
-        dataKey.setValue(entity, false);
-    }
-
     private static void onEntityTick(LivingEntity entity) {
-        if (ModSyncedDataKeys.MELEE_RIGHT.getValue(entity)) {
-            handTick(entity, InteractionHand.MAIN_HAND);
-        }
-        else if (ModSyncedDataKeys.MELEE_LEFT.getValue(entity)) {
-            handTick(entity, InteractionHand.OFF_HAND);
-        }
-        else if (TRACKER_MAP.containsKey(entity)) {
-            TRACKER_MAP.remove(entity);
-        }
+        handTick(entity, InteractionHand.MAIN_HAND);
+        handTick(entity, InteractionHand.OFF_HAND);
     }
 
     private static void handTick(LivingEntity shooter, InteractionHand arm) {
-        var tracker = TRACKER_MAP.get(shooter);
-        var isSameWeapon = !tracker.isSameWeapon();
+        var tracker = TRACKER_MAP.get(Pair.of(arm, shooter));
 
-        if (isSameWeapon) {
-            TRACKER_MAP.remove(shooter);
-            var dataKey = getPreparingDataKey(arm);
-            dataKey.setValue(shooter, false);
+        if (!tracker.isSameWeapon()) {
+            tracker.stop();
+        }
+        else {
+            tracker.tick();
         }
     }
 
@@ -123,14 +110,16 @@ public class GrenadeTracker {
         private final int maxThrow;
         private final int maxLife;
         private final LivingEntity entity;
+        private Runnable onStop;
 
         private int prepareTick = 0;
         private int throwTick = 0;
         private int lifeTick = 0;
 
-        private Tracker(LivingEntity entity, InteractionHand arm) {
+        private Tracker(LivingEntity entity, InteractionHand arm, Runnable onStop) {
             this.arm = arm;
             this.entity = entity;
+            this.onStop = onStop;
             this.stack = entity.getItemInHand(arm);
             this.throwable = (IThrowable) stack.getItem();
             this.maxPrepare = throwable.getConfig().getGeneral().getPrepareTime();
@@ -199,7 +188,7 @@ public class GrenadeTracker {
         }
 
         private void stop() {
-            TRACKER_MAP.remove(arm);
+            onStop.run();
             setPreparing(false);
             setThrowing(false);
         }
