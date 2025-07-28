@@ -526,36 +526,35 @@ public class GunRenderingHandler {
         if (heldItem.isEmpty())
             return;
 
-        if (player.isUsingItem() && player.getUsedItemHand() == InteractionHand.MAIN_HAND && heldItem.getItem() instanceof GrenadeItem) {
-            if (!((GrenadeItem) heldItem.getItem()).canCook())
-                return;
-
-            int duration = player.getTicksUsingItem();
-            if (duration >= 10) {
-                float cookTime = 1.0F - ((float) (duration - 10) / (float) (player.getUseItem().getUseDuration() - 10));
-                if (cookTime > 0.0F) {
-                    float scale = 3;
-                    Window window = mc.getWindow();
-                    int i = (int) ((window.getGuiScaledHeight() / 2 - 7 - 60) / scale);
-                    int j = (int) Math.ceil((window.getGuiScaledWidth() / 2 - 8 * scale) / scale);
-
-                    RenderSystem.enableBlend();
-                    RenderSystem.defaultBlendFunc();
-                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-                    RenderSystem.setShaderTexture(0, GUI_ICONS_LOCATION);
-
-                    GuiGraphics graphics = new GuiGraphics(mc, mc.renderBuffers().bufferSource());
-                    graphics.pose().scale(scale, scale, scale);
-                    int progress = (int) Math.ceil((cookTime) * 17.0F) - 1;
-
-                    graphics.blit(GUI_ICONS_LOCATION, j, i, 36, 94, 16, 4, 256, 256);
-                    graphics.blit(GUI_ICONS_LOCATION, j, i, 52, 94, progress, 4, 256, 256);
-
-                    RenderSystem.disableBlend();
-                }
-            }
-        }
+//        if (player.isUsingItem()
+//                && player.getUsedItemHand() == InteractionHand.MAIN_HAND
+//                && heldItem.getItem() instanceof GrenadeItem) {
+//            int duration = player.getTicksUsingItem();
+//            if (duration >= 10) {
+//                float cookTime = 1.0F - ((float) (duration - 10) / (float) (player.getUseItem().getUseDuration() - 10));
+//                if (cookTime > 0.0F) {
+//                    float scale = 3;
+//                    Window window = mc.getWindow();
+//                    int i = (int) ((window.getGuiScaledHeight() / 2 - 7 - 60) / scale);
+//                    int j = (int) Math.ceil((window.getGuiScaledWidth() / 2 - 8 * scale) / scale);
+//
+//                    RenderSystem.enableBlend();
+//                    RenderSystem.defaultBlendFunc();
+//                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//                    RenderSystem.setShaderTexture(0, GUI_ICONS_LOCATION);
+//
+//                    GuiGraphics graphics = new GuiGraphics(mc, mc.renderBuffers().bufferSource());
+//                    graphics.pose().scale(scale, scale, scale);
+//                    int progress = (int) Math.ceil((cookTime) * 17.0F) - 1;
+//
+//                    graphics.blit(GUI_ICONS_LOCATION, j, i, 36, 94, 16, 4, 256, 256);
+//                    graphics.blit(GUI_ICONS_LOCATION, j, i, 52, 94, progress, 4, 256, 256);
+//
+//                    RenderSystem.disableBlend();
+//                }
+//            }
+//        }
     }
 
     public void applyWeaponScale(ItemStack heldItem, PoseStack stack) {

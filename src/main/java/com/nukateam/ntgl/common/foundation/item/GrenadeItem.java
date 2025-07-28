@@ -36,20 +36,13 @@ import java.util.function.Supplier;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
 public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
-    protected int maxCookTime;
     private ThrowableConfig projectile = new ThrowableConfig();
     private final Lazy<DynamicGrenadeRenderer> RENDERER = Lazy.of(() -> new DynamicGrenadeRenderer(new GeoGrenadeModel()));
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
-    private int throwTick = 0;
-    private int timeLeft = 0;
-    private boolean isPreparing = false;
-    private boolean isThrowing = false;
-
-    public GrenadeItem(Item.Properties properties, int maxCookTime) {
+    public GrenadeItem(Item.Properties properties) {
         super(properties);
-        this.maxCookTime = maxCookTime;
     }
 
     @Override
@@ -60,22 +53,6 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     @Override
     public void setConfig(ConfigSupplier<ThrowableConfig> supplier) {
         projectile = supplier.getConfig();
-    }
-
-    public boolean isPreparing(){
-        return this.isPreparing;
-    }
-
-    public boolean isThrowing(){
-        return this.isThrowing;
-    }
-
-    public int getPrepareTime() {
-        return getConfig().getGeneral().getPrepareTime();
-    }
-
-    public int getThrowTime() {
-        return getConfig().getGeneral().getThrowTime();
     }
 
     @Override
@@ -91,67 +68,6 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     @OnlyIn(Dist.CLIENT)
     public DynamicGeoItemRenderer getRenderer() {
         return RENDERER.get();
-    }
-
-    @Override
-    public BiFunction<ItemDisplayContext, DynamicGrenadeRenderer<GrenadeAnimator>, GrenadeAnimator> getAnimatorFactory() {
-        return GrenadeAnimator::new;
-    }
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
-
-    @Override
-    public int getUseDuration(ItemStack stack) {
-        return this.maxCookTime;
-    }
-
-    @Override
-    public void onUseTick(Level level, LivingEntity player, ItemStack stack, int count) {
-        if (!this.canCook()) return;
-
-        int duration = this.getUseDuration(stack) - count;
-
-        if(duration < getPrepareTime()) {
-            isPreparing = true;
-        }
-
-        else {
-            isPreparing = false;
-        }
-
-        if (duration == getPrepareTime())
-            player.level().playLocalSound(
-                    player.getX(),
-                    player.getY(),
-                    player.getZ(),
-                    ModSounds.ITEM_GRENADE_PIN.get(),
-                    SoundSource.PLAYERS,
-                    1.0F, 1.0F, false);
-    }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
-        var stack = playerIn.getItemInHand(handIn);
-        playerIn.startUsingItem(handIn);
-        return InteractionResultHolder.consume(stack);
-    }
-
-    @Override
-    public @NotNull ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entityLiving) {
-        isPreparing = false;
-
-        if (this.canCook() && !level.isClientSide()) {
-            if (!(entityLiving instanceof Player player) || !player.isCreative()) {
-                stack.shrink(1);
-            }
-
-            explode(entityLiving);
-
-            if (entityLiving instanceof Player) {
-                ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
-            }
-        }
-        return stack;
     }
 
     @Override
@@ -179,35 +95,15 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
-        isPreparing = false;
-        this.timeLeft = timeLeft;
-        this.isThrowing = true;
+    public BiFunction<ItemDisplayContext, DynamicGrenadeRenderer<GrenadeAnimator>, GrenadeAnimator> getAnimatorFactory() {
+        return GrenadeAnimator::new;
     }
-
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if(timeLeft > 0)
-            timeLeft--;
-        if(throwTick > 0)
-            throwTick--;
-        else if(isThrowing) {
-            isThrowing = false;
-            if(!level.isClientSide){
-                throwItem(stack, (LivingEntity)entity, timeLeft);
-            }
-        }
-    }
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
 
     public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft) {
         return new ThrowableGrenadeEntity(world, entity, getConfig().getProjectile(), timeLeft);
     }
 
-    public boolean canCook() {
-        return true;
-    }
-
     protected void onThrown(Level world, ThrowableGrenadeEntity entity) {}
-
-
 }

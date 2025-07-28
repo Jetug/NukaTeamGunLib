@@ -131,7 +131,7 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
 
     @Override
     public boolean isNoGravity() {
-        return false;
+        return !projectile.isGravity();
     }
 
     @Override

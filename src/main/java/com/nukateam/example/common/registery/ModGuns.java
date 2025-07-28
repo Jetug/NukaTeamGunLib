@@ -28,16 +28,16 @@ public class ModGuns {
     public static final RegistryObject<WeaponItem> REVOLVER = registerGun("revolver");
 
     public static final RegistryObject<Item> GRENADE = ITEMS.register("grenade",
-            () -> new GrenadeItem(new Item.Properties(), 20 * 4));
+            () -> new GrenadeItem(new Item.Properties()));
 
 //    public static final RegistryObject<Item> MISSILE = ITEMS.register("missile",
 //            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 
     public static final RegistryObject<Item> GRENADE_OG = ITEMS.register("grenade_old",
-            () -> new GrenadeItem(new Item.Properties(), 20 * 4));
+            () -> new GrenadeItem(new Item.Properties()));
 
     public static final RegistryObject<Item> STUN_GRENADE = ITEMS.register("stun_grenade",
-            () -> new StunGrenadeItem(new Item.Properties()/*.tab(ModItemTabs.WEAPONS)*/, 72000));
+            () -> new StunGrenadeItem(new Item.Properties()));
 
     //Rounds
     public static final RegistryObject<Item> ROUND10MM = ITEMS.register("round10mm",

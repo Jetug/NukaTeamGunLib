@@ -10,18 +10,13 @@ import net.minecraft.world.level.Level;
 
 
 public class StunGrenadeItem extends GrenadeItem {
-    public StunGrenadeItem(Item.Properties properties, int maxCookTime) {
-        super(properties, maxCookTime);
+    public StunGrenadeItem(Item.Properties properties) {
+        super(properties);
     }
 
     @Override
     public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft) {
         return new StunGrenadeEntity(world, entity, getConfig().getProjectile(), 20 * 2);
-    }
-
-    @Override
-    public boolean canCook() {
-        return false;
     }
 
     @Override

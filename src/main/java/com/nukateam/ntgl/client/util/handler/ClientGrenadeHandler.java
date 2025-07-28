@@ -3,21 +3,30 @@ package com.nukateam.ntgl.client.util.handler;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.utils.trackers.GrenadeTracker;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.KeyAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageGrenade;
+import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
+import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canRenderInOffhand;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientGrenadeHandler {
@@ -44,6 +53,54 @@ public class ClientGrenadeHandler {
             }
 
 //            TRACKER_MAP.forEach((k, v) -> v.tick());
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onMouseClick(InputEvent.InteractionKeyMappingTriggered event) {
+        if (event.isCanceled())
+            return;
+
+        var mc = Minecraft.getInstance();
+        var player = mc.player;
+
+        if (player == null || PlayerReviveHelper.isBleeding(player))
+            return;
+
+        if (event.isAttack()) {
+            var heldItem = player.getMainHandItem();
+
+            if (heldItem.getItem() instanceof WeaponItem) {
+                event.setCanceled(true);
+                event.setSwingHand(false);
+            }
+        } else if (event.isUseItem()) {
+            var mainHandItem = player.getMainHandItem();
+            var offhandItem = player.getOffhandItem();
+
+            if (offhandItem.getItem() instanceof WeaponItem && canRenderInOffhand(player)) {
+                event.setCanceled(true);
+                event.setSwingHand(false);
+                return;
+            }
+
+            if (mainHandItem.getItem() instanceof WeaponItem) {
+                if (event.getHand() == InteractionHand.OFF_HAND) {
+                    // Allow shields to be used if weapon is one-handed
+                    if (offhandItem.getItem() == Items.SHIELD) {
+                        if (GunModifierHelper.getGripType(new GunData(mainHandItem, player)).isOneHanded()) {
+                            return;
+                        }
+                    }
+                    event.setCanceled(true);
+                    event.setSwingHand(false);
+                    return;
+                }
+                if (AimingHandler.get().isZooming() && AimingHandler.get().isLookingAtInteractableBlock()) {
+                    event.setCanceled(true);
+                    event.setSwingHand(false);
+                }
+            }
         }
     }
 

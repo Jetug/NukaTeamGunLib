@@ -6,16 +6,17 @@
     "throwTime": 6
   },
   "projectile": {
-      "damage": 1.0,
-      "size": 1.0,
-      "speed": 50.0,
-      "life": 80,
-
-      "explosion": {
-        "damage": 20,
-        "radius": 5,
-        "knockback": 0.3
-      }
+    "damage": 1.0,
+    "size": 1.0,
+    "speed": 50.0,
+    "life": 80,
+    "gravity": true,
+    
+    "explosion": {
+      "damage": 20,
+      "radius": 5,
+      "knockback": 0.3
+    }
   },
   "sounds": {
     "throw": "ntgl:item.shotgun.fire",
