@@ -55,78 +55,6 @@ public class ProjectileExplosion extends Explosion {
 
     @Override
     public void explode() {
-        blowBlocks();
-
-        var radius = this.radius * 2.0F;
-        int minX = Mth.floor(this.x - (double) radius - 1.0D);
-        int maxX = Mth.floor(this.x + (double) radius + 1.0D);
-        int minY = Mth.floor(this.y - (double) radius - 1.0D);
-        int maxY = Mth.floor(this.y + (double) radius + 1.0D);
-        int minZ = Mth.floor(this.z - (double) radius - 1.0D);
-        int maxZ = Mth.floor(this.z + (double) radius + 1.0D);
-
-        var entities = this.world.getEntities(this.exploder, new AABB(minX, minY, minZ, maxX, maxY, maxZ));
-
-        ForgeEventFactory.onExplosionDetonate(this.world, this, entities, radius);
-
-        var explosionPos = new Vec3(this.x, this.y, this.z);
-        for (var entity : entities) {
-            if (entity.ignoreExplosion())
-                continue;
-
-            var strength = Math.sqrt(entity.distanceToSqr(explosionPos)) / radius;
-            if (strength > 1.0D)
-                continue;
-
-            var deltaX = entity.getX() - this.x;
-            var deltaY = (entity instanceof PrimedTnt ? entity.getY() : entity.getEyeY()) - this.y;
-            var deltaZ = entity.getZ() - this.z;
-            var distanceToExplosion = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-
-            if (distanceToExplosion != 0.0D) {
-                deltaX /= distanceToExplosion;
-                deltaY /= distanceToExplosion;
-                deltaZ /= distanceToExplosion;
-            } else {
-                deltaX = 0.0;
-                deltaY = 1.0;
-                deltaZ = 0.0;
-            }
-
-            var blockDensity = (double) getSeenPercent(explosionPos, entity);
-            var damage = this.damage * blockDensity;
-
-            if (damageDecreaseWithDistance) {
-                damage *= (1.0 - (distanceToExplosion / this.radius));
-            }
-
-            entity.hurt(this.getDamageSource(), (float)damage);
-
-            var baseForce = this.knockback * blockDensity;
-
-            if (entity instanceof LivingEntity) {
-                baseForce *= ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity) entity, damage);
-            }
-
-//            if (damageDecreaseWithDistance) {
-//                baseForce *= (1.0 - (distanceToExplosion / this.radius));
-//            }
-
-            deltaX *= baseForce;
-            deltaY *= baseForce;
-            deltaZ *= baseForce;
-
-            entity.setDeltaMovement(entity.getDeltaMovement().add(deltaX, deltaY, deltaZ));
-
-            if (entity instanceof Player player) {
-                if (!player.isSpectator() && (!player.isCreative() || !player.getAbilities().flying)) {
-                    this.getHitPlayers().put(player, new Vec3(deltaX, deltaY, deltaZ));
-                }
-            }
-        }
-    }
-
-    private void blowBlocks() {
         var set = Sets.<BlockPos>newHashSet();
 
         for (int x = 0; x < 16; x++) {
@@ -169,5 +97,59 @@ public class ProjectileExplosion extends Explosion {
         }
 
         this.getToBlow().addAll(set);
+
+        var radius = this.radius * 2.0F;
+        int minX = Mth.floor(this.x - (double) radius - 1.0D);
+        int maxX = Mth.floor(this.x + (double) radius + 1.0D);
+        int minY = Mth.floor(this.y - (double) radius - 1.0D);
+        int maxY = Mth.floor(this.y + (double) radius + 1.0D);
+        int minZ = Mth.floor(this.z - (double) radius - 1.0D);
+        int maxZ = Mth.floor(this.z + (double) radius + 1.0D);
+
+        var entities = this.world.getEntities(this.exploder, new AABB(minX, minY, minZ, maxX, maxY, maxZ));
+
+        ForgeEventFactory.onExplosionDetonate(this.world, this, entities, radius);
+
+        var explosionPos = new Vec3(this.x, this.y, this.z);
+        for (var entity : entities) {
+            if (entity.ignoreExplosion())
+                continue;
+
+            var strength = Math.sqrt(entity.distanceToSqr(explosionPos)) / radius;
+            if (strength > 1.0D)
+                continue;
+
+            var deltaX = entity.getX() - this.x;
+            var deltaY = (entity instanceof PrimedTnt ? entity.getY() : entity.getEyeY()) - this.y;
+            var deltaZ = entity.getZ() - this.z;
+            var distanceToExplosion = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+
+            if (distanceToExplosion != 0.0D) {
+                deltaX /= distanceToExplosion;
+                deltaY /= distanceToExplosion;
+                deltaZ /= distanceToExplosion;
+            } else {
+                deltaX = 0.0;
+                deltaY = 1.0;
+                deltaZ = 0.0;
+            }
+
+            var blockDensity = (double) getSeenPercent(explosionPos, entity);
+            var damage = (1.0D - strength) * blockDensity;
+            entity.hurt(this.getDamageSource(), (float) ((int) ((damage * damage + damage) / 2.0D * 7.0D * (double) radius + 1.0D)));
+
+            var blastDamage = damage;
+
+            if (entity instanceof LivingEntity)
+                blastDamage = ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity) entity, damage);
+
+            entity.setDeltaMovement(entity.getDeltaMovement().add(deltaX * blastDamage, deltaY * blastDamage, deltaZ * blastDamage));
+
+            if (entity instanceof Player player) {
+                if (!player.isSpectator() && (!player.isCreative() || !player.getAbilities().flying)) {
+                    this.getHitPlayers().put(player, new Vec3(deltaX * damage, deltaY * damage, deltaZ * damage));
+                }
+            }
+        }
     }
 }
