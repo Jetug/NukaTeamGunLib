@@ -21,9 +21,10 @@ import java.util.*;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class PlayerEventHandler {
-    private static final Map<Pair<InteractionHand, Player>, ItemStack> lastSelectedSlots = new HashMap<>();
     public static final UUID SPEED_MODIFIER_ID = UUID.fromString("a1b2c3d4-5e6f-7890-1234-567890abcdef");
     public static final String MOVEMENT_SPEED = "custom_movement_speed";
+
+    private static final Map<Pair<InteractionHand, Player>, Pair<ItemStack, Integer> > lastSelectedSlots = new HashMap<>();
 
     @SubscribeEvent
     public static void onPlayerTick2(TickEvent.PlayerTickEvent event) {
@@ -58,15 +59,22 @@ public class PlayerEventHandler {
 
     private static void tryEquip(Player player, InteractionHand hand) {
         var key = new Pair<>(hand, player);
-        var lastSlot = lastSelectedSlots.getOrDefault(key, ItemStack.EMPTY);
+        var lastSlot = lastSelectedSlots.getOrDefault(key, Pair.of(ItemStack.EMPTY, 0));
         var newItem = player.getItemInHand(hand);
 
-        if (newItem != lastSlot) {
-            if (newItem.getItem() instanceof IWeapon || newItem.getItem() instanceof IThrowable) {
-                EquipTracker.startEquip(player, hand);
+        if (newItem != lastSlot.getFirst() || newItem.getCount() < lastSlot.getSecond()) {
+            EquipTracker.stopEquip(player, hand);
+
+            if (newItem.getItem() instanceof IWeapon) {
+                var data = new GunData(newItem, player);
+                var equipTime = GunModifierHelper.getEquipTime(data);
+                EquipTracker.startEquip(player, hand, equipTime);
+            }
+            else if(newItem.getItem() instanceof IThrowable throwable){
+                EquipTracker.startEquip(player, hand, throwable.getConfig().getGeneral().getEquipTime());
             }
 
-            lastSelectedSlots.put(key, newItem);
+            lastSelectedSlots.put(key, Pair.of(newItem, newItem.getCount()));
         }
     }
 }

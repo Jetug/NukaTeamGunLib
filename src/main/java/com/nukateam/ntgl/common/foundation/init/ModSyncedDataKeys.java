@@ -58,6 +58,10 @@ public class ModSyncedDataKeys {
         return getHandObject(hand, MELEE_RIGHT, MELEE_LEFT);
     }
 
+    public static SyncedDataKey<LivingEntity, Boolean> getEquipKey(InteractionHand hand){
+        return getHandObject(hand, EQUIP_RIGHT, EQUIP_LEFT);
+    }
+
     public static SyncedDataKey<LivingEntity, Boolean> getReloadKey(InteractionHand hand){
         return getHandObject(hand, RELOADING_RIGHT, RELOADING_LEFT);
     }

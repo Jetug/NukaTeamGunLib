@@ -161,6 +161,24 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     }
 
     @Override
+    public void throwItem(ItemStack stack, LivingEntity entityLiving, int timeLeft) {
+        var level = entityLiving.level();
+
+        if (!(entityLiving instanceof Player player) || !player.isCreative()) {
+            stack.shrink(1);
+        }
+
+        var grenade = this.create(level, entityLiving, timeLeft);
+        grenade.shootFromRotation(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0.0F, Math.min(1.0F, timeLeft / 20F), 1.0F);
+        level.addFreshEntity(grenade);
+        this.onThrown(level, grenade);
+
+        if (entityLiving instanceof Player) {
+            ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
+        }
+    }
+
+    @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         isPreparing = false;
         this.timeLeft = timeLeft;
@@ -191,23 +209,5 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
 
     protected void onThrown(Level world, ThrowableGrenadeEntity entity) {}
 
-    @Override
-    public void throwItem(ItemStack stack, LivingEntity entityLiving, int timeLeft) {
-        var level = entityLiving.level();
-        int duration = this.getUseDuration(stack) - timeLeft;
-        if (duration >= getPrepareTime()) {
-            if (!(entityLiving instanceof Player player) || !player.isCreative()) {
-                stack.shrink(1);
-            }
 
-            var grenade = this.create(level, entityLiving, this.maxCookTime - duration);
-            grenade.shootFromRotation(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0.0F, Math.min(1.0F, duration / 20F), 1.0F);
-            level.addFreshEntity(grenade);
-            this.onThrown(level, grenade);
-
-            if (entityLiving instanceof Player) {
-                ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
-            }
-        }
-    }
 }

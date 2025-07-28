@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.base.utils.trackers;
 
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.base.holders.GrenadeMode;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import net.minecraft.server.MinecraftServer;
@@ -94,11 +95,12 @@ public class GrenadeTracker {
     private static void handTick(LivingEntity shooter, InteractionHand arm) {
         var tracker = TRACKER_MAP.get(Pair.of(arm, shooter));
 
-        if (!tracker.isSameWeapon()) {
-            tracker.stop();
-        }
-        else {
-            tracker.tick();
+        if(tracker != null) {
+            if (!tracker.isSameWeapon()) {
+                tracker.stop();
+            } else {
+                tracker.tick();
+            }
         }
     }
 
@@ -112,9 +114,9 @@ public class GrenadeTracker {
         private final LivingEntity entity;
         private Runnable onStop;
 
-        private int prepareTick = 0;
-        private int throwTick = 0;
-        private int lifeTick = 0;
+        private int prepareTick;
+        private int throwTick;
+        private int lifeTick;
 
         private Tracker(LivingEntity entity, InteractionHand arm, Runnable onStop) {
             this.arm = arm;
@@ -156,8 +158,9 @@ public class GrenadeTracker {
             prepareTick = Math.max(prepareTick - 1, 0);
 
             if(prepareTick == 0){
-                setPreparing(false);
-                lifeTick = Math.max(lifeTick - 1, 0);
+                if(throwable.getConfig().getGeneral().getMode() == GrenadeMode.UNSAFE) {
+                    lifeTick = Math.max(lifeTick - 1, 0);
+                }
 
                 if(lifeTick == 0){
                     explode();
@@ -166,20 +169,25 @@ public class GrenadeTracker {
                 if (isThrowing()){
                     throwTick = Math.max(throwTick - 1, 0);
                 }
+
+                if(throwTick == 0){
+                    throwItem();
+                    stop();
+                }
             }
         }
 
         public void onRelease(){
             if(prepareTick == 0){
+                setPreparing(false);
                 setThrowing(true);
-                throwItem();
             }
             else stop();
         }
 
         private void throwItem(){
             throwable.throwItem(stack, entity, lifeTick);
-            stop();
+//            stop();
         }
 
         private void explode() {
@@ -194,7 +202,8 @@ public class GrenadeTracker {
         }
 
         private boolean isSameWeapon() {
-            return !this.stack.isEmpty() && entity.getItemInHand(arm) == this.stack;
+            var heldItem = entity.getItemInHand(arm);
+            return !this.stack.isEmpty() && heldItem == this.stack;
         }
     }
 }
