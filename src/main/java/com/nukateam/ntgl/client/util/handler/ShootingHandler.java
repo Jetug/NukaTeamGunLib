@@ -117,14 +117,14 @@ public class ShootingHandler {
             var heldItem = player.getMainHandItem();
 
             if (heldItem.getItem() instanceof WeaponItem) {
-                handleGunInput(event);
+                cancelSwing(event);
             }
         } else if (event.isUseItem()) {
             var mainHandItem = player.getMainHandItem();
             var offhandItem = player.getOffhandItem();
 
             if (offhandItem.getItem() instanceof WeaponItem && canRenderInOffhand(player)) {
-                handleGunInput(event);
+                cancelSwing(event);
                 return;
             }
 
@@ -136,13 +136,11 @@ public class ShootingHandler {
                             return;
                         }
                     }
-                    event.setCanceled(true);
-                    event.setSwingHand(false);
+                    cancelSwing(event);
                     return;
                 }
                 if (AimingHandler.get().isZooming() && AimingHandler.get().isLookingAtInteractableBlock()) {
-                    event.setCanceled(true);
-                    event.setSwingHand(false);
+                    cancelSwing(event);
                 }
             }
         }
@@ -184,7 +182,7 @@ public class ShootingHandler {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void handleGunInput(InputEvent.InteractionKeyMappingTriggered event) {
+    private void cancelSwing(InputEvent.InteractionKeyMappingTriggered event) {
         event.setSwingHand(false);
         event.setCanceled(true);
     }

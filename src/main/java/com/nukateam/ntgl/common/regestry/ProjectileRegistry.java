@@ -9,27 +9,26 @@ import com.nukateam.ntgl.common.util.interfaces.IProjectileFactory;
 import org.jetbrains.annotations.NotNull;
 
 public class ProjectileRegistry {
-    private static final IProjectileFactory DEFAULT = (worldIn, entity, weapon, item, modifiedGun) ->
-            new ProjectileEntity(Projectiles.PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun);
+    private static final IProjectileFactory DEFAULT = (level, entity, weapon, item, modifiedGun) ->
+            new ProjectileEntity(Projectiles.PROJECTILE.get(), level, entity, weapon, item, modifiedGun);
 
-    private static final IProjectileFactory GRENADE = (worldIn, entity, weapon, item, modifiedGun) ->
-            new GrenadeEntity(Projectiles.GRENADE.get(), worldIn, entity, weapon, item, modifiedGun);
+    private static final IProjectileFactory GRENADE = (level, entity, weapon, item, modifiedGun) ->
+            new GrenadeEntity(Projectiles.GRENADE.get(), level, entity, weapon, item, modifiedGun);
 
-    private static final IProjectileFactory MISSILE           = (worldIn, entity, weapon, item, modifiedGun) ->
-            new MissileEntity(Projectiles.MISSILE.get(), worldIn, entity, weapon, item, modifiedGun);
+    private static final IProjectileFactory MISSILE           = (level, entity, weapon, item, modifiedGun) ->
+            new MissileEntity(Projectiles.MISSILE.get(), level, entity, weapon, item, modifiedGun);
 
-    private static final IProjectileFactory LASER             = (worldIn, entity, weapon, item, modifiedGun) ->
-            new LaserProjectile(Projectiles.LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun);
+    private static final IProjectileFactory LASER             = (level, entity, weapon, item, modifiedGun) ->
+            new LaserProjectile(Projectiles.LASER_PROJECTILE.get(), level, entity, weapon, item, modifiedGun);
 
-    private static final IProjectileFactory TESLA             = (worldIn, entity, weapon, item, modifiedGun) ->
-            new TeslaProjectile(Projectiles.TESLA_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun);
+    private static final IProjectileFactory TESLA             = (level, entity, weapon, item, modifiedGun) ->
+            new TeslaProjectile(Projectiles.TESLA_PROJECTILE.get(), level, entity, weapon, item, modifiedGun);
 
-    private static final IProjectileFactory FIRE              = (worldIn, entity, weapon, item, modifiedGun) ->
-            new FlameProjectile(Projectiles.FLAME_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun);
+    private static final IProjectileFactory FIRE              = (level, entity, weapon, item, modifiedGun) ->
+            new FlameProjectile(Projectiles.FLAME_PROJECTILE.get(), level, entity, weapon, item, modifiedGun);
 
-    private static final IProjectileFactory CONTINUOUS_LASER  = (worldIn, entity, weapon, item, modifiedGun) ->
-            new ContinuousLaserProjectile(Projectiles.CONTINUOUS_LASER_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun);
-
+    private static final IProjectileFactory CONTINUOUS_LASER  = (level, entity, weapon, item, modifiedGun) ->
+            new ContinuousLaserProjectile(Projectiles.CONTINUOUS_LASER_PROJECTILE.get(), level, entity, weapon, item, modifiedGun);
 
     public static void registerProjectiles() {
         ProjectileManager.getInstance().registerFactory(ProjectileType.BULLET, DEFAULT);
@@ -48,7 +47,7 @@ public class ProjectileRegistry {
     }
 
     private static @NotNull IProjectileFactory registerDefault() {
-        return (worldIn, entity, weapon, item, modifiedGun) ->
-                new FlameProjectile(Projectiles.FLAME_PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun);
+        return (level, entity, weapon, item, modifiedGun) ->
+                new FlameProjectile(Projectiles.FLAME_PROJECTILE.get(), level, entity, weapon, item, modifiedGun);
     }
 }

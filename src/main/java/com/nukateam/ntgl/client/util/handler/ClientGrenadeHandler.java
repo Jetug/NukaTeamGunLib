@@ -35,7 +35,7 @@ public class ClientGrenadeHandler {
     @SubscribeEvent
     public static void tick(TickEvent.ClientTickEvent event){
         var minecraft = Minecraft.getInstance();
-        if(event.phase == TickEvent.Phase.START){
+        if(event.phase == TickEvent.Phase.END){
             var hand = InteractionHand.MAIN_HAND;
 
             if(minecraft.options.keyAttack.isDown()){
@@ -57,66 +57,29 @@ public class ClientGrenadeHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onMouseClick(InputEvent.InteractionKeyMappingTriggered event) {
-        if (event.isCanceled())
-            return;
+    public static void onMouseClick(InputEvent.InteractionKeyMappingTriggered event) {
+        if (event.isCanceled()) return;
 
         var mc = Minecraft.getInstance();
         var player = mc.player;
 
-        if (player == null || PlayerReviveHelper.isBleeding(player))
-            return;
+        if (player == null) return;
 
         if (event.isAttack()) {
             var heldItem = player.getMainHandItem();
 
-            if (heldItem.getItem() instanceof WeaponItem) {
+            if (heldItem.getItem() instanceof IThrowable) {
                 event.setCanceled(true);
                 event.setSwingHand(false);
             }
         } else if (event.isUseItem()) {
-            var mainHandItem = player.getMainHandItem();
             var offhandItem = player.getOffhandItem();
 
-            if (offhandItem.getItem() instanceof WeaponItem && canRenderInOffhand(player)) {
+            if (offhandItem.getItem() instanceof IThrowable && canRenderInOffhand(player)) {
                 event.setCanceled(true);
                 event.setSwingHand(false);
-                return;
-            }
-
-            if (mainHandItem.getItem() instanceof WeaponItem) {
-                if (event.getHand() == InteractionHand.OFF_HAND) {
-                    // Allow shields to be used if weapon is one-handed
-                    if (offhandItem.getItem() == Items.SHIELD) {
-                        if (GunModifierHelper.getGripType(new GunData(mainHandItem, player)).isOneHanded()) {
-                            return;
-                        }
-                    }
-                    event.setCanceled(true);
-                    event.setSwingHand(false);
-                    return;
-                }
-                if (AimingHandler.get().isZooming() && AimingHandler.get().isLookingAtInteractableBlock()) {
-                    event.setCanceled(true);
-                    event.setSwingHand(false);
-                }
             }
         }
-    }
-
-    private static boolean isTracking(Minecraft minecraft, InteractionHand hand) {
-        return ModSyncedDataKeys.getPreparingDataKey(hand).getValue(minecraft.player)
-                || ModSyncedDataKeys.getThrowingDataKey(hand).getValue(minecraft.player);
-    }
-
-    public static boolean isPreparing(InteractionHand hand) {
-        var tracker = TRACKER_MAP.get(hand);
-        return tracker != null && tracker.isPreparing();
-    }
-
-    public static boolean isThrowing(InteractionHand hand) {
-        var tracker = TRACKER_MAP.get(hand);
-        return tracker != null && tracker.isThrowing();
     }
 
     private static class Tracker {
@@ -147,45 +110,6 @@ public class ClientGrenadeHandler {
             prepareTick = maxPrepare;
             throwTick = maxThrow;
             lifeTick = maxLife;
-        }
-
-        public void tick(){
-            if(!isSameWeapon()) stop();
-
-            prepareTick = Math.max(prepareTick - 1, 0);
-
-            if(prepareTick == 0){
-                isPreparing = false;
-                lifeTick = Math.max(lifeTick - 1, 0);
-
-                if(lifeTick == 0){
-                    explode();
-                }
-
-                if (isThrowing){
-                    throwTick = Math.max(throwTick - 1, 0);
-                }
-            }
-//            throwTick = Math.max(prepareTick - 1, 0);
-        }
-
-        public boolean isPreparing() {
-            return isPreparing;
-        }
-
-        public boolean isThrowing() {
-            return isThrowing;
-        }
-
-        public void onRelease(){
-            if(prepareTick == 0){
-                isThrowing = true;
-                throwItem();
-            }
-        }
-
-        private void throwItem(){
-            stop();
         }
 
         private void explode() {

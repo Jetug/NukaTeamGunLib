@@ -57,6 +57,7 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
 
     protected int equipTime;
     protected int prepareTime;
+    protected int throwingTime;
 
     public GrenadeAnimator(ItemDisplayContext transformType, DynamicGrenadeRenderer<GrenadeAnimator> renderer) {
         super(transformType);
@@ -97,6 +98,7 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
     protected void tickStart() {
         if (getStack().getItem() instanceof IThrowable throwable) {
             prepareTime = throwable.getConfig().getGeneral().getPrepareTime();
+            throwingTime = throwable.getConfig().getGeneral().getThrowTime();
             equipTime = throwable.getConfig().getGeneral().getEquipTime();
         }
     }
@@ -137,10 +139,13 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
                     animation = getEquipAnimation(event);
                 }
                 else if(isPreparing()){
-                    animation = getThrowingAnimation(event);
-                }
-                else if(isThrowing()){
                     animation = getPrepareAnimation(event);
+                }
+//                else if(isThrowing()){
+//                    animation = getThrowingAnimation(event);
+//                }
+                else if (ClientHandler.getInspectionTicks(getArm()) > 0) {
+                    animation = getInspectionAnimation(event);
                 }
                 else {
                     animation = holdAnimation;
@@ -153,11 +158,11 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
         };
     }
 
-    private Boolean isThrowing() {
+    private boolean isPreparing() {
         return ModSyncedDataKeys.getPreparingDataKey(getArm()).getValue(getEntity());
     }
 
-    private Boolean isPreparing() {
+    private boolean isThrowing() {
         return ModSyncedDataKeys.getThrowingDataKey(getArm()).getValue(getEntity());
     }
 
@@ -165,7 +170,6 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
         return event -> {
             var controller = event.getController();
             controller.setAnimationSpeed(1);
-            var shooter = getEntity();
             var holdAnimation = getHoldAnimation(event);
 
             if (!isHandTransform(transformType))
@@ -213,13 +217,13 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
 
     protected RawAnimation getPrepareAnimation(AnimationState<GrenadeAnimator> event) {
         var animation = playGunAnim("prepare", HOLD_ON_LAST_FRAME);
-        animationHelper.syncAnimation(event, prepareTime, "prepare");
+//        animationHelper.syncAnimation(event, prepareTime, "prepare");
         return animation;
     }
 
     protected RawAnimation getThrowingAnimation(AnimationState<GrenadeAnimator> event) {
         var animation = playGunAnim("throw", LOOP);
-        animationHelper.syncAnimation(event, prepareTime, "throw");
+        animationHelper.syncAnimation(event, throwingTime, "throw");
         return animation;
     }
 

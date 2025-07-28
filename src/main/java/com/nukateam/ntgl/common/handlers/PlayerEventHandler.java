@@ -65,14 +65,16 @@ public class PlayerEventHandler {
         if (newItem != lastSlot.getFirst() || newItem.getCount() < lastSlot.getSecond()) {
             EquipTracker.stopEquip(player, hand);
 
+            var equipTime = 0;
             if (newItem.getItem() instanceof IWeapon) {
                 var data = new GunData(newItem, player);
-                var equipTime = GunModifierHelper.getEquipTime(data);
-                EquipTracker.startEquip(player, hand, equipTime);
+                equipTime = GunModifierHelper.getEquipTime(data);
             }
             else if(newItem.getItem() instanceof IThrowable throwable){
-                EquipTracker.startEquip(player, hand, throwable.getConfig().getGeneral().getEquipTime());
+                equipTime = throwable.getConfig().getGeneral().getEquipTime();
             }
+
+            EquipTracker.startEquip(player, hand, equipTime);
 
             lastSelectedSlots.put(key, Pair.of(newItem, newItem.getCount()));
         }

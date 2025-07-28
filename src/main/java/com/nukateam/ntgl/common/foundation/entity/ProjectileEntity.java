@@ -76,17 +76,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
-    protected Predicate<BlockState> getBlockFilter() {
-        return (value) -> false;
-    }
-
-    public boolean isVisible(){
-       return projectile.isVisible();
-    }
-
-    public boolean isRightHand(){
-       return isRightHand;
-    }
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level level, LivingEntity shooter, ItemStack weapon, WeaponItem item, Gun modifiedGun) {
         this(entityType, level);
@@ -182,6 +171,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    public boolean isVisible(){
+        return projectile.isVisible();
+    }
+
+    public boolean isRightHand(){
+        return isRightHand;
     }
 
     public void setWeapon(ItemStack weapon) {
@@ -319,6 +316,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
             this.remove(RemovalReason.KILLED);
         }
+    }
+
+    protected Predicate<BlockState> getBlockFilter() {
+        return (value) -> false;
     }
 
     /**

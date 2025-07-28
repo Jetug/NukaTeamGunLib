@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageHandAction;
@@ -15,7 +16,8 @@ public class ClientActions {
         var mainGun = player.getMainHandItem();
         var offGun = player.getOffhandItem();
 
-        if((mainGun.getItem() instanceof WeaponItem || offGun.getItem() instanceof WeaponItem)
+        if((mainGun.getItem() instanceof WeaponItem || offGun.getItem() instanceof WeaponItem
+                || mainGun.getItem() instanceof IThrowable || offGun.getItem() instanceof IThrowable)
                 && !ClientHandler.isInspecting()){
             ClientHandler.resetInspectionTimer();
         }

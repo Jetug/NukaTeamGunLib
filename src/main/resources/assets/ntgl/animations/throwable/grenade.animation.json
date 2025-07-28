@@ -473,61 +473,14 @@
 			"loop": true,
 			"animation_length": 0.75,
 			"bones": {
-				"grenade": {
-					"rotation": {
-						"vector": [0, 15, 0]
-					}
-				},
 				"gear": {
 					"rotation": {
 						"0.0": {
-							"vector": [180, 0, 0]
+							"vector": [-5, 0, 0]
 						},
 						"0.75": {
 							"vector": [360, 0, 0]
 						}
-					}
-				},
-				"right_arm_anim": {
-					"rotation": {
-						"vector": [2.62976, -12.04736, -13.37075]
-					},
-					"position": {
-						"vector": [6.59, -2.73, 3.6]
-					}
-				},
-				"left_arm_anim": {
-					"rotation": {
-						"vector": [45.54, 25.42, 22.49]
-					},
-					"position": {
-						"vector": [2.06, -3.12, 11.31]
-					}
-				},
-				"grenade_arm": {
-					"rotation": {
-						"vector": [-66.43, 25.31, 16.14]
-					},
-					"position": {
-						"vector": [-1, -2.3, -0.9]
-					}
-				},
-				"model": {
-					"rotation": {
-						"vector": [0, 0, 0]
-					},
-					"position": {
-						"vector": [0, 0, 0]
-					}
-				},
-				"pin": {
-					"scale": {
-						"vector": [0, 0, 0]
-					}
-				},
-				"handle": {
-					"scale": {
-						"vector": [0, 0, 0]
 					}
 				}
 			}
@@ -1217,5 +1170,6 @@
 				}
 			}
 		}
-	}
+	},
+	"azurelib_format_version": 2
 }
