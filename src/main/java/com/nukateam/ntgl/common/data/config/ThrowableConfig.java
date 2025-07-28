@@ -29,6 +29,10 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     public static final String EQUIP_TIME = "equipTime";
     public static final String PREPARE_TIME = "prepareTime";
     public static final String THROW_TIME = "throwTime";
+    public static final String GENERAL = "General";
+    public static final String PROJECTILE = "Projectile";
+    public static final String SOUNDS = "Sounds";
+    public static final String TEXTURES = "Textures";
 
     public static class General implements INBTSerializable<CompoundTag>{
         @Optional
@@ -106,7 +110,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     }
 
     protected General general = new General();
-    protected Projectile projectile = new Projectile();
+    protected ProjectileConfig projectile = new ProjectileConfig();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     @Ignored
@@ -125,26 +129,26 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
-        tag.put("general", general.serializeNBT());
-        tag.put("Projectile", projectile.serializeNBT());
-        tag.put("Sounds", NbtUtils.serializeStringMap(this.sounds));
-        tag.put("Textures", NbtUtils.serializeStringMap(this.textures));
+        tag.put(GENERAL, general.serializeNBT());
+        tag.put(PROJECTILE, projectile.serializeNBT());
+        tag.put(SOUNDS, NbtUtils.serializeStringMap(this.sounds));
+        tag.put(TEXTURES, NbtUtils.serializeStringMap(this.textures));
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        if (tag.contains("general", Tag.TAG_COMPOUND)) {
-            this.general = General.create(tag.getCompound("general"));
+        if (tag.contains(GENERAL, Tag.TAG_COMPOUND)) {
+            this.general = General.create(tag.getCompound(GENERAL));
         }
-        if (tag.contains("Projectile", Tag.TAG_COMPOUND)) {
-            this.projectile = Projectile.create(tag.getCompound("Projectile"));
+        if (tag.contains(PROJECTILE, Tag.TAG_COMPOUND)) {
+            this.projectile = ProjectileConfig.create(tag.getCompound(PROJECTILE));
         }
-        if (tag.contains("Sounds", Tag.TAG_COMPOUND)) {
-            this.sounds = deserializeSounds(tag.getCompound("Sounds"));
+        if (tag.contains(SOUNDS, Tag.TAG_COMPOUND)) {
+            this.sounds = deserializeSounds(tag.getCompound(SOUNDS));
         }
-        if (tag.contains("Textures", Tag.TAG_COMPOUND)) {
-            this.textures = NbtUtils.deserializeRLMap(tag.getCompound("Textures"));
+        if (tag.contains(TEXTURES, Tag.TAG_COMPOUND)) {
+            this.textures = NbtUtils.deserializeRLMap(tag.getCompound(TEXTURES));
         }
     }
 
@@ -171,7 +175,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         return general;
     }
 
-    public Projectile getProjectile() {
+    public ProjectileConfig getProjectile() {
         return projectile;
     }
 

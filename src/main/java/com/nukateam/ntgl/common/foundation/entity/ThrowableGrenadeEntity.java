@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.nukateam.example.common.registery.ModGuns;
-import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.util.world.ExplosionUtils;
 import net.minecraft.core.particles.ParticleTypes;
@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class ThrowableGrenadeEntity extends ThrowableItemEntity {
-    private Projectile projectile = new Projectile();
+    private ProjectileConfig projectile = new ProjectileConfig();
     public float rotation;
     public float prevRotation;
 
@@ -19,7 +19,7 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity {
         super(entityType, worldIn);
     }
 
-    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity thrower, Projectile projectile, int timeLeft) {
+    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity thrower, ProjectileConfig projectile, int timeLeft) {
         super(entityType, world, thrower, projectile);
         this.setShouldBounce(true);
         this.setGravityVelocity(0.05F);
@@ -27,7 +27,7 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity {
         this.setMaxLife(timeLeft);
     }
 
-    public ThrowableGrenadeEntity(Level world, LivingEntity entity, Projectile projectile, int timeLeft) {
+    public ThrowableGrenadeEntity(Level world, LivingEntity entity, ProjectileConfig projectile, int timeLeft) {
         this(Projectiles.THROWABLE_GRENADE.get(), world, entity, projectile, timeLeft);
         this.projectile = projectile;
         this.setItem(new ItemStack(ModGuns.GRENADE.get()));

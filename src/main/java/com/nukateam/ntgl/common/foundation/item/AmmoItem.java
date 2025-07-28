@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
-import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IConfigConsumer;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
@@ -20,9 +20,9 @@ import java.util.List;
  * <p>
  * Author: MrCrayfish
  */
-public class AmmoItem extends Item implements IAmmo, IConfigConsumer<Projectile> {
+public class AmmoItem extends Item implements IAmmo, IConfigConsumer<ProjectileConfig> {
     private final IGunModifier[] modifiers;
-    private Projectile projectile = new Projectile();
+    private ProjectileConfig projectile = new ProjectileConfig();
 
     public AmmoItem(Properties properties, IGunModifier... modifiers) {
         super(properties);
@@ -30,11 +30,11 @@ public class AmmoItem extends Item implements IAmmo, IConfigConsumer<Projectile>
     }
 
     @Override
-    public void setConfig(ConfigSupplier<Projectile> supplier) {
+    public void setConfig(ConfigSupplier<ProjectileConfig> supplier) {
         this.projectile = supplier.getConfig();
     }
 
-    public Projectile getAmmo() {
+    public ProjectileConfig getAmmo() {
         return this.projectile;
     }
 

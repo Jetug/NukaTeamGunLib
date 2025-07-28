@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
@@ -30,10 +30,10 @@ import static net.minecraftforge.registries.ForgeRegistries.*;
  */
 public class GunModifierHelper {
     private static final IGunModifier[] EMPTY = {};
-    public static final Projectile PROJECTILE = new Projectile();
+    public static final ProjectileConfig PROJECTILE = new ProjectileConfig();
 
     @Deprecated
-    public static Projectile getCurrentAmmo(GunData data) {
+    public static ProjectileConfig getCurrentAmmo(GunData data) {
         return GunStateHelper.getAmmoConfig(data);
     }
 
@@ -474,9 +474,9 @@ public class GunModifierHelper {
         }
     }
 
-    public static Projectile getAmmoConfig(ResourceLocation ammoId, GunData data) {
+    public static ProjectileConfig getAmmoConfig(ResourceLocation ammoId, GunData data) {
         var gun = getGun(data.gun);
-        Projectile config = null;
+        ProjectileConfig config = null;
         var item = GunStateHelper.getAmmoItem(data);
         if(gun.hasAmmo(ammoId)) {
             config = gun.getAmmoConfig(ammoId);
@@ -485,6 +485,6 @@ public class GunModifierHelper {
             config = ammoItem.getAmmo();
         }
 
-        return config != null ? config : new Projectile();
+        return config != null ? config : new ProjectileConfig();
     }
 }

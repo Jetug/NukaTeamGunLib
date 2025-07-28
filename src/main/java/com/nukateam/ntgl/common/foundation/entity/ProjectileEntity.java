@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
-import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -65,7 +65,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected LivingEntity shooter;
     protected Gun modifiedGun;
     protected General general;
-    protected Projectile projectile;
+    protected ProjectileConfig projectile;
     protected ItemStack weapon = ItemStack.EMPTY;
     protected ItemStack ammo = ItemStack.EMPTY;
     protected float additionalDamage = 0.0F;
@@ -121,7 +121,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void readAdditionalSaveData(CompoundTag compound) {
         this.weapon = ItemStack.of(compound.getCompound("Weapon"));
         this.ammo = ItemStack.of(compound.getCompound("Ammo"));
-        this.projectile = Projectile.create(compound.getCompound("Projectile"));
+        this.projectile = ProjectileConfig.create(compound.getCompound("Projectile"));
         this.general = General.create(compound.getCompound("General"));
         this.modifiedGravity = compound.getDouble("ModifiedGravity");
         this.life = compound.getInt("MaxLife");
@@ -141,7 +141,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     @Override
     public void readSpawnData(FriendlyByteBuf buffer) {
-        this.projectile = Projectile.create(buffer.readNbt());
+        this.projectile = ProjectileConfig.create(buffer.readNbt());
         this.general = General.create(buffer.readNbt());
         this.shooterId = buffer.readInt();
         this.ammo = BufferUtil.readItemStackFromBufIgnoreTag(buffer);
@@ -209,7 +209,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return projectile.getLife();
     }
 
-    public Projectile getProjectile() {
+    public ProjectileConfig getProjectile() {
         return this.projectile;
     }
 

@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.base.utils;
 
 import com.nukateam.ntgl.common.base.holders.ResourceHolder;
 import com.nukateam.ntgl.common.base.holders.FuelType;
-import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.config.Fuel;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
 import com.nukateam.ntgl.common.base.holders.AttachmentType;
@@ -156,12 +156,12 @@ public class NbtUtils {
         return map;
     }
 
-    public static HashMap<ResourceLocation, Projectile> deserializeProjectileMap(CompoundTag tag){
-        var map = new HashMap<ResourceLocation, Projectile>();
+    public static HashMap<ResourceLocation, ProjectileConfig> deserializeProjectileMap(CompoundTag tag){
+        var map = new HashMap<ResourceLocation, ProjectileConfig>();
 
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {
-                var projectile = new Projectile();
+                var projectile = new ProjectileConfig();
                 var resource = ResourceLocation.tryParse(key);
 
                 projectile.deserializeNBT(tag.getCompound(key));

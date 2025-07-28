@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.util.world;
 
 import com.google.common.collect.Sets;
 import com.nukateam.ntgl.common.data.config.ExplosionConfig;
-import com.nukateam.ntgl.common.data.config.Projectile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -14,16 +13,11 @@ import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * Author: MrCrayfish

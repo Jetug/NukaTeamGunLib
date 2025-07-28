@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.foundation.entity;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.init.ModEffects;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
@@ -32,12 +32,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-
-import static com.nukateam.example.common.registery.ModGuns.STUN_GRENADE;
-import static com.nukateam.ntgl.common.foundation.init.Projectiles.THROWABLE_STUN_GRENADE;
 
 @Mod.EventBusSubscriber
 public class StunGrenadeEntity extends ThrowableGrenadeEntity {
@@ -45,7 +41,7 @@ public class StunGrenadeEntity extends ThrowableGrenadeEntity {
         super(entityType, world);
     }
 
-    public StunGrenadeEntity(Level world, LivingEntity player, Projectile projectile, int maxCookTime) {
+    public StunGrenadeEntity(Level world, LivingEntity player, ProjectileConfig projectile, int maxCookTime) {
         super(Projectiles.THROWABLE_STUN_GRENADE.get(), world, player, projectile, maxCookTime);
         this.setItem(new ItemStack(ModGuns.STUN_GRENADE.get()));
     }

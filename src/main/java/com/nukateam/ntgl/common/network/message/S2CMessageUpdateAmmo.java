@@ -5,7 +5,7 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
-import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.Validate;
@@ -14,7 +14,7 @@ import org.apache.commons.lang3.Validate;
  * Author: MrCrayfish
  */
 public class S2CMessageUpdateAmmo extends PlayMessage<S2CMessageUpdateAmmo> {
-    private ImmutableMap<ResourceLocation, Projectile> registeredGuns;
+    private ImmutableMap<ResourceLocation, ProjectileConfig> registeredGuns;
 
     public S2CMessageUpdateAmmo() {}
 
@@ -37,7 +37,7 @@ public class S2CMessageUpdateAmmo extends PlayMessage<S2CMessageUpdateAmmo> {
         supplier.setHandled(true);
     }
 
-    public ImmutableMap<ResourceLocation, Projectile> getRegisteredAmmo() {
+    public ImmutableMap<ResourceLocation, ProjectileConfig> getRegisteredAmmo() {
         return this.registeredGuns;
     }
 }

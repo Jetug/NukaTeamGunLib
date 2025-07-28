@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.common.data.config;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.base.holders.AmmoType;
 import com.nukateam.ntgl.common.base.holders.ProjectileType;
@@ -16,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.level.Explosion;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
@@ -28,7 +26,7 @@ import static com.nukateam.ntgl.common.base.utils.json.JsonDeserializers.getDama
 import static com.nukateam.ntgl.common.data.config.gun.General.PROJECTILE_AMOUNT;
 import static com.nukateam.ntgl.common.data.config.gun.General.SPREAD;
 
-public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
     private float damage = 1;
     private float size;
     @Optional private float speed = 20;
@@ -151,8 +149,8 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
         return object;
     }
 
-    public Projectile copy() {
-        var projectile = new Projectile();
+    public ProjectileConfig copy() {
+        var projectile = new ProjectileConfig();
         projectile.visible = this.visible;
         projectile.damage = this.damage;
         projectile.size = this.size;
@@ -271,8 +269,8 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.damageType;
     }
 
-    public static Projectile create(CompoundTag tag) {
-        var ammo = new Projectile();
+    public static ProjectileConfig create(CompoundTag tag) {
+        var ammo = new ProjectileConfig();
         ammo.deserializeNBT(tag);
         return ammo;
     }
@@ -300,74 +298,74 @@ public class Projectile implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static class Builder {
-        private final Projectile projectile;
+        private final ProjectileConfig projectile;
 
         private Builder() {
-            this.projectile = new Projectile();
+            this.projectile = new ProjectileConfig();
         }
 
-        private Builder(Projectile projectile) {
+        private Builder(ProjectileConfig projectile) {
             this.projectile = projectile.copy();
         }
 
-        public static Projectile.Builder create() {
-            return new Projectile.Builder();
+        public static ProjectileConfig.Builder create() {
+            return new ProjectileConfig.Builder();
         }
 
-        public static Projectile.Builder create(Projectile projectile) {
-            return new Projectile.Builder(projectile);
+        public static ProjectileConfig.Builder create(ProjectileConfig projectile) {
+            return new ProjectileConfig.Builder(projectile);
         }
 
-        public Projectile build() {
+        public ProjectileConfig build() {
             return this.projectile.copy(); //Copy since the builder could be used again
         }
 
-        public Projectile.Builder setProjectileVisible(ResourceLocation id, boolean visible) {
+        public ProjectileConfig.Builder setProjectileVisible(ResourceLocation id, boolean visible) {
             this.projectile.visible = visible;
             return this;
         }
 
-        public Projectile.Builder setProjectileSize(ResourceLocation id, float size) {
+        public ProjectileConfig.Builder setProjectileSize(ResourceLocation id, float size) {
             this.projectile.size = size;
             return this;
         }
 
-        public Projectile.Builder setProjectileSpeed(ResourceLocation id, float speed) {
+        public ProjectileConfig.Builder setProjectileSpeed(ResourceLocation id, float speed) {
             this.projectile.speed = speed;
             return this;
         }
 
-        public Projectile.Builder setProjectileLife(ResourceLocation id, int life) {
+        public ProjectileConfig.Builder setProjectileLife(ResourceLocation id, int life) {
             this.projectile.life = life;
             return this;
         }
 
-        public Projectile.Builder setProjectileAffectedByGravity(ResourceLocation id, boolean gravity) {
+        public ProjectileConfig.Builder setProjectileAffectedByGravity(ResourceLocation id, boolean gravity) {
             this.projectile.gravity = gravity;
             return this;
         }
 
-        public Projectile.Builder setProjectileTrailColor(ResourceLocation id, int trailColor) {
+        public ProjectileConfig.Builder setProjectileTrailColor(ResourceLocation id, int trailColor) {
             this.projectile.trailColor = trailColor;
             return this;
         }
 
-        public Projectile.Builder setProjectileTrailLengthMultiplier(ResourceLocation id, int trailLengthMultiplier) {
+        public ProjectileConfig.Builder setProjectileTrailLengthMultiplier(ResourceLocation id, int trailLengthMultiplier) {
             this.projectile.trailLengthMultiplier = trailLengthMultiplier;
             return this;
         }
 
-        public Projectile.Builder setDamage(ResourceLocation id, float damage) {
+        public ProjectileConfig.Builder setDamage(ResourceLocation id, float damage) {
             this.projectile.damage = damage;
             return this;
         }
 
-        public Projectile.Builder setReduceDamageOverLife(ResourceLocation id, boolean damageReduceOverLife) {
+        public ProjectileConfig.Builder setReduceDamageOverLife(ResourceLocation id, boolean damageReduceOverLife) {
             this.projectile.damageReduceOverLife = damageReduceOverLife;
             return this;
         }
 
-        public Projectile.Builder setMagazineMode(ResourceLocation id, boolean magazineMode) {
+        public ProjectileConfig.Builder setMagazineMode(ResourceLocation id, boolean magazineMode) {
             this.projectile.magazineMode = magazineMode;
             return this;
         }

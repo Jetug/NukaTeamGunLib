@@ -5,7 +5,7 @@ import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.Melee;
-import com.nukateam.ntgl.common.data.config.Projectile;
+import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
@@ -67,7 +67,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     @Ignored
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
-    protected HashMap<ResourceLocation, Projectile> projectiles = new HashMap<>();
+    protected HashMap<ResourceLocation, ProjectileConfig> projectiles = new HashMap<>();
     protected HashMap<FuelType, Fuel> fuel = new HashMap<>();
 
     public static boolean isAmmoIgnored(ItemStack stack) {
@@ -89,7 +89,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.put(Tags.ATTACHMENTS, attachmentsTag);
     }
 
-    public HashMap<ResourceLocation, Projectile> getProjectiles() {
+    public HashMap<ResourceLocation, ProjectileConfig> getProjectiles() {
         return projectiles;
     }
 
@@ -253,7 +253,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         gun.melee = this.melee.copy();
         gun.sounds = (HashMap<String, ResourceLocation>)    this.sounds.clone();
         gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
-        gun.projectiles = (HashMap<ResourceLocation, Projectile>) this.projectiles.clone();
+        gun.projectiles = (HashMap<ResourceLocation, ProjectileConfig>) this.projectiles.clone();
         gun.fuel = (HashMap<FuelType, Fuel>) this.fuel.clone();
         gun.display = this.display.copy();
         gun.modules = this.modules.copy();
@@ -587,7 +587,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return projectiles.containsKey(ammo);
     }
 
-    public Projectile getAmmoConfig(ResourceLocation ammo){
+    public ProjectileConfig getAmmoConfig(ResourceLocation ammo){
         return projectiles.get(ammo);
     }
 
