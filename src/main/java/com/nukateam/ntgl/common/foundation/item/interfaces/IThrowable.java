@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 public interface IThrowable extends IConfigConsumer<ThrowableConfig> {
     ThrowableConfig getConfig();
 
-    void explode(LivingEntity entityLiving);
+    void expire(LivingEntity entityLiving);
 
     void throwItem(ItemStack stack, LivingEntity entityLiving, int timeLeft);
 }

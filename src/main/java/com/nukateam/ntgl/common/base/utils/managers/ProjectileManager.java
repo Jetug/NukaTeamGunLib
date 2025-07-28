@@ -1,9 +1,11 @@
-package com.nukateam.ntgl.common.base.utils;
+package com.nukateam.ntgl.common.base.utils.managers;
 
 import com.nukateam.ntgl.common.base.holders.ProjectileType;
+import com.nukateam.ntgl.common.foundation.entity.ThrowableGrenadeEntity;
 import com.nukateam.ntgl.common.util.interfaces.IProjectileFactory;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
+import com.nukateam.ntgl.common.util.interfaces.IThrowableProjectileFactory;
 import com.nukateam.ntgl.common.util.util.GunData;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -20,11 +22,15 @@ import java.util.Map;
  */
 public class ProjectileManager {
     private static ProjectileManager instance = null;
-    private final IProjectileFactory DEFAULT_FACTORY = (worldIn, entity, weapon, item, modifiedGun) ->
-            new ProjectileEntity(Projectiles.PROJECTILE.get(), worldIn, entity, weapon, item, modifiedGun);
+    private final IProjectileFactory DEFAULT_FACTORY = (level, entity, weapon, item, modifiedGun) ->
+            new ProjectileEntity(Projectiles.PROJECTILE.get(), level, entity, weapon, item, modifiedGun);
+    
+    private final IThrowableProjectileFactory DEFAULT_THROWABLE_FACTORY = ThrowableGrenadeEntity::new;
 
     private final Map<ResourceLocation, IProjectileFactory> projectileForAmmoFactories = new HashMap();
     private final Map<ResourceLocation, IProjectileFactory> projectileForTypeFactories = new HashMap();
+
+    private final Map<ResourceLocation, IThrowableProjectileFactory> throwableProjectileFactories = new HashMap();
 
     public ProjectileManager() {}
 
@@ -34,6 +40,10 @@ public class ProjectileManager {
         }
 
         return instance;
+    }
+
+    public void registerFactory(ProjectileType ammo, IThrowableProjectileFactory factory) {
+        this.throwableProjectileFactories.put(ammo.getId(), factory);
     }
 
     public void registerFactory(ProjectileType ammo, IProjectileFactory factory) {
@@ -57,5 +67,13 @@ public class ProjectileManager {
             return factory;
         }
         return DEFAULT_FACTORY;
+    }
+
+    public IThrowableProjectileFactory getFactory(ProjectileType projectileType) {
+        var factory = throwableProjectileFactories.get(projectileType.getId());
+        if(factory != null){
+            return factory;
+        }
+        return DEFAULT_THROWABLE_FACTORY;
     }
 }

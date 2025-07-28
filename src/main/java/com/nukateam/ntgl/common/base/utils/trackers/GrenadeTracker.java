@@ -1,9 +1,7 @@
 package com.nukateam.ntgl.common.base.utils.trackers;
 
-import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.holders.GrenadeMode;
-import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
@@ -191,7 +189,7 @@ public class GrenadeTracker {
         }
 
         private void explode() {
-            throwable.explode(entity);
+            throwable.expire(entity);
             stop();
         }
 

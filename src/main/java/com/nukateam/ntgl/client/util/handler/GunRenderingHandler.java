@@ -528,7 +528,7 @@ public class GunRenderingHandler {
 
 //        if (player.isUsingItem()
 //                && player.getUsedItemHand() == InteractionHand.MAIN_HAND
-//                && heldItem.getItem() instanceof GrenadeItem) {
+//                && heldItem.getItem() instanceof ThrowableItem) {
 //            int duration = player.getTicksUsingItem();
 //            if (duration >= 10) {
 //                float cookTime = 1.0F - ((float) (duration - 10) / (float) (player.getUseItem().getUseDuration() - 10));

@@ -5,7 +5,7 @@ import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.base.utils.BoundingBoxManager;
+import com.nukateam.ntgl.common.base.utils.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.base.utils.trackers.SpreadTracker;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;

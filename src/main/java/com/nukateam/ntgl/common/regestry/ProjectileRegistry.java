@@ -2,10 +2,11 @@ package com.nukateam.ntgl.common.regestry;
 
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.common.base.holders.ProjectileType;
-import com.nukateam.ntgl.common.base.utils.ProjectileManager;
+import com.nukateam.ntgl.common.base.utils.managers.ProjectileManager;
 import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.util.interfaces.IProjectileFactory;
+import com.nukateam.ntgl.common.util.interfaces.IThrowableProjectileFactory;
 import org.jetbrains.annotations.NotNull;
 
 public class ProjectileRegistry {
@@ -30,6 +31,8 @@ public class ProjectileRegistry {
     private static final IProjectileFactory CONTINUOUS_LASER  = (level, entity, weapon, item, modifiedGun) ->
             new ContinuousLaserProjectile(Projectiles.CONTINUOUS_LASER_PROJECTILE.get(), level, entity, weapon, item, modifiedGun);
 
+    private static final IThrowableProjectileFactory THROWABLE_GRENADE = ThrowableGrenadeEntity::new;
+
     public static void registerProjectiles() {
         ProjectileManager.getInstance().registerFactory(ProjectileType.BULLET, DEFAULT);
         ProjectileManager.getInstance().registerFactory(ProjectileType.GRENADE  , GRENADE);
@@ -44,6 +47,9 @@ public class ProjectileRegistry {
         ProjectileManager.getInstance().registerFactory(ModGuns.ROUND45.get()   , TESLA);
         ProjectileManager.getInstance().registerFactory(ModGuns.ROUND38.get()   , CONTINUOUS_LASER);
         ProjectileManager.getInstance().registerFactory(ModGuns.FUEL.get(), FIRE);
+
+        ProjectileManager.getInstance().registerFactory(ProjectileType.GRENADE  , THROWABLE_GRENADE);
+
     }
 
     private static @NotNull IProjectileFactory registerDefault() {

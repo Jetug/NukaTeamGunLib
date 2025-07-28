@@ -2,46 +2,41 @@ package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
-import com.nukateam.ntgl.client.animators.GrenadeAnimator;
-import com.nukateam.ntgl.client.model.gun.GeoGrenadeModel;
-import com.nukateam.ntgl.client.render.renderers.gun.DynamicGrenadeRenderer;
+import com.nukateam.ntgl.client.animators.ThrowableAnimator;
+import com.nukateam.ntgl.client.model.gun.ThrowableItemModel;
+import com.nukateam.ntgl.client.render.renderers.gun.ThrowableItemRenderer;
+import com.nukateam.ntgl.common.base.utils.managers.ProjectileManager;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
-import com.nukateam.ntgl.common.foundation.init.ModSounds;
+import com.nukateam.ntgl.common.foundation.entity.ThrowableItemEntity;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
-import com.nukateam.ntgl.common.foundation.entity.ThrowableGrenadeEntity;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Lazy;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
-public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
-    private ThrowableConfig projectile = new ThrowableConfig();
-    private final Lazy<DynamicGrenadeRenderer> RENDERER = Lazy.of(() -> new DynamicGrenadeRenderer(new GeoGrenadeModel()));
+public class ThrowableItem extends Item implements DynamicGeoItem, IThrowable {
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
+    private final Lazy<ThrowableItemRenderer<?>> RENDERER = Lazy.of(() ->
+            new ThrowableItemRenderer<ThrowableAnimator>(new ThrowableItemModel()));
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
+    private ThrowableConfig projectile = new ThrowableConfig();
 
-    public GrenadeItem(Item.Properties properties) {
+    public ThrowableItem(Item.Properties properties) {
         super(properties);
     }
 
@@ -53,6 +48,11 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     @Override
     public void setConfig(ConfigSupplier<ThrowableConfig> supplier) {
         projectile = supplier.getConfig();
+    }
+
+    @Override
+    public BiFunction<ItemDisplayContext, ThrowableItemRenderer<ThrowableAnimator>, ThrowableAnimator> getAnimatorFactory() {
+        return ThrowableAnimator::new;
     }
 
     @Override
@@ -71,9 +71,9 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     }
 
     @Override
-    public void explode(LivingEntity entityLiving) {
-        var grenade = this.create(entityLiving.level(), entityLiving, 0);
-        grenade.onDeath();
+    public void expire(LivingEntity entityLiving) {
+        var throwableEntity = this.create(entityLiving.level(), entityLiving, 0);
+        throwableEntity.onDeath();
     }
 
     @Override
@@ -95,15 +95,15 @@ public class GrenadeItem extends Item implements DynamicGeoItem, IThrowable {
     }
 
     @Override
-    public BiFunction<ItemDisplayContext, DynamicGrenadeRenderer<GrenadeAnimator>, GrenadeAnimator> getAnimatorFactory() {
-        return GrenadeAnimator::new;
-    }
-    @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
 
-    public ThrowableGrenadeEntity create(Level world, LivingEntity entity, int timeLeft) {
-        return new ThrowableGrenadeEntity(world, entity, getConfig().getProjectile(), timeLeft);
+    public ThrowableItemEntity create(Level world, LivingEntity entity, int timeLeft) {
+
+
+        return ProjectileManager.getInstance()
+                .getFactory(getConfig().getGeneral().getProjectileType())
+                .create(world, entity, getConfig().getProjectile(), timeLeft);
     }
 
-    protected void onThrown(Level world, ThrowableGrenadeEntity entity) {}
+    protected void onThrown(Level world, ThrowableItemEntity entity) {}
 }

@@ -1,13 +1,11 @@
 package com.nukateam.ntgl.client.animators;
 
-import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
-import com.nukateam.ntgl.client.model.gun.GeoGrenadeModel;
-import com.nukateam.ntgl.client.render.renderers.gun.DynamicGrenadeRenderer;
-import com.nukateam.ntgl.client.util.handler.ClientGrenadeHandler;
+import com.nukateam.ntgl.client.model.gun.ThrowableItemModel;
+import com.nukateam.ntgl.client.render.renderers.gun.ThrowableItemRenderer;
 import com.nukateam.ntgl.common.base.utils.trackers.EquipTracker;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
 import com.nukateam.ntgl.common.data.constants.Animations;
@@ -16,8 +14,6 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.util.util.AnimationHelper;
-import com.nukateam.ntgl.common.util.util.GunData;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.AnimationController.AnimationStateHandler;
 import mod.azure.azurelib.core.animation.AnimationState;
@@ -45,21 +41,21 @@ import static mod.azure.azurelib.core.animation.Animation.LoopType.*;
 import static mod.azure.azurelib.core.animation.RawAnimation.begin;
 
 @OnlyIn(Dist.CLIENT)
-public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<ThrowableConfig> {
-    protected final DynamicGrenadeRenderer<GrenadeAnimator> renderer;
+public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<ThrowableConfig> {
+    protected final ThrowableItemRenderer<ThrowableAnimator> renderer;
     protected final Minecraft minecraft = Minecraft.getInstance();
-    protected final AnimationHelper<GrenadeAnimator> animationHelper;
+    protected final AnimationHelper<ThrowableAnimator> animationHelper;
 
-    protected final AnimationController<GrenadeAnimator> TRIGGER_CONTROLLER;
-    protected final AnimationController<GrenadeAnimator> MAIN_CONTROLLER;
-    protected final AnimationController<GrenadeAnimator> TICKING_CONTROLLER;
+    protected final AnimationController<ThrowableAnimator> TRIGGER_CONTROLLER;
+    protected final AnimationController<ThrowableAnimator> MAIN_CONTROLLER;
+    protected final AnimationController<ThrowableAnimator> TICKING_CONTROLLER;
     protected final InteractionHand arm;
 
     protected int equipTime;
     protected int prepareTime;
     protected int throwingTime;
 
-    public GrenadeAnimator(ItemDisplayContext transformType, DynamicGrenadeRenderer<GrenadeAnimator> renderer) {
+    public ThrowableAnimator(ItemDisplayContext transformType, ThrowableItemRenderer<ThrowableAnimator> renderer) {
         super(transformType);
         this.renderer = renderer;
         this.arm = getArm();
@@ -68,7 +64,7 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
         TRIGGER_CONTROLLER = createController("triggerController", event -> PlayState.CONTINUE);
         MAIN_CONTROLLER = createController("mainController", animate()).setSoundKeyframeHandler(this::handleSoundEvent);
         TICKING_CONTROLLER = createController("tickingController", animateTick());
-        animationHelper = new AnimationHelper<>(this, GeoGrenadeModel.INSTANCE);
+        animationHelper = new AnimationHelper<>(this, ThrowableItemModel.INSTANCE);
     }
 
     @Override
@@ -114,7 +110,7 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
     }
 
     @NotNull
-    protected AnimationController<GrenadeAnimator> createController(String name, AnimationStateHandler<GrenadeAnimator> animate) {
+    protected AnimationController<ThrowableAnimator> createController(String name, AnimationStateHandler<ThrowableAnimator> animate) {
         return new AnimationController<>(this, name, 0, animate);
     }
 
@@ -122,7 +118,7 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
         return isRightHand(transformType) ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
     }
 
-    protected AnimationStateHandler<GrenadeAnimator> animate() {
+    protected AnimationStateHandler<ThrowableAnimator> animate() {
         return event -> {
             try {
                 var controller = event.getController();
@@ -166,7 +162,7 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
         return ModSyncedDataKeys.getThrowingDataKey(getArm()).getValue(getEntity());
     }
 
-    protected AnimationStateHandler<GrenadeAnimator> animateTick() {
+    protected AnimationStateHandler<ThrowableAnimator> animateTick() {
         return event -> {
             var controller = event.getController();
             controller.setAnimationSpeed(1);
@@ -192,42 +188,42 @@ public class GrenadeAnimator extends ItemAnimator implements IConfigProvider<Thr
         return begin().then(Animations.HIDE, HOLD_ON_LAST_FRAME);
     }
 
-    protected RawAnimation getInspectionAnimation(AnimationState<GrenadeAnimator> event) {
+    protected RawAnimation getInspectionAnimation(AnimationState<ThrowableAnimator> event) {
         RawAnimation animation;
         animation = playGunAnim(Animations.INSPECT, PLAY_ONCE);
         animationHelper.syncAnimation(event, Animations.INSPECT, ClientHandler.getMaxInspectionTicks());
         return animation;
     }
 
-    protected RawAnimation getHoldAnimation(AnimationState<GrenadeAnimator> event) {
+    protected RawAnimation getHoldAnimation(AnimationState<ThrowableAnimator> event) {
         return playGunAnim(HOLD, LOOP);
     }
 
-    protected RawAnimation getTickingAnimation(AnimationState<GrenadeAnimator> event) {
+    protected RawAnimation getTickingAnimation(AnimationState<ThrowableAnimator> event) {
         var animation = playGunAnim(TICKING, LOOP);
 //        animationHelper.syncAnimation(event, equipTime, TICKING);
         return animation;
     }
 
-    protected RawAnimation getEquipAnimation(AnimationState<GrenadeAnimator> event) {
+    protected RawAnimation getEquipAnimation(AnimationState<ThrowableAnimator> event) {
         var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);
         animationHelper.syncAnimation(event, equipTime, EQUIP);
         return animation;
     }
 
-    protected RawAnimation getPrepareAnimation(AnimationState<GrenadeAnimator> event) {
+    protected RawAnimation getPrepareAnimation(AnimationState<ThrowableAnimator> event) {
         var animation = playGunAnim("prepare", HOLD_ON_LAST_FRAME);
 //        animationHelper.syncAnimation(event, prepareTime, "prepare");
         return animation;
     }
 
-    protected RawAnimation getThrowingAnimation(AnimationState<GrenadeAnimator> event) {
+    protected RawAnimation getThrowingAnimation(AnimationState<ThrowableAnimator> event) {
         var animation = playGunAnim("throw", LOOP);
         animationHelper.syncAnimation(event, throwingTime, "throw");
         return animation;
     }
 
-    protected void handleSoundEvent(SoundKeyframeEvent<GrenadeAnimator> event) {
+    protected void handleSoundEvent(SoundKeyframeEvent<ThrowableAnimator> event) {
         var player = minecraft.player;
         var name = event.getKeyframeData().getSound();
         var sounds = getItem().getConfig().getSoundsMap();

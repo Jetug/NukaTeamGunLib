@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.base.utils;
+package com.nukateam.ntgl.common.base.utils.managers;
 
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.base.headshot.*;

@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.data.config;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.base.holders.GrenadeMode;
+import com.nukateam.ntgl.common.base.holders.ProjectileType;
 import com.nukateam.ntgl.common.base.utils.NbtUtils;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -35,9 +36,8 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     public static final String TEXTURES = "Textures";
 
     public static class General implements INBTSerializable<CompoundTag>{
-        @Optional
-        private GrenadeMode mode = GrenadeMode.SAFE;
-        @Optional
+        @Optional private GrenadeMode mode = GrenadeMode.SAFE;
+        @Optional private ProjectileType projectile = ProjectileType.BULLET;
         private int equipTime = 0;
         private int prepareTime = 0;
         private int throwTime = 1;
@@ -52,6 +52,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         public CompoundTag serializeNBT() {
             var tag = new CompoundTag();
             tag.putString("mode", mode.toString());
+            tag.putString("projectile", projectile.toString());
             tag.putInt(EQUIP_TIME, equipTime);
             tag.putInt(PREPARE_TIME, prepareTime);
             tag.putInt(THROW_TIME, throwTime);
@@ -62,6 +63,9 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         public void deserializeNBT(CompoundTag tag) {
             if (tag.contains("mode", Tag.TAG_STRING)) {
                 this.mode = GrenadeMode.getType(tag.getString("mode"));
+            }
+            if (tag.contains("projectile", Tag.TAG_STRING)) {
+                this.projectile = ProjectileType.getType(tag.getString("projectile"));
             }
             if (tag.contains(EQUIP_TIME, Tag.TAG_INT)) {
                 this.equipTime = tag.getInt(EQUIP_TIME);
@@ -77,6 +81,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         public JsonObject toJsonObject() {
             var object = new JsonObject();
             object.addProperty("mode", this.mode.toString());
+            object.addProperty("projectile", this.projectile.toString());
             object.addProperty("equipTime", this.equipTime);
             object.addProperty("prepareTime", this.prepareTime);
             object.addProperty("throwTime", this.throwTime);
@@ -86,10 +91,15 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         public General copy() {
             var gun = new General();
             gun.mode = mode;
+            gun.projectile = projectile;
             gun.equipTime = equipTime;
             gun.prepareTime = prepareTime;
             gun.throwTime = throwTime;
             return gun;
+        }
+
+        public ProjectileType getProjectileType() {
+            return projectile;
         }
 
         public GrenadeMode getMode() {

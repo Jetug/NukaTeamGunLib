@@ -158,7 +158,7 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
         this.gravityVelocity = gravity;
     }
 
-    protected void onDeath() {}
+    public void onDeath() {}
 
     private void bounce(Direction direction) {
         switch (direction.getAxis()) {

@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderRightArm;
 
-public class DynamicGrenadeRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
+public class ThrowableItemRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
     public static final String RIGHT_ARM = "right_arm";
     public static final String LEFT_ARM = "left_arm";
     protected MultiBufferSource bufferSource;
@@ -37,7 +37,7 @@ public class DynamicGrenadeRenderer<Animator extends ItemAnimator> extends Dynam
     protected boolean firstLeftRender = true;
     private ItemDisplayContext transformType;
 
-    public DynamicGrenadeRenderer(GeoModel<Animator> model) {
+    public ThrowableItemRenderer(GeoModel<Animator> model) {
         super(model);
         addRenderLayer(new GlowingLayer<>(this));
         ClientTickHandler.addTicker(this, this::tick);
