@@ -89,7 +89,7 @@ public class ProjectileExplosion extends Explosion {
 
         var entities = this.world.getEntities(null, new AABB(minX, minY, minZ, maxX, maxY, maxZ));
 
-//        ForgeEventFactory.onExplosionDetonate(this.world, this, entities, diameter);
+        ForgeEventFactory.onExplosionDetonate(this.world, this, entities, diameter);
 
         for (var entity : entities) {
             if (entity.ignoreExplosion())
