@@ -48,6 +48,8 @@ public class PacketHandler {
                 .registerPlayMessage(S2CMessageProjectileHitBlock.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageProjectileHitEntity.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageRemoveProjectile.class, MessageDirection.PLAY_CLIENT_BOUND)
+
+                .registerPlayMessage(S2CMessageProjectileExplosion.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .build();
 
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);

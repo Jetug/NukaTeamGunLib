@@ -32,6 +32,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -70,6 +71,12 @@ public class ProjectileExplosion extends Explosion {
         this.damage = projectile.getDamage();
         this.knockback = projectile.getKnockback();
         this.damageDecreaseWithDistance = projectile.isDamageReduceOverDistance();
+    }
+
+    public ProjectileExplosion(Level world, Entity exploder, ExplosionConfig projectile,
+                               Vec3 pos, BlockInteraction mode, List<BlockPos> toBlow) {
+        this(world, exploder, null, null, projectile, pos, projectile.getRadius(), projectile.isCauseFire(), mode);
+        this.getToBlow().addAll(toBlow);
     }
 
     @Override
@@ -139,10 +146,10 @@ public class ProjectileExplosion extends Explosion {
     @Override
     public void finalizeExplosion(boolean pSpawnParticles) {
         if (this.world.isClientSide) {
-//            this.world.playLocalSound(this.x, this.y, this.z,
-//                    SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F,
-//                    (1.0F + (this.world.random.nextFloat() - this.world.random.nextFloat()) * 0.2F) * 0.7F,
-//                    false);
+            this.world.playLocalSound(this.x, this.y, this.z,
+                    SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F,
+                    (1.0F + (this.world.random.nextFloat() - this.world.random.nextFloat()) * 0.2F) * 0.7F,
+                    false);
         }
 
         var interactsWithBlocks = this.interactsWithBlocks();

@@ -3,6 +3,8 @@ package com.nukateam.ntgl.common.util.world;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.ExplosionConfig;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
+import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.S2CMessageProjectileExplosion;
 import com.nukateam.ntgl.common.util.interfaces.IExplosionDamageable;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
@@ -50,12 +52,12 @@ public class ExplosionUtils {
         explosion.explode();
         explosion.finalizeExplosion(true);
 
-//        explosion.getToBlow().forEach(pos ->
-//        {
-//            if (world.getBlockState(pos).getBlock() instanceof IExplosionDamageable) {
-//                ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
-//            }
-//        });
+        explosion.getToBlow().forEach(pos ->
+        {
+            if (world.getBlockState(pos).getBlock() instanceof IExplosionDamageable) {
+                ((IExplosionDamageable) world.getBlockState(pos).getBlock()).onProjectileExploded(world, world.getBlockState(pos), pos, entity);
+            }
+        });
 
         if (!explosion.interactsWithBlocks()) {
             explosion.clearToBlow();
@@ -63,7 +65,16 @@ public class ExplosionUtils {
 
         for (var player : ((ServerLevel) world).players()) {
             if (player.distanceToSqr(hitPos) < 4096) {
-                player.connection.send(new ClientboundExplodePacket(hitPos.x(), hitPos.y(), hitPos.z(), config.getRadius(), explosion.getToBlow(), explosion.getHitPlayers().get(player)));
+                PacketHandler.getPlayChannel().sendToPlayer(() -> player,
+                        new S2CMessageProjectileExplosion(
+                                hitPos, explosion.getHitPlayers().get(player),
+                                config, explosion.getToBlow())
+                );
+
+//                player.connection.send(new ClientboundExplodePacket(
+//                        hitPos.x(), hitPos.y(), hitPos.z(),
+//                        config.getRadius(), explosion.getToBlow(),
+//                        explosion.getHitPlayers().get(player)));
             }
         }
     }

@@ -14,7 +14,7 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 public class EnchantmentTypes {
     public static final EnchantmentCategory GUN = EnchantmentCategory.create(Ntgl.MOD_ID + ":gun", item ->
             item instanceof WeaponItem weaponItem && weaponItem.getGun().getGeneral().isEnchantable() &&
-                    GunModifierHelper.getWeaponMode(new GunData(null, null)) == WeaponMode.GUN
+                    weaponItem.getGun().getGeneral().getWeaponMode() == WeaponMode.GUN
     );
     public static final EnchantmentCategory SEMI_AUTO_GUN = EnchantmentCategory.create(Ntgl.MOD_ID + ":semi_auto_gun", item ->
             item instanceof WeaponItem && ((WeaponItem) item).getGun().getGeneral().getFireModes().stream().noneMatch((v) -> v == FireMode.AUTO));

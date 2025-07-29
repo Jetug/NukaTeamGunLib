@@ -5,6 +5,7 @@ import com.nukateam.ntgl.client.config.*;
 import com.nukateam.ntgl.client.util.*;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.util.handler.*;
+import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkGrenadeManager;
@@ -16,11 +17,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.resources.sounds.*;
 import net.minecraft.core.particles.*;
+import net.minecraft.network.protocol.PacketUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.*;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -90,6 +94,24 @@ public class ClientPlayHandler {
                                 gravity, shooterId, enchanted, data)
                 );
             }
+        }
+    }
+
+    public static void handleMessageExplosion(S2CMessageProjectileExplosion message) {
+        var level = Minecraft.getInstance().level;
+        var minecraft = Minecraft.getInstance();
+
+        if (level != null) {
+            var explosion = new ProjectileExplosion(
+                    level, null,
+                    message.getConfig(),
+                    message.getPosition(),
+                    Explosion.BlockInteraction.KEEP,
+                    message.getToBlow());
+
+            explosion.finalizeExplosion(true);
+
+            minecraft.player.setDeltaMovement(minecraft.player.getDeltaMovement().add(message.getKnockback()));
         }
     }
 
