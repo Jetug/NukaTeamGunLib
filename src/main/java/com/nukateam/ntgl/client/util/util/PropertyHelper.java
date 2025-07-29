@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.util.util;
 
-import com.nukateam.ntgl.client.MetaLoader;
+import com.nukateam.ntgl.client.util.MetaLoader;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.gun.Gun;

@@ -13,7 +13,7 @@ import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
-import com.nukateam.ntgl.common.base.holders.*;
+
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import com.nukateam.ntgl.common.data.config.Fuel;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;

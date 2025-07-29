@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client;
+package com.nukateam.ntgl.client.util;
 
 import com.mrcrayfish.framework.client.resources.IDataLoader;
 import com.mrcrayfish.framework.client.resources.IResourceSupplier;

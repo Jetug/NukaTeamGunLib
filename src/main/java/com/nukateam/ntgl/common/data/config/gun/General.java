@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.data.config.gun;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.holders.*;
+
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.GripType;

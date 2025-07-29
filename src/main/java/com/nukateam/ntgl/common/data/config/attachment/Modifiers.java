@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.data.config.attachment;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.holders.*;
+
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.FuelType;
 import com.nukateam.ntgl.common.data.holders.GripType;

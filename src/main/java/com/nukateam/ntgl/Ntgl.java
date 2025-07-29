@@ -5,7 +5,7 @@ import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.nukateam.example.common.registery.EntityTypes;
 import com.nukateam.example.common.registery.*;
 import com.nukateam.ntgl.client.handlers.ClientHandler;
-import com.nukateam.ntgl.client.MetaLoader;
+import com.nukateam.ntgl.client.util.MetaLoader;
 import com.nukateam.ntgl.client.settings.GunOptions;
 import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;

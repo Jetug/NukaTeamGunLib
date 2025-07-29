@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.common.util.managers;
 
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.base.headshot.*;
 import com.nukateam.ntgl.common.util.headshot.*;
 import com.nukateam.ntgl.common.util.interfaces.IHeadshotBox;
 import net.minecraft.util.Mth;

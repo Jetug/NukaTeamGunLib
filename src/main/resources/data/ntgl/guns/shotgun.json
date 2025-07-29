@@ -30,7 +30,7 @@
       "explosion": {
         "damage": 2,
         "radius": 10,
-        "knockback": 0.5
+        "knockback": 1
       }
     }
   },

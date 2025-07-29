@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.container;
 
-import com.nukateam.ntgl.common.base.holders.*;
+
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.*;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;

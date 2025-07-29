@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.interfaces;
 
-import com.nukateam.ntgl.client.MetaLoader;
+import com.nukateam.ntgl.client.util.MetaLoader;
 
 /**
  * <p>A marker interface to let {@link MetaLoader} know an item can have
