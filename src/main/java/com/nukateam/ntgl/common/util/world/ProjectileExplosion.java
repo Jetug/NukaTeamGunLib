@@ -41,9 +41,6 @@ public class ProjectileExplosion extends Explosion {
     private static final ExplosionDamageCalculator DEFAULT_CONTEXT = new ExplosionDamageCalculator();
 
     private final Level world;
-    private final double x;
-    private final double y;
-    private final double z;
     private final float radius;
     private final Entity exploder;
     private final ExplosionDamageCalculator context;
@@ -53,19 +50,18 @@ public class ProjectileExplosion extends Explosion {
     private final boolean causesFire;
     private final RandomSource random = RandomSource.create();
     private final BlockInteraction blockInteraction;
+    private final Vec3 pos;
 
     public ProjectileExplosion(Level world, Entity exploder,
                                @Nullable DamageSource source,
                                @Nullable ExplosionDamageCalculator context, ExplosionConfig projectile,
-                               Vec3 pos, float radius, boolean causesFire, BlockInteraction mode) {
-        super(world, exploder, source, context, pos.x, pos.y, pos.z, radius, causesFire, mode);
+                               Vec3 pos, BlockInteraction mode) {
+        super(world, exploder, source, context, pos.x, pos.y, pos.z, projectile.getRadius(), projectile.isCauseFire(), mode);
         this.world = world;
-        this.causesFire = causesFire;
+        this.causesFire = projectile.isCauseFire();
         this.blockInteraction = mode;
-        this.x = pos.x;
-        this.y = pos.y;
-        this.z = pos.z;
-        this.radius = radius;
+        this.pos = pos;
+        this.radius = projectile.getRadius();
         this.exploder = exploder;
         this.context = context == null ? DEFAULT_CONTEXT : context;
         this.damage = projectile.getDamage();
@@ -75,7 +71,7 @@ public class ProjectileExplosion extends Explosion {
 
     public ProjectileExplosion(Level world, Entity exploder, ExplosionConfig projectile,
                                Vec3 pos, BlockInteraction mode, List<BlockPos> toBlow) {
-        this(world, exploder, null, null, projectile, pos, projectile.getRadius(), projectile.isCauseFire(), mode);
+        this(world, exploder, null, null, projectile, pos, mode);
         this.getToBlow().addAll(toBlow);
     }
 
@@ -84,29 +80,28 @@ public class ProjectileExplosion extends Explosion {
         destroyBlocks();
 
         var diameter = this.radius * 2.0D;
-        int minX = Mth.floor(this.x - diameter - 1.0D);
-        int maxX = Mth.floor(this.x + diameter + 1.0D);
-        int minY = Mth.floor(this.y - diameter - 1.0D);
-        int maxY = Mth.floor(this.y + diameter + 1.0D);
-        int minZ = Mth.floor(this.z - diameter - 1.0D);
-        int maxZ = Mth.floor(this.z + diameter + 1.0D);
+        int minX = Mth.floor(this.pos.x - diameter - 1.0D);
+        int maxX = Mth.floor(this.pos.x + diameter + 1.0D);
+        int minY = Mth.floor(this.pos.y - diameter - 1.0D);
+        int maxY = Mth.floor(this.pos.y + diameter + 1.0D);
+        int minZ = Mth.floor(this.pos.z - diameter - 1.0D);
+        int maxZ = Mth.floor(this.pos.z + diameter + 1.0D);
 
         var entities = this.world.getEntities(null, new AABB(minX, minY, minZ, maxX, maxY, maxZ));
 
 //        ForgeEventFactory.onExplosionDetonate(this.world, this, entities, diameter);
 
-        var explosionPos = new Vec3(this.x, this.y, this.z);
         for (var entity : entities) {
             if (entity.ignoreExplosion())
                 continue;
 
-            var strength = Math.sqrt(entity.distanceToSqr(explosionPos)) / diameter;
+            var strength = Math.sqrt(entity.distanceToSqr(pos)) / diameter;
             if (strength > 1.0D)
                 continue;
 
-            var deltaX = entity.getX() - this.x;
-            var deltaY = (entity instanceof PrimedTnt ? entity.getY() : entity.getEyeY()) - this.y;
-            var deltaZ = entity.getZ() - this.z;
+            var deltaX = entity.getX() - pos.x;
+            var deltaY = (entity instanceof PrimedTnt ? entity.getY() : entity.getEyeY()) - pos.y;
+            var deltaZ = entity.getZ() - pos.z;
             var distanceToExplosion = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
 
             if (distanceToExplosion != 0.0D) {
@@ -119,7 +114,7 @@ public class ProjectileExplosion extends Explosion {
                 deltaZ = 0.0;
             }
 
-            var blockDensity = (double) getSeenPercent(explosionPos, entity);
+            var blockDensity = (double) getSeenPercent(pos, entity);
             var knockback = (1.0D - strength) * blockDensity * this.knockback;
 //            float finalDamage = (int)((knockback * knockback + knockback) / 2.0D * 7.0D * diameter + 1.0D);
             float finalDamage = this.damage;
@@ -146,7 +141,7 @@ public class ProjectileExplosion extends Explosion {
     @Override
     public void finalizeExplosion(boolean pSpawnParticles) {
         if (this.world.isClientSide) {
-            this.world.playLocalSound(this.x, this.y, this.z,
+            this.world.playLocalSound(pos.x, pos.y, pos.z,
                     SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F,
                     (1.0F + (this.world.random.nextFloat() - this.world.random.nextFloat()) * 0.2F) * 0.7F,
                     false);
@@ -157,9 +152,9 @@ public class ProjectileExplosion extends Explosion {
 
         if (pSpawnParticles) {
             if (!(this.radius < 2.0F) && interactsWithBlocks) {
-                this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+                this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
             } else {
-                this.world.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+                this.world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
             }
         }
 
@@ -248,9 +243,9 @@ public class ProjectileExplosion extends Explosion {
                         d1 = d1 / d3;
                         d2 = d2 / d3;
                         var f = this.radius * (0.7F + this.world.random.nextFloat() * 0.6F);
-                        var blockX = this.x;
-                        var blockY = this.y;
-                        var blockZ = this.z;
+                        var blockX = pos.x;
+                        var blockY = pos.y;
+                        var blockZ = pos.z;
 
                         for (; f > 0.0F; f -= 0.225F) {
                             var pos = BlockPos.containing(blockX, blockY, blockZ);

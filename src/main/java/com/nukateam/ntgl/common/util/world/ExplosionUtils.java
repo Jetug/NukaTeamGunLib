@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -26,9 +27,9 @@ public class ExplosionUtils {
         return config.getRadius() > 0;
     }
 
-    public static void createExplosion(Entity entity, ExplosionConfig config, Vec3 hitPos) {
+    public static void createExplosion(@NotNull Entity entity, @NotNull ExplosionConfig config, Vec3 hitPos) {
         var world = entity.level();
-        if (world.isClientSide())
+        if (world.isClientSide() || hitPos == null)
             return;
 
         entity.setPos(hitPos);
@@ -43,8 +44,7 @@ public class ExplosionUtils {
 
         var explosion = new ProjectileExplosion(world,
                 entity, source, null,
-                config, hitPos,
-                config.getRadius(), config.isCauseFire(), mode);
+                config, hitPos, mode);
 
         if (ForgeEventFactory.onExplosionStart(world, explosion))
             return;
