@@ -3,12 +3,13 @@ package com.nukateam.ntgl.common.network;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.utils.managers.ProjectileManager;
+import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.common.base.utils.trackers.*;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.util.trackers.*;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -200,7 +201,9 @@ public class ServerPlayHandler {
                     if (!Gun.isAmmoIgnored(heldItem)) {
                         int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.RECLAIMED.get(), heldItem);
                         if (level == 0 || shooter.level().random.nextInt(4 - Mth.clamp(level, 1, 2)) != 0) {
-                            weaponItem.getGunHandler().handleAmmoAfterShoot(data);
+                            var ammoPerShot = GunModifierHelper.getAmmoPerShot(data);
+                            var remainingAmmo =  Math.max(0, Gun.getAmmo(data.gun) - ammoPerShot);
+                            Gun.setAmmo(data.gun, remainingAmmo);
                         }
                     }
                 }

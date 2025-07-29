@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.client.util.util;
 
 import com.nukateam.ntgl.client.MetaLoader;
-import com.nukateam.ntgl.common.base.holders.AttachmentType;
+import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.base.properties.SightAnimation;
+import com.nukateam.ntgl.common.data.properties.SightAnimation;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.util.data.ObjectCache;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
@@ -13,7 +13,6 @@ import com.mrcrayfish.framework.api.serialize.DataArray;
 import com.mrcrayfish.framework.api.serialize.DataNumber;
 import com.mrcrayfish.framework.api.serialize.DataObject;
 import com.mrcrayfish.framework.api.serialize.DataType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;

@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.data.config.gun;
 
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.base.holders.AttachmentType;
-import com.nukateam.ntgl.common.base.utils.NbtUtils;
+import com.nukateam.ntgl.common.data.holders.AttachmentType;
+import com.nukateam.ntgl.common.util.util.NbtUtils;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;

@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.handlers;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.data.GunData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.event.TickEvent;
@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
-import static com.nukateam.ntgl.common.base.utils.trackers.ShootTracker.*;
+import static com.nukateam.ntgl.common.util.trackers.ShootTracker.*;
 import static com.nukateam.ntgl.common.network.ServerPlayHandler.*;
 import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
 

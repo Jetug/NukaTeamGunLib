@@ -2,7 +2,7 @@ package com.nukateam.ntgl.mixin.client;
 
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
-import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.mojang.blaze3d.vertex.PoseStack;

@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.modules.datapack;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.utils.json.JsonDeserializers;
+import com.nukateam.ntgl.common.data.json.JsonDeserializers;
 import com.nukateam.ntgl.common.util.annotation.Validator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;

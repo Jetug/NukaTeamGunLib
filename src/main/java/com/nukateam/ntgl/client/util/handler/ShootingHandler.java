@@ -2,11 +2,11 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.ibm.icu.impl.Pair;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.holders.FireMode;
-import com.nukateam.ntgl.common.base.holders.WeaponMode;
+import com.nukateam.ntgl.common.data.holders.FireMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;

@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.util.interfaces;
 
-import com.nukateam.ntgl.common.base.utils.managers.BoundingBoxManager;
+import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.AABB;

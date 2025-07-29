@@ -3,7 +3,7 @@ package com.nukateam.ntgl.mixin.client;
 
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;

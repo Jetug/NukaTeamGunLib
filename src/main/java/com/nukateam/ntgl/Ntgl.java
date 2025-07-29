@@ -9,7 +9,7 @@ import com.nukateam.ntgl.client.MetaLoader;
 import com.nukateam.ntgl.client.settings.GunOptions;
 import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
-import com.nukateam.ntgl.common.base.utils.managers.BoundingBoxManager;
+import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.datagen.*;
 import com.nukateam.ntgl.common.regestry.ProjectileRegistry;
 import com.nukateam.ntgl.modules.enchantment.EnchantmentModule;

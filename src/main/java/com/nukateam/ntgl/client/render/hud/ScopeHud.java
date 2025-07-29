@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.render.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
-import com.nukateam.ntgl.common.base.holders.AttachmentType;
+import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,8 +10,6 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 

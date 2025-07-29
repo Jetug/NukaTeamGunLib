@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.data.config;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.base.holders.AmmoType;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.util.annotation.Optional;
@@ -17,9 +16,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.function.Supplier;
-
-import static com.nukateam.ntgl.common.data.config.gun.General.PROJECTILE_AMOUNT;
-import static com.nukateam.ntgl.common.data.config.gun.General.SPREAD;
 
 public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String TYPE = "Type";

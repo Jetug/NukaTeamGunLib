@@ -1,21 +1,14 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.utils.trackers.GrenadeTracker;
-import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.KeyAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageGrenade;
-import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
-import com.nukateam.ntgl.common.util.util.GunData;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;

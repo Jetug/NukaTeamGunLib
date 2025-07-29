@@ -2,8 +2,8 @@ package com.nukateam.ntgl.common.data.config;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.base.holders.AmmoType;
-import com.nukateam.ntgl.common.base.holders.ProjectileType;
+import com.nukateam.ntgl.common.data.holders.AmmoType;
+import com.nukateam.ntgl.common.data.holders.ProjectileType;
 import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
@@ -22,7 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.nukateam.ntgl.common.base.utils.json.JsonDeserializers.getDamageTypeResourceKey;
+import static com.nukateam.ntgl.common.data.json.JsonDeserializers.getDamageTypeResourceKey;
 import static com.nukateam.ntgl.common.data.config.gun.General.PROJECTILE_AMOUNT;
 import static com.nukateam.ntgl.common.data.config.gun.General.SPREAD;
 

@@ -2,9 +2,9 @@ package com.nukateam.ntgl.common.data.config;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.base.holders.GrenadeMode;
-import com.nukateam.ntgl.common.base.holders.ProjectileType;
-import com.nukateam.ntgl.common.base.utils.NbtUtils;
+import com.nukateam.ntgl.common.data.holders.GrenadeMode;
+import com.nukateam.ntgl.common.data.holders.ProjectileType;
+import com.nukateam.ntgl.common.util.util.NbtUtils;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.util.annotation.Ignored;

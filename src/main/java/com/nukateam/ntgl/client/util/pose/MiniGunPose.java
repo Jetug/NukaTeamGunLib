@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.util.pose;
 
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.base.holders.GripType;
+import com.nukateam.ntgl.common.data.holders.GripType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import net.minecraft.client.Minecraft;

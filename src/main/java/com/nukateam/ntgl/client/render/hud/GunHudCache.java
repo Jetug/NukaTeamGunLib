@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.render.hud;
 
-import com.nukateam.ntgl.common.base.holders.AmmoType;
-import com.nukateam.ntgl.common.base.holders.FireMode;
+import com.nukateam.ntgl.common.data.holders.AmmoType;
+import com.nukateam.ntgl.common.data.holders.FireMode;
 import net.minecraft.world.InteractionHand;
 
 public class GunHudCache {

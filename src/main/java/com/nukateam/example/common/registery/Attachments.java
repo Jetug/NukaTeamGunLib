@@ -1,9 +1,6 @@
 package com.nukateam.example.common.registery;
 
-import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.GunModifiers;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Author: MrCrayfish

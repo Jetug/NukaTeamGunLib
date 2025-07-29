@@ -1,10 +1,9 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.ntgl.client.animators.GunAnimator;
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
-import com.nukateam.ntgl.common.base.handlers.GunHandler;
-import com.nukateam.ntgl.common.base.utils.FuelUtils;
+import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
@@ -12,7 +11,6 @@ import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.render.renderers.gun.*;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.item.interfaces.*;
 import com.nukateam.ntgl.modules.enchantment.EnchantmentTypes;
@@ -45,7 +43,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
     private final Lazy<DefaultGunRendererGeo> GUN_RENDERER = Lazy.of(() -> new DefaultGunRendererGeo());
     private Gun gun = new Gun();
-    private GunHandler gunHandler = new GunHandler();
 
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     protected IGunModifier[] modifiers;
@@ -93,15 +90,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
 
     public Gun getGun() {
         return this.gun;
-    }
-
-    public GunHandler getGunHandler() {
-        return gunHandler;
-    }
-
-    public WeaponItem setGunHandler(GunHandler gunHandler) {
-        this.gunHandler = gunHandler;
-        return this;
     }
 
     public static String getVariant(ItemStack stack) {

@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.modules.enchantment;
 
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.particles.TrailData;
 import net.minecraft.core.particles.ParticleOptions;

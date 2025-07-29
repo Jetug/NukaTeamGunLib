@@ -1,7 +1,5 @@
 package com.nukateam.ntgl.common.foundation.item;
 
-import com.nukateam.ntgl.common.util.util.GunData;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;

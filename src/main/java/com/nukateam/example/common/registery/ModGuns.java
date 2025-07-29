@@ -4,7 +4,6 @@ import com.nukateam.example.common.modifiers.*;
 import com.nukateam.ntgl.common.foundation.item.attachment.*;
 import com.nukateam.ntgl.common.data.attachment.impl.*;
 import com.nukateam.ntgl.common.foundation.item.*;
-import com.nukateam.ntgl.common.base.*;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import net.minecraft.world.item.Item;

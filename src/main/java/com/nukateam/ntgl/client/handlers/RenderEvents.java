@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.utils.DeathType;
+import com.nukateam.ntgl.common.data.enums.DeathType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLivingEvent;

@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.foundation.goals;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
-import com.nukateam.ntgl.common.base.utils.trackers.EntityReloadTracker;
+import com.nukateam.ntgl.common.util.trackers.EntityReloadTracker;
 import com.nukateam.ntgl.common.util.interfaces.IGunUser;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.message.C2SMessageShoot;

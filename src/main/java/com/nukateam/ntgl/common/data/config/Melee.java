@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.data.config;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.base.holders.MeleeMode;
+import com.nukateam.ntgl.common.data.holders.MeleeMode;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import net.minecraft.nbt.CompoundTag;

@@ -1,15 +1,8 @@
 package com.nukateam.ntgl.common.data.config.gun;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.base.utils.NbtUtils;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.util.INBTSerializable;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 
 public class Sounds{
     private final Gun gun;

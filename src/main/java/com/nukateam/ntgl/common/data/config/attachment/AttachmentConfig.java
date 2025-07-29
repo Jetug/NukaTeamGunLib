@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.data.config.attachment;
 
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.base.holders.AttachmentType;
+import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.util.annotation.Ignored;

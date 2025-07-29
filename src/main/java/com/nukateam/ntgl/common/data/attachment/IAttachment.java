@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.data.attachment;
 
-import com.nukateam.ntgl.common.base.holders.AttachmentType;
+import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.impl.Attachment;
 import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IConfigConsumer;

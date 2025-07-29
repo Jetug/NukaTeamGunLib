@@ -1,8 +1,8 @@
 package com.nukateam.example.common.modifiers;
 
-import com.nukateam.ntgl.common.base.holders.GripType;
+import com.nukateam.ntgl.common.data.holders.GripType;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
-import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.data.GunData;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 

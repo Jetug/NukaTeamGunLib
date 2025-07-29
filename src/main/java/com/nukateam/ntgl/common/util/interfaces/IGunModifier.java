@@ -1,9 +1,9 @@
 package com.nukateam.ntgl.common.util.interfaces;
 
-import com.nukateam.ntgl.common.base.GunModifiers;
-import com.nukateam.ntgl.common.base.holders.*;
+import com.nukateam.example.common.registery.GunModifiers;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
-import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.data.holders.*;
+import com.nukateam.ntgl.common.data.GunData;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Set;

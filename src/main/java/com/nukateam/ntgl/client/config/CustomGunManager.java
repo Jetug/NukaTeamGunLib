@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.config;
 
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.base.utils.loaders.CustomGunLoader;
+import com.nukateam.ntgl.common.util.loaders.CustomGunLoader;
 import com.nukateam.ntgl.common.data.config.gun.CustomGun;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
 import net.minecraft.network.FriendlyByteBuf;

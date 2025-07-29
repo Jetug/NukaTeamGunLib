@@ -5,7 +5,7 @@ import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
-import com.nukateam.ntgl.common.base.holders.GripType;
+import com.nukateam.ntgl.common.data.holders.GripType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;

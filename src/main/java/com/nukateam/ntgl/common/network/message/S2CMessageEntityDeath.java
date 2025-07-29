@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
-import com.nukateam.ntgl.common.base.utils.DeathType;
+import com.nukateam.ntgl.common.data.enums.DeathType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
 

@@ -4,10 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.holders.*;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.holders.FireMode;
+import com.nukateam.ntgl.common.data.holders.FuelType;
+import com.nukateam.ntgl.common.data.holders.GripType;
+import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
-import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.data.GunData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -47,13 +50,15 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     @Optional String fireSound = "";
     @Optional String silencedFire = "";
     @Optional HashMap<FuelType, Integer> maxFuel = new HashMap<>();
-    @Optional GripType gripType = null;
+    @Optional
+    GripType gripType = null;
     @Optional String needsFullCharge = "";
     @Optional String oneTimeCharge = "";
     @Optional Set<ResourceLocation> ammoItems = new HashSet<>();
     @Optional String autoReload = "";
     @Optional String renderHud = "";
-    @Optional LoadingType loadingType = null;
+    @Optional
+    LoadingType loadingType = null;
     @Optional Set<FuelType> fuel = new HashSet<>();
 
     @Override

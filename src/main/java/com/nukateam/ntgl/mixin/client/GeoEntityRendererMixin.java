@@ -2,22 +2,15 @@ package com.nukateam.ntgl.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.ClientProxy;
-import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
-import com.nukateam.ntgl.common.base.utils.DeathType;
+import com.nukateam.ntgl.common.data.enums.DeathType;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.renderer.GeoEntityRenderer;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Author: MrCrayfish

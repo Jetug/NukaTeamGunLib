@@ -1,7 +1,7 @@
 package com.nukateam.example.common.modifiers;
 
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
-import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.data.GunData;
 import net.minecraft.world.item.ItemStack;
 
 public class TestModifier implements IGunModifier {

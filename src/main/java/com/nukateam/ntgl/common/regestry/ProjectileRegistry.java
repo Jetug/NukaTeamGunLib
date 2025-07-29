@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.regestry;
 
 import com.nukateam.example.common.registery.ModGuns;
-import com.nukateam.ntgl.common.base.holders.ProjectileType;
-import com.nukateam.ntgl.common.base.utils.managers.ProjectileManager;
+import com.nukateam.ntgl.common.data.holders.ProjectileType;
+import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.util.interfaces.IProjectileFactory;

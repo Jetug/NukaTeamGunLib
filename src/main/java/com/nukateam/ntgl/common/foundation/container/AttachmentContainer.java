@@ -1,21 +1,18 @@
 package com.nukateam.ntgl.common.foundation.container;
 
 import com.nukateam.ntgl.common.base.holders.*;
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.*;
+import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.event.*;
-import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.container.slot.*;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.util.data.*;
-import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
-import com.nukateam.ntgl.common.util.util.*;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.*;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.*;
-import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.ArrayList;
 

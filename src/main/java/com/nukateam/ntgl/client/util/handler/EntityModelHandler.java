@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.util.handler;
 
-import com.nukateam.ntgl.common.util.util.GunData;
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import net.minecraft.client.model.EntityModel;

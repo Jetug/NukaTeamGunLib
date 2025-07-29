@@ -4,7 +4,11 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.base.holders.*;
-import com.nukateam.ntgl.common.base.utils.NbtUtils;
+import com.nukateam.ntgl.common.util.util.NbtUtils;
+import com.nukateam.ntgl.common.data.holders.FireMode;
+import com.nukateam.ntgl.common.data.holders.GripType;
+import com.nukateam.ntgl.common.data.holders.LoadingType;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.util.annotation.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -52,7 +56,8 @@ public class General implements INBTSerializable<CompoundTag> {
     int maxAmmo;
     @Optional
     LinkedHashSet<FireMode> fireMode = new LinkedHashSet<>(List.of(FireMode.SEMI_AUTO));
-    @Optional WeaponMode weaponMode = WeaponMode.GUN;
+    @Optional
+    WeaponMode weaponMode = WeaponMode.GUN;
     @Optional boolean fullCharge = false;
     @Optional boolean enchantable = true;
     @Optional float damage;
@@ -62,9 +67,11 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional int reloadEnd = 0;
     @Optional int equipTime = 1;
     @Optional int ammoPerShot = 1;
-    @Ignored GripType gripType = GripType.ONE_HANDED;
+    @Ignored
+    GripType gripType = GripType.ONE_HANDED;
     @Ignored ResourceLocation reloadType = ResourceLocation.tryBuild(Ntgl.MOD_ID, "gun_reload");
-    @Optional LoadingType loadingType = LoadingType.MAGAZINE;
+    @Optional
+    LoadingType loadingType = LoadingType.MAGAZINE;
     @Optional String category = "pistol";
     @Optional boolean autoReload = false;
     @Optional boolean renderHud = true;

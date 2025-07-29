@@ -5,7 +5,7 @@ import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.client.animators.ThrowableAnimator;
 import com.nukateam.ntgl.client.model.gun.ThrowableItemModel;
 import com.nukateam.ntgl.client.render.renderers.gun.ThrowableItemRenderer;
-import com.nukateam.ntgl.common.base.utils.managers.ProjectileManager;
+import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
 import com.nukateam.ntgl.common.foundation.entity.ThrowableItemEntity;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;

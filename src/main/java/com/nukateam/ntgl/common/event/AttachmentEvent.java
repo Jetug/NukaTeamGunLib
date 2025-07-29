@@ -1,9 +1,6 @@
 package com.nukateam.ntgl.common.event;
 
-import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
-import com.nukateam.ntgl.common.util.util.GunData;
-import net.minecraft.world.phys.HitResult;
+import com.nukateam.ntgl.common.data.GunData;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 

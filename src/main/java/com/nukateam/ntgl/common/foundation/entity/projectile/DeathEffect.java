@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity.projectile;
 
-import com.nukateam.ntgl.common.base.utils.DeathType;
+import com.nukateam.ntgl.common.data.enums.DeathType;
 import com.nukateam.ntgl.common.foundation.entity.misc.AshPile;
 import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;

@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.data.config;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.base.utils.NbtUtils;
+import com.nukateam.ntgl.common.util.util.NbtUtils;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;

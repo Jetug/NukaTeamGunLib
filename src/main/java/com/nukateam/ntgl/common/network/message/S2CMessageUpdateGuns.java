@@ -4,7 +4,7 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.common.data.config.gun.CustomGun;
-import com.nukateam.ntgl.common.base.utils.loaders.CustomGunLoader;
+import com.nukateam.ntgl.common.util.loaders.CustomGunLoader;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
 import com.google.common.collect.ImmutableMap;
