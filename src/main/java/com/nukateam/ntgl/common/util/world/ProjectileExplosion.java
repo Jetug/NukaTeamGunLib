@@ -1,18 +1,32 @@
 package com.nukateam.ntgl.common.util.world;
 
 import com.google.common.collect.Sets;
+import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.common.data.config.ExplosionConfig;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -35,6 +49,9 @@ public class ProjectileExplosion extends Explosion {
     private final float damage;
     private final float knockback;
     private final boolean damageDecreaseWithDistance;
+    private final boolean causesFire;
+    private final RandomSource random = RandomSource.create();
+    private final BlockInteraction blockInteraction;
 
     public ProjectileExplosion(Level world, Entity exploder,
                                @Nullable DamageSource source,
@@ -42,6 +59,8 @@ public class ProjectileExplosion extends Explosion {
                                Vec3 pos, float radius, boolean causesFire, BlockInteraction mode) {
         super(world, exploder, source, context, pos.x, pos.y, pos.z, radius, causesFire, mode);
         this.world = world;
+        this.causesFire = causesFire;
+        this.blockInteraction = mode;
         this.x = pos.x;
         this.y = pos.y;
         this.z = pos.z;
@@ -65,9 +84,9 @@ public class ProjectileExplosion extends Explosion {
         int minZ = Mth.floor(this.z - diameter - 1.0D);
         int maxZ = Mth.floor(this.z + diameter + 1.0D);
 
-        var entities = this.world.getEntities(this.exploder, new AABB(minX, minY, minZ, maxX, maxY, maxZ));
+        var entities = this.world.getEntities(null, new AABB(minX, minY, minZ, maxX, maxY, maxZ));
 
-        ForgeEventFactory.onExplosionDetonate(this.world, this, entities, diameter);
+//        ForgeEventFactory.onExplosionDetonate(this.world, this, entities, diameter);
 
         var explosionPos = new Vec3(this.x, this.y, this.z);
         for (var entity : entities) {
@@ -94,8 +113,13 @@ public class ProjectileExplosion extends Explosion {
             }
 
             var blockDensity = (double) getSeenPercent(explosionPos, entity);
-            var knockback = (1.0D - strength) * blockDensity;
-            float finalDamage = (int)((knockback * knockback + knockback) / 2.0D * 7.0D * diameter + 1.0D);
+            var knockback = (1.0D - strength) * blockDensity * this.knockback;
+//            float finalDamage = (int)((knockback * knockback + knockback) / 2.0D * 7.0D * diameter + 1.0D);
+            float finalDamage = this.damage;
+
+            if(this.damageDecreaseWithDistance){
+                finalDamage *= 1.0D - strength;
+            }
 
             entity.hurt(this.getDamageSource(), finalDamage);
 
@@ -110,6 +134,96 @@ public class ProjectileExplosion extends Explosion {
                 }
             }
         }
+    }
+
+    @Override
+    public void finalizeExplosion(boolean pSpawnParticles) {
+        if (this.world.isClientSide) {
+//            this.world.playLocalSound(this.x, this.y, this.z,
+//                    SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F,
+//                    (1.0F + (this.world.random.nextFloat() - this.world.random.nextFloat()) * 0.2F) * 0.7F,
+//                    false);
+        }
+
+        var interactsWithBlocks = this.interactsWithBlocks();
+        var toBlow = (ObjectArrayList<BlockPos>)getToBlow();
+
+        if (pSpawnParticles) {
+            if (!(this.radius < 2.0F) && interactsWithBlocks) {
+                this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+            } else {
+                this.world.addParticle(ParticleTypes.EXPLOSION, this.x, this.y, this.z, 1.0D, 0.0D, 0.0D);
+            }
+        }
+
+        if (interactsWithBlocks) {
+            var blockDrops = new ObjectArrayList<Pair<ItemStack, BlockPos>>();
+            var isPlayer = this.getIndirectSourceEntity() instanceof Player;
+            Util.shuffle(toBlow, this.world.random);
+
+            for(BlockPos blockpos : toBlow) {
+                var blockState = this.world.getBlockState(blockpos);
+
+                if (!blockState.isAir()) {
+                    var immutableBLockPos = blockpos.immutable();
+                    this.world.getProfiler().push("explosion_blocks");
+                    if (blockState.canDropFromExplosion(this.world, blockpos, this)) {
+                        if (this.world instanceof ServerLevel serverLevel) {
+                            var blockEntity = blockState.hasBlockEntity() ? this.world.getBlockEntity(blockpos) : null;
+                            var builder = (new LootParams.Builder(serverLevel))
+                                    .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockpos))
+                                    .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+                                    .withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockEntity)
+                                    .withOptionalParameter(LootContextParams.THIS_ENTITY, this.exploder);
+
+                            if (this.blockInteraction == Explosion.BlockInteraction.DESTROY_WITH_DECAY) {
+                                builder.withParameter(LootContextParams.EXPLOSION_RADIUS, this.radius);
+                            }
+
+                            blockState.spawnAfterBreak(serverLevel, blockpos, ItemStack.EMPTY, isPlayer);
+                            blockState.getDrops(builder).forEach((p_46074_) -> {
+                                addBlockDrops(blockDrops, p_46074_, immutableBLockPos);
+                            });
+                        }
+                    }
+
+                    blockState.onBlockExploded(this.world, blockpos, this);
+                    this.world.getProfiler().pop();
+                }
+            }
+
+            for(Pair<ItemStack, BlockPos> pair : blockDrops) {
+                Block.popResource(this.world, pair.getSecond(), pair.getFirst());
+            }
+        }
+
+        if (this.causesFire) {
+            for(BlockPos blockpos2 : toBlow) {
+                if (this.random.nextInt(3) == 0 && this.world.getBlockState(blockpos2).isAir() && this.world.getBlockState(blockpos2.below()).isSolidRender(this.world, blockpos2.below())) {
+                    this.world.setBlockAndUpdate(blockpos2, BaseFireBlock.getState(this.world, blockpos2));
+                }
+            }
+        }
+
+    }
+
+    private static void addBlockDrops(ObjectArrayList<Pair<ItemStack, BlockPos>> pDropPositionArray,
+                                      ItemStack pStack, BlockPos pPos) {
+        int i = pDropPositionArray.size();
+
+        for(int j = 0; j < i; ++j) {
+            Pair<ItemStack, BlockPos> pair = pDropPositionArray.get(j);
+            ItemStack itemstack = pair.getFirst();
+            if (ItemEntity.areMergable(itemstack, pStack)) {
+                ItemStack itemstack1 = ItemEntity.merge(itemstack, pStack, 16);
+                pDropPositionArray.set(j, Pair.of(itemstack1, pair.getSecond()));
+                if (pStack.isEmpty()) {
+                    return;
+                }
+            }
+        }
+
+        pDropPositionArray.add(Pair.of(pStack, pPos));
     }
 
     private void destroyBlocks() {
