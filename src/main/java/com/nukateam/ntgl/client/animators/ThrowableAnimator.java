@@ -5,7 +5,7 @@ import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.model.gun.ThrowableItemModel;
-import com.nukateam.ntgl.client.render.renderers.gun.ThrowableItemRenderer;
+import com.nukateam.ntgl.client.render.renderers.weapon.ThrowableItemRenderer;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
 import com.nukateam.ntgl.common.data.constants.Animations;
@@ -127,7 +127,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
                 var holdAnimation = getHoldAnimation(event);
 
                 if (!isHandTransform(transformType))
-                    return event.setAndContinue(holdAnimation);
+                    return PlayState.STOP;
 
                 var animation = begin();
 
@@ -169,7 +169,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
             var holdAnimation = getHoldAnimation(event);
 
             if (!isHandTransform(transformType))
-                return event.setAndContinue(holdAnimation);
+                return PlayState.STOP;
 
             var animation = begin();
             var item = (IThrowable)getStack().getItem();

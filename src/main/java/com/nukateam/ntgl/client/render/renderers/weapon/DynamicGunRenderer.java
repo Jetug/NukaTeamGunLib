@@ -1,15 +1,21 @@
-package com.nukateam.ntgl.client.render.renderers.gun;
+package com.nukateam.ntgl.client.render.renderers.weapon;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
-import com.nukateam.ntgl.common.util.data.Rgba;
+import com.nukateam.ntgl.common.data.config.gun.Modules;
+import com.nukateam.ntgl.common.data.holders.AttachmentType;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.helpers.compatibility.ChassisHelper;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.data.Rgba;
+import com.nukateam.ntgl.common.foundation.item.attachment.BarrelItem;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
 import mod.azure.azurelib.util.ClientUtils;
@@ -23,21 +29,31 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderRightArm;
+import static com.nukateam.ntgl.client.util.ClientDebug.*;
 
-public class ThrowableItemRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
+public class DynamicGunRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
     public static final String RIGHT_ARM = "right_arm";
     public static final String LEFT_ARM = "left_arm";
+    public static final String MUZZLE_FLASH = "muzzle_flash";
     protected MultiBufferSource bufferSource;
-    protected ItemStack stack;
+    protected ArrayList<ItemStack> gunAttachments;
+    protected ArrayList<Modules.Attachment> configAttachments;
+    protected ArrayList<String> hiddenBones = new ArrayList<>();
+    protected BarrelItem barrelItem;
+    protected Gun gun;
+    protected ItemStack gunStack;
     protected boolean firstRightRender = true;
     protected boolean firstLeftRender = true;
     private ItemDisplayContext transformType;
 
-    public ThrowableItemRenderer(GeoModel<Animator> model) {
+    public DynamicGunRenderer(GeoModel<Animator> model) {
         super(model);
         addRenderLayer(new GlowingLayer<>(this));
         ClientTickHandler.addTicker(this, this::tick);
@@ -55,7 +71,10 @@ public class ThrowableItemRenderer<Animator extends ItemAnimator> extends Dynami
                        @Nullable RenderType renderType, @Nullable VertexConsumer buffer, int packedLight) {
         this.bufferSource = bufferSource;
         this.transformType = transformType;
-        this.stack = stack;
+        this.gun = GunModifierHelper.getGun(stack);
+        this.gunStack = stack;
+        this.gunAttachments = Gun.getAttachmentItems(stack);
+        this.configAttachments = gun.getAttachments(gunAttachments);
         this.firstRightRender = true;
         this.firstLeftRender  = true;
         this.currentEntity = entity;
@@ -63,9 +82,18 @@ public class ThrowableItemRenderer<Animator extends ItemAnimator> extends Dynami
         if (TransformUtils.isFirstPerson(transformType) && AimingHandler.isScoping(stack))
             return;
 
+        var barrelStack = Gun.getAttachmentItem(AttachmentType.BARREL, stack);
+
+        if(barrelStack.getItem() instanceof BarrelItem barrel) {
+            this.barrelItem = barrel;
+        }
+        else this.barrelItem = null;
+
+        prepareHiddenBones(transformType);
+
         poseStack.pushPose();
         {
-            poseStack.translate(0, -6 / 16D, 0);
+            poseStack.translate(0, /*InputEvents.Y / 16D*/ -6 / 16D, 0);
             super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
         }
         poseStack.popPose();
@@ -77,14 +105,20 @@ public class ThrowableItemRenderer<Animator extends ItemAnimator> extends Dynami
                                   boolean isReRender, float partialTick, int packedLight, int packedOverlay,
                                   float red, float green, float blue, float alpha) {
         poseStack.pushPose();
+        renderAttachments(bone);
 
-        var name = bone.getName();
-
-        if (name.equals(LEFT_ARM) || name.equals(RIGHT_ARM)) {
-            bone.setHidden(true);
-            bone.setChildrenHidden(false);
-            renderArms(poseStack, animatable, bone, renderType, bufferSource,
-                    isReRender, partialTick, packedLight, packedOverlay, new Rgba(red, green, blue, alpha));
+        switch (bone.getName()) {
+            case LEFT_ARM, RIGHT_ARM -> {
+                bone.setHidden(true);
+                bone.setChildrenHidden(false);
+                renderArms(poseStack, animatable, bone, renderType, bufferSource,
+                        isReRender, partialTick, packedLight, packedOverlay, new Rgba(red, green, blue, alpha));
+            }
+            case MUZZLE_FLASH -> {
+                if(barrelItem != null){
+                    renderMuzzleFlash(poseStack);
+                }
+            }
         }
 
         renderRecursivelyPost(poseStack, animatable, bone, renderType, bufferSource,
@@ -100,10 +134,25 @@ public class ThrowableItemRenderer<Animator extends ItemAnimator> extends Dynami
         return currentEntity;
     }
 
+    protected boolean shouldRenderAttachment(Modules.Attachment attachment, ItemStack item) {
+        if (transformType != ItemDisplayContext.GUI) {
+            var itemId = ForgeRegistries.ITEMS.getKey(item.getItem());
+            return !item.isEmpty() && attachment.getItemId().equals(itemId);
+        }
+        return false;
+    }
+
+    protected void renderAttachments(GeoBone bone) {
+        var boneName = bone.getName();
+        var hideBone = hiddenBones.stream().anyMatch((s) -> s.equals(boneName));
+        bone.setHidden(hideBone);
+    }
+
     protected void renderRecursivelyPost(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
                                          MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender,
                                          float partialTick, int packedLight, int packedOverlay,
                                          float red, float green, float blue, float alpha) {}
+
 
     protected void renderArms(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
                               MultiBufferSource bufferSource, boolean isReRender, float partialTick,
@@ -170,5 +219,34 @@ public class ThrowableItemRenderer<Animator extends ItemAnimator> extends Dynami
             }
             poseStack.popPose();
         }
+    }
+
+    protected void renderMuzzleFlash(PoseStack poseStack) {
+        var length = barrelItem.getProperties().getLength();
+        poseStack.translate(0, 0, -length / 16D);
+        if (Ntgl.isDebugging())
+            poseStack.translate(-X / 10D / 16D, Y / 10D / 16D, Z / 10D / 16D);
+    }
+
+    protected void prepareHiddenBones(ItemDisplayContext transformType) {
+        if(gunStack == null || gunStack.isEmpty()) return;
+
+        var gunAttachments = this.gun.getModules().getAttachments();
+        hiddenBones.clear();
+        gunAttachments.forEach((type, typeAttachments) -> {
+            var item = Gun.getAttachmentItem(type, gunStack);
+
+            typeAttachments.forEach((attachment) -> {
+                if(shouldRenderAttachment(attachment, item)){
+                    if(transformType != ItemDisplayContext.GUI) {
+                        hiddenBones.addAll(attachment.getHidden());
+                    }
+                }
+                else {
+                    hiddenBones.add(attachment.getName());
+                    hiddenBones.addAll(attachment.getBones());
+                }
+            });
+        });
     }
 }

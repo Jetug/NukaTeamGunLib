@@ -23,6 +23,9 @@ public class S2CMessageProjectileExplosion extends PlayMessage<S2CMessageProject
     public S2CMessageProjectileExplosion(Vec3 position, Vec3 knockback, ExplosionConfig config, List<BlockPos> toBlow) {
         this.position = position;
         this.knockback = knockback;
+        if(knockback == null){
+            this.knockback = Vec3.ZERO;
+        }
         this.config = config;
         this.toBlow = toBlow;
     }

@@ -9,7 +9,7 @@ import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.render.renderers.gun.*;
+import com.nukateam.ntgl.client.render.renderers.weapon.*;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.item.interfaces.*;

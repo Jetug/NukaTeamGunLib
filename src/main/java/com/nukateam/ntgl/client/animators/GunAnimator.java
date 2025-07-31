@@ -6,7 +6,7 @@ import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.model.gun.*;
-import com.nukateam.ntgl.client.render.renderers.gun.*;
+import com.nukateam.ntgl.client.render.renderers.weapon.*;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.data.GunData;
