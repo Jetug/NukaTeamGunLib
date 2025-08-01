@@ -10,13 +10,13 @@ import java.util.ArrayList;
 
 public class MeleeAttackEvent extends LivingEvent {
     private final ItemStack stack;
-    private final InteractionHand arm;
+    private final InteractionHand hand;
     private final ArrayList<LivingEntity> targets;
 
-    public MeleeAttackEvent(LivingEntity entity, ItemStack stack, InteractionHand arm, ArrayList<LivingEntity> targets) {
+    public MeleeAttackEvent(LivingEntity entity, ItemStack stack, InteractionHand hand, ArrayList<LivingEntity> targets) {
         super(entity);
         this.stack = stack;
-        this.arm = arm;
+        this.hand = hand;
         this.targets = targets;
     }
 
@@ -24,9 +24,12 @@ public class MeleeAttackEvent extends LivingEvent {
         return stack;
     }
 
-
     public InteractionHand getHand() {
-        return arm;
+        return hand;
+    }
+
+    public ArrayList<LivingEntity> getTargets() {
+        return targets;
     }
 
     /**
