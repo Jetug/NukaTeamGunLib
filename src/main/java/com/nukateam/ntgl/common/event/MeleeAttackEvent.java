@@ -6,14 +6,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
+import java.util.ArrayList;
+
 public class MeleeAttackEvent extends LivingEvent {
     private final ItemStack stack;
     private final InteractionHand arm;
+    private final ArrayList<LivingEntity> targets;
 
-    public MeleeAttackEvent(LivingEntity entity, ItemStack stack, InteractionHand arm) {
+    public MeleeAttackEvent(LivingEntity entity, ItemStack stack, InteractionHand arm, ArrayList<LivingEntity> targets) {
         super(entity);
         this.stack = stack;
         this.arm = arm;
+        this.targets = targets;
     }
 
     public ItemStack getStack() {
@@ -34,14 +38,14 @@ public class MeleeAttackEvent extends LivingEvent {
 
     @Cancelable
     public static class Pre extends MeleeAttackEvent {
-        public Pre(LivingEntity entity, ItemStack stack, InteractionHand hand) {
-            super(entity, stack, hand);
+        public Pre(LivingEntity entity, ItemStack stack, InteractionHand hand, ArrayList<LivingEntity> targets) {
+            super(entity, stack, hand, targets);
         }
     }
 
     public static class Post extends MeleeAttackEvent {
-        public Post(LivingEntity entity, ItemStack stack, InteractionHand hand) {
-            super(entity, stack, hand);
+        public Post(LivingEntity entity, ItemStack stack, InteractionHand hand, ArrayList<LivingEntity> targets) {
+            super(entity, stack, hand, targets);
         }
     }
 }

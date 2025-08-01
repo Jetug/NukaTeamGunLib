@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.util.trackers;
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.event.MeleeAttackEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.util.*;
@@ -21,11 +22,13 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -70,19 +73,19 @@ public class MeleeTracker {
     }
 
     public static void start(LivingEntity entity, InteractionHand arm){
-        var reloadKey = getDataKey(arm);
-        reloadKey.setValue(entity, true);
+        var dataKey = getDataKey(arm);
+        dataKey.setValue(entity, true);
         addTracker(entity, arm);
     }
 
     private static boolean addTracker(LivingEntity entity, InteractionHand arm) {
-        var reloadKey = getDataKey(arm);
+        var dataKey = getDataKey(arm);
 
         var gunItem = entity.getItemInHand(arm).getItem();
 
         if (!TRACKER_MAP.containsKey(entity)) {
             if (!(gunItem instanceof WeaponItem)) {
-                reloadKey.setValue(entity, false);
+                dataKey.setValue(entity, false);
                 return true;
             }
             TRACKER_MAP.put(entity, new Tracker(entity, arm));
@@ -165,10 +168,35 @@ public class MeleeTracker {
         }
 
         private boolean tryMeleeAttack(LivingEntity player, ItemStack stack) {
+            var targets = getTargets(player);
+
+            var targetsToAttack = new ArrayList<LivingEntity>();
+            var limit = maxTargets > 0 ? maxTargets : Integer.MAX_VALUE;
+
+            for (int i = 0; i < Math.min(limit, targets.size()); i++) {
+                targetsToAttack.add(targets.get(i).entity);
+            }
+
+            if (!targetsToAttack.isEmpty()) {
+                if (!MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(player, stack, arm, targetsToAttack))) {
+                    for (var target : targetsToAttack) {
+                        attackEntity(player, target);
+                    }
+                    MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Post(player, stack, arm, targetsToAttack));
+                }
+
+                playAttackSound(player);
+                spawnAttackEffects(player, targetsToAttack);
+                return true;
+            }
+            return false;
+        }
+
+        private @NotNull ArrayList<TargetInfo> getTargets(LivingEntity player) {
             var playerPos = player.getEyePosition(1.0F);
             var lookVec = player.getLookAngle().normalize();
             var coneAngleCos = Math.cos(Math.toRadians(attackAngle / 2));
-            var visibleTargets = new ArrayList<MeleeTracker.TargetInfo>();
+            var visibleTargets = new ArrayList<TargetInfo>();
             var area = player.getBoundingBox().inflate(attackDistance);
 
             for (var entity : player.level().getEntities(player, area)) {
@@ -185,28 +213,27 @@ public class MeleeTracker {
                 if (!isVisible(playerPos, closestPoint, player.level()))
                     continue;
 
-                visibleTargets.add(new MeleeTracker.TargetInfo(living, distance, closestPoint));
+                visibleTargets.add(new TargetInfo(living, distance, closestPoint));
             }
 
             visibleTargets.sort(Comparator.comparingDouble(t -> t.distance));
+            return visibleTargets;
+        }
 
-            var targetsToAttack = new ArrayList<LivingEntity>();
-            var limit = maxTargets > 0 ? maxTargets : Integer.MAX_VALUE;
-
-            for (int i = 0; i < Math.min(limit, visibleTargets.size()); i++) {
-                targetsToAttack.add(visibleTargets.get(i).entity);
+        private void attackEntity(LivingEntity shooter, Entity target) {
+            if(shooter instanceof Player player) {
+                target.hurt(shooter.damageSources().playerAttack(player), meleeDamage);
             }
+            else target.hurt(shooter.damageSources().mobAttack(shooter), meleeDamage);
 
-            if (!targetsToAttack.isEmpty()) {
-                for (LivingEntity target : targetsToAttack) {
-                    performMeleeAttack(player, target);
-                }
+            var knockbackVec = new Vec3(
+                    target.getX() - shooter.getX(),
+                    0,
+                    target.getZ() - shooter.getZ()
+            ).normalize().scale(knockback);
 
-                playAttackSound(player);
-                spawnAttackEffects(player, targetsToAttack);
-                return true;
-            }
-            return false;
+            target.push(knockbackVec.x, knockbackVec.y + 0.2, knockbackVec.z);
+            target.hurtMarked = true;
         }
 
         private Vec3 findClosestPointOnHitbox(Vec3 start, Vec3 direction, LivingEntity target) {
@@ -241,23 +268,6 @@ public class MeleeTracker {
                     null);
 
             return level.clip(context).getType() == HitResult.Type.MISS;
-        }
-
-
-        private void performMeleeAttack(LivingEntity shooter, Entity target) {
-            if(shooter instanceof Player player) {
-                target.hurt(shooter.damageSources().playerAttack(player), meleeDamage);
-            }
-            else target.hurt(shooter.damageSources().mobAttack(shooter), meleeDamage);
-
-            Vec3 knockbackVec = new Vec3(
-                    target.getX() - shooter.getX(),
-                    0,
-                    target.getZ() - shooter.getZ()
-            ).normalize().scale(knockback);
-
-            target.push(knockbackVec.x, knockbackVec.y + 0.2, knockbackVec.z);
-            target.hurtMarked = true;
         }
 
         private void playAttackSound(LivingEntity shooter) {

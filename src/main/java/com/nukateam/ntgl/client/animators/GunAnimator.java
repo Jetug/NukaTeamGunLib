@@ -358,7 +358,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         var entity = getEntity();
         var currentItem = entity.getItemInHand(arm);
         var oppositeItem = entity.getItemInHand(PlayerHelper.getOpposite(arm));
-        var isOneHanded = isOneHanded(currentItem) && isOneHanded(oppositeItem) || arm == InteractionHand.OFF_HAND;
+        var isOneHanded = isOneHanded(currentItem) && isOneHanded(oppositeItem) || arm == InteractionHand.OFF_HAND || !oppositeItem.isEmpty();
         var hasShield = isOneHanded(currentItem) && oppositeItem.getItem() instanceof ShieldItem;
         if ((hasShield || isOneHanded) && animationHelper.hasAnimation(name + Animations.ONE_HAND_SUFFIX))
             return name + Animations.ONE_HAND_SUFFIX;

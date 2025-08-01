@@ -125,9 +125,6 @@ public class ClientMeleeHandler {
                 && !EquipTracker.isEquiping(shooter, hand)
                 && !shooter.isSpectator()) {
 
-            if (MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(shooter, heldItem, hand)))
-                return;
-
             var key = new Pair<>(shooter, hand);
 
             if(!TRACKER_MAP.containsKey(key)) {

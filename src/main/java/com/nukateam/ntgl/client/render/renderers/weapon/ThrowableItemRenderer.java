@@ -7,7 +7,6 @@ import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.util.ClientDebug;
-import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.util.helpers.compatibility.ChassisHelper;
@@ -25,6 +24,10 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderRightArm;
@@ -63,13 +66,21 @@ public class ThrowableItemRenderer<Animator extends ItemAnimator> extends Dynami
 
         poseStack.pushPose();
         {
+            var isLeftHand = this.transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
+            if(isLeftHand){
+                poseStack.scale(1 + ClientDebug.X, 1 + ClientDebug.Y, 1 + ClientDebug.Z);
+            }
             if(TransformUtils.isFirstPerson(transformType)){
                 poseStack.translate(0, -6 / 16D, 0);
             }
-            else if(transformType == ItemDisplayContext.GUI){
+            else if (TransformUtils.isThirdPerson(transformType)){
+                poseStack.translate(0, -9 / 16D, 0);
+            }
+            else if(TransformUtils.isNonHand(transformType)){
                 poseStack.translate(0, -8 / 16D, 0);
             }
             else {
+                poseStack.translate(0, -8 / 16D, 0);
                 poseStack.translate(0, ClientDebug.Y / 10d / 16D, 0);
             }
             super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
