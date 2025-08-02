@@ -11,6 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.Objects;
 
 public class S2CMessageProjectileExplosion extends PlayMessage<S2CMessageProjectileExplosion> {
     private Vec3 position;
@@ -22,7 +23,7 @@ public class S2CMessageProjectileExplosion extends PlayMessage<S2CMessageProject
 
     public S2CMessageProjectileExplosion(Vec3 position, Vec3 knockback, ExplosionConfig config, List<BlockPos> toBlow) {
         this.position = position;
-        this.knockback = knockback;
+        this.knockback = Objects.requireNonNullElseGet(knockback, () -> new Vec3(0, 0, 0));
         if(knockback == null){
             this.knockback = Vec3.ZERO;
         }

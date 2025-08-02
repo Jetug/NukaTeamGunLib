@@ -61,8 +61,8 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
         this.arm = getArm();
 
         ClientTickHandler.addTicker(this, this::tick);
-        TRIGGER_CONTROLLER = createController("triggerController", event -> PlayState.CONTINUE);
         MAIN_CONTROLLER = createController("mainController", animate()).setSoundKeyframeHandler(this::handleSoundEvent);
+        TRIGGER_CONTROLLER = createController("triggerController", event -> PlayState.CONTINUE);
         TICKING_CONTROLLER = createController("tickingController", animateTick());
         animationHelper = new AnimationHelper<>(this, ThrowableItemModel.INSTANCE);
     }

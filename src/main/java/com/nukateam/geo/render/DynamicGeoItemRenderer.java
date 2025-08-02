@@ -129,4 +129,8 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
         var31.addAdditionalStateData(animatable, instanceId, animationState::setData);
         this.model.handleAnimations(animatable, instanceId, animationState);
     }
+
+    public LivingEntity getRenderEntity() {
+        return currentEntity;
+    }
 }

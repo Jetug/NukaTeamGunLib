@@ -11,6 +11,7 @@ import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -58,7 +59,7 @@ public class GunModifierHelper {
     }
 
     public static boolean isOneHanded(GunData data){
-        if(data.gun.getItem() instanceof WeaponItem){
+        if(data.gun.getItem() instanceof IWeapon){
             return GunModifierHelper.getGripType(data).isOneHanded();
         }
         return true;

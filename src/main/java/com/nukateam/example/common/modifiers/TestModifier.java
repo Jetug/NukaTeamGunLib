@@ -7,11 +7,12 @@ import net.minecraft.world.item.ItemStack;
 public class TestModifier implements IGunModifier {
     @Override
     public int modifyReloadTime(int reloadTime, GunData data) {
-        var mainHandStack = data.shooter.getMainHandItem();
-
-        if(ItemStack.matches(mainHandStack, data.gun)) {
-            return 1;
-        }
-        else return reloadTime;
+//        var mainHandStack = data.shooter.getMainHandItem();
+//
+//        if(ItemStack.matches(mainHandStack, data.gun)) {
+//            return 1;
+//        }
+//        else return reloadTime;
+        return reloadTime;
     }
 }

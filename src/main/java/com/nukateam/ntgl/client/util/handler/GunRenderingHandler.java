@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.util.PropertyHelper;
@@ -9,6 +10,8 @@ import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.init.*;
@@ -239,55 +242,54 @@ public class GunRenderingHandler {
             }
         }
 
-        if (!(heldItem.getItem() instanceof WeaponItem weaponItem)) {
-            return;
-        }
-        /* Cancel it because we are doing our own custom render */
-        event.setCanceled(true);
+        if (heldItem.getItem() instanceof IWeapon || heldItem.getItem() instanceof IThrowable) {
+            event.setCanceled(true);
 
-        var overrideModel = ItemStack.EMPTY;
-        if (heldItem.getTag() != null) {
-            if (heldItem.getTag().contains("Model", Tag.TAG_COMPOUND)) {
-                overrideModel = ItemStack.of(heldItem.getTag().getCompound("Model"));
+            var overrideModel = ItemStack.EMPTY;
+            if (heldItem.getTag() != null) {
+                if (heldItem.getTag().contains("Model", Tag.TAG_COMPOUND)) {
+                    overrideModel = ItemStack.of(heldItem.getTag().getCompound("Model"));
+                }
             }
+
+            var model = minecraft.getItemRenderer().getModel(overrideModel.isEmpty() ? heldItem : overrideModel, player.level(), player, 0);
+            var rightHandTranslation = model.getTransforms().firstPersonRightHand.translation;
+            var transformType = isRight ? ItemDisplayContext.FIRST_PERSON_RIGHT_HAND : ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
+
+            poseStack.pushPose();
+            {
+                int offset = isRight ? 1 : -1;
+
+                if (heldItem.getItem() instanceof WeaponItem weaponItem) {
+                    var modifiedGun = weaponItem.getModifiedGun(heldItem);
+                    var pos = model.getTransforms().firstPersonRightHand.translation;
+                    this.applyIronSightTransforms(event, poseStack, model, isRight, heldItem, modifiedGun);
+                    this.applyAimingTransforms(poseStack, heldItem, modifiedGun, pos, offset);
+                    this.applySwayTransforms(poseStack, heldItem, player, rightHandTranslation, event.getPartialTick());
+                }
+
+                this.applyBobbingTransforms(poseStack, event.getPartialTick());
+
+                /* Applies equip progress animation translations */
+                float equipProgress = this.getEquipProgress(event.getPartialTick());
+                poseStack.translate(0, equipProgress * -0.6F, 0);
+                poseStack.mulPose(Axis.XP.rotationDegrees(equipProgress * -50F));
+
+                //poseStack.translate(0.56 * offset, -0.52, -0.72);
+                poseStack.translate(0.15 * offset, -1.0, -1.3);//Jetug
+
+
+    //          this.applySprintingTransforms(player, heldItem, hand, poseStack, event.getPartialTick());
+    //            this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
+    //          this.applyReloadTransforms(poseStack, event.getPartialTick());
+                this.applyShieldTransforms(poseStack, player, heldItem, event.getPartialTick());
+
+
+    //        this.renderFirstPersonArms(event, poseStack, hand, heldItem, modifiedGun, packedLight);
+                this.renderWeapon(player, heldItem, transformType, event.getPoseStack(), event.getMultiBufferSource(), getWeaponLghtning(event, player));
+            }
+            poseStack.popPose();
         }
-
-        var model = minecraft.getItemRenderer().getModel(overrideModel.isEmpty() ? heldItem : overrideModel, player.level(), player, 0);
-        var rightHandTranslation = model.getTransforms().firstPersonRightHand.translation;
-        var transformType = isRight ? ItemDisplayContext.FIRST_PERSON_RIGHT_HAND : ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
-
-        poseStack.pushPose();
-        {
-            var modifiedGun = weaponItem.getModifiedGun(heldItem);
-            this.applyIronSightTransforms(event, poseStack, model, isRight, heldItem, modifiedGun);
-            this.applyBobbingTransforms(poseStack, event.getPartialTick());
-
-            /* Applies equip progress animation translations */
-            float equipProgress = this.getEquipProgress(event.getPartialTick());
-            //poseStack.translate(0, equipProgress * -0.6F, 0);
-            poseStack.mulPose(Axis.XP.rotationDegrees(equipProgress * -50F));
-//        this.renderReloadArm(poseStack, event.getMultiBufferSource(), event.getPackedLight(), modifiedGun, heldItem, hand, translateX);
-
-            int offset = isRight ? 1 : -1;
-            //poseStack.translate(0.56 * offset, -0.52, -0.72);
-            poseStack.translate(0.15 * offset, -1.0, -1.3);//Jetug
-
-            float translateX = model.getTransforms().firstPersonRightHand.translation.x();
-            float translateY = model.getTransforms().firstPersonRightHand.translation.y();
-            float translateZ = model.getTransforms().firstPersonRightHand.translation.z();
-            /* Applies recoil and reload rotations */
-            this.applyAimingTransforms(poseStack, heldItem, modifiedGun, translateX, translateY, translateZ, offset);
-            this.applySwayTransforms(poseStack, heldItem, player, rightHandTranslation, event.getPartialTick());
-//          this.applySprintingTransforms(player, heldItem, hand, poseStack, event.getPartialTick());
-//            this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);
-//          this.applyReloadTransforms(poseStack, event.getPartialTick());
-            this.applyShieldTransforms(poseStack, player, heldItem, event.getPartialTick());
-
-
-//        this.renderFirstPersonArms(event, poseStack, hand, heldItem, modifiedGun, packedLight);
-            this.renderWeapon(player, heldItem, transformType, event.getPoseStack(), event.getMultiBufferSource(), getWeaponLghtning(event, player));
-        }
-        poseStack.popPose();
     }
 
     private Vec3 getArmTransforms(BakedModel model, InteractionHand hand){
@@ -410,17 +412,20 @@ public class GunRenderingHandler {
     }
 
 
-    private void applyAimingTransforms(PoseStack poseStack, ItemStack heldItem, Gun modifiedGun, float x, float y, float z, int offset) {
+    private void applyAimingTransforms(PoseStack poseStack, ItemStack heldItem, Gun modifiedGun, Vector3f pos, int offset) {
 //        if (!Config.CLIENT.display.oldAnimations.get()) {
-            poseStack.translate(x * offset, y, z);
-            poseStack.translate(0, -0.25, 0.25);
-            float aiming = (float) Math.sin(Math.toRadians(AimingHandler.get().getNormalisedAdsProgress() * 180F));
-            aiming = getSightAnimations(heldItem, modifiedGun).getAimTransformCurve().apply(aiming);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(aiming * 10F * offset));
-            poseStack.mulPose(Axis.XP.rotationDegrees(aiming * 5F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(aiming * 5F * offset));
-            poseStack.translate(0, 0.25, -0.25);
-            poseStack.translate(-x * offset, -y, -z);
+        var x = pos.x();
+        var y = pos.y();
+        var z = pos.z();
+        poseStack.translate(x * offset, y, z);
+        poseStack.translate(0, -0.25, 0.25);
+        var aiming = (float) Math.sin(Math.toRadians(AimingHandler.get().getNormalisedAdsProgress() * 180F));
+        aiming = getSightAnimations(heldItem, modifiedGun).getAimTransformCurve().apply(aiming);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(aiming * 10F * offset));
+        poseStack.mulPose(Axis.XP.rotationDegrees(aiming * 5F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(aiming * 5F * offset));
+        poseStack.translate(0, 0.25, -0.25);
+        poseStack.translate(-x * offset, -y, -z);
 //        }
     }
 
@@ -566,7 +571,7 @@ public class GunRenderingHandler {
     public void renderWeapon(@Nullable LivingEntity entity, ItemStack renderStack,
                              ItemDisplayContext transformType, PoseStack poseStack,
                              MultiBufferSource bufferSource, int packedLight) {
-        if (renderStack.getItem() instanceof WeaponItem weaponItem) {
+        if (renderStack.getItem() instanceof DynamicGeoItem weaponItem) {
             poseStack.pushPose();
             {
                 var model = ItemStack.EMPTY;

@@ -167,7 +167,7 @@ public class MeleeTracker {
             this.maxTargets = GunModifierHelper.getMeleeMaxTargets(data);
         }
 
-        private boolean tryMeleeAttack(LivingEntity player, ItemStack stack) {
+        private void tryMeleeAttack(LivingEntity player, ItemStack stack) {
             var targets = getTargets(player);
 
             var targetsToAttack = new ArrayList<LivingEntity>();
@@ -177,19 +177,17 @@ public class MeleeTracker {
                 targetsToAttack.add(targets.get(i).entity);
             }
 
-            if (!targetsToAttack.isEmpty()) {
-                if (!MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(player, stack, arm, targetsToAttack))) {
+            if (!MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(player, stack, arm, targetsToAttack))) {
+                if (!targetsToAttack.isEmpty()) {
                     for (var target : targetsToAttack) {
                         attackEntity(player, target);
                     }
+
+                    playAttackSound(player);
+                    spawnAttackEffects(player, targetsToAttack);
                     MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Post(player, stack, arm, targetsToAttack));
                 }
-
-                playAttackSound(player);
-                spawnAttackEffects(player, targetsToAttack);
-                return true;
             }
-            return false;
         }
 
         private @NotNull ArrayList<TargetInfo> getTargets(LivingEntity player) {
