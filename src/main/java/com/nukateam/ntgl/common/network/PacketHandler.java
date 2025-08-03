@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.network;
 
 import com.mrcrayfish.framework.api.network.*;
 import com.nukateam.ntgl.*;
-import com.nukateam.ntgl.client.config.*;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkGrenadeManager;
@@ -55,7 +54,6 @@ public class PacketHandler {
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_ammo_manager"), NetworkAmmoManager.LoginData::new);
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_attachment_manager"), NetworkAttachmentManager.LoginData::new);
-        FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "custom_gun_manager"), CustomGunManager.LoginData::new);
-        FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "custom_gun_manager"), NetworkGrenadeManager.LoginData::new);
+        FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_grenade_manager"), NetworkGrenadeManager.LoginData::new);
     }
 }

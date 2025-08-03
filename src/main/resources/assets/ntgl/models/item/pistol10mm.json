@@ -58,6 +58,18 @@
         1.46484
       ]
     },
+    "head": {
+      "rotation": [
+        0,
+        0,
+        -90
+      ],
+      "translation": [
+        5.25,
+        7.5,
+        0
+      ]
+    },
     "fixed": {
       "rotation": [
         0,

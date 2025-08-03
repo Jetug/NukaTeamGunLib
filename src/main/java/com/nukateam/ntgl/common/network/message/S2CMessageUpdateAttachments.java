@@ -13,8 +13,7 @@ import org.apache.commons.lang3.Validate;
 public class S2CMessageUpdateAttachments extends PlayMessage<S2CMessageUpdateAttachments> {
     private ImmutableMap<ResourceLocation, AttachmentConfig> registered;
 
-    public S2CMessageUpdateAttachments() {
-    }
+    public S2CMessageUpdateAttachments() {}
 
     @Override
     public void encode(S2CMessageUpdateAttachments message, FriendlyByteBuf buffer) {

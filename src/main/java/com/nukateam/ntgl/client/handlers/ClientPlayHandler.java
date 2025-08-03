@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.client.config.*;
 import com.nukateam.ntgl.client.util.*;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.util.handler.*;
@@ -229,7 +228,6 @@ public class ClientPlayHandler {
 
     public static void handleUpdateGuns(S2CMessageUpdateGuns message) {
         NetworkGunManager.updateRegisteredGuns(message);
-        CustomGunManager.updateCustomGuns(message);
     }
 
     public static void handleUpdateAmmo(S2CMessageUpdateAmmo message) {

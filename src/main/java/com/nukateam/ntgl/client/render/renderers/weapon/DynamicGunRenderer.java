@@ -81,7 +81,10 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmsRende
 
         poseStack.pushPose();
         {
-            poseStack.translate(0, /*InputEvents.Y / 16D*/ -6 / 16D, 0);
+            if(TransformUtils.isNonHand(transformType)){
+                poseStack.translate(0, -7.5D/* ClientDebug.Y / 10D / 16D*/, 0);
+            }
+            else poseStack.translate(0, -6 / 16D, 0);
             super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
         }
         poseStack.popPose();
