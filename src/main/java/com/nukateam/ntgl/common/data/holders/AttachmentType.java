@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AttachmentType {
-    public static AttachmentType NONE        = new AttachmentType("none");
+    public static AttachmentType NONE         = new AttachmentType("none");
     public static AttachmentType SCOPE        = new AttachmentType("scope");
     public static AttachmentType BARREL       = new AttachmentType("barrel");
     public static AttachmentType STOCK        = new AttachmentType("stock");
@@ -18,6 +18,7 @@ public class AttachmentType {
     public static AttachmentType UNDER_BARREL = new AttachmentType("under_barrel");
     public static AttachmentType MAGAZINE     = new AttachmentType("magazine");
     public static AttachmentType MUZZLE       = new AttachmentType("muzzle");
+    public static AttachmentType MELEE        = new AttachmentType("melee");
 
     private static final Map<ResourceLocation, AttachmentType> typeMap = new HashMap<>();
     
@@ -30,6 +31,7 @@ public class AttachmentType {
         registerType(UNDER_BARREL);
         registerType(MAGAZINE    );
         registerType(MUZZLE      );
+        registerType(MELEE      );
     }
 
     private final ResourceLocation id;

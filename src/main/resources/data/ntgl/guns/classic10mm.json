@@ -16,7 +16,7 @@
     "enchantable": false,
     "renderHud": true,
     "spread": 2.0,
-    "movementModifier": -0.5,
+    "movementSpeed": -0.5,
     "melee": true,
     "ammo": [
       "minecraft:stick"

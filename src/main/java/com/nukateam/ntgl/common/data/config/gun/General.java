@@ -84,7 +84,7 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional boolean oneTimeCharge = true;
     @Optional float spread;
     @Optional int fireTimer;
-    @Optional float movementModifier = 0.0f;
+    @Optional float movementSpeed = 0.0f;
     @Optional boolean melee = false;
     @Optional protected LinkedHashSet<ResourceLocation> ammo = new LinkedHashSet<>(List.of(ResourceLocation.tryBuild(Ntgl.MOD_ID, "round10mm")));
 
@@ -117,7 +117,7 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putFloat    (RECOIL_ADS_REDUCTION, this.recoilAdsReduction);
         tag.putInt      (PROJECTILE_AMOUNT, this.projectileAmount);
         tag.putFloat    (SPREAD, this.spread);
-        tag.putFloat    (MOVEMENT_MODIFIER, this.movementModifier);
+        tag.putFloat    (MOVEMENT_MODIFIER, this.movementSpeed);
         tag.putBoolean  (ALWAYS_SPREAD, this.alwaysSpread);
         tag.putBoolean  (ONE_TIME_CHARGE, this.oneTimeCharge);
         tag.putBoolean  (MELEE, this.melee);
@@ -215,7 +215,7 @@ public class General implements INBTSerializable<CompoundTag> {
             this.spread = tag.getFloat(SPREAD);
         }
         if (tag.contains(MOVEMENT_MODIFIER, Tag.TAG_ANY_NUMERIC)) {
-            this.movementModifier = tag.getFloat(MOVEMENT_MODIFIER);
+            this.movementSpeed = tag.getFloat(MOVEMENT_MODIFIER);
         }
         if (tag.contains(AMMO, Tag.TAG_COMPOUND)) {
             this.ammo = NbtUtils.deserializeResourceLocationSet(tag.getCompound(AMMO));
@@ -234,7 +234,7 @@ public class General implements INBTSerializable<CompoundTag> {
         Preconditions.checkArgument(this.recoilAdsReduction >= 0.0F && this.recoilAdsReduction <= 1.0F, "Recoil ads reduction must be between 0.0 and 1.0");
         Preconditions.checkArgument(this.projectileAmount >= 1, "Projectile amount must be more than or equal to one");
         Preconditions.checkArgument(this.spread >= 0.0F, "Spread must be more than or equal to zero");
-        Preconditions.checkArgument(this.movementModifier >= 0.0F, "Spread must be more than or equal to zero");
+        Preconditions.checkArgument(this.movementSpeed >= 0.0F, "Spread must be more than or equal to zero");
         JsonObject object = new JsonObject();
         if (this.fullCharge) object.addProperty("fullCharge", true);
         object.addProperty("fullCharge", fullCharge);
@@ -264,7 +264,7 @@ public class General implements INBTSerializable<CompoundTag> {
         object.addProperty("alwaysSpread", this.alwaysSpread);
         object.addProperty("oneTimeCharge", this.oneTimeCharge);
         object.addProperty("melee", this.melee);
-        if (this.movementModifier != 1.0F) object.addProperty("movementModifier", true);
+        if (this.movementSpeed != 1.0F) object.addProperty("movementSpeed", true);
         if (this.spread != 0.0F) object.addProperty("spread", this.spread);
 //            object.add("", new JsonArray());
         return object;
@@ -304,7 +304,7 @@ public class General implements INBTSerializable<CompoundTag> {
         general.spread = this.spread;
         general.oneTimeCharge = this.oneTimeCharge;
         general.melee = this.melee;
-        general.movementModifier = this.movementModifier;
+        general.movementSpeed = this.movementSpeed;
         general.ammo = new LinkedHashSet<>(this.ammo);
         return general;
     }
@@ -498,7 +498,7 @@ public class General implements INBTSerializable<CompoundTag> {
         return this.spread;
     }
 
-    public float getMovementModifier() {
-        return this.movementModifier;
+    public float getMovementSpeed() {
+        return this.movementSpeed;
     }
 }

@@ -277,7 +277,7 @@ public class GunModifierHelper {
     }
 
     public static float getModifiedMovementSpeed(GunData data) {
-        var gunSpread = getGeneral(getGun(data.gun)).getMovementModifier();
+        var gunSpread = getGeneral(getGun(data.gun)).getMovementSpeed();
         var finalValue = new AtomicReference<>(gunSpread);
 
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMovementSpeed(finalValue.get(), data))));

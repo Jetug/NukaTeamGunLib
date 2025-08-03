@@ -44,7 +44,6 @@ public class ThrowableItemRenderer<Animator extends ItemAnimator> extends ArmsRe
 
     public ThrowableItemRenderer(GeoModel<Animator> model) {
         super(model);
-        addRenderLayer(new GlowingLayer<>(this));
     }
 
     @Override

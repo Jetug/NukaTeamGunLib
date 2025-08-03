@@ -52,7 +52,6 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmsRende
 
     public DynamicGunRenderer(GeoModel<Animator> model) {
         super(model);
-        addRenderLayer(new GlowingLayer<>(this));
     }
 
     @Override
@@ -82,7 +81,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmsRende
         poseStack.pushPose();
         {
             if(TransformUtils.isNonHand(transformType)){
-                poseStack.translate(0, -7.5D/* ClientDebug.Y / 10D / 16D*/, 0);
+                poseStack.translate(0, -7.5D / 16D/* ClientDebug.Y / 10D / 16D*/, 0);
             }
             else poseStack.translate(0, -6 / 16D, 0);
             super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
