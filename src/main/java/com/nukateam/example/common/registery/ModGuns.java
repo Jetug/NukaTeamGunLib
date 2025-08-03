@@ -25,6 +25,7 @@ public class ModGuns {
     public static final RegistryObject<WeaponItem> FLAMER = registerGun("flamer");
     public static final RegistryObject<WeaponItem> GATLING = registerGun("gatling");
     public static final RegistryObject<WeaponItem> REVOLVER = registerGun("revolver");
+    public static final RegistryObject<WeaponItem> RPG = registerGun("rpg");
 
     public static final RegistryObject<Item> GRENADE = ITEMS.register("grenade",
             () -> new ThrowableItem(new Item.Properties()));
