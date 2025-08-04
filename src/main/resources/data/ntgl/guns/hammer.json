@@ -1,0 +1,63 @@
+{
+  "general": {
+    "rate": 10,
+    "weaponMode": "ntgl:melee",
+    "gripType": "ntgl:one_handed",
+    "loadingType": "magazine",
+    "maxAmmo": 6,
+    "reloadTime": 50,
+    "equipTime": 10,
+    "enchantable": false,
+    "melee": true,
+    "ammo": [
+      "cgs:stick"
+    ]
+  },
+  "melee": {
+    "mode": "ntgl:single",
+    "damage": 15,
+    "delay": 10,
+    "cooldown": 10,
+    "distance": 4,
+    "angle": 20,
+    "maxTargets": 3,
+    "knockback": 0.4
+  },
+  "fuel": {
+    "ntgl:air":{
+      "max": 900
+    }
+  },
+  "sounds": {
+    "fire": "ntgl:item.pistol10mm.fire",
+    "reload": "ntgl:item.pistol45mm.reload",
+    "cock": "ntgl:item.pistol45mm.cock",
+    "silencedFire": "ntgl:item.pistol10mm.silenced_fire",
+    "enchantedFire": "ntgl:item.pistol10mm.enchanted_fire"
+  },
+  "modules": {
+    "attachments": {
+      "cgs:head": [
+        {
+          "name": "hammer",
+          "item": "cgs:hammer_stone",
+          "bones": [
+            "spring_holders",
+            "springs"
+          ]
+        },
+        {
+          "name": "hammer2",
+          "item": "cgs:hammer_diamond",
+          "bones": [
+            "spring_holders"
+          ]
+        },
+        {
+          "name": "axe",
+          "item": "cgs:axe_diamond"
+        }
+      ]
+    }
+  }
+}
