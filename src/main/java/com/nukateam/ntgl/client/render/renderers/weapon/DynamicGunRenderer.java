@@ -116,13 +116,6 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmsRende
                                          MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender,
                                          float partialTick, int packedLight, int packedOverlay, Rgba rgba) {}
 
-    protected boolean shouldRenderAttachment(Modules.Attachment attachment, ItemStack item) {
-        if (transformType != ItemDisplayContext.GUI) {
-            var itemId = ForgeRegistries.ITEMS.getKey(item.getItem());
-            return !item.isEmpty() && attachment.getItemId().equals(itemId);
-        }
-        return false;
-    }
 
     protected void renderAttachments(GeoBone bone) {
         var boneName = bone.getName();
@@ -140,22 +133,36 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmsRende
     protected void prepareHiddenBones(ItemDisplayContext transformType) {
         if(gunStack == null || gunStack.isEmpty()) return;
 
-        var gunAttachments = this.gun.getModules().getAttachments();
         hiddenBones.clear();
+        var gunAttachments = this.gun.getModules().getAttachments();
+
+        var visibleBones = new ArrayList<String>();
+
         gunAttachments.forEach((type, typeAttachments) -> {
             var item = Gun.getAttachmentItem(type, gunStack);
 
-            typeAttachments.forEach((attachment) -> {
-                if(shouldRenderAttachment(attachment, item)){
-                    if(transformType != ItemDisplayContext.GUI) {
+            for (var attachment : typeAttachments) {
+                if (shouldRenderAttachment(attachment, item)) {
+                    if (transformType != ItemDisplayContext.GUI) {
                         hiddenBones.addAll(attachment.getHidden());
+                        visibleBones.add(attachment.getName());
+                        visibleBones.addAll(attachment.getBones());
                     }
-                }
-                else {
+                } else {
                     hiddenBones.add(attachment.getName());
                     hiddenBones.addAll(attachment.getBones());
                 }
-            });
+            }
         });
+
+        hiddenBones.removeAll(visibleBones);
+    }
+
+    protected boolean shouldRenderAttachment(Modules.Attachment attachment, ItemStack item) {
+        if (transformType != ItemDisplayContext.GUI) {
+            var itemId = ForgeRegistries.ITEMS.getKey(item.getItem());
+            return !item.isEmpty() && attachment.getItemId().equals(itemId);
+        }
+        return false;
     }
 }

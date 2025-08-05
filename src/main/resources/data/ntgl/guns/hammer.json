@@ -37,25 +37,26 @@
   },
   "modules": {
     "attachments": {
-      "cgs:head": [
+      "ntgl:grip": [
         {
           "name": "hammer",
-          "item": "cgs:hammer_stone",
+          "item": "ntgl:hammer_stone",
           "bones": [
             "spring_holders",
             "springs"
           ]
         },
         {
-          "name": "hammer2",
-          "item": "cgs:hammer_diamond",
+          "name": "hammer",
+          "item": "ntgl:hammer_diamond",
           "bones": [
-            "spring_holders"
+            "spring_holders",
+            "springs"
           ]
         },
         {
           "name": "axe",
-          "item": "cgs:axe_diamond"
+          "item": "ntgl:axe_diamond"
         }
       ]
     }

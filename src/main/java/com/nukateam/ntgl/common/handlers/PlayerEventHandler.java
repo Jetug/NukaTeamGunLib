@@ -24,7 +24,7 @@ public class PlayerEventHandler {
     public static final UUID SPEED_MODIFIER_ID = UUID.fromString("a1b2c3d4-5e6f-7890-1234-567890abcdef");
     public static final String MOVEMENT_SPEED = "custom_movement_speed";
 
-    private static final Map<Pair<InteractionHand, Player>, Pair<ItemStack, Integer> > lastSelectedSlots = new HashMap<>();
+    private static final Map<Pair<InteractionHand, Player>, Slot> lastSelectedSlots = new HashMap<>();
 
     @SubscribeEvent
     public static void onPlayerTick2(TickEvent.PlayerTickEvent event) {
@@ -59,10 +59,11 @@ public class PlayerEventHandler {
 
     private static void tryEquip(Player player, InteractionHand hand) {
         var key = new Pair<>(hand, player);
-        var lastSlot = lastSelectedSlots.getOrDefault(key, Pair.of(ItemStack.EMPTY, 0));
+        var lastSlot = lastSelectedSlots.getOrDefault(key, new Slot(ItemStack.EMPTY, 0, 0));
         var newItem = player.getItemInHand(hand);
 
-        if (newItem != lastSlot.getFirst() || newItem.getCount() < lastSlot.getSecond()) {
+        if (newItem != lastSlot.stack || newItem.getCount() < lastSlot.stackSize()
+                || player.getInventory().selected != lastSlot.slotId) {
             EquipTracker.stopEquip(player, hand);
 
             var equipTime = 0;
@@ -76,7 +77,9 @@ public class PlayerEventHandler {
 
             EquipTracker.startEquip(player, hand, equipTime);
 
-            lastSelectedSlots.put(key, Pair.of(newItem, newItem.getCount()));
+            lastSelectedSlots.put(key, new Slot(newItem, newItem.getCount(), player.getInventory().selected));
         }
     }
+
+    record Slot(ItemStack stack, int stackSize, int slotId){}
 }

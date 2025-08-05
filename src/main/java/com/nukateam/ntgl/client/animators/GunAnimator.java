@@ -191,7 +191,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                     }
                 }
 
-                return event.setAndContinue(animation);
+                return animation != null ? event.setAndContinue(animation): PlayState.STOP;
             } catch (Exception e) {
                 return PlayState.STOP;
             }
@@ -237,7 +237,9 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected RawAnimation getHoldAnimation(AnimationState<GunAnimator> event) {
-        return playGunAnim(HOLD, LOOP);
+        if(isFirstPerson(transformType))
+            return playGunAnim(HOLD, LOOP);
+        else return null;
     }
 
     protected RawAnimation getChargingAnimation(AnimationState<GunAnimator> event, ShootingData shootingData) {

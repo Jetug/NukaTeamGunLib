@@ -90,6 +90,12 @@ public class ModGuns {
     public static final RegistryObject<Item> DRUM_MAGAZINE = ITEMS.register("drum_magazine",
             () -> new MagazineItem(Magazine.create(60, GunModifiers.SLOWER_ADS, GunModifiers.EXTENDED_MAG), new Item.Properties().stacksTo(1)));
 
+    public static final RegistryObject<Item> HEAD_STONE = ITEMS.register("hammer_stone",
+            () -> new GripItem(Grip.create(GunModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
+
+    public static final RegistryObject<Item> HAMMER_DIAMOND = ITEMS.register("hammer_diamond",
+            () -> new GripItem(Grip.create(GunModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
+
     public static final RegistryObject<Item> AMMO_BOX = ITEMS.register("ammo_box", () ->
             new AmmoBoxItem(new Item.Properties().stacksTo(1), 100));
 

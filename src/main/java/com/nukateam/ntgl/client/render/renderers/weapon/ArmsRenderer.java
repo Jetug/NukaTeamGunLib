@@ -139,20 +139,20 @@ public class ArmsRenderer<Animator extends ItemAnimator> extends DynamicGeoItemR
 
                     if (isRightHand) {
                         if (bone.getName().equals(LEFT_ARM)) {
-                            poseStack.translate(0, -8 / 10d / 16d, 0);
+                            poseStack.translate(-8 / 10d / 16d, 0, 0);
 //                            poseStack.translate(X / 10d / 16d, Y / 10d / 16d, Z / 10d / 16d);
                             renderLeftArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
-                            poseStack.translate(0, 3 / 10d / 16d, 0);
+                            poseStack.translate(X / 10d / 16d, Y / 10d / 16d, Z / 10d / 16d);
+                            poseStack.translate(4 / 10d / 16d, 0, 0);
                             renderRightArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve);
                         }
                     } else {
                         if (bone.getName().equals(LEFT_ARM)) {
-                            poseStack.translate(0, 3 / 10d / 16d, 0);
+                            poseStack.translate(4 / 10d / 16d, 0, 0);
                             renderRightArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
-                            poseStack.translate(X / 10d / 16d, Y / 10d / 16d, Z / 10d / 16d);
-                            poseStack.translate(0, -8 / 10d / 16d, 0);
+                            poseStack.translate(-8 / 10d / 16d, 0, 0);
                             renderLeftArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve);
                         }
                     }

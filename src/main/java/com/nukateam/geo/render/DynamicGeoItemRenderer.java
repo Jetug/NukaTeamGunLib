@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
+import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.constant.DataTickets;
 import mod.azure.azurelib.core.animation.AnimationState;
 import mod.azure.azurelib.model.GeoModel;
@@ -11,6 +12,7 @@ import mod.azure.azurelib.model.data.EntityModelData;
 import mod.azure.azurelib.renderer.GeoObjectRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -38,37 +40,6 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
     public DynamicGeoItemRenderer(GeoModel<Animator> model, BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> animatorFactory) {
         super(model);
         this.animatorFactory = animatorFactory;
-    }
-
-    public void render(LivingEntity entity, ItemStack stack, ItemDisplayContext transformType,
-                       PoseStack poseStack,
-                       @Nullable MultiBufferSource bufferSource,
-                       @Nullable RenderType renderType,
-                       @Nullable VertexConsumer buffer,
-                       int packedLight) {
-        this.currentStack = stack;
-        this.currentTransform = transformType;
-        this.currentEntity = entity;
-
-        if(buffEntity != null){
-            currentEntity = buffEntity;
-            buffEntity = null;
-        }
-
-        super.render(poseStack, getAnimator(currentEntity, transformType, stack), bufferSource, renderType, buffer, packedLight);
-    }
-
-    public Animator getAnimator(LivingEntity entity, ItemDisplayContext transformType, ItemStack stack) {
-        var key = Pair.of(entity, transformType);
-        if (!animatorsByTransform.containsKey(key)) {
-            if(animatorFactory == null) {
-                var dynamicItem = (DynamicGeoItem) stack.getItem();
-                animatorFactory = dynamicItem.getAnimatorFactory();
-            }
-            animatorsByTransform.put(key, animatorFactory.apply(transformType, this));
-        }
-
-        return animatorsByTransform.get(key);
     }
 
     @Override
@@ -106,6 +77,41 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
         poseStack.popPose();
     }
 
+    public void render(LivingEntity entity, ItemStack stack, ItemDisplayContext transformType,
+                       PoseStack poseStack,
+                       @Nullable MultiBufferSource bufferSource,
+                       @Nullable RenderType renderType,
+                       @Nullable VertexConsumer buffer,
+                       int packedLight) {
+        this.currentStack = stack;
+        this.currentTransform = transformType;
+        this.currentEntity = entity;
+
+        if(buffEntity != null){
+            currentEntity = buffEntity;
+            buffEntity = null;
+        }
+
+        super.render(poseStack, getAnimator(currentEntity, transformType, stack), bufferSource, renderType, buffer, packedLight);
+    }
+
+    public Animator getAnimator(LivingEntity entity, ItemDisplayContext transformType, ItemStack stack) {
+        var key = Pair.of(entity, transformType);
+        if (!animatorsByTransform.containsKey(key)) {
+            if(animatorFactory == null) {
+                var dynamicItem = (DynamicGeoItem) stack.getItem();
+                animatorFactory = dynamicItem.getAnimatorFactory();
+            }
+            animatorsByTransform.put(key, animatorFactory.apply(transformType, this));
+        }
+
+        return animatorsByTransform.get(key);
+    }
+
+    public LivingEntity getRenderEntity() {
+        return currentEntity;
+    }
+
     public void setEntity(LivingEntity entity) {
         this.buffEntity = entity;
     }
@@ -128,9 +134,5 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
         Objects.requireNonNull(animationState);
         var31.addAdditionalStateData(animatable, instanceId, animationState::setData);
         this.model.handleAnimations(animatable, instanceId, animationState);
-    }
-
-    public LivingEntity getRenderEntity() {
-        return currentEntity;
     }
 }
