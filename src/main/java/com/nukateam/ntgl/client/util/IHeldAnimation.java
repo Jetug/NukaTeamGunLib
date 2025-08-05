@@ -60,18 +60,6 @@ public interface IHeldAnimation {
     }
 
     /**
-     * @param player
-     * @param hand
-     * @param stack
-     * @param poseStack
-     * @param buffer
-     * @param light
-     * @param partialTicks
-     */
-    default void renderFirstPersonArms(Player player, HumanoidArm hand, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks) {
-    }
-
-    /**
      * @param entity
      * @param model
      * @param stack

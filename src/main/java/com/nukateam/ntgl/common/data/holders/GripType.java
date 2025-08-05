@@ -3,10 +3,7 @@ package com.nukateam.ntgl.common.data.holders;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.IHeldAnimation;
-import com.nukateam.ntgl.client.util.pose.BazookaPose;
-import com.nukateam.ntgl.client.util.pose.MiniGunPose;
-import com.nukateam.ntgl.client.util.pose.OneHandedPose;
-import com.nukateam.ntgl.client.util.pose.TwoHandedPose;
+import com.nukateam.ntgl.client.util.pose.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -21,16 +18,23 @@ import java.util.Map;
  */
 public class GripType extends ResourceHolder {
     /** A grip type designed for weapons that are held with only one hand, like a pistol. */
-    public static final GripType ONE_HANDED = new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "one_handed"), new OneHandedPose(), true);
+    public static final GripType ONE_HANDED =
+            new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "one_handed"), new OneHandedPose(), true);
 
     /** A grip type designed for weapons that are held with two hands, like an assault rifle. */
-    public static final GripType TWO_HANDED = new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "two_handed"), new TwoHandedPose());
+    public static final GripType TWO_HANDED =
+            new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "two_handed"), new TwoHandedPose());
 
     /** A custom grip type designed for the mini gun. */
-    public static final GripType MINI_GUN = new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "mini_gun"), new MiniGunPose());
+    public static final GripType MINI_GUN =
+            new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "mini_gun"), new MiniGunPose());
 
     /**A custom grip type designed for the bazooka. */
-    public static final GripType BAZOOKA = new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "bazooka"), new BazookaPose());
+    public static final GripType BAZOOKA =
+            new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "bazooka"), new BazookaPose());
+
+    public static final GripType HAMMER =
+            new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "hammer"), new HammerPose());
 
     private static final Map<ResourceLocation, GripType> gripTypeMap = new HashMap<>();
 
@@ -40,6 +44,7 @@ public class GripType extends ResourceHolder {
         registerType(TWO_HANDED);
         registerType(MINI_GUN);
         registerType(BAZOOKA);
+        registerType(HAMMER);
     }
 
     private final IHeldAnimation heldAnimation;

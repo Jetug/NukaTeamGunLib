@@ -74,34 +74,6 @@ public class OneHandedPose implements IHeldAnimation {
     }
 
     @Override
-    public void renderFirstPersonArms(Player player, HumanoidArm hand, ItemStack stack, PoseStack poseStack,
-                                      MultiBufferSource buffer, int light, float partialTicks) {
-//        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
-//        var model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level, player, 0);
-//        var translateX = model.getTransforms().firstPersonRightHand.translation.x();
-//        var translateZ = model.getTransforms().firstPersonRightHand.translation.z();
-//        var side = hand == HumanoidArm.RIGHT ? -1 : 1;
-//        poseStack.translate(translateX * side, 0, -translateZ);
-//
-//        var slim = Minecraft.getInstance().player.getModelName().equals("slim");
-//        var armWidth = slim ? 3.0F : 4.0F;
-//
-//        poseStack.scale(0.5F, 0.5F, 0.5F);
-//        poseStack.translate(0.8 * side, 1.45, -2.9);
-// //       poseStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
-////        poseStack.translate(0, 0.15, -1.3125);
-//        poseStack.mulPose(Axis.XP.rotationDegrees(75F));
-
-//        RIGHT_HAND_RENDERER.render();
-
-
-//        poseStack.translate(-0.75, 0, 0);
-//        RIGHT_HAND_RENDERER.renderHand(player, stack, poseStack, buffer, light);
-
-//        ModelRenderUtil.renderFirstPersonArm((LocalPlayer) player, hand, poseStack, buffer, light);
-    }
-
-    @Override
     public boolean applyOffhandTransforms(LivingEntity entity, HumanoidModel<LivingEntity> model, ItemStack stack, PoseStack poseStack, float partialTicks) {
         poseStack.mulPose(Axis.YP.rotationDegrees(180F));
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));

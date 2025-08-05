@@ -176,61 +176,6 @@ public class TwoHandedPose extends WeaponPose {
     }
 
     @Override
-    public void renderFirstPersonArms(Player player, HumanoidArm hand, ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, int light, float partialTicks) {
-        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
-
-        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, player.level(), player, 0);
-        float translateX = model.getTransforms().firstPersonRightHand.translation.x();
-        int side = hand.getOpposite() == HumanoidArm.RIGHT ? 1 : -1;
-        poseStack.translate(translateX * side, 0, 0);
-
-        boolean slim = Minecraft.getInstance().player.getModelName().equals("slim");
-        float armWidth = slim ? 3.0F : 4.0F;
-
-        // Front arm holding the barrel
-        poseStack.pushPose();
-        {
-            float reloadProgress = ClientReloadHandler.get().getReloadProgress(partialTicks);
-            poseStack.translate(reloadProgress * 0.5, -reloadProgress, -reloadProgress * 0.5);
-
-            poseStack.scale(0.5F, 0.5F, 0.5F);
-
-
-            poseStack.translate(1.6 * side, 1.35, -1.8);
-
-//            poseStack.translate(4.0 * 0.0625 * side, 0, 0);
-//            poseStack.translate((armWidth / 2.0) * 0.0625 * side, 0, 0);
-//            poseStack.translate(-0.3125 * side, -0.1, -0.4375);
-
-            poseStack.mulPose(Axis.XP.rotationDegrees(80F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(15F * -side));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(15F * -side));
-            poseStack.mulPose(Axis.XP.rotationDegrees(-35F));
-
-            ModelRenderUtil.renderFirstPersonArm((LocalPlayer) player, hand.getOpposite(), poseStack, buffer, light);
-
-//            LEFT_HAND_RENDERER.renderHand(player, stack, poseStack, buffer, light);
-        }
-        poseStack.popPose();
-
-        // Back arm holding the handle
-        poseStack.pushPose();
-        {
-//            poseStack.translate(0, 0.1, -0.675);
-            poseStack.scale(0.5F, 0.5F, 0.5F);
-            poseStack.translate(1.2 * side, 1.6, -3);
-//            poseStack.translate(-4.0 * 0.0625 * side, 0, 0);
-//            poseStack.translate(-(armWidth / 2.0) * 0.0625 * side, 0, 0);
-            poseStack.mulPose(Axis.XP.rotationDegrees(80F));
-
-            ModelRenderUtil.renderFirstPersonArm((LocalPlayer) player, hand, poseStack, buffer, light);
-
-//            RIGHT_HAND_RENDERER.renderHand(player, stack, poseStack, buffer, light);
-        }
-        poseStack.popPose();
-    }
-
-    @Override
     public boolean applyOffhandTransforms(LivingEntity entity, HumanoidModel<LivingEntity> model, ItemStack stack, PoseStack poseStack, float partialTicks) {
         return GripType.applyBackTransforms(entity, poseStack);
     }
