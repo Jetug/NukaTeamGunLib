@@ -26,29 +26,32 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
-public class HammerPose implements IHeldAnimation {
+public class HammerPose extends WeaponPose {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void applyHumanoidModelRotation(LivingEntity entity, ModelPart rightArm, ModelPart leftArm, ModelPart head, InteractionHand hand, float aimProgress) {
+        super.applyHumanoidModelRotation(entity, rightArm, leftArm, head, hand, aimProgress);
+
         var right = hand == InteractionHand.MAIN_HAND;
 
         if(!right) return;
 
-        IHeldAnimation.copyModelAngles(head, rightArm);
-        IHeldAnimation.copyModelAngles(head, leftArm);
+//        IHeldAnimation.copyModelAngles(head, rightArm);
+//        IHeldAnimation.copyModelAngles(head, leftArm);
 //        arm.xRot += (float) Math.toRadians(-70F);
 //        rightArm.xRot += (float) -60;
 //        rightArm.yRot += (float) 5;
 //        rightArm.zRot += (float) -25;
 
-        rightArm.xRot += (float) Math.toRadians(-65);
-        rightArm.yRot += (float) Math.toRadians(-15);
-        rightArm.zRot += (float) Math.toRadians(-35);
-
-        leftArm.xRot += (float) Math.toRadians(-65);
-        leftArm.yRot += (float) Math.toRadians(35);
-        leftArm.zRot += (float) Math.toRadians(-10);
+//        rightArm.xRot += (float) Math.toRadians(-65);
+//        rightArm.yRot += (float) Math.toRadians(-15);
+//        rightArm.zRot += (float) Math.toRadians(-35);
+//
+//        leftArm.xRot += (float) Math.toRadians(-65);
+//        leftArm.yRot += (float) Math.toRadians(35 );
+//        leftArm.zRot += (float) Math.toRadians(-10);
 
         leftArm.xRot += (float) Math.toRadians(ClientDebug.X);
         leftArm.yRot += (float) Math.toRadians(ClientDebug.Y);
@@ -57,6 +60,76 @@ public class HammerPose implements IHeldAnimation {
         if (entity.getUseItem().getItem() == Items.SHIELD) {
             rightArm.xRot = (float) Math.toRadians(-30F);
         }
+    }
+
+    @Override
+    protected AimPose getUpPose() {
+        var upPose = new AimPose();
+        upPose.getIdle()
+                .setRenderYawOffset(45F)
+                .setItemRotation(new Vector3f(60F, 0F, 10F))
+                .setRightArm(new LimbPose()
+                        .setRotationAngleX(-120f + 5)
+                        .setRotationAngleY(-55F - 5)
+                        .setRotationAngleZ(-10f - 40)
+                        .setRotationPointX(-5 )
+                        .setRotationPointY(3  )
+                        .setRotationPointZ(0) )
+                .setLeftArm(new LimbPose()
+                        .setRotationAngleX(-160F + 20 + 10)
+                        .setRotationAngleY(-20F - 10 + 5)
+                        .setRotationAngleZ(-30F - 30)
+                        .setRotationPointY(2)
+                        .setRotationPointZ(-1));
+         return upPose;
+    }
+
+    @Override
+    protected AimPose getForwardPose() {
+        AimPose forwardPose = new AimPose();
+        forwardPose.getIdle()
+                .setRenderYawOffset(45F)
+                .setItemRotation(new Vector3f(30F, -11F, 0F))
+                .setRightArm(new LimbPose()
+                        .setRotationAngleX(-65)
+                        .setRotationAngleY(-15)
+                        .setRotationAngleZ(-35)
+
+                        .setRotationPointX(-5)
+                        .setRotationPointY(2)
+                        .setRotationPointZ(1))
+                .setLeftArm(new LimbPose()
+                        .setRotationAngleX(-65 - 15 + 15)
+                        .setRotationAngleY(35 + 50 - 30)
+                        .setRotationAngleZ(-10 - 15)
+
+                        .setRotationPointY(2)
+                        .setRotationPointZ(-1));
+        return forwardPose;
+    }
+
+    @Override
+    protected AimPose getDownPose() {
+        var downPose = new AimPose();
+        downPose.getIdle()
+                .setRenderYawOffset(45F)
+                .setItemRotation(new Vector3f(-15F, -5F, 0F))
+                .setItemTranslate(new Vector3f(0, -0.5F, 0.5F))
+                .setRightArm(new LimbPose()
+                        .setRotationAngleX(-30F - 10)
+                        .setRotationAngleY(-65F + 60)
+                        .setRotationAngleZ(0F -40)
+
+                        .setRotationPointX(-5)
+                        .setRotationPointY(2))
+                .setLeftArm(new LimbPose()
+                        .setRotationAngleX(-5F)
+                        .setRotationAngleY(-20F + 50)
+                        .setRotationAngleZ(20F + 10)
+
+                        .setRotationPointY(5)
+                        .setRotationPointZ(0));
+        return downPose;
     }
 
 //    @Override
@@ -100,7 +173,7 @@ public class HammerPose implements IHeldAnimation {
 
 //        poseStack.mulPose(Axis.ZP.rotationDegrees(-30 * leftHanded));
 //
-////        poseStack.translate(ClientDebug.X / 10d * 0.0625, ClientDebug.Y / 10d * 0.0625, ClientDebug.Z / 10d * 0.0625);
+        poseStack.translate(-20 / 10d * 0.0625, -30 / 10d * 0.0625, -10 / 10d * 0.0625);
 //        poseStack.translate(-55 / 10d * 0.0625, 10 / 10d * 0.0625, 15 / 10d * 0.0625);
 
 

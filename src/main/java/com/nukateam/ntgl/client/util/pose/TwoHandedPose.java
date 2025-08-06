@@ -98,19 +98,13 @@ public class TwoHandedPose extends WeaponPose {
             var mainArm = right ? rightArm : leftArm;
             var secondaryArm = right ? leftArm : rightArm;
 
-            mainArm.xRot = head.xRot;
-            mainArm.yRot = head.yRot;
-            mainArm.zRot = head.zRot;
-
-            secondaryArm.xRot = head.xRot;
-            secondaryArm.yRot = head.yRot;
-            secondaryArm.zRot = head.zRot;
-
             mainArm.xRot = (float) Math.toRadians(-55F + aimProgress * -30F);
             mainArm.yRot = (float) Math.toRadians((-45F + aimProgress * -20F) * (right ? 1F : -1F));
+            mainArm.zRot = head.zRot;
 
             secondaryArm.xRot = (float) Math.toRadians(-42F + aimProgress * -48F);
             secondaryArm.yRot = (float) Math.toRadians((-15F + aimProgress * 5F) * (right ? 1F : -1F));
+            secondaryArm.zRot = head.zRot;
         } else {
             super.applyHumanoidModelRotation(entity, rightArm, leftArm, head, hand, aimProgress);
             float angle = this.getEntityPitch(entity);
