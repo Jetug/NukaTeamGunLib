@@ -93,6 +93,23 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.put(Tags.ATTACHMENTS, attachmentsTag);
     }
 
+    public static void saveAttachment(ItemStack weapon, ItemStack attachmentStack){
+        var tag = weapon.getOrCreateTag();
+
+        var attachmentsTag = new CompoundTag();
+
+        if(tag.contains(Tags.ATTACHMENTS, Tag.TAG_COMPOUND)){
+            attachmentsTag = tag.getCompound(Tags.ATTACHMENTS);
+        }
+
+        if (attachmentStack.getItem() instanceof IAttachment attachment) {
+            var tagKey = attachment.getType().toString();
+            attachmentsTag.put(tagKey, attachmentStack.save(new CompoundTag()));
+        }
+
+        tag.put(Tags.ATTACHMENTS, attachmentsTag);
+    }
+
     public HashMap<ResourceLocation, ProjectileConfig> getProjectiles() {
         return projectiles;
     }

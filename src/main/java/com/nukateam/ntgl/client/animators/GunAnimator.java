@@ -198,10 +198,6 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         };
     }
 
-    protected static @NotNull RawAnimation getHideAnimation() {
-        return begin().then(Animations.HIDE, HOLD_ON_LAST_FRAME);
-    }
-
     protected AnimationStateHandler<GunAnimator> animateRevolver() {
         return (event) -> getCycledAnimation(event, Animations.CHAMBER, this.chamberCycler);
     }
@@ -229,30 +225,44 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return PlayState.STOP;
     }
 
-    protected RawAnimation getInspectionAnimation(AnimationState<GunAnimator> event) {
-        RawAnimation animation;
-        animation = playGunAnim(Animations.INSPECT, PLAY_ONCE);
-        animationHelper.syncAnimation(event, Animations.INSPECT, ClientHandler.getMaxInspectionTicks());
-        return animation;
-    }
-
     protected RawAnimation getHoldAnimation(AnimationState<GunAnimator> event) {
         if(isFirstPerson(transformType))
             return playGunAnim(HOLD, LOOP);
         else return null;
     }
 
-    protected RawAnimation getChargingAnimation(AnimationState<GunAnimator> event, ShootingData shootingData) {
-        var animation = begin();
-        if (animationHelper.hasAnimation(Animations.CHARGE)) {
-            BARREL_CONTROLLER.stop();
-            BARREL_CONTROLLER.setAnimation(begin().then("void", PLAY_ONCE));
-            animation = playGunAnim(Animations.CHARGE, LOOP);
-            var data = getGunData();
-            var fireDelay = GunModifierHelper.getFireDelay(data);
-            animationHelper.syncAnimation(event, Animations.CHARGE, fireDelay);
+    protected RawAnimation getHideAnimation() {
+        if(isFirstPerson(transformType))
+            return begin().then(Animations.HIDE, HOLD_ON_LAST_FRAME);
+        else return null;
+    }
+
+    protected RawAnimation getInspectionAnimation(AnimationState<GunAnimator> event) {
+        if(isFirstPerson(transformType)) {
+            RawAnimation animation;
+            animation = playGunAnim(Animations.INSPECT, PLAY_ONCE);
+            animationHelper.syncAnimation(event, Animations.INSPECT, ClientHandler.getMaxInspectionTicks());
+            return animation;
         }
-        return animation;
+        else return null;
+
+    }
+
+    protected RawAnimation getChargingAnimation(AnimationState<GunAnimator> event, ShootingData shootingData) {
+        if(isFirstPerson(transformType)) {
+
+            var animation = begin();
+            if (animationHelper.hasAnimation(Animations.CHARGE)) {
+                BARREL_CONTROLLER.stop();
+                BARREL_CONTROLLER.setAnimation(begin().then("void", PLAY_ONCE));
+                animation = playGunAnim(Animations.CHARGE, LOOP);
+                var data = getGunData();
+                var fireDelay = GunModifierHelper.getFireDelay(data);
+                animationHelper.syncAnimation(event, Animations.CHARGE, fireDelay);
+            }
+            return animation;
+        }
+        return null;
     }
 
 //    protected RawAnimation getMeleeAnimation(AnimationState<GunAnimator> event) {
@@ -271,46 +281,59 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 //    }
 
     protected RawAnimation getMeleeDelayAnimation(AnimationState<GunAnimator> event) {
-        var animation = playGunAnim(MELEE, LOOP);
-        animationHelper.syncAnimation(event, MELEE, meleeDelay);
-        return animation;
+        if(isFirstPerson(transformType)) {
+            var animation = playGunAnim(MELEE, LOOP);
+            animationHelper.syncAnimation(event, MELEE, meleeDelay);
+            return animation;
+        }
+        return null;
     }
 
     protected RawAnimation getMeleeCooldownAnimation(AnimationState<GunAnimator> event) {
-        if(!animationHelper.hasAnimation(MELEE_END))
-            return getHoldAnimation(event);
+        if(isFirstPerson(transformType)) {
+            if (!animationHelper.hasAnimation(MELEE_END))
+                return getHoldAnimation(event);
 
-        var animation = playGunAnim(MELEE_END, LOOP);
-        animationHelper.syncAnimation(event, MELEE_END, meleeCooldown);
-        return animation;
+            var animation = playGunAnim(MELEE_END, LOOP);
+            animationHelper.syncAnimation(event, MELEE_END, meleeCooldown);
+            return animation;
+        }
+        return null;
     }
 
     protected RawAnimation getEquipAnimation(AnimationState<GunAnimator> event) {
-        var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);
-        animationHelper.syncAnimation(event, EQUIP, equipTime);
-        return animation;
+        if(isFirstPerson(transformType)) {
+            var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);
+            animationHelper.syncAnimation(event, EQUIP, equipTime);
+            return animation;
+        }
+        return null;
     }
 
     protected RawAnimation getShootingAnimation(AnimationState<GunAnimator> event) {
-        var animation = playGunAnim(SHOT, LOOP);
-        animationHelper.syncAnimation(event, SHOT, rate);
-        return animation;
+        if(isFirstPerson(transformType)) {
+            var animation = playGunAnim(SHOT, LOOP);
+            animationHelper.syncAnimation(event, SHOT, rate);
+            return animation;
+        }
+        return null;
     }
 
     protected RawAnimation getReloadingAnimation(AnimationState<GunAnimator> event) {
-        var animation = begin();
+        if(isFirstPerson(transformType)) {
+            var animation = begin();
 
-        if(ModSyncedDataKeys.RELOAD_START.getValue(getEntity())){
-            animation = getStartReloadAnimation(event);
-        }
-        else if(ModSyncedDataKeys.RELOAD_END.getValue(getEntity())){
-            animation = getEndReloadAnimation(event);
-        }
-        else {
-            animation = getDefaultReloadAnimation(event);
-        }
+            if (ModSyncedDataKeys.RELOAD_START.getValue(getEntity())) {
+                animation = getStartReloadAnimation(event);
+            } else if (ModSyncedDataKeys.RELOAD_END.getValue(getEntity())) {
+                animation = getEndReloadAnimation(event);
+            } else {
+                animation = getDefaultReloadAnimation(event);
+            }
 
-        return animation;
+            return animation;
+        }
+        return null;
     }
 
     protected RawAnimation getDefaultReloadAnimation(AnimationState<GunAnimator> event) {
