@@ -396,10 +396,10 @@ public class ServerPlayHandler {
         var action = message.getAction();
 
         if(action == KeyAction.HOLD){
-            GrenadeTracker.start(player, message.getHand());
+            ThrowingTracker.start(player, message.getHand());
         }
         else if(action == KeyAction.RELEASE){
-            GrenadeTracker.onRelease(player, message.getHand());
+            ThrowingTracker.onRelease(player, message.getHand());
         }
     }
 

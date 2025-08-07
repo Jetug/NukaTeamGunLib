@@ -1,6 +1,6 @@
 {
   "general": {
-    "mode": "ntgl:unsafe",
+    "mode": "ntgl:safe",
     "equipTime": 20,
     "prepareTime": 20,
     "throwTime": 6

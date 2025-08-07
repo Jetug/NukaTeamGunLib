@@ -20,7 +20,7 @@ import java.util.*;
 import static com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys.*;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public class GrenadeTracker {
+public class ThrowingTracker {
     private static final Map<Pair<InteractionHand, LivingEntity>, Tracker> TRACKER_MAP = new HashMap<>();
 
     @SubscribeEvent
@@ -161,7 +161,7 @@ public class GrenadeTracker {
                 }
 
                 if(lifeTick == 0){
-                    explode();
+                    onExpire();
                 }
 
                 if (isThrowing()){
@@ -188,7 +188,7 @@ public class GrenadeTracker {
 //            stop();
         }
 
-        private void explode() {
+        private void onExpire() {
             throwable.expire(entity);
             stop();
         }

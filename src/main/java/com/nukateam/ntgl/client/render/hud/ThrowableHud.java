@@ -39,9 +39,9 @@ public class ThrowableHud implements IGuiOverlay {
     private static final int BAR_HEIGHT = 6;
     private static final int BAR_START_X = 70;
     private static final int BAR_START_Y = 57;
-    protected static final Map<InteractionHand, GunHudCache> cache = Map.of(
-            InteractionHand.MAIN_HAND, new GunHudCache(InteractionHand.MAIN_HAND),
-            InteractionHand.OFF_HAND, new GunHudCache(InteractionHand.OFF_HAND)
+    protected static final Map<InteractionHand, ThrowableHudCache> cache = Map.of(
+            InteractionHand.MAIN_HAND, new ThrowableHudCache(InteractionHand.MAIN_HAND),
+            InteractionHand.OFF_HAND, new ThrowableHudCache(InteractionHand.OFF_HAND)
     );
 
     protected final Minecraft minecraft = Minecraft.getInstance();
@@ -92,7 +92,7 @@ public class ThrowableHud implements IGuiOverlay {
         return hand == InteractionHand.MAIN_HAND || GunModifierHelper.canRenderInOffhand(player);
     }
 
-    protected void renderAmmoCounter(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int x, int y) {
+    protected void renderAmmoCounter(GuiGraphics graphics, ThrowableHudCache handCache, ItemStack stack, int x, int y) {
         if(!GunModifierHelper.shouldRenderHud(new GunData(stack, minecraft.player))) return;
         var currentAmmoCountText = CURRENT_AMMO_FORMAT.format(handCache.ammoCount);
         var poseStack = graphics.pose();
@@ -111,29 +111,9 @@ public class ThrowableHud implements IGuiOverlay {
         renderFireModeIcon(graphics, handCache, x, y, currentAmmoCountText);
         renderAmmoTypeIcon(graphics, handCache, x, y, currentAmmoCountText);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-
-        renderFuelCounters(graphics, stack, x - BAR_START_X, y - BAR_START_Y);
     }
 
-    protected void renderFuelCounters(GuiGraphics graphics, ItemStack stack, int x, int y) {
-        var gunData = new GunData(stack, minecraft.player);
-        var allFuel = GunModifierHelper.getFuelTypes(gunData);
-        var barOffsetY = 0;
-
-        for (var fuelType : allFuel) {
-            renderFuelCounter(graphics, stack, fuelType, x, y - barOffsetY);
-            barOffsetY += 18;
-        }
-    }
-
-    protected void renderFuelCounter(GuiGraphics graphics, ItemStack stack, FuelType fuelType, int x, int y) {
-        var gunData = new GunData(stack, minecraft.player);
-        var fuelPercent = FuelUtils.getFuelPercent(stack, fuelType, gunData);
-        renderIcon(graphics, fuelType.getIcon(), x - 18, y - 4);
-        Figures.drawBar(graphics, x, y, BAR_WIDTH, BAR_HEIGHT, fuelPercent);
-    }
-
-    protected void renderCurrentAmmo(GuiGraphics graphics, GunHudCache handCache,
+    protected void renderCurrentAmmo(GuiGraphics graphics, ThrowableHudCache handCache,
                                      int x, int y,
                                      PoseStack poseStack,
                                      String currentAmmoCountText) {
@@ -150,7 +130,7 @@ public class ThrowableHud implements IGuiOverlay {
         poseStack.popPose();
     }
 
-    protected void renderInventoryAmmo(GuiGraphics graphics, GunHudCache handCache, int x, int y,
+    protected void renderInventoryAmmo(GuiGraphics graphics, ThrowableHudCache handCache, int x, int y,
                                        PoseStack poseStack, Font font) {
         var inventoryAmmoCountText = INVENTORY_AMMO_FORMAT.format(handCache.inventoryAmmoCount);
         poseStack.pushPose();
@@ -164,7 +144,7 @@ public class ThrowableHud implements IGuiOverlay {
         poseStack.popPose();
     }
 
-    protected void renderFireModeIcon(GuiGraphics graphics, GunHudCache handCache, int width, int height,
+    protected void renderFireModeIcon(GuiGraphics graphics, ThrowableHudCache handCache, int width, int height,
                                       String currentAmmoCountText) {
         var fireMode = handCache.fireMode;
         var icon = fireMode.getIcon();
@@ -174,7 +154,7 @@ public class ThrowableHud implements IGuiOverlay {
         renderIcon(graphics, icon, x, height - 46);
     }
 
-    protected void renderAmmoTypeIcon(GuiGraphics graphics, GunHudCache handCache, int width, int height, String currentAmmoCountText) {
+    protected void renderAmmoTypeIcon(GuiGraphics graphics, ThrowableHudCache handCache, int width, int height, String currentAmmoCountText) {
         var ammoType = handCache.ammoType;
         var icon = ammoType.getIcon();
         var textWidth =  minecraft.font.width(currentAmmoCountText) * 1.5;
@@ -187,14 +167,14 @@ public class ThrowableHud implements IGuiOverlay {
         graphics.blit(icon, x, y, 0F, 0F, 16, 16, 16, 16);
     }
 
-    protected int getIconX(GunHudCache handCache, double textWidth) {
+    protected int getIconX(ThrowableHudCache handCache, double textWidth) {
         if (handCache.hand == InteractionHand.OFF_HAND){
             return ICON_X - (int)textWidth - 20;
         }
         return ICON_X;
     }
 
-    protected void updateCache(GunHudCache handCache, LocalPlayer player, ItemStack stack) {
+    protected void updateCache(ThrowableHudCache handCache, LocalPlayer player, ItemStack stack) {
         if ((System.currentTimeMillis() - handCache.checkAmmoTimestamp) > 200) {
             var data = new GunData(stack, player);
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
