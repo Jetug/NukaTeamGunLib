@@ -6,7 +6,7 @@ import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.model.gun.ThrowableItemModel;
 import com.nukateam.ntgl.client.render.renderers.weapon.ThrowableItemRenderer;
-import com.nukateam.ntgl.common.data.holders.GrenadeMode;
+import com.nukateam.ntgl.common.data.holders.ThrowMode;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
 import com.nukateam.ntgl.common.data.constants.Animations;
@@ -60,7 +60,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
     protected int equipTime;
     protected int prepareTime;
     protected int throwingTime;
-    protected GrenadeMode mode;
+    protected ThrowMode mode;
 
     public ThrowableAnimator(ItemDisplayContext transformType, ThrowableItemRenderer<ThrowableAnimator> renderer) {
         super(transformType);
@@ -181,7 +181,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
 
             var animation = begin();
             var item = (IThrowable)getStack().getItem();
-            if(mode == GrenadeMode.UNSAFE && (isPreparing() || isThrowing())){
+            if(mode == ThrowMode.UNSAFE && (isPreparing() || isThrowing())){
                 animation = getTickingAnimation(event);
             }
             else {
@@ -221,7 +221,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
 
     protected RawAnimation getPrepareAnimation(AnimationState<ThrowableAnimator> event) {
         var name = PREPARE;
-        if(mode == GrenadeMode.SAFE && animationHelper.hasAnimation(PREPARE_SAFE)){
+        if(mode == ThrowMode.SAFE && animationHelper.hasAnimation(PREPARE_SAFE)){
             name = PREPARE_SAFE;
         }
 
@@ -232,10 +232,10 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
 
     protected RawAnimation getThrowingAnimation(AnimationState<ThrowableAnimator> event) {
         var name = THROW;
-        if(mode == GrenadeMode.SAFE && animationHelper.hasAnimation(THROW_SAFE)){
+        if(mode == ThrowMode.SAFE && animationHelper.hasAnimation(THROW_SAFE)){
             name = THROW_SAFE;
         }
-        var animation = playGunAnim(name, LOOP);
+        var animation = playGunAnim(name, HOLD_ON_LAST_FRAME);
         animationHelper.syncAnimation(event, throwingTime, name);
         return animation;
     }

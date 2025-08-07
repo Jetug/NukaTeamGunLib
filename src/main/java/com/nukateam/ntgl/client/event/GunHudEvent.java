@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.event;
 
 import com.nukateam.ntgl.client.render.hud.GunHud;
-import com.nukateam.ntgl.client.render.hud.GunHudCache;
+import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.eventbus.api.Cancelable;

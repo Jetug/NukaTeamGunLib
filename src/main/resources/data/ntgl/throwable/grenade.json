@@ -6,6 +6,7 @@
     "throwTime": 6
   },
   "projectile": {
+    "type": "ntgl:explosive",
     "damage": 1.0,
     "size": 1.0,
     "speed": 50.0,

@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.util.trackers;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.holders.GrenadeMode;
+import com.nukateam.ntgl.common.data.holders.ThrowMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
@@ -156,7 +156,7 @@ public class ThrowingTracker {
             prepareTick = Math.max(prepareTick - 1, 0);
 
             if(prepareTick == 0){
-                if(throwable.getConfig().getGeneral().getMode() == GrenadeMode.UNSAFE) {
+                if(throwable.getConfig().getGeneral().getMode() == ThrowMode.UNSAFE) {
                     lifeTick = Math.max(lifeTick - 1, 0);
                 }
 

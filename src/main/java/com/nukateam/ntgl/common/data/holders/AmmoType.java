@@ -12,6 +12,7 @@ public class AmmoType extends ResourceHolder {
     public static AmmoType LASER                = new AmmoType("laser"                );
     public static AmmoType TESLA                = new AmmoType("tesla"                );
     public static AmmoType ENERGETIC            = new AmmoType("energetic"            );
+    public static AmmoType ROCKET               = new AmmoType("rocket"               );
     public static AmmoType EXPLOSIVE            = new AmmoType("explosive"            );
     public static AmmoType EXPLOSIVE_INCENDIARY = new AmmoType("explosive_incendiary" );
     public static AmmoType FIRE                 = new AmmoType("fire"                 );
@@ -26,6 +27,7 @@ public class AmmoType extends ResourceHolder {
         registerType(INCENDIARY           );
         registerType(LASER                );
         registerType(TESLA                );
+        registerType(ROCKET               );
         registerType(ENERGETIC            );
         registerType(EXPLOSIVE            );
         registerType(EXPLOSIVE_INCENDIARY );

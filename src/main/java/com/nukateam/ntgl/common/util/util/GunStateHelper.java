@@ -87,7 +87,7 @@ public class GunStateHelper {
 
     public static AmmoType getAmmoType(GunData data) {
         var ammo = getAmmoConfig(data);
-        return ammo.getType();
+        return ammo.getAmmoType();
     }
 
     public static @NotNull ProjectileConfig getAmmoConfig(GunData data) {

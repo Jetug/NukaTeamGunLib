@@ -2,14 +2,12 @@ package com.nukateam.ntgl.client.render.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.nukateam.ntgl.client.render.hud.cache.ThrowableHudCache;
 import com.nukateam.ntgl.client.util.util.render.Figures;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.data.holders.FuelType;
 import com.nukateam.ntgl.common.foundation.item.AmmoBoxItem;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.util.util.FuelUtils;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.ThrowableStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -35,10 +33,6 @@ public class ThrowableHud implements IGuiOverlay {
     protected static final DecimalFormat INVENTORY_AMMO_FORMAT = new DecimalFormat("0000");
     private static final int ICON_X = 115;
     private static final int OFFHAND_X_OFFSET = 110;
-    private static final int BAR_WIDTH = 35;
-    private static final int BAR_HEIGHT = 6;
-    private static final int BAR_START_X = 70;
-    private static final int BAR_START_Y = 57;
     protected static final Map<InteractionHand, ThrowableHudCache> cache = Map.of(
             InteractionHand.MAIN_HAND, new ThrowableHudCache(InteractionHand.MAIN_HAND),
             InteractionHand.OFF_HAND, new ThrowableHudCache(InteractionHand.OFF_HAND)
@@ -78,7 +72,7 @@ public class ThrowableHud implements IGuiOverlay {
             var heldItem = player.getItemInHand(hand);
             var x = hand == InteractionHand.OFF_HAND ? OFFHAND_X_OFFSET : width;
 
-            if (heldItem.getItem() instanceof WeaponItem && shouldRender(hand, player)) {
+            if (heldItem.getItem() instanceof IThrowable && shouldRender(hand, player)) {
                 updateCache(cache, player, heldItem);
 //                if (!MinecraftForge.EVENT_BUS.post(new GunHudEvent(this, hand, graphics, cache, GunHudEvent.Phase.START))) {
                     renderAmmoCounter(graphics, cache, heldItem, x, height);
@@ -93,7 +87,7 @@ public class ThrowableHud implements IGuiOverlay {
     }
 
     protected void renderAmmoCounter(GuiGraphics graphics, ThrowableHudCache handCache, ItemStack stack, int x, int y) {
-        if(!GunModifierHelper.shouldRenderHud(new GunData(stack, minecraft.player))) return;
+//        if(!GunModifierHelper.shouldRenderHud(new GunData(stack, minecraft.player))) return;
         var currentAmmoCountText = CURRENT_AMMO_FORMAT.format(handCache.ammoCount);
         var poseStack = graphics.pose();
 
@@ -108,7 +102,7 @@ public class ThrowableHud implements IGuiOverlay {
 
         var iconColor = rgbToFloatRgba(colors.hud);
         RenderSystem.setShaderColor(iconColor[0], iconColor[1], iconColor[2], iconColor[3]);
-        renderFireModeIcon(graphics, handCache, x, y, currentAmmoCountText);
+        renderThrowModeIcon(graphics, handCache, x, y, currentAmmoCountText);
         renderAmmoTypeIcon(graphics, handCache, x, y, currentAmmoCountText);
         RenderSystem.setShaderColor(1, 1, 1, 1);
     }
@@ -144,10 +138,10 @@ public class ThrowableHud implements IGuiOverlay {
         poseStack.popPose();
     }
 
-    protected void renderFireModeIcon(GuiGraphics graphics, ThrowableHudCache handCache, int width, int height,
+    protected void renderThrowModeIcon(GuiGraphics graphics, ThrowableHudCache handCache, int width, int height,
                                       String currentAmmoCountText) {
-        var fireMode = handCache.fireMode;
-        var icon = fireMode.getIcon();
+        var mode = handCache.throwMode;
+        var icon = mode.getIcon();
         var textWidth = minecraft.font.width(currentAmmoCountText) * 1.5;
         var x = (int) (width - getIconX(handCache, textWidth) + textWidth);
 
@@ -175,13 +169,12 @@ public class ThrowableHud implements IGuiOverlay {
     }
 
     protected void updateCache(ThrowableHudCache handCache, LocalPlayer player, ItemStack stack) {
-        if ((System.currentTimeMillis() - handCache.checkAmmoTimestamp) > 200) {
-            var data = new GunData(stack, player);
+        if ((System.currentTimeMillis() - handCache.checkAmmoTimestamp) > 200 && stack.getItem() instanceof IThrowable throwable) {
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
-            handCache.maxAmmoCount = GunModifierHelper.getMaxAmmo(data);
-            handCache.fireMode = GunStateHelper.getFireMode(data);
-            handCache.ammoType = GunStateHelper.getAmmoType(data);
-            handCache.ammoCount = GunStateHelper.getAmmoCount(stack);
+            handCache.throwMode = ThrowableStateHelper.getMode(stack);
+            handCache.ammoType = throwable.getConfig().getProjectile().getAmmoType();
+            handCache.ammoCount = stack.getCount();
+            handCache.maxAmmoCount = stack.getMaxStackSize();
 
             if (!player.isCreative()) {
                 handCache.inventoryAmmoCount = getInventoryAmmoCount(stack, player.getInventory());
@@ -194,16 +187,14 @@ public class ThrowableHud implements IGuiOverlay {
     protected int getInventoryAmmoCount(ItemStack stack, Inventory inventory) {
         var inventoryAmmoCount = 0;
         for (int i = 0; i < inventory.getContainerSize(); i++) {
-            var gunData = new GunData(stack, minecraft.player);
             var inventoryStack = inventory.getItem(i);
             var inventoryItem = inventoryStack.getItem();
 
-            if (GunStateHelper.isCurrentAmmo(gunData, inventoryItem)) {
+            if (inventoryItem == stack.getItem()) {
                 inventoryAmmoCount += inventoryStack.getCount();
             }
             else if (inventoryItem instanceof AmmoBoxItem iAmmoBox) {
-                var currentAmmo = GunStateHelper.getAmmoItem(gunData);
-                inventoryAmmoCount += iAmmoBox.getAmmoCount(inventoryStack, currentAmmo);
+                inventoryAmmoCount += iAmmoBox.getAmmoCount(inventoryStack, stack.getItem());
             }
         }
         return inventoryAmmoCount;
