@@ -17,6 +17,7 @@ import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
@@ -128,44 +129,43 @@ public class ControllerHandler {
         if (player != null && world != null && Minecraft.getInstance().screen == null) {
             var heldItem = player.getMainHandItem();
 
-            if (!(heldItem.getItem() instanceof WeaponItem)) return false;
+            if (heldItem.getItem() instanceof WeaponItem) {
+                if (isEquals(originalButton, GunButtonBindings.SHOOT)) {
+                    shouldCancel = true;
+                    if (state) {
+                        ShootingHandler.get().fire(player, heldItem);
+                    }
+                } else if (isEquals(originalButton, GunButtonBindings.AIM)) {
+                    shouldCancel = true;
+                } else if (isEquals(originalButton, GunButtonBindings.STEADY_AIM)) {
+                    shouldCancel = true;
+                } else if (isEquals(originalButton, GunButtonBindings.RELOAD)) {
+                    shouldCancel = true;
+                    if (state) {
+                        ControllerHandler.reloadCounter = 0;
+                    }
+                } else if (isEquals(originalButton, GunButtonBindings.OPEN_ATTACHMENTS)) {
+                    shouldCancel = true;
+                    if (state) {
+                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
+                    }
+                } else if (isEquals(originalButton, GunButtonBindings.INSPECT)) {
+                    shouldCancel = true;
+                    ClientActions.inspectWeapon(player);
+                } else if (isEquals(originalButton, GunButtonBindings.SELECT_FIRE)) {
+                    shouldCancel = true;
+                    ClientActions.switchFireMode(hand);
+                } else if (isEquals(originalButton, GunButtonBindings.SELECT_AMMO)) {
+                    shouldCancel = true;
+                    ClientActions.switchFireMode(hand);
+                }
+            } else if (heldItem.getItem() instanceof IThrowable){
+                if (isEquals(originalButton, GunButtonBindings.SELECT_FIRE)) {
+                    shouldCancel = true;
+                    ClientActions.switchThrowMode(hand);
+                }
+            }
 
-            if (isEquals(originalButton, GunButtonBindings.SHOOT)) {
-                shouldCancel = true;
-                if (state) {
-                    ShootingHandler.get().fire(player, heldItem);
-                }
-            }
-            else if (isEquals(originalButton, GunButtonBindings.AIM)) {
-                shouldCancel = true;
-            }
-            else if (isEquals(originalButton, GunButtonBindings.STEADY_AIM)) {
-                shouldCancel = true;
-            }
-            else if (isEquals(originalButton, GunButtonBindings.RELOAD)) {
-                shouldCancel = true;
-                if (state) {
-                    ControllerHandler.reloadCounter = 0;
-                }
-            }
-            else if (isEquals(originalButton, GunButtonBindings.OPEN_ATTACHMENTS)) {
-                shouldCancel = true;
-                if (state) {
-                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
-                }
-            }
-            else if (isEquals(originalButton, GunButtonBindings.INSPECT)) {
-                shouldCancel = true;
-                ClientActions.inspectWeapon(player);
-            }
-            else if (isEquals(originalButton, GunButtonBindings.SELECT_FIRE)) {
-                shouldCancel = true;
-                ClientActions.switchFireMode(hand);
-            }
-            else if (isEquals(originalButton, GunButtonBindings.SELECT_AMMO)) {
-                shouldCancel = true;
-                ClientActions.switchFireMode(hand);
-            }
         }
         return shouldCancel;
     }

@@ -7,6 +7,8 @@ import com.nukateam.ntgl.client.util.handler.ClientActions;
 import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import net.minecraft.client.Minecraft;
@@ -38,27 +40,36 @@ public class InputHandler {
         if (player == null || !isInGame())
             return;
 
-        if (KeyBinds.KEY_ATTACHMENTS.consumeClick()) {
-            PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
+        var heldItem = player.getItemInHand(hand).getItem();
+
+        if(heldItem instanceof WeaponItem) {
+            if (KeyBinds.KEY_ATTACHMENTS.consumeClick()) {
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
+            }
+            if (KeyBinds.KEY_RELOAD.consumeClick()) {
+                ClientReloadHandler.get().startReloading();
+            }
+            if (KeyBinds.KEY_UNLOAD.consumeClick()) {
+                ClientReloadHandler.get().unloadAmmo(InteractionHand.MAIN_HAND);
+                ClientReloadHandler.get().unloadAmmo(InteractionHand.OFF_HAND);
+            }
+            if (KeyBinds.KEY_INSPECT.consumeClick()) {
+                ClientActions.inspectWeapon(player);
+            }
+            if (KeyBinds.KEY_FIRE_SELECT.consumeClick()) {
+                ClientActions.switchFireMode(hand);
+            }
+            if (KeyBinds.KEY_AMMO_SELECT.consumeClick()) {
+                ClientActions.switchAmmo(hand, player);
+            }
+            if (KeyBinds.KEY_MELEE.consumeClick()) {
+                ClientActions.meleeAttack(player);
+            }
         }
-        if (KeyBinds.KEY_RELOAD.consumeClick()) {
-            ClientReloadHandler.get().startReloading();
-        }
-        if (KeyBinds.KEY_UNLOAD.consumeClick()) {
-            ClientReloadHandler.get().unloadAmmo(InteractionHand.MAIN_HAND);
-            ClientReloadHandler.get().unloadAmmo(InteractionHand.OFF_HAND);
-        }
-        if (KeyBinds.KEY_INSPECT.consumeClick()){
-            ClientActions.inspectWeapon(player);
-        }
-        if(KeyBinds.KEY_FIRE_SELECT.consumeClick()){
-            ClientActions.switchFireMode(hand);
-        }
-        if(KeyBinds.KEY_AMMO_SELECT.consumeClick()){
-            ClientActions.switchAmmo(hand, player);
-        }
-        if(KeyBinds.KEY_MELEE.consumeClick()){
-            ClientActions.meleeAttack(player);
+        else if (heldItem instanceof IThrowable){
+            if (KeyBinds.KEY_FIRE_SELECT.consumeClick()) {
+                ClientActions.switchThrowMode(hand);
+            }
         }
     }
 

@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Set;
 
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
@@ -39,7 +38,7 @@ public class GunStateHelper {
     public static void switchAmmo(GunData data){
         var ammoItems = GunModifierHelper.getAmmoItems(data);
         var current = getAmmoId(data);
-        var newAmmo = cycleSet(ammoItems, current);
+        var newAmmo = SetUtils.cycleSet(ammoItems, current);
 
         setCurrentAmmo(data, newAmmo);
     }
@@ -66,7 +65,7 @@ public class GunStateHelper {
         var currentAmmo = getAmmoId(tag);
 
         if (currentAmmo == null) {
-            return getFirst(ammoItems);
+            return SetUtils.getFirst(ammoItems);
         }
         else return currentAmmo;
     }
@@ -99,7 +98,7 @@ public class GunStateHelper {
     public static void switchFireMode(GunData data){
         var fireModes = GunModifierHelper.getFireModes(data);
         var current = getFireMode(data);
-        var newFireMode = cycleSet(fireModes, current);
+        var newFireMode = SetUtils.cycleSet(fireModes, current);
         setFireMode(data, newFireMode);
     }
 
@@ -114,8 +113,8 @@ public class GunStateHelper {
         var currentFireMode = getFireMode(data.gun);
 
         if (currentFireMode == null || !fireModes.contains(currentFireMode)) {
-            setFireMode(data,getFirst(fireModes));
-            return getFirst(fireModes);
+            setFireMode(data, SetUtils.getFirst(fireModes));
+            return SetUtils.getFirst(fireModes);
         }
         else return currentFireMode;
     }
@@ -126,21 +125,6 @@ public class GunStateHelper {
         if(tag.contains(FIRE_MODE, Tag.TAG_STRING))
             return FireMode.getType(tag.getString(FIRE_MODE));
         else return null;
-    }
-
-    private static <T> T cycleSet(Set<T> set, T value) {
-        var buff = new ArrayList<>(set.stream().toList());
-        var i = buff.indexOf(value);
-
-        if(i == set.size() - 1)
-            i = 0;
-        else i++;
-
-        return buff.get(i);
-    }
-
-    public static <T> T getFirst(Set<T> set) {
-        return set.iterator().next();
     }
 
     public static boolean isMaxAmmo(GunData data) {

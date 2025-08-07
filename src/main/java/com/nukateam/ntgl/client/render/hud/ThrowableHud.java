@@ -171,7 +171,7 @@ public class ThrowableHud implements IGuiOverlay {
     protected void updateCache(ThrowableHudCache handCache, LocalPlayer player, ItemStack stack) {
         if ((System.currentTimeMillis() - handCache.checkAmmoTimestamp) > 200 && stack.getItem() instanceof IThrowable throwable) {
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
-            handCache.throwMode = ThrowableStateHelper.getMode(stack);
+            handCache.throwMode = ThrowableStateHelper.getThrowMode(stack);
             handCache.ammoType = throwable.getConfig().getProjectile().getAmmoType();
             handCache.ammoCount = stack.getCount();
             handCache.maxAmmoCount = stack.getMaxStackSize();

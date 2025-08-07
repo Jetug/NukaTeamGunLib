@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.network;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
@@ -10,6 +11,7 @@ import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.trackers.*;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.ThrowableStateHelper;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.util.StackUtils;
@@ -412,6 +414,11 @@ public class ServerPlayHandler {
                 case SWITCH_AMMO -> handleAmmoSwitch(message.getHand(), player, stack);
             }
         }
+        else if(stack.getItem() instanceof IThrowable){
+            switch (message.getHandAction()) {
+                case SWITCH_THROW_MODE -> handleThrowModeSwitch(player, stack);
+            }
+        }
     }
 
     public static void handleMeleeAttack(C2SMessageMeleeAttack message, ServerPlayer player) {
@@ -428,6 +435,11 @@ public class ServerPlayHandler {
     public static void handleFireModeSwitch(ServerPlayer player, ItemStack stack) {
         var data = new GunData(stack, player);
         GunStateHelper.switchFireMode(data);
+        player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
+    }
+
+    public static void handleThrowModeSwitch(ServerPlayer player, ItemStack stack) {
+        ThrowableStateHelper.switchThrowMode(stack);
         player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
     }
 

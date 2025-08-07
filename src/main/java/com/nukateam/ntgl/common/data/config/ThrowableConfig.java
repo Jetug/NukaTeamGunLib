@@ -36,7 +36,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     public static final String TEXTURES = "Textures";
 
     public static class General implements INBTSerializable<CompoundTag>{
-        @Optional private ThrowMode mode = ThrowMode.SAFE;
+        @Optional LinkedHashSet<ThrowMode> mode = new LinkedHashSet<>(List.of(ThrowMode.SAFE));
         @Optional private ProjectileType projectile = ProjectileType.BULLET;
         private int equipTime = 0;
         private int prepareTime = 0;
@@ -51,7 +51,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         @Override
         public CompoundTag serializeNBT() {
             var tag = new CompoundTag();
-            tag.putString("mode", mode.toString());
+            tag.put("mode", NbtUtils.serializeSet(this.mode));
             tag.putString("projectile", projectile.toString());
             tag.putInt(EQUIP_TIME, equipTime);
             tag.putInt(PREPARE_TIME, prepareTime);
@@ -61,8 +61,8 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
 
         @Override
         public void deserializeNBT(CompoundTag tag) {
-            if (tag.contains("mode", Tag.TAG_STRING)) {
-                this.mode = ThrowMode.getType(tag.getString("mode"));
+            if (tag.contains("mode", Tag.TAG_COMPOUND)) {
+                this.mode = NbtUtils.deserializeSet(tag.getCompound("mode"), ThrowMode::getType);
             }
             if (tag.contains("projectile", Tag.TAG_STRING)) {
                 this.projectile = ProjectileType.getType(tag.getString("projectile"));
@@ -90,7 +90,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
 
         public General copy() {
             var gun = new General();
-            gun.mode = mode;
+            gun.mode = (LinkedHashSet<ThrowMode>)mode.clone();
             gun.projectile = projectile;
             gun.equipTime = equipTime;
             gun.prepareTime = prepareTime;
@@ -102,7 +102,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
             return projectile;
         }
 
-        public ThrowMode getMode() {
+        public LinkedHashSet<ThrowMode> getThrowModes() {
             return mode;
         }
 

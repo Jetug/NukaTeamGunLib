@@ -103,7 +103,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
             prepareTime = throwable.getConfig().getGeneral().getPrepareTime();
             throwingTime = throwable.getConfig().getGeneral().getThrowTime();
             equipTime = throwable.getConfig().getGeneral().getEquipTime();
-            mode = ThrowableStateHelper.getMode(getStack());
+            mode = ThrowableStateHelper.getThrowMode(getStack());
         }
     }
 
