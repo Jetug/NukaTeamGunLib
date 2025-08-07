@@ -97,7 +97,7 @@ public class ServerPlayHandler {
         var heldItem = shooter.getItemInHand(hand);
 
         if (heldItem.getItem() instanceof WeaponItem weaponItem
-                && (Gun.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
+                && (GunStateHelper.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
             var modifiedGun = weaponItem.getModifiedGun(heldItem);
             var tag = heldItem.getOrCreateTag();
 
@@ -143,7 +143,7 @@ public class ServerPlayHandler {
                     var factory = ProjectileManager.getInstance().getFactory(data);
                     var projectileEntity = factory.create(world, shooter, heldItem, weaponItem, modifiedGun);
                     projectileEntity.setWeapon(heldItem);
-                    projectileEntity.setAdditionalDamage(Gun.getAdditionalDamage(heldItem));
+                    projectileEntity.setAdditionalDamage(GunStateHelper.getAdditionalDamage(heldItem));
                     world.addFreshEntity(projectileEntity);
                     spawnedProjectiles[i] = projectileEntity;
                     projectileEntity.tick();
@@ -197,12 +197,12 @@ public class ServerPlayHandler {
                 }
 
                 if (!(shooter instanceof Player player && player.isCreative())) {
-                    if (!Gun.isAmmoIgnored(heldItem)) {
+                    if (!GunStateHelper.isAmmoIgnored(heldItem)) {
                         int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.RECLAIMED.get(), heldItem);
                         if (level == 0 || shooter.level().random.nextInt(4 - Mth.clamp(level, 1, 2)) != 0) {
                             var ammoPerShot = GunModifierHelper.getAmmoPerShot(data);
-                            var remainingAmmo =  Math.max(0, Gun.getAmmo(data.gun) - ammoPerShot);
-                            Gun.setAmmo(data.gun, remainingAmmo);
+                            var remainingAmmo =  Math.max(0, GunStateHelper.getAmmoCount(data.gun) - ammoPerShot);
+                            GunStateHelper.setAmmo(data.gun, remainingAmmo);
                         }
                     }
                 }
@@ -219,7 +219,7 @@ public class ServerPlayHandler {
     public static void handlePreFireSound(C2SMessagePreFireSound message, ServerPlayer player) {
         Level world = player.level();
         ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
-        if (heldItem.getItem() instanceof WeaponItem item && (Gun.hasAmmo(heldItem) || player.isCreative())) {
+        if (heldItem.getItem() instanceof WeaponItem item && (GunStateHelper.hasAmmo(heldItem) || player.isCreative())) {
             Gun modifiedGun = item.getModifiedGun(heldItem);
             ResourceLocation fireSound = getPreFireSound(heldItem, modifiedGun);
             if (fireSound != null) {

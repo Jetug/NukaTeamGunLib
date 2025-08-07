@@ -2,41 +2,29 @@ package com.nukateam.ntgl.client.render.renderers.weapon;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
-import com.nukateam.ntgl.client.handlers.ClientTickHandler;
-import com.nukateam.ntgl.client.render.layers.GlowingLayer;
-import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.util.helpers.compatibility.ChassisHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.item.attachment.BarrelItem;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
-import mod.azure.azurelib.util.ClientUtils;
-import mod.azure.azurelib.util.RenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
-import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderRightArm;
 import static com.nukateam.ntgl.client.util.ClientDebug.*;
 
 public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmsRenderer<Animator> {
@@ -62,14 +50,14 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmsRende
         this.transformType = transformType;
         this.gun = GunModifierHelper.getGun(stack);
         this.gunStack = stack;
-        this.gunAttachments = Gun.getAttachmentItems(stack);
+        this.gunAttachments = GunStateHelper.getAttachmentItems(stack);
         this.configAttachments = gun.getAttachments(gunAttachments);
         this.currentEntity = entity;
 
         if (TransformUtils.isFirstPerson(transformType) && AimingHandler.isScoping(stack))
             return;
 
-        var barrelStack = Gun.getAttachmentItem(AttachmentType.BARREL, stack);
+        var barrelStack = GunStateHelper.getAttachmentItem(AttachmentType.BARREL, stack);
 
         if(barrelStack.getItem() instanceof BarrelItem barrel) {
             this.barrelItem = barrel;
@@ -139,7 +127,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmsRende
         var visibleBones = new ArrayList<String>();
 
         gunAttachments.forEach((type, typeAttachments) -> {
-            var item = Gun.getAttachmentItem(type, gunStack);
+            var item = GunStateHelper.getAttachmentItem(type, gunStack);
 
             for (var attachment : typeAttachments) {
                 if (shouldRenderAttachment(attachment, item)) {

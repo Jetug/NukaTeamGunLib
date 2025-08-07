@@ -226,9 +226,9 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected RawAnimation getHoldAnimation(AnimationState<GunAnimator> event) {
-        if(isFirstPerson(transformType))
+//        if(isFirstPerson(transformType))
             return playGunAnim(HOLD, LOOP);
-        else return null;
+//        else return null;
     }
 
     protected RawAnimation getHideAnimation() {

@@ -6,7 +6,6 @@ import com.nukateam.ntgl.client.event.*;
 import com.nukateam.ntgl.client.util.util.render.Figures;
 import com.nukateam.ntgl.common.data.holders.FuelType;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.AmmoBoxItem;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
@@ -204,7 +203,7 @@ public class GunHud implements IGuiOverlay {
             handCache.maxAmmoCount = GunModifierHelper.getMaxAmmo(data);
             handCache.fireMode = GunStateHelper.getFireMode(data);
             handCache.ammoType = GunStateHelper.getAmmoType(data);
-            handCache.ammoCount = Gun.getAmmo(stack);
+            handCache.ammoCount = GunStateHelper.getAmmoCount(stack);
 
             if (!player.isCreative()) {
                 handCache.inventoryAmmoCount = getInventoryAmmoCount(stack, player.getInventory());

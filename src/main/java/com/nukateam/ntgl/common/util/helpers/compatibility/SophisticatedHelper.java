@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.util.helpers.compatibility;
 
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.SophisticatedAmmoContext;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -67,7 +67,7 @@ public class SophisticatedHelper {
 
         for (int i = 0; i < inventory.getSlots(); i++) {
             var stack = inventory.getStackInSlot(i);
-            if (Gun.isAmmo(stack, id)) {
+            if (InventoryUtil.isAmmo(stack, id)) {
                 return new SophisticatedAmmoContext(stack, inventory);
             }
         }
@@ -85,7 +85,7 @@ public class SophisticatedHelper {
 
         for (int i = 0; i < inventory.getSlots(); i++) {
             var stack = inventory.getStackInSlot(i);
-            if (Gun.isAmmo(stack, id)) {
+            if (InventoryUtil.isAmmo(stack, id)) {
                 if (stack.getDamageValue() == 0) {
                     return new SophisticatedAmmoContext(stack, inventory);
                 }

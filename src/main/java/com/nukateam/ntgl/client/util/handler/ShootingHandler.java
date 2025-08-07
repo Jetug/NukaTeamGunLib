@@ -4,7 +4,6 @@ import com.ibm.icu.impl.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -198,7 +197,7 @@ public class ShootingHandler {
 
             if (player != null) {
                 var mainHandItem = player.getMainHandItem();
-                if (mainHandItem.getItem() instanceof WeaponItem && (Gun.hasAmmo(mainHandItem) || player.isCreative())) {
+                if (mainHandItem.getItem() instanceof WeaponItem && (GunStateHelper.hasAmmo(mainHandItem) || player.isCreative())) {
                     var shooting = isKeyAttackDown();
                     if (Ntgl.controllableLoaded) {
                         shooting |= ControllerHandler.isShooting();
@@ -259,7 +258,7 @@ public class ShootingHandler {
 
     public void fire(LivingEntity shooter, ItemStack heldItem) {
         if (heldItem.getItem() instanceof WeaponItem
-                && (Gun.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))
+                && (GunStateHelper.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))
                 && isGun(heldItem, shooter)
                 && !shooter.isSpectator()) {
             var isMainHand = shooter.getMainHandItem() == heldItem;
@@ -311,7 +310,7 @@ public class ShootingHandler {
     }
 
     private void setupShootingData(ItemStack stack, Player player, InteractionHand arm) {
-        if(!Gun.hasAmmo(stack)) return;
+        if(!GunStateHelper.hasAmmo(stack)) return;
         var data = shootingData.get(arm);
         var gunData = new GunData(stack, player);
 

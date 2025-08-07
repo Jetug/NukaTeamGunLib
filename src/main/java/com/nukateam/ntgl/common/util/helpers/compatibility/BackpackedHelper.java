@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.util.helpers.compatibility;
 
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.mrcrayfish.backpacked.inventory.BackpackedInventoryAccess;
+import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +19,7 @@ public class BackpackedHelper {
 
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
-            if (Gun.isAmmo(stack, id)) {
+            if (InventoryUtil.isAmmo(stack, id)) {
                 return new AmmoContext(stack, inventory);
             }
         }
@@ -37,7 +37,7 @@ public class BackpackedHelper {
 
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             var stack = inventory.getItem(i);
-            if (Gun.isAmmo(stack, id)) {
+            if (InventoryUtil.isAmmo(stack, id)) {
                 if(stack.getDamageValue() == 0)
                     return new AmmoContext(stack, inventory);
                 if (ammo == null || (stack.getDamageValue() < ammo.getDamageValue() && ammo.getDamageValue() < ammo.getMaxDamage()))

@@ -2,8 +2,8 @@ package com.nukateam.ntgl.client.util.handler;
 
 
 import com.nukateam.ntgl.client.util.util.PropertyHelper;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
@@ -74,7 +74,7 @@ public class AimingHandler {
     }
 
     public static boolean isScoping(ItemStack gun) {
-        return AimingHandler.isAiming(gun) && Gun.hasScopeOverlay(gun);
+        return AimingHandler.isAiming(gun) && GunStateHelper.hasScopeOverlay(gun);
     }
 
     @SubscribeEvent
@@ -167,8 +167,8 @@ public class AimingHandler {
         if (modifiedGun.getModules().getZoom() == null)
             return;
 
-        double time = PropertyHelper.getSightAnimations(heldItem, modifiedGun).getFovCurve().apply(this.normalisedAdsProgress);
-        float modifier = Gun.getFovModifier(heldItem, modifiedGun);
+        double time = PropertyHelper.getSightAnimations(heldItem).getFovCurve().apply(this.normalisedAdsProgress);
+        float modifier = GunStateHelper.getFovModifier(heldItem, modifiedGun);
         modifier = (1.0F - modifier) * (float) time;
         event.setFOV(event.getFOV() - event.getFOV() * modifier);
     }

@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.common.foundation.container.slot;
 
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -94,11 +93,11 @@ public class AttachmentSlot extends Slot {
     public static void checkAmmoCount(ItemStack stack, LivingEntity entity) {
         var gunData = new GunData(stack, entity);
         var maxAmmo = GunModifierHelper.getMaxAmmo(gunData  );
-        var ammoCount = Gun.getAmmo(stack);
+        var ammoCount = GunStateHelper.getAmmoCount(stack);
         var diff = ammoCount - maxAmmo;
 
         if(diff > 0){
-            Gun.setAmmo(stack, maxAmmo);
+            GunStateHelper.setAmmo(stack, maxAmmo);
 
             var ammoItem = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoId(gunData));
             var dropStack = new ItemStack(ammoItem, diff);

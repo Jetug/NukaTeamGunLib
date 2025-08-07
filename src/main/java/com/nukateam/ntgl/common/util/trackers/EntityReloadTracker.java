@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -79,7 +80,7 @@ public class EntityReloadTracker {
         }
         else{
             var data = new GunData(tracker.stack, entity);
-            Gun.fillAmmo(data);
+            GunStateHelper.fillAmmo(data);
             setReloading(entity, tracker.arm, false);
 //            RELOAD_TRACKER_MAP.remove(entity);
             FOR_REMOVE.add(entity);

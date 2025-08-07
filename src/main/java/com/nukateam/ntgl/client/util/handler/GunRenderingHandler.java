@@ -17,6 +17,7 @@ import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -214,11 +215,11 @@ public class GunRenderingHandler {
 
         // Calculate the time curve
         double time = AimingHandler.get().getNormalisedAdsProgress();
-        var sightAnimation = PropertyHelper.getSightAnimations(heldItem, modifiedGun);
+        var sightAnimation = PropertyHelper.getSightAnimations(heldItem);
         time = sightAnimation.getViewportCurve().apply(time);
 
         // Apply the new FOV
-        var viewportFov = PropertyHelper.getViewportFov(heldItem, modifiedGun);
+        var viewportFov = PropertyHelper.getViewportFov(heldItem);
         var newFov = viewportFov > 0 ? viewportFov : event.getFOV(); // Backwards compatibility
         event.setFOV(Mth.lerp(time, event.getFOV(), newFov));
     }
@@ -363,7 +364,7 @@ public class GunRenderingHandler {
                 /* Controls the direction of the following translations, changes depending on the main hand. */
                 var side = isRight ? 1.0F : -1.0F;
                 var time = AimingHandler.get().getNormalisedAdsProgress();
-                var transition = getSightAnimations(heldItem, modifiedGun).getSightCurve().apply(time);
+                var transition = getSightAnimations(heldItem).getSightCurve().apply(time);
 
                 /* Reverses the original first person translations */
                 poseStack.translate(-0.56 * side * transition, 0.52 * transition, 0.72 * transition);
@@ -420,7 +421,7 @@ public class GunRenderingHandler {
         poseStack.translate(x * offset, y, z);
         poseStack.translate(0, -0.25, 0.25);
         var aiming = (float) Math.sin(Math.toRadians(AimingHandler.get().getNormalisedAdsProgress() * 180F));
-        aiming = getSightAnimations(heldItem, modifiedGun).getAimTransformCurve().apply(aiming);
+        aiming = getSightAnimations(heldItem).getAimTransformCurve().apply(aiming);
         poseStack.mulPose(Axis.ZP.rotationDegrees(aiming * 10F * offset));
         poseStack.mulPose(Axis.XP.rotationDegrees(aiming * 5F));
         poseStack.mulPose(Axis.YP.rotationDegrees(aiming * 5F * offset));
@@ -478,7 +479,7 @@ public class GunRenderingHandler {
 
     private void applyRecoilTransforms(PoseStack poseStack, Player player, ItemStack item, Gun gun) {
         double recoilNormal = RecoilHandler.get().getGunRecoilNormal();
-        if (Gun.hasAttachmentEquipped(item, gun, AttachmentType.SCOPE)) {
+        if (GunStateHelper.hasAttachmentEquipped(item, AttachmentType.SCOPE)) {
             recoilNormal -= recoilNormal * (0.5 * AimingHandler.get().getNormalisedAdsProgress());
         }
 

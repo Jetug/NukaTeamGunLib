@@ -461,7 +461,7 @@ public class GunModifierHelper {
     }
 
     private static IGunModifier[] getAttachmentModifiers(ItemStack gun, AttachmentType type) {
-        var attachmentItem = Gun.getAttachmentItem(type, gun);
+        var attachmentItem = GunStateHelper.getAttachmentItem(type, gun);
 
         if (!attachmentItem.isEmpty() && attachmentItem.getItem() instanceof IAttachment<?> attachment) {
             var modifiers = attachment.getProperties().getModifiers();

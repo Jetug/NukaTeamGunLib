@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.handlers;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -58,7 +57,7 @@ public class GunEventHandler {
 
         if (heldItem.getItem() instanceof WeaponItem) {
             if (heldItem.isDamageableItem() && tag != null) {
-                if (Gun.hasAmmo(heldItem)) {
+                if (GunStateHelper.hasAmmo(heldItem)) {
                     damageGun(heldItem, level, entity);
                 }
                 if (heldItem.getDamageValue() >= (heldItem.getMaxDamage() / 1.5)) {
@@ -127,7 +126,7 @@ public class GunEventHandler {
 //        var rifleAmmoLocation = ModItems.RIFLE_AMMO.getId();
 //        var shotgunShellLocation = ModItems.SHOTGUN_SHELL.getId();
 //        var spectreAmmoLocation = ModItems.SPECTRE_AMMO.getId();
-//        var projectileLocation = gun.getAmmo().getItem();
+//        var projectileLocation = gun.getAmmoCount().getItem();
 //
 //        SimpleParticleType casingType = ModParticleTypes.CASING_PARTICLE.get();
 //

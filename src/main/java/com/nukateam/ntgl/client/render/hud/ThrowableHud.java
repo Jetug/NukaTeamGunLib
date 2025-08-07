@@ -2,10 +2,8 @@ package com.nukateam.ntgl.client.render.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.nukateam.ntgl.client.event.GunHudEvent;
 import com.nukateam.ntgl.client.util.util.render.Figures;
 import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.holders.FuelType;
 import com.nukateam.ntgl.common.foundation.item.AmmoBoxItem;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -23,7 +21,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.minecraftforge.common.MinecraftForge;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -204,7 +201,7 @@ public class ThrowableHud implements IGuiOverlay {
             handCache.maxAmmoCount = GunModifierHelper.getMaxAmmo(data);
             handCache.fireMode = GunStateHelper.getFireMode(data);
             handCache.ammoType = GunStateHelper.getAmmoType(data);
-            handCache.ammoCount = Gun.getAmmo(stack);
+            handCache.ammoCount = GunStateHelper.getAmmoCount(stack);
 
             if (!player.isCreative()) {
                 handCache.inventoryAmmoCount = getInventoryAmmoCount(stack, player.getInventory());

@@ -15,13 +15,13 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
@@ -86,11 +86,11 @@ public class ControllerHandler {
                 var tag = heldItem.getTag();
                 var data = new GunData(heldItem, player);
 
-                if (tag != null && Gun.getAmmo(heldItem) < GunEnchantmentHelper.getAmmoCapacity(data)) {
+                if (tag != null && GunStateHelper.getAmmoCount(heldItem) < GunEnchantmentHelper.getAmmoCapacity(data)) {
                     actions.put(GunButtonBindings.RELOAD, new Action(Component.translatable("ntgl.action.reload"), Action.Side.LEFT));
                 }
 
-                Scope scope = Gun.getScope(heldItem);
+                Scope scope = GunStateHelper.getScope(heldItem);
                 if (scope != null && scope.isStable() && AimingHandler.get().isAiming()) {
                     actions.put(GunButtonBindings.STEADY_AIM, new Action(Component.translatable("ntgl.action.steady_aim"), Action.Side.RIGHT));
                 }
@@ -107,7 +107,7 @@ public class ControllerHandler {
                 yawSpeed.set(10.0F * (float) adsSensitivity);
                 pitchSpeed.set(7.5F * (float) adsSensitivity);
 
-                var scope = Gun.getScope(heldItem);
+                var scope = GunStateHelper.getScope(heldItem);
                 var controller = Controllable.getController();
                 if (scope != null && scope.isStable() && controller != null && controller.isButtonPressed(GunButtonBindings.STEADY_AIM.getButton())) {
                     yawSpeed.set(yawSpeed.get() / 2.0F);

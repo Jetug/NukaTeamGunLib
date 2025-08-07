@@ -5,6 +5,7 @@ import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.*;
@@ -102,16 +103,16 @@ public class ClientReloadHandler {
 
         if (reloading) {
             if (stack.getItem() instanceof WeaponItem) {
-                var isAmmoIgnored = Gun.isAmmoIgnored(stack);
-                var hasAmmo = Gun.hasNoAmmo(player, stack);
+                var isAmmoIgnored = GunStateHelper.isAmmoIgnored(stack);
+                var hasAmmo = GunStateHelper.hasNoAmmo(player, stack);
                 var data = new GunData(stack, player);
-                var isMaxAmmo = Gun.isMaxAmmo(data);
+                var isMaxAmmo = GunStateHelper.isMaxAmmo(data);
 
                 if (!isAmmoIgnored && !hasAmmo && !isMaxAmmo) {
                     var gun = ((WeaponItem) stack.getItem()).getModifiedGun(stack);
                     reloadTicks = GunModifierHelper.getReloadTime(data);
 
-                    if (Gun.getAmmo(stack) >= GunEnchantmentHelper.getAmmoCapacity(data))
+                    if (GunStateHelper.getAmmoCount(stack) >= GunEnchantmentHelper.getAmmoCapacity(data))
                         return;
                     if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))
                         return;
@@ -152,8 +153,8 @@ public class ClientReloadHandler {
         var loadingType = GunModifierHelper.getLoadingType(dunData);
 
         if(loadingType.equals(LoadingType.PER_CARTRIDGE)){
-//            var ammoCount = general.getMaxAmmo(stack) - Gun.getAmmo(stack);
-            var ammoCount =  GunModifierHelper.getMaxAmmo(dunData) - Gun.getAmmo(stack);
+//            var ammoCount = general.getMaxAmmo(stack) - Gun.getAmmoCount(stack);
+            var ammoCount =  GunModifierHelper.getMaxAmmo(dunData) - GunStateHelper.getAmmoCount(stack);
 
             for (var i = 0; i < ammoCount; i++)
                 reloadDuration += reloadTime;

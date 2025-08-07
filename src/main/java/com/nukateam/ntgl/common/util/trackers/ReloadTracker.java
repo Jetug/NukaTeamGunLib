@@ -127,11 +127,11 @@ public class ReloadTracker {
 
     private boolean isWeaponFull() {
         var data = new GunData(stack, shooter);
-        return Gun.getAmmo(stack) >= GunEnchantmentHelper.getAmmoCapacity(data);
+        return GunStateHelper.getAmmoCount(stack) >= GunEnchantmentHelper.getAmmoCapacity(data);
     }
 
     private boolean hasNoAmmo(LivingEntity player) {
-        return Gun.hasNoAmmo(player, stack);
+        return GunStateHelper.hasNoAmmo(player, stack);
     }
 
     private boolean canReload(Player player) {
@@ -251,7 +251,7 @@ public class ReloadTracker {
     }
 
     private void addAmmo(LivingEntity entity, int amount) {
-        var context = Gun.findAmmo(entity, stack);
+        var context = InventoryUtil.findAmmo(entity, stack);
         var ammo = context.stack();
 
         if (!ammo.isEmpty()) {
@@ -281,14 +281,14 @@ public class ReloadTracker {
         var ammoItem = GunStateHelper.getAmmoId(data);
         var tag = this.stack.getTag();
 
-        return !Gun.findAmmo(entity, stack).stack().isEmpty() &&
+        return !InventoryUtil.findAmmo(entity, stack).stack().isEmpty() &&
                 tag.getInt(Tags.AMMO_COUNT) < GunEnchantmentHelper.getAmmoCapacity(data);
     }
 
     private void addMagazine(LivingEntity entity) {
         var data = new GunData(stack, entity);
         var ammoId = GunStateHelper.getAmmoId(data);
-        var context = Gun.findMagazine(entity, stack);
+        var context = InventoryUtil.findMagazine(entity, stack);
         var ammo = context.stack();
 
         if (!ammo.isEmpty()) {

@@ -13,6 +13,7 @@ import com.mrcrayfish.framework.api.serialize.DataArray;
 import com.mrcrayfish.framework.api.serialize.DataNumber;
 import com.mrcrayfish.framework.api.serialize.DataObject;
 import com.mrcrayfish.framework.api.serialize.DataType;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -82,7 +83,7 @@ public final class PropertyHelper {
             double cameraY = modifiedGun.getModules().getZoom().getYOffset();
             double cameraZ = modifiedGun.getModules().getZoom().getZOffset();
 
-            var attachment = Gun.getAttachmentItem(AttachmentType.SCOPE, stack);
+            var attachment = GunStateHelper.getAttachmentItem(AttachmentType.SCOPE, stack);
             if(!attachment.isEmpty() ){
                 var scope = (ScopeItem)attachment.getItem();
                 var attachmentData = modifiedGun.findAttachment(scope);
@@ -115,69 +116,6 @@ public final class PropertyHelper {
         return defaultOrigin;
     }
 
-    public static boolean hasMuzzleFlash(ItemStack weapon, Gun modifiedGun) {
-        DataObject weaponObject = getObjectByPath(weapon, WEAPON_KEY);
-        return weaponObject.has("muzzleFlash", DataType.OBJECT) || modifiedGun.getDisplay().getFlash() != null;
-    }
-
-//    public static Vec3 getMuzzleFlashPosition(ItemStack weapon, Gun modifiedGun) {
-//        // Try and get the animations from the scope
-//        if (Gun.hasAttachmentEquipped(weapon, modifiedGun, IAttachment.Type.BARREL)) {
-//            ItemStack barrelStack = Gun.getAttachmentItem(IAttachment.Type.BARREL, weapon);
-//            if (barrelStack.getItem() instanceof IBarrel) {
-//                DataObject barrelObject = getObjectByPath(barrelStack, BARREL_KEY);
-//                if (barrelObject.has("muzzleFlash", DataType.OBJECT)) {
-//                    DataObject muzzleObject = barrelObject.getDataObject("muzzleFlash");
-//                    DataArray translationArray = muzzleObject.getDataArray("translation");
-//                    Vec3 muzzlePosition = arrayToVec3(translationArray, Vec3.ZERO);
-//                    Vec3 barrelOrigin = PropertyHelper.getModelOrigin(barrelStack, ATTACHMENT_DEFAULT_ORIGIN);
-//                    Vec3 barrelPosition = PropertyHelper.getAttachmentPosition(weapon, modifiedGun, IAttachment.Type.BARREL);
-//                    Vec3 barrelScale = PropertyHelper.getAttachmentScale(weapon, modifiedGun, IAttachment.Type.BARREL);
-//                    return muzzlePosition.subtract(barrelOrigin).multiply(barrelScale).add(barrelPosition);
-//                }
-//            }
-//        }
-//
-//        DataObject weaponObject = getObjectByPath(weapon, WEAPON_KEY);
-//        if (weaponObject.has("muzzleFlash", DataType.OBJECT)) {
-//            DataObject muzzleObject = weaponObject.getDataObject("muzzleFlash");
-//            DataArray translationArray = muzzleObject.getDataArray("translation");
-//            return arrayToVec3(translationArray, Vec3.ZERO);
-//        }
-//
-//        Gun.Positioned muzzleFlash = modifiedGun.getDisplay().getFlash();
-//        if (muzzleFlash != null) {
-//            double displayX = muzzleFlash.getXOffset();
-//            double displayY = muzzleFlash.getYOffset();
-//            double displayZ = muzzleFlash.getZOffset();
-//            return new Vec3(displayX, displayY, displayZ).add(GUN_DEFAULT_ORIGIN);
-//        }
-//        return Vec3.ZERO;
-//    }
-//
-//    public static Vec3 getMuzzleFlashScale(ItemStack weapon, Gun modifiedGun) {
-//        DataObject weaponObject = getObjectByPath(weapon, WEAPON_KEY);
-//        if (weaponObject.has("muzzleFlash", DataType.OBJECT)) {
-//            DataObject muzzleObject = weaponObject.getDataObject("muzzleFlash");
-//            if (muzzleObject.has("scale", DataType.ARRAY)) {
-//                DataArray scaleArray = muzzleObject.getDataArray("scale");
-//                return arrayToVec3(scaleArray, DEFAULT_SCALE);
-//            }
-//            return DEFAULT_SCALE;
-//        }
-//        Display.Flash muzzleFlash = modifiedGun.getDisplay().getFlash();
-//        if (muzzleFlash != null) {
-//            double scale = muzzleFlash.getSize();
-//            return new Vec3(scale, scale, 1.0);
-//        }
-//        return DEFAULT_SCALE;
-//    }
-//
-//    public static boolean isUsingBarrelMuzzleFlash(ItemStack barrel) {
-//        DataObject customObject = getObjectByPath(barrel, BARREL_KEY);
-//        return customObject.has("muzzleFlash", DataType.OBJECT);
-//    }
-
     public static int getReticleColor(ItemStack stack) {
         // Prioritise getting the reticle colour from the ItemStack tag
         var tag = stack.getTag();
@@ -204,10 +142,10 @@ public final class PropertyHelper {
         return 0xFFFF0000;
     }
 
-    public static SightAnimation getSightAnimations(ItemStack weapon, Gun modifiedGun) {
+    public static SightAnimation getSightAnimations(ItemStack weapon) {
         // Try and get the animations from the scope
-        if (Gun.hasAttachmentEquipped(weapon, modifiedGun, AttachmentType.SCOPE)) {
-            var scopeStack = Gun.getScopeStack(weapon);
+        if (GunStateHelper.hasAttachmentEquipped(weapon, AttachmentType.SCOPE)) {
+            var scopeStack = GunStateHelper.getScopeStack(weapon);
             if (scopeStack.getItem() instanceof IAttachment<?> attachment && attachment.getType() == AttachmentType.SCOPE) {
                 DataObject scopeObject = getObjectByPath(scopeStack, SCOPE_KEY);
                 if (scopeObject.get("sightAnimation") instanceof DataObject sightObject) {
@@ -225,10 +163,10 @@ public final class PropertyHelper {
         return SightAnimation.DEFAULT;
     }
 
-    public static double getViewportFov(ItemStack weapon, Gun modifiedGun) {
+    public static double getViewportFov(ItemStack weapon) {
         // Get the viewport from the attached scope
-        if (Gun.hasAttachmentEquipped(weapon, modifiedGun, AttachmentType.SCOPE)) {
-            var scopeStack = Gun.getScopeStack(weapon);
+        if (GunStateHelper.hasAttachmentEquipped(weapon, AttachmentType.SCOPE)) {
+            var scopeStack = GunStateHelper.getScopeStack(weapon);
             var customObject = getObjectByPath(scopeStack, SCOPE_KEY);
             if (customObject.has("viewportFov", DataType.NUMBER)) {
                 return Mth.clamp(customObject.getDataNumber("viewportFov").asDouble(), 1.0, 100.0);
