@@ -20,9 +20,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Predicate;
 
-/**
- * Author: MrCrayfish
- */
 public class FlameProjectile extends ProjectileEntity {
     private static final float GROUND_FIRE_CHANCE = 0.4f;
     private static final float ENTITY_FIRE_CHANCE = 1.0f;

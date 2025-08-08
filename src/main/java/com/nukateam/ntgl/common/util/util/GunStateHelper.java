@@ -13,6 +13,7 @@ import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
+import com.nukateam.ntgl.modules.enchantment.ModEnchantments;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
@@ -281,5 +282,20 @@ public class GunStateHelper {
         }
 
         tag.put(Tags.ATTACHMENTS, attachmentsTag);
+    }
+
+    public static void consumeAmmo(GunData data) {
+        var shooter = data.shooter;
+        var heldItem = data.gun;
+        if(shooter != null && heldItem != null){
+            var ammoPerShot = GunModifierHelper.getAmmoPerShot(data);
+            var ammoCount = getAmmoCount(heldItem);
+            int level = heldItem.getEnchantmentLevel(ModEnchantments.RECLAIMED.get());
+
+            if (level == 0 || shooter.level().random.nextInt(4 - Mth.clamp(level, 1, 2)) != 0) {
+                var remainingAmmo = Math.max(0, ammoCount - ammoPerShot);
+                setAmmo(heldItem, remainingAmmo);
+            }
+        }
     }
 }

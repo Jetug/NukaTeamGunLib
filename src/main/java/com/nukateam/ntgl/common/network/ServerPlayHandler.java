@@ -23,7 +23,6 @@ import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
-import com.nukateam.ntgl.modules.enchantment.ModEnchantments;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
@@ -52,7 +51,6 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.MinecraftForge;
@@ -200,14 +198,7 @@ public class ServerPlayHandler {
 
                 if (!(shooter instanceof Player player && player.isCreative())) {
                     if (!GunStateHelper.isAmmoIgnored(heldItem)) {
-                        var ammoPerShot = GunModifierHelper.getAmmoPerShot(data);
-                        var ammoCount = GunStateHelper.getAmmoCount(heldItem);
-                        int level = heldItem.getEnchantmentLevel(ModEnchantments.RECLAIMED.get());
-
-                        if (level == 0 || shooter.level().random.nextInt(4 - Mth.clamp(level, 1, 2)) != 0) {
-                            var remainingAmmo =  Math.max(0, ammoCount - ammoPerShot);
-                            GunStateHelper.setAmmo(heldItem, remainingAmmo);
-                        }
+                        GunStateHelper.consumeAmmo(data);
                     }
                 }
 
