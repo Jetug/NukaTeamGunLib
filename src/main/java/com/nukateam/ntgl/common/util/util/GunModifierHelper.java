@@ -247,8 +247,8 @@ public class GunModifierHelper {
     }
 
     public static int getAmmoPerShot(GunData data) {
-        var equipTime = getGeneral(getGun(data.gun)).getAmmoPerShot();
-        var finalEquipTime = new AtomicInteger(equipTime);
+        var value = getGeneral(getGun(data.gun)).getAmmoPerShot();
+        var finalEquipTime = new AtomicInteger(value);
         forEachAttachment(data, (modifier -> finalEquipTime.set(modifier.modifyAmmoPerShot(finalEquipTime.get(), data))));
         return finalEquipTime.get();
     }

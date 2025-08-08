@@ -200,11 +200,13 @@ public class ServerPlayHandler {
 
                 if (!(shooter instanceof Player player && player.isCreative())) {
                     if (!GunStateHelper.isAmmoIgnored(heldItem)) {
-                        int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.RECLAIMED.get(), heldItem);
+                        var ammoPerShot = GunModifierHelper.getAmmoPerShot(data);
+                        var ammoCount = GunStateHelper.getAmmoCount(heldItem);
+                        int level = heldItem.getEnchantmentLevel(ModEnchantments.RECLAIMED.get());
+
                         if (level == 0 || shooter.level().random.nextInt(4 - Mth.clamp(level, 1, 2)) != 0) {
-                            var ammoPerShot = GunModifierHelper.getAmmoPerShot(data);
-                            var remainingAmmo =  Math.max(0, GunStateHelper.getAmmoCount(data.gun) - ammoPerShot);
-                            GunStateHelper.setAmmo(data.gun, remainingAmmo);
+                            var remainingAmmo =  Math.max(0, ammoCount - ammoPerShot);
+                            GunStateHelper.setAmmo(heldItem, remainingAmmo);
                         }
                     }
                 }
