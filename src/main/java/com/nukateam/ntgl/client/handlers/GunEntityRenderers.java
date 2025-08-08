@@ -23,8 +23,8 @@ public class GunEntityRenderers {
         event.registerEntityRenderer(Projectiles.FLAME_PROJECTILE.get(), FlameRenderer::new);
         event.registerEntityRenderer(Projectiles.GRENADE.get(), GrenadeRenderer::new);
         event.registerEntityRenderer(Projectiles.MISSILE.get(), MissileRenderer::new);
-        event.registerEntityRenderer(Projectiles.THROWABLE_GRENADE.get(), ThrowableGrenadeRenderer::new);
-        event.registerEntityRenderer(Projectiles.THROWABLE_STUN_GRENADE.get(), ThrowableGrenadeRenderer::new);
+        event.registerEntityRenderer(Projectiles.THROWABLE_GRENADE.get(), ThrowableItemRenderer::new);
+        event.registerEntityRenderer(Projectiles.THROWABLE_STUN_GRENADE.get(), ThrowableItemRenderer::new);
 
         event.registerEntityRenderer(ModEntityTypes.FLYING_GIBS.get(), FlyingGibsRenderer::new);
         event.registerEntityRenderer(ModEntityTypes.ASH_PILE.get(), AshPileRenderer::new);

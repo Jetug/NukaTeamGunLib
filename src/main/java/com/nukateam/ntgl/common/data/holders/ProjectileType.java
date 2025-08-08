@@ -8,17 +8,22 @@ import java.util.Map;
 public class ProjectileType extends ResourceHolder {
     public static ProjectileType BULLET = new ProjectileType("bullet");
     public static ProjectileType GRENADE = new ProjectileType("grenade");
+    public static ProjectileType STUN_GRENADE = new ProjectileType("stun_grenade");
     public static ProjectileType MISSILE = new ProjectileType("missile");
     public static ProjectileType LASER   = new ProjectileType("laser"  );
     public static ProjectileType TESLA   = new ProjectileType("tesla"  );
     public static ProjectileType FIRE    = new ProjectileType("fire"  );
     public static ProjectileType CONTINUOUS_LASER = new ProjectileType("continuous_laser");
 
+    public static ProjectileType THROWABLE = new ProjectileType("throwable");
+
+
     private static final Map<ResourceLocation, ProjectileType> typeMap = new HashMap<>();
 
     static {
         registerType(BULLET);
         registerType(GRENADE);
+        registerType(STUN_GRENADE);
         registerType(MISSILE);
         registerType(LASER);
         registerType(TESLA);

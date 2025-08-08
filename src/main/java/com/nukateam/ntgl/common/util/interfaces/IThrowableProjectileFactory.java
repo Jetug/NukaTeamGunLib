@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.util.interfaces;
 
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
-import com.nukateam.ntgl.common.foundation.entity.ThrowableItemEntity;
+import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 

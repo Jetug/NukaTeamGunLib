@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.common.foundation.entity.StunGrenadeEntity;
-import com.nukateam.ntgl.common.foundation.entity.ThrowableGrenadeEntity;
-import com.nukateam.ntgl.common.foundation.entity.ThrowableItemEntity;
+import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableGrenadeEntity;
+import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;

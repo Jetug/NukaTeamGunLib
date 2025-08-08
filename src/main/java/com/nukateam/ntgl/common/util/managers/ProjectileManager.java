@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.util.managers;
 
 import com.nukateam.ntgl.common.data.holders.ProjectileType;
-import com.nukateam.ntgl.common.foundation.entity.ThrowableGrenadeEntity;
+import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableGrenadeEntity;
 import com.nukateam.ntgl.common.util.interfaces.IProjectileFactory;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;

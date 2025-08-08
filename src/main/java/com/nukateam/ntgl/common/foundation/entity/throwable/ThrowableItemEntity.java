@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.entity;
+package com.nukateam.ntgl.common.foundation.entity.throwable;
 
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import net.minecraft.core.BlockPos;
@@ -31,6 +31,8 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
     private float gravityVelocity = 0.03F;
+    public float rotation;
+    public float prevRotation;
 
     /* The max life of the entity. If -1, will stay alive forever and will need to be explicitly removed. */
     private int maxLife = 20 * 10;

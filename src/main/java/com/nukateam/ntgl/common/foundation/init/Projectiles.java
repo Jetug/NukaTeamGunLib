@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.foundation.init;
 
 import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableGrenadeEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;

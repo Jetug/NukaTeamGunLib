@@ -1,7 +1,6 @@
 package com.nukateam.example.client;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.render.renderers.projectiles.ThrowableGrenadeRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;

@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.entity;
+package com.nukateam.ntgl.common.foundation.entity.throwable;
 
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
@@ -12,8 +12,6 @@ import net.minecraft.world.level.Level;
 
 public class ThrowableGrenadeEntity extends ThrowableItemEntity {
     private ProjectileConfig projectile = new ProjectileConfig();
-    public float rotation;
-    public float prevRotation;
 
     public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level worldIn) {
         super(entityType, worldIn);

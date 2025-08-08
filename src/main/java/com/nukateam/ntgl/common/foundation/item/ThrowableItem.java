@@ -7,7 +7,7 @@ import com.nukateam.ntgl.client.model.gun.ThrowableItemModel;
 import com.nukateam.ntgl.client.render.renderers.weapon.ThrowableItemRenderer;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
-import com.nukateam.ntgl.common.foundation.entity.ThrowableItemEntity;
+import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import mod.azure.azurelib.animatable.GeoItem;
