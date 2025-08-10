@@ -161,22 +161,22 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 if(equipTime > 0 && shooter instanceof Player player && EquipTracker.isEquiping(player, getArm())) {
                     animation = getEquipAnimation(event);
                 }
-                else if(ClientMeleeHandler.isOnDelay(shooter, arm) && TransformUtils.isFirstPerson(transformType)){
+                else if(ClientMeleeHandler.isOnDelay(shooter, arm)){
                     animation = getMeleeDelayAnimation(event);
                 }
-                else if(ClientMeleeHandler.isOnCooldown(shooter, arm) && TransformUtils.isFirstPerson(transformType)){
+                else if(ClientMeleeHandler.isOnCooldown(shooter, arm)){
                     animation = getMeleeCooldownAnimation(event);
                 }
                 else if (fireDelay > 0 && data.fireTimer > 0 && fireDelay != data.fireTimer) {
                     animation = getChargingAnimation(event, data);
                 }
-                else if (reloadHandler.isReloading(shooter, arm) && isFirstPerson(transformType)) {
+                else if (reloadHandler.isReloading(shooter, arm)) {
                     animation = getReloadingAnimation(event);
                 }
                 else if (isShooting) {
                     animation = getShootingAnimation(event);
                 }
-                else if (reloadHandler.isReloading(shooter, PlayerHelper.getOpposite(arm)) && isFirstPerson(transformType)) {
+                else if (reloadHandler.isReloading(shooter, PlayerHelper.getOpposite(arm))) {
                     animation = getHideAnimation();
                 }
                 else if (ClientHandler.getInspectionTicks(getArm()) > 0) {
