@@ -16,13 +16,15 @@ public class FireMode extends ResourceHolder {
     /** A fire mode that shoots in bursts*/
     public static final FireMode BURST = new FireMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "burst"));
 
+    public static final FireMode MULTI = new FireMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "multi"));
+
     private static final Map<ResourceLocation, FireMode> fireModeMap = new HashMap<>();
 
     static {
-        /* Registers the standard fire modes when the class is loaded */
         registerType(SEMI_AUTO);
         registerType(AUTO);
         registerType(BURST);
+        registerType(MULTI);
     }
 
     public FireMode(ResourceLocation id) {

@@ -36,6 +36,7 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String RECOIL_DURATION_OFFSET = "RecoilDurationOffset";
     public static final String RECOIL_ADS_REDUCTION = "RecoilAdsReduction";
     public static final String PROJECTILE_AMOUNT = "ProjectileAmount";
+    public static final String MULTISHOT_AMOUNT = "multishotAmount";
     public static final String ALWAYS_SPREAD = "AlwaysSpread";
     public static final String SPREAD = "Spread";
     public static final String CATEGORY = "category";
@@ -80,6 +81,7 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional float recoilDurationOffset;
     @Optional float recoilAdsReduction = 0.2F;
     @Optional int projectileAmount = 1;
+    @Optional int multishotAmount = 2;
     @Optional boolean alwaysSpread;
     @Optional boolean oneTimeCharge = true;
     @Optional float spread;
@@ -116,6 +118,7 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putFloat    (RECOIL_DURATION_OFFSET, this.recoilDurationOffset);
         tag.putFloat    (RECOIL_ADS_REDUCTION, this.recoilAdsReduction);
         tag.putInt      (PROJECTILE_AMOUNT, this.projectileAmount);
+        tag.putInt      (MULTISHOT_AMOUNT, this.multishotAmount);
         tag.putFloat    (SPREAD, this.spread);
         tag.putFloat    (MOVEMENT_MODIFIER, this.movementSpeed);
         tag.putBoolean  (ALWAYS_SPREAD, this.alwaysSpread);
@@ -202,6 +205,9 @@ public class General implements INBTSerializable<CompoundTag> {
         if (tag.contains(PROJECTILE_AMOUNT, Tag.TAG_ANY_NUMERIC)) {
             this.projectileAmount = tag.getInt(PROJECTILE_AMOUNT);
         }
+        if (tag.contains(MULTISHOT_AMOUNT, Tag.TAG_ANY_NUMERIC)) {
+            this.multishotAmount = tag.getInt(MULTISHOT_AMOUNT);
+        }
         if (tag.contains(ONE_TIME_CHARGE)) {
             this.oneTimeCharge = tag.getBoolean(ONE_TIME_CHARGE);
         }
@@ -261,6 +267,7 @@ public class General implements INBTSerializable<CompoundTag> {
             object.addProperty("recoilDurationOffset", this.recoilDurationOffset);
         if (this.recoilAdsReduction != 0.2F) object.addProperty("recoilAdsReduction", this.recoilAdsReduction);
         if (this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
+        object.addProperty("multishotAmount", this.multishotAmount);
         object.addProperty("alwaysSpread", this.alwaysSpread);
         object.addProperty("oneTimeCharge", this.oneTimeCharge);
         object.addProperty("melee", this.melee);
@@ -300,6 +307,7 @@ public class General implements INBTSerializable<CompoundTag> {
         general.recoilDurationOffset = this.recoilDurationOffset;
         general.recoilAdsReduction = this.recoilAdsReduction;
         general.projectileAmount = this.projectileAmount;
+        general.multishotAmount = this.multishotAmount;
         general.alwaysSpread = this.alwaysSpread;
         general.spread = this.spread;
         general.oneTimeCharge = this.oneTimeCharge;
@@ -473,6 +481,10 @@ public class General implements INBTSerializable<CompoundTag> {
      */
     public int getProjectileAmount() {
         return this.projectileAmount;
+    }
+
+    public int getMultishotAmount() {
+        return multishotAmount;
     }
 
     /**

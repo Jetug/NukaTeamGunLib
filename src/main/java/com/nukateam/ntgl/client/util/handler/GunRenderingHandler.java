@@ -369,12 +369,9 @@ public class GunRenderingHandler {
                 /* Reverses the original first person translations */
                 poseStack.translate(-0.56 * side * transition, 0.52 * transition, 0.72 * transition);
 
-                xOffset += 1.5 * 0.0625;
-                yOffset += 10 * 0.0625;
-                zOffset += -2.5 * 0.0625;
-
-                xOffset += 8 * 0.0625;
-                zOffset += 8 * 0.0625;
+                xOffset += 9.5 * 0.0625;
+                yOffset += 7.2 * 0.0625;
+                zOffset += 5.5 * 0.0625;
 
                 if(Ntgl.isDebugging()) {
                     xOffset += (double) ClientDebug.X / 10 * 0.0625;
@@ -384,6 +381,8 @@ public class GunRenderingHandler {
 
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
                 poseStack.translate(-xOffset * side * transition, -yOffset * transition, -zOffset * transition);
+//                poseStack.translate(0, -8.5 / 16D, 0.5 / 16D);
+
             }
         }
     }

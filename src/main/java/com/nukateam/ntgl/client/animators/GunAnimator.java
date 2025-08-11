@@ -177,7 +177,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                     animation = getShootingAnimation(event);
                 }
                 else if (reloadHandler.isReloading(shooter, PlayerHelper.getOpposite(arm))) {
-                    animation = getHideAnimation();
+                    animation = getHideAnimation(event);
                 }
                 else if (ClientHandler.getInspectionTicks(getArm()) > 0) {
                     animation = getInspectionAnimation(event);
@@ -231,10 +231,10 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 //        else return null;
     }
 
-    protected RawAnimation getHideAnimation() {
+    protected RawAnimation getHideAnimation(AnimationState<GunAnimator> event) {
         if(isFirstPerson(transformType))
             return begin().then(Animations.HIDE, HOLD_ON_LAST_FRAME);
-        else return null;
+        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getInspectionAnimation(AnimationState<GunAnimator> event) {
@@ -244,8 +244,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             animationHelper.syncAnimation(event, Animations.INSPECT, ClientHandler.getMaxInspectionTicks());
             return animation;
         }
-        else return null;
-
+        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getChargingAnimation(AnimationState<GunAnimator> event, ShootingData shootingData) {
@@ -262,7 +261,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             }
             return animation;
         }
-        return null;
+        else return getHoldAnimation(event);
     }
 
 //    protected RawAnimation getMeleeAnimation(AnimationState<GunAnimator> event) {
@@ -286,7 +285,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             animationHelper.syncAnimation(event, MELEE, meleeDelay);
             return animation;
         }
-        return null;
+        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getMeleeCooldownAnimation(AnimationState<GunAnimator> event) {
@@ -298,7 +297,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             animationHelper.syncAnimation(event, MELEE_END, meleeCooldown);
             return animation;
         }
-        return null;
+        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getEquipAnimation(AnimationState<GunAnimator> event) {
@@ -307,7 +306,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             animationHelper.syncAnimation(event, EQUIP, equipTime);
             return animation;
         }
-        return null;
+        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getShootingAnimation(AnimationState<GunAnimator> event) {
@@ -316,7 +315,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             animationHelper.syncAnimation(event, SHOT, rate);
             return animation;
         }
-        return null;
+        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getReloadingAnimation(AnimationState<GunAnimator> event) {
@@ -333,7 +332,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
             return animation;
         }
-        return null;
+        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getDefaultReloadAnimation(AnimationState<GunAnimator> event) {

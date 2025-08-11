@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.network;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -135,7 +136,17 @@ public class ServerPlayHandler {
                     SpreadTracker.get(shooter).update(shooter, weaponItem);
                 }
 
+                var fireMode = GunStateHelper.getFireMode(data);
+                var multishotAmount = GunModifierHelper.getMultishotAmount(data);
+
                 var count = GunModifierHelper.getProjectileAmount(data);
+
+                if(fireMode == FireMode.MULTI && multishotAmount > 1){
+                    var currentAmmo = GunStateHelper.getAmmoCount(heldItem);
+                    multishotAmount = Math.min(currentAmmo, multishotAmount);
+                    count *= multishotAmount;
+                }
+
                 var projectileProps = GunStateHelper.getAmmoConfig(data);
                 var spawnedProjectiles = new ProjectileEntity[count];
 

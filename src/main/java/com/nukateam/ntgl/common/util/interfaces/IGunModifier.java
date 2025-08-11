@@ -220,6 +220,10 @@ public interface IGunModifier {
         return amount;
     }
 
+    default int modifyMultishotAmount(int amount, GunData data) {
+        return amount;
+    }
+
     default Set<FireMode> modifyFireModes(Set<FireMode> fireMode, GunData data) {
         return fireMode;
     }

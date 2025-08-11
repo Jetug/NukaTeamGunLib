@@ -289,6 +289,15 @@ public class GunStateHelper {
         var heldItem = data.gun;
         if(shooter != null && heldItem != null){
             var ammoPerShot = GunModifierHelper.getAmmoPerShot(data);
+            var fireMode = GunStateHelper.getFireMode(data);
+            var multishotAmount = GunModifierHelper.getMultishotAmount(data);
+
+            if(fireMode == FireMode.MULTI && multishotAmount > 1){
+                var currentAmmo = GunStateHelper.getAmmoCount(heldItem);
+                multishotAmount = Math.min(currentAmmo, multishotAmount);
+                ammoPerShot *= multishotAmount;
+            }
+
             var ammoCount = getAmmoCount(heldItem);
             int level = heldItem.getEnchantmentLevel(ModEnchantments.RECLAIMED.get());
 

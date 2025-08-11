@@ -152,6 +152,12 @@ public class GunModifierHelper {
         return finalProjectileAmount.get();
     }
 
+    public static int getMultishotAmount(GunData data) {
+        var value = new AtomicInteger(getGeneral(getGun(data.gun)).getMultishotAmount());
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyMultishotAmount(value.get(), data))));
+        return value.get();
+    }
+
     public static Set<FireMode> getFireModes(GunData data) {
         var fireMode = getGeneral(getGun(data.gun)).getFireModes();
         var finalFireMode = new AtomicReference<>(fireMode);
