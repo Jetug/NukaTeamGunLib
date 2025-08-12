@@ -31,7 +31,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
     private float size;
     @Optional private float speed = 20;
     private int life = 20;
-    @Optional private AmmoType type = AmmoType.STANDARD;
+
     @Optional private ProjectileType projectile = ProjectileType.BULLET;
     @Optional private ResourceKey<DamageType> damageType = ModDamageTypes.BULLET;
     @Optional private boolean visible;
@@ -47,7 +47,6 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
-        tag.putString("Type", this.type.toString());
         tag.putString("Projectile", this.projectile.toString());
         tag.putString("DamageType", this.damageType.location().toString());
         tag.putFloat("Damage", this.damage);
@@ -101,9 +100,6 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         if (tag.contains("TrailLengthMultiplier", Tag.TAG_ANY_NUMERIC)) {
             this.trailLengthMultiplier = tag.getDouble("TrailLengthMultiplier");
         }
-        if (tag.contains("Type", Tag.TAG_STRING)) {
-            this.type = AmmoType.getType(tag.getString("Type"));
-        }
         if (tag.contains("Projectile", Tag.TAG_STRING)) {
             this.projectile = ProjectileType.getType(tag.getString("Projectile"));
         }
@@ -134,7 +130,6 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         object.addProperty("size", this.size);
         object.addProperty("speed", this.speed);
         object.addProperty("life", this.life);
-        object.addProperty("type", this.type.toString());
         object.addProperty("projectile", this.projectile.toString());
         object.addProperty("damageType", this.damageType.location().toString());
         GunJsonUtil.addObjectIfNotEmpty(object,"explosion", this.explosion.toJsonObject());
@@ -161,7 +156,6 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         projectile.magazineMode = this.magazineMode;
         projectile.trailColor = this.trailColor;
         projectile.trailLengthMultiplier = this.trailLengthMultiplier;
-        projectile.type = this.type;
         projectile.projectile = this.projectile;
         projectile.damageType = this.damageType;
         projectile.projectileAmount = this.projectileAmount;
@@ -243,7 +237,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
     }
 
     /**
-     * @return The amount of projectiles this weapon fires
+     * @return The amount of ammoData this weapon fires
      */
     public int getProjectileAmount() {
         return this.projectileAmount;
@@ -255,10 +249,6 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
      */
     public float getSpread() {
         return this.spread;
-    }
-
-    public AmmoType getAmmoType() {
-        return this.type;
     }
 
     public ProjectileType getProjectile() {

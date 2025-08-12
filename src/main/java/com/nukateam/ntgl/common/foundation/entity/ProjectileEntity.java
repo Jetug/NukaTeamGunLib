@@ -85,7 +85,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.shooter = shooter;
         this.weapon = weapon;
         this.general = GunModifierHelper.getGeneral(GunModifierHelper.getGun(weapon));
-        this.projectile = GunStateHelper.getAmmoConfig(data);
+        this.projectile = GunStateHelper.getProjectileConfig(data);
         this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
         this.modifiedGravity = projectile.isGravity() ? GunModifierHelper.getModifiedProjectileGravity(data, -0.04) : 0.0;
         this.life = GunModifierHelper.getModifiedProjectileLife(data, this.projectile.getLife());

@@ -26,18 +26,17 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
-
     public static final String EQUIP_TIME = "equipTime";
     public static final String PREPARE_TIME = "prepareTime";
     public static final String THROW_TIME = "throwTime";
     public static final String GENERAL = "General";
-    public static final String PROJECTILE = "Projectile";
+    public static final String AMMO_DATA = "AmmoData";
     public static final String SOUNDS = "Sounds";
     public static final String TEXTURES = "Textures";
 
     public static class General implements INBTSerializable<CompoundTag>{
         @Optional LinkedHashSet<ThrowMode> mode = new LinkedHashSet<>(List.of(ThrowMode.SAFE));
-        @Optional private ProjectileType projectile = ProjectileType.BULLET;
+        @Optional private ProjectileType projectile = ProjectileType.GRENADE;
         private int equipTime = 0;
         private int prepareTime = 0;
         private int throwTime = 1;
@@ -120,7 +119,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     }
 
     protected General general = new General();
-    protected ProjectileConfig projectile = new ProjectileConfig();
+    protected AmmoData ammoData = new AmmoData();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     @Ignored
@@ -140,7 +139,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.put(GENERAL, general.serializeNBT());
-        tag.put(PROJECTILE, projectile.serializeNBT());
+        tag.put(AMMO_DATA, ammoData.serializeNBT());
         tag.put(SOUNDS, NbtUtils.serializeStringMap(this.sounds));
         tag.put(TEXTURES, NbtUtils.serializeStringMap(this.textures));
         return tag;
@@ -151,8 +150,8 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         if (tag.contains(GENERAL, Tag.TAG_COMPOUND)) {
             this.general = General.create(tag.getCompound(GENERAL));
         }
-        if (tag.contains(PROJECTILE, Tag.TAG_COMPOUND)) {
-            this.projectile = ProjectileConfig.create(tag.getCompound(PROJECTILE));
+        if (tag.contains(AMMO_DATA, Tag.TAG_COMPOUND)) {
+            this.ammoData = AmmoData.create(tag.getCompound(AMMO_DATA));
         }
         if (tag.contains(SOUNDS, Tag.TAG_COMPOUND)) {
             this.sounds = deserializeSounds(tag.getCompound(SOUNDS));
@@ -165,7 +164,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     public JsonObject toJsonObject() {
         var gson = new Gson();
         var object = new JsonObject();
-        object.add("projectile", this.projectile.toJsonObject());
+        object.add("projectile", this.ammoData.toJsonObject());
         object.add("general", this.general.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object,"sounds", gson.toJsonTree(sounds).getAsJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object,"textures", gson.toJsonTree(textures).getAsJsonObject());
@@ -175,7 +174,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     public ThrowableConfig copy() {
         var gun = new ThrowableConfig();
         gun.general = general;
-        gun.projectile = projectile;
+        gun.ammoData = ammoData;
         gun.sounds = (HashMap<String, ResourceLocation>) this.sounds.clone();
         gun.textures = (HashMap<String, ResourceLocation>) this.textures.clone();
         return gun;
@@ -186,7 +185,11 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     }
 
     public ProjectileConfig getProjectile() {
-        return projectile;
+        return ammoData.getProjectile();
+    }
+
+    public AmmoConfig getAmmo(){
+        return ammoData.getAmmo();
     }
 
     public HashMap<String, ResourceLocation> getSoundsMap() {

@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 /**
- * This class allows weapons to fire custom projectiles instead of the default implementation. The
+ * This class allows weapons to fire custom ammoData instead of the default implementation. The
  * grenade launcher uses this to spawn a grenade entity with custom physics. Use {@link ProjectileManager}
  * to register a factory.
  * <p>

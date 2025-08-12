@@ -56,7 +56,7 @@ public class ProjectileManager {
 
     public IProjectileFactory getFactory(GunData data) {
         var item = GunStateHelper.getAmmoId(data);
-        var projectileType = GunStateHelper.getAmmoConfig(data).getProjectile();
+        var projectileType = GunStateHelper.getProjectileConfig(data).getProjectile();
         var factory = projectileForAmmoFactories.get(item);
 
         if(projectileForAmmoFactories.containsKey(item)){

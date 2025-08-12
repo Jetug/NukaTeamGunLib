@@ -47,7 +47,7 @@ public class S2CMessageBulletTrail extends PlayMessage<S2CMessageBulletTrail> {
         this.trailColor = this.enchanted ? 0x9C71FF : projectileProps.getTrailColor();
         this.trailLengthMultiplier = projectileProps.getTrailLengthMultiplier();
         this.life = projectileProps.getLife();
-        this.gravity = spawnedProjectiles[0].getModifiedGravity(); //It's possible that projectiles have different gravity
+        this.gravity = spawnedProjectiles[0].getModifiedGravity(); //It's possible that ammoData have different gravity
         this.shooterId = shooterId;
         this.particleData = particleData;
     }

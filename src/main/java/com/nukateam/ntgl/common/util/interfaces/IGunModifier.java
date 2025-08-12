@@ -2,8 +2,11 @@ package com.nukateam.ntgl.common.util.interfaces;
 
 import com.nukateam.example.common.registery.GunModifiers;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
+import com.nukateam.ntgl.common.data.config.AmmoConfig;
+import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.regestry.ProjectileRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Set;
@@ -325,6 +328,15 @@ public interface IGunModifier {
     }
 
     default int modifyMeleeMaxTargets(int value, GunData data) {
+        return value;
+    }
+
+    default ProjectileConfig modifyProjectile(ProjectileConfig value, GunData data) {
+        return value;
+    }
+
+
+    default AmmoConfig modifyAmmo(AmmoConfig value, GunData data) {
         return value;
     }
 

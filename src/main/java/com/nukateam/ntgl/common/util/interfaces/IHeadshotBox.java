@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 /**
  * This interface used to create hit box definitions of an entity's head. This has to be registered with
  * {@link BoundingBoxManager#registerHeadshotBox(EntityType, IHeadshotBox)}
- * in order for projectiles to be able to perform a headshot on the given entity.
+ * in order for ammoData to be able to perform a headshot on the given entity.
  * <p>
  * Author: MrCrayfish
  */

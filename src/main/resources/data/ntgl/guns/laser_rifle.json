@@ -14,13 +14,6 @@
       "ntgl:fusion_cell"
     ]
   },
-  "projectile": {
-    "item": "ntgl:fusion_cell",
-    "damage": 6.5,
-    "size": 0.2,
-    "speed": 150,
-    "life": 6
-  },
   "sounds": {
     "fire": "ntgl:item.laser_rifle.fire",
     "reload": "ntgl:item.laser_rifle.reload",

@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.util.util;
 
-import com.nukateam.ntgl.common.data.holders.ResourceHolder;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.config.Fuel;
@@ -58,35 +57,12 @@ public class NbtUtils {
         return set;
     }
 
-
-
     public static LinkedHashSet<FireMode> deserializeFireMode(CompoundTag tag){
         return deserializeSet(tag, (FireMode::getType));
-//
-//        var array = new HashSet<FireMode>();
-//
-//        for (var key: tag.getAllKeys()) {
-//            if(tag.contains(key, Tag.TAG_STRING)) {
-//                array.add(FireMode.getType(tag.getString(key)));
-//            }
-//        }
-//
-//        return array;
     }
 
     public static LinkedHashSet<ResourceLocation> deserializeResourceLocationSet(CompoundTag tag){
         return deserializeSet(tag, ResourceLocation::tryParse);
-
-
-//        var array = new HashSet<ResourceLocation>();
-//
-//        for (var key: tag.getAllKeys()) {
-//            if(tag.contains(key, Tag.TAG_STRING)) {
-//                array.add(ResourceLocation.tryParse(tag.getString(key)));
-//            }
-//        }
-//
-//        return array;
     }
 
     public static <T extends INBTSerializable> CompoundTag serializeArray(ArrayList<T> array){
@@ -96,50 +72,6 @@ public class NbtUtils {
         }
         return tag;
     }
-
-    public static <T extends ResourceHolder> CompoundTag serializeHolderArray(ArrayList<T> array){
-        var tag = new CompoundTag();
-        for (var i = 0; i < array.size(); i++){
-            tag.putString(String.valueOf(i), array.get(i).toString());
-        }
-        return tag;
-    }
-
-    public static <T extends ResourceHolder> ArrayList<T> deserializeHolderArray(
-            CompoundTag tag, Function<ResourceLocation, T> deserializer)
-    {
-        var array = new ArrayList<T>();
-        for (var key: tag.getAllKeys()) {
-            if(tag.contains(key, Tag.TAG_STRING)) {
-                var value = tag.getString(key);
-                var holder = deserializer.apply(ResourceLocation.tryParse(value));
-                array.add(holder);
-            }
-        }
-
-        return array;
-    }
-
-
-//    public static <T extends INBTSerializable> HashMap<ResourceLocation, T> deserializeMap(
-//            CompoundTag tag, Function<ResourceLocation, T> deserializer)
-//    {
-//        var map = new HashMap<ResourceLocation, T>();
-//
-//        for (var key: tag.getAllKeys()) {
-//            if(tag.contains(key, Tag.TAG_COMPOUND)) {
-//
-//                var result = deserializer.apply(key, tag.getCompound(key))
-//
-//                var projectile = new Projectile();
-//                var resource = ResourceLocation.tryParse(key);
-//
-//                map.put(resource, result);
-//            }
-//        }
-//
-//        return map;
-//    }
 
     public static HashMap<AmmoHolder, Fuel> deserializeFuelMap(CompoundTag tag){
         var map = new HashMap<AmmoHolder, Fuel>();
@@ -156,15 +88,37 @@ public class NbtUtils {
         return map;
     }
 
+    public static <K, R extends INBTSerializable> CompoundTag serializeMap(Map<K, R> map){
+        var tag = new CompoundTag();
+
+        for (var entry : map.entrySet()) {
+            tag.put(entry.getKey().toString(), entry.getValue().serializeNBT());
+        }
+
+        return tag;
+    }
+
+    public static <V> HashMap<ResourceLocation, V> deserializeMap(CompoundTag tag, Function<CompoundTag, V> deserializer){
+        var map = new HashMap<ResourceLocation, V>();
+
+        for (var nbtKey : tag.getAllKeys()) {
+            if(tag.contains(nbtKey, Tag.TAG_COMPOUND)) {
+                var resource = ResourceLocation.tryParse(nbtKey);
+                var value = deserializer.apply(tag.getCompound(nbtKey));
+                map.put(resource, value);
+            }
+        }
+
+        return map;
+    }
+
     public static HashMap<ResourceLocation, ProjectileConfig> deserializeProjectileMap(CompoundTag tag){
         var map = new HashMap<ResourceLocation, ProjectileConfig>();
 
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {
-                var projectile = new ProjectileConfig();
                 var resource = ResourceLocation.tryParse(key);
-
-                projectile.deserializeNBT(tag.getCompound(key));
+                var projectile = ProjectileConfig.create(tag.getCompound(key));
                 map.put(resource, projectile);
             }
         }
@@ -185,16 +139,6 @@ public class NbtUtils {
         return array;
     }
 
-    public static <K, R extends INBTSerializable> CompoundTag serializeMap(Map<K, R> map){
-        var tag = new CompoundTag();
-
-        for (var entry : map.entrySet()) {
-            tag.put(entry.getKey().toString(), entry.getValue().serializeNBT());
-        }
-
-        return tag;
-    }
-
     public static <K, R> CompoundTag serializeStringMap(Map<K, R> map){
         var tag = new CompoundTag();
 
@@ -203,18 +147,6 @@ public class NbtUtils {
         }
 
         return tag;
-    }
-
-    public static HashMap<String, String> deserializeStringMap(CompoundTag tag){
-        var map = new HashMap<String, String>();
-
-        for (var key: tag.getAllKeys()) {
-            if(tag.contains(key, Tag.TAG_STRING)) {
-                map.put(key, tag.getString(key));
-            }
-        }
-
-        return map;
     }
 
     public static HashMap<String, ResourceLocation> deserializeRLMap(CompoundTag tag){

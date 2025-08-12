@@ -4,8 +4,8 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
+import com.nukateam.ntgl.common.data.config.AmmoConfig;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.data.holders.AmmoType;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
@@ -45,7 +45,7 @@ public class GunStateHelper {
     }
 
     public static ResourceKey<DamageType> getDamageType(GunData data){
-        var ammo = getAmmoConfig(data);
+        var ammo = getProjectileConfig(data);
         return ammo.getDamageType();
     }
 
@@ -85,14 +85,14 @@ public class GunStateHelper {
         return ITEMS.getValue(getAmmoId(data));
     }
 
-    public static AmmoType getAmmoType(GunData data) {
-        var ammo = getAmmoConfig(data);
-        return ammo.getAmmoType();
-    }
-
-    public static @NotNull ProjectileConfig getAmmoConfig(GunData data) {
+    public static AmmoConfig getAmmoConfig(GunData data) {
         var ammoId = getAmmoId(data);
         return GunModifierHelper.getAmmoConfig(ammoId, data);
+    }
+
+    public static @NotNull ProjectileConfig getProjectileConfig(GunData data) {
+        var ammoId = getAmmoId(data);
+        return GunModifierHelper.getProjectileConfig(ammoId, data);
     }
 
     //FIRE MODE______________________________________

@@ -3,15 +3,13 @@ package com.nukateam.ntgl.common.data.config.gun;
 import com.google.gson.Gson;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.config.Melee;
-import com.nukateam.ntgl.common.data.config.ProjectileConfig;
+import com.nukateam.ntgl.common.data.config.*;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.GripType;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 
 import com.nukateam.ntgl.common.util.util.*;
-import com.nukateam.ntgl.common.data.config.Fuel;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
@@ -55,7 +53,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     @Ignored
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
-    protected HashMap<ResourceLocation, ProjectileConfig> projectiles = new HashMap<>();
+    protected HashMap<ResourceLocation, AmmoData> ammoData = new HashMap<>();
     protected HashMap<AmmoHolder, Fuel> fuel = new HashMap<>();
 
     @Override
@@ -89,7 +87,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
         tag.put("Textures", NbtUtils.serializeStringMap(this.textures));
-        tag.put("Projectiles", NbtUtils.serializeMap(this.projectiles));
+        tag.put("Projectiles", NbtUtils.serializeMap(this.ammoData));
         tag.put("SecondaryAmmo", NbtUtils.serializeMap(this.fuel));
         return tag;
     }
@@ -115,7 +113,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             this.textures = NbtUtils.deserializeRLMap(tag.getCompound("Textures"));
         }
         if (tag.contains("Projectiles", Tag.TAG_COMPOUND)) {
-            this.projectiles = NbtUtils.deserializeProjectileMap(tag.getCompound("Projectiles"));
+            this.ammoData = NbtUtils.deserializeMap(tag.getCompound("Projectiles"), (nbt) -> AmmoData.create(nbt));
         }
         if (tag.contains("SecondaryAmmo", Tag.TAG_COMPOUND)) {
             this.fuel = NbtUtils.deserializeFuelMap(tag.getCompound("SecondaryAmmo"));
@@ -127,10 +125,24 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         var object = new JsonObject();
         object.add("general", this.general.toJsonObject());
         object.add("melee", this.melee.toJsonObject());
+        GunJsonUtil.addObjectIfNotEmpty(object,"ammoData", gson.toJsonTree(this.ammoData).getAsJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object,"sounds", gson.toJsonTree(this.sounds).getAsJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modules", this.modules.toJsonObject());
         return object;
+    }
+
+    public Gun copy() {
+        var gun = new Gun();
+        gun.general = this.general.copy();
+        gun.melee = this.melee.copy();
+        gun.sounds = (HashMap<String, ResourceLocation>)    this.sounds.clone();
+        gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
+        gun.ammoData = (HashMap<ResourceLocation, AmmoData>) this.ammoData.clone();
+        gun.fuel = (HashMap<AmmoHolder, Fuel>) this.fuel.clone();
+        gun.display = this.display.copy();
+        gun.modules = this.modules.copy();
+        return gun;
     }
 
     public static Gun create(ResourceLocation id, CompoundTag tag) {
@@ -140,8 +152,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return gun;
     }
 
-    public HashMap<ResourceLocation, ProjectileConfig> getProjectiles() {
-        return projectiles;
+    public void onCreated(String id){
+        prepareTextures(id);
+    }
+
+    public HashMap<ResourceLocation, AmmoData> getAmmoData() {
+        return ammoData;
     }
 
     public HashMap<AmmoHolder, Fuel> getFuel() {
@@ -180,22 +196,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return preparedTextures;
     }
 
-    public void onCreated(String id){
-        prepareTextures(id);
-    }
-
-    public Gun copy() {
-        var gun = new Gun();
-        gun.general = this.general.copy();
-        gun.melee = this.melee.copy();
-        gun.sounds = (HashMap<String, ResourceLocation>)    this.sounds.clone();
-        gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
-        gun.projectiles = (HashMap<ResourceLocation, ProjectileConfig>) this.projectiles.clone();
-        gun.fuel = (HashMap<AmmoHolder, Fuel>) this.fuel.clone();
-        gun.display = this.display.copy();
-        gun.modules = this.modules.copy();
-        return gun;
-    }
 
     public boolean canAttachType(@Nullable AttachmentType type, Gun gun) {
         var attachments = gun.getModules().getAttachments();
@@ -261,11 +261,15 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public boolean hasAmmo(ResourceLocation ammo){
-        return projectiles.containsKey(ammo);
+        return ammoData.containsKey(ammo);
     }
 
-    public ProjectileConfig getAmmoConfig(ResourceLocation ammo){
-        return projectiles.get(ammo);
+    public ProjectileConfig getProjectileConfig(ResourceLocation ammo){
+        return ammoData.get(ammo).getProjectile();
+    }
+
+    public AmmoConfig getAmmoiConfig(ResourceLocation ammo){
+        return ammoData.get(ammo).getAmmo();
     }
 
     private void prepareTextures(String itemId) {

@@ -6,6 +6,7 @@ import com.nukateam.ntgl.client.event.*;
 import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
 import com.nukateam.ntgl.client.util.util.render.Figures;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
+import com.nukateam.ntgl.common.data.holders.CounterType;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.foundation.item.AmmoBoxItem;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -35,6 +36,7 @@ public class GunHud implements IGuiOverlay {
     public static final int LOW_AMMO_COLOR = 0xFF5555;
     public static final Colors DEFAULT_COLORS = new Colors(DEFAULT_AMMO_COLOR, INVENTORY_AMMO_COUNT_COLOR, DEFAULT_AMMO_COLOR, LOW_AMMO_COLOR);
     protected static final DecimalFormat CURRENT_AMMO_FORMAT = new DecimalFormat("000");
+    protected static final DecimalFormat CURRENT_AMMO_FORMAT_PERCENT = new DecimalFormat("000%");
     protected static final DecimalFormat INVENTORY_AMMO_FORMAT = new DecimalFormat("0000");
     private static final int ICON_X = 115;
     private static final int OFFHAND_X_OFFSET = 110;
@@ -97,7 +99,18 @@ public class GunHud implements IGuiOverlay {
 
     protected void renderAmmoCounter(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int x, int y) {
         if(!GunModifierHelper.shouldRenderHud(new GunData(stack, minecraft.player))) return;
-        var currentAmmoCountText = CURRENT_AMMO_FORMAT.format(handCache.ammoCount);
+
+        var currentAmmoCountText = "";
+        currentAmmoCountText = CURRENT_AMMO_FORMAT.format(handCache.ammoCount);
+
+//        if(handCache.counterType == CounterType.NUMBER) {
+//            currentAmmoCountText = CURRENT_AMMO_FORMAT.format(handCache.ammoCount);
+//        }
+//        else if(handCache.counterType == CounterType.PERCENT){
+//            int percent = (handCache.ammoCount / handCache.maxAmmoCount) * 100;
+//            currentAmmoCountText = CURRENT_AMMO_FORMAT_PERCENT.format(percent);
+//        }
+
         var poseStack = graphics.pose();
 
         renderAmmoTypeIcon(graphics, handCache, x, y, currentAmmoCountText);
@@ -202,8 +215,9 @@ public class GunHud implements IGuiOverlay {
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
             handCache.maxAmmoCount = GunModifierHelper.getMaxAmmo(data);
             handCache.fireMode = GunStateHelper.getFireMode(data);
-            handCache.ammoType = GunStateHelper.getAmmoType(data);
+            handCache.ammoType = GunStateHelper.getAmmoConfig(data).getAmmoType();
             handCache.ammoCount = GunStateHelper.getAmmoCount(stack);
+            handCache.counterType = GunStateHelper.getAmmoConfig(data).getCounter();
 
             if (!player.isCreative()) {
                 handCache.inventoryAmmoCount = getInventoryAmmoCount(stack, player.getInventory());

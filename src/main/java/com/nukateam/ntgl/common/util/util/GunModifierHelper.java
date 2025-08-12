@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
+import com.nukateam.ntgl.common.data.config.AmmoConfig;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -37,7 +38,7 @@ public class GunModifierHelper {
 
     @Deprecated
     public static ProjectileConfig getCurrentAmmo(GunData data) {
-        return GunStateHelper.getAmmoConfig(data);
+        return GunStateHelper.getProjectileConfig(data);
     }
 
     public static boolean isAuto(GunData itemStack) {
@@ -98,10 +99,10 @@ public class GunModifierHelper {
 
     public static int getMaxAmmo(GunData data) {
         var finalMaxAmmo = new AtomicInteger(getGeneral(getGun(data.gun)).getMaxAmmo());
-        var config = GunStateHelper.getAmmoConfig(data);
+        var config = GunStateHelper.getProjectileConfig(data);
 
         if (data != null && config != null && data.gun.getItem() instanceof WeaponItem) {
-            if (GunStateHelper.getAmmoConfig(data).isMagazineMode()) {
+            if (GunStateHelper.getProjectileConfig(data).isMagazineMode()) {
                 var id = GunStateHelper.getAmmoId(data);
                 var item = ITEMS.getValue(id);
 
@@ -145,7 +146,7 @@ public class GunModifierHelper {
 
     public static int getProjectileAmount(GunData data) {
         var gunProjectileAmount = getGeneral(getGun(data.gun)).getProjectileAmount();
-        var ammoProjectileAmount = GunStateHelper.getAmmoConfig(data).getProjectileAmount();
+        var ammoProjectileAmount = GunStateHelper.getProjectileConfig(data).getProjectileAmount();
 
         var finalProjectileAmount = new AtomicInteger(gunProjectileAmount * ammoProjectileAmount);
         forEachAttachment(data, (modifier -> finalProjectileAmount.set(modifier.modifyProjectileAmount(finalProjectileAmount.get(), data))));
@@ -274,7 +275,7 @@ public class GunModifierHelper {
 
     public static float getModifiedSpread(GunData data) {
         var gunSpread = getGeneral(getGun(data.gun)).getSpread();
-        var ammoSpread = GunStateHelper.getAmmoConfig(data).getSpread();
+        var ammoSpread = GunStateHelper.getProjectileConfig(data).getSpread();
         var spread = Math.max(gunSpread + ammoSpread, 0);
         var finalSpread = new AtomicReference<>(spread);
 
@@ -373,7 +374,7 @@ public class GunModifierHelper {
     }
 
     public static float getAmmoDamageMultiplier(GunData data){
-        return GunStateHelper.getAmmoConfig(data).getDamage();
+        return GunStateHelper.getProjectileConfig(data).getDamage();
     }
 
     public static double getModifiedAimDownSightSpeed(GunData data, double speed) {
@@ -444,11 +445,37 @@ public class GunModifierHelper {
         return finalValue.get();
     }
 
-
     public static float getMeleeKnockback(GunData data) {
         var value = getGun(data.gun).getMelee().getKnockback();
         var finalValue = new AtomicReference<Float>(value);
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMeleeKnockback(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+    public static ProjectileConfig getProjectileConfig(ResourceLocation ammoId, GunData data) {
+        var gun = getGun(data.gun);
+        ProjectileConfig config = null;
+        var item = GunStateHelper.getAmmoItem(data);
+
+        if(gun.hasAmmo(ammoId)) {
+            config = gun.getProjectileConfig(ammoId);
+        }
+        else if(item instanceof IAmmo ammoItem) {
+            config = ammoItem.getAmmo();
+        }
+
+        if(config == null) {
+            config = new ProjectileConfig();
+        }
+
+        var finalValue = new AtomicReference<>(config);
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyProjectile(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+    public static AmmoConfig getAmmoConfig(ResourceLocation ammoId, GunData data) {
+        var finalValue = new AtomicReference<>(getGun(data.gun).getAmmoiConfig(ammoId));
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyAmmo(finalValue.get(), data))));
         return finalValue.get();
     }
 
@@ -481,19 +508,5 @@ public class GunModifierHelper {
         for (var modifier : gunModifiers) {
             consumer.accept(modifier);
         }
-    }
-
-    public static ProjectileConfig getAmmoConfig(ResourceLocation ammoId, GunData data) {
-        var gun = getGun(data.gun);
-        ProjectileConfig config = null;
-        var item = GunStateHelper.getAmmoItem(data);
-        if(gun.hasAmmo(ammoId)) {
-            config = gun.getAmmoConfig(ammoId);
-        }
-        else if(item instanceof IAmmo ammoItem) {
-            config = ammoItem.getAmmo();
-        }
-
-        return config != null ? config : new ProjectileConfig();
     }
 }

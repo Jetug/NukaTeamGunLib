@@ -147,7 +147,7 @@ public class ServerPlayHandler {
                     count *= multishotAmount;
                 }
 
-                var projectileProps = GunStateHelper.getAmmoConfig(data);
+                var projectileProps = GunStateHelper.getProjectileConfig(data);
                 var spawnedProjectiles = new ProjectileEntity[count];
 
                 for (int i = 0; i < count; i++) {
@@ -308,7 +308,7 @@ public class ServerPlayHandler {
 
     public static void unloadGun(ServerPlayer player, ItemStack stack) {
         var data = new GunData(stack, player);
-        if (GunStateHelper.getAmmoConfig(data).isMagazineMode())
+        if (GunStateHelper.getProjectileConfig(data).isMagazineMode())
             unloadMagazine(player, stack);
         else unloadAmmo(player, stack);
     }
@@ -420,7 +420,7 @@ public class ServerPlayHandler {
         }
         else if(stack.getItem() instanceof IThrowable){
             switch (message.getHandAction()) {
-                case SWITCH_THROW_MODE -> handleThrowModeSwitch(player, stack);
+                case SWITCH_THROW_MODE -> handleThrowModeSwitch(player, stack, message.getHand());
             }
         }
     }
@@ -442,9 +442,14 @@ public class ServerPlayHandler {
         player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
     }
 
-    public static void handleThrowModeSwitch(ServerPlayer player, ItemStack stack) {
-        ThrowableStateHelper.switchThrowMode(stack);
-        player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
+    public static void handleThrowModeSwitch(ServerPlayer player, ItemStack stack, InteractionHand hand) {
+        var isNotPreparing = !ModSyncedDataKeys.getPreparingDataKey(hand).getValue(player);
+        var isNotThrowing = !ModSyncedDataKeys.getThrowingDataKey(hand).getValue(player);
+
+        if(isNotPreparing && isNotThrowing) {
+            ThrowableStateHelper.switchThrowMode(stack);
+            player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
+        }
     }
 
     public static void handleAmmoSwitch(InteractionHand hand, ServerPlayer player, ItemStack weapon) {

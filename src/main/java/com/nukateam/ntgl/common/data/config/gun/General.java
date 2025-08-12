@@ -473,7 +473,7 @@ public class General implements INBTSerializable<CompoundTag> {
     }
 
     /**
-     * @return The amount of projectiles this weapon fires
+     * @return The amount of ammoData this weapon fires
      */
     public int getProjectileAmount() {
         return this.projectileAmount;
@@ -484,7 +484,7 @@ public class General implements INBTSerializable<CompoundTag> {
     }
 
     /**
-     * @return If this weapon should always spread its projectiles according to {@link #getSpread()}
+     * @return If this weapon should always spread its ammoData according to {@link #getSpread()}
      */
     public boolean isAlwaysSpread() {
         return this.alwaysSpread;

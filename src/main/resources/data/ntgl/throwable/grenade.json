@@ -8,18 +8,22 @@
     "prepareTime": 20,
     "throwTime": 6
   },
-  "projectile": {
-    "type": "ntgl:explosive",
-    "damage": 1.0,
-    "size": 1.0,
-    "speed": 50.0,
-    "life": 80,
-    "gravity": true,
-    
-    "explosion": {
-      "damage": 40,
-      "radius": 10,
-      "knockback": 0.5
+  "ammoData":{
+    "ammo": {
+      "type": "ntgl:explosive"
+    },
+    "projectile": {
+      "damage": 1.0,
+      "size": 1.0,
+      "speed": 50.0,
+      "life": 80,
+      "gravity": true,
+
+      "explosion": {
+        "damage": 40,
+        "radius": 10,
+        "knockback": 0.5
+      }
     }
   },
   "sounds": {
