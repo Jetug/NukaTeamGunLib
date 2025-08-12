@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.holders.ResourceHolder;
-import com.nukateam.ntgl.common.data.holders.FuelType;
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.config.Fuel;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
@@ -141,13 +141,13 @@ public class NbtUtils {
 //        return map;
 //    }
 
-    public static HashMap<FuelType, Fuel> deserializeFuelMap(CompoundTag tag){
-        var map = new HashMap<FuelType, Fuel>();
+    public static HashMap<AmmoHolder, Fuel> deserializeFuelMap(CompoundTag tag){
+        var map = new HashMap<AmmoHolder, Fuel>();
 
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {
                 var fuel = new Fuel();
-                var resource = FuelType.getType(key);
+                var resource = AmmoHolder.getType(key);
                 fuel.deserializeNBT(tag.getCompound(key));
                 map.put(resource, fuel);
             }

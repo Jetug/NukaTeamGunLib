@@ -21,11 +21,13 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String TYPE = "Type";
     @Optional
     private int max = 100;
+    private boolean isMandatory = true;
 
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.putInt("Max", this.max);
+        tag.putBoolean("isMandatory", this.isMandatory);
         return tag;
     }
 
@@ -34,11 +36,15 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains("Max", Tag.TAG_ANY_NUMERIC)) {
             this.max = tag.getInt("Max");
         }
+        if (tag.contains("Max", Tag.TAG_ANY_NUMERIC)) {
+            this.isMandatory = tag.getBoolean("isMandatory");
+        }
     }
 
     public Fuel copy() {
         var projectile = new Fuel();
         projectile.max = this.max;
+        projectile.isMandatory = this.isMandatory;
 
         return projectile;
     }
@@ -47,11 +53,16 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
         Preconditions.checkArgument(this.max > 0, "Max capacity must be more than zero");
         var object = new JsonObject();
         object.addProperty("max", this.max);
+        object.addProperty("isMandatory", this.isMandatory);
         return object;
     }
 
     public int getMax() {
         return this.max;
+    }
+
+    public boolean isMandatory() {
+        return isMandatory;
     }
 
     public static Fuel create(CompoundTag tag) {

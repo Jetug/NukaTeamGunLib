@@ -292,11 +292,11 @@ public interface IGunModifier {
         return loadingType;
     }
 
-    default Set<FuelType> modifyFuel(Set<FuelType> secondaryAmmo, GunData data) {
+    default Set<AmmoHolder> modifyFuel(Set<AmmoHolder> secondaryAmmo, GunData data) {
         return secondaryAmmo;
     }
 
-    default int modifyMaxFuel(int max, FuelType type, GunData data) {
+    default int modifyMaxFuel(int max, AmmoHolder type, GunData data) {
         return max;
     }
 

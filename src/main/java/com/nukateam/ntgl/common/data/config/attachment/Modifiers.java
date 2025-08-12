@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.nukateam.ntgl.Ntgl;
 
 import com.nukateam.ntgl.common.data.holders.FireMode;
-import com.nukateam.ntgl.common.data.holders.FuelType;
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.GripType;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.util.annotation.Optional;
@@ -49,7 +49,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     @Optional String fireSoundVolume = "";
     @Optional String fireSound = "";
     @Optional String silencedFire = "";
-    @Optional HashMap<FuelType, Integer> maxFuel = new HashMap<>();
+    @Optional HashMap<AmmoHolder, Integer> maxFuel = new HashMap<>();
     @Optional
     GripType gripType = null;
     @Optional String needsFullCharge = "";
@@ -59,7 +59,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     @Optional String renderHud = "";
     @Optional
     LoadingType loadingType = null;
-    @Optional Set<FuelType> fuel = new HashSet<>();
+    @Optional Set<AmmoHolder> fuel = new HashSet<>();
 
     @Override
     public CompoundTag serializeNBT() {
@@ -216,7 +216,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         if (tag.contains("fuel", Tag.TAG_LIST)) {
             this.fuel.clear();
             tag.getList("fuel", Tag.TAG_STRING).forEach(t ->
-                    this.fuel.add(FuelType.getType(t.getAsString()))
+                    this.fuel.add(AmmoHolder.getType(t.getAsString()))
             );
         }
     }
@@ -233,7 +233,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
             CompoundTag fuelTag = tag.getCompound("maxFuel");
             fuelTag.getAllKeys().forEach(key ->
                     this.maxFuel.put(
-                            FuelType.getType(key),
+                            AmmoHolder.getType(key),
                             fuelTag.getInt(key)
                     )
             );
@@ -381,7 +381,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     }
 
     @Override
-    public Set<FuelType> modifyFuel(Set<FuelType> baseValue, GunData data) {
+    public Set<AmmoHolder> modifyFuel(Set<AmmoHolder> baseValue, GunData data) {
         return fuel != null && !fuel.isEmpty() ? this.fuel : baseValue;
     }
 
@@ -484,7 +484,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         return (int) calculate(ammo, ammoPerShot);
     }
 
-    public int modifyMaxFuel(int max, FuelType type, GunData gunData) {
+    public int modifyMaxFuel(int max, AmmoHolder type, GunData gunData) {
         return maxFuel != null && maxFuel.get(type) != null ? maxFuel.get(type) : max;
     }
 

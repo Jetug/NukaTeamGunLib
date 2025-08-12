@@ -178,14 +178,14 @@ public class GunModifierHelper {
         return chargeTime.get();
     }
 
-    public static Set<FuelType> getFuelTypes(GunData data) {
+    public static Set<AmmoHolder> getFuelTypes(GunData data) {
         var keys = getGun(data.gun).getFuel().keySet();
         var fuel = new AtomicReference<>(keys);
         forEachAttachment(data, (modifier -> fuel.set(modifier.modifyFuel(fuel.get(), data))));
         return fuel.get();
     }
 
-    public static Integer getMaxFuel(GunData data, FuelType type) {
+    public static Integer getMaxFuel(GunData data, AmmoHolder type) {
         var fuel = getGun(data.gun).getFuel().get(type);
         int max = fuel != null ? fuel.getMax() : 0;
         var result = new AtomicReference<>(max);

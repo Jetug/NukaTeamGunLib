@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.client.event.*;
 import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
 import com.nukateam.ntgl.client.util.util.render.Figures;
-import com.nukateam.ntgl.common.data.holders.FuelType;
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.foundation.item.AmmoBoxItem;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -100,6 +100,7 @@ public class GunHud implements IGuiOverlay {
         var currentAmmoCountText = CURRENT_AMMO_FORMAT.format(handCache.ammoCount);
         var poseStack = graphics.pose();
 
+        renderAmmoTypeIcon(graphics, handCache, x, y, currentAmmoCountText);
         renderCurrentAmmo(graphics, handCache, x - 70, y - 43, poseStack, currentAmmoCountText);
         Figures.drawLine(graphics, x - 70, y - 30, 27, 2, toRgba(colors.hud));
         renderInventoryAmmo(graphics, handCache, x - 67, y - 26, poseStack, minecraft.font);
@@ -109,12 +110,7 @@ public class GunHud implements IGuiOverlay {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        var iconColor = rgbToFloatRgba(colors.hud);
-        RenderSystem.setShaderColor(iconColor[0], iconColor[1], iconColor[2], iconColor[3]);
         renderFireModeIcon(graphics, handCache, x, y, currentAmmoCountText);
-        renderAmmoTypeIcon(graphics, handCache, x, y, currentAmmoCountText);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-
         renderFuelCounters(graphics, stack, x - BAR_START_X, y - BAR_START_Y);
     }
 
@@ -129,10 +125,10 @@ public class GunHud implements IGuiOverlay {
         }
     }
 
-    protected void renderFuelCounter(GuiGraphics graphics, ItemStack stack, FuelType fuelType, int x, int y) {
+    protected void renderFuelCounter(GuiGraphics graphics, ItemStack stack, AmmoHolder ammoHolder, int x, int y) {
         var gunData = new GunData(stack, minecraft.player);
-        var fuelPercent = FuelUtils.getFuelPercent(stack, fuelType, gunData);
-        renderIcon(graphics, fuelType.getIcon(), x - 18, y - 4);
+        var fuelPercent = FuelUtils.getFuelPercent(stack, ammoHolder, gunData);
+        renderIcon(graphics, ammoHolder.getIcon(), x - 18, y - 4);
         Figures.drawBar(graphics, x, y, BAR_WIDTH, BAR_HEIGHT, fuelPercent);
     }
 
@@ -167,19 +163,19 @@ public class GunHud implements IGuiOverlay {
         poseStack.popPose();
     }
 
-    protected void renderFireModeIcon(GuiGraphics graphics, GunHudCache handCache, int width, int height,
+    protected void renderAmmoTypeIcon(GuiGraphics graphics, GunHudCache handCache, int width, int height,
                                       String currentAmmoCountText) {
-        var fireMode = handCache.fireMode;
-        var icon = fireMode.getIcon();
+        var ammoType = handCache.ammoType;
+        var icon = ammoType.getIcon();
         var textWidth = minecraft.font.width(currentAmmoCountText) * 1.5;
         var x = (int) (width - getIconX(handCache, textWidth) + textWidth);
 
         renderIcon(graphics, icon, x, height - 46);
     }
 
-    protected void renderAmmoTypeIcon(GuiGraphics graphics, GunHudCache handCache, int width, int height, String currentAmmoCountText) {
-        var ammoType = handCache.ammoType;
-        var icon = ammoType.getIcon();
+    protected void renderFireModeIcon(GuiGraphics graphics, GunHudCache handCache, int width, int height, String currentAmmoCountText) {
+        var fireMode = handCache.fireMode;
+        var icon = fireMode.getIcon();
         var textWidth =  minecraft.font.width(currentAmmoCountText) * 1.5;
         var x = (int) (width - getIconX(handCache, textWidth) + textWidth);
 
@@ -187,7 +183,10 @@ public class GunHud implements IGuiOverlay {
     }
 
     protected void renderIcon(GuiGraphics graphics, ResourceLocation icon, int x, int y) {
+        var iconColor = rgbToFloatRgba(colors.hud);
+        RenderSystem.setShaderColor(iconColor[0], iconColor[1], iconColor[2], iconColor[3]);
         graphics.blit(icon, x, y, 0F, 0F, 16, 16, 16, 16);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
     }
 
     protected int getIconX(GunHudCache handCache, double textWidth) {

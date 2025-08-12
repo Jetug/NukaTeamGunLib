@@ -6,7 +6,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.Melee;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
-import com.nukateam.ntgl.common.data.holders.FuelType;
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.GripType;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 
@@ -56,7 +56,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Ignored
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
     protected HashMap<ResourceLocation, ProjectileConfig> projectiles = new HashMap<>();
-    protected HashMap<FuelType, Fuel> fuel = new HashMap<>();
+    protected HashMap<AmmoHolder, Fuel> fuel = new HashMap<>();
 
     @Override
     public Component getEditorLabel() {
@@ -144,11 +144,11 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return projectiles;
     }
 
-    public HashMap<FuelType, Fuel> getFuel() {
+    public HashMap<AmmoHolder, Fuel> getFuel() {
         return fuel;
     }
 
-    public Fuel getFuelConfig(FuelType type) {
+    public Fuel getFuelConfig(AmmoHolder type) {
         return fuel.get(type);
     }
 
@@ -191,7 +191,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         gun.sounds = (HashMap<String, ResourceLocation>)    this.sounds.clone();
         gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
         gun.projectiles = (HashMap<ResourceLocation, ProjectileConfig>) this.projectiles.clone();
-        gun.fuel = (HashMap<FuelType, Fuel>) this.fuel.clone();
+        gun.fuel = (HashMap<AmmoHolder, Fuel>) this.fuel.clone();
         gun.display = this.display.copy();
         gun.modules = this.modules.copy();
         return gun;

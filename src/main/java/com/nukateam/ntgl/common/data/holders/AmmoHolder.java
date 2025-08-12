@@ -5,16 +5,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.*;
 
-public class FuelType extends ResourceHolder {
-    public static final FuelType BURNABLE = new FuelType("burnable", FuelType::isBurnable);
-    public static final FuelType WATER    = new FuelType("water"   , FuelType::isWater);
+public class AmmoHolder extends ResourceHolder {
+    public static final AmmoHolder BURNABLE = new AmmoHolder("burnable", AmmoHolder::isBurnable);
+    public static final AmmoHolder WATER    = new AmmoHolder("water"   , AmmoHolder::isWater);
 
-    private static final Map<ResourceLocation, FuelType> ammoTypeMap = new HashMap<>();
+    private static final Map<ResourceLocation, AmmoHolder> ammoTypeMap = new HashMap<>();
 
     static {
         registerType(BURNABLE);
@@ -23,14 +25,21 @@ public class FuelType extends ResourceHolder {
 
     private Function<ItemStack, Boolean> isAcceptable = (i) -> false;
 
-    private FuelType(String id, Function<ItemStack, Boolean> isAcceptable) {
+    public AmmoHolder(ResourceLocation id, Function<ItemStack, Boolean> isAcceptable) {
+        super(id);
+        this.isAcceptable = isAcceptable;
+    }
+
+    private AmmoHolder(String id, Function<ItemStack, Boolean> isAcceptable) {
         super(ResourceLocation.tryBuild(Ntgl.MOD_ID, id));
         this.isAcceptable = isAcceptable;
     }
 
-    public FuelType(ResourceLocation id, Function<ItemStack, Boolean> isAcceptable) {
+    private AmmoHolder(ResourceLocation id){
         super(id);
-        this.isAcceptable = isAcceptable;
+        this.isAcceptable = (stack) -> {
+           return Objects.equals(ForgeRegistries.ITEMS.getKey(stack.getItem()), id);
+        };
     }
 
     public boolean isAcceptable(ItemStack ammoStack) {
@@ -41,22 +50,17 @@ public class FuelType extends ResourceHolder {
         return ResourceLocation.tryBuild(id.getNamespace(), "textures/hud/ammo_type/" + id.getPath() + ".png");
     }
 
-    public static void registerType(FuelType mode) {
+    public static void registerType(AmmoHolder mode) {
         ammoTypeMap.putIfAbsent(mode.getId(), mode);
     }
 
-    public static FuelType getType(ResourceLocation id) {
-        return ammoTypeMap.getOrDefault(id, BURNABLE);
+    public static AmmoHolder getType(ResourceLocation id) {
+        return ammoTypeMap.getOrDefault(id, new AmmoHolder(id));
     }
 
-    public static FuelType getType(String id) {
+    public static AmmoHolder getType(String id) {
         return getType(ResourceLocation.tryParse(id));
     }
-
-
-//    public Component getType(String id) {
-//        return Component.tr;
-//    }
 
     public String getDescriptionId() {
         return "info." + id.getNamespace() + "." + id.getPath();
