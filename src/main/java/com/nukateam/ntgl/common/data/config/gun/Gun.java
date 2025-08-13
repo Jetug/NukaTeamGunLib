@@ -326,7 +326,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             return this.gun.copy(); //Copy since the builder could be used again
         }
 
-        public Gun.Builder addAmmo(ResourceLocation id) {
+        public Gun.Builder addAmmo(AmmoHolder id) {
             this.gun.general.ammo.add(id);
             return this;
         }

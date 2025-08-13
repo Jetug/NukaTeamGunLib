@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.data.config.AmmoConfig;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
@@ -21,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -38,10 +40,10 @@ public class GunStateHelper {
     //AMMO
     public static void switchAmmo(GunData data){
         var ammoItems = GunModifierHelper.getAmmoItems(data);
-        var current = getAmmoId(data);
+        var current = getAmmoHolder(data);
         var newAmmo = SetUtils.cycleSet(ammoItems, current);
 
-        setCurrentAmmo(data, newAmmo);
+        setCurrentAmmo(data, newAmmo.getId());
     }
 
     public static ResourceKey<DamageType> getDamageType(GunData data){
@@ -54,44 +56,44 @@ public class GunStateHelper {
         return tag.getInt(Tags.AMMO_COUNT);
     }
 
+    public static void addAmmo(GunData data, int amount) {
+        var tag = data.gun.getOrCreateTag();
+        var maxAmmo = GunModifierHelper.getMaxAmmo(data);
+        var result = Math.min(tag.getInt(Tags.AMMO_COUNT) + amount, maxAmmo);
+        tag.putInt(Tags.AMMO_COUNT, result);
+    }
+
     public static void setCurrentAmmo(GunData data, ResourceLocation ammo) {
         var tag = data.gun.getOrCreateTag();
         tag.putString(AMMO_TAG, ammo.toString());
         data.gun.setTag(tag);
     }
 
-    public static ResourceLocation getAmmoId(GunData data) {
+    public static AmmoHolder getAmmoHolder(GunData data) {
         var tag = data.gun.getOrCreateTag();
         var ammoItems = GunModifierHelper.getAmmoItems(data);
-        var currentAmmo = getAmmoId(tag);
 
-        if (currentAmmo == null) {
-            return SetUtils.getFirst(ammoItems);
+        if(tag.contains(AMMO_TAG, Tag.TAG_STRING)) {
+            return AmmoHolder.getType(tag.getString(AMMO_TAG));
         }
-        else return currentAmmo;
-    }
-
-    private static @Nullable ResourceLocation getAmmoId(CompoundTag tag) {
-        if(tag.contains(AMMO_TAG, Tag.TAG_STRING))
-            return ResourceLocation.tryParse(tag.getString(AMMO_TAG));
-        else return null;
+        else return SetUtils.getFirst(ammoItems);
     }
 
     public static boolean isCurrentAmmo(GunData gunData, Item item) {
-        return getAmmoId(gunData).equals(ITEMS.getKey(item));
+        return getAmmoHolder(gunData).equals(ITEMS.getKey(item));
     }
 
-    public static Item getAmmoItem(GunData data) {
-        return ITEMS.getValue(getAmmoId(data));
-    }
+//    public static Item getAmmoItem(GunData data) {
+//        return ITEMS.getValue(getAmmoHolder(data));
+//    }
 
     public static AmmoConfig getAmmoConfig(GunData data) {
-        var ammoId = getAmmoId(data);
+        var ammoId = getAmmoHolder(data).getId();
         return GunModifierHelper.getAmmoConfig(ammoId, data);
     }
 
     public static @NotNull ProjectileConfig getProjectileConfig(GunData data) {
-        var ammoId = getAmmoId(data);
+        var ammoId = getAmmoHolder(data).getId();
         return GunModifierHelper.getProjectileConfig(ammoId, data);
     }
 
@@ -159,8 +161,11 @@ public class GunStateHelper {
         return tag.getFloat("AdditionalDamage");
     }
 
-    public static boolean hasNoAmmo(LivingEntity player, ItemStack weapon) {
-        return InventoryUtil.findAmmo(player, weapon).stack().isEmpty();
+    public static boolean hasNoAmmo(LivingEntity entity, ItemStack weapon) {
+        if(entity instanceof Player player && !player.isCreative()) {
+            return InventoryUtil.findAmmo(player, weapon).stack().isEmpty();
+        }
+        return false;
     }
 
     public static ArrayList<ItemStack> getAttachmentItems(ItemStack gun) {

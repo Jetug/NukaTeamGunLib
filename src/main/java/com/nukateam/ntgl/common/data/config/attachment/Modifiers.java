@@ -54,7 +54,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     GripType gripType = null;
     @Optional String needsFullCharge = "";
     @Optional String oneTimeCharge = "";
-    @Optional Set<ResourceLocation> ammoItems = new HashSet<>();
+    @Optional Set<AmmoHolder> ammoItems = new HashSet<>();
     @Optional String autoReload = "";
     @Optional String renderHud = "";
     @Optional
@@ -366,7 +366,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     }
 
     @Override
-    public Set<ResourceLocation> modifyAmmoItems(Set<ResourceLocation> baseValue, GunData data) {
+    public Set<AmmoHolder> modifyAmmoItems(Set<AmmoHolder> baseValue, GunData data) {
         return ammoItems != null && !ammoItems.isEmpty() ? this.ammoItems : baseValue;
     }
 

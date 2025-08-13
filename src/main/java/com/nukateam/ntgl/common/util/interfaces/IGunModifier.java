@@ -227,6 +227,10 @@ public interface IGunModifier {
         return amount;
     }
 
+    default int modifyReloadAmount(int amount, GunData data) {
+        return amount;
+    }
+
     default Set<FireMode> modifyFireModes(Set<FireMode> fireMode, GunData data) {
         return fireMode;
     }
@@ -251,7 +255,7 @@ public interface IGunModifier {
         return value;
     }
 
-    default Set<ResourceLocation> modifyAmmoItems(Set<ResourceLocation> item, GunData data) {
+    default Set<AmmoHolder> modifyAmmoItems(Set<AmmoHolder> item, GunData data) {
         return item;
     }
 

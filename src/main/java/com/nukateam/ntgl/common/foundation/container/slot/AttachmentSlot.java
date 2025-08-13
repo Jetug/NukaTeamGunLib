@@ -98,12 +98,14 @@ public class AttachmentSlot extends Slot {
 
         if(diff > 0){
             GunStateHelper.setAmmo(stack, maxAmmo);
+            var ammoHolder = GunStateHelper.getAmmoHolder(gunData);
+            if(ammoHolder.canReturnAmmo()) {
+                var ammoItem = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
+                var dropStack = new ItemStack(ammoItem, diff);
 
-            var ammoItem = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoId(gunData));
-            var dropStack = new ItemStack(ammoItem, diff);
-
-            if (entity instanceof Player player && !player.addItem(dropStack)) {
-                player.drop(dropStack, false);
+                if (entity instanceof Player player && !player.addItem(dropStack)) {
+                    player.drop(dropStack, false);
+                }
             }
         }
     }

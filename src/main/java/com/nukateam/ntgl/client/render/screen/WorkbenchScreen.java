@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.render.screen;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMelee;
 import com.nukateam.ntgl.common.util.interfaces.IMeleeWeapon;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
@@ -528,8 +529,10 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         for (var gunItem : NetworkGunManager.getClientRegisteredGuns()) {
             var ammo = gunItem.getModifiedGun(stack).getGeneral().getAmmo();
 
-            if (ammo.contains(id)) {
-                return true;
+            for (var a : ammo) {
+                if(a.getId().equals(id)){
+                    return true;
+                }
             }
         }
         return false;

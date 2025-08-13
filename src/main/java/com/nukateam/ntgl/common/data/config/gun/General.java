@@ -4,11 +4,8 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.Ntgl;
 
+import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.util.util.NbtUtils;
-import com.nukateam.ntgl.common.data.holders.FireMode;
-import com.nukateam.ntgl.common.data.holders.GripType;
-import com.nukateam.ntgl.common.data.holders.LoadingType;
-import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.util.annotation.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -84,7 +81,7 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional int fireTimer;
     @Optional float movementSpeed = 0.0f;
     @Optional boolean melee = false;
-    @Optional protected LinkedHashSet<ResourceLocation> ammo = new LinkedHashSet<>(List.of(ResourceLocation.tryBuild(Ntgl.MOD_ID, "round10mm")));
+    @Optional protected LinkedHashSet<AmmoHolder> ammo = new LinkedHashSet<>(List.of(AmmoHolder.getType(Ntgl.MOD_ID + ":round10mm")));
 
     @Override
     public CompoundTag serializeNBT() {
@@ -220,7 +217,7 @@ public class General implements INBTSerializable<CompoundTag> {
             this.movementSpeed = tag.getFloat(MOVEMENT_MODIFIER);
         }
         if (tag.contains(AMMO, Tag.TAG_COMPOUND)) {
-            this.ammo = NbtUtils.deserializeResourceLocationSet(tag.getCompound(AMMO));
+            this.ammo = NbtUtils. deserializeSet(tag.getCompound(AMMO), AmmoHolder::getType);
         }
     }
 
@@ -319,7 +316,7 @@ public class General implements INBTSerializable<CompoundTag> {
         return general;
     }
 
-    public Set<ResourceLocation> getAmmo() {
+    public Set<AmmoHolder> getAmmo() {
         return this.ammo;
     }
 

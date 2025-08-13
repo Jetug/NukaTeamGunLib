@@ -237,10 +237,10 @@ public class GunHud implements IGuiOverlay {
             if (GunStateHelper.isCurrentAmmo(gunData, inventoryItem)) {
                 inventoryAmmoCount += inventoryStack.getCount();
             }
-            else if (inventoryItem instanceof AmmoBoxItem iAmmoBox) {
-                var currentAmmo = GunStateHelper.getAmmoItem(gunData);
-                inventoryAmmoCount += iAmmoBox.getAmmoCount(inventoryStack, currentAmmo);
-            }
+//            else if (inventoryItem instanceof AmmoBoxItem iAmmoBox) {
+//                var currentAmmo = GunStateHelper.getAmmoItem(gunData);
+//                inventoryAmmoCount += iAmmoBox.getAmmoCount(inventoryStack, currentAmmo);
+//            }
         }
         return inventoryAmmoCount;
     }

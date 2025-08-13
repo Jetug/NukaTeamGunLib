@@ -320,11 +320,15 @@ public class ServerPlayHandler {
                 int count = tag.getInt(Tags.AMMO_COUNT);
                 tag.putInt(Tags.AMMO_COUNT, 0);
                 var data = new GunData(stack, player);
-                var id = GunStateHelper.getAmmoId(data);
-                var item = ForgeRegistries.ITEMS.getValue(id);
+                var itemHolder = GunStateHelper.getAmmoHolder(data);
 
-                if (item != null && !player.isCreative()) {
-                    givePlayerAmmo(player, item, count);
+                if(itemHolder.canReturnAmmo()) {
+                    var id = itemHolder.getId();
+                    var item = ForgeRegistries.ITEMS.getValue(id);
+
+                    if (item != null && !player.isCreative()) {
+                        givePlayerAmmo(player, item, count);
+                    }
                 }
             }
         }
@@ -339,7 +343,7 @@ public class ServerPlayHandler {
 
                 tag.putInt(Tags.AMMO_COUNT, 0);
                 var data = new GunData(stack, player);
-                var id = GunStateHelper.getAmmoId(data);
+                var id = GunStateHelper.getAmmoHolder(data);
                 var item = ForgeRegistries.ITEMS.getValue(id);
 
                 if (item != null && !player.isCreative()) {

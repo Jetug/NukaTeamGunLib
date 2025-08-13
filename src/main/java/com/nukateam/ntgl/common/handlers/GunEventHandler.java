@@ -25,7 +25,7 @@ public class GunEventHandler {
     public static void attachmentsChanged(AttachmentEvent event) {
         var gunData = event.getGunData();
         var allAmmo = GunModifierHelper.getAmmoItems(gunData);
-        var currentAmmo = GunStateHelper.getAmmoId(gunData);
+        var currentAmmo = GunStateHelper.getAmmoHolder(gunData);
 
         if (!allAmmo.contains(currentAmmo)) {
             ServerPlayHandler.unloadGun((ServerPlayer)gunData.shooter, gunData.gun);

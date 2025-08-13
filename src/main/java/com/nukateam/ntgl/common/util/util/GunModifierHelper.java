@@ -103,7 +103,7 @@ public class GunModifierHelper {
 
         if (data != null && config != null && data.gun.getItem() instanceof WeaponItem) {
             if (GunStateHelper.getProjectileConfig(data).isMagazineMode()) {
-                var id = GunStateHelper.getAmmoId(data);
+                var id = GunStateHelper.getAmmoHolder(data);
                 var item = ITEMS.getValue(id);
 
                 finalMaxAmmo.set(item.getMaxDamage(new ItemStack(item)));
@@ -151,6 +151,14 @@ public class GunModifierHelper {
         var finalProjectileAmount = new AtomicInteger(gunProjectileAmount * ammoProjectileAmount);
         forEachAttachment(data, (modifier -> finalProjectileAmount.set(modifier.modifyProjectileAmount(finalProjectileAmount.get(), data))));
         return finalProjectileAmount.get();
+    }
+
+
+
+    public static int getReloadAmount(GunData data) {
+        var value = new AtomicInteger(getGeneral(getGun(data.gun)).getMultishotAmount());
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyReloadAmount(value.get(), data))));
+        return value.get();
     }
 
     public static int getMultishotAmount(GunData data) {
@@ -213,14 +221,14 @@ public class GunModifierHelper {
         return value.get();
     }
 
-    public static Set<ResourceLocation> getAmmoItems(GunData data) {
+    public static Set<AmmoHolder> getAmmoItems(GunData data) {
         var items = getGeneral(getGun(data.gun)).getAmmo();
         var ammoItem = new AtomicReference<>(items);
         forEachAttachment(data, (modifier -> ammoItem.set(modifier.modifyAmmoItems(ammoItem.get(), data))));
         return ammoItem.get();
     }
 
-    public static ResourceLocation getFirstAmmoItem(GunData data) {
+    public static AmmoHolder getFirstAmmoItem(GunData data) {
         var items = getAmmoItems(data);
         return items.iterator().next();
     }
@@ -455,15 +463,14 @@ public class GunModifierHelper {
     public static ProjectileConfig getProjectileConfig(ResourceLocation ammoId, GunData data) {
         var gun = getGun(data.gun);
         ProjectileConfig config = null;
-        var item = GunStateHelper.getAmmoItem(data);
+        var item = GunStateHelper.getAmmoHolder(data);
 
         if(gun.hasAmmo(ammoId)) {
             config = gun.getProjectileConfig(ammoId);
         }
-        else if(item instanceof IAmmo ammoItem) {
+        else if(item.canReturnAmmo() && ITEMS.getValue(item.getId()) instanceof IAmmo ammoItem) {
             config = ammoItem.getAmmo();
         }
-
         if(config == null) {
             config = new ProjectileConfig();
         }

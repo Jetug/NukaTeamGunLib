@@ -42,12 +42,14 @@ public class AmmoHolder extends ResourceHolder {
         };
     }
 
-    public boolean isAcceptable(ItemStack ammoStack) {
-        return isAcceptable.apply(ammoStack);
+    private boolean canReturnAmmo = false;
+
+    public boolean canReturnAmmo() {
+        return canReturnAmmo;
     }
 
-    public ResourceLocation getIcon() {
-        return ResourceLocation.tryBuild(id.getNamespace(), "textures/hud/ammo_type/" + id.getPath() + ".png");
+    public boolean isAcceptable(ItemStack ammoStack) {
+        return isAcceptable.apply(ammoStack);
     }
 
     public static void registerType(AmmoHolder mode) {
