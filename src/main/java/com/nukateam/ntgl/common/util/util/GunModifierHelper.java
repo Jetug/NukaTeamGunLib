@@ -104,8 +104,7 @@ public class GunModifierHelper {
         if (data != null && config != null && data.gun.getItem() instanceof WeaponItem) {
             if (GunStateHelper.getProjectileConfig(data).isMagazineMode()) {
                 var id = GunStateHelper.getAmmoHolder(data);
-                var item = ITEMS.getValue(id);
-
+                var item = ITEMS.getValue(id.getId());
                 finalMaxAmmo.set(item.getMaxDamage(new ItemStack(item)));
             }
         }

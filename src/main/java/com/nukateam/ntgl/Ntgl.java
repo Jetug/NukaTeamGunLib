@@ -9,6 +9,7 @@ import com.nukateam.ntgl.client.util.MetaLoader;
 import com.nukateam.ntgl.client.settings.GunOptions;
 import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
+import com.nukateam.ntgl.common.data.holders.AmmoHolders;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.datagen.*;
 import com.nukateam.ntgl.common.regestry.ProjectileRegistry;
@@ -67,7 +68,6 @@ public class Ntgl {
         }
 
         ModGuns.register(MOD_EVENT_BUS);
-
         ModRecipeType.REGISTER.register(MOD_EVENT_BUS);
         ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
         ModRecipeSerializers.REGISTER.register(MOD_EVENT_BUS);
@@ -96,6 +96,8 @@ public class Ntgl {
         playerAnimatorLoaded = ModList.get().isLoaded("playeranimator");
         curiosLoaded = ModList.get().isLoaded("curios");
 
+        AmmoHolders.register();
+
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -105,6 +107,10 @@ public class Ntgl {
 
     public static GunOptions getOptions() {
         return GunOptions.getInstance();
+    }
+
+    public static ResourceLocation ntglResource(String name) {
+        return ResourceLocation.tryBuild(MOD_ID, name);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event) {

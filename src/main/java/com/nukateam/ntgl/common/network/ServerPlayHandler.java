@@ -343,13 +343,16 @@ public class ServerPlayHandler {
 
                 tag.putInt(Tags.AMMO_COUNT, 0);
                 var data = new GunData(stack, player);
-                var id = GunStateHelper.getAmmoHolder(data);
-                var item = ForgeRegistries.ITEMS.getValue(id);
+                var ammoHolder = GunStateHelper.getAmmoHolder(data);
 
-                if (item != null && !player.isCreative()) {
-                    var usedMagazine = new ItemStack(item);
-                    StackUtils.setDurability(usedMagazine, count);
-                    spawnAmmo(player, usedMagazine);
+                if(ammoHolder.canReturnAmmo()) {
+                    var item = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
+
+                    if (item != null && !player.isCreative()) {
+                        var usedMagazine = new ItemStack(item);
+                        StackUtils.setDurability(usedMagazine, count);
+                        spawnAmmo(player, usedMagazine);
+                    }
                 }
             }
         }

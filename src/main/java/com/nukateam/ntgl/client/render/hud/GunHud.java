@@ -124,15 +124,13 @@ public class GunHud implements IGuiOverlay {
         RenderSystem.defaultBlendFunc();
 
         renderFireModeIcon(graphics, handCache, x, y, currentAmmoCountText);
-        renderFuelCounters(graphics, stack, x - BAR_START_X, y - BAR_START_Y);
+        renderFuelCounters(graphics, handCache, stack, x - BAR_START_X, y - BAR_START_Y);
     }
 
-    protected void renderFuelCounters(GuiGraphics graphics, ItemStack stack, int x, int y) {
-        var gunData = new GunData(stack, minecraft.player);
-        var allFuel = GunModifierHelper.getFuelTypes(gunData);
+    protected void renderFuelCounters(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int x, int y) {
         var barOffsetY = 0;
 
-        for (var fuelType : allFuel) {
+        for (var fuelType : handCache.fuels) {
             renderFuelCounter(graphics, stack, fuelType, x, y - barOffsetY);
             barOffsetY += 18;
         }
@@ -141,7 +139,7 @@ public class GunHud implements IGuiOverlay {
     protected void renderFuelCounter(GuiGraphics graphics, ItemStack stack, AmmoHolder ammoHolder, int x, int y) {
         var gunData = new GunData(stack, minecraft.player);
         var fuelPercent = FuelUtils.getFuelPercent(stack, ammoHolder, gunData);
-        renderIcon(graphics, ammoHolder.getIcon(), x - 18, y - 4);
+//        renderIcon(graphics, ammoHolder.getIcon(), x - 18, y - 4);
         Figures.drawBar(graphics, x, y, BAR_WIDTH, BAR_HEIGHT, fuelPercent);
     }
 
@@ -215,9 +213,10 @@ public class GunHud implements IGuiOverlay {
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
             handCache.maxAmmoCount = GunModifierHelper.getMaxAmmo(data);
             handCache.fireMode = GunStateHelper.getFireMode(data);
-            handCache.ammoType = GunStateHelper.getAmmoConfig(data).getAmmoType();
+//            handCache.ammoType = GunStateHelper.getAmmoConfig(data).getAmmoType();
             handCache.ammoCount = GunStateHelper.getAmmoCount(stack);
-            handCache.counterType = GunStateHelper.getAmmoConfig(data).getCounter();
+//            handCache.counterType = GunStateHelper.getAmmoConfig(data).getCounter();
+            handCache.fuels = GunModifierHelper.getFuelTypes(data);
 
             if (!player.isCreative()) {
                 handCache.inventoryAmmoCount = getInventoryAmmoCount(stack, player.getInventory());

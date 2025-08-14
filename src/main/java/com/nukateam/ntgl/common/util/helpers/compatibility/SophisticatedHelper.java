@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.util.helpers.compatibility;
 
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.SophisticatedAmmoContext;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
@@ -58,7 +59,7 @@ public class SophisticatedHelper {
         return null;
     }
 
-    public static IAmmoContext findAmmo(Player player, ResourceLocation id) {
+    public static IAmmoContext findAmmo(Player player, AmmoHolder id) {
         var inventory = getBackpackInventory(player);
 
         if (inventory == null)
@@ -75,7 +76,7 @@ public class SophisticatedHelper {
         return SophisticatedAmmoContext.NONE;
     }
 
-    public static IAmmoContext findMagazine(Player player, ResourceLocation id) {
+    public static IAmmoContext findMagazine(Player player, AmmoHolder id) {
         var inventory = getBackpackInventory(player);
         if (inventory == null) {
             return SophisticatedAmmoContext.NONE;

@@ -224,15 +224,19 @@ public class ReloadTracker {
         }
     }
 
+    private void reloadMagazine(LivingEntity entity) {
+        var data = new GunData(weapon, entity);
 
-    private void reloadMagazine(LivingEntity player) {
-        var data = new GunData(weapon, player);
-
-        if(GunStateHelper.getProjectileConfig(data).isMagazineMode()){
-            addMagazine(player);
+        if(entity instanceof Player player && !player.isCreative()) {
+            if(GunStateHelper.getProjectileConfig(data).isMagazineMode()){
+                addMagazine(entity);
+            }
+            else{
+                addAmmo(entity);
+            }
         }
-        else{
-            addAmmo(player);
+        else {
+            GunStateHelper.setMaxAmmo(data);
         }
     }
 
@@ -261,9 +265,15 @@ public class ReloadTracker {
         var context = InventoryUtil.findAmmo(entity, weapon);
         var ammo = context.stack();
 
+        var data = new GunData(weapon, entity);
+        var ammoHandler = GunStateHelper.getAmmoHolder(data);
+
         if (!ammo.isEmpty()) {
             var tag = this.weapon.getTag();
-            amount = Math.min(ammo.getCount(), amount);
+            var value = ammoHandler.getGetValue(weapon);
+            var currentAmount = GunStateHelper.getAmmoCount(weapon);
+
+            amount = Math.min(ammo.getCount() * value, amount);
 
             if (tag != null) {
                 var gunData = new GunData(weapon, shooter);
@@ -271,7 +281,10 @@ public class ReloadTracker {
                 amount = Math.min(amount, maxAmmo - tag.getInt(Tags.AMMO_COUNT));
                 GunStateHelper.addAmmo(gunData, amount);
             }
-            context.shrink(amount);
+
+            var shrinkAmount = (int)Math.ceil((double) amount / (double)value);
+
+            context.shrink(shrinkAmount);
         }
     }
 
@@ -279,9 +292,18 @@ public class ReloadTracker {
         var data = new GunData(weapon, entity);
         var tag = this.weapon.getTag();
 
-        return GunStateHelper.hasNoAmmo(entity, weapon) &&
+        return !GunStateHelper.hasNoAmmo(entity, weapon) &&
                 GunStateHelper.getAmmoCount(weapon) < GunEnchantmentHelper.getAmmoCapacity(data);
     }
+
+//    private boolean isNotReloaded(LivingEntity entity) {
+//        var data = new GunData(weapon, entity);
+//        var ammoItem = GunStateHelper.getAmmoId(data);
+//        var tag = this.weapon.getTag();
+//
+//        return !InventoryUtil.findAmmo(entity, weapon).stack().isEmpty() &&
+//                tag.getInt(Tags.AMMO_COUNT) < GunEnchantmentHelper.getAmmoCapacity(data);
+//    }
 
     private void addMagazine(LivingEntity entity) {
         var data = new GunData(weapon, entity);

@@ -113,13 +113,11 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
         var data = new GunData(stack, null);
-        var ammo = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoHolder(data));
+        var descriptionId = GunStateHelper.getAmmoHolder(data).getDescriptionId();
 
-        if (ammo != null) {
-            tooltip.add(Component.translatable("info.ntgl.ammo_type",
-                            Component.translatable(ammo.getDescriptionId()).withStyle(ChatFormatting.WHITE))
-                    .withStyle(ChatFormatting.GRAY));
-        }
+        tooltip.add(Component.translatable("info.ntgl.ammo_type",
+                        Component.translatable(descriptionId).withStyle(ChatFormatting.WHITE)
+                ).withStyle(ChatFormatting.GRAY));
 
         var tagCompound = stack.getOrCreateTag();
         addAditionalDamage(tooltip, tagCompound, data);

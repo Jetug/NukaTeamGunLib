@@ -141,6 +141,10 @@ public class GunStateHelper {
         tag.putInt(Tags.AMMO_COUNT, amount);
     }
 
+    public static void setMaxAmmo(GunData data) {
+        GunStateHelper.setAmmo(data.gun, GunModifierHelper.getMaxAmmo(data));
+    }
+
     public static boolean hasAmmo(ItemStack gunStack) {
         var tag = gunStack.getOrCreateTag();
         return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) > 0;

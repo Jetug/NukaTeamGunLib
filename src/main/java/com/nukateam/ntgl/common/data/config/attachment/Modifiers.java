@@ -189,7 +189,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
         if (tag.contains("ammoItems", Tag.TAG_LIST)) {
             this.ammoItems.clear();
             tag.getList("ammoItems", Tag.TAG_STRING).forEach(t ->
-                    this.ammoItems.add(ResourceLocation.tryParse(t.getAsString()))
+                    this.ammoItems.add(AmmoHolder.getType(t.getAsString()))
             );
         }
     }

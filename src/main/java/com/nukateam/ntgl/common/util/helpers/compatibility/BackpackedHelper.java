@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.util.helpers.compatibility;
 
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.mrcrayfish.backpacked.inventory.BackpackedInventoryAccess;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
@@ -11,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
  * Author: MrCrayfish
  */
 public class BackpackedHelper {
-    public static AmmoContext findAmmo(Player player, ResourceLocation id) {
+    public static AmmoContext findAmmo(Player player, AmmoHolder id) {
         var inventory = ((BackpackedInventoryAccess) player).backpacked$GetBackpackInventory();
 
         if (inventory == null)
@@ -27,7 +28,7 @@ public class BackpackedHelper {
         return AmmoContext.NONE;
     }
 
-    public static AmmoContext findMagazine(Player player, ResourceLocation id) {
+    public static AmmoContext findMagazine(Player player, AmmoHolder id) {
         var inventory = ((BackpackedInventoryAccess) player).backpacked$GetBackpackInventory();
 
         if (inventory == null)

@@ -71,9 +71,6 @@ public class InventoryUtil {
     }
 
     public static IAmmoContext findPlayerAmmo(Player player, AmmoHolder id) {
-        if (player.isCreative())
-            return getCreativeAmmoContext(id);
-
         var context = findAmmo(player.getInventory(), id);
         if (!context.equals(AmmoContext.NONE))
             return context;
@@ -81,7 +78,7 @@ public class InventoryUtil {
         return BackpackHelper.findAmmo(player, id);
     }
 
-    public static AmmoContext findAmmo(Container inventory, ResourceLocation id){
+    public static AmmoContext findAmmo(Container inventory, AmmoHolder id){
         for (int i = 0; i < inventory.getContainerSize(); ++i) {
             var stack = inventory.getItem(i);
             if (isAmmo(stack, id)) {
@@ -92,11 +89,7 @@ public class InventoryUtil {
         return AmmoContext.NONE;
     }
 
-    public static IAmmoContext findPlayerMagazine(Player player, ResourceLocation id) {
-        if (player.isCreative()) {
-            return getCreativeAmmoContext(id);
-        }
-
+    public static IAmmoContext findPlayerMagazine(Player player, AmmoHolder id) {
         var context = findMagazine(player.getInventory(), id);
         if (!context.equals(AmmoContext.NONE))
             return context;
@@ -104,7 +97,7 @@ public class InventoryUtil {
         return BackpackHelper.findMagazine(player, id);
     }
 
-    public static AmmoContext findMagazine(Container inventory, ResourceLocation id){
+    public static AmmoContext findMagazine(Container inventory, AmmoHolder id){
         ItemStack ammoStack = null;
 
         for (int i = 0; i < inventory.getContainerSize(); ++i) {
@@ -125,8 +118,8 @@ public class InventoryUtil {
         return AmmoContext.NONE;
     }
 
-    public static boolean isAmmo(ItemStack stack, ResourceLocation id) {
-        return stack != null && Objects.equals(ForgeRegistries.ITEMS.getKey(stack.getItem()), id);
+    public static boolean isAmmo(ItemStack stack, AmmoHolder id) {
+        return stack != null && id.isAcceptable(stack);
     }
 
     /**
@@ -145,45 +138,44 @@ public class InventoryUtil {
 
     public static IAmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
         var data = new GunData(weapon, entity);
-        var id = GunStateHelper.getAmmoHolder(data);
+        var ammoHandler = GunStateHelper.getAmmoHolder(data);
 
         if (entity instanceof Player player) {
-            var context = findPlayerAmmo(player, id);
+            var context = findPlayerAmmo(player, ammoHandler);
 
             if(context == AmmoContext.NONE){
                 var set = GunModifierHelper.getAmmoItems(data);
                 for (var value: set) {
-                    if(!value.equals(id) && GunStateHelper.getAmmoCount(weapon) == 0){
-                        id = value;
-                        context = findPlayerAmmo(player, id);
+                    if(!value.equals(ammoHandler.getId()) && GunStateHelper.getAmmoCount(weapon) == 0){
+                        ammoHandler = value;
+                        context = findPlayerAmmo(player, ammoHandler);
                         if(context != AmmoContext.NONE) {
-                            GunStateHelper.setCurrentAmmo(data, id);
+                            GunStateHelper.setCurrentAmmo(data, ammoHandler.getId());
                             return context;
                         }
                     }
                 }
             }
-
             return context;
         }
-        return getCreativeAmmoContext(id);
+        return AmmoContext.NONE;
     }
 
     public static IAmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {
         var data = new GunData(weapon, entity);
-        var id = GunStateHelper.getAmmoHolder(data);
+        var ammoHandler = GunStateHelper.getAmmoHolder(data);
 
         if (entity instanceof Player player) {
-            var context = findPlayerMagazine(player, id);
+            var context = findPlayerMagazine(player, ammoHandler);
 
             if(context == AmmoContext.NONE){
                 var set = GunModifierHelper.getAmmoItems(data);
                 for (var value: set) {
-                    if(!value.equals(id) && GunStateHelper.getAmmoCount(weapon) == 0){
-                        id = value;
-                        context = findPlayerMagazine(player, id);
+                    if(!value.equals(ammoHandler) && GunStateHelper.getAmmoCount(weapon) == 0){
+                        ammoHandler = value;
+                        context = findPlayerMagazine(player, ammoHandler);
                         if(context != AmmoContext.NONE) {
-                            GunStateHelper.setCurrentAmmo(data, id);
+                            GunStateHelper.setCurrentAmmo(data, ammoHandler.getId());
                             return context;
                         }
                     }
@@ -193,6 +185,6 @@ public class InventoryUtil {
             return context;
         }
 
-        return getCreativeAmmoContext(id);
+        return AmmoContext.NONE;
     }
 }

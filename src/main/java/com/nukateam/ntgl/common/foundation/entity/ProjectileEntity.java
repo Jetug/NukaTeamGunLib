@@ -638,22 +638,26 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     private ItemStack setupAmmo(GunData data) {
         var weapon = data.gun;
-        var ammo = ForgeRegistries.ITEMS.getValue(GunStateHelper.getAmmoHolder(data));
-        if (ammo != null) {
-            int customModelData = -1;
-            if (weapon.getTag() != null) {
-                if (weapon.getTag().contains("Model", Tag.TAG_COMPOUND)) {
-                    ItemStack model = ItemStack.of(weapon.getTag().getCompound("Model"));
-                    if (model.getTag() != null && model.getTag().contains("CustomModelData")) {
-                        customModelData = model.getTag().getInt("CustomModelData");
+
+        var ammoHolder = GunStateHelper.getAmmoHolder(data);
+        if(ammoHolder.canReturnAmmo()) {
+            var ammo = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
+            if (ammo != null) {
+                int customModelData = -1;
+                if (weapon.getTag() != null) {
+                    if (weapon.getTag().contains("Model", Tag.TAG_COMPOUND)) {
+                        ItemStack model = ItemStack.of(weapon.getTag().getCompound("Model"));
+                        if (model.getTag() != null && model.getTag().contains("CustomModelData")) {
+                            customModelData = model.getTag().getInt("CustomModelData");
+                        }
                     }
                 }
+                var ammoStack = new ItemStack(ammo);
+                if (customModelData != -1) {
+                    ammoStack.getOrCreateTag().putInt("CustomModelData", customModelData);
+                }
+                return ammoStack;
             }
-            var ammoStack = new ItemStack(ammo);
-            if (customModelData != -1) {
-                ammoStack.getOrCreateTag().putInt("CustomModelData", customModelData);
-            }
-            return ammoStack;
         }
         return ItemStack.EMPTY;
     }
