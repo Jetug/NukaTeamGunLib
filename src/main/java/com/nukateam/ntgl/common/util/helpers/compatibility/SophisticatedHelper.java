@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.common.util.helpers.compatibility;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.SophisticatedAmmoContext;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +12,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.p3pp3rf1y.sophisticatedbackpacks.api.CapabilityBackpackWrapper;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackItem;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.wrapper.IBackpackWrapper;
-import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
 
@@ -20,12 +19,13 @@ import javax.annotation.Nullable;
 public class SophisticatedHelper {
     @Nullable
     private static ItemStack getBackpackItem(Player player) {
-        var backpackCurio = CuriosApi.getCuriosHelper().findFirstCurio(player, stack -> stack.getItem() instanceof BackpackItem);
-        var chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
+        if(Ntgl.curiosLoaded){
+            var backpackItem = CuriosHelper.getItem(player, stack -> stack.getItem() instanceof BackpackItem);
+            if(backpackItem != null) return backpackItem;
+        }
 
-        if(backpackCurio.isPresent())
-            return backpackCurio.get().stack();
-        else if(chestStack.getItem() instanceof BackpackItem) {
+        var chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
+        if(chestStack.getItem() instanceof BackpackItem) {
             return chestStack;
         }
         else return null;

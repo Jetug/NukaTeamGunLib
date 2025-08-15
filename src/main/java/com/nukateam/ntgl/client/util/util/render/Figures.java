@@ -3,8 +3,8 @@ package com.nukateam.ntgl.client.util.util.render;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class Figures {
-    public static void drawBar(GuiGraphics graphics, int x, int y, int width, int height, float percent){
-        var color = percent < 0.25 ? 0xFFFF5555 : 0xFFFFFFFF;
+    public static void drawBar(GuiGraphics graphics, int x, int y, int width, int height, float percent, int color){
+//        var color = percent < 0.25 ? 0xFFFF5555 : 0xFFFFFFFF;
         var value = (int)(width * percent);
         drawFrame(graphics, x, y, width, height, color);
         graphics.fill(x, y, x + value, y + height, color);

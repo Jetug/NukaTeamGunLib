@@ -4,19 +4,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.ForgeHooks;
 
+import java.util.List;
+
 import static com.nukateam.ntgl.Ntgl.ntglResource;
 
 public class AmmoHolders {
     public static final AmmoHolder BURNABLE = AmmoHolder.Builder
             .create(ntglResource("burnable"))
-            .setIsAcceptable(AmmoHolders::isBurnable)
-            .setGetValue((stack -> ForgeHooks.getBurnTime(stack, null)))
+            .isAcceptable(AmmoHolders::isBurnable)
+            .value((stack -> ForgeHooks.getBurnTime(stack, null)))
+            .onConsume(AmmoHolders::consumeBurnable)
             .build();
 
     public static final AmmoHolder WATER = AmmoHolder.Builder
             .create(ntglResource("water"))
-            .setIsAcceptable(AmmoHolders::isWater)
-            .setGetValue((stack -> 1000))
+            .isAcceptable(AmmoHolders::isWater)
+            .value((stack -> 1000))
+            .onConsume(AmmoHolders::consumeWater)
             .build();
 
     public static void register() {
@@ -31,5 +35,19 @@ public class AmmoHolders {
 
     private static boolean isWater(ItemStack ammoStack) {
         return ammoStack.getItem() == Items.WATER_BUCKET;
+    }
+
+    private static List<ItemStack> consumeBurnable(ItemStack stack, Integer i) {
+        if (stack.getItem() == Items.LAVA_BUCKET) {
+            return List.of(new ItemStack(Items.BUCKET));
+        }
+        return List.of();
+    }
+
+    private static List<ItemStack> consumeWater(ItemStack stack, Integer i) {
+        if (stack.getItem() == Items.WATER_BUCKET) {
+            return List.of(new ItemStack(Items.BUCKET));
+        }
+        return List.of();
     }
 }

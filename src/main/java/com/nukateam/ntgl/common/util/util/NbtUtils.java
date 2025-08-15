@@ -112,6 +112,21 @@ public class NbtUtils {
         return map;
     }
 
+
+    public static <V> LinkedHashMap<ResourceLocation, V> deserializeLinkedMap(CompoundTag tag, Function<CompoundTag, V> deserializer){
+        var map = new LinkedHashMap<ResourceLocation, V>();
+
+        for (var nbtKey : tag.getAllKeys()) {
+            if(tag.contains(nbtKey, Tag.TAG_COMPOUND)) {
+                var resource = ResourceLocation.tryParse(nbtKey);
+                var value = deserializer.apply(tag.getCompound(nbtKey));
+                map.put(resource, value);
+            }
+        }
+
+        return map;
+    }
+
     public static HashMap<ResourceLocation, ProjectileConfig> deserializeProjectileMap(CompoundTag tag){
         var map = new HashMap<ResourceLocation, ProjectileConfig>();
 

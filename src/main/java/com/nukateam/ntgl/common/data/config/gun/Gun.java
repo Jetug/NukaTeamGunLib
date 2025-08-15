@@ -53,7 +53,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     @Ignored
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
-    protected HashMap<ResourceLocation, AmmoData> ammoData = new HashMap<>();
+    protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
     protected HashMap<AmmoHolder, Fuel> fuel = new HashMap<>();
 
     @Override
@@ -87,7 +87,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
         tag.put("Textures", NbtUtils.serializeStringMap(this.textures));
-        tag.put("Projectiles", NbtUtils.serializeMap(this.ammoData));
+        tag.put("AmmoData", NbtUtils.serializeMap(this.ammoData));
         tag.put("SecondaryAmmo", NbtUtils.serializeMap(this.fuel));
         return tag;
     }
@@ -112,8 +112,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains("Textures", Tag.TAG_COMPOUND)) {
             this.textures = NbtUtils.deserializeRLMap(tag.getCompound("Textures"));
         }
-        if (tag.contains("Projectiles", Tag.TAG_COMPOUND)) {
-            this.ammoData = NbtUtils.deserializeMap(tag.getCompound("Projectiles"), (nbt) -> AmmoData.create(nbt));
+        if (tag.contains("AmmoData", Tag.TAG_COMPOUND)) {
+            this.ammoData = NbtUtils.deserializeLinkedMap(tag.getCompound("AmmoData"), (nbt) -> AmmoData.create(nbt));
         }
         if (tag.contains("SecondaryAmmo", Tag.TAG_COMPOUND)) {
             this.fuel = NbtUtils.deserializeFuelMap(tag.getCompound("SecondaryAmmo"));
@@ -138,7 +138,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         gun.melee = this.melee.copy();
         gun.sounds = (HashMap<String, ResourceLocation>)    this.sounds.clone();
         gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
-        gun.ammoData = (HashMap<ResourceLocation, AmmoData>) this.ammoData.clone();
+        gun.ammoData = (LinkedHashMap<ResourceLocation, AmmoData>) this.ammoData.clone();
         gun.fuel = (HashMap<AmmoHolder, Fuel>) this.fuel.clone();
         gun.display = this.display.copy();
         gun.modules = this.modules.copy();
@@ -154,10 +154,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public void onCreated(String id){
         prepareTextures(id);
-    }
-
-    public HashMap<ResourceLocation, AmmoData> getAmmoData() {
-        return ammoData;
     }
 
     public HashMap<AmmoHolder, Fuel> getFuel() {
@@ -260,16 +256,20 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
     }
 
+    public AmmoData getAmmoData(ResourceLocation ammo) {
+        return ammoData.getOrDefault(ammo, new AmmoData());
+    }
+
     public boolean hasAmmo(ResourceLocation ammo){
         return ammoData.containsKey(ammo);
     }
 
     public ProjectileConfig getProjectileConfig(ResourceLocation ammo){
-        return ammoData.get(ammo).getProjectile();
+        return getAmmoData(ammo).getProjectile();
     }
 
-    public AmmoConfig getAmmoiConfig(ResourceLocation ammo){
-        return ammoData.get(ammo).getAmmo();
+    public AmmoConfig getAmmoConfig(ResourceLocation ammo){
+        return getAmmoData(ammo).getAmmo();
     }
 
     private void prepareTextures(String itemId) {

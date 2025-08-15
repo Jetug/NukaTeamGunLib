@@ -18,6 +18,8 @@ public class AmmoType extends ResourceHolder {
     public static AmmoType FIRE                 = new AmmoType("fire"                 );
     public static AmmoType SLUG                 = new AmmoType("slug"                 );
     public static AmmoType BUCKSHOT             = new AmmoType("buckshot"             );
+    public static AmmoType BURNABLE             = new AmmoType("burnable"             );
+    public static AmmoType WATER                = new AmmoType("water"             );
 
     private static final Map<ResourceLocation, AmmoType> typeMap = new HashMap<>();
     
@@ -34,6 +36,8 @@ public class AmmoType extends ResourceHolder {
         registerType(FIRE                 );
         registerType(SLUG                 );
         registerType(BUCKSHOT             );
+        registerType(BURNABLE             );
+        registerType(WATER                );
     }
 
     public AmmoType(ResourceLocation id) {

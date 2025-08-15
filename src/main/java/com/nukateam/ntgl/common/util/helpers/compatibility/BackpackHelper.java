@@ -11,10 +11,10 @@ public class BackpackHelper {
     public static IAmmoContext findAmmo(Player player, AmmoHolder id) {
         var context = (IAmmoContext)AmmoContext.NONE;
 
-        if (Ntgl.backpackedLoaded) {
+        if (Ntgl.backpackedLoaded && Ntgl.curiosLoaded) {
             context = BackpackedHelper.findAmmo(player, id);
         }
-        if(Ntgl.sophisticatedLoaded && Ntgl.curiosLoaded && context.equals(AmmoContext.NONE)){
+        if(Ntgl.sophisticatedLoaded && context.equals(AmmoContext.NONE)){
             context = SophisticatedHelper.findAmmo(player, id);
         }
 

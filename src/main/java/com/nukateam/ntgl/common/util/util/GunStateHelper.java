@@ -23,14 +23,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-
-import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
 public class GunStateHelper {
     public static final String AMMO_TAG = "Projectile";
@@ -79,8 +76,8 @@ public class GunStateHelper {
         else return SetUtils.getFirst(ammoItems);
     }
 
-    public static boolean isCurrentAmmo(GunData gunData, Item item) {
-        return getAmmoHolder(gunData).equals(ITEMS.getKey(item));
+    public static boolean isAcceptable(GunData gunData, ItemStack item) {
+        return getAmmoHolder(gunData).isAcceptable(item);
     }
 
 //    public static Item getAmmoItem(GunData data) {

@@ -2,7 +2,7 @@
   "general": {
     "fireMode": ["ntgl:auto"],
     "rate": 1,
-    "gripType": "ntgl:mini_gun",
+    "gripType": "ntgl:one_handed",
     "category": "heavy",
     "damage": 5.0,
     "maxAmmo": 1000,
@@ -12,8 +12,39 @@
     "projectileAmount": 6,
     "spread": 6.0,
     "ammo": [
-      "ntgl:fuel"
+      "ntgl:burnable"
     ]
+  },
+  "ammoData":{
+    "ntgl:burnable": {
+      "ammo": {
+        "type": "ntgl:fire",
+        "counter": "ntgl:bar"
+      },
+      "projectile": {
+        "damageType": "ntgl:fire",
+        "projectile": "ntgl:fire",
+        "damage": 1.0,
+        "size": 1.0,
+        "speed": 50.0,
+        "life": 5,
+        "projectileAmount": 1
+      }
+    }
+  },
+  "fuel": {
+    "ntgl:burnable":{
+      "max": 1000,
+      "ammo": {
+        "type": "ntgl:burnable"
+      }
+    },
+    "ntgl:water":{
+      "max": 1000,
+      "ammo": {
+        "type": "ntgl:water"
+      }
+    }
   },
   "sounds": {
     "fire": "ntgl:item.flamer.fire",

@@ -4,11 +4,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.client.event.*;
 import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
+import com.nukateam.ntgl.client.util.ClientDebug;
+import com.nukateam.ntgl.client.util.util.RgbUtils;
 import com.nukateam.ntgl.client.util.util.render.Figures;
-import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.CounterType;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
-import com.nukateam.ntgl.common.foundation.item.AmmoBoxItem;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -29,6 +29,8 @@ import net.minecraftforge.common.MinecraftForge;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.getGun;
+
 public class GunHud implements IGuiOverlay {
     public static final float COUNTER_SCALE = 0.9f;
     public static final int INVENTORY_AMMO_COUNT_COLOR = 0xAAAAAA;
@@ -42,12 +44,18 @@ public class GunHud implements IGuiOverlay {
     private static final int OFFHAND_X_OFFSET = 110;
     private static final int BAR_WIDTH = 35;
     private static final int BAR_HEIGHT = 6;
-    private static final int BAR_START_X = 70;
+
+    public static final int COUNTER_POS_X = 70;
+    public static final int ICON_SIZE = 16;
+    public static final int COUNTER_POS_Y = 36;
+
+    private static final int BAR_START_X = COUNTER_POS_X;
     private static final int BAR_START_Y = 57;
     protected static final Map<InteractionHand, GunHudCache> cache = Map.of(
             InteractionHand.MAIN_HAND, new GunHudCache(InteractionHand.MAIN_HAND),
             InteractionHand.OFF_HAND, new GunHudCache(InteractionHand.OFF_HAND)
     );
+    public static final int INVENTORY_AMMO_POS_Y = 25;
 
     protected final Minecraft minecraft = Minecraft.getInstance();
     private Colors colors = DEFAULT_COLORS;
@@ -59,19 +67,6 @@ public class GunHud implements IGuiOverlay {
 
     public void resetHudColor() {
         colors = DEFAULT_COLORS;
-    }
-
-    public static int toRgba(int rgb){
-        int alpha = 0xFF;
-        return (alpha << 24) | rgb;
-    }
-
-    public static float[] rgbToFloatRgba(int rgb) {
-        float red   = ((rgb >> 16) & 0xFF) / 255.0f;
-        float green = ((rgb >> 8)  & 0xFF) / 255.0f;
-        float blue  =  (rgb        & 0xFF) / 255.0f;
-
-        return new float[] {red, green, blue, 1}; // Returns [R, G, B, A]
     }
 
     @Override
@@ -100,53 +95,66 @@ public class GunHud implements IGuiOverlay {
     protected void renderAmmoCounter(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int x, int y) {
         if(!GunModifierHelper.shouldRenderHud(new GunData(stack, minecraft.player))) return;
 
-        var currentAmmoCountText = "";
-        currentAmmoCountText = CURRENT_AMMO_FORMAT.format(handCache.ammoCount);
-
-//        if(handCache.counterType == CounterType.NUMBER) {
-//            currentAmmoCountText = CURRENT_AMMO_FORMAT.format(handCache.ammoCount);
-//        }
-//        else if(handCache.counterType == CounterType.PERCENT){
-//            int percent = (handCache.ammoCount / handCache.maxAmmoCount) * 100;
-//            currentAmmoCountText = CURRENT_AMMO_FORMAT_PERCENT.format(percent);
-//        }
 
         var poseStack = graphics.pose();
+        poseStack.pushPose();
+        {
+            RenderSystem.enableDepthTest();
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
 
-        renderAmmoTypeIcon(graphics, handCache, x, y, currentAmmoCountText);
-        renderCurrentAmmo(graphics, handCache, x - 70, y - 43, poseStack, currentAmmoCountText);
-        Figures.drawLine(graphics, x - 70, y - 30, 27, 2, toRgba(colors.hud));
-        renderInventoryAmmo(graphics, handCache, x - 67, y - 26, poseStack, minecraft.font);
 
-        RenderSystem.enableDepthTest();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+            var fontHeight = minecraft.font.lineHeight;
 
-        renderFireModeIcon(graphics, handCache, x, y, currentAmmoCountText);
-        renderFuelCounters(graphics, handCache, stack, x - BAR_START_X, y - BAR_START_Y);
+            renderAmmoTypeIcon(graphics, handCache, x - COUNTER_POS_X - ICON_SIZE - 2, y - COUNTER_POS_Y - 11);
+            renderCurrentAmmo(graphics,  handCache, x - COUNTER_POS_X, y - COUNTER_POS_Y - fontHeight, poseStack);
+
+            Figures.drawLine(graphics, x - COUNTER_POS_X, y - 31, 27, 2, RgbUtils.toRgba(colors.hud));
+
+            renderFireModeIcon(graphics, handCache, x - COUNTER_POS_X - ICON_SIZE - 2 , y - INVENTORY_AMMO_POS_Y - 6);
+            renderInventoryAmmo(graphics, handCache, x - COUNTER_POS_X + 3, y - INVENTORY_AMMO_POS_Y, poseStack, minecraft.font);
+
+            renderFuelCounters(graphics, handCache, stack, x - BAR_START_X + 8 + ClientDebug.X, y - BAR_START_Y - 3 + ClientDebug.Y);
+        }
+        poseStack.popPose();
+    }
+
+    protected void renderCurrentAmmo(GuiGraphics graphics, GunHudCache handCache,
+                                     int x, int y,
+                                     PoseStack poseStack) {
+        var currentAmmoCountText = "";
+
+        if(handCache.ammoConfig.getCounter() == CounterType.NUMBER) {
+            currentAmmoCountText = CURRENT_AMMO_FORMAT.format(handCache.ammoCount);
+            renderCounter(graphics, handCache, x, y, poseStack, currentAmmoCountText);
+        }
+        else if(handCache.ammoConfig.getCounter() == CounterType.PERCENT){
+            var percent = (((float)handCache.ammoCount / (float)handCache.maxAmmoCount));
+            currentAmmoCountText = CURRENT_AMMO_FORMAT_PERCENT.format(percent);
+            renderCounter(graphics, handCache, x, y, poseStack, currentAmmoCountText);
+        }
+        else if(handCache.ammoConfig.getCounter() == CounterType.BAR){
+            var percent = (((float)handCache.ammoCount / (float)handCache.maxAmmoCount));
+            renderBarCounter(graphics, percent, x, y);
+        }
     }
 
     protected void renderFuelCounters(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int x, int y) {
         var barOffsetY = 0;
 
-        for (var fuelType : handCache.fuels) {
-            renderFuelCounter(graphics, stack, fuelType, x, y - barOffsetY);
-            barOffsetY += 18;
+        for (var entry : handCache.fuels.entrySet()) {
+            var gunData = new GunData(stack, minecraft.player);
+            var fuelPercent = FuelUtils.getFuelPercent(stack, entry.getKey(), gunData);
+            var fuel = entry.getValue();
+
+            renderIcon(graphics, fuel.getAmmo().getAmmoType().getIcon(), x - ICON_SIZE - 2, y - 5 - barOffsetY);
+            renderBarCounter(graphics, fuelPercent, x, y - barOffsetY);
+            barOffsetY += 16;
         }
     }
 
-    protected void renderFuelCounter(GuiGraphics graphics, ItemStack stack, AmmoHolder ammoHolder, int x, int y) {
-        var gunData = new GunData(stack, minecraft.player);
-        var fuelPercent = FuelUtils.getFuelPercent(stack, ammoHolder, gunData);
-//        renderIcon(graphics, ammoHolder.getIcon(), x - 18, y - 4);
-        Figures.drawBar(graphics, x, y, BAR_WIDTH, BAR_HEIGHT, fuelPercent);
-    }
-
-    protected void renderCurrentAmmo(GuiGraphics graphics, GunHudCache handCache,
-                                     int x, int y,
-                                     PoseStack poseStack,
-                                     String currentAmmoCountText) {
+    private void renderCounter(GuiGraphics graphics, GunHudCache handCache, int x, int y, PoseStack poseStack, String currentAmmoCountText) {
         var ammoCountColor = handCache.ammoCount < (handCache.maxAmmoCount * 0.25) ? colors.lowAmmo : colors.currentAmmo;
         poseStack.pushPose();
         {
@@ -158,6 +166,11 @@ public class GunHud implements IGuiOverlay {
                     ammoCountColor, true);
         }
         poseStack.popPose();
+    }
+
+    protected void renderBarCounter(GuiGraphics graphics, float percent, int x, int y) {
+        var color = percent < 0.25 ? colors.lowAmmo : colors.currentAmmo;
+        Figures.drawBar(graphics, x, y, BAR_WIDTH, BAR_HEIGHT, percent, RgbUtils.toRgba(color));
     }
 
     protected void renderInventoryAmmo(GuiGraphics graphics, GunHudCache handCache, int x, int y,
@@ -174,29 +187,26 @@ public class GunHud implements IGuiOverlay {
         poseStack.popPose();
     }
 
-    protected void renderAmmoTypeIcon(GuiGraphics graphics, GunHudCache handCache, int width, int height,
-                                      String currentAmmoCountText) {
-        var ammoType = handCache.ammoType;
+    protected void renderAmmoTypeIcon(GuiGraphics graphics, GunHudCache handCache, int x, int y) {
+        var ammoType = handCache.ammoConfig.getAmmoType();
         var icon = ammoType.getIcon();
-        var textWidth = minecraft.font.width(currentAmmoCountText) * 1.5;
-        var x = (int) (width - getIconX(handCache, textWidth) + textWidth);
+//        var textWidth = minecraft.font.width(currentAmmoCountText) * 1.5;
+//        var x = (int) (width - getIconX(handCache, textWidth) + textWidth);
 
-        renderIcon(graphics, icon, x, height - 46);
+        renderIcon(graphics, icon, x, y);
     }
 
-    protected void renderFireModeIcon(GuiGraphics graphics, GunHudCache handCache, int width, int height, String currentAmmoCountText) {
+    protected void renderFireModeIcon(GuiGraphics graphics, GunHudCache handCache, int x, int y) {
         var fireMode = handCache.fireMode;
         var icon = fireMode.getIcon();
-        var textWidth =  minecraft.font.width(currentAmmoCountText) * 1.5;
-        var x = (int) (width - getIconX(handCache, textWidth) + textWidth);
 
-        renderIcon(graphics, icon, x, height - 32);
+        renderIcon(graphics, icon, x, y);
     }
 
     protected void renderIcon(GuiGraphics graphics, ResourceLocation icon, int x, int y) {
-        var iconColor = rgbToFloatRgba(colors.hud);
+        var iconColor = RgbUtils.rgbToFloatRgba(colors.hud);
         RenderSystem.setShaderColor(iconColor[0], iconColor[1], iconColor[2], iconColor[3]);
-        graphics.blit(icon, x, y, 0F, 0F, 16, 16, 16, 16);
+        graphics.blit(icon, x, y, 0F, 0F, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
         RenderSystem.setShaderColor(1, 1, 1, 1);
     }
 
@@ -207,34 +217,37 @@ public class GunHud implements IGuiOverlay {
         return ICON_X;
     }
 
-    protected void updateCache(GunHudCache handCache, LocalPlayer player, ItemStack stack) {
+    protected void updateCache(GunHudCache handCache, LocalPlayer player, ItemStack weapon) {
         if ((System.currentTimeMillis() - handCache.checkAmmoTimestamp) > 200) {
-            var data = new GunData(stack, player);
+            var data = new GunData(weapon, player);
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
             handCache.maxAmmoCount = GunModifierHelper.getMaxAmmo(data);
             handCache.fireMode = GunStateHelper.getFireMode(data);
-//            handCache.ammoType = GunStateHelper.getAmmoConfig(data).getAmmoType();
-            handCache.ammoCount = GunStateHelper.getAmmoCount(stack);
+            handCache.ammoCount = GunStateHelper.getAmmoCount(weapon);
+//            handCache.ammoConfig = GunStateHelper.getAmmoConfig(data);
+//            GunStateHelper.getAmmoHolder(data).getId();
+            handCache.ammoConfig = getGun(weapon).getAmmoConfig(GunStateHelper.getAmmoHolder(data).getId());
 //            handCache.counterType = GunStateHelper.getAmmoConfig(data).getCounter();
-            handCache.fuels = GunModifierHelper.getFuelTypes(data);
+            handCache.fuels = getGun(weapon).getFuel();
 
             if (!player.isCreative()) {
-                handCache.inventoryAmmoCount = getInventoryAmmoCount(stack, player.getInventory());
+                handCache.inventoryAmmoCount = getInventoryAmmoCount(weapon, player.getInventory());
             } else {
                 handCache.inventoryAmmoCount = 9999;
             }
         }
     }
 
-    protected int getInventoryAmmoCount(ItemStack stack, Inventory inventory) {
+    protected int getInventoryAmmoCount(ItemStack weapon, Inventory inventory) {
         var inventoryAmmoCount = 0;
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
-            var gunData = new GunData(stack, minecraft.player);
-            var inventoryStack = inventory.getItem(i);
-            var inventoryItem = inventoryStack.getItem();
+        var gunData = new GunData(weapon, minecraft.player);
+        var ammoHolder = GunStateHelper.getAmmoHolder(gunData);
 
-            if (GunStateHelper.isCurrentAmmo(gunData, inventoryItem)) {
-                inventoryAmmoCount += inventoryStack.getCount();
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            var inventoryStack = inventory.getItem(i);
+
+            if (ammoHolder.isAcceptable(inventoryStack)) {
+                inventoryAmmoCount += inventoryStack.getCount() * ammoHolder.getValue(inventoryStack);
             }
 //            else if (inventoryItem instanceof AmmoBoxItem iAmmoBox) {
 //                var currentAmmo = GunStateHelper.getAmmoItem(gunData);

@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CounterType extends ResourceHolder {
-    public static final CounterType NUMBER = new CounterType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "number"));
-    public static final CounterType PERCENT = new CounterType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "percent"));
-    public static final CounterType BAR = new CounterType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "multi"));
+    public static final CounterType NUMBER = new CounterType(Ntgl.ntglResource("number"));
+    public static final CounterType PERCENT = new CounterType(Ntgl.ntglResource("percent"));
+    public static final CounterType BAR = new CounterType(Ntgl.ntglResource( "bar"));
 
     private static final Map<ResourceLocation, CounterType> fireModeMap = new HashMap<>();
 

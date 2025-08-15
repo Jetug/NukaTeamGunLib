@@ -22,12 +22,14 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Optional
     private int max = 100;
     private boolean isMandatory = true;
+    private AmmoConfig ammo = new AmmoConfig();
 
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.putInt("Max", this.max);
         tag.putBoolean("isMandatory", this.isMandatory);
+        tag.put("ammo", this.ammo.serializeNBT());
         return tag;
     }
 
@@ -39,14 +41,9 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains("Max", Tag.TAG_ANY_NUMERIC)) {
             this.isMandatory = tag.getBoolean("isMandatory");
         }
-    }
-
-    public Fuel copy() {
-        var projectile = new Fuel();
-        projectile.max = this.max;
-        projectile.isMandatory = this.isMandatory;
-
-        return projectile;
+        if (tag.contains("ammo", Tag.TAG_COMPOUND)) {
+            this.ammo = AmmoConfig.create(tag.getCompound("ammo"));
+        }
     }
 
     public JsonObject toJsonObject() {
@@ -54,7 +51,21 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
         var object = new JsonObject();
         object.addProperty("max", this.max);
         object.addProperty("isMandatory", this.isMandatory);
+        object.add("ammo", this.ammo.toJsonObject());
         return object;
+    }
+
+    public Fuel copy() {
+        var projectile = new Fuel();
+        projectile.max = this.max;
+        projectile.isMandatory = this.isMandatory;
+        projectile.ammo = this.ammo;
+
+        return projectile;
+    }
+
+    public AmmoConfig getAmmo() {
+        return ammo;
     }
 
     public int getMax() {

@@ -270,7 +270,7 @@ public class ReloadTracker {
 
         if (!ammo.isEmpty()) {
             var tag = this.weapon.getTag();
-            var value = ammoHandler.getGetValue(weapon);
+            var value = ammoHandler.getValue(ammo);
             var currentAmount = GunStateHelper.getAmmoCount(weapon);
 
             amount = Math.min(ammo.getCount() * value, amount);
@@ -284,7 +284,7 @@ public class ReloadTracker {
 
             var shrinkAmount = (int)Math.ceil((double) amount / (double)value);
 
-            context.shrink(shrinkAmount);
+            context.shrink(shrinkAmount, ammoHandler, entity);
         }
     }
 
@@ -329,7 +329,7 @@ public class ReloadTracker {
                 }
                 tag.putInt(Tags.AMMO_COUNT, amount);
             }
-            context.shrink(1);
+            context.shrink(1, ammoHolder, entity);
         }
     }
 

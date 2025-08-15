@@ -4,9 +4,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+
+import java.util.*;
 import java.util.function.*;
 
 public class AmmoHolder extends ResourceHolder {
@@ -15,6 +14,10 @@ public class AmmoHolder extends ResourceHolder {
     private boolean canReturnAmmo = false;
     private Function<ItemStack, Boolean> isAcceptable = (stack) -> false;
     private Function<ItemStack, Integer> getValue = (stack) -> 1;
+    private BiFunction<ItemStack, Integer, List<ItemStack>> onConsume = (stack, i) -> {
+        return List.of();
+    };
+
     private Function<AmmoHolder, String> getDescriptionId = (ammo) ->
             "info." + ammo.id.getNamespace() + "." + ammo.id.getPath();
 
@@ -30,8 +33,12 @@ public class AmmoHolder extends ResourceHolder {
         return isAcceptable.apply(ammoStack);
     }
 
-    public int getGetValue(ItemStack ammoStack) {
+    public int getValue(ItemStack ammoStack) {
         return getValue.apply(ammoStack);
+    }
+
+    public BiFunction<ItemStack, Integer, List<ItemStack>> onConsume() {
+        return onConsume;
     }
 
     public String getDescriptionId() {
@@ -52,9 +59,9 @@ public class AmmoHolder extends ResourceHolder {
 
     private static AmmoHolder createDefault(ResourceLocation id){
         return Builder.create(id)
-                .setIsAcceptable((stack) -> Objects.equals(getKey(stack), id))
-                .setGetValue((s) -> 1)
-                .setDescriptionId((ammo) -> {
+                .isAcceptable((stack) -> Objects.equals(getKey(stack), id))
+                .value((s) -> 1)
+                .descriptionId((ammo) -> {
                     var item = ForgeRegistries.ITEMS.getValue(ammo.getId());
                     if (item != null){
                         return item.getDescriptionId();
@@ -81,17 +88,22 @@ public class AmmoHolder extends ResourceHolder {
             return new Builder(holder);
         }
 
-        public Builder setIsAcceptable(Function<ItemStack, Boolean> isAcceptable) {
+        public Builder isAcceptable(Function<ItemStack, Boolean> isAcceptable) {
             holder.isAcceptable = isAcceptable;
             return this;
         }
 
-        public Builder setGetValue(Function<ItemStack, Integer> getValue) {
+        public Builder value(Function<ItemStack, Integer> getValue) {
             holder.getValue = getValue;
             return this;
         }
 
-        public Builder setDescriptionId(Function<AmmoHolder, String > getValue) {
+        public Builder onConsume(BiFunction<ItemStack, Integer, List<ItemStack>> onConsume) {
+            holder.onConsume = onConsume;
+            return this;
+        }
+
+        public Builder descriptionId(Function<AmmoHolder, String > getValue) {
             holder.getDescriptionId = getValue;
             return this;
         }

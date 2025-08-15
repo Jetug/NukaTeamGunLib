@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.util.util;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.AmmoConfig;
+import com.nukateam.ntgl.common.data.config.Fuel;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -194,12 +195,16 @@ public class GunModifierHelper {
     }
 
     public static Integer getMaxFuel(GunData data, AmmoHolder type) {
-        var fuel = getGun(data.gun).getFuel().get(type);
+        var fuel = getFuel(data, type);
         int max = fuel != null ? fuel.getMax() : 0;
         var result = new AtomicReference<>(max);
 
         forEachAttachment(data, (modifier -> result.set(modifier.modifyMaxFuel(result.get(), type, data))));
         return result.get();
+    }
+
+    public static Fuel getFuel(GunData data, AmmoHolder type) {
+        return getGun(data.gun).getFuel().get(type);
     }
 
     public static boolean needsFullCharge(GunData data) {
@@ -480,7 +485,7 @@ public class GunModifierHelper {
     }
 
     public static AmmoConfig getAmmoConfig(ResourceLocation ammoId, GunData data) {
-        var finalValue = new AtomicReference<>(getGun(data.gun).getAmmoiConfig(ammoId));
+        var finalValue = new AtomicReference<>(getGun(data.gun).getAmmoConfig(ammoId));
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyAmmo(finalValue.get(), data))));
         return finalValue.get();
     }

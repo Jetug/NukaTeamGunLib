@@ -190,12 +190,12 @@ public class ThrowableHud implements IGuiOverlay {
             var inventoryStack = inventory.getItem(i);
             var inventoryItem = inventoryStack.getItem();
 
-            if (inventoryItem == stack.getItem()) {
+            if (inventoryItem == stack.getItem() && inventoryStack != stack) {
                 inventoryAmmoCount += inventoryStack.getCount();
             }
-            else if (inventoryItem instanceof AmmoBoxItem iAmmoBox) {
-                inventoryAmmoCount += iAmmoBox.getAmmoCount(inventoryStack, stack.getItem());
-            }
+//            else if (inventoryItem instanceof AmmoBoxItem iAmmoBox) {
+//                inventoryAmmoCount += iAmmoBox.getAmmoCount(inventoryStack, stack.getItem());
+//            }
         }
         return inventoryAmmoCount;
     }
