@@ -87,6 +87,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.general = GunModifierHelper.getGeneral(GunModifierHelper.getGun(weapon));
         this.projectile = GunStateHelper.getProjectileConfig(data);
         this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
+        setBoundingBox(new AABB(
+                projectile.getSize(), projectile.getSize(), projectile.getSize(),
+                -projectile.getSize(), -projectile.getSize(), -projectile.getSize()));
         this.modifiedGravity = projectile.isGravity() ? GunModifierHelper.getModifiedProjectileGravity(data, -0.04) : 0.0;
         this.life = GunModifierHelper.getModifiedProjectileLife(data, this.projectile.getLife());
         var hand = shooter.getMainHandItem() == weapon ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
@@ -150,6 +153,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.life = buffer.readVarInt();
         this.isRightHand = buffer.readBoolean();
         this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
+        setBoundingBox(new AABB(
+                projectile.getSize(), projectile.getSize(), projectile.getSize(),
+                -projectile.getSize(), -projectile.getSize(), -projectile.getSize()));
     }
 
     @Override
@@ -279,8 +285,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 if (hitEntities != null && hitEntities.size() > 0) {
                     for (var entityResult : hitEntities) {
                         result = new ExtendedEntityRayTraceResult(entityResult);
-                        if (((EntityHitResult) result).getEntity() instanceof Player) {
-                            Player player = (Player) ((EntityHitResult) result).getEntity();
+                        if (((EntityHitResult)result).getEntity() instanceof Player) {
+                            var player = (Player) ((EntityHitResult) result).getEntity();
 
                             if (this.shooter instanceof Player && !((Player) this.shooter).canHarmPlayer(player)) {
                                 result = null;

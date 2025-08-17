@@ -11,13 +11,15 @@ public record SophisticatedAmmoContext(ItemStack stack, IItemHandler inventory) 
     public void shrink(int amount, AmmoHolder ammoHolder, LivingEntity entity){
         for (int i = 0; i < inventory.getSlots() && amount > 0; i++) {
             var foundStack = inventory.getStackInSlot(i);
-            var ammo = ammoHolder.onConsume().apply(stack, amount);
 
             if (foundStack.getItem() == stack.getItem()) {
-                inventory.extractItem(i, amount, false);
+                var ammo = ammoHolder.onConsume().apply(stack, amount);
                 for (var stack : ammo) {
                     entity.spawnAtLocation(stack);
                 }
+
+                var shrinkAmount = (int)Math.ceil((double) amount / (double)ammoHolder.getValue(stack));
+                inventory.extractItem(i, shrinkAmount, false);
                 return;
             }
         }

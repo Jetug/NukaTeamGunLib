@@ -16,12 +16,12 @@
   "melee": {
     "mode": "ntgl:single",
     "damage": 15,
-    "delay": 10,
+    "delay": 8,
     "cooldown": 10,
     "distance": 4,
-    "angle": 20,
-    "maxTargets": 3,
-    "knockback": 0.4
+    "angle": 50,
+    "maxTargets": 5,
+    "knockback": 1.0
   },
   "fuel": {
     "ntgl:air":{

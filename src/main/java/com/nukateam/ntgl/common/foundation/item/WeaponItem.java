@@ -113,27 +113,41 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
         var data = new GunData(stack, null);
-        var descriptionId = GunStateHelper.getAmmoHolder(data).getDescriptionId();
-
-        tooltip.add(Component.translatable("info.ntgl.ammo_type",
-                        Component.translatable(descriptionId).withStyle(ChatFormatting.WHITE)
-                ).withStyle(ChatFormatting.GRAY));
-
         var tagCompound = stack.getOrCreateTag();
-        addAditionalDamage(tooltip, tagCompound, data);
+        addAmmoType(tooltip, data);
+        addFireRate(tooltip, data);
+        addDamage(tooltip, tagCompound, data);
+        addMelleDamage(tooltip, data);
         addAmmo(tooltip, tagCompound, data);
-        addFuel(tooltip, tagCompound, data);
+        addFuel(tooltip, data);
         tooltip.add(Component.translatable("info.ntgl.attachment_help", Component.keybind("key.ntgl.attachments")
          .getString().toUpperCase(Locale.ENGLISH))
          .withStyle(ChatFormatting.YELLOW));
     }
 
-    private static void addFuel(List<Component> tooltip, CompoundTag tagCompound, GunData gunData) {
+    private static void addAmmoType(List<Component> tooltip, GunData data) {
+        var descriptionId = GunStateHelper.getAmmoHolder(data).getDescriptionId();
+
+        tooltip.add(Component.translatable("info.ntgl.ammo_type",
+                        Component.translatable(descriptionId).withStyle(ChatFormatting.WHITE)
+                ).withStyle(ChatFormatting.GRAY));
+    }
+
+    private static void addFireRate(List<Component> tooltip, GunData data) {
+        var rate = GunModifierHelper.getRate(data);
+        rate = rate == 0 ? 0 : 20 / rate;
+
+        tooltip.add(Component.translatable("info.ntgl.rate",
+                ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(rate))
+                .withStyle(ChatFormatting.GRAY));
+    }
+
+    private static void addFuel(List<Component> tooltip, GunData gunData) {
         var allFuel = GunModifierHelper.getFuelTypes(gunData);
         for (var fuelType : allFuel) {
             int fuelAmount = FuelUtils.getFuel(gunData.gun, fuelType);
             tooltip.add(Component.translatable(fuelType.getDescriptionId(),
-                    ChatFormatting.WHITE.toString()
+                    ChatFormatting.WHITE.toString() + ": "
                             + fuelAmount + "/"
                             + GunModifierHelper.getMaxFuel(gunData, fuelType)).withStyle(ChatFormatting.GRAY));
         }
@@ -144,14 +158,14 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
             tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
         } else {
             int ammoCount = tagCompound.getInt(AMMO_COUNT);
-            tooltip.add(Component.translatable("info.ntgl.projectile",
+            tooltip.add(Component.translatable("info.ntgl.ammo",
                     ChatFormatting.WHITE.toString()
                             + ammoCount + "/"
                             + GunEnchantmentHelper.getAmmoCapacity(gunData)).withStyle(ChatFormatting.GRAY));
         }
     }
 
-    private static void addAditionalDamage(List<Component> tooltip, CompoundTag tagCompound, GunData gunData) {
+    private static void addDamage(List<Component> tooltip, CompoundTag tagCompound, GunData gunData) {
         var additionalDamageText = "";
 
         if (tagCompound.contains("AdditionalDamage", Tag.TAG_ANY_NUMERIC)) {
@@ -167,8 +181,17 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
 
         var damage = GunModifierHelper.getModifiedDamage(gunData);
         damage = GunEnchantmentHelper.getAcceleratorDamage(gunData.gun, damage);
-        tooltip.add(Component.translatable("info.ntgl.damage",
-                ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage) + additionalDamageText).withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("info.ntgl.damage", ChatFormatting.WHITE
+                        + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)
+                        + additionalDamageText).withStyle(ChatFormatting.GRAY));
+    }
+
+    private static void addMelleDamage(List<Component> tooltip, GunData gunData) {
+        var damage = GunModifierHelper.getMeleeDamage(gunData);
+
+        tooltip.add(Component.translatable("info.ntgl.melee_damage",
+                ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)
+        ).withStyle(ChatFormatting.GRAY));
     }
 
 //    @Override

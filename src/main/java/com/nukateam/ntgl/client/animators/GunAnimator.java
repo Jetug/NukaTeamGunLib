@@ -62,6 +62,9 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected int meleeDelay;
     protected int meleeCooldown;
     protected int fireDelay;
+    protected int reloadTime;
+    protected int reloadStartTime;
+    protected int reloadEndTime;
 
     public GunAnimator(ItemDisplayContext transformType, DynamicGunRenderer<GunAnimator> renderer) {
         super(transformType);
@@ -111,7 +114,9 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         this.meleeDelay = GunModifierHelper.getMeleeDelay(data);
         this.meleeCooldown = GunModifierHelper.getMeleeCooldown(data);
         this.fireDelay = GunModifierHelper.getFireDelay(data);
-
+        this.reloadTime = GunModifierHelper.getReloadTime(data);
+        this.reloadStartTime = GunModifierHelper.getReloadStart(data);
+        this.reloadEndTime = GunModifierHelper.getReloadEnd(data);
         setupCycledAnimations();
     }
 
@@ -128,6 +133,10 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     protected WeaponItem getGunItem() {
         return (WeaponItem) getStack().getItem();
+    }
+
+    protected @NotNull GunData getGunData() {
+        return new GunData(getStack(), getEntity());
     }
 
     protected boolean isOneHanded(ItemStack stack) {
@@ -255,8 +264,6 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 BARREL_CONTROLLER.stop();
                 BARREL_CONTROLLER.setAnimation(begin().then("void", PLAY_ONCE));
                 animation = playGunAnim(Animations.CHARGE, LOOP);
-                var data = getGunData();
-                var fireDelay = GunModifierHelper.getFireDelay(data);
                 animationHelper.syncAnimation(event, Animations.CHARGE, fireDelay);
             }
             return animation;
@@ -336,30 +343,21 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected RawAnimation getDefaultReloadAnimation(AnimationState<GunAnimator> event) {
-        var data = getGunData();
-
-        var time = GunModifierHelper.getReloadTime(data);
-        animationHelper.syncAnimation(event, RELOAD, time);
-        return begin().then(RELOAD, LOOP);
-    }
-
-    protected @NotNull GunData getGunData() {
-        return new GunData(getStack(), getEntity());
+        var animation = playGunAnim(RELOAD, LOOP);
+        animationHelper.syncAnimation(event, RELOAD, reloadTime);
+        return animation;
     }
 
     protected RawAnimation getEndReloadAnimation(AnimationState<GunAnimator> event) {
-        var data = getGunData();
-        var time = GunModifierHelper.getReloadEnd(data);
-        animationHelper.syncAnimation(event, Animations.RELOAD_END, time);
-        return begin().then(Animations.RELOAD_END, PLAY_ONCE);
+        var animation = playGunAnim(Animations.RELOAD_END, PLAY_ONCE);
+        animationHelper.syncAnimation(event, Animations.RELOAD_END, reloadEndTime);
+        return animation;
     }
 
     protected RawAnimation getStartReloadAnimation(AnimationState<GunAnimator> event) {
-        var data = getGunData();
-
-        var time = GunModifierHelper.getReloadStart(data);
-        animationHelper.syncAnimation(event, Animations.RELOAD_START, time);
-        return begin().then(Animations.RELOAD_START, PLAY_ONCE);
+        var animation = playGunAnim(Animations.RELOAD_START, PLAY_ONCE);
+        animationHelper.syncAnimation(event, Animations.RELOAD_START, reloadStartTime);
+        return animation;
     }
 
     protected void handleSoundEvent(SoundKeyframeEvent<GunAnimator> event) {

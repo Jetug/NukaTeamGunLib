@@ -43,6 +43,7 @@ public class ProjectileRegistry {
         ProjectileManager.getInstance().registerFactory(ProjectileType.MISSILE  , MISSILE);
         ProjectileManager.getInstance().registerFactory(ProjectileType.LASER    , LASER);
         ProjectileManager.getInstance().registerFactory(ProjectileType.TESLA    , TESLA);
+        ProjectileManager.getInstance().registerFactory(ProjectileType.FIRE    , FIRE);
         ProjectileManager.getInstance().registerFactory(ProjectileType.CONTINUOUS_LASER, CONTINUOUS_LASER);
 
         ProjectileManager.getInstance().registerFactory(ModGuns.GRENADE.get()   , GRENADE);

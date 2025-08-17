@@ -310,54 +310,60 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
             return this.projectile.copy(); //Copy since the builder could be used again
         }
 
-        public ProjectileConfig.Builder setProjectileVisible(ResourceLocation id, boolean visible) {
+        public ProjectileConfig.Builder setProjectileVisible(boolean visible) {
             this.projectile.visible = visible;
             return this;
         }
 
-        public ProjectileConfig.Builder setProjectileSize(ResourceLocation id, float size) {
+        public ProjectileConfig.Builder setProjectileSize(float size) {
             this.projectile.size = size;
             return this;
         }
 
-        public ProjectileConfig.Builder setProjectileSpeed(ResourceLocation id, float speed) {
+        public ProjectileConfig.Builder setProjectileSpeed(float speed) {
             this.projectile.speed = speed;
             return this;
         }
 
-        public ProjectileConfig.Builder setProjectileLife(ResourceLocation id, int life) {
+        public ProjectileConfig.Builder setProjectileLife(int life) {
             this.projectile.life = life;
             return this;
         }
 
-        public ProjectileConfig.Builder setProjectileAffectedByGravity(ResourceLocation id, boolean gravity) {
+        public ProjectileConfig.Builder setProjectileAffectedByGravity(boolean gravity) {
             this.projectile.gravity = gravity;
             return this;
         }
 
-        public ProjectileConfig.Builder setProjectileTrailColor(ResourceLocation id, int trailColor) {
+        public ProjectileConfig.Builder setProjectileTrailColor(int trailColor) {
             this.projectile.trailColor = trailColor;
             return this;
         }
 
-        public ProjectileConfig.Builder setProjectileTrailLengthMultiplier(ResourceLocation id, int trailLengthMultiplier) {
+        public ProjectileConfig.Builder setProjectileTrailLengthMultiplier(int trailLengthMultiplier) {
             this.projectile.trailLengthMultiplier = trailLengthMultiplier;
             return this;
         }
 
-        public ProjectileConfig.Builder setDamage(ResourceLocation id, float damage) {
+        public ProjectileConfig.Builder setDamage(float damage) {
             this.projectile.damage = damage;
             return this;
         }
 
-        public ProjectileConfig.Builder setReduceDamageOverLife(ResourceLocation id, boolean damageReduceOverLife) {
+        public ProjectileConfig.Builder setReduceDamageOverLife(boolean damageReduceOverLife) {
             this.projectile.damageReduceOverLife = damageReduceOverLife;
             return this;
         }
 
-        public ProjectileConfig.Builder setMagazineMode(ResourceLocation id, boolean magazineMode) {
+        public ProjectileConfig.Builder setMagazineMode(boolean magazineMode) {
             this.projectile.magazineMode = magazineMode;
             return this;
         }
+
+        public ProjectileConfig.Builder setExplosionConfig(ExplosionConfig explosion) {
+            this.projectile.explosion = explosion;
+            return this;
+        }
+
     }
 }

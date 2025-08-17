@@ -12,14 +12,15 @@ public record AmmoContext(ItemStack stack, @Nullable Container container) implem
 
     public void shrink(int amount, AmmoHolder ammoHolder, LivingEntity entity){
         var ammo = ammoHolder.onConsume().apply(stack, amount);
-
         for (var stack : ammo) {
             if(!addItem(stack)){
                 entity.spawnAtLocation(stack);
             }
         }
 
-        stack.shrink(amount);
+        var shrinkAmount = (int)Math.ceil((double) amount / (double)ammoHolder.getValue(stack));
+        stack.shrink(shrinkAmount);
+
         if (container != null) {
             container.setChanged();
         }

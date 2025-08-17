@@ -282,9 +282,7 @@ public class ReloadTracker {
                 GunStateHelper.addAmmo(gunData, amount);
             }
 
-            var shrinkAmount = (int)Math.ceil((double) amount / (double)value);
-
-            context.shrink(shrinkAmount, ammoHandler, entity);
+            context.shrink(amount, ammoHandler, entity);
         }
     }
 

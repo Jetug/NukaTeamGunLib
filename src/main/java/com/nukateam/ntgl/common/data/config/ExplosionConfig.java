@@ -148,14 +148,14 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
     }
 
     public static class Builder {
-        private final ExplosionConfig projectile;
+        private final ExplosionConfig config;
 
         private Builder() {
-            this.projectile = new ExplosionConfig();
+            this.config = new ExplosionConfig();
         }
 
         private Builder(ExplosionConfig projectile) {
-            this.projectile = projectile.copy();
+            this.config = projectile.copy();
         }
 
         public static ExplosionConfig.Builder create() {
@@ -167,12 +167,37 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
         }
 
         public ExplosionConfig build() {
-            return this.projectile.copy(); //Copy since the builder could be used again
+            return this.config.copy(); //Copy since the builder could be used again
         }
 
-        public ExplosionConfig.Builder setDamage(ResourceLocation id, float damage) {
-            this.projectile.damage = damage;
+        public ExplosionConfig.Builder setDamage(float damage) {
+            this.config.damage = damage;
             return this;
+        }
+        
+        public ExplosionConfig.Builder setRadius(float value) {
+            this.config.radius = value;
+            return this;
+        }
+
+        public void setDamageReduceOverDistance(boolean damageReduceOverDistance) {
+            this.config.damageReduceOverDistance = damageReduceOverDistance;
+        }
+
+        public void setCauseFire(boolean causeFire) {
+            this.config.causeFire = causeFire;
+        }
+
+        public void setDestroyBlocks(boolean destroyBlocks) {
+            this.config.destroyBlocks = destroyBlocks;
+        }
+
+        public void setExplodeOnContact(boolean explodeOnContact) {
+            this.config.explodeOnContact = explodeOnContact;
+        }
+
+        public void setKnockback(float knockback) {
+            this.config.knockback = knockback;
         }
     }
 }

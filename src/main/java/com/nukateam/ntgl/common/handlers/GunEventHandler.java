@@ -23,12 +23,14 @@ public class GunEventHandler {
 
     @SubscribeEvent
     public static void attachmentsChanged(AttachmentEvent event) {
-        var gunData = event.getGunData();
-        var allAmmo = GunModifierHelper.getAmmoItems(gunData);
-        var currentAmmo = GunStateHelper.getAmmoHolder(gunData);
+        if(event.getGunData().shooter != null && !event.getGunData().shooter.level().isClientSide) {
+            var gunData = event.getGunData();
+            var allAmmo = GunModifierHelper.getAmmoItems(gunData);
+            var currentAmmo = GunStateHelper.getAmmoHolder(gunData);
 
-        if (!allAmmo.contains(currentAmmo)) {
-            ServerPlayHandler.unloadGun((ServerPlayer)gunData.shooter, gunData.gun);
+            if (!allAmmo.contains(currentAmmo)) {
+                ServerPlayHandler.unloadGun((ServerPlayer) gunData.shooter, gunData.gun);
+            }
         }
     }
 

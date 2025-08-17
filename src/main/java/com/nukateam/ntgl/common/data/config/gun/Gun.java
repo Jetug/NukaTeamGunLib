@@ -192,7 +192,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return preparedTextures;
     }
 
-
     public boolean canAttachType(@Nullable AttachmentType type, Gun gun) {
         var attachments = gun.getModules().getAttachments();
         if(attachments == null)

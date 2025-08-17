@@ -57,13 +57,16 @@
   "death.attack.ntgl.bullet.annihilated": "%1$s was annihilated by %2$s",
   "death.attack.ntgl.bullet.decimated": "%1$s was decimated by %2$s",
 
+  "info.ntgl.rate": "Rounds Per Second: %s",
   "info.ntgl.damage": "Damage: %s",
+  "info.ntgl.melee_damage": "Melee Damage: %s",
   "info.ntgl.ignore_ammo": "Infinite Ammo",
   "info.ntgl.ammo": "Ammo: %s",
   "info.ntgl.ammo_type": "Ammo Type: %s",
+  "info.ntgl.max_ammo": "Max ammo: %s",
   "info.ntgl.attachment_help": "Press %s in-game for Attachments",
-  "info.ntgl.burnable": "Fuel: %s",
-  "info.ntgl.water": "Water: %s",
+  "info.ntgl.burnable": "Fuel",
+  "info.ntgl.water": "Water",
 
   "key.categories.ntgl": "NTGL",
   "key.ntgl.reload": "Reload",
