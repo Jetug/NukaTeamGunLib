@@ -38,7 +38,8 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String SPREAD = "Spread";
     public static final String CATEGORY = "category";
     public static final String MOVEMENT_MODIFIER = "MovementModifier";
-    public static final String AMMO = "Projectile";
+    public static final String AMMO = "Ammo";
+    public static final String FUEL = "Fuel";
     public static final String FULL_CHARGE = "FullCharge";
     public static final String ENCHANTABLE = "Enchantable";
     public static final String FIRE_TIMER = "FireTimer";
@@ -82,6 +83,7 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional float movementSpeed = 0.0f;
     @Optional boolean melee = false;
     @Optional protected LinkedHashSet<AmmoHolder> ammo = new LinkedHashSet<>(List.of(AmmoHolder.getType(Ntgl.MOD_ID + ":round10mm")));
+    @Optional protected LinkedHashSet<AmmoHolder> fuel = new LinkedHashSet<>();
 
     @Override
     public CompoundTag serializeNBT() {
@@ -118,6 +120,7 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putBoolean  (ONE_TIME_CHARGE, this.oneTimeCharge);
         tag.putBoolean  (MELEE, this.melee);
         tag.put         (AMMO, NbtUtils.serializeSet(this.ammo));
+        tag.put         (FUEL, NbtUtils.serializeSet(this.fuel));
         return tag;
     }
 
@@ -217,7 +220,10 @@ public class General implements INBTSerializable<CompoundTag> {
             this.movementSpeed = tag.getFloat(MOVEMENT_MODIFIER);
         }
         if (tag.contains(AMMO, Tag.TAG_COMPOUND)) {
-            this.ammo = NbtUtils. deserializeSet(tag.getCompound(AMMO), AmmoHolder::getType);
+            this.ammo = NbtUtils.deserializeSet(tag.getCompound(AMMO), AmmoHolder::getType);
+        }
+        if (tag.contains(FUEL, Tag.TAG_COMPOUND)) {
+            this.fuel = NbtUtils.deserializeSet(tag.getCompound(FUEL), AmmoHolder::getType);
         }
     }
 
@@ -307,6 +313,7 @@ public class General implements INBTSerializable<CompoundTag> {
         general.melee = this.melee;
         general.movementSpeed = this.movementSpeed;
         general.ammo = new LinkedHashSet<>(this.ammo);
+        general.fuel = new LinkedHashSet<>(this.fuel);
         return general;
     }
 
@@ -318,6 +325,10 @@ public class General implements INBTSerializable<CompoundTag> {
 
     public Set<AmmoHolder> getAmmo() {
         return this.ammo;
+    }
+
+    public Set<AmmoHolder> getFuel() {
+        return this.fuel;
     }
 
     /**

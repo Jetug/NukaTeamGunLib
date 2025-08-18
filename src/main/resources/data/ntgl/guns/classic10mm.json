@@ -20,6 +20,9 @@
     "melee": true,
     "ammo": [
       "minecraft:stick"
+    ],
+    "fuel":[
+      "ntgl:burnable"
     ]
   },
   "melee": {

@@ -54,7 +54,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Ignored
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
     protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
-    protected HashMap<AmmoHolder, Fuel> fuel = new HashMap<>();
+    protected LinkedHashMap<ResourceLocation, Fuel> fuel = new LinkedHashMap<>();
 
     @Override
     public Component getEditorLabel() {
@@ -116,7 +116,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             this.ammoData = NbtUtils.deserializeLinkedMap(tag.getCompound("AmmoData"), (nbt) -> AmmoData.create(nbt));
         }
         if (tag.contains("SecondaryAmmo", Tag.TAG_COMPOUND)) {
-            this.fuel = NbtUtils.deserializeFuelMap(tag.getCompound("SecondaryAmmo"));
+            this.fuel = NbtUtils.deserializeLinkedMap(tag.getCompound("SecondaryAmmo"), (nbt) -> Fuel.create(nbt));
         }
     }
 
@@ -139,7 +139,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         gun.sounds = (HashMap<String, ResourceLocation>)    this.sounds.clone();
         gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
         gun.ammoData = (LinkedHashMap<ResourceLocation, AmmoData>) this.ammoData.clone();
-        gun.fuel = (HashMap<AmmoHolder, Fuel>) this.fuel.clone();
+        gun.fuel = (LinkedHashMap<ResourceLocation, Fuel>) this.fuel.clone();
         gun.display = this.display.copy();
         gun.modules = this.modules.copy();
         return gun;
@@ -154,14 +154,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public void onCreated(String id){
         prepareTextures(id);
-    }
-
-    public HashMap<AmmoHolder, Fuel> getFuel() {
-        return fuel;
-    }
-
-    public Fuel getFuelConfig(AmmoHolder type) {
-        return fuel.get(type);
     }
 
     public General getGeneral() {
@@ -259,6 +251,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return ammoData.getOrDefault(ammo, new AmmoData());
     }
 
+    public Fuel getFuelData(ResourceLocation ammo) {
+        return fuel.getOrDefault(ammo, new Fuel());
+    }
+
     public boolean hasAmmo(ResourceLocation ammo){
         return ammoData.containsKey(ammo);
     }
@@ -269,6 +265,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public AmmoConfig getAmmoConfig(ResourceLocation ammo){
         return getAmmoData(ammo).getAmmo();
+    }
+
+    public Fuel getFuelConfig(ResourceLocation ammo) {
+        return getFuelData(ammo);
+    }
+
+    public AmmoConfig getFuelAmmoConfig(ResourceLocation ammo){
+        return getFuelData(ammo).getAmmo();
     }
 
     private void prepareTextures(String itemId) {

@@ -19,7 +19,7 @@ public class FuelUtils {
     }
 
     public static boolean hasFuel(GunData data){
-        var allFuel = GunModifierHelper.getFuelTypes(data);
+        var allFuel = GunModifierHelper.getAllFuel(data);
         for (var fuelType : allFuel) {
             var fuel = getFuel(data.gun, fuelType);
             if (fuel <= 0)

@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.util.interfaces;
 import com.nukateam.example.common.registery.GunModifiers;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
 import com.nukateam.ntgl.common.data.config.AmmoConfig;
+import com.nukateam.ntgl.common.data.config.Fuel;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.data.GunData;
@@ -259,6 +260,10 @@ public interface IGunModifier {
         return item;
     }
 
+    default Set<AmmoHolder> modifyFuelItems(Set<AmmoHolder> item, GunData data) {
+        return item;
+    }
+
     default int modifyReloadStart(int reloadTime, GunData data) {
         return reloadTime;
     }
@@ -339,8 +344,15 @@ public interface IGunModifier {
         return value;
     }
 
+    default Fuel modifyFuel(Fuel value, GunData data) {
+        return value;
+    }
 
     default AmmoConfig modifyAmmo(AmmoConfig value, GunData data) {
+        return value;
+    }
+
+    default AmmoConfig modifyFuelAmmo(AmmoConfig value, GunData data) {
         return value;
     }
 

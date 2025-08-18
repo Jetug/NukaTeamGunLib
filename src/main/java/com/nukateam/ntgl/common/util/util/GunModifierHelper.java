@@ -187,12 +187,12 @@ public class GunModifierHelper {
         return chargeTime.get();
     }
 
-    public static Set<AmmoHolder> getFuelTypes(GunData data) {
-        var keys = getGun(data.gun).getFuel().keySet();
-        var fuel = new AtomicReference<>(keys);
-        forEachAttachment(data, (modifier -> fuel.set(modifier.modifyFuel(fuel.get(), data))));
-        return fuel.get();
-    }
+//    public static Set<AmmoHolder> getFuelTypes(GunData data) {
+//        var keys = getGun(data.gun).getFuel().keySet();
+//        var fuel = new AtomicReference<>(keys);
+//        forEachAttachment(data, (modifier -> fuel.set(modifier.modifyFuel(fuel.get(), data))));
+//        return fuel.get();
+//    }
 
     public static Integer getMaxFuel(GunData data, AmmoHolder type) {
         var fuel = getFuel(data, type);
@@ -204,7 +204,9 @@ public class GunModifierHelper {
     }
 
     public static Fuel getFuel(GunData data, AmmoHolder type) {
-        return getGun(data.gun).getFuel().get(type);
+        var value = new AtomicReference<>(getGun(data.gun).getFuelConfig(type.getId()));
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyFuel(value.get(), data))));
+        return value.get();
     }
 
     public static boolean needsFullCharge(GunData data) {
@@ -229,6 +231,13 @@ public class GunModifierHelper {
         var items = getGeneral(getGun(data.gun)).getAmmo();
         var ammoItem = new AtomicReference<>(items);
         forEachAttachment(data, (modifier -> ammoItem.set(modifier.modifyAmmoItems(ammoItem.get(), data))));
+        return ammoItem.get();
+    }
+
+    public static Set<AmmoHolder> getAllFuel(GunData data) {
+        var items = getGeneral(getGun(data.gun)).getFuel();
+        var ammoItem = new AtomicReference<>(items);
+        forEachAttachment(data, (modifier -> ammoItem.set(modifier.modifyFuelItems(ammoItem.get(), data))));
         return ammoItem.get();
     }
 
@@ -487,6 +496,12 @@ public class GunModifierHelper {
     public static AmmoConfig getAmmoConfig(ResourceLocation ammoId, GunData data) {
         var finalValue = new AtomicReference<>(getGun(data.gun).getAmmoConfig(ammoId));
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyAmmo(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+    public static AmmoConfig getFuelAmmoConfig(ResourceLocation ammoId, GunData data) {
+        var finalValue = new AtomicReference<>(getGun(data.gun).getFuelAmmoConfig(ammoId));
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyFuelAmmo(finalValue.get(), data))));
         return finalValue.get();
     }
 

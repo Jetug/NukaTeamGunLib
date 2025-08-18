@@ -7,6 +7,7 @@ import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.util.RgbUtils;
 import com.nukateam.ntgl.client.util.util.render.Figures;
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.CounterType;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -146,9 +147,8 @@ public class GunHud implements IGuiOverlay {
         for (var entry : handCache.fuels.entrySet()) {
             var gunData = new GunData(stack, minecraft.player);
             var fuelPercent = FuelUtils.getFuelPercent(stack, entry.getKey(), gunData);
-            var fuel = entry.getValue();
 
-            renderIcon(graphics, fuel.getAmmo().getAmmoType().getIcon(), x - ICON_SIZE - 2, y - 5 - barOffsetY);
+            renderIcon(graphics, entry.getValue().getAmmo().getAmmoType().getIcon(), x - ICON_SIZE - 2, y - 5 - barOffsetY);
             renderBarCounter(graphics, fuelPercent, x, y - barOffsetY);
             barOffsetY += 16;
         }
@@ -228,7 +228,12 @@ public class GunHud implements IGuiOverlay {
 //            GunStateHelper.getAmmoHolder(data).getId();
             handCache.ammoConfig = getGun(weapon).getAmmoConfig(GunStateHelper.getAmmoHolder(data).getId());
 //            handCache.counterType = GunStateHelper.getAmmoConfig(data).getCounter();
-            handCache.fuels = getGun(weapon).getFuel();
+            var fuels = GunModifierHelper.getAllFuel(data);
+            handCache.fuels.clear();
+            for (var id : fuels) {
+                var value = GunModifierHelper.getFuel(data, id);
+                handCache.fuels.put(id, value);
+            }
 
             if (!player.isCreative()) {
                 handCache.inventoryAmmoCount = getInventoryAmmoCount(weapon, player.getInventory());
