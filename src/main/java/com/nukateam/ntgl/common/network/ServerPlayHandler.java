@@ -11,11 +11,8 @@ import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.trackers.*;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
-import com.nukateam.ntgl.common.util.util.ThrowableStateHelper;
+import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.util.util.StackUtils;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
@@ -100,11 +97,14 @@ public class ServerPlayHandler {
         if (heldItem.getItem() instanceof WeaponItem weaponItem
                 && (GunStateHelper.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
             var modifiedGun = weaponItem.getModifiedGun(heldItem);
-            var tag = heldItem.getOrCreateTag();
+            var data = new GunData(heldItem, shooter);
 
             if (modifiedGun != null) {
-                if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand)))
+                if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand))) {
                     return;
+                }
+
+                if (!FuelUtils.hasFuel(data)) return;
 
                 /* Updates the yaw and pitch with the clients current yaw and pitch */
                 shooter.setYRot(Mth.wrapDegrees(message.getRotationYaw()));
@@ -129,7 +129,6 @@ public class ServerPlayHandler {
                     ModSyncedDataKeys.RELOADING_LEFT.setValue(shooter, false);
                 }
 
-                var data = new GunData(heldItem, shooter);
                 var gunSpread = GunModifierHelper.getModifiedSpread(data);
 
                 if (!GunModifierHelper.isAlwaysSpread(data) && gunSpread > 0.0F) {
@@ -320,7 +319,7 @@ public class ServerPlayHandler {
                 int count = tag.getInt(Tags.AMMO_COUNT);
                 tag.putInt(Tags.AMMO_COUNT, 0);
                 var data = new GunData(stack, player);
-                var itemHolder = GunStateHelper.getAmmoHolder(data);
+                var itemHolder = GunStateHelper.getCurrentAmmoWithoutCheck(data);
 
                 if(itemHolder.canReturnAmmo()) {
                     var id = itemHolder.getId();
@@ -343,7 +342,7 @@ public class ServerPlayHandler {
 
                 tag.putInt(Tags.AMMO_COUNT, 0);
                 var data = new GunData(stack, player);
-                var ammoHolder = GunStateHelper.getAmmoHolder(data);
+                var ammoHolder = GunStateHelper.getCurrentAmmoWithoutCheck(data);
 
                 if(ammoHolder.canReturnAmmo()) {
                     var item = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());

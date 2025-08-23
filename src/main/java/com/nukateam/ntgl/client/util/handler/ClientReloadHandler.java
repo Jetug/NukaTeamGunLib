@@ -104,11 +104,11 @@ public class ClientReloadHandler {
         if (reloading) {
             if (stack.getItem() instanceof WeaponItem) {
                 var isAmmoIgnored = GunStateHelper.isAmmoIgnored(stack);
-                var hasAmmo = GunStateHelper.hasNoAmmo(player, stack);
+                var hasAmmo = GunStateHelper.hasAmmo(player, stack);
                 var data = new GunData(stack, player);
                 var isMaxAmmo = GunStateHelper.isMaxAmmo(data);
 
-                if (!isAmmoIgnored && !hasAmmo && !isMaxAmmo) {
+                if (!isAmmoIgnored && hasAmmo && !isMaxAmmo) {
                     var gun = ((WeaponItem) stack.getItem()).getModifiedGun(stack);
                     reloadTicks = GunModifierHelper.getReloadTime(data);
 

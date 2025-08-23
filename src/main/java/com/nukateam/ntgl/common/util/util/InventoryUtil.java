@@ -14,8 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 /**
  * Author: MrCrayfish
  */
@@ -138,7 +136,7 @@ public class InventoryUtil {
 
     public static IAmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
         var data = new GunData(weapon, entity);
-        var ammoHandler = GunStateHelper.getAmmoHolder(data);
+        var ammoHandler = GunStateHelper.getCurrentAmmo(data);
 
         if (entity instanceof Player player) {
             var context = findPlayerAmmo(player, ammoHandler);
@@ -163,7 +161,7 @@ public class InventoryUtil {
 
     public static IAmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {
         var data = new GunData(weapon, entity);
-        var ammoHandler = GunStateHelper.getAmmoHolder(data);
+        var ammoHandler = GunStateHelper.getCurrentAmmo(data);
 
         if (entity instanceof Player player) {
             var context = findPlayerMagazine(player, ammoHandler);

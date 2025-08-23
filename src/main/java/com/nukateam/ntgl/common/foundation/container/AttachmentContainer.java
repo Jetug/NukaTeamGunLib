@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import static com.nukateam.ntgl.client.render.screen.AttachmentScreen.ATTACHMENT_Y;
 import static com.nukateam.ntgl.client.render.screen.AttachmentScreen.SLOT_SIZE;
 import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
+import static net.minecraftforge.common.MinecraftForge.*;
 
 /**
  * Author: MrCrayfish
@@ -36,7 +37,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
     public AttachmentContainer(int windowId, Inventory playerInventory, ItemStack stack) {
         this(windowId, playerInventory);
         var gunData = new GunData(stack, playerInventory.player);
-        var sortedAttachments = getSortedAttachmentTypes(gunData);
+        var sortedAttachments = getAttachmentTypes(gunData);
         var attachmentItems = new ArrayList<ItemStack>();
 
         for (var attachmentType : sortedAttachments) {
@@ -85,7 +86,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
         this.playerInventory = playerInventory;
         this.player = playerInventory.player;
         var gunData = new GunData(weapon, playerInventory.player);
-        var sortedTypes = getSortedAttachmentTypes(gunData);
+        var sortedTypes = getAttachmentTypes(gunData);
 
         weaponInventory = new SimpleContainer(sortedTypes.size()) {
             @Override
@@ -123,21 +124,25 @@ public class AttachmentContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public void setItem(int pSlotId, int pStateId, ItemStack pStack) {
-        super.setItem(pSlotId, pStateId, pStack);
+    public void setItem(int slotId, int stateId, ItemStack stack) {
+        var gunData = new GunData(this.weapon, this.player);
+        var oldStack = this.getSlot(slotId).getItem();
+        if(!EVENT_BUS.post(new AttachmentEvent.SlotUpdateEvent(this, gunData, oldStack, stack))) {
+            super.setItem(slotId, stateId, stack);
+        }
     }
 
     @Override
     public void slotsChanged(Container inventoryIn) {
         var attachments = new ArrayList<ItemStack>();
 
-        MinecraftForge.EVENT_BUS.post(new AttachmentEvent(new GunData(this.weapon, this.player)));
+        EVENT_BUS.post(new AttachmentEvent.ContainerUpdateEvent(this, new GunData(this.weapon, this.player)));
 
         for (int i = 0; i < this.getWeaponInventory().getContainerSize(); i++) {
             var itemStack = this.getSlot(i).getItem();
             attachments.add(itemStack);
         }
-        GunStateHelper.saveAttachments(this.weapon, attachments);
+        GunStateHelper.saveAttachments(new GunData(this.weapon, player), attachments);
         super.broadcastChanges();
     }
 

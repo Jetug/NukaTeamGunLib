@@ -381,7 +381,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     }
 
     @Override
-    public Set<AmmoHolder> modifyFuel(Set<AmmoHolder> baseValue, GunData data) {
+    public Set<AmmoHolder> modifyFuelItems(Set<AmmoHolder> baseValue, GunData data) {
         return fuel != null && !fuel.isEmpty() ? this.fuel : baseValue;
     }
 

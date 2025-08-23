@@ -7,7 +7,6 @@ import com.nukateam.ntgl.common.data.config.Fuel;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.data.config.gun.Modules;
 
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.holders.*;
@@ -81,17 +80,17 @@ public class GunModifierHelper {
         return gun.getGeneral();
     }
 
-    public static Map<AttachmentType, ArrayList<Modules.Attachment>> getAttachmentTypes(GunData data) {
+    public static Set<AttachmentType> getAttachmentTypes(GunData data) {
         var gun = getGun(data.gun);
-        return gun.getModules().getAttachments();
+        return gun.getModules().getAttachments().keySet();
     }
 
-    public static ArrayList<AttachmentType> getSortedAttachmentTypes(GunData data) {
-        var attachments = getAttachmentTypes(data);
-        var sortedTypes = new ArrayList<>(attachments.keySet());
-        sortedTypes.sort(Comparator.comparing(AttachmentType::toString));
-        return sortedTypes;
-    }
+//    public static ArrayList<AttachmentType> getSortedAttachmentTypes(GunData data) {
+//        var attachments = getAttachmentTypes(data);
+//        var sortedTypes = new ArrayList<>(attachments.keySet());
+//        sortedTypes.sort(Comparator.comparing(AttachmentType::toString));
+//        return sortedTypes;
+//    }
 
     public static boolean isAlwaysSpread(GunData data) {
         var isAlwaysSpread = new AtomicBoolean(getGeneral(getGun(data.gun)).isAlwaysSpread());
@@ -104,7 +103,7 @@ public class GunModifierHelper {
 
         if (data != null && config != null && data.gun.getItem() instanceof WeaponItem) {
             if (GunStateHelper.getProjectileConfig(data).isMagazineMode()) {
-                var id = GunStateHelper.getAmmoHolder(data);
+                var id = GunStateHelper.getCurrentAmmo(data);
                 var item = ITEMS.getValue(id.getId());
                 finalMaxAmmo.set(item.getMaxDamage(new ItemStack(item)));
             }
@@ -194,17 +193,8 @@ public class GunModifierHelper {
 //        return fuel.get();
 //    }
 
-    public static Integer getMaxFuel(GunData data, AmmoHolder type) {
-        var fuel = getFuel(data, type);
-        int max = fuel != null ? fuel.getMax() : 0;
-        var result = new AtomicReference<>(max);
-
-        forEachAttachment(data, (modifier -> result.set(modifier.modifyMaxFuel(result.get(), type, data))));
-        return result.get();
-    }
-
-    public static Fuel getFuel(GunData data, AmmoHolder type) {
-        var value = new AtomicReference<>(getGun(data.gun).getFuelConfig(type.getId()));
+    public static Fuel getFuel(ResourceLocation type, GunData data) {
+        var value = new AtomicReference<>(getGun(data.gun).getFuelConfig(type));
         forEachAttachment(data, (modifier -> value.set(modifier.modifyFuel(value.get(), data))));
         return value.get();
     }
@@ -476,7 +466,7 @@ public class GunModifierHelper {
     public static ProjectileConfig getProjectileConfig(ResourceLocation ammoId, GunData data) {
         var gun = getGun(data.gun);
         ProjectileConfig config = null;
-        var item = GunStateHelper.getAmmoHolder(data);
+        var item = GunStateHelper.getCurrentAmmoWithoutCheck(data);
 
         if(gun.hasAmmo(ammoId)) {
             config = gun.getProjectileConfig(ammoId);
@@ -502,6 +492,27 @@ public class GunModifierHelper {
     public static AmmoConfig getFuelAmmoConfig(ResourceLocation ammoId, GunData data) {
         var finalValue = new AtomicReference<>(getGun(data.gun).getFuelAmmoConfig(ammoId));
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyFuelAmmo(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+    public static Integer getMaxFuel(ResourceLocation type, GunData data) {
+        var fuel = getFuel(type, data);
+        int max = fuel != null ? fuel.getMax() : 0;
+        var result = new AtomicReference<>(max);
+
+        forEachAttachment(data, (modifier -> result.set(modifier.modifyMaxFuel(type, result.get(), data))));
+        return result.get();
+    }
+
+    public static boolean isFuelMandatory(ResourceLocation ammoId, GunData data) {
+        var finalValue = new AtomicReference<>(getGun(data.gun).getFuelConfig(ammoId).isMandatory());
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyIsFuelMandatory(ammoId, finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+    public static int getFuelAmountPerUse(ResourceLocation ammoId, GunData data) {
+        var finalValue = new AtomicReference<>(getGun(data.gun).getFuelConfig(ammoId).getAmountPerUse());
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyFuelAmountPerUse(ammoId, finalValue.get(), data))));
         return finalValue.get();
     }
 

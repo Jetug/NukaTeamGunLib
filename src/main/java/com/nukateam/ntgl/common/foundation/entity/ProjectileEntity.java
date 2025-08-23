@@ -645,7 +645,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     private ItemStack setupAmmo(GunData data) {
         var weapon = data.gun;
 
-        var ammoHolder = GunStateHelper.getAmmoHolder(data);
+        var ammoHolder = GunStateHelper.getCurrentAmmo(data);
         if(ammoHolder.canReturnAmmo()) {
             var ammo = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
             if (ammo != null) {

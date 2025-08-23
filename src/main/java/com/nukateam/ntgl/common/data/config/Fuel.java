@@ -22,12 +22,14 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Optional
     private int max = 100;
     private boolean isMandatory = true;
+    private int amountPerUse = 0;
     private AmmoConfig ammo = new AmmoConfig();
 
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.putInt("Max", this.max);
+        tag.putInt("amountPerUse", this.amountPerUse);
         tag.putBoolean("isMandatory", this.isMandatory);
         tag.put("ammo", this.ammo.serializeNBT());
         return tag;
@@ -37,6 +39,9 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
     public void deserializeNBT(CompoundTag tag) {
         if (tag.contains("Max", Tag.TAG_ANY_NUMERIC)) {
             this.max = tag.getInt("Max");
+        }
+        if (tag.contains("amountPerUse", Tag.TAG_ANY_NUMERIC)) {
+            this.amountPerUse = tag.getInt("amountPerUse");
         }
         if (tag.contains("Max", Tag.TAG_ANY_NUMERIC)) {
             this.isMandatory = tag.getBoolean("isMandatory");
@@ -50,6 +55,7 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
         Preconditions.checkArgument(this.max > 0, "Max capacity must be more than zero");
         var object = new JsonObject();
         object.addProperty("max", this.max);
+        object.addProperty("amountPerUse", this.amountPerUse);
         object.addProperty("isMandatory", this.isMandatory);
         object.add("ammo", this.ammo.toJsonObject());
         return object;
@@ -58,6 +64,7 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
     public Fuel copy() {
         var projectile = new Fuel();
         projectile.max = this.max;
+        projectile.amountPerUse = this.amountPerUse;
         projectile.isMandatory = this.isMandatory;
         projectile.ammo = this.ammo;
 
@@ -74,6 +81,10 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public boolean isMandatory() {
         return isMandatory;
+    }
+
+    public int getAmountPerUse() {
+        return amountPerUse;
     }
 
     public static Fuel create(CompoundTag tag) {

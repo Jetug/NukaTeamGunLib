@@ -126,7 +126,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
     }
 
     private static void addAmmoType(List<Component> tooltip, GunData data) {
-        var descriptionId = GunStateHelper.getAmmoHolder(data).getDescriptionId();
+        var descriptionId = GunStateHelper.getCurrentAmmo(data).getDescriptionId();
 
         tooltip.add(Component.translatable("info.ntgl.ammo_type",
                         Component.translatable(descriptionId).withStyle(ChatFormatting.WHITE)
@@ -155,7 +155,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
             tooltip.add(Component.translatable(fuelType.getDescriptionId(),
                     ChatFormatting.WHITE.toString()
                             + fuelAmount + "/"
-                            + GunModifierHelper.getMaxFuel(gunData, fuelType)).withStyle(ChatFormatting.GRAY));
+                            + GunModifierHelper.getMaxFuel(fuelType.getId(), gunData)).withStyle(ChatFormatting.GRAY));
         }
     }
 

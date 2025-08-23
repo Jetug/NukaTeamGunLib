@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.handlers;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
@@ -20,17 +21,42 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class GunEventHandler {
-
     @SubscribeEvent
-    public static void attachmentsChanged(AttachmentEvent event) {
-        if(event.getGunData().shooter != null && !event.getGunData().shooter.level().isClientSide) {
-            var gunData = event.getGunData();
-            var allAmmo = GunModifierHelper.getAmmoItems(gunData);
-            var currentAmmo = GunStateHelper.getAmmoHolder(gunData);
+    public static void attachmentsChanged(AttachmentEvent.ContainerUpdateEvent event) {
+        var shooter = event.getGunData().shooter;
+        var isClient = event.getGunData().shooter.level().isClientSide;
 
-            if (!allAmmo.contains(currentAmmo)) {
-                ServerPlayHandler.unloadGun((ServerPlayer) gunData.shooter, gunData.gun);
-            }
+        if(shooter != null && !isClient) {
+            var gunData = event.getGunData();
+
+//            var oldStack = event.getOldStack();
+//            var newStack = event.getNewStack();
+
+//            if(newStack.getItem() instanceof IAttachment<?> attachment){
+//                var mods = attachment.getProperties().getModifiers();
+//
+//                var maxAmmo = GunModifierHelper.getMaxAmmo(gunData);
+//                var ammoItems = GunModifierHelper.getAmmoItems(gunData);
+//
+//                var maxAmmoBuff = maxAmmo;
+//                var ammoItemsBuff = ammoItems;
+//
+//                for (var mod : mods){
+//                    maxAmmoBuff = mod.modifyMaxAmmo(maxAmmoBuff, gunData);
+//                    ammoItemsBuff = mod.modifyAmmoItems(ammoItemsBuff, gunData);
+//                }
+//
+//                if(maxAmmoBuff < maxAmmo || !ammoItemsBuff.containsAll(ammoItems)){
+//                    ServerPlayHandler.unloadGun((ServerPlayer) gunData.shooter, gunData.gun);
+//                }
+//            }
+
+//            var allAmmo = GunModifierHelper.getAmmoItems(gunData);
+//            var currentAmmo = GunStateHelper.getAmmoHolder(gunData);
+//
+//            if (!allAmmo.contains(currentAmmo)) {
+//                ServerPlayHandler.unloadGun((ServerPlayer) gunData.shooter, gunData.gun);
+//            }
         }
     }
 

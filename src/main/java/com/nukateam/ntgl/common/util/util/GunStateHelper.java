@@ -14,11 +14,13 @@ import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
+import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.modules.enchantment.ModEnchantments;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,16 +30,17 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class GunStateHelper {
-    public static final String AMMO_TAG = "Projectile";
+    public static final String AMMO_TAG = "Ammo";
     public static final String FIRE_MODE = "FireMode";
     public static final String ATTACHMENTS = "Attachments";
 
     //AMMO
     public static void switchAmmo(GunData data){
         var ammoItems = GunModifierHelper.getAmmoItems(data);
-        var current = getAmmoHolder(data);
+        var current = getCurrentAmmo(data);
         var newAmmo = SetUtils.cycleSet(ammoItems, current);
 
         setCurrentAmmo(data, newAmmo.getId());
@@ -58,6 +61,7 @@ public class GunStateHelper {
         var maxAmmo = GunModifierHelper.getMaxAmmo(data);
         var result = Math.min(tag.getInt(Tags.AMMO_COUNT) + amount, maxAmmo);
         tag.putInt(Tags.AMMO_COUNT, result);
+        data.gun.setTag(tag);
     }
 
     public static void setCurrentAmmo(GunData data, ResourceLocation ammo) {
@@ -66,18 +70,43 @@ public class GunStateHelper {
         data.gun.setTag(tag);
     }
 
-    public static AmmoHolder getAmmoHolder(GunData data) {
+    public static AmmoHolder getCurrentAmmo(GunData data) {
+        var tag = data.gun.getOrCreateTag();
+        var ammoItems = GunModifierHelper.getAmmoItems(data);
+
+        if(tag.contains(AMMO_TAG, Tag.TAG_STRING)){
+            var ammoId = tag.getString(AMMO_TAG);
+            var isServerSide = data.shooter != null && !data.shooter.level().isClientSide();
+            var hasAmmo = getAmmoCount(data.gun) > 0;
+            var matches = ammoItems.stream().anyMatch((i) -> i.getId().toString().equals(ammoId));
+
+            if(hasAmmo && isServerSide && !matches){
+                ServerPlayHandler.unloadGun((ServerPlayer)data.shooter, data.gun);
+            }
+
+            return AmmoHolder.getType(ammoId);
+        }
+        else {
+            return SetUtils.getFirst(ammoItems);
+        }
+    }
+
+    public static AmmoHolder getCurrentAmmoWithoutCheck(GunData data) {
         var tag = data.gun.getOrCreateTag();
         var ammoItems = GunModifierHelper.getAmmoItems(data);
 
         if(tag.contains(AMMO_TAG, Tag.TAG_STRING)) {
             return AmmoHolder.getType(tag.getString(AMMO_TAG));
         }
-        else return SetUtils.getFirst(ammoItems);
+        else {
+            var firstAmmo = SetUtils.getFirst(ammoItems);
+            setCurrentAmmo(data, firstAmmo.getId());
+            return firstAmmo;
+        }
     }
 
     public static boolean isAcceptable(GunData gunData, ItemStack item) {
-        return getAmmoHolder(gunData).isAcceptable(item);
+        return getCurrentAmmo(gunData).isAcceptable(item);
     }
 
 //    public static Item getAmmoItem(GunData data) {
@@ -85,12 +114,12 @@ public class GunStateHelper {
 //    }
 
     public static AmmoConfig getAmmoConfig(GunData data) {
-        var ammoId = getAmmoHolder(data).getId();
+        var ammoId = getCurrentAmmo(data).getId();
         return GunModifierHelper.getAmmoConfig(ammoId, data);
     }
 
     public static @NotNull ProjectileConfig getProjectileConfig(GunData data) {
-        var ammoId = getAmmoHolder(data).getId();
+        var ammoId = getCurrentAmmoWithoutCheck(data).getId();
         return GunModifierHelper.getProjectileConfig(ammoId, data);
     }
 
@@ -162,11 +191,11 @@ public class GunStateHelper {
         return tag.getFloat("AdditionalDamage");
     }
 
-    public static boolean hasNoAmmo(LivingEntity entity, ItemStack weapon) {
+    public static boolean hasAmmo(LivingEntity entity, ItemStack weapon) {
         if(entity instanceof Player player && !player.isCreative()) {
-            return InventoryUtil.findAmmo(player, weapon).stack().isEmpty();
+            return !InventoryUtil.findAmmo(player, weapon).stack().isEmpty();
         }
-        return false;
+        return true;
     }
 
     public static ArrayList<ItemStack> getAttachmentItems(ItemStack gun) {
@@ -259,7 +288,16 @@ public class GunStateHelper {
         return tag.contains("IgnoreAmmo", Tag.TAG_BYTE);
     }
 
-    public static void saveAttachments(ItemStack weapon, Iterable<ItemStack> attachments){
+    public static void saveAttachments(GunData data, Collection<ItemStack> attachments){
+        var weapon = data.gun;
+//        var currentAttachments = getAttachmentItems(weapon);
+//        var isServerSide = data.shooter != null && !data.shooter.level().isClientSide;
+//        var attachmentsChanged = !containsItem(attachments, currentAttachments);
+//
+//        if (isServerSide && attachmentsChanged){
+//            ServerPlayHandler.unloadGun((ServerPlayer)data.shooter, data.gun);
+//        }
+
         var attachmentsTag = new CompoundTag();
 
         for (var itemStack : attachments) {
@@ -271,6 +309,26 @@ public class GunStateHelper {
 
         var tag = weapon.getOrCreateTag();
         tag.put(Tags.ATTACHMENTS, attachmentsTag);
+    }
+
+    private static boolean containsItem(Collection<ItemStack> whereFind, Collection<ItemStack> whatFind) {
+        for (var att : whatFind) {
+            if (!contains(whereFind, att))
+                return false;
+        }
+        return true;
+
+//        return !whatFind.contains(whereFind);
+    }
+
+    public static boolean contains(Collection<ItemStack> list, ItemStack toFind) {
+        for (var stack : list) {
+//            ItemStack.matches()
+            if(stack.getItem() == toFind.getItem()){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void saveAttachment(ItemStack weapon, ItemStack attachmentStack){

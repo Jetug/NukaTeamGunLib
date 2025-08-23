@@ -131,7 +131,7 @@ public class ReloadTracker {
     }
 
     private boolean hasNoAmmo(LivingEntity player) {
-        return GunStateHelper.hasNoAmmo(player, weapon);
+        return !GunStateHelper.hasAmmo(player, weapon);
     }
 
     private boolean canReload(Player player) {
@@ -266,7 +266,7 @@ public class ReloadTracker {
         var ammo = context.stack();
 
         var data = new GunData(weapon, entity);
-        var ammoHandler = GunStateHelper.getAmmoHolder(data);
+        var ammoHandler = GunStateHelper.getCurrentAmmo(data);
 
         if (!ammo.isEmpty()) {
             var tag = this.weapon.getTag();
@@ -289,9 +289,10 @@ public class ReloadTracker {
     private boolean isNotReloaded(LivingEntity entity) {
         var data = new GunData(weapon, entity);
         var tag = this.weapon.getTag();
-
-        return !GunStateHelper.hasNoAmmo(entity, weapon) &&
-                GunStateHelper.getAmmoCount(weapon) < GunEnchantmentHelper.getAmmoCapacity(data);
+        var hasAmmo = GunStateHelper.hasAmmo(entity, weapon);
+        var ammoCount = GunStateHelper.getAmmoCount(weapon);
+        var ammoCapacity = GunEnchantmentHelper.getAmmoCapacity(data);
+        return hasAmmo && ammoCount < ammoCapacity;
     }
 
 //    private boolean isNotReloaded(LivingEntity entity) {
@@ -305,7 +306,7 @@ public class ReloadTracker {
 
     private void addMagazine(LivingEntity entity) {
         var data = new GunData(weapon, entity);
-        var ammoHolder = GunStateHelper.getAmmoHolder(data);
+        var ammoHolder = GunStateHelper.getCurrentAmmo(data);
         var context = InventoryUtil.findMagazine(entity, weapon);
         var ammo = context.stack();
 

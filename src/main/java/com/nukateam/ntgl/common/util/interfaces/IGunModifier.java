@@ -7,7 +7,6 @@ import com.nukateam.ntgl.common.data.config.Fuel;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.regestry.ProjectileRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Set;
@@ -304,14 +303,6 @@ public interface IGunModifier {
         return loadingType;
     }
 
-    default Set<AmmoHolder> modifyFuel(Set<AmmoHolder> secondaryAmmo, GunData data) {
-        return secondaryAmmo;
-    }
-
-    default int modifyMaxFuel(int max, AmmoHolder type, GunData data) {
-        return max;
-    }
-
     default int modifyMeleeCooldown(int time, GunData data) {
         return time;
     }
@@ -353,6 +344,18 @@ public interface IGunModifier {
     }
 
     default AmmoConfig modifyFuelAmmo(AmmoConfig value, GunData data) {
+        return value;
+    }
+
+    default int modifyMaxFuel(ResourceLocation ammo, int max, GunData data) {
+        return max;
+    }
+
+    default boolean modifyIsFuelMandatory(ResourceLocation ammo, boolean value, GunData data) {
+        return value;
+    }
+
+    default int modifyFuelAmountPerUse(ResourceLocation ammo, int value, GunData data) {
         return value;
     }
 
