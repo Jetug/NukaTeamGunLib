@@ -52,6 +52,23 @@ public class GunStateHelper {
     }
 
     public static int getAmmoCount(GunData data) {
+        if(data.gun.isEmpty()) return 0;
+
+        var tag = data.gun.getOrCreateTag();
+        var count = tag.getInt(Tags.AMMO_COUNT);
+
+        var maxAmmo = GunModifierHelper.getMaxAmmo(data);
+        var isServerSide = data.shooter != null && !data.shooter.level().isClientSide();
+
+        if(count > 0 && isServerSide && count > maxAmmo){
+            ServerPlayHandler.unloadGun((ServerPlayer)data.shooter, data.gun);
+            return 0;
+        }
+
+        return count;
+    }
+
+    public static int getAmmoCountNoCheck(GunData data) {
         var tag = data.gun.getOrCreateTag();
         return tag.getInt(Tags.AMMO_COUNT);
     }
@@ -77,10 +94,10 @@ public class GunStateHelper {
         if(tag.contains(AMMO_TAG, Tag.TAG_STRING)){
             var ammoId = tag.getString(AMMO_TAG);
             var isServerSide = data.shooter != null && !data.shooter.level().isClientSide();
-            var hasAmmo = getAmmoCount(data.gun) > 0;
+//            var hasAmmo = getAmmoCountNoCheck(data) > 0;
             var matches = ammoItems.stream().anyMatch((i) -> i.getId().toString().equals(ammoId));
 
-            if(hasAmmo && isServerSide && !matches){
+            if(isServerSide && !matches){
                 ServerPlayHandler.unloadGun((ServerPlayer)data.shooter, data.gun);
             }
 
@@ -157,7 +174,7 @@ public class GunStateHelper {
     }
 
     public static boolean isMaxAmmo(GunData data) {
-        var ammo = getAmmoCount(data.gun);
+        var ammo = getAmmoCount(data);
         var maxAmmo = GunModifierHelper.getMaxAmmo(data);
         return ammo == maxAmmo;
     }
@@ -355,14 +372,13 @@ public class GunStateHelper {
             var ammoPerShot = GunModifierHelper.getAmmoPerShot(data);
             var fireMode = GunStateHelper.getFireMode(data);
             var multishotAmount = GunModifierHelper.getMultishotAmount(data);
+            var ammoCount = GunStateHelper.getAmmoCount(data);
 
             if(fireMode == FireMode.MULTI && multishotAmount > 1){
-                var currentAmmo = GunStateHelper.getAmmoCount(heldItem);
-                multishotAmount = Math.min(currentAmmo, multishotAmount);
+                multishotAmount = Math.min(ammoCount, multishotAmount);
                 ammoPerShot *= multishotAmount;
             }
 
-            var ammoCount = getAmmoCount(heldItem);
             int level = heldItem.getEnchantmentLevel(ModEnchantments.RECLAIMED.get());
 
             if (level == 0 || shooter.level().random.nextInt(4 - Mth.clamp(level, 1, 2)) != 0) {

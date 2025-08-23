@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.event;
 
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
@@ -33,6 +34,10 @@ public class GunFireEvent extends LivingEvent {
 
     public InteractionHand getHand() {
         return arm;
+    }
+
+    public GunData getGunData(){
+        return new GunData(getStack(), getEntity());
     }
 
     /**

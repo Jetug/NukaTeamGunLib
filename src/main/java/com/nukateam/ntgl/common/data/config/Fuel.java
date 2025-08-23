@@ -21,7 +21,7 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String TYPE = "Type";
     @Optional
     private int max = 100;
-    private boolean isMandatory = true;
+    private boolean mandatory = true;
     private int amountPerUse = 0;
     private AmmoConfig ammo = new AmmoConfig();
 
@@ -30,7 +30,7 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
         var tag = new CompoundTag();
         tag.putInt("Max", this.max);
         tag.putInt("amountPerUse", this.amountPerUse);
-        tag.putBoolean("isMandatory", this.isMandatory);
+        tag.putBoolean("mandatory", this.mandatory);
         tag.put("ammo", this.ammo.serializeNBT());
         return tag;
     }
@@ -44,7 +44,7 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
             this.amountPerUse = tag.getInt("amountPerUse");
         }
         if (tag.contains("Max", Tag.TAG_ANY_NUMERIC)) {
-            this.isMandatory = tag.getBoolean("isMandatory");
+            this.mandatory = tag.getBoolean("mandatory");
         }
         if (tag.contains("ammo", Tag.TAG_COMPOUND)) {
             this.ammo = AmmoConfig.create(tag.getCompound("ammo"));
@@ -56,7 +56,7 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
         var object = new JsonObject();
         object.addProperty("max", this.max);
         object.addProperty("amountPerUse", this.amountPerUse);
-        object.addProperty("isMandatory", this.isMandatory);
+        object.addProperty("mandatory", this.mandatory);
         object.add("ammo", this.ammo.toJsonObject());
         return object;
     }
@@ -65,7 +65,7 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
         var projectile = new Fuel();
         projectile.max = this.max;
         projectile.amountPerUse = this.amountPerUse;
-        projectile.isMandatory = this.isMandatory;
+        projectile.mandatory = this.mandatory;
         projectile.ammo = this.ammo;
 
         return projectile;
@@ -80,7 +80,7 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public boolean isMandatory() {
-        return isMandatory;
+        return mandatory;
     }
 
     public int getAmountPerUse() {

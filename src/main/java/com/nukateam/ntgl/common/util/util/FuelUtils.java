@@ -25,7 +25,7 @@ public class FuelUtils {
             var isMandatory = GunModifierHelper.isFuelMandatory(fuelType.getId(), data);
 
             if(isMandatory) {
-                if(hasFuel(fuelType.getId(), data))
+                if(!hasFuel(fuelType.getId(), data))
                     return false;
             }
         }
@@ -68,10 +68,11 @@ public class FuelUtils {
         setFuel(data.gun, ammoHolder, Mth.clamp(oldValue + value, 0, max));
     }
 
-    public static void consumeFuel(AmmoHolder ammoHolder, int value, GunData data) {
+    public static void consumeFuel(AmmoHolder ammoHolder, GunData data) {
         var oldValue = getFuel(data.gun, ammoHolder);
         var max = GunModifierHelper.getMaxFuel(ammoHolder.getId(), data);
-        setFuel(data.gun, ammoHolder, Mth.clamp(oldValue + value, 0, max));
+        var value = GunModifierHelper.getFuelAmountPerUse(ammoHolder.getId(), data);
+        setFuel(data.gun, ammoHolder, Mth.clamp(oldValue - value, 0, max));
     }
 
     public static float getFuelPercent(ItemStack stack, AmmoHolder ammoHolder, GunData data) {

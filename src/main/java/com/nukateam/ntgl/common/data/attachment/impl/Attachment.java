@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.data.attachment.impl;
 
+import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
@@ -53,7 +54,7 @@ public class Attachment {
         var player = Minecraft.getInstance().player;
         if (player == null) return;
 
-        var data = new GunData(stack, player);
+        var data = new GunData(new ItemStack(ModGuns.CLASSIC10MM.get()), player);
 
         if (stack.getItem() instanceof IAttachment<?>) {
             IAttachment<?> attachment = (IAttachment<?>) stack.getItem();

@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
+import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -71,6 +72,10 @@ public class GunEventHandler {
             }
 
             if(isBroken(entity, heldItem)){
+                event.setCanceled(true);
+            }
+
+            if (!FuelUtils.hasFuel(event.getGunData())) {
                 event.setCanceled(true);
             }
         }

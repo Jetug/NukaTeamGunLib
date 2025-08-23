@@ -104,8 +104,6 @@ public class ServerPlayHandler {
                     return;
                 }
 
-                if (!FuelUtils.hasFuel(data)) return;
-
                 /* Updates the yaw and pitch with the clients current yaw and pitch */
                 shooter.setYRot(Mth.wrapDegrees(message.getRotationYaw()));
                 shooter.setXRot(Mth.clamp(message.getRotationPitch(), -90F, 90F));

@@ -155,7 +155,7 @@ public class GunModifierHelper {
 
 
     public static int getReloadAmount(GunData data) {
-        var value = new AtomicInteger(getGeneral(getGun(data.gun)).getMultishotAmount());
+        var value = new AtomicInteger(getGeneral(getGun(data.gun)).getReloadAmount());
         forEachAttachment(data, (modifier -> value.set(modifier.modifyReloadAmount(value.get(), data))));
         return value.get();
     }
