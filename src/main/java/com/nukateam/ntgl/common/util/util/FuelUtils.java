@@ -20,11 +20,15 @@ public class FuelUtils {
     }
 
     public static boolean hasFuel(GunData data){
+        return hasFuel(data, true);
+    }
+
+    public static boolean hasFuel(GunData data, boolean requareAll){
         var allFuel = GunModifierHelper.getAllFuel(data);
         for (var fuelType : allFuel) {
             var isMandatory = GunModifierHelper.isFuelMandatory(fuelType.getId(), data);
 
-            if(isMandatory) {
+            if(isMandatory || requareAll) {
                 if(!hasFuel(fuelType.getId(), data))
                     return false;
             }

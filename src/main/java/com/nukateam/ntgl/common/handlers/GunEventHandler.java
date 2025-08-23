@@ -75,7 +75,7 @@ public class GunEventHandler {
                 event.setCanceled(true);
             }
 
-            if (!FuelUtils.hasFuel(event.getGunData())) {
+            if (!FuelUtils.hasFuel(event.getGunData(), false)) {
                 event.setCanceled(true);
             }
         }

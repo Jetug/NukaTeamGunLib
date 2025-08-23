@@ -2,6 +2,8 @@ package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
+import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
@@ -22,6 +24,7 @@ import net.minecraft.*;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.*;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.*;
@@ -34,6 +37,7 @@ import java.util.*;
 import java.util.function.*;
 
 import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
+import static com.nukateam.ntgl.common.util.util.GunStateHelper.AMMO_TAG;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
 public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColored, IMeta{
@@ -103,6 +107,38 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
 
     public void setDefaultTag(CompoundTag tag){
         tag.putInt(AMMO_COUNT, getGun().getGeneral().getMaxAmmo());
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        if(entity instanceof LivingEntity livingEntity) {
+            var tag = stack.getOrCreateTag();
+            var data = new GunData(stack, livingEntity);
+            var ammoItems = GunModifierHelper.getAmmoItems(data);
+
+            GunStateHelper.getCurrentAmmo(data);
+
+            if (tag.contains(AMMO_TAG, Tag.TAG_STRING)) {
+                var ammoId = tag.getString(AMMO_TAG);
+                var matches = ammoItems.stream().anyMatch((i) -> i.getId().toString().equals(ammoId));
+
+                if(!matches) {
+                    if (entity instanceof ServerPlayer player) {
+                        ServerPlayHandler.unloadGun(player, stack);
+                    }
+                    var firstAmmo = SetUtils.getFirst(ammoItems);
+                    GunStateHelper.setCurrentAmmo(data, firstAmmo.getId());
+                }
+            }
+
+            var maxAmmo = GunModifierHelper.getMaxAmmo(data);
+            var currentAmount = GunStateHelper.getAmmoCount(data);
+            if(currentAmount > maxAmmo){
+                if (entity instanceof ServerPlayer player) {
+                    ServerPlayHandler.unloadGun(player, stack);
+                }
+            }
+        }
     }
 
     @Override

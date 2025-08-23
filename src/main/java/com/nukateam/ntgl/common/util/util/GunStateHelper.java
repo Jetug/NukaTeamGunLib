@@ -14,13 +14,11 @@ import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
-import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.modules.enchantment.ModEnchantments;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.LivingEntity;
@@ -52,23 +50,6 @@ public class GunStateHelper {
     }
 
     public static int getAmmoCount(GunData data) {
-        if(data.gun.isEmpty()) return 0;
-
-        var tag = data.gun.getOrCreateTag();
-        var count = tag.getInt(Tags.AMMO_COUNT);
-
-        var maxAmmo = GunModifierHelper.getMaxAmmo(data);
-        var isServerSide = data.shooter != null && !data.shooter.level().isClientSide();
-
-        if(count > 0 && isServerSide && count > maxAmmo){
-            ServerPlayHandler.unloadGun((ServerPlayer)data.shooter, data.gun);
-            return 0;
-        }
-
-        return count;
-    }
-
-    public static int getAmmoCountNoCheck(GunData data) {
         var tag = data.gun.getOrCreateTag();
         return tag.getInt(Tags.AMMO_COUNT);
     }
@@ -89,21 +70,13 @@ public class GunStateHelper {
 
     public static AmmoHolder getCurrentAmmo(GunData data) {
         var tag = data.gun.getOrCreateTag();
-        var ammoItems = GunModifierHelper.getAmmoItems(data);
 
         if(tag.contains(AMMO_TAG, Tag.TAG_STRING)){
             var ammoId = tag.getString(AMMO_TAG);
-            var isServerSide = data.shooter != null && !data.shooter.level().isClientSide();
-//            var hasAmmo = getAmmoCountNoCheck(data) > 0;
-            var matches = ammoItems.stream().anyMatch((i) -> i.getId().toString().equals(ammoId));
-
-            if(isServerSide && !matches){
-                ServerPlayHandler.unloadGun((ServerPlayer)data.shooter, data.gun);
-            }
-
             return AmmoHolder.getType(ammoId);
         }
         else {
+            var ammoItems = GunModifierHelper.getAmmoItems(data);
             return SetUtils.getFirst(ammoItems);
         }
     }
