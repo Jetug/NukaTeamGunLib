@@ -141,7 +141,7 @@ public class ServerPlayHandler {
                 var count = GunModifierHelper.getProjectileAmount(data);
 
                 if(fireMode == FireMode.MULTI && multishotAmount > 1){
-                    var currentAmmo = GunStateHelper.getAmmoCount(heldItem);
+                    var currentAmmo = GunStateHelper.getAmmoCount(data);
                     multishotAmount = Math.min(currentAmmo, multishotAmount);
                     count *= multishotAmount;
                 }

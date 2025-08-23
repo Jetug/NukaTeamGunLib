@@ -222,7 +222,7 @@ public class GunHud implements IGuiOverlay {
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
             handCache.maxAmmoCount = GunModifierHelper.getMaxAmmo(data);
             handCache.fireMode = GunStateHelper.getFireMode(data);
-            handCache.ammoCount = GunStateHelper.getAmmoCount(weapon);
+            handCache.ammoCount = GunStateHelper.getAmmoCount(data);
 //            handCache.ammoConfig = GunStateHelper.getAmmoConfig(data);
 //            GunStateHelper.getAmmoHolder(data).getId();
             handCache.ammoConfig = getGun(weapon).getAmmoConfig(GunStateHelper.getCurrentAmmo(data).getId());

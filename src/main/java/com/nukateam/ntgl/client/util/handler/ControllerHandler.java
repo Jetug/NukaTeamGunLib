@@ -87,7 +87,7 @@ public class ControllerHandler {
                 var tag = heldItem.getTag();
                 var data = new GunData(heldItem, player);
 
-                if (tag != null && GunStateHelper.getAmmoCount(heldItem) < GunEnchantmentHelper.getAmmoCapacity(data)) {
+                if (tag != null && GunStateHelper.getAmmoCount(data) < GunEnchantmentHelper.getAmmoCapacity(data)) {
                     actions.put(GunButtonBindings.RELOAD, new Action(Component.translatable("ntgl.action.reload"), Action.Side.LEFT));
                 }
 

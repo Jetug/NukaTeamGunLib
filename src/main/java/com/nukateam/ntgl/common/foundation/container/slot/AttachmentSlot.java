@@ -93,7 +93,7 @@ public class AttachmentSlot extends Slot {
     public static void checkAmmoCount(ItemStack stack, LivingEntity entity) {
         var gunData = new GunData(stack, entity);
         var maxAmmo = GunModifierHelper.getMaxAmmo(gunData  );
-        var ammoCount = GunStateHelper.getAmmoCount(stack);
+        var ammoCount = GunStateHelper.getAmmoCount(gunData);
         var diff = ammoCount - maxAmmo;
 
         if(diff > 0){

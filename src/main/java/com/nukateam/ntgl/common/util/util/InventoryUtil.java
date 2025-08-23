@@ -144,7 +144,7 @@ public class InventoryUtil {
             if(context == AmmoContext.NONE){
                 var set = GunModifierHelper.getAmmoItems(data);
                 for (var value: set) {
-                    if(!value.equals(ammoHandler.getId()) && GunStateHelper.getAmmoCount(weapon) == 0){
+                    if(!value.equals(ammoHandler.getId()) && GunStateHelper.getAmmoCount(data) == 0){
                         ammoHandler = value;
                         context = findPlayerAmmo(player, ammoHandler);
                         if(context != AmmoContext.NONE) {
@@ -169,7 +169,7 @@ public class InventoryUtil {
             if(context == AmmoContext.NONE){
                 var set = GunModifierHelper.getAmmoItems(data);
                 for (var value: set) {
-                    if(!value.equals(ammoHandler) && GunStateHelper.getAmmoCount(weapon) == 0){
+                    if(!value.equals(ammoHandler) && GunStateHelper.getAmmoCount(data) == 0){
                         ammoHandler = value;
                         context = findPlayerMagazine(player, ammoHandler);
                         if(context != AmmoContext.NONE) {

@@ -51,8 +51,8 @@ public class GunStateHelper {
         return ammo.getDamageType();
     }
 
-    public static int getAmmoCount(ItemStack gunStack) {
-        var tag = gunStack.getOrCreateTag();
+    public static int getAmmoCount(GunData data) {
+        var tag = data.gun.getOrCreateTag();
         return tag.getInt(Tags.AMMO_COUNT);
     }
 

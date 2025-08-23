@@ -112,7 +112,7 @@ public class ClientReloadHandler {
                     var gun = ((WeaponItem) stack.getItem()).getModifiedGun(stack);
                     reloadTicks = GunModifierHelper.getReloadTime(data);
 
-                    if (GunStateHelper.getAmmoCount(stack) >= GunEnchantmentHelper.getAmmoCapacity(data))
+                    if (GunStateHelper.getAmmoCount(data) >= GunEnchantmentHelper.getAmmoCapacity(data))
                         return;
                     if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))
                         return;
@@ -148,13 +148,13 @@ public class ClientReloadHandler {
 
     private static void playAnimation(LocalPlayer player, ItemStack stack, Gun gun, InteractionHand arm) {
         var reloadDuration = 0;
-        var dunData = new GunData(stack, player);
-        var reloadTime = GunModifierHelper.getReloadTime(dunData);
-        var loadingType = GunModifierHelper.getLoadingType(dunData);
+        var gunData = new GunData(stack, player);
+        var reloadTime = GunModifierHelper.getReloadTime(gunData);
+        var loadingType = GunModifierHelper.getLoadingType(gunData);
 
         if(loadingType.equals(LoadingType.PER_CARTRIDGE)){
 //            var ammoCount = general.getMaxAmmo(stack) - Gun.getAmmoCount(stack);
-            var ammoCount =  GunModifierHelper.getMaxAmmo(dunData) - GunStateHelper.getAmmoCount(stack);
+            var ammoCount =  GunModifierHelper.getMaxAmmo(gunData) - GunStateHelper.getAmmoCount(gunData);
 
             for (var i = 0; i < ammoCount; i++)
                 reloadDuration += reloadTime;

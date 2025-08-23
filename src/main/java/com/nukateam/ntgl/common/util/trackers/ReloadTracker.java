@@ -127,7 +127,7 @@ public class ReloadTracker {
 
     private boolean isWeaponFull() {
         var data = new GunData(weapon, shooter);
-        return GunStateHelper.getAmmoCount(weapon) >= GunEnchantmentHelper.getAmmoCapacity(data);
+        return GunStateHelper.getAmmoCount(data) >= GunEnchantmentHelper.getAmmoCapacity(data);
     }
 
     private boolean hasNoAmmo(LivingEntity player) {
@@ -271,7 +271,7 @@ public class ReloadTracker {
         if (!ammo.isEmpty()) {
             var tag = this.weapon.getTag();
             var value = ammoHandler.getValue(ammo);
-            var currentAmount = GunStateHelper.getAmmoCount(weapon);
+            var currentAmount = GunStateHelper.getAmmoCount(data);
 
             amount = Math.min(ammo.getCount() * value, amount);
 
@@ -290,7 +290,7 @@ public class ReloadTracker {
         var data = new GunData(weapon, entity);
         var tag = this.weapon.getTag();
         var hasAmmo = GunStateHelper.hasAmmo(entity, weapon);
-        var ammoCount = GunStateHelper.getAmmoCount(weapon);
+        var ammoCount = GunStateHelper.getAmmoCount(data);
         var ammoCapacity = GunEnchantmentHelper.getAmmoCapacity(data);
         return hasAmmo && ammoCount < ammoCapacity;
     }
