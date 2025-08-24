@@ -315,6 +315,11 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
             return this;
         }
 
+        public ProjectileConfig.Builder setProjectileAmount(int projectileAmount) {
+            this.projectile.projectileAmount = projectileAmount;
+            return this;
+        }
+
         public ProjectileConfig.Builder setProjectileSize(float size) {
             this.projectile.size = size;
             return this;
@@ -347,6 +352,11 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
 
         public ProjectileConfig.Builder setDamage(float damage) {
             this.projectile.damage = damage;
+            return this;
+        }
+
+        public ProjectileConfig.Builder setSpread(float spread) {
+            this.projectile.spread = spread;
             return this;
         }
 
