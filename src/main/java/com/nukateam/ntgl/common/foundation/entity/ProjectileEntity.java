@@ -66,7 +66,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected LivingEntity shooter;
     protected Gun modifiedGun;
     protected General general;
-    protected ProjectileConfig projectile;
+    protected ProjectileConfig projectile = new ProjectileConfig();
     protected ItemStack weapon = ItemStack.EMPTY;
     protected ItemStack ammo = ItemStack.EMPTY;
     protected float additionalDamage = 0.0F;

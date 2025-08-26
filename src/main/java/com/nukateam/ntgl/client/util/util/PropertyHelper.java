@@ -86,11 +86,10 @@ public final class PropertyHelper {
             var attachment = GunStateHelper.getAttachmentItem(AttachmentType.SCOPE, stack);
             if(!attachment.isEmpty() ){
                 var scope = (ScopeItem)attachment.getItem();
-                var attachmentData = modifiedGun.findAttachment(scope);
-
-                cameraX += attachmentData.getXOffset();
-                cameraY += attachmentData.getYOffset();
-                cameraZ += attachmentData.getZOffset();
+                var attachmentConfig = modifiedGun.findAttachment(scope);
+                cameraX += attachmentConfig.getXOffset();
+                cameraY += attachmentConfig.getYOffset();
+                cameraZ += attachmentConfig.getZOffset();
             }
 
             return new Vec3(cameraX, cameraY, cameraZ);

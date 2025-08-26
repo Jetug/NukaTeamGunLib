@@ -33,6 +33,7 @@ public class ClientActions {
 
     public static void switchAmmo(InteractionHand hand, LocalPlayer player) {
         if (!getReloadKey(hand).getValue(player)) {
+
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageHandAction(hand, HandAction.SWITCH_AMMO));
         }
     }

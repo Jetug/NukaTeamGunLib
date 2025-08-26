@@ -134,11 +134,8 @@ public class InventoryUtil {
         return new AmmoContext(ammo, null);
     }
 
-    public static IAmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
-        var data = new GunData(weapon, entity);
-        var ammoHandler = GunStateHelper.getCurrentAmmo(data);
-
-        if (entity instanceof Player player) {
+    public static IAmmoContext findAmmo(AmmoHolder ammoHandler, GunData data) {
+        if (data.shooter instanceof Player player) {
             var context = findPlayerAmmo(player, ammoHandler);
 
             if(context == AmmoContext.NONE){
@@ -157,6 +154,13 @@ public class InventoryUtil {
             return context;
         }
         return AmmoContext.NONE;
+    }
+
+    public static IAmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
+        var data = new GunData(weapon, entity);
+        var ammoHandler = GunStateHelper.getCurrentAmmo(data);
+
+        return findAmmo(ammoHandler, data);
     }
 
     public static IAmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {

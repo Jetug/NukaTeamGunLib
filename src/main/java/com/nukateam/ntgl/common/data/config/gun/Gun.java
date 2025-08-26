@@ -215,7 +215,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             var attachmentType = attachmentItem.getType();
 
             if(!getModules().getAttachments().containsKey(attachmentType))
-                return null;
+                return new Modules.Attachment();
 
             var attachments = getModules().getAttachments().get(attachmentType);
 
@@ -225,7 +225,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
                 }
             }
         }
-        return null;
+        return new Modules.Attachment();
     }
 
     public void playCockSound(LivingEntity player) {

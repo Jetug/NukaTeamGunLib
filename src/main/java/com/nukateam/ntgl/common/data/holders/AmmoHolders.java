@@ -28,23 +28,23 @@ public class AmmoHolders {
         AmmoHolder.registerType(WATER);
     }
 
-    private static boolean isBurnable(ItemStack ammoStack) {
+    public static boolean isBurnable(ItemStack ammoStack) {
         var burnTime = ForgeHooks.getBurnTime(ammoStack, null);
         return burnTime > 0;
     }
 
-    private static boolean isWater(ItemStack ammoStack) {
+    public static boolean isWater(ItemStack ammoStack) {
         return ammoStack.getItem() == Items.WATER_BUCKET;
     }
 
-    private static List<ItemStack> consumeBurnable(ItemStack stack, Integer i) {
+    public static List<ItemStack> consumeBurnable(ItemStack stack, Integer i) {
         if (stack.getItem() == Items.LAVA_BUCKET) {
             return List.of(new ItemStack(Items.BUCKET));
         }
         return List.of();
     }
 
-    private static List<ItemStack> consumeWater(ItemStack stack, Integer i) {
+    public static List<ItemStack> consumeWater(ItemStack stack, Integer i) {
         if (stack.getItem() == Items.WATER_BUCKET) {
             return List.of(new ItemStack(Items.BUCKET));
         }

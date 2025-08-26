@@ -375,5 +375,10 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
             return this;
         }
 
+        public ProjectileConfig.Builder setProjectileType(ProjectileType projectile) {
+            this.projectile.projectile = projectile;
+            return this;
+        }
+
     }
 }

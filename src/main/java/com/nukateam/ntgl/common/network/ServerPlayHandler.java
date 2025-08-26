@@ -167,7 +167,6 @@ public class ServerPlayHandler {
                     PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(shooter.level(), spawnX, spawnY, spawnZ, radius), messageBulletTrail);
                 }
 
-                MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
 
                 if (Config.COMMON.aggroMobs.enabled.get()) {
                     double radius = GunModifierHelper.getModifiedFireSoundRadius(data, Config.COMMON.aggroMobs.unsilencedRange.get());
@@ -212,6 +211,8 @@ public class ServerPlayHandler {
 
                 if (shooter instanceof Player player)
                     player.awardStat(Stats.ITEM_USED.get(weaponItem));
+
+                MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
             }
         } else {
             world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(),
@@ -399,7 +400,6 @@ public class ServerPlayHandler {
             dataKey.setValue(player, false);
             return;
         }
-        MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, gun));
     }
 
     public static void handleGrenade(C2SMessageGrenade message, ServerPlayer player) {
@@ -462,8 +462,8 @@ public class ServerPlayHandler {
 
         if (!isReloading.getValue(player) && GunModifierHelper.getAmmoItems(data).size() > 1){
             handleUnload(player, hand);
-            reloadGun(hand, player);
             GunStateHelper.switchAmmo(data);
+            reloadGun(hand, player);
             player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
         }
     }

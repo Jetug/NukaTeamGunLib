@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.util.trackers;
 
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.util.util.DelayedTask;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -192,7 +194,7 @@ public class ReloadTracker {
 
             if(tracker.reloadTick == 0){
                 tracker.reloadMagazine(shooter);
-                stopReloading(shooter, gun, arm);
+                stopReloading(data, gun, arm);
             }
         }
         else if(loadingType == LoadingType.PER_CARTRIDGE){
@@ -210,7 +212,7 @@ public class ReloadTracker {
                     if (tracker.isWeaponFull() || tracker.hasNoAmmo(shooter)) {
                         if(tracker.isEnd) {
                             ModSyncedDataKeys.RELOAD_END.setValue(shooter, false);
-                            stopReloading(shooter, gun, arm);
+                            stopReloading(data, gun, arm);
                         }
                         else {
                             tracker.isEnd = true;
@@ -365,18 +367,21 @@ public class ReloadTracker {
         return false;
     }
 
-    private static void stopReloading(LivingEntity entity, Gun gun, HumanoidArm arm) {
+    private static void stopReloading(GunData data, Gun gun, HumanoidArm arm) {
         var reloadKey = getReloadKey(arm);
-
+        var entity = data.shooter;
         RELOAD_TRACKER_MAP.remove(entity);
         reloadKey.setValue(entity, false);
         final var finalPlayer = entity;
         DelayedTask.runAfter(4, () -> gun.playCockSound(finalPlayer));
         var oppositeStack = LivingEntityUtils.getItemInHand(entity, arm.getOpposite());
-        var data = new GunData(oppositeStack, entity);
 
-        if (arm == HumanoidArm.RIGHT && oppositeStack.getItem() instanceof WeaponItem && !GunModifierHelper.isWeaponFull(data)) {
+        if (arm == HumanoidArm.RIGHT
+                && oppositeStack.getItem() instanceof WeaponItem
+                && !GunModifierHelper.isWeaponFull(new GunData(oppositeStack, entity))) {
             PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) entity, new S2CMessageReload(true, arm.getOpposite()));
         }
+
+        MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post((ServerPlayer)entity, data.gun));
     }
 }

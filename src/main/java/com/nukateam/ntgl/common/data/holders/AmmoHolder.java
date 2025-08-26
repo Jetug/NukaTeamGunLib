@@ -58,7 +58,7 @@ public class AmmoHolder extends ResourceHolder {
     }
 
     private static AmmoHolder createDefault(ResourceLocation id){
-        return Builder.create(id)
+        var holder = Builder.create(id)
                 .isAcceptable((stack) -> Objects.equals(getKey(stack), id))
                 .value((s) -> 1)
                 .descriptionId((ammo) -> {
@@ -70,6 +70,9 @@ public class AmmoHolder extends ResourceHolder {
                 })
                 .canReturnAmmo()
                 .build();
+
+        registerType(holder);
+        return holder;
     }
 
     private static @Nullable ResourceLocation getKey(ItemStack stack) {

@@ -181,17 +181,13 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
     private static void addFuel(List<Component> tooltip, GunData gunData) {
         var allFuel = GunModifierHelper.getAllFuel(gunData);
         for (var fuelType : allFuel) {
-            int fuelAmount = FuelUtils.getFuel(gunData.gun, fuelType);
-//            tooltip.add(Component.translatable(fuelType.getDescriptionId(), Component.literal(": "),
-//                    ChatFormatting.WHITE.toString()
-//                            + fuelAmount + "/"
-//                            + GunModifierHelper.getMaxFuel(gunData, fuelType)
-//            ).withStyle(ChatFormatting.GRAY));
+            var fuelAmount = FuelUtils.getFuel(gunData.gun, fuelType);
+            var maxFuel = GunModifierHelper.getMaxFuel(fuelType.getId(), gunData);
 
-            tooltip.add(Component.translatable(fuelType.getDescriptionId(),
-                    ChatFormatting.WHITE.toString()
-                            + fuelAmount + "/"
-                            + GunModifierHelper.getMaxFuel(fuelType.getId(), gunData)).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable(fuelType.getDescriptionId())
+                    .append(ChatFormatting.WHITE + " : " + fuelAmount + "/" + maxFuel)
+                    .withStyle(ChatFormatting.GRAY)
+            );
         }
     }
 
