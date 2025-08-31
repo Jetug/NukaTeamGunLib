@@ -189,4 +189,11 @@ public class InventoryUtil {
 
         return AmmoContext.NONE;
     }
+
+    public static boolean hasAmmo(LivingEntity entity, ItemStack weapon) {
+        if(entity instanceof Player player && !player.isCreative()) {
+            return !findAmmo(player, weapon).stack().isEmpty();
+        }
+        return true;
+    }
 }

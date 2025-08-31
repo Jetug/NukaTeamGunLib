@@ -195,23 +195,23 @@ public class ShootingHandler {
 
             var player = Minecraft.getInstance().player;
 
-            if (player != null) {
-                var mainHandItem = player.getMainHandItem();
-                if (mainHandItem.getItem() instanceof WeaponItem && (GunStateHelper.hasAmmo(mainHandItem) || player.isCreative())) {
-                    var shooting = isKeyAttackDown();
-                    if (Ntgl.controllableLoaded) {
-                        shooting |= ControllerHandler.isShooting();
-                    }
-                    if (shooting ^ this.shooting) {
-                        this.shooting = shooting;
-                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(shooting));
-                    }
-                } else if (this.shooting) {
-                    this.shooting = false;
-                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(false));
-                }
-            }
-            else this.shooting = false;
+//            if (player != null) {
+//                var mainHandItem = player.getMainHandItem();
+//                if (mainHandItem.getItem() instanceof WeaponItem && (GunStateHelper.hasAmmo(mainHandItem) || player.isCreative())) {
+//                    var shooting = isKeyAttackDown();
+//                    if (Ntgl.controllableLoaded) {
+//                        shooting |= ControllerHandler.isShooting();
+//                    }
+//                    if (shooting ^ this.shooting) {
+//                        this.shooting = shooting;
+//                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(shooting));
+//                    }
+//                } else if (this.shooting) {
+//                    this.shooting = false;
+//                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(false));
+//                }
+//            }
+//            else this.shooting = false;
         }
     }
 
@@ -258,7 +258,7 @@ public class ShootingHandler {
 
     public void fire(LivingEntity shooter, ItemStack heldItem) {
         if (heldItem.getItem() instanceof WeaponItem
-                && (GunStateHelper.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))
+                && (GunStateHelper.hasAmmo(heldItem) /*|| (shooter instanceof Player player && player.isCreative())*/)
                 && isGun(heldItem, shooter)
                 && !shooter.isSpectator()) {
             var isMainHand = shooter.getMainHandItem() == heldItem;

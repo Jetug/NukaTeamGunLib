@@ -21,8 +21,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -179,13 +177,6 @@ public class GunStateHelper {
     public static float getAdditionalDamage(ItemStack gunStack) {
         var tag = gunStack.getOrCreateTag();
         return tag.getFloat("AdditionalDamage");
-    }
-
-    public static boolean hasAmmo(LivingEntity entity, ItemStack weapon) {
-        if(entity instanceof Player player && !player.isCreative()) {
-            return !InventoryUtil.findAmmo(player, weapon).stack().isEmpty();
-        }
-        return true;
     }
 
     public static ArrayList<ItemStack> getAttachmentItems(ItemStack gun) {

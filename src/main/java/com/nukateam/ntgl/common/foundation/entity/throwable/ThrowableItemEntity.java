@@ -27,7 +27,7 @@ import net.minecraftforge.network.NetworkHooks;
  * Author: MrCrayfish
  */
 public abstract class ThrowableItemEntity extends ThrowableProjectile implements IEntityAdditionalSpawnData {
-    private ProjectileConfig projectile;
+    protected ProjectileConfig projectile;
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
     private float gravityVelocity = 0.03F;
@@ -138,6 +138,10 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    public ProjectileConfig getProjectileConfig() {
+        return projectile;
     }
 
     public ItemStack getItem() {

@@ -20,7 +20,7 @@ import java.util.WeakHashMap;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class EquipTracker {
-    private static final Map<Pair<InteractionHand, Player>, Tracker> TRACKER_MAP = new WeakHashMap<>();
+    private static final Map<Pair<InteractionHand, LivingEntity>, Tracker> TRACKER_MAP = new WeakHashMap<>();
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
@@ -60,7 +60,7 @@ public class EquipTracker {
         return ModSyncedDataKeys.getEquipKey(arm).getValue(entity);
     }
 
-    public static void startEquip(Player entity, InteractionHand arm, int equipTime){
+    public static void startEquip(LivingEntity entity, InteractionHand arm, int equipTime){
         var reloadKey = ModSyncedDataKeys.getEquipKey(arm);
         reloadKey.setValue(entity,true);
         addTracker(entity, arm, equipTime);
@@ -72,7 +72,7 @@ public class EquipTracker {
         TRACKER_MAP.remove(new Pair<>(arm, entity));
     }
 
-    private static void addTracker(Player entity, InteractionHand arm, int equipTime) {
+    private static void addTracker(LivingEntity entity, InteractionHand arm, int equipTime) {
         var reloadKey = ModSyncedDataKeys.getEquipKey(arm);
         var heldItem = entity.getItemInHand(arm).getItem();
         var key = new Pair<>(arm, entity);

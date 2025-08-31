@@ -133,7 +133,7 @@ public class ReloadTracker {
     }
 
     private boolean hasNoAmmo(LivingEntity player) {
-        return !GunStateHelper.hasAmmo(player, weapon);
+        return !InventoryUtil.hasAmmo(player, weapon);
     }
 
     private boolean canReload(Player player) {
@@ -291,7 +291,7 @@ public class ReloadTracker {
     private boolean isNotReloaded(LivingEntity entity) {
         var data = new GunData(weapon, entity);
         var tag = this.weapon.getTag();
-        var hasAmmo = GunStateHelper.hasAmmo(entity, weapon);
+        var hasAmmo = InventoryUtil.hasAmmo(entity, weapon);
         var ammoCount = GunStateHelper.getAmmoCount(data);
         var ammoCapacity = GunEnchantmentHelper.getAmmoCapacity(data);
         return hasAmmo && ammoCount < ammoCapacity;
@@ -373,7 +373,7 @@ public class ReloadTracker {
         RELOAD_TRACKER_MAP.remove(entity);
         reloadKey.setValue(entity, false);
         final var finalPlayer = entity;
-        DelayedTask.runAfter(4, () -> gun.playCockSound(finalPlayer));
+//        DelayedTask.runAfter(4, () -> gun.playCockSound(finalPlayer));
         var oppositeStack = LivingEntityUtils.getItemInHand(entity, arm.getOpposite());
 
         if (arm == HumanoidArm.RIGHT

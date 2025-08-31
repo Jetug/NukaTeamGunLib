@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.*;
@@ -104,7 +105,7 @@ public class ClientReloadHandler {
         if (reloading) {
             if (stack.getItem() instanceof WeaponItem) {
                 var isAmmoIgnored = GunStateHelper.isAmmoIgnored(stack);
-                var hasAmmo = GunStateHelper.hasAmmo(player, stack);
+                var hasAmmo = InventoryUtil.hasAmmo(player, stack);
                 var data = new GunData(stack, player);
                 var isMaxAmmo = GunStateHelper.isMaxAmmo(data);
 

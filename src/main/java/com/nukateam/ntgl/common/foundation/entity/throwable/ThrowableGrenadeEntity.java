@@ -11,8 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class ThrowableGrenadeEntity extends ThrowableItemEntity {
-    private ProjectileConfig projectile = new ProjectileConfig();
-
     public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
@@ -27,7 +25,7 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity {
 
     public ThrowableGrenadeEntity(Level world, LivingEntity entity, ProjectileConfig projectile, int timeLeft) {
         this(Projectiles.THROWABLE_GRENADE.get(), world, entity, projectile, timeLeft);
-        this.projectile = projectile;
+
         this.setItem(new ItemStack(ModGuns.GRENADE.get()));
     }
 
@@ -49,6 +47,10 @@ public class ThrowableGrenadeEntity extends ThrowableItemEntity {
 
     @Override
     public void onDeath() {
+        explode();
+    }
+
+    public void explode() {
         ExplosionUtils.createExplosion(this, projectile.getExplosion(), position());
     }
 
