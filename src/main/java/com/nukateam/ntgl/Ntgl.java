@@ -132,7 +132,7 @@ public class Ntgl {
         event.enqueueWork(ClientHandler::setup);
     }
 
-    private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder().add(Registries.DAMAGE_TYPE, ModDamageTypes::bootstrap);
+    private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder().add(Registries.DAMAGE_TYPE, NtglDamageTypes::bootstrap);
 
     private void onGatherData(GatherDataEvent event) {
         var generator = event.getGenerator();

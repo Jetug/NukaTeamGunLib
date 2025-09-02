@@ -3,12 +3,15 @@ package com.nukateam.ntgl.common.util.helpers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class PlayerHelper {
     public static HumanoidArm convertHand(InteractionHand hand){
         return hand == InteractionHand.MAIN_HAND ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static boolean isRight(InteractionHand hand){
         var mainHand = Minecraft.getInstance().options.mainHand().get();
         return mainHand == HumanoidArm.RIGHT ?

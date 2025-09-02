@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.datagen;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
+import com.nukateam.ntgl.common.foundation.init.NtglDamageTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -23,6 +23,6 @@ public class DamageTypeGen extends TagsProvider<DamageType> {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        this.tag(DamageTypeTags.IS_PROJECTILE).add(ModDamageTypes.BULLET);
+        this.tag(DamageTypeTags.IS_PROJECTILE).add(NtglDamageTypes.BULLET);
     }
 }

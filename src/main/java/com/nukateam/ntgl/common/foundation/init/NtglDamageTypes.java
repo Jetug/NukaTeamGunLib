@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Author: MrCrayfish
  */
-public class ModDamageTypes {
+public class NtglDamageTypes {
     public static final ResourceKey<DamageType> BULLET = create("bullet");
     public static final ResourceKey<DamageType> ENERGY = create("energy");
     public static final ResourceKey<DamageType> EXPLOSIVE = create("explosive");

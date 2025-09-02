@@ -93,7 +93,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.modifiedGravity = projectile.isGravity() ? GunModifierHelper.getModifiedProjectileGravity(data, -0.04) : 0.0;
         this.life = GunModifierHelper.getModifiedProjectileLife(data, this.projectile.getLife());
         var hand = shooter.getMainHandItem() == weapon ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-        this.isRightHand = PlayerHelper.isRight(hand); //shooter.getItemInHand(InteractionHand.MAIN_HAND) == weapon;
+        this.isRightHand =  hand == InteractionHand.MAIN_HAND; //shooter.getItemInHand(InteractionHand.MAIN_HAND) == weapon;
         this.ammo = setupAmmo(data);
 
         /* Get speed and set motion */
@@ -485,7 +485,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         if (headshot) damage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
 
-        var source = ModDamageTypes.Sources.source(this.level().registryAccess(), projectile.getDamageType(),this, this.shooter);
+        var source = NtglDamageTypes.Sources.source(this.level().registryAccess(), projectile.getDamageType(),this, this.shooter);
         entity.hurt(source, damage);
 
         if (this.shooter instanceof ServerPlayer playerShooter) {

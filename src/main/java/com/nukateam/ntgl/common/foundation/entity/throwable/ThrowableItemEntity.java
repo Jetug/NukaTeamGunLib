@@ -89,39 +89,46 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
     protected void onHit(HitResult result) {
         switch (result.getType()) {
             case BLOCK:
-                BlockHitResult blockResult = (BlockHitResult) result;
-                if (this.shouldBounce) {
-                    BlockPos resultPos = blockResult.getBlockPos();
-                    BlockState state = this.level().getBlockState(resultPos);
-                    SoundEvent event = state.getBlock().getSoundType(state, this.level(), resultPos, this).getStepSound();
-                    double speed = this.getDeltaMovement().length();
-                    if (speed > 0.1) {
-                        this.level().playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, event, SoundSource.AMBIENT, 1.0F, 1.0F);
-                        this.level().gameEvent(GameEvent.PROJECTILE_LAND, position(), GameEvent.Context.of(this));
-                    }
-                    this.bounce(blockResult.getDirection());
-                } else {
-                    this.remove(RemovalReason.KILLED);
-                    this.onDeath();
-                }
+                onHitBlock((BlockHitResult) result);
                 break;
             case ENTITY:
-                EntityHitResult entityResult = (EntityHitResult) result;
-                Entity entity = entityResult.getEntity();
-                if (this.shouldBounce) {
-                    double speed = this.getDeltaMovement().length();
-                    if (speed > 0.1) {
-                        entity.hurt(entity.damageSources().thrown(this, this.getOwner()), 1.0F);
-                    }
-                    this.bounce(Direction.getNearest(this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z()).getOpposite());
-                    this.setDeltaMovement(this.getDeltaMovement().multiply(0.25, 1.0, 0.25));
-                } else {
-                    this.remove(RemovalReason.KILLED);
-                    this.onDeath();
-                }
+                onHitEntity((EntityHitResult) result);
                 break;
             default:
                 break;
+        }
+    }
+
+    protected void onHitEntity(EntityHitResult result) {
+        var entity = result.getEntity();
+        if (this.shouldBounce) {
+            double speed = this.getDeltaMovement().length();
+            if (speed > 0.1) {
+                var damage = getProjectileConfig().getDamage();
+                entity.hurt(entity.damageSources().thrown(this, this.getOwner()), damage);
+            }
+            this.bounce(Direction.getNearest(this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z()).getOpposite());
+            this.setDeltaMovement(this.getDeltaMovement().multiply(0.25, 1.0, 0.25));
+        } else {
+            this.remove(RemovalReason.KILLED);
+            this.onDeath();
+        }
+    }
+
+    protected void onHitBlock(BlockHitResult result) {
+        if (this.shouldBounce) {
+            BlockPos resultPos = result.getBlockPos();
+            BlockState state = this.level().getBlockState(resultPos);
+            SoundEvent event = state.getBlock().getSoundType(state, this.level(), resultPos, this).getStepSound();
+            double speed = this.getDeltaMovement().length();
+            if (speed > 0.1) {
+                this.level().playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, event, SoundSource.AMBIENT, 1.0F, 1.0F);
+                this.level().gameEvent(GameEvent.PROJECTILE_LAND, position(), GameEvent.Context.of(this));
+            }
+            this.bounce(result.getDirection());
+        } else {
+            this.remove(RemovalReason.KILLED);
+            this.onDeath();
         }
     }
 

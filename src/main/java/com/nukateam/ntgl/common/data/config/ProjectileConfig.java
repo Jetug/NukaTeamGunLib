@@ -2,9 +2,8 @@ package com.nukateam.ntgl.common.data.config;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.data.holders.AmmoType;
 import com.nukateam.ntgl.common.data.holders.ProjectileType;
-import com.nukateam.ntgl.common.foundation.init.ModDamageTypes;
+import com.nukateam.ntgl.common.foundation.init.NtglDamageTypes;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -13,7 +12,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -33,7 +31,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
     private int life = 20;
 
     @Optional private ProjectileType projectile = ProjectileType.BULLET;
-    @Optional private ResourceKey<DamageType> damageType = ModDamageTypes.BULLET;
+    @Optional private ResourceKey<DamageType> damageType = NtglDamageTypes.BULLET;
     @Optional private boolean visible;
     @Optional private boolean gravity;
     @Optional private boolean damageReduceOverLife;

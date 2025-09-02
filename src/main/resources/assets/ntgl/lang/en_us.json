@@ -1,8 +1,5 @@
 {
   "itemGroup.weapons": "NTGL",
-  "item.ntgl.aimproccesor": "Circuit Board",
-  "item.ntgl.antisept": "Antiseptic",
-  "item.ntgl.alumicond": "Aluminium Radiator",
   "item.ntgl.round10mm": "10mm Round",
   "item.ntgl.round45": ".45 Round",
   "item.ntgl.powdergun": "Black Powder Rifle",
@@ -59,6 +56,8 @@
 
   "info.ntgl.rate": "Rounds Per Second: %s",
   "info.ntgl.damage": "Damage: %s",
+  "info.ntgl.explosionDamage": "Explosion Damage: %s",
+  "info.ntgl.explosionRadius": "Explosion Radius: %s",
   "info.ntgl.melee_damage": "Melee Damage: %s",
   "info.ntgl.ignore_ammo": "Infinite Ammo",
   "info.ntgl.ammo": "Ammo: %s",
@@ -198,7 +197,5 @@
   "ntgl.button.config.tooltip": "Config Options",
   "ntgl.chat.open_curseforge_page": "Open CurseForge Page",
   "ntgl.chat.install_configured": "Install %s to access config options",
-
-  "gui.ntgl.marker.tomb": "Here lies %s",
   "key.ntgl.melee": "Melee Attack"
 }

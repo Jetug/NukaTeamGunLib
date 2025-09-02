@@ -5,6 +5,8 @@ import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.client.animators.ThrowableAnimator;
 import com.nukateam.ntgl.client.model.gun.ThrowableItemModel;
 import com.nukateam.ntgl.client.render.renderers.weapon.ThrowableItemRenderer;
+import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.config.ExplosionConfig;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
@@ -13,17 +15,22 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Lazy;
 
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -93,6 +100,37 @@ public class ThrowableItem extends Item implements DynamicGeoItem, IThrowable {
             ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
         }
     }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
+        addDamageTip(tooltip);
+
+        var explosion = getConfig().getProjectile().getExplosion();
+        if(explosion.getRadius() > 0){
+            addExplosionTip(tooltip, explosion);
+        }
+
+    }
+
+    private static void addExplosionTip(List<Component> tooltip, ExplosionConfig explosion) {
+        var damage = explosion.getDamage();
+        tooltip.add(Component.translatable("info.ntgl.explosionDamage",
+                        ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage))
+                .withStyle(ChatFormatting.GRAY));
+
+        var radius = explosion.getRadius();
+        tooltip.add(Component.translatable("info.ntgl.explosionRadius",
+                        ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(radius))
+                .withStyle(ChatFormatting.GRAY));
+    }
+
+    private void addDamageTip(List<Component> tooltip) {
+        var damage = getConfig().getProjectile().getDamage();
+        tooltip.add(Component.translatable("info.ntgl.damage",
+                ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage))
+                .withStyle(ChatFormatting.GRAY));
+    }
+
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
