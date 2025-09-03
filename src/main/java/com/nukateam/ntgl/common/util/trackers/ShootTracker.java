@@ -8,6 +8,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.Pair;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -24,11 +25,11 @@ public class ShootTracker {
      * an awkward experience as the cooldown applies to the item after the packet has traveled to the
      * server then back to the client. To fix this and still apply security, we just handle the
      * cooldown tracker quietly and not send cooldown packet back to client. The cooldown is still
-     * applied on the client in {@link WeaponItem#onItemUseFirst(ItemStack, UseOnContext)} and {@link WeaponItem#onUsingTick}.
+     * applied on the client in {@link WeaponItem#onItemUseFirst(ItemStack, UseOnContext)} and {@link WeaponItem#onUseTick(Level, LivingEntity, ItemStack, int)}.
      */
     private static final Map<Pair<LivingEntity, InteractionHand>, ShootTracker> SHOOT_TRACKER_MAP = new WeakHashMap<>();
 
-    private Pair<Long, Integer> cooldownMap = Pair.of(0L, 0);
+    private Pair<Long, Integer> cooldown = Pair.of(0L, 0);
     private final InteractionHand hand;
 
     public ShootTracker(InteractionHand hand) {
@@ -52,7 +53,7 @@ public class ShootTracker {
     public void putCooldown(ItemStack weapon, LivingEntity shooter) {
         var data = new GunData(weapon, shooter);
         var rate = GunModifierHelper.getRate(data);
-        this.cooldownMap = Pair.of(Util.getMillis(), rate * 50);
+        this.cooldown = Pair.of(Util.getMillis(), rate * 50);
     }
 
     /**
@@ -64,9 +65,17 @@ public class ShootTracker {
      * @return if the specified gun item has an active cooldown
      */
     public boolean hasCooldown() {
-        if (this.cooldownMap != null) {
+        if (this.cooldown != null) {
             /* Give a 50 millisecond leeway as most of the time the cooldown has finished, just not exactly to the millisecond */
-            return Util.getMillis() - this.cooldownMap.getLeft() < this.cooldownMap.getRight() - 50;
+            return Util.getMillis() - this.cooldown.getLeft() < this.cooldown.getRight() - 50;
+        }
+        return false;
+    }
+
+    public boolean cooldownEnded() {
+        if (this.cooldown != null) {
+            var time = Util.getMillis() - this.cooldown.getLeft();
+            return time > this.cooldown.getRight() && time < this.cooldown.getRight() + 50;
         }
         return false;
     }
@@ -78,9 +87,13 @@ public class ShootTracker {
      * @return the remaining time in milliseconds
      */
     public long getRemaining() {
-        if (this.cooldownMap != null) {
-            return this.cooldownMap.getRight() - (Util.getMillis() - this.cooldownMap.getLeft());
+        if (this.cooldown != null) {
+            return this.cooldown.getRight() - (Util.getMillis() - this.cooldown.getLeft());
         }
         return 0;
+    }
+
+    public InteractionHand getHand() {
+        return hand;
     }
 }

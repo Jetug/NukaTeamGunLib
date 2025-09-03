@@ -37,6 +37,7 @@ import java.util.*;
 import java.util.function.*;
 
 import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
+import static com.nukateam.ntgl.common.foundation.item.ThrowableItem.addExplosionTip;
 import static com.nukateam.ntgl.common.util.util.GunStateHelper.AMMO_TAG;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
@@ -154,8 +155,15 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
         addFireRate(tooltip, data);
         addDamage(tooltip, tagCompound, data);
         addMelleDamage(tooltip, data);
+
+        var explosion = GunStateHelper.getProjectileConfig(data).getExplosion();
+        if(explosion.getRadius() > 0){
+            addExplosionTip(tooltip, explosion);
+        }
+
         addAmmo(tooltip, tagCompound, data);
         addFuel(tooltip, data);
+
         tooltip.add(Component.translatable("info.ntgl.attachment_help", Component.keybind("key.ntgl.attachments")
          .getString().toUpperCase(Locale.ENGLISH))
          .withStyle(ChatFormatting.YELLOW));
@@ -211,7 +219,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
             additionalDamage += GunModifierHelper.getAdditionalDamage(gunData);
 
             if (additionalDamage > 0) {
-                additionalDamageText = ChatFormatting.GREEN + " +" + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
+                additionalDamageText = ChatFormatting.YELLOW + " +" + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
             } else if (additionalDamage < 0) {
                 additionalDamageText = ChatFormatting.RED + " " + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
             }

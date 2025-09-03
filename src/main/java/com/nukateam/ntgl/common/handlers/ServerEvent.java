@@ -2,6 +2,8 @@ package com.nukateam.ntgl.common.handlers;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.event.TickEvent;
@@ -26,8 +28,15 @@ public class ServerEvent {
     private static void handleAutoReload(ServerPlayer player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
         var shootTracker = getShootTracker(player, hand);
+        var isReloading = ModSyncedDataKeys.getReloadKey(hand).getValue(player);
 
-        if (!player.isCreative() && isGun(stack) && isAutoReloading(new GunData(stack, player)) && shootTracker.hasCooldown()) {
+        if (!player.isCreative()
+                && isGun(stack)
+                && !isReloading
+                && isAutoReloading(new GunData(stack, player))
+                && shootTracker.cooldownEnded()
+                && !GunStateHelper.hasAmmo(stack)
+        ) {
             reloadGun(hand, player);
         }
     }

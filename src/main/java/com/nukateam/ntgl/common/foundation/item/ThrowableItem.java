@@ -109,10 +109,9 @@ public class ThrowableItem extends Item implements DynamicGeoItem, IThrowable {
         if(explosion.getRadius() > 0){
             addExplosionTip(tooltip, explosion);
         }
-
     }
 
-    private static void addExplosionTip(List<Component> tooltip, ExplosionConfig explosion) {
+    public static void addExplosionTip(List<Component> tooltip, ExplosionConfig explosion) {
         var damage = explosion.getDamage();
         tooltip.add(Component.translatable("info.ntgl.explosionDamage",
                         ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage))
