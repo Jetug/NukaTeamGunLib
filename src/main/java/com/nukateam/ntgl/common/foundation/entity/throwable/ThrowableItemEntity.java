@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity.throwable;
 
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -9,10 +10,10 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,10 +24,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 
-/**
- * Author: MrCrayfish
- */
-public abstract class ThrowableItemEntity extends ThrowableProjectile implements IEntityAdditionalSpawnData {
+public abstract class ThrowableItemEntity<T extends Item & IThrowable> extends ThrowableProjectile implements IEntityAdditionalSpawnData {
     protected ProjectileConfig projectile;
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
@@ -41,9 +39,10 @@ public abstract class ThrowableItemEntity extends ThrowableProjectile implements
         super(entityType, worldIn);
     }
 
-    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity thrower, ProjectileConfig projectile) {
+    public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity thrower, T item) {
         super(entityType, thrower, world);
-        this.projectile = projectile;
+        this.projectile = item.getConfig().getProjectile();
+        this.setItem(new ItemStack(item));
     }
 
     @Override

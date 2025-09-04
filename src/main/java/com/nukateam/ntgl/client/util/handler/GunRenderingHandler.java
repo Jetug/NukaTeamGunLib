@@ -276,7 +276,6 @@ public class GunRenderingHandler {
                 poseStack.translate(0, equipProgress * -0.6F, 0);
                 poseStack.mulPose(Axis.XP.rotationDegrees(equipProgress * -50F));
 
-                //poseStack.translate(0.56 * offset, -0.52, -0.72);
                 poseStack.translate(0.15 * offset, -1.0, -1.3);//Jetug
 
 

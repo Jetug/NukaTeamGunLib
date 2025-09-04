@@ -2,7 +2,9 @@ package com.nukateam.ntgl.common.util.world;
 
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
+import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.ExplosionConfig;
+import com.nukateam.ntgl.common.foundation.ModTags;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -34,9 +36,6 @@ import net.minecraftforge.event.ForgeEventFactory;
 import javax.annotation.Nullable;
 import java.util.List;
 
-/**
- * Author: MrCrayfish
- */
 public class ProjectileExplosion extends Explosion {
     private static final ExplosionDamageCalculator DEFAULT_CONTEXT = new ExplosionDamageCalculator();
 
@@ -158,7 +157,11 @@ public class ProjectileExplosion extends Explosion {
             }
         }
 
-        if (interactsWithBlocks) {
+        var canBrakeGlass = Config.COMMON.gameplay.griefing.enableGlassBreaking.get();
+
+//        var isFragile =  && state.is(ModTags.Blocks.FRAGILE);
+
+        if (interactsWithBlocks || canBrakeGlass) {
             var blockDrops = new ObjectArrayList<Pair<ItemStack, BlockPos>>();
             var isPlayer = this.getIndirectSourceEntity() instanceof Player;
             Util.shuffle(toBlow, this.world.random);
@@ -166,7 +169,7 @@ public class ProjectileExplosion extends Explosion {
             for(BlockPos blockpos : toBlow) {
                 var blockState = this.world.getBlockState(blockpos);
 
-                if (!blockState.isAir()) {
+                if (!blockState.isAir() && ((canBrakeGlass && blockState.is(ModTags.Blocks.FRAGILE)) || interactsWithBlocks)) {
                     var immutableBLockPos = blockpos.immutable();
                     this.world.getProfiler().push("explosion_blocks");
                     if (blockState.canDropFromExplosion(this.world, blockpos, this)) {
@@ -201,7 +204,7 @@ public class ProjectileExplosion extends Explosion {
 
         if (this.causesFire) {
             for(BlockPos blockpos2 : toBlow) {
-                if (this.random.nextInt(3) == 0 && this.world.getBlockState(blockpos2).isAir() && this.world.getBlockState(blockpos2.below()).isSolidRender(this.world, blockpos2.below())) {
+                if (this.random.nextInt(2) == 0 && this.world.getBlockState(blockpos2).isAir() && this.world.getBlockState(blockpos2.below()).isSolidRender(this.world, blockpos2.below())) {
                     this.world.setBlockAndUpdate(blockpos2, BaseFireBlock.getState(this.world, blockpos2));
                 }
             }

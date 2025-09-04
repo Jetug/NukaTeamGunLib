@@ -12,6 +12,7 @@ import com.nukateam.ntgl.common.util.helpers.compatibility.ChassisHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
+import mod.azure.azurelib.renderer.layer.AutoGlowingGeoLayer;
 import mod.azure.azurelib.util.ClientUtils;
 import mod.azure.azurelib.util.RenderUtils;
 import net.minecraft.client.Minecraft;

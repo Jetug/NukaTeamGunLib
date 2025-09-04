@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableGrenadeEnti
 import com.nukateam.ntgl.common.foundation.init.ModEffects;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageStunGrenade;
 import net.minecraft.core.BlockPos;
@@ -21,6 +22,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -37,14 +39,14 @@ import net.minecraftforge.fml.common.Mod;
 import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber
-public class StunGrenadeEntity extends ThrowableGrenadeEntity {
+public class StunGrenadeEntity<T extends Item & IThrowable> extends ThrowableGrenadeEntity<T> {
     public StunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world) {
         super(entityType, world);
     }
 
-    public StunGrenadeEntity(Level world, LivingEntity player, ProjectileConfig projectile, int maxCookTime) {
-        super(Projectiles.THROWABLE_STUN_GRENADE.get(), world, player, projectile, maxCookTime);
-        this.setItem(new ItemStack(ModGuns.STUN_GRENADE.get()));
+    public StunGrenadeEntity(Level world, LivingEntity player, T item, int maxCookTime) {
+        super(Projectiles.THROWABLE_STUN_GRENADE.get(), world, player, item, maxCookTime);
+        this.setItem(new ItemStack(item));
     }
 
     @SubscribeEvent

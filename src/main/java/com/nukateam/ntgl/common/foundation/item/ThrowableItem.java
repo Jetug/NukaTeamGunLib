@@ -137,7 +137,7 @@ public class ThrowableItem extends Item implements DynamicGeoItem, IThrowable {
     public ThrowableItemEntity create(Level world, LivingEntity entity, int timeLeft) {
         return ProjectileManager.getInstance()
                 .getFactory(getConfig().getGeneral().getProjectileType())
-                .create(world, entity, getConfig().getProjectile(), timeLeft);
+                .create(world, entity, this, timeLeft);
     }
 
     protected void onThrown(Level world, ThrowableItemEntity entity) {}

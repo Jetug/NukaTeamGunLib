@@ -3,30 +3,31 @@ package com.nukateam.ntgl.common.foundation.entity.throwable;
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.util.world.ExplosionUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public class ThrowableGrenadeEntity extends ThrowableItemEntity {
+public class ThrowableGrenadeEntity<T extends Item & IThrowable> extends ThrowableItemEntity<T> {
     public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
 
-    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity thrower, ProjectileConfig projectile, int timeLeft) {
-        super(entityType, world, thrower, projectile);
+    public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity thrower, T item, int timeLeft) {
+        super(entityType, world, thrower, item);
         this.setShouldBounce(true);
         this.setGravityVelocity(0.05F);
-        this.setItem(new ItemStack(ModGuns.GRENADE.get()));
+        this.setItem(new ItemStack(item));
         this.setMaxLife(timeLeft);
     }
 
-    public ThrowableGrenadeEntity(Level world, LivingEntity entity, ProjectileConfig projectile, int timeLeft) {
-        this(Projectiles.THROWABLE_GRENADE.get(), world, entity, projectile, timeLeft);
-
-        this.setItem(new ItemStack(ModGuns.GRENADE.get()));
+    public ThrowableGrenadeEntity(Level world, LivingEntity entity, T item, int timeLeft) {
+        this(Projectiles.THROWABLE_GRENADE.get(), world, entity, item, timeLeft);
+        this.setItem(new ItemStack(item));
     }
 
     @Override
