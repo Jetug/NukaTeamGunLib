@@ -135,8 +135,9 @@ public class ThrowableItem extends Item implements DynamicGeoItem, IThrowable {
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
 
     public ThrowableItemEntity create(Level world, LivingEntity entity, int timeLeft) {
+        var projectile = getConfig().getProjectile().getProjectile();
         return ProjectileManager.getInstance()
-                .getFactory(getConfig().getGeneral().getProjectileType())
+                .getFactory(projectile)
                 .create(world, entity, this, timeLeft);
     }
 

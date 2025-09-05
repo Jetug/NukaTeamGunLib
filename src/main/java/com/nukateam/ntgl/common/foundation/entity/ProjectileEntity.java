@@ -519,7 +519,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     protected void handleBlockBreaking(BlockPos pos, BlockState state) {
-        if (Config.COMMON.gameplay.griefing.enableGlassBreaking.get() && state.is(ModTags.Blocks.FRAGILE)) {
+        if (ModTags.isFragile(state)) {
             float destroySpeed = state.getDestroySpeed(this.level(), pos);
             if (destroySpeed >= 0) {
                 float chance = Config.COMMON.gameplay.griefing.fragileBaseBreakChance.get().floatValue() / (destroySpeed + 1);
@@ -529,6 +529,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
         }
     }
+
 
     protected void updateHeading() {
         double horizontalDistance = this.getDeltaMovement().horizontalDistance();

@@ -61,6 +61,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
     protected int prepareTime;
     protected int throwingTime;
     protected ThrowMode mode;
+    protected boolean isEquiping;
 
     public ThrowableAnimator(ItemDisplayContext transformType, ThrowableItemRenderer<ThrowableAnimator> renderer) {
         super(transformType);
@@ -103,6 +104,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
             prepareTime = throwable.getConfig().getGeneral().getPrepareTime();
             throwingTime = throwable.getConfig().getGeneral().getThrowTime();
             equipTime = throwable.getConfig().getGeneral().getEquipTime();
+            isEquiping = EquipTracker.isEquiping(getEntity(), getArm());
             mode = ThrowableStateHelper.getThrowMode(getStack());
         }
     }
@@ -131,7 +133,6 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
             try {
                 var controller = event.getController();
                 controller.setAnimationSpeed(1);
-                var shooter = getEntity();
                 var holdAnimation = getHoldAnimation(event);
 
                 if (!isHandTransform(transformType))
@@ -139,7 +140,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
 
                 var animation = begin();
 
-                if(equipTime > 0 && shooter instanceof Player player && EquipTracker.isEquiping(player, getArm())) {
+                if(equipTime > 0 && isEquiping) {
                     animation = getEquipAnimation(event);
                 }
                 else if(isPreparing()){
@@ -214,7 +215,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
     }
 
     protected RawAnimation getEquipAnimation(AnimationState<ThrowableAnimator> event) {
-        var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);
+        var animation = playGunAnim(EQUIP, LOOP);
         animationHelper.syncAnimation(event, equipTime, EQUIP);
         return animation;
     }

@@ -22,6 +22,8 @@ import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -33,7 +35,7 @@ public class PlayerEventHandler {
     public static final String ID = "WeaponId";
 
     @SubscribeEvent
-    public static void onPlayerTick2(TickEvent.PlayerTickEvent event) {
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             var player = event.player;
             var heldItem = player.getMainHandItem();
@@ -65,57 +67,34 @@ public class PlayerEventHandler {
         var lastItemId = getId(oldItem);
         var newItemId = getId(newItem);
 
-        if ((isGun || isThrowable) &&
-                (!lastItemId.equals(newItemId) || newItem.getCount() < oldItem.getCount())) {
-            if(event.getSlot() == EquipmentSlot.MAINHAND || event.getSlot() == EquipmentSlot.OFFHAND) {
-                var hand = event.getSlot() == EquipmentSlot.MAINHAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-                var equipTime = 0;
+        Ntgl.LOGGER.info("!!! onChangeEquipment start");
+        if(event.getSlot() == EquipmentSlot.MAINHAND || event.getSlot() == EquipmentSlot.OFFHAND) {
+            var hand = getHand(event.getSlot());
 
-                if (newItem.getItem() instanceof IWeapon) {
-                    var data = new GunData(newItem, event.getEntity());
-                    equipTime = GunModifierHelper.getEquipTime(data);
-                }
-                else if(newItem.getItem() instanceof IThrowable throwable){
-                    equipTime = throwable.getConfig().getGeneral().getEquipTime();
-                }
+            if (isGun || isThrowable) {
+                if (!lastItemId.equals(newItemId) || newItem.getCount() < oldItem.getCount()) {
+                    Ntgl.LOGGER.info("!!! onChangeEquipment check");
 
-                newItem.getOrCreateTag().putString(ID, newItemId);
-                EquipTracker.startEquip(event.getEntity(), hand, equipTime);
+                    var equipTime = 0;
+
+                    if (newItem.getItem() instanceof IWeapon) {
+                        var data = new GunData(newItem, event.getEntity());
+                        equipTime = GunModifierHelper.getEquipTime(data);
+                    } else if (newItem.getItem() instanceof IThrowable throwable) {
+                        equipTime = throwable.getConfig().getGeneral().getEquipTime();
+                    }
+
+                    newItem.getOrCreateTag().putString(ID, newItemId);
+                    EquipTracker.stopEquip(event.getEntity(), hand);
+                    EquipTracker.startEquip(event.getEntity(), hand, equipTime);
+                }
             }
+            else EquipTracker.stopEquip(event.getEntity(), hand);
         }
     }
 
-    private static void tryEquip(Player player, InteractionHand hand) {
-        var key = new Pair<>(hand, player);
-        var lastSlot = lastSelectedSlots.getOrDefault(key, new Slot(ItemStack.EMPTY, 0, 0));
-        var newItem = player.getItemInHand(hand);
-
-        var lastItemId = getId(lastSlot.stack);
-        var newItemId = getId(newItem);
-
-        var isGun = newItem.getItem() instanceof IWeapon;
-        var isThrowable = newItem.getItem() instanceof IThrowable;
-
-        if ((isGun || isThrowable) && !lastItemId.equals(newItemId)
-                || newItem.getCount() < lastSlot.stackSize()
-                || player.getInventory().selected != lastSlot.slotId) {
-            EquipTracker.stopEquip(player, hand);
-
-            var equipTime = 0;
-            if (isGun) {
-                var data = new GunData(newItem, player);
-                equipTime = GunModifierHelper.getEquipTime(data);
-                newItem.getOrCreateTag().putString(ID, newItemId);
-            }
-            else if(newItem.getItem() instanceof IThrowable throwable){
-                equipTime = throwable.getConfig().getGeneral().getEquipTime();
-                newItem.getOrCreateTag().putString(ID, newItemId);
-            }
-
-            EquipTracker.startEquip(player, hand, equipTime);
-
-            lastSelectedSlots.put(key, new Slot(newItem, newItem.getCount(), player.getInventory().selected));
-        }
+    private static @NotNull InteractionHand getHand(EquipmentSlot slot) {
+        return slot == EquipmentSlot.MAINHAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
     }
 
     private static String getId(ItemStack stack) {

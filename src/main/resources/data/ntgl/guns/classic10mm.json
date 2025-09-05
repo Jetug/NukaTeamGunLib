@@ -7,7 +7,7 @@
     "maxAmmo": 6,
     "damage": 12.0,
     "reloadTime": 50,
-    "equipTime": 20,
+    "equipTime": 60,
     "reloadAmount": 1,
     "recoilAngle": 7.0,
     "recoilKick": 0.4,
@@ -43,6 +43,10 @@
         "counter": "ntgl:bar"
       }
     }
+  },
+  "animations": {
+    "fire": "ntgl:gun_fire",
+    "reload": "ntgl:gun_reload"
   },
   "textures": {
     "default" : "ntgl:classic10mm",

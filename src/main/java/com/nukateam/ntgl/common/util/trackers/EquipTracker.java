@@ -66,7 +66,7 @@ public class EquipTracker {
         addTracker(entity, arm, equipTime);
     }
 
-    public static void stopEquip(Player entity, InteractionHand arm) {
+    public static void stopEquip(LivingEntity entity, InteractionHand arm) {
         var dataKey = ModSyncedDataKeys.getEquipKey(arm);
         dataKey.setValue(entity, false);
         TRACKER_MAP.remove(new Pair<>(arm, entity));

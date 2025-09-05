@@ -1,6 +1,8 @@
 package com.nukateam.ntgl.common.foundation.entity.throwable;
 
+import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
+import com.nukateam.ntgl.common.foundation.ModTags;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -115,11 +117,23 @@ public abstract class ThrowableItemEntity<T extends Item & IThrowable> extends T
     }
 
     protected void onHitBlock(BlockHitResult result) {
-        if (this.shouldBounce) {
-            BlockPos resultPos = result.getBlockPos();
-            BlockState state = this.level().getBlockState(resultPos);
-            SoundEvent event = state.getBlock().getSoundType(state, this.level(), resultPos, this).getStepSound();
-            double speed = this.getDeltaMovement().length();
+        var resultPos = result.getBlockPos();
+        var state = this.level().getBlockState(resultPos);
+
+//        if(ModTags.isFragile(state)){
+//            var pos = result.getBlockPos();
+//            var destroySpeed = state.getDestroySpeed(this.level(), pos);
+//            if (destroySpeed >= 0) {
+//                float chance = Config.COMMON.gameplay.griefing.fragileBaseBreakChance.get().floatValue() / (destroySpeed + 1);
+//                if (this.random.nextFloat() < chance) {
+//                    this.level().destroyBlock(pos, Config.COMMON.gameplay.griefing.fragileBlockDrops.get());
+//                }
+//            }
+//        }
+//        else
+            if (this.shouldBounce) {
+            var event = state.getBlock().getSoundType(state, this.level(), resultPos, this).getStepSound();
+            var speed = this.getDeltaMovement().length();
             if (speed > 0.1) {
                 this.level().playSound(null, result.getLocation().x, result.getLocation().y, result.getLocation().z, event, SoundSource.AMBIENT, 1.0F, 1.0F);
                 this.level().gameEvent(GameEvent.PROJECTILE_LAND, position(), GameEvent.Context.of(this));

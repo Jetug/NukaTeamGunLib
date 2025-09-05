@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.animators;
 
 import com.nukateam.geo.render.*;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.handlers.*;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
@@ -65,6 +66,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected int reloadTime;
     protected int reloadStartTime;
     protected int reloadEndTime;
+    protected boolean isEquiping;
 
     public GunAnimator(ItemDisplayContext transformType, DynamicGunRenderer<GunAnimator> renderer) {
         super(transformType);
@@ -73,7 +75,9 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
         ClientTickHandler.addTicker(this, this::tick);
         TRIGGER_CONTROLLER = createController("triggerController", event -> PlayState.CONTINUE);
-        MAIN_CONTROLLER = createController("mainController", animate()).setSoundKeyframeHandler(this::handleSoundEvent);
+        MAIN_CONTROLLER = createController("mainController", animate())
+                .setSoundKeyframeHandler(this::handleSoundEvent)
+                .triggerableAnim(EQUIP, begin().then(EQUIP, LOOP));
         REVOLVER_CONTROLLER = createController("revolverController", animateRevolver());
         BARREL_CONTROLLER = createController("barrelController", animateBarrels());
         animationHelper = new AnimationHelper<>(this, GeoGunModel.INSTANCE);
@@ -111,17 +115,22 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         var data = getGunData();
         this.rate = GunModifierHelper.getRate(data);
         this.equipTime = GunModifierHelper.getEquipTime(data);
+        this.isEquiping = EquipTracker.isEquiping(getEntity(), getArm());
         this.meleeDelay = GunModifierHelper.getMeleeDelay(data);
         this.meleeCooldown = GunModifierHelper.getMeleeCooldown(data);
         this.fireDelay = GunModifierHelper.getFireDelay(data);
         this.reloadTime = GunModifierHelper.getReloadTime(data);
         this.reloadStartTime = GunModifierHelper.getReloadStart(data);
         this.reloadEndTime = GunModifierHelper.getReloadEnd(data);
+//        Ntgl.LOGGER.info("! Is equiping: " + isEquiping);
+
+        if(isEquiping) {
+            Ntgl.LOGGER.info("! Equip time: " + equipTime);
+        }
         setupCycledAnimations();
     }
 
-    protected void tickEnd() {
-    }
+    protected void tickEnd() {}
 
     protected int getBarrelAmount() {
         return 1;
@@ -167,7 +176,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 var data = shootingHandler.getShootingData(arm);
                 var animation = begin();
 
-                if(equipTime > 0 && shooter instanceof Player player && EquipTracker.isEquiping(player, getArm())) {
+                if(equipTime > 0 && isEquiping) {
                     animation = getEquipAnimation(event);
                 }
                 else if(ClientMeleeHandler.isOnDelay(shooter, arm)){
@@ -309,7 +318,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     protected RawAnimation getEquipAnimation(AnimationState<GunAnimator> event) {
         if(isFirstPerson(transformType)) {
-            var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);
+            var animation = playGunAnim(EQUIP, LOOP);
             animationHelper.syncAnimation(event, EQUIP, equipTime);
             return animation;
         }
