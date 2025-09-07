@@ -151,6 +151,10 @@ public class ThrowingTracker {
             getPreparingDataKey(arm).setValue(entity, value);
         }
 
+        public void setHolding(boolean value) {
+            getHoldingDataKey(arm).setValue(entity, value);
+        }
+
         public void tick(){
             if(!isSameWeapon()) stop();
 
@@ -161,14 +165,14 @@ public class ThrowingTracker {
                     lifeTick = Math.max(lifeTick - 1, 0);
                 }
 
+                setHolding(true);
+
                 if(lifeTick == 0){
                     onExpire();
                 }
-
-                if (isThrowing()){
+                else if (isThrowing()){
                     throwTick = Math.max(throwTick - 1, 0);
                 }
-
                 if(throwTick == 0){
                     throwItem();
                     stop();
@@ -180,13 +184,13 @@ public class ThrowingTracker {
             if(prepareTick == 0){
                 setPreparing(false);
                 setThrowing(true);
+                setHolding(false);
             }
             else stop();
         }
 
         private void throwItem(){
             throwable.throwItem(stack, entity, lifeTick);
-//            stop();
         }
 
         private void onExpire() {
@@ -198,6 +202,7 @@ public class ThrowingTracker {
             onStop.run();
             setPreparing(false);
             setThrowing(false);
+            setHolding(false);
         }
 
         private boolean isSameWeapon() {

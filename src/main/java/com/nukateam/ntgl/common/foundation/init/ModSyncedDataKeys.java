@@ -51,6 +51,9 @@ public class ModSyncedDataKeys {
     public static final SyncedDataKey<LivingEntity, Boolean> PREPARE_RIGHT  = registerBooleanKey("prepare_right" );
     public static final SyncedDataKey<LivingEntity, Boolean> PREPARE_LEFT   = registerBooleanKey("prepare_left" );
 
+    public static final SyncedDataKey<LivingEntity, Boolean> HOLD_RIGHT  = registerBooleanKey("hold_right" );
+    public static final SyncedDataKey<LivingEntity, Boolean> HOLD_LEFT   = registerBooleanKey("hold_left" );
+
     public static final SyncedDataKey<LivingEntity, Boolean> THROW_RIGHT  = registerBooleanKey("throw_right" );
     public static final SyncedDataKey<LivingEntity, Boolean> THROW_LEFT   = registerBooleanKey("throw_left" );
 
@@ -68,6 +71,10 @@ public class ModSyncedDataKeys {
 
     public static SyncedDataKey<LivingEntity, Boolean> getPreparingDataKey(InteractionHand arm) {
         return getHandObject(arm, PREPARE_RIGHT, PREPARE_LEFT);
+    }
+
+    public static SyncedDataKey<LivingEntity, Boolean> getHoldingDataKey(InteractionHand arm) {
+        return getHandObject(arm, HOLD_RIGHT, HOLD_LEFT);
     }
 
     public static SyncedDataKey<LivingEntity, Boolean> getThrowingDataKey(InteractionHand arm) {
@@ -97,6 +104,8 @@ public class ModSyncedDataKeys {
         FrameworkAPI.registerSyncedDataKey(PREPARE_LEFT );
         FrameworkAPI.registerSyncedDataKey(THROW_RIGHT);
         FrameworkAPI.registerSyncedDataKey(THROW_LEFT );
+        FrameworkAPI.registerSyncedDataKey(HOLD_RIGHT);
+        FrameworkAPI.registerSyncedDataKey(HOLD_LEFT );
     }
 
     private static SyncedDataKey<LivingEntity, Boolean> registerBooleanKey(String name) {

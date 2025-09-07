@@ -163,11 +163,15 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
         };
     }
 
-    private boolean isPreparing() {
+    protected boolean isPreparing() {
         return ModSyncedDataKeys.getPreparingDataKey(getArm()).getValue(getEntity());
     }
 
-    private boolean isThrowing() {
+    protected boolean isHolding() {
+        return ModSyncedDataKeys.getHoldingDataKey(getArm()).getValue(getEntity());
+    }
+
+    protected boolean isThrowing() {
         return ModSyncedDataKeys.getThrowingDataKey(getArm()).getValue(getEntity());
     }
 
@@ -181,8 +185,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
                 return PlayState.STOP;
 
             var animation = begin();
-            var item = (IThrowable)getStack().getItem();
-            if(mode == ThrowMode.UNSAFE && (isPreparing() || isThrowing())){
+            if(mode == ThrowMode.UNSAFE && (isHolding() || isThrowing())){
                 animation = getTickingAnimation(event);
             }
             else {

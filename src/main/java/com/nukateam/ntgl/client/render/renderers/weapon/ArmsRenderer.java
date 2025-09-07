@@ -7,6 +7,7 @@ import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
+import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.util.helpers.compatibility.ChassisHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -36,6 +37,8 @@ import static com.nukateam.ntgl.client.util.ClientDebug.*;
 public class ArmsRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
     public static final String RIGHT_ARM = "right_arm";
     public static final String LEFT_ARM = "left_arm";
+    public static final String RIGHT_ARM_ANIM = "right_arm_anim";
+    public static final String LEFT_ARM_ANIM = "left_arm_anim";
     protected MultiBufferSource bufferSource;
     protected boolean firstRightRender = true;
     protected boolean firstLeftRender = true;
@@ -83,6 +86,12 @@ public class ArmsRenderer<Animator extends ItemAnimator> extends DynamicGeoItemR
                 bone.setHidden(true);
                 bone.setChildrenHidden(false);
                 renderArms(poseStack, bone, packedLight, packedOverlay);
+            }
+            case LEFT_ARM_ANIM, RIGHT_ARM_ANIM ->{
+                if(!TransformUtils.isFirstPerson(transformType)){
+                    bone.setHidden(true);
+                }
+                else bone.setHidden(false);
             }
         }
 

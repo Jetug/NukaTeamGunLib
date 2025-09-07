@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.foundation.init;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.holders.ProjectileType;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
