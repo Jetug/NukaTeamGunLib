@@ -64,16 +64,16 @@ public class PlayerEventHandler {
 
         var isGun = newItem.getItem() instanceof IWeapon;
         var isThrowable = newItem.getItem() instanceof IThrowable;
-        var lastItemId = getId(oldItem);
-        var newItemId = getId(newItem);
 
-        Ntgl.LOGGER.info("!!! onChangeEquipment start");
+//        Ntgl.LOGGER.info("!!! onChangeEquipment start");
         if(event.getSlot() == EquipmentSlot.MAINHAND || event.getSlot() == EquipmentSlot.OFFHAND) {
             var hand = getHand(event.getSlot());
-
             if (isGun || isThrowable) {
+                var lastItemId = getId(oldItem);
+                var newItemId = getId(newItem);
+
                 if (!lastItemId.equals(newItemId) || newItem.getCount() < oldItem.getCount()) {
-                    Ntgl.LOGGER.info("!!! onChangeEquipment check");
+//                    Ntgl.LOGGER.info("!!! onChangeEquipment check");
 
                     var equipTime = 0;
 
@@ -99,10 +99,9 @@ public class PlayerEventHandler {
 
     private static String getId(ItemStack stack) {
         var lastItemTag = stack.getOrCreateTag();
-        var lastItemId = lastItemTag.contains(ID, Tag.TAG_STRING) ?
+        return lastItemTag.contains(ID, Tag.TAG_STRING) ?
                 lastItemTag.getString(ID):
                 UUID.randomUUID().toString();
-        return lastItemId;
     }
 
     record Slot(ItemStack stack, int stackSize, int slotId){}
