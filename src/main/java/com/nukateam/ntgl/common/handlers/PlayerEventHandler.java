@@ -69,12 +69,11 @@ public class PlayerEventHandler {
         if(event.getSlot() == EquipmentSlot.MAINHAND || event.getSlot() == EquipmentSlot.OFFHAND) {
             var hand = getHand(event.getSlot());
             if (isGun || isThrowable) {
-                var lastItemId = getId(oldItem);
-                var newItemId = getId(newItem);
+//                var lastItemId = getId(oldItem);
+//                var newItemId = getId(newItem);
 
-                if (!lastItemId.equals(newItemId) || newItem.getCount() < oldItem.getCount()) {
+                if (!ItemStack.matches(oldItem, newItem) || newItem.getCount() < oldItem.getCount()) {
 //                    Ntgl.LOGGER.info("!!! onChangeEquipment check");
-
                     var equipTime = 0;
 
                     if (newItem.getItem() instanceof IWeapon) {
@@ -84,7 +83,7 @@ public class PlayerEventHandler {
                         equipTime = throwable.getConfig().getGeneral().getEquipTime();
                     }
 
-                    newItem.getOrCreateTag().putString(ID, newItemId);
+//                    newItem.getOrCreateTag().putString(ID, newItemId);
                     EquipTracker.stopEquip(event.getEntity(), hand);
                     EquipTracker.startEquip(event.getEntity(), hand, equipTime);
                 }
