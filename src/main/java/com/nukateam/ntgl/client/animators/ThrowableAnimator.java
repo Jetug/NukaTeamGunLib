@@ -6,6 +6,7 @@ import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.model.gun.ThrowableItemModel;
 import com.nukateam.ntgl.client.render.renderers.weapon.ThrowableItemRenderer;
+import com.nukateam.ntgl.client.util.handler.ClientEquipHandler;
 import com.nukateam.ntgl.common.data.holders.ThrowMode;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
@@ -142,7 +143,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
 
                 var animation = begin();
 
-                if(equipTime > 0 && isEquiping) {
+                if(equipTime > 0 && ClientEquipHandler.get().isEquiping(arm)) {
                     animation = getEquipAnimation(event);
                 }
                 else if(isPreparing()){
