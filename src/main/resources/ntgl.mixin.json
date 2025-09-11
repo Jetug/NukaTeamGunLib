@@ -5,6 +5,7 @@
   "mixins": [
     "common.EndPortalBlockMixin",
     "common.LivingEntityMixin",
+    "common.MixinServerGamePacketListenerImpl",
     "common.SittingPhaseMixin"
   ],
   "client": [
@@ -16,12 +17,13 @@
     "client.LevelRendererMixin",
     "client.LivingEntityModelMixin",
     "client.MinecraftMixin",
+    "client.MixinMultiPlayerGameMode",
     "client.MouseHandlerMixin",
+    "client.NarratorMixin",
     "client.QuadrupedModelAccessor",
     "client.RenderTypeLookupMixin",
     "client.SoundOptionsScreenMixin",
-    "client.VillagerModelAccessor",
-    "client.NarratorMixin"
+    "client.VillagerModelAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

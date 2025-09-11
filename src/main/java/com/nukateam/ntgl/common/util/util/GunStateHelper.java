@@ -14,6 +14,8 @@ import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.modules.enchantment.ModEnchantments;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -21,6 +23,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -350,5 +353,17 @@ public class GunStateHelper {
                 setAmmo(heldItem, remainingAmmo);
             }
         }
+    }
+
+    public static int getEquipTime(ItemStack slot, LivingEntity shooter) {
+        var equipTime = 0;
+        if (slot.getItem() instanceof IWeapon) {
+            var data = new GunData(slot, shooter);
+            equipTime = GunModifierHelper.getEquipTime(data);
+        }
+        else if (slot.getItem() instanceof IThrowable throwable) {
+            equipTime = throwable.getConfig().getGeneral().getEquipTime();
+        }
+        return equipTime;
     }
 }

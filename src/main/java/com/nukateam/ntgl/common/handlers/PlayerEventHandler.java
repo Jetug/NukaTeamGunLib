@@ -62,28 +62,11 @@ public class PlayerEventHandler {
         var oldItem = event.getFrom();
         var newItem = event.getTo();
 
-        var isGun = newItem.getItem() instanceof IWeapon;
-        var isThrowable = newItem.getItem() instanceof IThrowable;
-
-//        Ntgl.LOGGER.info("!!! onChangeEquipment start");
         if(event.getSlot() == EquipmentSlot.MAINHAND || event.getSlot() == EquipmentSlot.OFFHAND) {
             var hand = getHand(event.getSlot());
-            if (isGun || isThrowable) {
-//                var lastItemId = getId(oldItem);
-//                var newItemId = getId(newItem);
-
-                if (oldItem.getItem() == newItem.getItem() || newItem.getCount() < oldItem.getCount()) {
-//                    Ntgl.LOGGER.info("!!! onChangeEquipment check");
-                    var equipTime = 0;
-
-                    if (newItem.getItem() instanceof IWeapon) {
-                        var data = new GunData(newItem, event.getEntity());
-                        equipTime = GunModifierHelper.getEquipTime(data);
-                    } else if (newItem.getItem() instanceof IThrowable throwable) {
-                        equipTime = throwable.getConfig().getGeneral().getEquipTime();
-                    }
-
-//                    newItem.getOrCreateTag().putString(ID, newItemId);
+            if (newItem.getItem() instanceof IThrowable throwable) {
+                if (newItem.getCount() < oldItem.getCount()) {
+                    var equipTime = throwable.getConfig().getGeneral().getEquipTime();
                     EquipTracker.stopEquip(event.getEntity(), hand);
                     EquipTracker.startEquip(event.getEntity(), hand, equipTime);
                 }

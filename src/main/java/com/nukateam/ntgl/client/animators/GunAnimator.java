@@ -176,7 +176,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 var data = shootingHandler.getShootingData(arm);
                 var animation = begin();
 
-                if(equipTime > 0 && isEquiping) {
+                if(equipTime > 0 && ClientEquipHandler.get().isEquiping(arm)) {
                     animation = getEquipAnimation(event);
                 }
                 else if(ClientMeleeHandler.isOnDelay(shooter, arm)){
