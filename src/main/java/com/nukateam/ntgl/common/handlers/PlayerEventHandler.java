@@ -72,7 +72,7 @@ public class PlayerEventHandler {
 //                var lastItemId = getId(oldItem);
 //                var newItemId = getId(newItem);
 
-                if (!ItemStack.matches(oldItem, newItem) || newItem.getCount() < oldItem.getCount()) {
+                if (oldItem.getItem() == newItem.getItem() || newItem.getCount() < oldItem.getCount()) {
 //                    Ntgl.LOGGER.info("!!! onChangeEquipment check");
                     var equipTime = 0;
 
