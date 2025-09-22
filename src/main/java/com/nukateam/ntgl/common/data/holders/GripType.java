@@ -58,7 +58,6 @@ public class GripType extends ResourceHolder {
      */
     public GripType(ResourceLocation id, IHeldAnimation heldAnimation) {
         this(id, heldAnimation, false);
-
     }
 
     /**

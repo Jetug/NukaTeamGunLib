@@ -2,8 +2,8 @@ package com.nukateam.ntgl.common.data.config;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.nukateam.ntgl.common.data.holders.GripType;
 import com.nukateam.ntgl.common.data.holders.ThrowMode;
-import com.nukateam.ntgl.common.data.holders.ProjectileType;
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -33,12 +33,14 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     public static final String AMMO_DATA = "AmmoData";
     public static final String SOUNDS = "Sounds";
     public static final String TEXTURES = "Textures";
+    public static final String GRIP_TYPE = "GripType";
 
     public static class General implements INBTSerializable<CompoundTag>{
         @Optional LinkedHashSet<ThrowMode> mode = new LinkedHashSet<>(List.of(ThrowMode.SAFE));
         private int equipTime = 0;
         private int prepareTime = 0;
         private int throwTime = 1;
+        @Ignored GripType gripType = GripType.ONE_HANDED;
 
         public static General create(CompoundTag tag) {
             var config = new General();
@@ -53,6 +55,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
             tag.putInt(EQUIP_TIME, equipTime);
             tag.putInt(PREPARE_TIME, prepareTime);
             tag.putInt(THROW_TIME, throwTime);
+            tag.putString   (GRIP_TYPE, this.gripType.getId().toString());
             return tag;
         }
 
@@ -70,6 +73,9 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
             if (tag.contains(THROW_TIME, Tag.TAG_INT)) {
                 this.throwTime = tag.getInt(THROW_TIME);
             }
+            if (tag.contains(GRIP_TYPE, Tag.TAG_STRING)) {
+                this.gripType = GripType.getType(ResourceLocation.tryParse(tag.getString(GRIP_TYPE)));
+            }
         }
 
         public JsonObject toJsonObject() {
@@ -78,16 +84,18 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
             object.addProperty("equipTime", this.equipTime);
             object.addProperty("prepareTime", this.prepareTime);
             object.addProperty("throwTime", this.throwTime);
+            object.addProperty("gripType", this.gripType.toString());
             return object;
         }
 
         public General copy() {
-            var gun = new General();
-            gun.mode = (LinkedHashSet<ThrowMode>)mode.clone();
-            gun.equipTime = equipTime;
-            gun.prepareTime = prepareTime;
-            gun.throwTime = throwTime;
-            return gun;
+            var config = new General();
+            config.mode = (LinkedHashSet<ThrowMode>)mode.clone();
+            config.equipTime = equipTime;
+            config.prepareTime = prepareTime;
+            config.throwTime = throwTime;
+            config.gripType = this.gripType;
+            return config;
         }
 
         public LinkedHashSet<ThrowMode> getThrowModes() {
@@ -104,6 +112,10 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
 
         public int getThrowTime() {
             return throwTime;
+        }
+
+        public GripType getGripType() {
+            return this.gripType;
         }
     }
 

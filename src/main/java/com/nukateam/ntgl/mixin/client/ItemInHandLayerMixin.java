@@ -3,10 +3,12 @@ package com.nukateam.ntgl.mixin.client;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.*;
@@ -19,8 +21,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
 
 /**
  * Author: MrCrayfish
@@ -41,27 +41,13 @@ public class ItemInHandLayerMixin {
         var oppositeStack = entity.getItemInHand(oppositeHand);
 
         if (hand == InteractionHand.OFF_HAND) {
-            if(!isOneHanded(new GunData(stack, entity)) || !isOneHanded(new GunData(oppositeStack, entity))){
+            if(!GunStateHelper.isOneHanded(new GunData(stack, entity)) || !GunStateHelper.isOneHanded(new GunData(oppositeStack, entity))){
                 ci.cancel();
                 return;
             }
         }
 
-//        var reloadHandler = ClientReloadHandler.get();
-//        var player = Minecraft.getInstance().player;
-//
-//        var isReloadingLeft = reloadHandler.isReloadingLeft(player);
-//        var isRightArm = hand == InteractionHand.MAIN_HAND;
-//
-//        var isReloadingRight = reloadHandler.isReloadingRight(player);
-//        var isLeftArm = hand == InteractionHand.OFF_HAND;
-//
-//        if ((isReloadingLeft && isRightArm) || (isReloadingRight && isLeftArm)) {
-//            ci.cancel();
-//            return;
-//        }
-
-        if (stack.getItem() instanceof WeaponItem) {
+        if (stack.getItem() instanceof INtglItem) {
             ci.cancel();
             var layer = (ItemInHandLayer<?, ?>) (Object) this;
             renderArmWithGun(layer, entity, stack, transformType, hand, arm,
@@ -82,9 +68,10 @@ public class ItemInHandLayerMixin {
             poseStack.mulPose(Axis.YP.rotationDegrees(180F));
             GunRenderingHandler.get().applyWeaponScale(stack, poseStack);
 
-            var heldAnimation = GunModifierHelper.getGripType(new GunData(stack, entity)).getHeldAnimation();
-
-            heldAnimation.applyHeldItemTransforms(entity, hand, AimingHandler.get().getAimProgress(entity, deltaTicks), poseStack, source);
+            var gripType = GunStateHelper.getGripType(new GunData(stack, entity));
+            var aimProgress = AimingHandler.get().getAimProgress(entity, deltaTicks);
+            gripType.getHeldAnimation()
+                    .applyHeldItemTransforms(entity, hand, aimProgress, poseStack, source);
             GunRenderingHandler.get().renderWeapon(entity, stack, transformType, poseStack, source, light);
         }
         poseStack.popPose();

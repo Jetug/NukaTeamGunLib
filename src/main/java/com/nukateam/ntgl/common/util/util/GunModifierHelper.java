@@ -12,7 +12,6 @@ import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -55,15 +54,8 @@ public class GunModifierHelper {
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
 
-        return isOneHanded(new GunData(mainHandItem, player))
-                && isOneHanded(new GunData(offhandItem, player));
-    }
-
-    public static boolean isOneHanded(GunData data){
-        if(data.gun.getItem() instanceof IWeapon){
-            return GunModifierHelper.getGripType(data).isOneHanded();
-        }
-        return true;
+        return GunStateHelper.isOneHanded(new GunData(mainHandItem, player))
+                && GunStateHelper.isOneHanded(new GunData(offhandItem, player));
     }
 
     public static boolean isGun(ItemStack data){
@@ -174,6 +166,7 @@ public class GunModifierHelper {
     }
 
     public static GripType getGripType(GunData data) {
+        if(data.gun == null) return GripType.ONE_HANDED;
         var gripType = getGeneral(getGun(data.gun)).getGripType();
         var finalGripType = new AtomicReference<>(gripType);
         forEachAttachment(data, (modifier -> finalGripType.set(modifier.modifyGripType(finalGripType.get(), data))));

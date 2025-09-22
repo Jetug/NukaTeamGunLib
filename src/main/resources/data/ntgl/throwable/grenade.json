@@ -4,6 +4,7 @@
       "ntgl:safe",
       "ntgl:unsafe"
     ],
+    "gripType": "ntgl:two_handed",
     "equipTime": 60,
     "prepareTime": 20,
     "throwTime": 6

@@ -41,7 +41,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.isOneHanded;
+import static com.nukateam.ntgl.common.util.util.GunStateHelper.isOneHanded;
 
 /**
  * Author: MrCrayfish
@@ -214,7 +214,7 @@ public class AimingHandler {
             return false;
 
         if (mc.player.getOffhandItem().getItem() == Items.SHIELD
-                && GunModifierHelper.isOneHanded(new GunData(mainHandItem, mc.player)))
+                && GunStateHelper.isOneHanded(new GunData(mainHandItem, mc.player)))
             return false;
 
         if (!this.localTracker.isAiming() && this.isLookingAtInteractableBlock())

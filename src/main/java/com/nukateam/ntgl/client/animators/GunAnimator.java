@@ -27,7 +27,6 @@ import net.minecraft.client.*;
 import net.minecraft.sounds.*;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.event.TickEvent;
@@ -149,7 +148,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected boolean isOneHanded(ItemStack stack) {
-        return stack.getItem() instanceof WeaponItem && GunModifierHelper.getGripType(getGunData()).isOneHanded();
+        return GunStateHelper.isOneHanded(new GunData(stack, getEntity()));
     }
 
     @NotNull

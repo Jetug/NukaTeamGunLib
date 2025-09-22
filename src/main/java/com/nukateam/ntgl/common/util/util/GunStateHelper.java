@@ -11,6 +11,7 @@ import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.constants.Tags;
+import com.nukateam.ntgl.common.data.holders.GripType;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
@@ -332,6 +333,19 @@ public class GunStateHelper {
         tag.put(Tags.ATTACHMENTS, attachmentsTag);
     }
 
+    public static GripType getGripType(GunData data){
+        if(data.gun == null) return GripType.ONE_HANDED;
+
+        var item = data.gun.getItem();
+        if(item instanceof IWeapon){
+            return GunModifierHelper.getGripType(data);
+        }
+        else if(item instanceof IThrowable throwable){
+            return throwable.getConfig().getGeneral().getGripType();
+        }
+        return GripType.ONE_HANDED;
+    }
+
     public static void consumeAmmo(GunData data) {
         var shooter = data.shooter;
         var heldItem = data.gun;
@@ -365,5 +379,14 @@ public class GunStateHelper {
             equipTime = throwable.getConfig().getGeneral().getEquipTime();
         }
         return equipTime;
+    }
+
+    public static boolean isOneHanded(GunData data){
+        if(data.gun == null) return true;
+        var item = data.gun.getItem();
+        if(item instanceof IWeapon || item instanceof IThrowable){
+            return getGripType(data).isOneHanded();
+        }
+        return true;
     }
 }

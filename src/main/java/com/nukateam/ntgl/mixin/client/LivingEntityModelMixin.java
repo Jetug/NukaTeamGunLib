@@ -4,7 +4,10 @@ package com.nukateam.ntgl.mixin.client;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
@@ -36,7 +39,7 @@ public class LivingEntityModelMixin<T extends LivingEntity> {
     private void setupForArm(T entity, float animationPos, HumanoidModel<T> model, InteractionHand interactionHand) {
         var heldItem = entity.getItemInHand(interactionHand);
 
-        if (heldItem.getItem() instanceof WeaponItem) {
+        if (heldItem.getItem() instanceof INtglItem) {
             if (animationPos == 0.0F) {
                 model.rightArm.xRot = 0;
                 model.rightArm.yRot = 0;
@@ -52,9 +55,12 @@ public class LivingEntityModelMixin<T extends LivingEntity> {
                 return;
             }
 
-            GunModifierHelper.getGripType(new GunData(heldItem, entity)).getHeldAnimation().applyHumanoidModelRotation(entity, model.rightArm,
-                    model.leftArm, model.head, interactionHand,
-                    AimingHandler.get().getAimProgress(entity, Minecraft.getInstance().getFrameTime()));
+            var aimProgress = AimingHandler.get().getAimProgress(entity, Minecraft.getInstance().getFrameTime());
+            var gripType = GunStateHelper.getGripType(new GunData(heldItem, entity));
+
+            gripType.getHeldAnimation().applyHumanoidModelRotation(
+                            entity, model.rightArm, model.leftArm, model.head,
+                            interactionHand, aimProgress);
 
             if(model instanceof PlayerModel<T> playerModel) {
                 copyModelAngles(playerModel.rightArm, playerModel.rightSleeve);

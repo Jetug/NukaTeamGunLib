@@ -10,6 +10,7 @@ import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -53,7 +54,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import static com.nukateam.ntgl.client.util.util.PropertyHelper.*;
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.isOneHanded;
+import static com.nukateam.ntgl.common.util.util.GunStateHelper.isOneHanded;
 
 @SuppressWarnings("removal")
 public class GunRenderingHandler {
@@ -152,14 +153,17 @@ public class GunRenderingHandler {
 
     private void updateOffhandTranslate() {
         this.prevOffhandTranslate = this.offhandTranslate;
-        Minecraft mc = Minecraft.getInstance();
+        var mc = Minecraft.getInstance();
         if (mc.player == null)
             return;
 
-        boolean down = false;
-        ItemStack heldItem = mc.player.getMainHandItem();
-        if (heldItem.getItem() instanceof WeaponItem) {
-            down = GunModifierHelper.getGripType(new GunData(heldItem, mc.player)).getHeldAnimation().canRenderOffhandItem();
+        var down = false;
+        var heldItem = mc.player.getMainHandItem();
+
+        if (heldItem.getItem() instanceof INtglItem) {
+            down = GunStateHelper.getGripType(new GunData(heldItem, mc.player))
+                    .getHeldAnimation()
+                    .canRenderOffhandItem();
         }
 
         float direction = down ? -0.3F : 0.3F;
@@ -453,20 +457,20 @@ public class GunRenderingHandler {
         }
     }
 
-    private void applySprintingTransforms(Player player, ItemStack stack, HumanoidArm hand, PoseStack poseStack, float partialTicks) {
-        if (Config.CLIENT.display.sprintAnimation.get()
-                && GunModifierHelper
-                .getGripType(new GunData(stack, player))
-                .getHeldAnimation()
-                .canApplySprintingAnimation()) {
-            float leftHanded = hand == HumanoidArm.LEFT ? -1 : 1;
-            float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
-            transition = (float) Math.sin((transition * Math.PI) / 2);
-            poseStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
-            poseStack.mulPose(Axis.YP.rotationDegrees(45F * leftHanded * transition));
-            poseStack.mulPose(Axis.XP.rotationDegrees(-25F * transition));
-        }
-    }
+//    private void applySprintingTransforms(Player player, ItemStack stack, HumanoidArm hand, PoseStack poseStack, float partialTicks) {
+//        if (Config.CLIENT.display.sprintAnimation.get()
+//                && GunModifierHelper
+//                .getGripType(new GunData(stack, player))
+//                .getHeldAnimation()
+//                .canApplySprintingAnimation()) {
+//            float leftHanded = hand == HumanoidArm.LEFT ? -1 : 1;
+//            float transition = (this.prevSprintTransition + (this.sprintTransition - this.prevSprintTransition) * partialTicks) / 5F;
+//            transition = (float) Math.sin((transition * Math.PI) / 2);
+//            poseStack.translate(-0.25 * leftHanded * transition, -0.1 * transition, 0);
+//            poseStack.mulPose(Axis.YP.rotationDegrees(45F * leftHanded * transition));
+//            poseStack.mulPose(Axis.XP.rotationDegrees(-25F * transition));
+//        }
+//    }
 
     private void applyReloadTransforms(PoseStack poseStack, float partialTicks) {
         float reloadProgress = ClientReloadHandler.get().getReloadProgress(partialTicks);
@@ -499,7 +503,7 @@ public class GunRenderingHandler {
 
     private void applyShieldTransforms(PoseStack poseStack, LocalPlayer player, ItemStack stack, float partialTick) {
         if (player.isUsingItem() && player.getOffhandItem().getItem() == Items.SHIELD
-                && GunModifierHelper.isOneHanded(new GunData(stack, player))) {
+                && GunStateHelper.isOneHanded(new GunData(stack, player))) {
             double time = Mth.clamp((player.getTicksUsingItem() + partialTick), 0.0, 4.0) / 4.0;
             poseStack.translate(0, 0.35 * time, 0);
             poseStack.mulPose(Axis.XP.rotationDegrees(45F * (float) time));
