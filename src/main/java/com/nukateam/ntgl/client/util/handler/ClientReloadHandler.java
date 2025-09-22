@@ -163,7 +163,7 @@ public class ClientReloadHandler {
         else reloadDuration = reloadTime;
 
         if (Ntgl.playerAnimatorLoaded)
-            PlayerAnimationHelper.playAnim(player, gun.getGeneral().getReloadType(), reloadDuration, arm == InteractionHand.OFF_HAND);
+            PlayerAnimationHelper.playAnim(player, gun.getGeneral().getReloadAnimation(), reloadDuration, arm == InteractionHand.OFF_HAND);
     }
 
     private void updateReloadTimer(Player player) {

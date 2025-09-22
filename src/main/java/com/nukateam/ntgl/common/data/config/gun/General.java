@@ -372,7 +372,7 @@ public class General implements INBTSerializable<CompoundTag> {
         return this.gripType;
     }
 
-    public ResourceLocation getReloadType() {
+    public ResourceLocation getReloadAnimation() {
         return this.reloadType;
     }
 

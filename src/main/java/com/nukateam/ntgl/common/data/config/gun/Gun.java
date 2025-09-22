@@ -47,10 +47,11 @@ import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected General general = new General();
     protected Melee melee = new Melee();
-    protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected Display display = new Display();
     protected Modules modules = new Modules();
+    protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
+    protected HashMap<String, ResourceLocation> animations = new HashMap<>();
     @Ignored
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
     protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
@@ -87,6 +88,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
         tag.put("Textures", NbtUtils.serializeStringMap(this.textures));
+        tag.put("Animations", NbtUtils.serializeStringMap(this.animations));
         tag.put("AmmoData", NbtUtils.serializeMap(this.ammoData));
         tag.put("SecondaryAmmo", NbtUtils.serializeMap(this.fuel));
         return tag;
@@ -112,6 +114,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         if (tag.contains("Textures", Tag.TAG_COMPOUND)) {
             this.textures = NbtUtils.deserializeRLMap(tag.getCompound("Textures"));
         }
+        if (tag.contains("Animations", Tag.TAG_COMPOUND)) {
+            this.animations = NbtUtils.deserializeRLMap(tag.getCompound("Animations"));
+        }
         if (tag.contains("AmmoData", Tag.TAG_COMPOUND)) {
             this.ammoData = NbtUtils.deserializeLinkedMap(tag.getCompound("AmmoData"), (nbt) -> AmmoData.create(nbt));
         }
@@ -136,8 +141,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         var gun = new Gun();
         gun.general = this.general.copy();
         gun.melee = this.melee.copy();
-        gun.sounds = (HashMap<String, ResourceLocation>)    this.sounds.clone();
+        gun.sounds   = (HashMap<String, ResourceLocation>)  this.sounds.clone();
         gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
+        gun.textures = (HashMap<String, ResourceLocation>)  this.animations.clone();
         gun.ammoData = (LinkedHashMap<ResourceLocation, AmmoData>) this.ammoData.clone();
         gun.fuel = (LinkedHashMap<ResourceLocation, Fuel>) this.fuel.clone();
         gun.display = this.display.copy();
