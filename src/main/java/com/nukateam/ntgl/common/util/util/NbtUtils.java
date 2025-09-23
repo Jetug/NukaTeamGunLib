@@ -106,7 +106,7 @@ public class NbtUtils {
         var map = new HashMap<K, V>();
 
         for (var nbtKey : tag.getAllKeys()) {
-            if(tag.contains(nbtKey, Tag.TAG_COMPOUND)) {
+            if(tag.contains(nbtKey)) {
                 var key = keyDeserializer.apply(nbtKey);
                 var value = valueDeserializer.apply(tag, nbtKey);
                 map.put(key, value);
