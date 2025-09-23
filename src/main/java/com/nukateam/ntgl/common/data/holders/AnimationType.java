@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.data.holders;
 
+import com.google.gson.JsonParseException;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.resources.ResourceLocation;
 
@@ -11,7 +12,7 @@ public class AnimationType extends ResourceHolder {
     public static final AnimationType RELOAD = new AnimationType("reload");
     public static final AnimationType MELEE = new AnimationType("melee");
 
-    private static final Map<ResourceLocation, AnimationType> loadingTypeMap = new HashMap<>();
+    private static final Map<ResourceLocation, AnimationType> typeMap = new HashMap<>();
 
     public static void register(){
         registerType(FIRE);
@@ -28,11 +29,17 @@ public class AnimationType extends ResourceHolder {
     }
 
     public static void registerType(AnimationType mode) {
-        loadingTypeMap.putIfAbsent(mode.getId(), mode);
+        typeMap.putIfAbsent(mode.getId(), mode);
     }
 
     public static AnimationType getType(ResourceLocation id) {
-        return loadingTypeMap.getOrDefault(id, FIRE);
+//        return typeMap.getOrDefault(id, FIRE);
+
+        var type = typeMap.get(id);
+        if(type == null){
+            throw new JsonParseException("Animation type \"" + id.toString() + "\" doesn't exists");
+        }
+        return type;
     }
 
     public static AnimationType getType(String id) {

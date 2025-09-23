@@ -45,8 +45,8 @@
     }
   },
   "animations": {
-    "fire": "ntgl:gun_fire",
-    "reload": "ntgl:gun_reload"
+    "ntgl:fire": "ntgl:gun_fire",
+    "ntgl:reload": "ntgl:gun_reload"
   },
   "textures": {
     "default" : "ntgl:classic10mm",
