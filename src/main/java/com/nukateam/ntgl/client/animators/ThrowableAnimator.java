@@ -138,12 +138,12 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
                 controller.setAnimationSpeed(1);
                 var holdAnimation = getHoldAnimation(event);
 
-                if (!isHandTransform(transformType))
+                if (!isFirstPerson(transformType))
                     return PlayState.STOP;
 
                 var animation = begin();
 
-                if(equipTime > 0 && ClientEquipHandler.get().isEquiping(arm)) {
+                if(ClientEquipHandler.get().isEquiping(arm)) {
                     animation = getEquipAnimation(event);
                 }
                 else if(isPreparing()){
@@ -221,7 +221,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
     }
 
     protected RawAnimation getEquipAnimation(AnimationState<ThrowableAnimator> event) {
-        var animation = playGunAnim(EQUIP, LOOP);
+        var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);
         animationHelper.syncAnimation(event, equipTime, EQUIP);
         return animation;
     }

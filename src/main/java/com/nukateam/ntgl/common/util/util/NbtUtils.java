@@ -10,8 +10,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
+import org.checkerframework.checker.units.qual.K;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class NbtUtils {
@@ -98,20 +100,36 @@ public class NbtUtils {
         return tag;
     }
 
-    public static <V> HashMap<ResourceLocation, V> deserializeMap(CompoundTag tag, Function<CompoundTag, V> deserializer){
-        var map = new HashMap<ResourceLocation, V>();
+    public static <K, V> HashMap<K, V> deserializeMap(CompoundTag tag,
+                                                   Function<String, K> keyDeserializer,
+                                                   BiFunction<CompoundTag, String, V> valueDeserializer){
+        var map = new HashMap<K, V>();
 
         for (var nbtKey : tag.getAllKeys()) {
             if(tag.contains(nbtKey, Tag.TAG_COMPOUND)) {
-                var resource = ResourceLocation.tryParse(nbtKey);
-                var value = deserializer.apply(tag.getCompound(nbtKey));
-                map.put(resource, value);
+                var key = keyDeserializer.apply(nbtKey);
+                var value = valueDeserializer.apply(tag, nbtKey);
+                map.put(key, value);
             }
         }
 
         return map;
     }
 
+
+//
+//
+//    public static HashMap<String, ResourceLocation> deserializeRLMap(CompoundTag tag){
+//        var map = new HashMap<String, ResourceLocation>();
+//
+//        for (var key: tag.getAllKeys()) {
+//            if(tag.contains(key, Tag.TAG_STRING)) {
+//                map.put(key, ResourceLocation.tryParse(tag.getString(key)));
+//            }
+//        }
+//
+//        return map;
+//    }
 
     public static <V> LinkedHashMap<ResourceLocation, V> deserializeLinkedMap(CompoundTag tag, Function<CompoundTag, V> deserializer){
         var map = new LinkedHashMap<ResourceLocation, V>();

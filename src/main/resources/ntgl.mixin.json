@@ -5,7 +5,7 @@
   "mixins": [
     "common.EndPortalBlockMixin",
     "common.LivingEntityMixin",
-    "common.MixinServerGamePacketListenerImpl",
+    "common.ServerGamePacketListenerImplMixin",
     "common.SittingPhaseMixin"
   ],
   "client": [
@@ -17,7 +17,7 @@
     "client.LevelRendererMixin",
     "client.LivingEntityModelMixin",
     "client.MinecraftMixin",
-    "client.MixinMultiPlayerGameMode",
+    "client.MultiPlayerGameModeMixin",
     "client.MouseHandlerMixin",
     "client.NarratorMixin",
     "client.QuadrupedModelAccessor",

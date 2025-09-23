@@ -10,6 +10,7 @@ import com.nukateam.ntgl.client.settings.GunOptions;
 import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.holders.AmmoHolders;
+import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.datagen.*;
 import com.nukateam.ntgl.common.regestry.ProjectileRegistry;
@@ -97,7 +98,7 @@ public class Ntgl {
         curiosLoaded = ModList.get().isLoaded("curios");
 
         AmmoHolders.register();
-
+        AnimationType.register();
         MinecraftForge.EVENT_BUS.register(this);
     }
 

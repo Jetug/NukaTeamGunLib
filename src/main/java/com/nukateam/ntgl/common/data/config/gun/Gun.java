@@ -3,11 +3,9 @@ package com.nukateam.ntgl.common.data.config.gun;
 import com.google.gson.Gson;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.*;
-import com.nukateam.ntgl.common.data.holders.AttachmentType;
-import com.nukateam.ntgl.common.data.holders.AmmoHolder;
-import com.nukateam.ntgl.common.data.holders.GripType;
-import com.nukateam.ntgl.common.data.holders.LoadingType;
+import com.nukateam.ntgl.common.data.holders.*;
 
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
@@ -45,13 +43,15 @@ import java.util.function.Supplier;
 import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
+    private static final ResourceLocation RELOAD = ResourceLocation.tryBuild(Ntgl.MOD_ID, "gun_reload");
+
     protected General general = new General();
     protected Melee melee = new Melee();
     protected Display display = new Display();
     protected Modules modules = new Modules();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
-    protected HashMap<String, ResourceLocation> animations = new HashMap<>();
+    protected HashMap<AnimationType, ResourceLocation> animations = new HashMap<>(Map.of(AnimationType.RELOAD, RELOAD));
     @Ignored
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
     protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
@@ -115,7 +115,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             this.textures = NbtUtils.deserializeRLMap(tag.getCompound("Textures"));
         }
         if (tag.contains("Animations", Tag.TAG_COMPOUND)) {
-            this.animations = NbtUtils.deserializeRLMap(tag.getCompound("Animations"));
+            this.animations = NbtUtils.deserializeMap(tag.getCompound("Animations"),
+                    (nbt) -> AnimationType.getType(nbt),
+                    (nbt, key) -> ResourceLocation.tryParse(nbt.getString(key))
+            );
         }
         if (tag.contains("AmmoData", Tag.TAG_COMPOUND)) {
             this.ammoData = NbtUtils.deserializeLinkedMap(tag.getCompound("AmmoData"), (nbt) -> AmmoData.create(nbt));
@@ -143,7 +146,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         gun.melee = this.melee.copy();
         gun.sounds   = (HashMap<String, ResourceLocation>)  this.sounds.clone();
         gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
-        gun.textures = (HashMap<String, ResourceLocation>)  this.animations.clone();
+        gun.animations = (HashMap<AnimationType, ResourceLocation>) this.animations.clone();
         gun.ammoData = (LinkedHashMap<ResourceLocation, AmmoData>) this.ammoData.clone();
         gun.fuel = (LinkedHashMap<ResourceLocation, Fuel>) this.fuel.clone();
         gun.display = this.display.copy();
@@ -188,6 +191,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public Map<String, ResourceLocation> getTextures() {
         return preparedTextures;
+    }
+
+    public HashMap<AnimationType, ResourceLocation> getAnimations() {
+        return animations;
+    }
+
+    public ResourceLocation getAnimation(AnimationType type) {
+        return animations.get(type);
     }
 
     public boolean canAttachType(@Nullable AttachmentType type, Gun gun) {
@@ -347,11 +358,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
         public Builder setGripType(GripType gripType) {
             this.gun.general.gripType = gripType;
-            return this;
-        }
-
-        public Builder setReloadType(ResourceLocation reloadType) {
-            this.gun.general.reloadType = reloadType;
             return this;
         }
 

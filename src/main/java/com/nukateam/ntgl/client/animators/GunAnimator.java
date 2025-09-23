@@ -123,9 +123,9 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         this.reloadEndTime = GunModifierHelper.getReloadEnd(data);
 //        Ntgl.LOGGER.info("! Is equiping: " + isEquiping);
 
-        if(isEquiping) {
-            Ntgl.LOGGER.info("! Equip time: " + equipTime);
-        }
+//        if(isEquiping) {
+//            Ntgl.LOGGER.info("! Equip time: " + equipTime);
+//        }
         setupCycledAnimations();
     }
 
@@ -175,7 +175,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 var data = shootingHandler.getShootingData(arm);
                 var animation = begin();
 
-                if(equipTime > 0 && ClientEquipHandler.get().isEquiping(arm)) {
+                if(ClientEquipHandler.get().isEquiping(arm)) {
                     animation = getEquipAnimation(event);
                 }
                 else if(ClientMeleeHandler.isOnDelay(shooter, arm)){
@@ -317,7 +317,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     protected RawAnimation getEquipAnimation(AnimationState<GunAnimator> event) {
         if(isFirstPerson(transformType)) {
-            var animation = playGunAnim(EQUIP, LOOP);
+            var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);
             animationHelper.syncAnimation(event, EQUIP, equipTime);
             return animation;
         }

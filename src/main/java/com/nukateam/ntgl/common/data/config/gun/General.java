@@ -65,7 +65,6 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional int equipTime = 1;
     @Optional int ammoPerShot = 1;
     @Ignored GripType gripType = GripType.ONE_HANDED;
-    @Ignored ResourceLocation reloadType = ResourceLocation.tryBuild(Ntgl.MOD_ID, "gun_reload");
     @Optional LoadingType loadingType = LoadingType.MAGAZINE;
     @Optional String category = "pistol";
     @Optional boolean autoReload = false;
@@ -94,7 +93,6 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putInt      (FIRE_TIMER, this.fireTimer);
         tag.put         (FIRE_MODE, NbtUtils.serializeSet(this.fireMode));
         tag.putString   (GRIP_TYPE, this.gripType.getId().toString());
-        tag.putString   (RELOAD_TYPE, this.reloadType.toString());
         tag.putInt      (MAX_AMMO, this.maxAmmo);
         tag.putInt      (RELOAD_SPEED, this.reloadAmount);
         tag.putInt      (RELOAD_START, this.reloadStart);
@@ -143,9 +141,6 @@ public class General implements INBTSerializable<CompoundTag> {
         }
         if (tag.contains(GRIP_TYPE, Tag.TAG_STRING)) {
             this.gripType = GripType.getType(ResourceLocation.tryParse(tag.getString(GRIP_TYPE)));
-        }
-        if (tag.contains(RELOAD_TYPE, Tag.TAG_STRING)) {
-            this.reloadType = ResourceLocation.tryParse(tag.getString(RELOAD_TYPE));
         }
         if (tag.contains(MAX_AMMO, Tag.TAG_ANY_NUMERIC)) {
             this.maxAmmo = tag.getInt(MAX_AMMO);
@@ -251,7 +246,6 @@ public class General implements INBTSerializable<CompoundTag> {
         object.addProperty("weaponMode", this.weaponMode.toString());
         object.addProperty("autoReload", this.autoReload);
         object.addProperty("renderHud", this.renderHud);
-        object.addProperty("reloadType", this.reloadType.toString());
         object.addProperty("maxAmmo", this.maxAmmo);
         if (this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
         if (this.reloadStart > 0 ) object.addProperty("reloadStart", this.reloadStart);
@@ -287,7 +281,6 @@ public class General implements INBTSerializable<CompoundTag> {
         general.rate = this.rate;
         general.fireTimer = this.fireTimer;
         general.gripType = this.gripType;
-        general.reloadType = this.reloadType;
         general.maxAmmo = this.maxAmmo;
         general.reloadAmount = this.reloadAmount;
         general.reloadStart = this.reloadStart;
@@ -370,10 +363,6 @@ public class General implements INBTSerializable<CompoundTag> {
      */
     public GripType getGripType() {
         return this.gripType;
-    }
-
-    public ResourceLocation getReloadAnimation() {
-        return this.reloadType;
     }
 
     /**

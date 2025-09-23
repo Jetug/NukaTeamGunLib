@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerGamePacketListenerImpl.class)
-public class MixinServerGamePacketListenerImpl {
+public class ServerGamePacketListenerImplMixin {
     @Shadow public ServerPlayer player;
 
     @Inject(
@@ -32,8 +32,7 @@ public class MixinServerGamePacketListenerImpl {
         var item = slot.get().getItem();
         var isGun = item instanceof IWeapon;
         var isThrowable = item instanceof IThrowable;
-        var hand = packet.getSlot() == Inventory.SLOT_OFFHAND ?
-                InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+        var hand = packet.getSlot() == Inventory.SLOT_OFFHAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         if (isGun || isThrowable) {
             var equipTime = GunStateHelper.getEquipTime(slot.get(), player);
             EquipTracker.stopEquip(player, hand);
