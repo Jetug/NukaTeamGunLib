@@ -1,20 +1,21 @@
 package com.nukateam.ntgl.client.render.layers;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.nukateam.ntgl.client.model.IGlowingModel;
 import com.nukateam.ntgl.common.util.util.ResourceUtils;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
+import mod.azure.azurelib.cache.texture.GeoAbstractTexture;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.renderer.GeoRenderer;
+import mod.azure.azurelib.renderer.layer.AutoGlowingGeoLayer;
 import mod.azure.azurelib.renderer.layer.GeoRenderLayer;
-import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -39,6 +40,7 @@ public class GlowingLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {
                        MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         var model = (IGlowingModel<T>)getRenderer().getGeoModel();
         var texture = model.getGlowingTextureResource(animatable);
+
         if(resourceExists(texture)) {
             renderLayer(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, texture);
         }

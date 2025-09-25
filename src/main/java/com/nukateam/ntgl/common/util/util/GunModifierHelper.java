@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 
+import com.nukateam.ntgl.common.data.constants.Animations;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -189,6 +190,12 @@ public class GunModifierHelper {
     public static Fuel getFuel(ResourceLocation type, GunData data) {
         var value = new AtomicReference<>(getGun(data.gun).getFuelConfig(type));
         forEachAttachment(data, (modifier -> value.set(modifier.modifyFuel(value.get(), data))));
+        return value.get();
+    }
+
+    public static ResourceLocation getAnimation(AnimationType type, GunData data) {
+        var value = new AtomicReference<>(getGun(data.gun).getAnimation(type));
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyAnimation(type, value.get(), data))));
         return value.get();
     }
 

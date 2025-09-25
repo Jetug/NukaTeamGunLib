@@ -4,16 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.geo.render.ItemAnimator;
-import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
-import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.util.helpers.compatibility.ChassisHelper;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
-import mod.azure.azurelib.renderer.layer.AutoGlowingGeoLayer;
 import mod.azure.azurelib.util.ClientUtils;
 import mod.azure.azurelib.util.RenderUtils;
 import net.minecraft.client.Minecraft;
@@ -25,16 +21,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
 
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderRightArm;
-import static com.nukateam.ntgl.client.util.ClientDebug.*;
 
-public class ArmsRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
+public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
     public static final String RIGHT_ARM = "right_arm";
     public static final String LEFT_ARM = "left_arm";
     public static final String RIGHT_ARM_ANIM = "right_arm_anim";
@@ -44,7 +36,7 @@ public class ArmsRenderer<Animator extends ItemAnimator> extends DynamicGeoItemR
     protected boolean firstLeftRender = true;
     private ItemDisplayContext transformType;
 
-    public ArmsRenderer(GeoModel<Animator> model) {
+    public ArmedModelRenderer(GeoModel<Animator> model) {
         super(model);
         addRenderLayer(new GlowingLayer<>(this));
         ClientTickHandler.addTicker(this, this::tick);

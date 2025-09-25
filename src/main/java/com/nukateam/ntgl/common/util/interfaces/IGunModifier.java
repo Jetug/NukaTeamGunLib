@@ -339,6 +339,10 @@ public interface IGunModifier {
         return value;
     }
 
+    default ResourceLocation modifyAnimation(AnimationType tupe, ResourceLocation animation, GunData data) {
+        return animation;
+    }
+
     default AmmoConfig modifyAmmo(AmmoConfig value, GunData data) {
         return value;
     }

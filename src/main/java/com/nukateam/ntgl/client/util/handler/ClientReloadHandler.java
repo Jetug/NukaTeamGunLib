@@ -120,7 +120,7 @@ public class ClientReloadHandler {
                         return;
 
                     //JET
-                    playAnimation(player, stack, gun, arm);
+                    playAnimation(player, stack, arm);
 
                     dataKey.setValue(player, true);
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(true, arm));
@@ -148,23 +148,23 @@ public class ClientReloadHandler {
         reloadTicks = -1;
     }
 
-    private static void playAnimation(LocalPlayer player, ItemStack stack, Gun gun, InteractionHand arm) {
-        var reloadDuration = 0;
-        var gunData = new GunData(stack, player);
-        var reloadTime = GunModifierHelper.getReloadTime(gunData);
-        var loadingType = GunModifierHelper.getLoadingType(gunData);
-
-        if(loadingType.equals(LoadingType.PER_CARTRIDGE)){
-//            var ammoCount = general.getMaxAmmo(stack) - Gun.getAmmoCount(stack);
-            var ammoCount =  GunModifierHelper.getMaxAmmo(gunData) - GunStateHelper.getAmmoCount(gunData);
-
-            for (var i = 0; i < ammoCount; i++)
-                reloadDuration += reloadTime;
-        }
-        else reloadDuration = reloadTime;
-
+    private static void playAnimation(LocalPlayer player, ItemStack stack, InteractionHand arm) {
         if (Ntgl.playerAnimatorLoaded) {
-            var reloadAnimation = gun.getAnimation(AnimationType.RELOAD);
+            var reloadDuration = 0;
+            var gunData = new GunData(stack, player);
+            var reloadTime = GunModifierHelper.getReloadTime(gunData);
+            var loadingType = GunModifierHelper.getLoadingType(gunData);
+
+            if(loadingType.equals(LoadingType.PER_CARTRIDGE)){
+                var ammoCount =  GunModifierHelper.getMaxAmmo(gunData) - GunStateHelper.getAmmoCount(gunData);
+
+                for (var i = 0; i < ammoCount; i++) {
+                    reloadDuration += reloadTime;
+                }
+            }
+            else reloadDuration = reloadTime;
+
+            var reloadAnimation =  GunModifierHelper.getAnimation(AnimationType.RELOAD, gunData);
             PlayerAnimationHelper.playAnim(player, reloadAnimation, reloadDuration, arm == InteractionHand.OFF_HAND);
         }
     }

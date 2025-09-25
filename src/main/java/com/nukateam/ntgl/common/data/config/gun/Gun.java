@@ -52,8 +52,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     protected HashMap<AnimationType, ResourceLocation> animations = new HashMap<>(Map.of(AnimationType.RELOAD, RELOAD));
-    @Ignored
-    protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
+//    @Ignored
+//    protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
     protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
     protected LinkedHashMap<ResourceLocation, Fuel> fuel = new LinkedHashMap<>();
 
@@ -157,12 +157,12 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static Gun create(ResourceLocation id, CompoundTag tag) {
         var gun = new Gun();
         gun.deserializeNBT(tag);
-        gun.prepareTextures(id.getPath());
+//        gun.prepareTextures(id.getPath());
         return gun;
     }
 
     public void onCreated(String id){
-        prepareTextures(id);
+//        prepareTextures(id);
     }
 
     public General getGeneral() {
@@ -189,8 +189,14 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.modules;
     }
 
+//    public ResourceLocation getTexture(String variant) {
+//        return preparedTextures.computeIfAbsent(variant, v ->
+//                prepareTexture(textures.get(variant))
+//        );
+//    }
+
     public Map<String, ResourceLocation> getTextures() {
-        return preparedTextures;
+        return textures;
     }
 
     public HashMap<AnimationType, ResourceLocation> getAnimations() {
@@ -292,19 +298,19 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return getFuelData(ammo).getAmmo();
     }
 
-    private void prepareTextures(String itemId) {
-        if(FMLEnvironment.dist == Dist.CLIENT) {
-            CompletableFuture.runAsync(() -> {
-                this.textures.forEach((variant, path) -> {
-//                        var texture = resourceExists(path) ? path : getTexture(itemId, path);
-                    var texture = getTexture(itemId, path);
-                    this.preparedTextures.put(variant, texture);
-                });
-            });
-        }
-    }
+//    private void prepareTextures(String itemId) {
+//        if(FMLEnvironment.dist == Dist.CLIENT) {
+//            CompletableFuture.runAsync(() -> {
+//                this.textures.forEach((variant, path) -> {
+////                        var texture = resourceExists(path) ? path : getTexture(itemId, path);
+//                    var texture = prepareTexture(itemId, path);
+//                    this.preparedTextures.put(variant, texture);
+//                });
+//            });
+//        }
+//    }
 
-    private static ResourceLocation getTexture(String itemId, ResourceLocation path) {
+    private static ResourceLocation prepareTexture(String itemId, ResourceLocation path) {
         return ResourceLocation.tryBuild(path.getNamespace(), "textures/guns/" + itemId + "/" + path.getPath() + ".png");
     }
 

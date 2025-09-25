@@ -2,38 +2,18 @@ package com.nukateam.ntgl.client.render.renderers.weapon;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.geo.render.ItemAnimator;
-import com.nukateam.ntgl.client.handlers.ClientTickHandler;
-import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
-import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
-import com.nukateam.ntgl.common.util.data.Rgba;
-import com.nukateam.ntgl.common.util.helpers.compatibility.ChassisHelper;
-import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
-import mod.azure.azurelib.util.ClientUtils;
-import mod.azure.azurelib.util.RenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.TickEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
-
-import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
-import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderRightArm;
-
-public class ThrowableItemRenderer<Animator extends ItemAnimator> extends ArmsRenderer<Animator> {
+public class ThrowableItemRenderer<Animator extends ItemAnimator> extends ArmedModelRenderer<Animator> {
     public static final String RIGHT_ARM = "right_arm";
     public static final String LEFT_ARM = "left_arm";
     protected MultiBufferSource bufferSource;

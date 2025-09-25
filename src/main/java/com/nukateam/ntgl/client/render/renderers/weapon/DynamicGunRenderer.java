@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import static com.nukateam.ntgl.client.util.ClientDebug.*;
 
-public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmsRenderer<Animator> {
+public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmedModelRenderer<Animator> {
     public static final String MUZZLE_FLASH = "muzzle_flash";
     protected MultiBufferSource bufferSource;
     protected ArrayList<ItemStack> gunAttachments;
