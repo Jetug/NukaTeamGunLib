@@ -66,6 +66,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected int reloadStartTime;
     protected int reloadEndTime;
     protected boolean isEquiping;
+    protected ItemStack itemCache = ItemStack.EMPTY;
 
     public GunAnimator(ItemDisplayContext transformType, DynamicGunRenderer<GunAnimator> renderer) {
         super(transformType);
@@ -162,6 +163,10 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     protected AnimationStateHandler<GunAnimator> animate() {
         return event -> {
+            if(itemCache != getStack()) {
+                itemCache = getStack();
+                return event.setAndContinue(begin().then("void", PLAY_ONCE));
+            }
             try {
                 var controller = event.getController();
                 controller.setAnimationSpeed(1);
@@ -177,6 +182,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
                 if(ClientEquipHandler.get().isEquiping(arm)) {
                     animation = getEquipAnimation(event);
+                    Ntgl.LOGGER.debug("! Equip");
                 }
                 else if(ClientMeleeHandler.isOnDelay(shooter, arm)){
                     animation = getMeleeDelayAnimation(event);
@@ -206,6 +212,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                         currentGun = getGunItem();
                         animation = playGunAnim(SHOT, LOOP);
                     }
+                    Ntgl.LOGGER.debug("! Hold");
                 }
 
                 return animation != null ? event.setAndContinue(animation): PlayState.STOP;
@@ -317,7 +324,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     protected RawAnimation getEquipAnimation(AnimationState<GunAnimator> event) {
         if(isFirstPerson(transformType)) {
-            var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);
+            var animation = playGunAnim(EQUIP, LOOP);
             animationHelper.syncAnimation(event, EQUIP, equipTime);
             return animation;
         }

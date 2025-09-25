@@ -22,19 +22,18 @@ public class MultiPlayerGameModeMixin {
     @Inject(method = "ensureHasSentCarriedItem()V", at = @At(value = "HEAD"))
     private void onEnsureHasSentCarriedItem(CallbackInfo ci) {
         var player = Minecraft.getInstance().player;
-        int i = player.getInventory().selected;
-        if (i != this.carriedIndex) {
+        int selected = player.getInventory().selected;
+        if (selected != this.carriedIndex) {
             var hand = carriedIndex == Inventory.SLOT_OFFHAND ?
                     InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
 
-            var item = player.getSlot(carriedIndex).get().getItem();
+            var currentStack = player.getSlot(selected).get();
+            var item = currentStack.getItem();
             var isGun = item instanceof IWeapon;
             var isThrowable = item instanceof IThrowable;
 
             if (isGun || isThrowable) {
-                var slot = player.getSlot(carriedIndex);
-                var equipTime = GunStateHelper.getEquipTime(slot.get(), player);
-
+                var equipTime = GunStateHelper.getEquipTime(currentStack, player);
                 ClientEquipHandler.get().setEquiping(hand, equipTime);
             }
         }

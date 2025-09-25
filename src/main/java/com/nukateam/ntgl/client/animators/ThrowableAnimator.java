@@ -24,12 +24,9 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.core.keyframe.event.SoundKeyframeEvent;
 import mod.azure.azurelib.core.object.PlayState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
@@ -65,6 +62,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
     protected int throwingTime;
     protected ThrowMode mode;
     protected boolean isEquiping;
+    private ItemStack itemCache = ItemStack.EMPTY;
 
     public ThrowableAnimator(ItemDisplayContext transformType, ThrowableItemRenderer<ThrowableAnimator> renderer) {
         super(transformType);
@@ -133,6 +131,10 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
 
     protected AnimationStateHandler<ThrowableAnimator> animate() {
         return event -> {
+            if(itemCache != getStack()) {
+                itemCache = getStack();
+                return event.setAndContinue(begin().then("void", PLAY_ONCE));
+            }
             try {
                 var controller = event.getController();
                 controller.setAnimationSpeed(1);
@@ -221,7 +223,7 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
     }
 
     protected RawAnimation getEquipAnimation(AnimationState<ThrowableAnimator> event) {
-        var animation = playGunAnim(EQUIP, HOLD_ON_LAST_FRAME);
+        var animation = playGunAnim(EQUIP, LOOP);
         animationHelper.syncAnimation(event, equipTime, EQUIP);
         return animation;
     }
