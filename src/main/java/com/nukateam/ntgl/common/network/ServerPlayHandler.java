@@ -396,7 +396,7 @@ public class ServerPlayHandler {
 
         var gun = player.getItemInHand(message.getHand());
 
-        if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, gun))) {
+        if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, gun, message.getHand()))) {
             dataKey.setValue(player, false);
             return;
         }

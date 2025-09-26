@@ -10,6 +10,10 @@ public class LivingEntityUtils {
         return arm == HumanoidArm.RIGHT ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
     }
 
+    public static InteractionHand getOppositeHand(InteractionHand arm) {
+        return arm == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+    }
+
     public static ItemStack getItemInHand(LivingEntity entity, HumanoidArm arm) {
         return entity.getItemInHand(getInteractionHand(arm));
     }

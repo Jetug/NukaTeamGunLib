@@ -41,6 +41,7 @@ import static mod.azure.azurelib.core.animation.RawAnimation.begin;
 
 @OnlyIn(Dist.CLIENT)
 public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
+    public static final String STATIC = "static";
     protected final DynamicGunRenderer<GunAnimator> renderer;
     protected final Minecraft minecraft = Minecraft.getInstance();
     protected final ShootingHandler shootingHandler = ShootingHandler.get();
@@ -171,10 +172,9 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 var controller = event.getController();
                 controller.setAnimationSpeed(1);
                 var shooter = getEntity();
-                var holdAnimation = getHoldAnimation(event);
 
-                if (!isHandTransform(transformType))
-                    return event.setAndContinue(holdAnimation);
+                if (!isFirstPerson(transformType))
+                    return event.setAndContinue(getStaticAnimation(event));
 
                 var isShooting = shootingHandler.isShooting(shooter, arm);
                 var data = shootingHandler.getShootingData(arm);
@@ -182,7 +182,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
                 if(ClientEquipHandler.get().isEquiping(arm)) {
                     animation = getEquipAnimation(event);
-                    Ntgl.LOGGER.debug("! Equip");
+                    Ntgl.LOGGER.debug("!Equip");
                 }
                 else if(ClientMeleeHandler.isOnDelay(shooter, arm)){
                     animation = getMeleeDelayAnimation(event);
@@ -207,7 +207,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 }
                 else {
                     if (currentGun == getGunItem())
-                        animation = holdAnimation;
+                        animation = getHoldAnimation(event);
                     else {
                         currentGun = getGunItem();
                         animation = playGunAnim(SHOT, LOOP);
@@ -217,6 +217,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
                 return animation != null ? event.setAndContinue(animation): PlayState.STOP;
             } catch (Exception e) {
+                Ntgl.LOGGER.error(e.getMessage());
                 return PlayState.STOP;
             }
         };
@@ -250,9 +251,11 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected RawAnimation getHoldAnimation(AnimationState<GunAnimator> event) {
-//        if(isFirstPerson(transformType))
-            return playGunAnim(HOLD, LOOP);
-//        else return null;
+        return playGunAnim(HOLD, LOOP);
+    }
+
+    protected RawAnimation getStaticAnimation(AnimationState<GunAnimator> event) {
+        return playGunAnim(STATIC, LOOP);
     }
 
     protected RawAnimation getHideAnimation(AnimationState<GunAnimator> event) {

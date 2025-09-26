@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.network;
 
 import com.mrcrayfish.framework.api.network.*;
 import com.nukateam.ntgl.*;
+import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkGrenadeManager;
@@ -9,6 +10,8 @@ import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
 import com.nukateam.ntgl.common.network.message.*;
 import com.mrcrayfish.framework.api.*;
 import net.minecraft.resources.*;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
 
 public class PacketHandler {
     private static FrameworkNetwork PLAY_CHANNEL;
@@ -31,6 +34,7 @@ public class PacketHandler {
                 .registerPlayMessage(C2SMessageMeleeAttack.class, MessageDirection.PLAY_SERVER_BOUND)
                 .registerPlayMessage(C2SMessageGrenade.class, MessageDirection.PLAY_SERVER_BOUND)
 
+                .registerPlayMessage(S2CMessagePlayerAnimation.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageEntityDeath.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageEntityDeathFx.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageReload.class, MessageDirection.PLAY_CLIENT_BOUND)
@@ -55,5 +59,11 @@ public class PacketHandler {
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_ammo_manager"), NetworkAmmoManager.LoginData::new);
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_attachment_manager"), NetworkAttachmentManager.LoginData::new);
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_grenade_manager"), NetworkGrenadeManager.LoginData::new);
+    }
+
+    public static void sendAnimation(LivingEntity entity, InteractionHand hand, AnimationType animation) {
+        var levelLoc = LevelLocation.create(entity.level(), entity.blockPosition());
+        getPlayChannel().sendToNearbyPlayers(() -> levelLoc,
+                new S2CMessagePlayerAnimation(entity.getId(), animation, hand));
     }
 }

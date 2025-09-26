@@ -1,9 +1,5 @@
 package com.nukateam.ntgl.client.util.handler;
 
-import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.data.holders.AnimationType;
-import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
@@ -12,15 +8,12 @@ import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerAnimationHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -91,17 +84,12 @@ public class ClientReloadHandler {
         }
     }
 
-    public void setReloading(boolean reloading, InteractionHand arm) {
+    public void setReloading(boolean reloading, InteractionHand hand) {
         var player = Minecraft.getInstance().player;
         if (player == null) return;
 
-        var dataKey = arm == InteractionHand.MAIN_HAND ?
-                ModSyncedDataKeys.RELOADING_RIGHT:
-                ModSyncedDataKeys.RELOADING_LEFT;
-
-        var stack = arm == InteractionHand.MAIN_HAND ?
-                player.getMainHandItem():
-                player.getOffhandItem();
+        var dataKey = ModSyncedDataKeys.getReloadKey(hand);
+        var stack = player.getItemInHand(hand);
 
         if (reloading) {
             if (stack.getItem() instanceof WeaponItem) {
@@ -116,22 +104,21 @@ public class ClientReloadHandler {
 
                     if (GunStateHelper.getAmmoCount(data) >= GunEnchantmentHelper.getAmmoCapacity(data))
                         return;
-                    if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack)))
+                    if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack, hand)))
                         return;
-
-                    //JET
-                    playAnimation(player, stack, arm);
+                      //JET
+//                    PlayerAnimations.playReloadAnimation(player, stack, arm);
 
                     dataKey.setValue(player, true);
-                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(true, arm));
+                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(true, hand));
                     this.reloadingSlot = player.getInventory().selected;
                     reloadTimer = GunModifierHelper.getReloadTime(data);
 
-                    MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack));
+                    MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack, hand));
                 }
             }
         } else {
-            stopReloading(arm);
+            stopReloading(hand);
         }
     }
 
@@ -146,27 +133,6 @@ public class ClientReloadHandler {
         PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(false, arm));
         this.reloadingSlot = -1;
         reloadTicks = -1;
-    }
-
-    private static void playAnimation(LocalPlayer player, ItemStack stack, InteractionHand arm) {
-        if (Ntgl.playerAnimatorLoaded) {
-            var reloadDuration = 0;
-            var gunData = new GunData(stack, player);
-            var reloadTime = GunModifierHelper.getReloadTime(gunData);
-            var loadingType = GunModifierHelper.getLoadingType(gunData);
-
-            if(loadingType.equals(LoadingType.PER_CARTRIDGE)){
-                var ammoCount =  GunModifierHelper.getMaxAmmo(gunData) - GunStateHelper.getAmmoCount(gunData);
-
-                for (var i = 0; i < ammoCount; i++) {
-                    reloadDuration += reloadTime;
-                }
-            }
-            else reloadDuration = reloadTime;
-
-            var reloadAnimation =  GunModifierHelper.getAnimation(AnimationType.RELOAD, gunData);
-            PlayerAnimationHelper.playAnim(player, reloadAnimation, reloadDuration, arm == InteractionHand.OFF_HAND);
-        }
     }
 
     private void updateReloadTimer(Player player) {

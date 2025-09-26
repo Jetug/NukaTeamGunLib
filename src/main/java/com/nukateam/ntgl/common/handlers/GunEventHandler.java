@@ -1,16 +1,15 @@
 package com.nukateam.ntgl.common.handlers;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.attachment.IAttachment;
+import com.nukateam.ntgl.common.data.holders.AnimationType;
+import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,41 +22,15 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class GunEventHandler {
     @SubscribeEvent
-    public static void attachmentsChanged(AttachmentEvent.ContainerUpdateEvent event) {
-        var shooter = event.getGunData().shooter;
-        var isClient = event.getGunData().shooter.level().isClientSide;
+    public static void attachmentsChanged(AttachmentEvent.ContainerUpdateEvent event) {}
 
-        if(shooter != null && !isClient) {
-            var gunData = event.getGunData();
+    @SubscribeEvent
+    public static void onMelee(MeleeAttackEvent.Pre event) {}
 
-//            var oldStack = event.getOldStack();
-//            var newStack = event.getNewStack();
-
-//            if(newStack.getItem() instanceof IAttachment<?> attachment){
-//                var mods = attachment.getProperties().getModifiers();
-//
-//                var maxAmmo = GunModifierHelper.getMaxAmmo(gunData);
-//                var ammoItems = GunModifierHelper.getAmmoItems(gunData);
-//
-//                var maxAmmoBuff = maxAmmo;
-//                var ammoItemsBuff = ammoItems;
-//
-//                for (var mod : mods){
-//                    maxAmmoBuff = mod.modifyMaxAmmo(maxAmmoBuff, gunData);
-//                    ammoItemsBuff = mod.modifyAmmoItems(ammoItemsBuff, gunData);
-//                }
-//
-//                if(maxAmmoBuff < maxAmmo || !ammoItemsBuff.containsAll(ammoItems)){
-//                    ServerPlayHandler.unloadGun((ServerPlayer) gunData.shooter, gunData.gun);
-//                }
-//            }
-
-//            var allAmmo = GunModifierHelper.getAmmoItems(gunData);
-//            var currentAmmo = GunStateHelper.getAmmoHolder(gunData);
-//
-//            if (!allAmmo.contains(currentAmmo)) {
-//                ServerPlayHandler.unloadGun((ServerPlayer) gunData.shooter, gunData.gun);
-//            }
+    @SubscribeEvent
+    public static void preReload(GunReloadEvent.Pre event) {
+        if(!event.isClient()){
+            PacketHandler.sendAnimation(event.getEntity(), event.getHand(), AnimationType.RELOAD);
         }
     }
 
@@ -96,6 +69,10 @@ public class GunEventHandler {
                 if (heldItem.getDamageValue() >= (heldItem.getMaxDamage() / 1.5)) {
                     level.playSound(entity, entity.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.PLAYERS, 1.0F, 1.75F);
                 }
+            }
+
+            if(!event.isClient()){
+                PacketHandler.sendAnimation(entity, event.getHand(), AnimationType.FIRE);
             }
         }
     }

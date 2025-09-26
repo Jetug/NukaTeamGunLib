@@ -4,6 +4,8 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.util.*;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.util.handler.*;
+import com.nukateam.ntgl.client.util.util.PlayerAnimations;
+import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
@@ -14,6 +16,8 @@ import com.nukateam.ntgl.common.foundation.particles.*;
 import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.*;
 import net.minecraft.core.particles.*;
 import net.minecraft.network.protocol.PacketUtils;
@@ -111,6 +115,20 @@ public class ClientPlayHandler {
             explosion.finalizeExplosion(true);
 
             minecraft.player.setDeltaMovement(minecraft.player.getDeltaMovement().add(message.getKnockback()));
+        }
+    }
+
+    public static void handleMessageAnimation(S2CMessagePlayerAnimation message) {
+        var id = message.getEntityId();
+        var entity = Minecraft.getInstance().level.getEntity(id);
+
+        if(entity instanceof AbstractClientPlayer player){
+            if(message.getAnimation() == AnimationType.MELEE){
+                PlayerAnimations.playMeleeAnimation(player, message.getHand());
+            }
+            else if(message.getAnimation() == AnimationType.RELOAD){
+                PlayerAnimations.playReloadAnimation(player, message.getHand());
+            }
         }
     }
 

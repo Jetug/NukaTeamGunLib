@@ -28,6 +28,10 @@
       "max": 900
     }
   },
+  "animations": {
+    "ntgl:melee": "ntgl:hammer_hit",
+    "ntgl:reload": "ntgl:hammer_reload"
+  },
   "sounds": {
     "fire": "ntgl:item.pistol10mm.fire",
     "reload": "ntgl:item.pistol45mm.reload",

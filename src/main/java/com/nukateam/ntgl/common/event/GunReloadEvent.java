@@ -1,5 +1,7 @@
 package com.nukateam.ntgl.common.event;
 
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -12,10 +14,12 @@ import net.minecraftforge.eventbus.api.Cancelable;
  */
 public class GunReloadEvent extends PlayerEvent {
     private final ItemStack stack;
+    private final InteractionHand hand;
 
-    public GunReloadEvent(Player player, ItemStack stack) {
+    public GunReloadEvent(Player player, ItemStack stack, InteractionHand hand) {
         super(player);
         this.stack = stack;
+        this.hand = hand;
     }
 
     /**
@@ -23,6 +27,10 @@ public class GunReloadEvent extends PlayerEvent {
      */
     public ItemStack getStack() {
         return stack;
+    }
+
+    public InteractionHand getHand() {
+        return hand;
     }
 
     /**
@@ -39,8 +47,8 @@ public class GunReloadEvent extends PlayerEvent {
      */
     @Cancelable
     public static class Pre extends GunReloadEvent {
-        public Pre(Player player, ItemStack stack) {
-            super(player, stack);
+        public Pre(Player player, ItemStack stack, InteractionHand hand) {
+            super(player, stack, hand);
         }
     }
 
@@ -50,8 +58,8 @@ public class GunReloadEvent extends PlayerEvent {
      * @author Ocelot
      */
     public static class Post extends GunReloadEvent {
-        public Post(Player player, ItemStack stack) {
-            super(player, stack);
+        public Post(Player player, ItemStack stack, InteractionHand hand) {
+            super(player, stack, hand);
         }
     }
 }

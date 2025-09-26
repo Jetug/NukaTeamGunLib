@@ -3,7 +3,6 @@ package com.nukateam.ntgl.common.util.trackers;
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.event.GunReloadEvent;
-import com.nukateam.ntgl.common.util.util.DelayedTask;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
@@ -16,6 +15,7 @@ import com.nukateam.ntgl.common.network.message.S2CMessageReload;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -44,7 +44,7 @@ public class ReloadTracker {
     private final int startTick;
     private final LivingEntity shooter;
     private int slot = 0;
-    private final HumanoidArm arm;
+    private final InteractionHand arm;
     private final ItemStack weapon;
     private final WeaponItem weaponItem;
     private final Gun gun;
@@ -53,16 +53,16 @@ public class ReloadTracker {
     public boolean isStart = false;
     public boolean isEnd = false;
 
-    private ReloadTracker(LivingEntity entity, HumanoidArm arm) {
+    private ReloadTracker(LivingEntity entity, InteractionHand arm) {
         this.startTick = entity.tickCount;
         this.arm = arm;
-        this.weapon = entity.getItemInHand(getInteractionHand(arm));
+        this.weapon = entity.getItemInHand(arm);
         this.weaponItem = ((WeaponItem) weapon.getItem());
         this.gun = weaponItem.getModifiedGun(weapon);
         this.shooter = entity;
 
         if(entity instanceof Player player) {
-            this.slot = arm == HumanoidArm.RIGHT ? player.getInventory().selected : Inventory.SLOT_OFFHAND;
+            this.slot = arm == InteractionHand.MAIN_HAND ? player.getInventory().selected : Inventory.SLOT_OFFHAND;
         }
 
         var data = new GunData(weapon, entity);
@@ -122,7 +122,7 @@ public class ReloadTracker {
      * @return True if it's the same weapon and slot
      */
     private boolean isSameWeapon(LivingEntity entity) {
-        if(arm == HumanoidArm.RIGHT)
+        if(arm == InteractionHand.MAIN_HAND)
             return !this.weapon.isEmpty() && entity.getMainHandItem() == this.weapon;
         else return !this.weapon.isEmpty() && entity.getOffhandItem() == this.weapon;
     }
@@ -163,17 +163,17 @@ public class ReloadTracker {
 
     private static void handTick(LivingEntity entity) {
         if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(entity)) {
-            handTick(entity, HumanoidArm.RIGHT);
+            handTick(entity, InteractionHand.MAIN_HAND);
         }
         else if (ModSyncedDataKeys.RELOADING_LEFT.getValue(entity)) {
-            handTick(entity, HumanoidArm.LEFT);
+            handTick(entity, InteractionHand.OFF_HAND);
         }
         else if (RELOAD_TRACKER_MAP.containsKey(entity)) {
             RELOAD_TRACKER_MAP.remove(entity);
         }
     }
 
-    private static void handTick(LivingEntity shooter, HumanoidArm arm) {
+    private static void handTick(LivingEntity shooter, InteractionHand arm) {
         if (addTracker(shooter, arm)) return;
         var tracker = RELOAD_TRACKER_MAP.get(shooter);
         var data = new GunData(tracker.weapon, shooter);
@@ -185,7 +185,7 @@ public class ReloadTracker {
 
         if (isSameWeapon || (!tracker.isEnd && (isWeaponFull || hasNoAmmo))) {
             RELOAD_TRACKER_MAP.remove(shooter);
-            var reloadKey = getReloadKey(arm);
+            var reloadKey = ModSyncedDataKeys.getReloadKey(arm);
             reloadKey.setValue(shooter, false);
         }
         else if(loadingType == LoadingType.MAGAZINE){
@@ -338,24 +338,23 @@ public class ReloadTracker {
         tracker.reloadTick = GunModifierHelper.getReloadTime(data);
     }
 
-    public static void startReloading(LivingEntity entity, HumanoidArm arm){
-        var reloadKey = getReloadKey(arm);
+    public static void startReloading(LivingEntity entity, InteractionHand arm){
+        var reloadKey = ModSyncedDataKeys.getReloadKey(arm);
         reloadKey.setValue(entity, true);
         addTracker(entity, arm);
     }
 
-    private static SyncedDataKey<LivingEntity, Boolean> getReloadKey(HumanoidArm arm) {
-        var reloadKey = arm == HumanoidArm.RIGHT ?
-                ModSyncedDataKeys.RELOADING_RIGHT: ModSyncedDataKeys.RELOADING_LEFT;
-        return reloadKey;
-    }
+//    private static SyncedDataKey<LivingEntity, Boolean> getReloadKey(HumanoidArm arm) {
+//        getReloadKey()
+//        var reloadKey = arm == InteractionHand.MAIN_HAND ?
+//                ModSyncedDataKeys.RELOADING_RIGHT: ModSyncedDataKeys.RELOADING_LEFT;
+//        return reloadKey;
+//    }
 
-    private static boolean addTracker(LivingEntity entity, HumanoidArm arm) {
-        var reloadKey = getReloadKey(arm);
+    private static boolean addTracker(LivingEntity entity, InteractionHand arm) {
+        var reloadKey = ModSyncedDataKeys.getReloadKey(arm);
 
-        var gunItem = arm == HumanoidArm.RIGHT ?
-                entity.getMainHandItem().getItem():
-                entity.getOffhandItem().getItem();
+        var gunItem = entity.getItemInHand(arm).getItem();
 
         if (!RELOAD_TRACKER_MAP.containsKey(entity)) {
             if (!(gunItem instanceof WeaponItem)) {
@@ -367,21 +366,23 @@ public class ReloadTracker {
         return false;
     }
 
-    private static void stopReloading(GunData data, Gun gun, HumanoidArm arm) {
-        var reloadKey = getReloadKey(arm);
+    private static void stopReloading(GunData data, Gun gun, InteractionHand hand) {
+        var reloadKey = ModSyncedDataKeys.getReloadKey(hand);
         var entity = data.shooter;
         RELOAD_TRACKER_MAP.remove(entity);
         reloadKey.setValue(entity, false);
         final var finalPlayer = entity;
 //        DelayedTask.runAfter(4, () -> gun.playCockSound(finalPlayer));
-        var oppositeStack = LivingEntityUtils.getItemInHand(entity, arm.getOpposite());
 
-        if (arm == HumanoidArm.RIGHT
+        var oppositeHand = LivingEntityUtils.getOppositeHand(hand);
+        var oppositeStack = entity.getItemInHand(oppositeHand);
+
+        if (hand == InteractionHand.MAIN_HAND
                 && oppositeStack.getItem() instanceof WeaponItem
                 && !GunModifierHelper.isWeaponFull(new GunData(oppositeStack, entity))) {
-            PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) entity, new S2CMessageReload(true, arm.getOpposite()));
+            PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) entity, new S2CMessageReload(true, oppositeHand));
         }
 
-        MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post((ServerPlayer)entity, data.gun));
+        MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post((ServerPlayer)entity, data.gun, hand));
     }
 }

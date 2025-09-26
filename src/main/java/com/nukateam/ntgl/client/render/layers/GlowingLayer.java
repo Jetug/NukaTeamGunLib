@@ -5,17 +5,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.client.model.IGlowingModel;
 import com.nukateam.ntgl.common.util.util.ResourceUtils;
 import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.cache.texture.GeoAbstractTexture;
 import mod.azure.azurelib.core.animatable.GeoAnimatable;
 import mod.azure.azurelib.renderer.GeoRenderer;
-import mod.azure.azurelib.renderer.layer.AutoGlowingGeoLayer;
 import mod.azure.azurelib.renderer.layer.GeoRenderLayer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -29,10 +24,7 @@ public class GlowingLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {
     }
 
     protected boolean resourceExists(ResourceLocation location){
-        if (!textures.containsKey(location))
-            textures.put(location, ResourceUtils.resourceExists(location));
-
-        return textures.get(location);
+        return textures.computeIfAbsent(location, ResourceUtils::resourceExists);
     }
 
     @Override
@@ -48,7 +40,6 @@ public class GlowingLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {
 
     protected void renderLayer(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, MultiBufferSource bufferSource, float partialTick, int packedLight, ResourceLocation texture) {
         var renderTypeNew = RenderType.entityTranslucentEmissive(texture);
-//        var renderTypeNew = AutoGlowingTexture.getRenderType(texture);
 
         poseStack.pushPose();
         {

@@ -99,9 +99,9 @@ public class HammerPose extends WeaponPose {
                         .setRotationPointY(2)
                         .setRotationPointZ(1))
                 .setLeftArm(new LimbPose()
-                        .setRotationAngleX(-65 - 15 + 15)
-                        .setRotationAngleY(35 + 50 - 30)
-                        .setRotationAngleZ(-10 - 15)
+                        .setRotationAngleX(-65)
+                        .setRotationAngleY(55)
+                        .setRotationAngleZ(-25)
 
                         .setRotationPointY(2)
                         .setRotationPointZ(-1));

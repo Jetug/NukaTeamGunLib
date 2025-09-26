@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 
 public class S2CMessageReload extends PlayMessage<S2CMessageReload> {
@@ -12,9 +13,9 @@ public class S2CMessageReload extends PlayMessage<S2CMessageReload> {
 
     public S2CMessageReload() {}
 
-    public S2CMessageReload(boolean reload, HumanoidArm arm) {
+    public S2CMessageReload(boolean reload, InteractionHand arm) {
         this.reload = reload;
-        this.isRightHand = arm == HumanoidArm.RIGHT;
+        this.isRightHand = arm == InteractionHand.MAIN_HAND;
     }
 
     public S2CMessageReload(boolean reload, boolean isRightHand) {
