@@ -41,7 +41,7 @@ public class MissileRenderer extends EntityRenderer<MissileEntity> {
                 15728880, poseStack, renderTypeBuffer, entity.level(), 0);
 
         poseStack.translate(0, -1, 0);
-        ModelRenderUtil.renderModel(SpecialModels.FLAME.getModel(), entity.getItem(), poseStack, renderTypeBuffer, 15728880, OverlayTexture.NO_OVERLAY);
+//        ModelRenderUtil.renderModel(SpecialModels.FLAME.getModel(), entity.getItem(), poseStack, renderTypeBuffer, 15728880, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
     }
 }

@@ -173,8 +173,8 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 controller.setAnimationSpeed(1);
                 var shooter = getEntity();
 
-                if (!isFirstPerson(transformType))
-                    return event.setAndContinue(getStaticAnimation(event));
+                if (!isHandTransform(transformType))
+                    return event.setAndContinue(getHoldAnimation(event));
 
                 var isShooting = shootingHandler.isShooting(shooter, arm);
                 var data = shootingHandler.getShootingData(arm);
@@ -182,7 +182,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
                 if(ClientEquipHandler.get().isEquiping(arm)) {
                     animation = getEquipAnimation(event);
-                    Ntgl.LOGGER.debug("!Equip");
+//                    Ntgl.LOGGER.debug("!Equip");
                 }
                 else if(ClientMeleeHandler.isOnDelay(shooter, arm)){
                     animation = getMeleeDelayAnimation(event);
@@ -212,7 +212,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                         currentGun = getGunItem();
                         animation = playGunAnim(SHOT, LOOP);
                     }
-                    Ntgl.LOGGER.debug("! Hold");
+//                    Ntgl.LOGGER.debug("! Hold");
                 }
 
                 return animation != null ? event.setAndContinue(animation): PlayState.STOP;
@@ -259,24 +259,17 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected RawAnimation getHideAnimation(AnimationState<GunAnimator> event) {
-        if(isFirstPerson(transformType))
-            return begin().then(Animations.HIDE, HOLD_ON_LAST_FRAME);
-        else return getHoldAnimation(event);
+        return begin().then(Animations.HIDE, HOLD_ON_LAST_FRAME);
     }
 
     protected RawAnimation getInspectionAnimation(AnimationState<GunAnimator> event) {
-        if(isFirstPerson(transformType)) {
             RawAnimation animation;
             animation = playGunAnim(Animations.INSPECT, PLAY_ONCE);
             animationHelper.syncAnimation(event, Animations.INSPECT, ClientHandler.getMaxInspectionTicks());
             return animation;
-        }
-        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getChargingAnimation(AnimationState<GunAnimator> event, ShootingData shootingData) {
-        if(isFirstPerson(transformType)) {
-
             var animation = begin();
             if (animationHelper.hasAnimation(Animations.CHARGE)) {
                 BARREL_CONTROLLER.stop();
@@ -285,8 +278,6 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 animationHelper.syncAnimation(event, Animations.CHARGE, fireDelay);
             }
             return animation;
-        }
-        else return getHoldAnimation(event);
     }
 
 //    protected RawAnimation getMeleeAnimation(AnimationState<GunAnimator> event) {
@@ -305,46 +296,33 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 //    }
 
     protected RawAnimation getMeleeDelayAnimation(AnimationState<GunAnimator> event) {
-        if(isFirstPerson(transformType)) {
             var animation = playGunAnim(MELEE, LOOP);
             animationHelper.syncAnimation(event, MELEE, meleeDelay);
             return animation;
-        }
-        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getMeleeCooldownAnimation(AnimationState<GunAnimator> event) {
-        if(isFirstPerson(transformType)) {
             if (!animationHelper.hasAnimation(MELEE_END))
                 return getHoldAnimation(event);
 
             var animation = playGunAnim(MELEE_END, LOOP);
             animationHelper.syncAnimation(event, MELEE_END, meleeCooldown);
             return animation;
-        }
-        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getEquipAnimation(AnimationState<GunAnimator> event) {
-        if(isFirstPerson(transformType)) {
             var animation = playGunAnim(EQUIP, LOOP);
             animationHelper.syncAnimation(event, EQUIP, equipTime);
             return animation;
-        }
-        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getShootingAnimation(AnimationState<GunAnimator> event) {
-        if(isFirstPerson(transformType)) {
             var animation = playGunAnim(SHOT, LOOP);
             animationHelper.syncAnimation(event, SHOT, rate);
             return animation;
-        }
-        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getReloadingAnimation(AnimationState<GunAnimator> event) {
-        if(isFirstPerson(transformType)) {
             var animation = begin();
 
             if (ModSyncedDataKeys.RELOAD_START.getValue(getEntity())) {
@@ -356,8 +334,6 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             }
 
             return animation;
-        }
-        else return getHoldAnimation(event);
     }
 
     protected RawAnimation getDefaultReloadAnimation(AnimationState<GunAnimator> event) {
@@ -391,17 +367,33 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected RawAnimation playGunAnim(String name, LoopType loopType) {
-        return begin().then(getGunAnim(name), loopType);
+        if(isFirstPerson(getTransformType())) {
+            var gunAnim = getGunAnim(name);
+            return begin().then(gunAnim, loopType);
+        }
+        else {
+            var gunAnim = getGunAnim(name);
+            gunAnim += TPV_SUFFIX;
+
+            if(animationHelper.hasAnimation(gunAnim)){
+                return begin().then(gunAnim, loopType);
+            }
+            return begin();
+        }
     }
 
     protected String getGunAnim(String name){
         var entity = getEntity();
+
         var currentItem = entity.getItemInHand(arm);
         var oppositeItem = entity.getItemInHand(PlayerHelper.getOpposite(arm));
         var isOneHanded = isOneHanded(currentItem) && isOneHanded(oppositeItem) || arm == InteractionHand.OFF_HAND || !oppositeItem.isEmpty();
         var hasShield = isOneHanded(currentItem) && oppositeItem.getItem() instanceof ShieldItem;
-        if ((hasShield || isOneHanded) && animationHelper.hasAnimation(name + Animations.ONE_HAND_SUFFIX))
-            return name + Animations.ONE_HAND_SUFFIX;
+
+        if ((hasShield || isOneHanded) && animationHelper.hasAnimation(name + Animations.ONE_HAND_SUFFIX)) {
+            name += Animations.ONE_HAND_SUFFIX;
+        }
+
         return name;
     }
 
