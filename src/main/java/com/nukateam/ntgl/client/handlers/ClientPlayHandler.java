@@ -123,12 +123,7 @@ public class ClientPlayHandler {
         var entity = Minecraft.getInstance().level.getEntity(id);
 
         if(entity instanceof AbstractClientPlayer player){
-            if(message.getAnimation() == AnimationType.MELEE){
-                PlayerAnimations.playMeleeAnimation(player, message.getHand());
-            }
-            else if(message.getAnimation() == AnimationType.RELOAD){
-                PlayerAnimations.playReloadAnimation(player, message.getHand());
-            }
+            message.getAnimation().playAnimation(player, message.getHand());
         }
     }
 

@@ -1,8 +1,7 @@
 package com.nukateam.ntgl.modules.datapack.handlers;
 
-import com.jetug.chassis_core.ChassisCore;
-import com.jetug.chassis_core.common.network.PacketHandler;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
 import com.nukateam.ntgl.modules.datapack.managers.*;
 import net.minecraftforge.event.AddReloadListenerEvent;

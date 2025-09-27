@@ -14,8 +14,6 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
-import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.components.OptionsList;

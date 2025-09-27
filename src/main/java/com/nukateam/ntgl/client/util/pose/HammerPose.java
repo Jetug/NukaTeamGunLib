@@ -1,18 +1,9 @@
 package com.nukateam.ntgl.client.util.pose;
 
-import com.jetug.chassis_core.common.util.helpers.PlayerUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.ClientDebug;
-import com.nukateam.ntgl.client.util.IHeldAnimation;
-import com.nukateam.ntgl.client.util.handler.AimingHandler;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.data.holders.GripType;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;

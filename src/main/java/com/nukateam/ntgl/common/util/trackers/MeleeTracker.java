@@ -3,9 +3,11 @@ package com.nukateam.ntgl.common.util.trackers;
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.event.MeleeAttackEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.util.util.*;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
@@ -78,17 +80,17 @@ public class MeleeTracker {
         addTracker(entity, arm);
     }
 
-    private static boolean addTracker(LivingEntity entity, InteractionHand arm) {
-        var dataKey = getDataKey(arm);
-
-        var gunItem = entity.getItemInHand(arm).getItem();
+    private static boolean addTracker(LivingEntity entity, InteractionHand hand) {
+        var dataKey = getDataKey(hand);
+        var gunItem = entity.getItemInHand(hand).getItem();
 
         if (!TRACKER_MAP.containsKey(entity)) {
             if (!(gunItem instanceof WeaponItem)) {
                 dataKey.setValue(entity, false);
                 return true;
             }
-            TRACKER_MAP.put(entity, new Tracker(entity, arm));
+            TRACKER_MAP.put(entity, new Tracker(entity, hand));
+            PacketHandler.sendAnimation(entity, hand, AnimationType.MELEE);
         }
         return false;
     }

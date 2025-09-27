@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess.getPlayerAssociatedData;
@@ -24,56 +25,36 @@ public class PlayerAnimationHelper {
     public static final SpeedModifier SPEED_NORMAL = new SpeedModifier(1);
     public static final SpeedModifier SPEED_MIRROR = new SpeedModifier(1);
 
-    public static ModifierLayer<IAnimation> normalLayer;
-    public static ModifierLayer<IAnimation> mirrorLayer;
+//    public static ModifierLayer<IAnimation> normalLayer;
+//    public static ModifierLayer<IAnimation> mirrorLayer;
 
     @OnlyIn(Dist.CLIENT)
-    public static void playAnim(Player player, ResourceLocation name, int length, boolean mirror) {
+    public static void playAnim(AbstractClientPlayer player, ResourceLocation name, int length, boolean mirror) {
         if (player == null) return;
-        if(mirrorLayer == null){
-            mirrorLayer = getAnimationLayer((AbstractClientPlayer)player, MIRROR_ANIMATION);
-            mirrorLayer.addModifier(SPEED_MIRROR, 0);
-            mirrorLayer.addModifier(new MirrorModifier(), 1);
-        }
-        if(normalLayer == null){
-            normalLayer = getAnimationLayer((AbstractClientPlayer)player, ANIMATION);
-            normalLayer.addModifier(SPEED_NORMAL, 0);
-        }
 
-        var animationLayer = mirror ? mirrorLayer : normalLayer;
+        var animationLayer = mirror ? getMirrorLayer(player) : getNormalLayer(player);
         var speedModifier = mirror ? SPEED_MIRROR : SPEED_NORMAL;
         var animation = PlayerAnimationRegistry.getAnimation(name);
 
-        if (animationLayer != null && animation != null) {
+        if (animation != null) {
             var duration = animation.getLength();
             speedModifier.speed = (float)duration / (float)length;
             animationLayer.setAnimation(new KeyframeAnimationPlayer(animation));
         }
     }
-//
-//    @OnlyIn(Dist.CLIENT)
-//    public static void playAnim(Player player, ResourceLocation name, int length, boolean mirror) {
-//        if (player == null) return;
-//
-//        var animationLayer = getAnimationLayer((AbstractClientPlayer)player, MIRROR_ANIMATION);
-//        var animation = PlayerAnimationRegistry.getAnimation(name);
-//
-//        if (animationLayer != null && animation != null) {
-//            var duration = animation.getLength();
-//            var multiplier = (float)duration / (float)length;
-//
-////            SPEED_NORMAL.speed = multiplier;
-//
-//            try{
-//                animationLayer.removeModifier(0);
-//            } catch (Exception e){}
-//
-//            animationLayer.addModifier(new SpeedModifier(multiplier), 0);
-////            if(mirror) animationLayer.addModifier(new MirrorModifier(), 1);
-//
-//            animationLayer.setAnimation(new KeyframeAnimationPlayer(animation));
-//        }
-//    }
+
+    private static @NotNull ModifierLayer<IAnimation> getNormalLayer(AbstractClientPlayer player) {
+        var normalLayer = getAnimationLayer(player, ANIMATION);
+        normalLayer.addModifier(SPEED_NORMAL, 0);
+        return normalLayer;
+    }
+
+    private static @NotNull ModifierLayer<IAnimation> getMirrorLayer(AbstractClientPlayer player) {
+        var mirrorLayer = getAnimationLayer(player, MIRROR_ANIMATION);
+        mirrorLayer.addModifier(SPEED_MIRROR, 0);
+        mirrorLayer.addModifier(new MirrorModifier(), 1);
+        return mirrorLayer;
+    }
 
     @OnlyIn(Dist.CLIENT)
     public static void stopAnim(Player player, boolean mirror) {

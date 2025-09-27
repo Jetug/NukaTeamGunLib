@@ -45,8 +45,8 @@
     }
   },
   "animations": {
-    "ntgl:fire": "ntgl:gun_fire",
-    "ntgl:reload": "ntgl:gun_reload"
+    "ntgl:fire": "ntgl:pistol_fire",
+    "ntgl:reload": "ntgl:revolver_reload"
   },
   "textures": {
     "default" : "ntgl:textures/guns/classic10mm/classic10mm.png",

@@ -51,7 +51,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected Modules modules = new Modules();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
-    protected HashMap<AnimationType, ResourceLocation> animations = new HashMap<>(Map.of(AnimationType.RELOAD, RELOAD));
+    protected HashMap<AnimationType, ResourceLocation> animations = new HashMap<>();
 //    @Ignored
 //    protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
     protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
