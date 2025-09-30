@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.data.attachment.impl;
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
+import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.data.GunData;
 import net.minecraft.ChatFormatting;
@@ -16,7 +17,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The base attachment object
@@ -178,6 +181,23 @@ public class Attachment {
             addPerk(positivePerks, outputRate < inputRate, "perk.ntgl.rate", percent);
         }
 
+        var inputFireModes = new HashSet<FireMode>();
+        Set<FireMode> outputFireModes = new HashSet<>();
+
+        for (var modifier : modifiers) {
+            outputFireModes = modifier.modifyFireModes(inputFireModes, data);
+        }
+
+        if (!outputFireModes.equals(inputFireModes)) {
+            var modes = Component.empty();
+
+            for (var fireMode : outputFireModes) {
+                modes.append(fireMode.getDisplayName()).append("; ");
+            }
+
+            addPerk(positivePerks, "perk.ntgl.fire_modes", modes);
+        }
+
 //        positivePerks.addAll(negativePerks);
         setPerks(positivePerks);
         return perks;
@@ -196,5 +216,11 @@ public class Attachment {
 
         components.add(Component.translatable(icon, Component.translatable(id, params).withStyle(ChatFormatting.WHITE))
                 .withStyle(style));
+    }
+
+    private static void addPerk(List<Component> components, String id, Component param) {
+        components.add(Component.literal("   ")
+                .append(Component.translatable(id).withStyle(ChatFormatting.WHITE))
+                .append(param).withStyle(ChatFormatting.GRAY));
     }
 }

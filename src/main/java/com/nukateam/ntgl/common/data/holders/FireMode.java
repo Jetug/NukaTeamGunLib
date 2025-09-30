@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.data.holders;
 
 import com.nukateam.ntgl.Ntgl;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -25,6 +26,10 @@ public class FireMode extends ResourceHolder {
         registerType(AUTO);
         registerType(BURST);
         registerType(MULTI);
+    }
+
+    public Component getDisplayName(){
+        return Component.translatable("fire_mode." + getId().getNamespace() + "." + getId().getPath());
     }
 
     public FireMode(ResourceLocation id) {

@@ -150,6 +150,11 @@
   "enchantment.ntgl.puncturing.desc": "Creates a chance that a bullet will deal critical damage",
   "enchantment.ntgl.fire_starter.desc": "Fired bullets will set blocks and entities on fire upon impact",
 
+  "fire_mode.ntgl.semi": "Semi Auto",
+  "fire_mode.ntgl.auto": "Auto",
+  "fire_mode.ntgl.burst": "Burst",
+  "fire_mode.ntgl.multi": "Multi Shot",
+
   "perk.ntgl.title": "Perks:",
   "perk.ntgl.entry.positive": "+ %s",
   "perk.ntgl.entry.negative": "- %s",
@@ -167,6 +172,7 @@
   "perk.ntgl.rate": "Fire Rate %s",
   "gui.ntgl.assemble": "Assemble",
   "gui.ntgl.show_remaining": "Show Remaining",
+  "perk.ntgl.fire_modes": "Fire Modes: ",
 
   "button.controls.ntgl": "NTGL Weapons",
   "button.categories.ntgl": "NTGL Weapons",

@@ -1,8 +1,12 @@
 package com.nukateam.example.common.registery;
 
+import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.data.GunData;
 import net.minecraft.util.Mth;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Author: MrCrayfish
@@ -154,6 +158,11 @@ public class GunModifiers {
     };
 
     public static final IGunModifier REDUCED_RECOIL = new IGunModifier() {
+        @Override
+        public Set<FireMode> modifyFireModes(Set<FireMode> fireMode, GunData data) {
+            return Set.of(FireMode.AUTO, FireMode.MULTI);
+        }
+
         @Override
         public float recoilModifier(GunData data) {
             return 1.53F;
