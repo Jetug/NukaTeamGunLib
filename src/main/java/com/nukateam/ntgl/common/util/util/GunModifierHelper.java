@@ -388,7 +388,8 @@ public class GunModifierHelper {
         return GunStateHelper.getProjectileConfig(data).getDamage();
     }
 
-    public static double getModifiedAimDownSightSpeed(GunData data, double speed) {
+    public static double getModifiedAimDownSightSpeed(GunData data) {
+        double speed = GunEnchantmentHelper.getAimDownSightSpeed(data.gun);
         var buffSpeed = new AtomicReference<>(speed);
 
         forEachAttachment(data, (modifier ->

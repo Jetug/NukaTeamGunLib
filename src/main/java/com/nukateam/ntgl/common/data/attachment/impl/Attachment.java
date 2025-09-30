@@ -42,170 +42,159 @@ public class Attachment {
         }
     }
 
-    List<Component> getPerks() {
-        return this.perks;
-    }
+    public List<Component> getPerks() {
+        if (perks != null && !perks.isEmpty()) {
+            return perks;
+        }
 
-    /* Determines the perks of attachments and caches them */
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public static void addInformationEvent(ItemTooltipEvent event) {
-        var stack = event.getItemStack();
         var player = Minecraft.getInstance().player;
-        if (player == null) return;
+        if (player == null) return List.of();
 
         var data = new GunData(new ItemStack(ModGuns.CLASSIC10MM.get()), player);
 
-        if (stack.getItem() instanceof IAttachment<?>) {
-            IAttachment<?> attachment = (IAttachment<?>) stack.getItem();
-            List<Component> perks = attachment.getProperties().getPerks();
-            if (perks != null && perks.size() > 0) {
-                event.getToolTip().add(Component.translatable("perk.ntgl.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
-                event.getToolTip().addAll(perks);
-                return;
-            }
+        var modifiers = getModifiers();
+        var positivePerks = new ArrayList<Component>();
+//        var negativePerks = new ArrayList<Component>();
 
-            IGunModifier[] modifiers = attachment.getProperties().getModifiers();
-            List<Component> positivePerks = new ArrayList<>();
-            List<Component> negativePerks = new ArrayList<>();
+        /* Test for fire sound volume */
+        float inputSound = 1f;
+        float outputSound = inputSound;
 
-            /* Test for fire sound volume */
-            float inputSound = 1.0F;
-            float outputSound = inputSound;
-            for (IGunModifier modifier : modifiers) {
-                outputSound = modifier.modifyFireSoundVolume(outputSound, data);
-            }
-            if (outputSound > inputSound) {
-                addPerk(negativePerks, false, "perk.ntgl.fire_volume.negative");
-            } else if (outputSound < inputSound) {
-                addPerk(positivePerks, true, "perk.ntgl.fire_volume.positive");
-            }
+        for (var modifier : modifiers) {
+            outputSound = modifier.modifyFireSoundVolume(outputSound, data);
+        }
+        if (outputSound != inputSound) {
+            var percent = getPercent(outputSound / inputSound);
+            addPerk(positivePerks, outputSound < inputSound, "perk.ntgl.fire_volume", percent);
+        }
 
-            /* Test for silenced */
-            for (IGunModifier modifier : modifiers) {
-                if (modifier.silencedFire(data)) {
-                    addPerk(positivePerks, true, "perk.ntgl.silenced.positive");
-                    break;
-                }
-            }
-
-            /* Test for sound radius */
-            double inputRadius = 10.0;
-            double outputRadius = inputRadius;
-            for (IGunModifier modifier : modifiers) {
-                outputRadius = modifier.modifyFireSoundRadius(outputRadius, data);
-            }
-            if (outputRadius > inputRadius) {
-                addPerk(negativePerks, false, "perk.ntgl.sound_radius.negative");
-            } else if (outputRadius < inputRadius) {
-                addPerk(positivePerks, true, "perk.ntgl.sound_radius.positive");
-            }
-
-            /* Test for additional damage */
-            float additionalDamage = 0.0F;
-            for (IGunModifier modifier : modifiers) {
-                additionalDamage += modifier.additionalDamage(data);
-            }
-            if (additionalDamage > 0.0F) {
-                addPerk(positivePerks, true, "perk.ntgl.additional_damage.positive", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage / 2.0));
-            } else if (additionalDamage < 0.0F) {
-                addPerk(negativePerks, false, "perk.ntgl.additional_damage.negative", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage / 2.0));
-            }
-
-            /* Test for modified damage */
-            float inputDamage = 10.0F;
-            float outputDamage = inputDamage;
-            for (IGunModifier modifier : modifiers) {
-                outputDamage = modifier.modifyDamage(outputDamage, data);
-            }
-            if (outputDamage > inputDamage) {
-                addPerk(positivePerks, true, "perk.ntgl.modified_damage.positive");
-            } else if (outputDamage < inputDamage) {
-                addPerk(negativePerks, false, "perk.ntgl.modified_damage.negative");
-            }
-
-            /* Test for modified damage */
-            double inputSpeed = 10.0;
-            double outputSpeed = inputSpeed;
-            for (IGunModifier modifier : modifiers) {
-                outputSpeed = modifier.modifyProjectileSpeed(outputSpeed, data);
-            }
-            if (outputSpeed > inputSpeed) {
-                addPerk(positivePerks, true, "perk.ntgl.projectile_speed.positive");
-            } else if (outputSpeed < inputSpeed) {
-                addPerk(negativePerks, false, "perk.ntgl.projectile_speed.negative");
-            }
-
-            /* Test for modified projectile spread */
-            float inputSpread = 10.0F;
-            float outputSpread = inputSpread;
-            for (IGunModifier modifier : modifiers) {
-                outputSpread = modifier.modifyProjectileSpread(outputSpread, data);
-            }
-            if (outputSpread > inputSpread) {
-                addPerk(negativePerks, false, "perk.ntgl.projectile_spread.negative");
-            } else if (outputSpread < inputSpread) {
-                addPerk(positivePerks, true, "perk.ntgl.projectile_spread.positive");
-            }
-
-            /* Test for modified projectile life */
-            int inputLife = 100;
-            int outputLife = inputLife;
-            for (IGunModifier modifier : modifiers) {
-                outputLife = modifier.modifyProjectileLife(outputLife, data);
-            }
-            if (outputLife > inputLife) {
-                addPerk(positivePerks, true, "perk.ntgl.projectile_life.positive");
-            } else if (outputLife < inputLife) {
-                addPerk(negativePerks, false, "perk.ntgl.projectile_life.negative");
-            }
-
-            /* Test for modified recoil */
-            float inputRecoil = 10.0F;
-            float outputRecoil = inputRecoil;
-            for (IGunModifier modifier : modifiers) {
-                outputRecoil *= modifier.recoilModifier(data);
-            }
-            if (outputRecoil > inputRecoil) {
-                addPerk(negativePerks, false, "perk.ntgl.recoil.negative");
-            } else if (outputRecoil < inputRecoil) {
-                addPerk(positivePerks, true, "perk.ntgl.recoil.positive");
-            }
-
-            /* Test for aim down sight speed */
-            double inputAdsSpeed = 10.0;
-            double outputAdsSpeed = inputAdsSpeed;
-            for (IGunModifier modifier : modifiers) {
-                outputAdsSpeed = modifier.modifyAimDownSightSpeed(outputAdsSpeed, data);
-            }
-            if (outputAdsSpeed > inputAdsSpeed) {
-                addPerk(positivePerks, true, "perk.ntgl.ads_speed.positive");
-            } else if (outputAdsSpeed < inputAdsSpeed) {
-                addPerk(negativePerks, false, "perk.ntgl.ads_speed.negative");
-            }
-
-            /* Test for fire rate */
-            int inputRate = 10;
-            int outputRate = inputRate;
-            for (IGunModifier modifier : modifiers) {
-                outputRate = modifier.modifyFireRate(outputRate, data);
-            }
-            if (outputRate > inputRate) {
-                addPerk(negativePerks, false, "perk.ntgl.rate.negative");
-            } else if (outputRate < inputRate) {
-                addPerk(positivePerks, true, "perk.ntgl.rate.positive");
-            }
-
-            positivePerks.addAll(negativePerks);
-            attachment.getProperties().setPerks(positivePerks);
-            if (positivePerks.size() > 0) {
-                event.getToolTip().add(Component.translatable("perk.ntgl.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
-                event.getToolTip().addAll(positivePerks);
+        /* Test for silenced */
+        for (var modifier : modifiers) {
+            if (modifier.silencedFire(data)) {
+                addPerk(positivePerks, true, "perk.ntgl.silenced.positive");
+                break;
             }
         }
+
+        /* Test for sound radius */
+        double inputRadius = 1.0;
+        double outputRadius = inputRadius;
+        for (var modifier : modifiers) {
+            outputRadius = modifier.modifyFireSoundRadius(outputRadius, data);
+        }
+        if (outputRadius != inputRadius) {
+            var percent = getPercent(outputRadius / inputRadius);
+            addPerk(positivePerks, outputRadius < inputRadius, "perk.ntgl.sound_radius.positive", percent);
+        }
+
+//        /* Test for additional damage */
+//        var additionalDamage = 0F;
+//        for (var modifier : modifiers) {
+//            additionalDamage += modifier.additionalDamage(data);
+//        }
+
+//        if (additionalDamage != 0) {
+//            var value = ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage / 2.0);
+//            addPerk(positivePerks, additionalDamage > 0.0f, "perk.ntgl.additional_damage.positive", value);
+//        }
+
+        /* Test for modified damage */
+        float inputDamage = 1.0f;
+        float outputDamage = inputDamage;
+        for (var modifier : modifiers) {
+            outputDamage = modifier.modifyDamage(outputDamage, data);
+        }
+        if (outputDamage != inputDamage) {
+            addPerk(positivePerks, outputDamage > inputDamage, "perk.ntgl.modified_damage");
+        }
+
+        /* Test for modified damage */
+        double inputSpeed = 1.0f;
+        double outputSpeed = inputSpeed;
+        for (var modifier : modifiers) {
+            outputSpeed = modifier.modifyProjectileSpeed(outputSpeed, data);
+        }
+
+        if (outputSpeed != inputSpeed) {
+            addPerk(positivePerks, outputSpeed > inputSpeed, "perk.ntgl.projectile_speed");
+        }
+
+        /* Test for modified projectile spread */
+        var inputSpread = 1.0f;
+        var outputSpread = inputSpread;
+
+        for (var modifier : modifiers) {
+            outputSpread = modifier.modifyProjectileSpread(outputSpread, data);
+        }
+
+        if (outputSpread != inputSpread) {
+            var percent = getPercent(outputSpread / inputSpread);
+            addPerk(positivePerks, outputSpread < inputSpread, "perk.ntgl.projectile_spread", percent);
+        }
+
+        /* Test for modified projectile life */
+        int inputLife = 1;
+        int outputLife = inputLife;
+
+        for (var modifier : modifiers) {
+            outputLife = modifier.modifyProjectileLife(outputLife, data);
+        }
+        if (outputLife != inputLife) {
+            var percent = getPercent((float)outputLife / (float)inputLife);
+            addPerk(positivePerks, outputLife > inputLife, "perk.ntgl.projectile_life", percent);
+        }
+
+        /* Test for modified recoil */
+        float inputRecoil = 1.0f;
+        float outputRecoil = inputRecoil;
+        for (var modifier : modifiers) {
+            outputRecoil *= modifier.recoilModifier(data);
+        }
+        if (outputRecoil != inputRecoil) {
+            var percent = getPercent(outputRecoil / inputRecoil);
+            addPerk(positivePerks, outputRecoil < inputRecoil, "perk.ntgl.recoil", percent);
+        }
+
+        /* Test for aim down sight speed */
+        double inputAdsSpeed = 1.0f;
+        double outputAdsSpeed = inputAdsSpeed;
+
+        for (var modifier : modifiers) {
+            outputAdsSpeed = modifier.modifyAimDownSightSpeed(outputAdsSpeed, data);
+        }
+        if (outputAdsSpeed != inputAdsSpeed) {
+            var percent = getPercent(outputAdsSpeed / inputAdsSpeed);
+            addPerk(positivePerks, outputAdsSpeed > inputAdsSpeed, "perk.ntgl.ads_speed", percent);
+        }
+
+        /* Test for fire rate */
+        int inputRate = 1;
+        int outputRate = inputRate;
+        for (var modifier : modifiers) {
+            outputRate = modifier.modifyFireRate(outputRate, data);
+        }
+        if (outputRate != inputRate) {
+            var percent = getPercent(outputRate / (float)inputRate);
+            addPerk(positivePerks, outputRate < inputRate, "perk.ntgl.rate", percent);
+        }
+
+//        positivePerks.addAll(negativePerks);
+        setPerks(positivePerks);
+        return perks;
+    }
+
+    private static String getPercent(double value){
+        var percent = Math.abs((1 - value) * 100f);
+        var formated = ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(percent);
+        var sign = value >= 1 ? "+" : "-";
+        return sign + formated + "%";
     }
 
     private static void addPerk(List<Component> components, boolean positive, String id, Object... params) {
-        components.add(Component.translatable(positive ? "perk.ntgl.entry.positive" : "perk.ntgl.entry.negative", Component.translatable(id, params).withStyle(ChatFormatting.WHITE)).withStyle(positive ? ChatFormatting.DARK_AQUA : ChatFormatting.GOLD));
+        var icon = positive ? "perk.ntgl.entry.positive" : "perk.ntgl.entry.negative";
+        var style = positive ? ChatFormatting.DARK_AQUA : ChatFormatting.GOLD;
+
+        components.add(Component.translatable(icon, Component.translatable(id, params).withStyle(ChatFormatting.WHITE))
+                .withStyle(style));
     }
 }

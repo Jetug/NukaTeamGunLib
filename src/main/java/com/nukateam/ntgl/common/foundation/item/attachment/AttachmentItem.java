@@ -1,5 +1,8 @@
 package com.nukateam.ntgl.common.foundation.item.attachment;
 
+import com.nukateam.example.common.registery.ModGuns;
+import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
@@ -7,10 +10,19 @@ import com.nukateam.ntgl.common.data.attachment.impl.Attachment;
 import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AttachmentItem<T extends Attachment> extends Item implements IAttachment<T>, IMeta, IColored{
     private final T attachmentData;
@@ -52,5 +64,14 @@ public class AttachmentItem<T extends Attachment> extends Item implements IAttac
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return enchantment == Enchantments.BINDING_CURSE || super.canApplyAtEnchantingTable(stack, enchantment);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level pLevel, List<Component> tooltip, TooltipFlag pIsAdvanced) {
+        var perks = getProperties().getPerks();
+        if (perks != null && !perks.isEmpty()) {
+            tooltip.add(Component.translatable("perk.ntgl.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
+            tooltip.addAll(perks);
+        }
     }
 }

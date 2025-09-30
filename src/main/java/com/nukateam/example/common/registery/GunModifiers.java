@@ -156,7 +156,7 @@ public class GunModifiers {
     public static final IGunModifier REDUCED_RECOIL = new IGunModifier() {
         @Override
         public float recoilModifier(GunData data) {
-            return 0.5F;
+            return 1.53F;
         }
 
         @Override

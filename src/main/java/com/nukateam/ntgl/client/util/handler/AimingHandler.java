@@ -270,8 +270,7 @@ public class AimingHandler {
             this.previousAim = this.currentAim;
             if (ModSyncedDataKeys.AIMING.getValue(player) || (player.isLocalPlayer() && AimingHandler.this.isAiming())) {
                 if (this.currentAim < MAX_AIM_PROGRESS) {
-                    double speed = GunEnchantmentHelper.getAimDownSightSpeed(heldItem);
-                    speed = GunModifierHelper.getModifiedAimDownSightSpeed(gunData, speed);
+                    var speed = GunModifierHelper.getModifiedAimDownSightSpeed(gunData);
                     this.currentAim += speed;
                     if (this.currentAim > MAX_AIM_PROGRESS) {
                         this.currentAim = (int) MAX_AIM_PROGRESS;
@@ -279,8 +278,7 @@ public class AimingHandler {
                 }
             } else {
                 if (this.currentAim > 0) {
-                    double speed = GunEnchantmentHelper.getAimDownSightSpeed(heldItem);
-                    speed = GunModifierHelper.getModifiedAimDownSightSpeed(gunData, speed);
+                    var speed = GunModifierHelper.getModifiedAimDownSightSpeed(gunData);
                     this.currentAim -= speed;
                     if (this.currentAim < 0) {
                         this.currentAim = 0;
