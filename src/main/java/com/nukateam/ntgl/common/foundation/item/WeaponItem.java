@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.client.animators.GunAnimator;
+import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
@@ -164,9 +165,14 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
         addAmmo(tooltip, tagCompound, data);
         addFuel(tooltip, data);
 
-        tooltip.add(Component.translatable("info.ntgl.attachment_help", Component.keybind("key.ntgl.attachments")
-         .getString().toUpperCase(Locale.ENGLISH))
+
+        var name = KeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
+
+        tooltip.add(Component.translatable("info.ntgl.attachment_help", name)
          .withStyle(ChatFormatting.YELLOW));
+
+
+//        Component.keybind("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH))
     }
 
     private static void addAmmoType(List<Component> tooltip, GunData data) {

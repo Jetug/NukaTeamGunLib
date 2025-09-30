@@ -372,29 +372,39 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
             return begin().then(gunAnim, loopType);
         }
         else {
-            var gunAnim = getGunAnim(name);
-            gunAnim += TPV_SUFFIX;
+            var tpvOneHand = name + ONE_HAND_SUFFIX + TPV_SUFFIX;
+            var tpv = name + TPV_SUFFIX;
 
-            if(animationHelper.hasAnimation(gunAnim)){
-                return begin().then(gunAnim, loopType);
+            if(isOneHanded() && animationHelper.hasAnimation(tpvOneHand)){
+                return begin().then(tpvOneHand, loopType);
+            }
+            else if(animationHelper.hasAnimation(tpv)){
+                return begin().then(tpv, loopType);
             }
             return begin();
         }
     }
 
     protected String getGunAnim(String name){
-        var entity = getEntity();
+        var isOneHanded = isOneHanded();
 
-        var currentItem = entity.getItemInHand(arm);
-        var oppositeItem = entity.getItemInHand(PlayerHelper.getOpposite(arm));
-        var isOneHanded = isOneHanded(currentItem) && isOneHanded(oppositeItem) || arm == InteractionHand.OFF_HAND || !oppositeItem.isEmpty();
-        var hasShield = isOneHanded(currentItem) && oppositeItem.getItem() instanceof ShieldItem;
-
-        if ((hasShield || isOneHanded) && animationHelper.hasAnimation(name + Animations.ONE_HAND_SUFFIX)) {
+        if (isOneHanded && animationHelper.hasAnimation(name + Animations.ONE_HAND_SUFFIX)) {
             name += Animations.ONE_HAND_SUFFIX;
         }
 
         return name;
+    }
+
+    private boolean isOneHanded() {
+        var entity = getEntity();
+
+        var currentItem = entity.getItemInHand(arm);
+        var oppositeItem = entity.getItemInHand(PlayerHelper.getOpposite(arm));
+        var isOneHanded = (isOneHanded(currentItem) && isOneHanded(oppositeItem) && !oppositeItem.isEmpty())
+                || arm == InteractionHand.OFF_HAND;
+        var hasShield = isOneHanded(currentItem) && oppositeItem.getItem() instanceof ShieldItem;
+        var isS = (hasShield || isOneHanded);
+        return isS;
     }
 
     private void setupCycledAnimations() {
