@@ -11,7 +11,6 @@ import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
-import com.nukateam.ntgl.common.util.annotation.Ignored;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -31,13 +30,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
@@ -218,7 +215,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return this.modules.zoom != null;
     }
 
-    public ArrayList<Modules.Attachment> getAttachments(ArrayList<ItemStack> itemStacks) {
+    public ArrayList<Modules.Attachment> getAttachmentConfigs(ArrayList<ItemStack> itemStacks) {
         var result = new ArrayList<Modules.Attachment>();
 
         for (var stack : itemStacks) {

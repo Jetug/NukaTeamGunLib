@@ -1,6 +1,8 @@
 package com.nukateam.ntgl.common.foundation.item.attachment;
 
 import com.nukateam.example.common.registery.ModGuns;
+import com.nukateam.ntgl.client.tooltip.ItemsClientTooltipComponent;
+import com.nukateam.ntgl.client.tooltip.ItemsTooltipData;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
@@ -16,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -23,6 +26,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,5 +79,16 @@ public class AttachmentItem<T extends Attachment> extends Item implements IAttac
             tooltip.add(Component.translatable("perk.ntgl.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
             tooltip.addAll(perks);
         }
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+//        var weapons = Arrays.asList(
+//                new ItemStack(Items.DIAMOND),
+//                new ItemStack(Items.EMERALD)
+//        );
+
+        var weapons = getProperties().getWeapons(this);
+        return Optional.of(new ItemsTooltipData(weapons));
     }
 }

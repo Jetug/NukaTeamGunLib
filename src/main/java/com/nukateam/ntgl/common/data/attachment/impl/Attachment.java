@@ -2,15 +2,20 @@ package com.nukateam.ntgl.common.data.attachment.impl;
 
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.WeaponHelper;
 import com.nukateam.ntgl.common.data.holders.FireMode;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.data.GunData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,6 +31,7 @@ import java.util.Set;
 public class Attachment {
     protected IGunModifier[] modifiers;
     private List<Component> perks = null;
+    private List<ItemStack> weapons = null;
 
     public Attachment(IGunModifier... modifiers) {
         this.modifiers = modifiers;
@@ -39,6 +45,45 @@ public class Attachment {
         if (this.perks == null) {
             this.perks = perks;
         }
+    }
+
+    void setWeapons(List<ItemStack> perks) {
+        if (this.weapons == null) {
+            this.weapons = perks;
+        }
+    }
+
+    public List<ItemStack> getWeapons(Item attachment) {
+        if (this.weapons != null && !this.weapons.isEmpty()) {
+            return this.weapons;
+        }
+
+        weapons = new ArrayList<>();
+
+        var weaponItems = WeaponHelper.getWeaponItems();
+        var id = ForgeRegistries.ITEMS.getKey(attachment);
+
+        for (var item : weaponItems) {
+            var weapon = (IWeapon)item;
+            if(hasAttachment(weapon, id)){
+                weapons.add(new ItemStack(item));
+            }
+        }
+
+        return this.weapons;
+    }
+
+    private static boolean hasAttachment(IWeapon weapon, ResourceLocation id) {
+        var list = weapon.getConfig().getModules().getAttachments().values();
+
+        for (var configs : list){
+            for (var config: configs){
+                if(config.getItemId() != null && config.getItemId().equals(id)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public List<Component> getPerks() {
@@ -194,18 +239,20 @@ public class Attachment {
         }
 
         if (outputSpeed != inputSpeed) {
-            addPerk(positivePerks, outputSpeed > inputSpeed, "perk.ntgl.projectile_speed");
+            var percent = getPercent(outputSpeed / inputSpeed);
+            addPerk(positivePerks, outputSpeed > inputSpeed, "perk.ntgl.projectile_speed", percent);
         }
     }
 
     private void damage(GunData data, ArrayList<Component> positivePerks) {
-        float inputDamage = 1.0f;
-        float outputDamage = inputDamage;
+        float input = 1.0f;
+        float output = input;
         for (var modifier : getModifiers()) {
-            outputDamage = modifier.modifyDamage(outputDamage, data);
+            output = modifier.modifyDamage(output, data);
         }
-        if (outputDamage != inputDamage) {
-            addPerk(positivePerks, outputDamage > inputDamage, "perk.ntgl.modified_damage");
+        if (output != input) {
+            var percent = getPercent(output / input);
+            addPerk(positivePerks, output > input, "perk.ntgl.modified_damage", percent);
         }
     }
 
@@ -216,7 +263,8 @@ public class Attachment {
             output = modifier.modifyMeleeDamage(output, data);
         }
         if (output != input) {
-            addPerk(positivePerks, output > input, "perk.ntgl.melee_damage");
+            var percent = getPercent(output / input);
+            addPerk(positivePerks, output > input, "perk.ntgl.melee_damage", percent);
         }
     }
 

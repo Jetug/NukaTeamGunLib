@@ -165,6 +165,8 @@
   "perk.ntgl.additional_damage.negative": "Negative Damage §r(§l-%s ♥§r)",
   "perk.ntgl.projectile_speed": "Projectile Speed %s",
   "perk.ntgl.modified_damage": "Weapon Damage %s",
+  "perk.ntgl.melee_damage": "Melee Damage %s",
+  "perk.ntgl.melee_distance": "Melee Distance %s",
   "perk.ntgl.projectile_spread": "Projectile Spread %s",
   "perk.ntgl.projectile_life": "Damage Range %s",
   "perk.ntgl.recoil": "Recoil %s",

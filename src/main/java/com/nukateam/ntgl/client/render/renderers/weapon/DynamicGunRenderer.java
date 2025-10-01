@@ -51,7 +51,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmedMode
         this.gun = GunModifierHelper.getGun(stack);
         this.gunStack = stack;
         this.gunAttachments = GunStateHelper.getAttachmentItems(stack);
-        this.configAttachments = gun.getAttachments(gunAttachments);
+        this.configAttachments = gun.getAttachmentConfigs(gunAttachments);
         this.currentEntity = entity;
 
         if (TransformUtils.isFirstPerson(transformType) && AimingHandler.isScoping(stack))
