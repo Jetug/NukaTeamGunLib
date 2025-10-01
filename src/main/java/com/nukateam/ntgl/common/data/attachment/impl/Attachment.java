@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.data.attachment.impl;
 
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.data.GunData;
@@ -11,9 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
@@ -46,20 +42,34 @@ public class Attachment {
     }
 
     public List<Component> getPerks() {
-        if (perks != null && !perks.isEmpty()) {
-            return perks;
+        if (this.perks != null && !this.perks.isEmpty()) {
+            return this.perks;
         }
 
         var player = Minecraft.getInstance().player;
         if (player == null) return List.of();
 
         var data = new GunData(new ItemStack(ModGuns.CLASSIC10MM.get()), player);
+        var perks = new ArrayList<Component>();
 
-        var modifiers = getModifiers();
-        var positivePerks = new ArrayList<Component>();
-//        var negativePerks = new ArrayList<Component>();
+        fireSoundVolume(data, perks);
+        silenced(data, perks);
+        soundRadius(data, perks);
+        damage(data, perks);
+        meleeDamage(data, perks);
+        meleeDistance(data, perks);
+        speed(data, perks);
+        spread(data, perks);
+        life(data, perks);
+        recoil(data, perks);
+        adsSpeed(data, perks);
+        rate(data, perks);
+        fireModes(data, perks);
+        setPerks(perks);
+        return this.perks;
+    }
 
-        /* Test for fire sound volume */
+    private void fireSoundVolume(GunData data, ArrayList<Component> positivePerks) {
         float inputSound = 1f;
         float outputSound = inputSound;
 
@@ -70,16 +80,18 @@ public class Attachment {
             var percent = getPercent(outputSound / inputSound);
             addPerk(positivePerks, outputSound < inputSound, "perk.ntgl.fire_volume", percent);
         }
+    }
 
-        /* Test for silenced */
+    private void silenced(GunData data, ArrayList<Component> positivePerks) {
         for (var modifier : modifiers) {
             if (modifier.silencedFire(data)) {
                 addPerk(positivePerks, true, "perk.ntgl.silenced.positive");
                 break;
             }
         }
+    }
 
-        /* Test for sound radius */
+    private void soundRadius(GunData data, ArrayList<Component> positivePerks) {
         double inputRadius = 1.0;
         double outputRadius = inputRadius;
         for (var modifier : modifiers) {
@@ -89,98 +101,9 @@ public class Attachment {
             var percent = getPercent(outputRadius / inputRadius);
             addPerk(positivePerks, outputRadius < inputRadius, "perk.ntgl.sound_radius.positive", percent);
         }
+    }
 
-//        /* Test for additional damage */
-//        var additionalDamage = 0F;
-//        for (var modifier : modifiers) {
-//            additionalDamage += modifier.additionalDamage(data);
-//        }
-
-//        if (additionalDamage != 0) {
-//            var value = ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage / 2.0);
-//            addPerk(positivePerks, additionalDamage > 0.0f, "perk.ntgl.additional_damage.positive", value);
-//        }
-
-        /* Test for modified damage */
-        float inputDamage = 1.0f;
-        float outputDamage = inputDamage;
-        for (var modifier : modifiers) {
-            outputDamage = modifier.modifyDamage(outputDamage, data);
-        }
-        if (outputDamage != inputDamage) {
-            addPerk(positivePerks, outputDamage > inputDamage, "perk.ntgl.modified_damage");
-        }
-
-        /* Test for modified damage */
-        double inputSpeed = 1.0f;
-        double outputSpeed = inputSpeed;
-        for (var modifier : modifiers) {
-            outputSpeed = modifier.modifyProjectileSpeed(outputSpeed, data);
-        }
-
-        if (outputSpeed != inputSpeed) {
-            addPerk(positivePerks, outputSpeed > inputSpeed, "perk.ntgl.projectile_speed");
-        }
-
-        /* Test for modified projectile spread */
-        var inputSpread = 1.0f;
-        var outputSpread = inputSpread;
-
-        for (var modifier : modifiers) {
-            outputSpread = modifier.modifyProjectileSpread(outputSpread, data);
-        }
-
-        if (outputSpread != inputSpread) {
-            var percent = getPercent(outputSpread / inputSpread);
-            addPerk(positivePerks, outputSpread < inputSpread, "perk.ntgl.projectile_spread", percent);
-        }
-
-        /* Test for modified projectile life */
-        int inputLife = 1;
-        int outputLife = inputLife;
-
-        for (var modifier : modifiers) {
-            outputLife = modifier.modifyProjectileLife(outputLife, data);
-        }
-        if (outputLife != inputLife) {
-            var percent = getPercent((float)outputLife / (float)inputLife);
-            addPerk(positivePerks, outputLife > inputLife, "perk.ntgl.projectile_life", percent);
-        }
-
-        /* Test for modified recoil */
-        float inputRecoil = 1.0f;
-        float outputRecoil = inputRecoil;
-        for (var modifier : modifiers) {
-            outputRecoil *= modifier.recoilModifier(data);
-        }
-        if (outputRecoil != inputRecoil) {
-            var percent = getPercent(outputRecoil / inputRecoil);
-            addPerk(positivePerks, outputRecoil < inputRecoil, "perk.ntgl.recoil", percent);
-        }
-
-        /* Test for aim down sight speed */
-        double inputAdsSpeed = 1.0f;
-        double outputAdsSpeed = inputAdsSpeed;
-
-        for (var modifier : modifiers) {
-            outputAdsSpeed = modifier.modifyAimDownSightSpeed(outputAdsSpeed, data);
-        }
-        if (outputAdsSpeed != inputAdsSpeed) {
-            var percent = getPercent(outputAdsSpeed / inputAdsSpeed);
-            addPerk(positivePerks, outputAdsSpeed > inputAdsSpeed, "perk.ntgl.ads_speed", percent);
-        }
-
-        /* Test for fire rate */
-        int inputRate = 1;
-        int outputRate = inputRate;
-        for (var modifier : modifiers) {
-            outputRate = modifier.modifyFireRate(outputRate, data);
-        }
-        if (outputRate != inputRate) {
-            var percent = getPercent(outputRate / (float)inputRate);
-            addPerk(positivePerks, outputRate < inputRate, "perk.ntgl.rate", percent);
-        }
-
+    private void fireModes(GunData data, ArrayList<Component> positivePerks) {
         var inputFireModes = new HashSet<FireMode>();
         Set<FireMode> outputFireModes = new HashSet<>();
 
@@ -197,10 +120,115 @@ public class Attachment {
 
             addPerk(positivePerks, "perk.ntgl.fire_modes", modes);
         }
+    }
 
-//        positivePerks.addAll(negativePerks);
-        setPerks(positivePerks);
-        return perks;
+    private void rate(GunData data, ArrayList<Component> positivePerks) {
+        int inputRate = 1;
+        int outputRate = inputRate;
+        for (var modifier : modifiers) {
+            outputRate = modifier.modifyFireRate(outputRate, data);
+        }
+        if (outputRate != inputRate) {
+            var percent = getPercent(outputRate / (float)inputRate);
+            addPerk(positivePerks, outputRate < inputRate, "perk.ntgl.rate", percent);
+        }
+    }
+
+    private void adsSpeed(GunData data, ArrayList<Component> positivePerks) {
+        double inputAdsSpeed = 1.0f;
+        double outputAdsSpeed = inputAdsSpeed;
+
+        for (var modifier : modifiers) {
+            outputAdsSpeed = modifier.modifyAimDownSightSpeed(outputAdsSpeed, data);
+        }
+        if (outputAdsSpeed != inputAdsSpeed) {
+            var percent = getPercent(outputAdsSpeed / inputAdsSpeed);
+            addPerk(positivePerks, outputAdsSpeed > inputAdsSpeed, "perk.ntgl.ads_speed", percent);
+        }
+    }
+
+    private void recoil(GunData data, ArrayList<Component> positivePerks) {
+        float inputRecoil = 1.0f;
+        float outputRecoil = inputRecoil;
+        for (var modifier : modifiers) {
+            outputRecoil *= modifier.recoilModifier(data);
+        }
+        if (outputRecoil != inputRecoil) {
+            var percent = getPercent(outputRecoil / inputRecoil);
+            addPerk(positivePerks, outputRecoil < inputRecoil, "perk.ntgl.recoil", percent);
+        }
+    }
+
+    private void life(GunData data, ArrayList<Component> positivePerks) {
+        int inputLife = 1;
+        int outputLife = inputLife;
+
+        for (var modifier : modifiers) {
+            outputLife = modifier.modifyProjectileLife(outputLife, data);
+        }
+        if (outputLife != inputLife) {
+            var percent = getPercent((float)outputLife / (float)inputLife);
+            addPerk(positivePerks, outputLife > inputLife, "perk.ntgl.projectile_life", percent);
+        }
+    }
+
+    private void spread(GunData data, ArrayList<Component> positivePerks) {
+        var inputSpread = 1.0f;
+        var outputSpread = inputSpread;
+
+        for (var modifier : modifiers) {
+            outputSpread = modifier.modifyProjectileSpread(outputSpread, data);
+        }
+
+        if (outputSpread != inputSpread) {
+            var percent = getPercent(outputSpread / inputSpread);
+            addPerk(positivePerks, outputSpread < inputSpread, "perk.ntgl.projectile_spread", percent);
+        }
+    }
+
+    private void speed(GunData data, ArrayList<Component> positivePerks) {
+        double inputSpeed = 1.0f;
+        double outputSpeed = inputSpeed;
+        for (var modifier : modifiers) {
+            outputSpeed = modifier.modifyProjectileSpeed(outputSpeed, data);
+        }
+
+        if (outputSpeed != inputSpeed) {
+            addPerk(positivePerks, outputSpeed > inputSpeed, "perk.ntgl.projectile_speed");
+        }
+    }
+
+    private void damage(GunData data, ArrayList<Component> positivePerks) {
+        float inputDamage = 1.0f;
+        float outputDamage = inputDamage;
+        for (var modifier : getModifiers()) {
+            outputDamage = modifier.modifyDamage(outputDamage, data);
+        }
+        if (outputDamage != inputDamage) {
+            addPerk(positivePerks, outputDamage > inputDamage, "perk.ntgl.modified_damage");
+        }
+    }
+
+    private void meleeDamage(GunData data, ArrayList<Component> positivePerks) {
+        float input = 1.0f;
+        float output = input;
+        for (var modifier : getModifiers()) {
+            output = modifier.modifyMeleeDamage(output, data);
+        }
+        if (output != input) {
+            addPerk(positivePerks, output > input, "perk.ntgl.melee_damage");
+        }
+    }
+
+    private void meleeDistance(GunData data, ArrayList<Component> positivePerks) {
+        float input = 1.0f;
+        float output = input;
+        for (var modifier : getModifiers()) {
+            output = modifier.modifyMeleeDistance(output, data);
+        }
+        if (output != input) {
+            addPerk(positivePerks, output > input, "perk.ntgl.melee_distance");
+        }
     }
 
     private static String getPercent(double value){

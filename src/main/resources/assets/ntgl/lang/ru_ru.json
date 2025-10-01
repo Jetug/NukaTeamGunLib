@@ -140,7 +140,14 @@
   "enchantment.ntgl.accelerator.desc": "Увеличивает скорость выпущенных снарядов, заставляя их наносить больше урона",
   "enchantment.ntgl.puncturing.desc": "Есть шанс, что пуля нанесет критический урон",
   "enchantment.ntgl.fire_starter.desc": "Пули поджигают блоки и объекты при попадании",
+
+  "fire_mode.ntgl.semi": "Полуавтомат",
+  "fire_mode.ntgl.auto": "Авто",
+  "fire_mode.ntgl.burst": "Очередь",
+  "fire_mode.ntgl.multi": "Мульти-выстрел",
+
   "perk.ntgl.title": "Перки:",
+  "perk.ntgl.fire_modes": "Fire Modes: ",
   "perk.ntgl.entry.positive": "+ %s",
   "perk.ntgl.entry.negative": "- %s",
   "perk.ntgl.fire_volume": "Звук огня",
@@ -189,5 +196,5 @@
   "ntgl.chat.open_curseforge_page": "Open CurseForge Page",
   "ntgl.chat.install_configured": "Install %s to access config options",
 
-  "item.ntgl.classic10mm": "Кольт 6520"
+  "item.ntgl.classic10mm": "Кольт 6520",
 }

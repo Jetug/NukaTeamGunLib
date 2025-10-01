@@ -13,6 +13,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -23,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AttachmentItem<T extends Attachment> extends Item implements IAttachment<T>, IMeta, IColored{
     private final T attachmentData;
