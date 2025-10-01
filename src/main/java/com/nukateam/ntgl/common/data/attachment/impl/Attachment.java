@@ -164,8 +164,15 @@ public class Attachment {
     }
 
     private void recoil(GunData data, ArrayList<Component> positivePerks) {
-        getNumericPerk(positivePerks, "perk.ntgl.recoil",
-                (modifier, val) -> modifier.recoilModifier(data));
+        float inputRecoil = 1.0f;
+        float outputRecoil = inputRecoil;
+        for (var modifier : modifiers) {
+            outputRecoil *= modifier.recoilModifier(data);
+        }
+        if (outputRecoil != inputRecoil) {
+            var percent = getPercent(outputRecoil / inputRecoil);
+            addPerk(positivePerks, outputRecoil < inputRecoil, "perk.ntgl.recoil", percent);
+        }
     }
 
     private void life(GunData data, ArrayList<Component> positivePerks) {
