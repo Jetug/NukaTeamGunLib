@@ -106,6 +106,11 @@ public class GunModifiers {
         public double modifyAimDownSightSpeed(double speed, GunData data) {
             return speed * 0.9F;
         }
+
+        @Override
+        public int modifyFireRate(int rate, GunData data) {
+            return rate + 20;
+        }
     };
 
     public static final IGunModifier SUPER_STABILISED = new IGunModifier() {
@@ -155,12 +160,27 @@ public class GunModifiers {
         public float modifyProjectileSpread(float spread, GunData data) {
             return spread * 0.8F;
         }
+
+        @Override
+        public int modifyFireRate(int rate, GunData data) {
+            return rate * 2;
+        }
+
+        @Override
+        public float modifyDamage(float damage, GunData data) {
+            return damage + 20;
+        }
     };
 
     public static final IGunModifier REDUCED_RECOIL = new IGunModifier() {
         @Override
         public Set<FireMode> modifyFireModes(Set<FireMode> fireMode, GunData data) {
             return Set.of(FireMode.AUTO, FireMode.MULTI);
+        }
+
+        @Override
+        public int modifyFireRate(int rate, GunData data) {
+            return 15;
         }
 
         @Override

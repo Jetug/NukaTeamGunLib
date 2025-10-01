@@ -116,37 +116,22 @@ public class Attachment {
     }
 
     private void fireSoundVolume(GunData data, ArrayList<Component> positivePerks) {
-        float inputSound = 1f;
-        float outputSound = inputSound;
-
-        for (var modifier : modifiers) {
-            outputSound = modifier.modifyFireSoundVolume(outputSound, data);
-        }
-        if (outputSound != inputSound) {
-            var percent = getPercent(outputSound / inputSound);
-            addPerk(positivePerks, outputSound < inputSound, "perk.ntgl.fire_volume", percent);
-        }
+        getNumericPerk(positivePerks, "perk.ntgl.fire_volume",
+                (modifier, val) -> modifier.modifyFireSoundVolume(val, data));
     }
 
     private void silenced(GunData data, ArrayList<Component> positivePerks) {
         for (var modifier : modifiers) {
             if (modifier.silencedFire(data)) {
-                addPerk(positivePerks, true, "perk.ntgl.silenced.positive");
+                addPerk(positivePerks, true, "perk.ntgl.silenced");
                 break;
             }
         }
     }
 
     private void soundRadius(GunData data, ArrayList<Component> positivePerks) {
-        double inputRadius = 1.0;
-        double outputRadius = inputRadius;
-        for (var modifier : modifiers) {
-            outputRadius = modifier.modifyFireSoundRadius(outputRadius, data);
-        }
-        if (outputRadius != inputRadius) {
-            var percent = getPercent(outputRadius / inputRadius);
-            addPerk(positivePerks, outputRadius < inputRadius, "perk.ntgl.sound_radius.positive", percent);
-        }
+        getNumericPerk(positivePerks, "perk.ntgl.sound_radius",
+                (modifier, val) -> (float) modifier.modifyFireSoundRadius(val, data));
     }
 
     private void fireModes(GunData data, ArrayList<Component> positivePerks) {
@@ -169,143 +154,82 @@ public class Attachment {
     }
 
     private void rate(GunData data, ArrayList<Component> positivePerks) {
-
-        rate2((modifier, val) -> modifier.modifyFireRate(output, data));
-
-        for (var modifier : modifiers) {
-            output = modifier.modifyFireRate(output, data);
-            output2 = modifier.modifyFireRate(output2, data);
-        }
-    }
-
-    private void rate2(GunData data, ArrayList<Component> positivePerks, BiFunction<IGunModifier, Double, Double> function) {
-        int input = 1;
-        int output = input;
-
-        int input2 = 2;
-        int output2 = input2;
-
-        for (var modifier : modifiers) {
-            output = modifier.modifyFireRate(output, data);
-            output2 = modifier.modifyFireRate(output2, data);
-        }
-        if (output != input) {
-            var p1 = output / (float) input;
-            var p2 = output2 / (float) input2;
-
-            var value = "";
-            if(p1 == p2) {
-                value = getPercent(p1);
-            }
-            else {
-                int num = 0;
-                for (var modifier : modifiers) {
-                    num = modifier.modifyFireRate(num, data);
-                }
-                value = getValue(num);
-            }
-
-            addPerk(positivePerks, output < input, "perk.ntgl.rate", value);
-        }
+        getNumericPerk(positivePerks, "perk.ntgl.rate", (modifier, val) ->
+                (float)modifier.modifyFireRate((int)(float)val, data));
     }
 
     private void adsSpeed(GunData data, ArrayList<Component> positivePerks) {
-        double inputAdsSpeed = 1.0f;
-        double outputAdsSpeed = inputAdsSpeed;
-
-        for (var modifier : modifiers) {
-            outputAdsSpeed = modifier.modifyAimDownSightSpeed(outputAdsSpeed, data);
-        }
-        if (outputAdsSpeed != inputAdsSpeed) {
-            var percent = getPercent(outputAdsSpeed / inputAdsSpeed);
-            addPerk(positivePerks, outputAdsSpeed > inputAdsSpeed, "perk.ntgl.ads_speed", percent);
-        }
+        getNumericPerk(positivePerks, "perk.ntgl.ads_speed", true,
+                (modifier, val) -> (float)modifier.modifyAimDownSightSpeed(val, data));
     }
 
     private void recoil(GunData data, ArrayList<Component> positivePerks) {
-        float inputRecoil = 1.0f;
-        float outputRecoil = inputRecoil;
-        for (var modifier : modifiers) {
-            outputRecoil *= modifier.recoilModifier(data);
-        }
-        if (outputRecoil != inputRecoil) {
-            var percent = getPercent(outputRecoil / inputRecoil);
-            addPerk(positivePerks, outputRecoil < inputRecoil, "perk.ntgl.recoil", percent);
-        }
+        getNumericPerk(positivePerks, "perk.ntgl.recoil",
+                (modifier, val) -> modifier.recoilModifier(data));
     }
 
     private void life(GunData data, ArrayList<Component> positivePerks) {
-        int inputLife = 1;
-        int outputLife = inputLife;
-
-        for (var modifier : modifiers) {
-            outputLife = modifier.modifyProjectileLife(outputLife, data);
-        }
-        if (outputLife != inputLife) {
-            var percent = getPercent((float)outputLife / (float)inputLife);
-            addPerk(positivePerks, outputLife > inputLife, "perk.ntgl.projectile_life", percent);
-        }
+        getNumericPerk(positivePerks, "perk.ntgl.projectile_life", true,
+                (modifier, val) -> (float)modifier.modifyProjectileLife((int)(float)val, data));
     }
 
     private void spread(GunData data, ArrayList<Component> positivePerks) {
-        var inputSpread = 1.0f;
-        var outputSpread = inputSpread;
-
-        for (var modifier : modifiers) {
-            outputSpread = modifier.modifyProjectileSpread(outputSpread, data);
-        }
-
-        if (outputSpread != inputSpread) {
-            var percent = getPercent(outputSpread / inputSpread);
-            addPerk(positivePerks, outputSpread < inputSpread, "perk.ntgl.projectile_spread", percent);
-        }
+        getNumericPerk(positivePerks, "perk.ntgl.projectile_spread",
+                (modifier, val) -> modifier.modifyProjectileSpread(val, data));
     }
 
     private void speed(GunData data, ArrayList<Component> positivePerks) {
-        double inputSpeed = 1.0f;
-        double outputSpeed = inputSpeed;
-        for (var modifier : modifiers) {
-            outputSpeed = modifier.modifyProjectileSpeed(outputSpeed, data);
-        }
-
-        if (outputSpeed != inputSpeed) {
-            var percent = getPercent(outputSpeed / inputSpeed);
-            addPerk(positivePerks, outputSpeed > inputSpeed, "perk.ntgl.projectile_speed", percent);
-        }
+        getNumericPerk(positivePerks, "perk.ntgl.projectile_speed",
+                (modifier, val) -> (float)modifier.modifyProjectileSpeed(val, data));
     }
 
     private void damage(GunData data, ArrayList<Component> positivePerks) {
-        float input = 1.0f;
-        float output = input;
-        for (var modifier : getModifiers()) {
-            output = modifier.modifyDamage(output, data);
-        }
-        if (output != input) {
-            var percent = getPercent(output / input);
-            addPerk(positivePerks, output > input, "perk.ntgl.modified_damage", percent);
-        }
+        getNumericPerk(positivePerks, "perk.ntgl.modified_damage",
+                (modifier, val) -> modifier.modifyDamage(val, data));
     }
 
     private void meleeDamage(GunData data, ArrayList<Component> positivePerks) {
-        float input = 1.0f;
-        float output = input;
-        for (var modifier : getModifiers()) {
-            output = modifier.modifyMeleeDamage(output, data);
-        }
-        if (output != input) {
-            var percent = getPercent(output / input);
-            addPerk(positivePerks, output > input, "perk.ntgl.melee_damage", percent);
-        }
+        getNumericPerk(positivePerks, "perk.ntgl.melee_damage",
+                (modifier, val) -> modifier.modifyMeleeDamage(val, data));
     }
 
     private void meleeDistance(GunData data, ArrayList<Component> positivePerks) {
-        float input = 1.0f;
-        float output = input;
-        for (var modifier : getModifiers()) {
-            output = modifier.modifyMeleeDistance(output, data);
+        getNumericPerk(positivePerks, "perk.ntgl.melee_distance",
+                (modifier, val) -> modifier.modifyMeleeDistance(val, data));
+    }
+
+    private void getNumericPerk(ArrayList<Component> positivePerks, String name, BiFunction<IGunModifier, Float, Float> function) {
+        getNumericPerk(positivePerks,  name, false, function);
+    }
+
+    private void getNumericPerk(ArrayList<Component> positivePerks, String name, boolean invert, BiFunction<IGunModifier, Float, Float> function) {
+        float input1 = 1.0f;
+        float input2 = 2.0f;
+        float output1 = input1;
+        float output2 = input2;
+
+        for (var modifier : modifiers) {
+            output1 = function.apply(modifier, output1);
+            output2 = function.apply(modifier, output2);
         }
-        if (output != input) {
-            addPerk(positivePerks, output > input, "perk.ntgl.melee_distance");
+        if (output1 != input1) {
+            var outputRatio1 = output1 / input1;
+            var outputRatio2 = output2 / input2;
+            var value = "";
+
+            if(outputRatio1 == outputRatio2) {
+                value = getPercent(outputRatio1);
+            }
+            else {
+                float num = 0f;
+                for (var modifier : modifiers) {
+                    num = function.apply(modifier, num);
+                }
+                value = getValue(num, output1 != output2);
+            }
+
+            var positive = invert ? output1 > input1 : output1 < input1;
+            addPerk(positivePerks, positive, name, value);
         }
     }
 
@@ -316,9 +240,9 @@ public class Attachment {
         return sign + formated + "%";
     }
 
-    private static String getValue(double value){
+    private static String getValue(double value, boolean signed){
         var formated = ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(value);
-        var sign = value > 0 ? "+" : "";
+        var sign = value > 0 && signed ? "+" : "";
         return sign + formated;
     }
 
@@ -326,13 +250,19 @@ public class Attachment {
         var icon = positive ? "perk.ntgl.entry.positive" : "perk.ntgl.entry.negative";
         var style = positive ? ChatFormatting.DARK_AQUA : ChatFormatting.GOLD;
 
-        components.add(Component.translatable(icon, Component.translatable(id, params).withStyle(ChatFormatting.WHITE))
-                .withStyle(style));
+        if(params.length == 1 && params[0] instanceof String value){
+            components.add(Component.translatable(icon, Component.translatable(id, ChatFormatting.WHITE + value).withStyle(ChatFormatting.GRAY))
+                    .withStyle(style));
+        }
+        else {
+            components.add(Component.translatable(icon, Component.translatable(id, params).withStyle(ChatFormatting.GRAY))
+                    .withStyle(style));
+        }
     }
 
     private static void addPerk(List<Component> components, String id, Component param) {
         components.add(Component.literal("   ")
-                .append(Component.translatable(id).withStyle(ChatFormatting.WHITE))
-                .append(param).withStyle(ChatFormatting.GRAY));
+                .append(Component.translatable(id).withStyle(ChatFormatting.GRAY))
+                .append(param).withStyle(ChatFormatting.WHITE));
     }
 }
