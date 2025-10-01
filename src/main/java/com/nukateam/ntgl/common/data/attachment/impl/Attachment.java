@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 /**
  * The base attachment object
@@ -168,14 +169,43 @@ public class Attachment {
     }
 
     private void rate(GunData data, ArrayList<Component> positivePerks) {
-        int inputRate = 1;
-        int outputRate = inputRate;
+
+        rate2((modifier, val) -> modifier.modifyFireRate(output, data));
+
         for (var modifier : modifiers) {
-            outputRate = modifier.modifyFireRate(outputRate, data);
+            output = modifier.modifyFireRate(output, data);
+            output2 = modifier.modifyFireRate(output2, data);
         }
-        if (outputRate != inputRate) {
-            var percent = getPercent(outputRate / (float)inputRate);
-            addPerk(positivePerks, outputRate < inputRate, "perk.ntgl.rate", percent);
+    }
+
+    private void rate2(GunData data, ArrayList<Component> positivePerks, BiFunction<IGunModifier, Double, Double> function) {
+        int input = 1;
+        int output = input;
+
+        int input2 = 2;
+        int output2 = input2;
+
+        for (var modifier : modifiers) {
+            output = modifier.modifyFireRate(output, data);
+            output2 = modifier.modifyFireRate(output2, data);
+        }
+        if (output != input) {
+            var p1 = output / (float) input;
+            var p2 = output2 / (float) input2;
+
+            var value = "";
+            if(p1 == p2) {
+                value = getPercent(p1);
+            }
+            else {
+                int num = 0;
+                for (var modifier : modifiers) {
+                    num = modifier.modifyFireRate(num, data);
+                }
+                value = getValue(num);
+            }
+
+            addPerk(positivePerks, output < input, "perk.ntgl.rate", value);
         }
     }
 
@@ -284,6 +314,12 @@ public class Attachment {
         var formated = ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(percent);
         var sign = value >= 1 ? "+" : "-";
         return sign + formated + "%";
+    }
+
+    private static String getValue(double value){
+        var formated = ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(value);
+        var sign = value > 0 ? "+" : "";
+        return sign + formated;
     }
 
     private static void addPerk(List<Component> components, boolean positive, String id, Object... params) {
