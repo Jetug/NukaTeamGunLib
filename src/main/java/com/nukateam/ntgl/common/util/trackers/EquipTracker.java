@@ -53,7 +53,7 @@ public class EquipTracker {
             }
             else stopEquip(entity, arm);
         }
-//        else stopEquip(entity, arm);
+        else stopEquip(entity, arm);
     }
 
     public static boolean isEquiping(LivingEntity entity, InteractionHand arm){
