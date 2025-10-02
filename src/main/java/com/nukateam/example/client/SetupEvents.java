@@ -15,8 +15,6 @@ public class SetupEvents {
     @SubscribeEvent()
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(RAIDER.get(), RaiderRenderer::new);
-//        event.registerEntityRenderer(DEATHCLAW.get(), DeathclawRenderer::new);
-
         event.registerEntityRenderer(BRAHMIN.get(), (context) -> new SimpleEntityRenderer<>(context, new BrahminModel()));
     }
 

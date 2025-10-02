@@ -18,11 +18,6 @@ public class EntityTypes {
                     .of(Raider::new, MobCategory.CREATURE)
                     .sized(1.0f, 1.9f));
 
-    public static final RegistryObject<EntityType<Deathclaw>> DEATHCLAW =
-            registerEntity("deathclaw", Builder
-                    .of(Deathclaw::new, MobCategory.MONSTER)
-                    .sized(1.5f, 3f));
-
     public static final RegistryObject<EntityType<Brahmin>> BRAHMIN =
             registerEntity("brahmin", Builder
                     .of(Brahmin::new, MobCategory.CREATURE)

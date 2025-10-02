@@ -1,8 +1,5 @@
 package com.nukateam.ntgl.common.foundation.init;
 
-import com.nukateam.example.common.entities.Brahmin;
-import com.nukateam.example.common.entities.Deathclaw;
-import com.nukateam.example.common.entities.Raider;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.common.foundation.entity.misc.AshPile;
@@ -10,13 +7,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.function.BiFunction;
 
 /**
  * Author: MrCrayfish
