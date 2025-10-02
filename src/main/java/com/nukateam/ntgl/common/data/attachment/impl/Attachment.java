@@ -25,8 +25,6 @@ import java.util.function.BiFunction;
 
 /**
  * The base attachment object
- * <p>
- * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class Attachment {
@@ -92,11 +90,17 @@ public class Attachment {
             return this.perks;
         }
 
-        var player = Minecraft.getInstance().player;
-        if (player == null) return List.of();
+//        var player = Minecraft.getInstance().player;
+//        if (player == null) return List.of();
 
-        var data = new GunData(new ItemStack(ModGuns.CLASSIC10MM.get()), player);
+        var data = new GunData(new ItemStack(ModGuns.CLASSIC10MM.get()), null);
         var perks = new ArrayList<Component>();
+
+        getNumericPerk(perks, "perk.ntgl.max_ammo",
+                (modifier, val) -> (float)modifier.modifyMaxAmmo((int)(float)val, data));
+
+        getNumericPerk(perks, "perk.ntgl.projectile_amount",
+                (modifier, val) -> (float)modifier.modifyProjectileAmount((int)(float)val, data));
 
         fireSoundVolume(data, perks);
         silenced(data, perks);

@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.regestry;
+package com.nukateam.ntgl.common.registry;
 
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.common.data.holders.ProjectileType;
@@ -9,8 +9,6 @@ import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.util.interfaces.IProjectileFactory;
 import com.nukateam.ntgl.common.util.interfaces.IThrowableProjectileFactory;
 import org.jetbrains.annotations.NotNull;
-
-import static com.nukateam.ntgl.common.foundation.init.Projectiles.THROWABLE_STUN_GRENADE;
 
 public class ProjectileRegistry {
     private static final IProjectileFactory DEFAULT = (level, entity, weapon, item, modifiedGun) ->

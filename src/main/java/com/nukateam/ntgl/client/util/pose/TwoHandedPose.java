@@ -52,20 +52,37 @@ public class TwoHandedPose extends WeaponPose {
                 .setRenderYawOffset(45F)
                 .setItemRotation(new Vector3f(30F, -11F, 0F))
                 .setRightArm(new LimbPose()
-                        .setRotationAngleX(-60F).setRotationAngleY(-55F).setRotationAngleZ(0F)
-                        .setRotationPointX(-5).setRotationPointY(2).setRotationPointZ(1))
+                        .setRotationAngleX(-60F)
+                        .setRotationAngleY(-55F)
+                        .setRotationAngleZ(0F)
+
+                        .setRotationPointX(-5)
+                        .setRotationPointY(2)
+                        .setRotationPointZ(1))
+
                 .setLeftArm(new LimbPose()
-                        .setRotationAngleX(-65F).setRotationAngleY(-10F).setRotationAngleZ(5F)
-                        .setRotationPointY(2).setRotationPointZ(-1));
+                        .setRotationAngleX(-65F)
+                        .setRotationAngleY(-10F)
+                        .setRotationAngleZ(5F)
+
+                        .setRotationPointY(2)
+                        .setRotationPointZ(-1));
         forwardPose.getAiming()
                 .setRenderYawOffset(45F)
                 .setItemRotation(new Vector3f(5F, -21F, 0F))
                 .setRightArm(new LimbPose()
-                        .setRotationAngleX(-85F).setRotationAngleY(-65F)
-                        .setRotationAngleZ(0F).setRotationPointX(-5).setRotationPointY(2))
+                        .setRotationAngleX(-85F)
+                        .setRotationAngleY(-65F)
+                        .setRotationAngleZ(0F)
+                        .setRotationPointX(-5)
+                        .setRotationPointY(2))
+
                 .setLeftArm(new LimbPose()
-                        .setRotationAngleX(-90F).setRotationAngleY(-15F).setRotationAngleZ(0F)
-                        .setRotationPointY(2).setRotationPointZ(0));
+                        .setRotationAngleX(-90F)
+                        .setRotationAngleY(-15F)
+                        .setRotationAngleZ(0F)
+                        .setRotationPointY(2)
+                        .setRotationPointZ(0));
         return forwardPose;
     }
 

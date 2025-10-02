@@ -12,6 +12,9 @@
       "ntgl:mini_nuke"
     ]
   },
+  "animations": {
+    "ntgl:reload": "ntgl:bazooka_reload"
+  },
   "sounds": {
     "fire": "ntgl:item.fatman.fire",
     "reload": "ntgl:item.fatman.reload"

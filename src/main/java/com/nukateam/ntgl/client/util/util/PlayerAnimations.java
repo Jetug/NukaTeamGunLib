@@ -13,17 +13,17 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 
 public class PlayerAnimations {
-    public static void playFireAnimation(AbstractClientPlayer player, InteractionHand hand) {
+    public static void playFireAnimation(Player player, InteractionHand hand) {
         if (Ntgl.playerAnimatorLoaded) {
             var gunData = new GunData(player.getItemInHand(hand), Minecraft.getInstance().player);
             var rate = GunModifierHelper.getRate(gunData);
             var animation = GunModifierHelper.getAnimation(AnimationType.FIRE, gunData);
 
-            PlayerAnimationHelper.playAnim(player, animation, rate, hand == InteractionHand.OFF_HAND);
+            PlayerAnimationHelper.playAnim((AbstractClientPlayer)player, animation, rate, hand == InteractionHand.OFF_HAND);
         }
     }
 
-    public static void playMeleeAnimation(AbstractClientPlayer player, InteractionHand hand) {
+    public static void playMeleeAnimation(Player player, InteractionHand hand) {
         if (Ntgl.playerAnimatorLoaded) {
             var gunData = new GunData(player.getItemInHand(hand), Minecraft.getInstance().player);
             var delay = GunModifierHelper.getMeleeDelay(gunData);
@@ -31,11 +31,11 @@ public class PlayerAnimations {
 
             var animation = GunModifierHelper.getAnimation(AnimationType.MELEE, gunData);
 
-            PlayerAnimationHelper.playAnim(player, animation, delay + cooldown, hand == InteractionHand.OFF_HAND);
+            PlayerAnimationHelper.playAnim((AbstractClientPlayer)player, animation, delay + cooldown, hand == InteractionHand.OFF_HAND);
         }
     }
 
-    public static void playReloadAnimation(AbstractClientPlayer player, InteractionHand hand) {
+    public static void playReloadAnimation(Player player, InteractionHand hand) {
         if (Ntgl.playerAnimatorLoaded) {
             var reloadDuration = 0;
             var gunData = new GunData(player.getItemInHand(hand), player);
@@ -52,7 +52,7 @@ public class PlayerAnimations {
             else reloadDuration = reloadTime;
 
             var reloadAnimation =  GunModifierHelper.getAnimation(AnimationType.RELOAD, gunData);
-            PlayerAnimationHelper.playAnim(player, reloadAnimation, reloadDuration, hand == InteractionHand.OFF_HAND);
+            PlayerAnimationHelper.playAnim((AbstractClientPlayer)player, reloadAnimation, reloadDuration, hand == InteractionHand.OFF_HAND);
         }
     }
 }

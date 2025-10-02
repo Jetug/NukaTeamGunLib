@@ -31,7 +31,23 @@ public class BazookaPose extends WeaponPose {
     @Override
     protected AimPose getForwardPose() {
         AimPose pose = new AimPose();
-        pose.getIdle().setRenderYawOffset(35F).setRightArm(new LimbPose().setRotationAngleX(-90F).setRotationAngleY(-35F).setRotationAngleZ(0F).setRotationPointY(2).setRotationPointZ(0)).setLeftArm(new LimbPose().setRotationAngleX(-91F).setRotationAngleY(35F).setRotationAngleZ(0F).setRotationPointX(4).setRotationPointY(2).setRotationPointZ(0));
+        pose.getIdle().setRenderYawOffset(35F)
+                .setRightArm(new LimbPose()
+                        .setRotationAngleX(-90F)
+                        .setRotationAngleY(-35F)
+                        .setRotationAngleZ(0F)
+
+                        .setRotationPointY(2)
+                        .setRotationPointZ(0))
+
+                .setLeftArm(new LimbPose()
+                        .setRotationAngleX(-91F)
+                        .setRotationAngleY(35F)
+                        .setRotationAngleZ(0F)
+
+                        .setRotationPointX(4)
+                        .setRotationPointY(2)
+                        .setRotationPointZ(0));
         return pose;
     }
 

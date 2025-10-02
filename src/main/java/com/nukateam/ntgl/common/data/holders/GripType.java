@@ -36,6 +36,9 @@ public class GripType extends ResourceHolder {
     public static final GripType HAMMER =
             new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "hammer"), new HammerPose());
 
+    public static final GripType KNIFE =
+            new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "knife"), new KnifePose(), true);
+
     private static final Map<ResourceLocation, GripType> gripTypeMap = new HashMap<>();
 
     /* Registers the standard grip types when the class is loaded */
@@ -45,6 +48,7 @@ public class GripType extends ResourceHolder {
         registerType(MINI_GUN);
         registerType(BAZOOKA);
         registerType(HAMMER);
+        registerType(KNIFE);
     }
 
     private final IHeldAnimation heldAnimation;

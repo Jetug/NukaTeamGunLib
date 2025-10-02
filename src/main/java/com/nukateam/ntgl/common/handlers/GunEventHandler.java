@@ -25,13 +25,6 @@ public class GunEventHandler {
     public static void attachmentsChanged(AttachmentEvent.ContainerUpdateEvent event) {}
 
     @SubscribeEvent
-    public static void onMelee(MeleeAttackEvent.Pre event) {
-        if(!event.isClient()){
-            PacketHandler.sendAnimation(event.getEntity(), event.getHand(), AnimationType.MELEE);
-        }
-    }
-
-    @SubscribeEvent
     public static void preReload(GunReloadEvent.Pre event) {
         if(!event.isClient()){
             PacketHandler.sendAnimation(event.getEntity(), event.getHand(), AnimationType.RELOAD);

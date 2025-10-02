@@ -1,5 +1,6 @@
 package com.nukateam.example.common.registery;
 
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.data.GunData;
@@ -141,6 +142,21 @@ public class GunModifiers {
     };
 
     public static final IGunModifier LIGHT_RECOIL = new IGunModifier() {
+        @Override
+        public int modifyMaxAmmo(int maxAmmo, GunData data) {
+            return (int)(maxAmmo * 2.5);
+        }
+
+        @Override
+        public int modifyProjectileAmount(int amount, GunData data) {
+            return IGunModifier.super.modifyProjectileAmount(amount, data);
+        }
+
+        @Override
+        public Set<AmmoHolder> modifyAmmoItems(Set<AmmoHolder> item, GunData data) {
+            return IGunModifier.super.modifyAmmoItems(item, data);
+        }
+
         @Override
         public float recoilModifier(GunData data) {
             return 0.75F;

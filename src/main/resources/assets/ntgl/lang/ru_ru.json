@@ -162,9 +162,11 @@
   "perk.ntgl.recoil": "Отдача %s",
   "perk.ntgl.ads_speed": "Скорость прицеливания %s",
   "perk.ntgl.rate": "Скорострельность %s",
+  "perk.ntgl.max_ammo": "Вместимость %s",
+  "perk.ntgl.projectile_amount": "Снарядов за выстрел: %s",
+
   "gui.ntgl.assemble": "Собрать %s",
   "gui.ntgl.show_remaining": "Показать оставшееся",
-
   "key.categories.ntgl": "NTGL Оружие",
   "button.categories.ntgl": "NTGL Оружие",
   "key.ntgl.reload": "Перезарядить",

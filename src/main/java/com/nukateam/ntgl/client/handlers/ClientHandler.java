@@ -1,9 +1,9 @@
 package com.nukateam.ntgl.client.handlers;
 
+import com.nukateam.ntgl.client.registry.*;
 import com.nukateam.ntgl.client.settings.OptionInstances;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
-import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.client.render.screen.AttachmentScreen;
 import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
 import com.nukateam.ntgl.client.util.util.PropertyHelper;
@@ -17,17 +17,13 @@ import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.components.OptionsList;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.MouseSettingsScreen;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.*;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,7 +32,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Field;
 
@@ -71,6 +66,7 @@ public class ClientHandler {
         setupRenderLayers();
         registerColors();
         registerScreenFactories();
+        AnimationRegistry.register();
     }
 
     private static void setupRenderLayers() {

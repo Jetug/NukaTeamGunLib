@@ -41,8 +41,17 @@ public class MiniGunPose extends WeaponPose {
 //                .setItemRotation(new Vector3f(67F, 0F, 0F))
 //                .setItemTranslate(new Vector3f(0F, -18F, -18F))
 //                .setItemRotation(new Vector3f(X, Y, Z))
-                .setRightArm(new LimbPose().setRotationAngleX(-15F).setRotationAngleY(-45F).setRotationAngleZ(0F).setRotationPointY(2))
-                .setLeftArm(new LimbPose().setRotationAngleX(-45F).setRotationAngleY(30F).setRotationAngleZ(0F).setRotationPointY(2));
+                .setRightArm(new LimbPose()
+                        .setRotationAngleX(-15F)
+                        .setRotationAngleY(-45F)
+                        .setRotationAngleZ(0F)
+                        .setRotationPointY(2))
+
+                .setLeftArm(new LimbPose()
+                        .setRotationAngleX(-45F)
+                        .setRotationAngleY(30F)
+                        .setRotationAngleZ(0F)
+                        .setRotationPointY(2));
         return pose;
     }
 

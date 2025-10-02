@@ -13,7 +13,7 @@ import com.nukateam.ntgl.common.data.holders.AmmoHolders;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.datagen.*;
-import com.nukateam.ntgl.common.regestry.ProjectileRegistry;
+import com.nukateam.ntgl.common.registry.ProjectileRegistry;
 import com.nukateam.ntgl.modules.enchantment.EnchantmentModule;
 import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;

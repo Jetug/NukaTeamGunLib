@@ -18,6 +18,9 @@
       "ntgl:round5mm"
     ]
   },
+  "animations": {
+    "ntgl:reload": "ntgl:minigun_reload"
+  },
   "sounds": {
     "fire": "ntgl:item.minigun.fire",
     "reload": "ntgl:item.minigun.reload"

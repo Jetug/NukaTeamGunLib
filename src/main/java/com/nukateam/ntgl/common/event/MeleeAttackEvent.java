@@ -33,7 +33,7 @@ public class MeleeAttackEvent extends LivingEvent {
     }
 
     /**
-     * @return Whether or not this event was fired on the client side
+     * @return Whether this event was fired on the client side
      */
     public boolean isClient() {
         return this.getEntity().getCommandSenderWorld().isClientSide();

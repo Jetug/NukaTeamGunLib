@@ -19,6 +19,9 @@
       "ntgl:shotshell"
     ]
   },
+  "animations": {
+    "ntgl:reload": "ntgl:rifle_reload"
+  },
   "ammoData":{
     "ntgl:shotshell": {
       "ammo": {
