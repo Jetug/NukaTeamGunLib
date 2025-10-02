@@ -190,12 +190,12 @@ public class Attachment {
     }
 
     private void speed(GunData data, ArrayList<Component> positivePerks) {
-        getNumericPerk(positivePerks, "perk.ntgl.projectile_speed",
+        getNumericPerk(positivePerks, "perk.ntgl.projectile_speed", true,
                 (modifier, val) -> (float)modifier.modifyProjectileSpeed(val, data));
     }
 
     private void damage(GunData data, ArrayList<Component> positivePerks) {
-        getNumericPerk(positivePerks, "perk.ntgl.modified_damage",
+        getNumericPerk(positivePerks, "perk.ntgl.modified_damage", true,
                 (modifier, val) -> modifier.modifyDamage(val, data));
     }
 

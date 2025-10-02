@@ -2,16 +2,11 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
-import com.nukateam.ntgl.client.util.util.PlayerAnimations;
-import com.nukateam.ntgl.common.data.enums.DeathType;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
 
-import java.util.Objects;
-
-import static com.nukateam.ntgl.client.handlers.ClientPlayHandler.handleMessageAnimation;
+import static com.nukateam.ntgl.client.handlers.ClientPlayHandler.*;
 
 public class S2CMessagePlayerAnimation extends PlayMessage<S2CMessagePlayerAnimation> {
     int entityId;
