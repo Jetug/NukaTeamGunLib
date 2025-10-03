@@ -8,7 +8,6 @@ import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 
-import com.nukateam.ntgl.common.data.constants.Animations;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -25,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static net.minecraftforge.registries.ForgeRegistries.*;
@@ -342,17 +342,9 @@ public class GunModifierHelper {
     }
 
     public static boolean isSilencedFire(GunData data) {
-        var gun = getGun(data.gun);
-        var attachments = gun.getModules().getAttachments();
-
-        for (var attachmentType : attachments.keySet()) {
-            var modifiers = getAttachmentModifiers(data.gun, attachmentType);
-            for (var modifier : modifiers) {
-                if (modifier.silencedFire(data))
-                    return true;
-            }
-        }
-        return false;
+        var value = new AtomicBoolean(getGeneral(getGun(data.gun)).isSilenced());
+        forEachAttachment(data, (modifier -> value.set(modifier.silencedFire(value.get(), data))));
+        return value.get();
     }
 
     public static double getModifiedFireSoundRadius(GunData data, double radius) {
@@ -523,28 +515,30 @@ public class GunModifierHelper {
         var attachments = config.getModules().getAttachments();
 
         for (var attachmentType : attachments.keySet()) {
-            var modifiers = getAttachmentModifiers(gun, attachmentType);
-            applyModifiers(consumer, modifiers);
+            var attachmentItem = GunStateHelper.getAttachmentItem(attachmentType, gun);
+            data.attachment = attachmentItem;
+            var modifiers = getAttachmentModifiers(attachmentItem);
+
+            for (var modifier : modifiers) {
+                consumer.accept(modifier);
+            }
+//            applyModifiers(consumer, modifiers);
         }
 
         var gunItem = (WeaponItem) gun.getItem();
-        applyModifiers(consumer, gunItem.getGunModifiers());
+
+        for (var modifier : gunItem.getGunModifiers()) {
+            consumer.accept(modifier);
+        }
+//        applyModifiers(consumer, gunItem.getGunModifiers());
     }
 
-    private static IGunModifier[] getAttachmentModifiers(ItemStack gun, AttachmentType type) {
-        var attachmentItem = GunStateHelper.getAttachmentItem(type, gun);
-
+    private static IGunModifier[] getAttachmentModifiers(ItemStack attachmentItem) {
         if (!attachmentItem.isEmpty() && attachmentItem.getItem() instanceof IAttachment<?> attachment) {
             var modifiers = attachment.getProperties().getModifiers();
             var configModifiers = attachment.getAttachmentConfig().getModifiers();
             return ArrayUtils.add(modifiers, configModifiers);
         }
         return EMPTY;
-    }
-
-    private static void applyModifiers(Consumer<IGunModifier> consumer, IGunModifier... gunModifiers) {
-        for (var modifier : gunModifiers) {
-            consumer.accept(modifier);
-        }
     }
 }

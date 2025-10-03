@@ -42,6 +42,7 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String FUEL = "Fuel";
     public static final String FULL_CHARGE = "FullCharge";
     public static final String ENCHANTABLE = "Enchantable";
+    public static final String SILENCED = "silenced";
     public static final String FIRE_TIMER = "FireTimer";
     public static final String FIRE_MODE = "FireMode";
     public static final String ONE_TIME_CHARGE = "OneTimeCharge";
@@ -57,6 +58,7 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional WeaponMode weaponMode = WeaponMode.GUN;
     @Optional boolean fullCharge = false;
     @Optional boolean enchantable = true;
+    @Optional boolean silenced = false;
     @Optional float damage;
     @Optional int reloadAmount = 1;
     @Optional int reloadStart = 0;
@@ -90,6 +92,7 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putInt      (RATE, this.rate);
         tag.putBoolean  (FULL_CHARGE, this.fullCharge);
         tag.putBoolean  (ENCHANTABLE, this.enchantable);
+        tag.putBoolean  (SILENCED, this.silenced);
         tag.putInt      (FIRE_TIMER, this.fireTimer);
         tag.put         (FIRE_MODE, NbtUtils.serializeSet(this.fireMode));
         tag.putString   (GRIP_TYPE, this.gripType.getId().toString());
@@ -132,6 +135,9 @@ public class General implements INBTSerializable<CompoundTag> {
         }
         if (tag.contains(ENCHANTABLE, Tag.TAG_ANY_NUMERIC)) {
             this.enchantable = tag.getBoolean(ENCHANTABLE);
+        }
+        if (tag.contains(SILENCED, Tag.TAG_ANY_NUMERIC)) {
+            this.silenced = tag.getBoolean(SILENCED);
         }
         if (tag.contains(RATE, Tag.TAG_ANY_NUMERIC)) {
             this.rate = tag.getInt(RATE);
@@ -278,6 +284,7 @@ public class General implements INBTSerializable<CompoundTag> {
         general.fireMode = this.fireMode;
         general.fullCharge = this.fullCharge;
         general.enchantable = this.enchantable;
+        general.silenced = this.silenced;
         general.rate = this.rate;
         general.fireTimer = this.fireTimer;
         general.gripType = this.gripType;
@@ -342,6 +349,10 @@ public class General implements INBTSerializable<CompoundTag> {
 
     public boolean isEnchantable() {
         return this.enchantable;
+    }
+
+    public boolean isSilenced() {
+        return this.silenced;
     }
 
     /**

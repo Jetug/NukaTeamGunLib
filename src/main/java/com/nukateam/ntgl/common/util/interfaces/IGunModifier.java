@@ -36,13 +36,11 @@ public interface IGunModifier {
     }
 
     /**
-     * Determines if the fire sound should be the silenced version. If at one attachment on the
-     * weapon has this set to true, it will be silenced regardless if other attachments specify false.
-     *
+     * Determines if the fire sound should be the silenced version.
      * @return if this fire sound should be silenced version
      */
-    default boolean silencedFire(GunData data) {
-        return false;
+    default boolean silencedFire(boolean silenced, GunData data) {
+        return silenced;
     }
 
     /**

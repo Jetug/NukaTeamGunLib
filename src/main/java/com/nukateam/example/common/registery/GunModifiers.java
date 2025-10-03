@@ -15,7 +15,7 @@ import java.util.Set;
 public class GunModifiers {
     public static final IGunModifier SILENCED = new IGunModifier() {
         @Override
-        public boolean silencedFire(GunData data) {
+        public boolean silencedFire(boolean value, GunData data) {
             return true;
         }
 

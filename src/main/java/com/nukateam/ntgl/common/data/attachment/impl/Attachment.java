@@ -85,18 +85,16 @@ public class Attachment {
         return false;
     }
 
-    public List<Component> getPerks() {
+    public List<Component> getPerks(ItemStack stack) {
         if (this.perks != null && !this.perks.isEmpty()) {
             return this.perks;
         }
 
-//        var player = Minecraft.getInstance().player;
-//        if (player == null) return List.of();
-
         var data = new GunData(new ItemStack(ModGuns.CLASSIC10MM.get()), null);
+        data.attachment = stack;
         var perks = new ArrayList<Component>();
 
-        getNumericPerk(perks, "perk.ntgl.max_ammo",
+        getNumericPerk(perks, "perk.ntgl.max_ammo", true,
                 (modifier, val) -> (float)modifier.modifyMaxAmmo((int)(float)val, data));
 
         getNumericPerk(perks, "perk.ntgl.projectile_amount",
@@ -126,7 +124,7 @@ public class Attachment {
 
     private void silenced(GunData data, ArrayList<Component> positivePerks) {
         for (var modifier : modifiers) {
-            if (modifier.silencedFire(data)) {
+            if (modifier.silencedFire(false, data)) {
                 addPerk(positivePerks, true, "perk.ntgl.silenced");
                 break;
             }
@@ -200,7 +198,7 @@ public class Attachment {
     }
 
     private void meleeDamage(GunData data, ArrayList<Component> positivePerks) {
-        getNumericPerk(positivePerks, "perk.ntgl.melee_damage",
+        getNumericPerk(positivePerks, "perk.ntgl.melee_damage", true,
                 (modifier, val) -> modifier.modifyMeleeDamage(val, data));
     }
 

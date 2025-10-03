@@ -346,7 +346,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     }
 
     @Override
-    public boolean silencedFire(GunData data) {
+    public boolean silencedFire(boolean value, GunData data) {
         return getBoolean(false, silencedFire);
     }
 

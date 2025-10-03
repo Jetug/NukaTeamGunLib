@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 public class GunData {
     @Nullable public final ItemStack gun;
+    @Nullable public ItemStack attachment;
     @Nullable public final LivingEntity shooter;
 
     public GunData(ItemStack gun, LivingEntity shooter) {

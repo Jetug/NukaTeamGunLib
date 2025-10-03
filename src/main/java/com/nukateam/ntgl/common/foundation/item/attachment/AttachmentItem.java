@@ -74,7 +74,7 @@ public class AttachmentItem<T extends Attachment> extends Item implements IAttac
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level pLevel, List<Component> tooltip, TooltipFlag pIsAdvanced) {
-        var perks = getProperties().getPerks();
+        var perks = getProperties().getPerks(stack);
         if (perks != null && !perks.isEmpty()) {
             tooltip.add(Component.translatable("perk.ntgl.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
             tooltip.addAll(perks);
