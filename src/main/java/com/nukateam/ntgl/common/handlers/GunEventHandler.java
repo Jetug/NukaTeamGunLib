@@ -1,7 +1,10 @@
 package com.nukateam.ntgl.common.handlers;
 
+import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
+import com.nukateam.ntgl.common.foundation.init.NtglGameEvents;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.event.*;
@@ -16,6 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -70,6 +74,12 @@ public class GunEventHandler {
 
             if(!event.isClient()){
                 PacketHandler.sendAnimation(entity, event.getHand(), AnimationType.FIRE);
+
+                if(!GunModifierHelper.isSilencedFire(new GunData(heldItem, entity))){
+                    NtglGameEvents.gunshotEvent(level, entity);
+                    level.gameEvent(entity, GameEvent.PROJECTILE_SHOOT, entity.blockPosition());
+                }
+
             }
         }
     }

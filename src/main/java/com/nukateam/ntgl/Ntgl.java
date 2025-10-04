@@ -88,6 +88,7 @@ public class Ntgl {
 
         GunPackModule.init(MOD_EVENT_BUS);
         EnchantmentModule.init(MOD_EVENT_BUS);
+        NtglGameEvents.register(MOD_EVENT_BUS);
 
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
