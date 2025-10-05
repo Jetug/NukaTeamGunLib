@@ -1,0 +1,30 @@
+{
+  "part": "ntgl:body",
+  "parent" : "ntgl:config/model/base/body.json",
+  "chassis": ["ntgl:example_chassis"],
+  "model": "ntgl:geo/power_armor/t45.geo.json",
+  "texture": {
+    "default": "ntgl:textures/power_armor/t45.png"
+  },
+
+  "hide": ["body_bottom_frame"],
+
+  "mods" : [
+    "jetpack"
+  ],
+
+  "attachments": [
+    {
+      "frame": "body_top",
+      "armor": "body_top_armor"
+    },
+    {
+      "frame": "body_top",
+      "armor": "jetpack"
+    },
+    {
+      "frame": "body_bottom",
+      "armor": "body_bottom_armor"
+    }
+  ]
+}

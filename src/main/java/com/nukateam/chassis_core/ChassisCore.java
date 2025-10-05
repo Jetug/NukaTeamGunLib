@@ -1,6 +1,5 @@
 package com.nukateam.chassis_core;
 
-import com.nukateam.chassis_core.client.KeyBindings;
 import com.nukateam.chassis_core.common.foundation.registery.ContainerRegistry;
 import com.nukateam.chassis_core.common.foundation.registery.ItemRegistry;
 import com.nukateam.chassis_core.common.network.PacketHandler;
@@ -25,7 +24,6 @@ public class ChassisCore {
         ItemRegistry.register(MOD_EVENT_BUS);
         ContainerRegistry.register(MOD_EVENT_BUS);
         Example.init(MOD_EVENT_BUS);
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> MOD_EVENT_BUS.addListener(KeyBindings::register));
         MOD_EVENT_BUS.addListener(this::onCommonSetup);
     }
 

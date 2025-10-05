@@ -153,8 +153,6 @@
   "perk.ntgl.fire_volume": "Звук огня",
   "perk.ntgl.silenced": "Заглушён",
   "perk.ntgl.sound_radius": "Радиус звука огня",
-  "perk.ntgl.additional_damage.positive": "Дополнительный урон §r(§l+%s ♥§r)",
-  "perk.ntgl.additional_damage.negative": "Отрицательный урон §r(§l-%s ♥§r)",
   "perk.ntgl.modified_damage": "Урон оружия %s",
   "perk.ntgl.projectile_speed": "Скорость снаряда %s",
   "perk.ntgl.projectile_spread": "Разброс снарядов %s",
@@ -164,6 +162,8 @@
   "perk.ntgl.rate": "Скорострельность %s",
   "perk.ntgl.max_ammo": "Вместимость %s",
   "perk.ntgl.projectile_amount": "Снарядов за выстрел: %s",
+  "perk.ntgl.melee_damage": "Урон в ближнем бою: %s",
+  "perk.ntgl.melee_distance": "Радиус ближнего боя: %s",
 
   "gui.ntgl.assemble": "Собрать %s",
   "gui.ntgl.show_remaining": "Показать оставшееся",
@@ -195,8 +195,11 @@
   "ntgl.action.reload": "Перезарядка",
   "ntgl.action.steady_aim": "Твёрдая рука",
   "ntgl.button.config.tooltip": "Config Options",
-  "ntgl.chat.open_curseforge_page": "Open CurseForge Page",
+  "ntgl.chat.open_curseforge_page": "Открыть страницу на CurseForge",
   "ntgl.chat.install_configured": "Install %s to access config options",
 
   "item.ntgl.classic10mm": "Кольт 6520",
+
+  "key.ntgl.leave": "Выйти из брони",
+  "key.categories.ntgl.armor": "Управление бронёй"
 }

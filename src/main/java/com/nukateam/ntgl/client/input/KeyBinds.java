@@ -1,19 +1,18 @@
 package com.nukateam.ntgl.client.input;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.settings.KeyConflictContext;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Author: MrCrayfish
- */
 public class KeyBinds {
     public static final KeyMapping KEY_RELOAD = new KeyMapping("key.ntgl.reload", GLFW.GLFW_KEY_R, "key.categories.ntgl");
     public static final KeyMapping KEY_UNLOAD = new KeyMapping("key.ntgl.unload", GLFW.GLFW_KEY_U, "key.categories.ntgl");
@@ -32,6 +31,8 @@ public class KeyBinds {
     public static final KeyMapping KEY_DEBUG_Z_SUB = new KeyMapping("key.ntgl.debug_z_sub", GLFW.GLFW_KEY_KP_6, "key.categories.ntgl");
     public static final KeyMapping KEY_DEBUG_ZERO = new KeyMapping("key.ntgl.debug_zero", GLFW.GLFW_KEY_KP_ENTER, "key.categories.ntgl");
     public static final KeyMapping KEY_DEBUG_SHOW = new KeyMapping("key.ntgl.debug_show", GLFW.GLFW_KEY_KP_MULTIPLY, "key.categories.ntgl");
+    public static final KeyMapping LEAVE = new KeyMapping("key.ntgl.leave", KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, "key.categories.ntgl.armor");
 
 
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
@@ -42,6 +43,7 @@ public class KeyBinds {
         event.register(KEY_FIRE_SELECT);
         event.register(KEY_AMMO_SELECT);
         event.register(KEY_MELEE);
+        event.register(LEAVE);
 
         if(Ntgl.isDebugging()){
             event.register(KEY_DEBUG_X_ADD);

@@ -1,0 +1,25 @@
+{
+  "part": "ntgl:left_leg",
+  "chassis": ["ntgl:example_chassis"],
+  "model": "ntgl:geo/power_armor/t45.geo.json",
+  "texture": {
+    "default": "ntgl:textures/power_armor/t45.png"
+  },
+
+  "hide" : ["left_toes_frame"],
+
+  "attachments": [
+    {
+      "frame": "left_upper_leg",
+      "armor": "left_upper_leg_armor"
+    },
+    {
+      "frame": "left_lower_leg",
+      "armor": "left_lower_leg_armor"
+    },
+    {
+      "frame": "left_toes",
+      "armor": "left_toes_armor"
+    }
+  ]
+}

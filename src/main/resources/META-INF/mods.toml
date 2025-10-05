@@ -7,10 +7,10 @@ modId="ntgl"
 version="${file.jarVersion}"
 displayName="NukaTeam's Gun Lib"
 updateJSONURL=""
-displayURL=""
+displayURL="https://discord.com/invite/njb6EKaDVJ"
 logoFile="logo.png"
 authors="Dayton, Jetug"
-credits = "MrCrayfish, AzureDoom, MigaMi"
+credits = "MrCrayfish, MigaMi"
 description="Core for gun mods"
 
 [[dependencies.ntgl]]
@@ -47,12 +47,6 @@ side="CLIENT"
 modId="backpacked"
 mandatory=false
 versionRange="[3.0.0-beta.9,)"
-ordering="AFTER"
-side="BOTH"
-[[dependencies.ntgl]]
-modId="chassis_core"
-mandatory=false
-versionRange="[1.20.1-2.6.4,)"
 ordering="AFTER"
 side="BOTH"
 [[dependencies.ntgl]]

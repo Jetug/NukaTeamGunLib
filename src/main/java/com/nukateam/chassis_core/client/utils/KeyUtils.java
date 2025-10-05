@@ -1,7 +1,7 @@
 package com.nukateam.chassis_core.client.utils;
 
-import com.nukateam.chassis_core.client.KeyBindings;
 import com.nukateam.chassis_core.common.input.InputKey;
+import com.nukateam.ntgl.client.input.KeyBinds;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Lazy;
@@ -22,7 +22,7 @@ public class KeyUtils {
         map.put(OPTIONS.keyLeft.getKey().getValue()     , InputKey.LEFT     );
         map.put(OPTIONS.keyRight.getKey().getValue()    , InputKey.RIGHT    );
         map.put(OPTIONS.keyJump.getKey().getValue()     , InputKey.JUMP     );
-        map.put(KeyBindings.LEAVE.getKey().getValue()   , InputKey.LEAVE    );
+        map.put(KeyBinds.LEAVE.getKey().getValue()   , InputKey.LEAVE    );
         map.put(OPTIONS.keyUse.getKey().getValue()      , InputKey.USE      );
         map.put(OPTIONS.keyAttack.getKey().getValue()   , InputKey.ATTACK   );
 

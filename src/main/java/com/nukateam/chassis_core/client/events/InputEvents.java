@@ -1,22 +1,19 @@
 package com.nukateam.chassis_core.client.events;
 
-import com.nukateam.chassis_core.ChassisCore;
-import com.nukateam.chassis_core.client.KeyBindings;
 import com.nukateam.chassis_core.client.utils.KeyUtils;
 import com.nukateam.chassis_core.common.input.CommonInputHandler;
 import com.nukateam.chassis_core.common.input.KeyAction;
 import com.nukateam.chassis_core.common.network.actions.InputAction;
+import com.nukateam.ntgl.client.input.KeyBinds;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import static com.nukateam.chassis_core.client.ClientConfig.OPTIONS;
-import static com.nukateam.chassis_core.client.KeyBindings.*;
 import static com.nukateam.chassis_core.common.network.PacketSender.doServerAction;
 import static com.nukateam.chassis_core.common.util.helpers.PlayerUtils.getLocalPlayer;
 import static com.nukateam.chassis_core.common.util.helpers.PlayerUtils.stopWearingArmor;
@@ -31,7 +28,7 @@ public class InputEvents {
         KeyAction action;
         if (event.getAction() == GLFW.GLFW_PRESS) {
             action = KeyAction.PRESS;
-            if (event.getKey() == KeyBindings.LEAVE.getKey().getValue())
+            if (event.getKey() == KeyBinds.LEAVE.getKey().getValue())
                 stopWearingArmor(Minecraft.getInstance().player);
         } else if (event.getAction() == GLFW.GLFW_RELEASE)
             action = KeyAction.RELEASE;
