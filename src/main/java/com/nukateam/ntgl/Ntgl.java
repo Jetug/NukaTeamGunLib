@@ -2,6 +2,7 @@ package com.nukateam.ntgl;
 
 import com.mojang.logging.LogUtils;
 import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
+import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.example.common.registery.EntityTypes;
 import com.nukateam.example.common.registery.*;
 import com.nukateam.ntgl.client.handlers.ClientHandler;
@@ -50,7 +51,6 @@ public class Ntgl {
 
     public static boolean controllableLoaded = false;
     public static boolean backpackedLoaded = false;
-    public static boolean chassisCoreLoaded = false;
     public static boolean sophisticatedLoaded = false;
     public static boolean curiosLoaded = false;
     public static boolean playerReviveLoaded = false;
@@ -89,10 +89,10 @@ public class Ntgl {
         GunPackModule.init(MOD_EVENT_BUS);
         EnchantmentModule.init(MOD_EVENT_BUS);
         NtglGameEvents.register(MOD_EVENT_BUS);
+        new ChassisCore(MOD_EVENT_BUS);
 
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
-        chassisCoreLoaded = ModList.get().isLoaded("chassis_core");
         sophisticatedLoaded = ModList.get().isLoaded("sophisticatedbackpacks");
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
         playerAnimatorLoaded = ModList.get().isLoaded("playeranimator");

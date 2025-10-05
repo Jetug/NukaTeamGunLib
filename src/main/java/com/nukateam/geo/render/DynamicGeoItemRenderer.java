@@ -119,7 +119,7 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
     private void setupRender(Animator animatable, boolean isReRender, float partialTick, boolean shouldSit, float netHeadYaw, float limbSwingAmount, float limbSwing) {
         var headPitch = 0;
         var motionThreshold = 0;
-        var velocity = Vec3.ZERO;//jetug
+        var velocity = Vec3.ZERO;//nukateam
         var avgVelocity = (float)(Math.abs(velocity.x) + Math.abs(velocity.z)) / 2.0F;
         var animationState = new AnimationState(animatable, limbSwing, limbSwingAmount, partialTick,
                 avgVelocity >= motionThreshold && limbSwingAmount != 0.0F);

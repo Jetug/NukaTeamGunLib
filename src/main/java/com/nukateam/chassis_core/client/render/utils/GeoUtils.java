@@ -1,0 +1,95 @@
+package com.nukateam.chassis_core.client.render.utils;
+
+import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
+import mod.azure.azurelib.cache.AzureLibCache;
+import mod.azure.azurelib.cache.object.BakedGeoModel;
+import mod.azure.azurelib.cache.object.GeoBone;
+import mod.azure.azurelib.constant.DataTickets;
+import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
+import mod.azure.azurelib.core.animation.AnimationProcessor;
+import mod.azure.azurelib.core.animation.AnimationState;
+import mod.azure.azurelib.model.data.EntityModelData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+@SuppressWarnings({"rawtypes"})
+public class GeoUtils {
+    @Nullable
+    public static Collection<GeoBone> getEquipmentBones(String boneName, WearableChassis animatable) {
+        var result = new ArrayList<GeoBone>();
+        var configs = animatable.getItemConfigs();
+        for (var config : configs) {
+            var boneNames = config.getArmorBone(boneName);
+
+            for (var name : boneNames) {
+                var armorBone = GeoUtils.getBone(config.getModel(), name);
+                if (armorBone != null) result.add(armorBone);
+            }
+        }
+        return result;
+    }
+
+
+    public static void setHeadAnimation(CoreGeoBone head, AnimationState animationState) {
+        if (head == null) return;
+        var data = (EntityModelData) animationState.getExtraData().get(DataTickets.ENTITY_MODEL_DATA);
+        head.setRotX(data.headPitch() * ((float) Math.PI / 180F));
+        head.setRotY(data.netHeadYaw() * ((float) Math.PI / 180F));
+    }
+
+    public static void setHeadAnimation(LivingEntity animatable, AnimationProcessor animationProcessor, AnimationState animationState) {
+        var head = animationProcessor.getBone("head");
+        if (head == null) return;
+        setHeadAnimation(head, animationState);
+    }
+
+    public static BakedGeoModel getModel(ResourceLocation location) {
+        return AzureLibCache.getBakedModels().get(location);
+    }
+
+    @Nullable
+    public static GeoBone getBone(ResourceLocation resourceLocation, String name) {
+        var model = getModel(resourceLocation);
+        return model == null ? null : model.getBone(name).orElse(null);
+    }
+
+    public static Vec3 getRot(CoreGeoBone bone){
+        return new Vec3(bone.getRotX(), bone.getRotY(), bone.getRotZ());
+    }
+    public static Vec3 getPos(CoreGeoBone bone){
+        return new Vec3(bone.getPosX(), bone.getPosY(), bone.getPosZ());
+    }
+
+    public static void setRot(CoreGeoBone bone, Vec3 pos){
+        bone.setRotX((float) pos.x);
+        bone.setRotX((float) pos.y);
+        bone.setRotX((float) pos.z);
+    }
+
+    public static void setPos(CoreGeoBone bone, Vec3 pos){
+        bone.setPosX((float) pos.x);
+        bone.setPosY((float) pos.y);
+        bone.setPosZ((float) pos.z);
+    }
+
+    public static @Nullable ResourceLocation getTextureForBone(GeoBone bone, WearableChassis animatable) {
+        if(bone == null || animatable == null) return null;
+
+        var texture = animatable.getTextureForBone(bone.getName());
+
+        if(texture == null){
+            var parent =  bone.getParent();
+            while (parent != null && texture == null){
+                texture = animatable.getTextureForBone(parent.getName());
+                parent =  parent.getParent();
+            }
+        }
+
+        return texture;
+    }
+}
