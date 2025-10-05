@@ -126,6 +126,21 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         return true;
     }
 
+    public boolean getDamageAfterAbsorb(DamageSource damageSource, float damage) {
+        float finalDamage = getDamageAfterAbsorb(damage);
+        damageArmor(damageSource, damage);
+
+        var passenger = getControllingPassenger();
+
+        if (damageSource.is(DamageTypes.CACTUS) || (hasPassenger() && damageSource.getEntity() == passenger))
+            return false;
+
+        if (passenger != null)
+            passenger.hurt(damageSource, finalDamage);
+
+        return true;
+    }
+
     @Override
     public void aiStep() {
         updateBobing();
@@ -512,7 +527,7 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         return getControllingPassenger() instanceof Player player && player.isCreative() && player.getAbilities().flying;
     }
 
-    private float getDamageAfterAbsorb(float damage) {
+    public float getDamageAfterAbsorb(float damage) {
         updateTotalArmor();
         return CombatRules.getDamageAfterAbsorb(damage, totalDefense, totalToughness);
     }
