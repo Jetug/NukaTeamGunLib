@@ -77,7 +77,6 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.8D);
     }
 
-
     @Override
     public @NotNull EntityDimensions getDimensions(@NotNull Pose pPose) {
         return POSES.getOrDefault(pPose, STANDING_DIMENSIONS);
@@ -88,13 +87,6 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         super.tick();
         speedometer.tick();
         timer.tick();
-
-//        if (getControllingPassenger() instanceof Player player) {
-//            this.setNoGravity(player.getAbilities().flying);
-//        } else {
-//            this.setNoGravity(false);
-//        }
-
         updatePose();
     }
 
@@ -109,22 +101,6 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
             return STEP_HEIGHT;
         return super.getStepHeight();
     }
-
-//    @Override
-//    public boolean hurt(DamageSource damageSource, float damage) {
-//        float finalDamage = getDamageAfterAbsorb(damage);
-//        damageArmor(damageSource, damage);
-//
-//        var passenger = getControllingPassenger();
-//
-//        if (damageSource.is(DamageTypes.CACTUS) || (hasPassenger() && damageSource.getEntity() == passenger))
-//            return false;
-//
-//        if (passenger != null)
-//            passenger.hurt(damageSource, finalDamage);
-//
-//        return true;
-//    }
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
@@ -200,17 +176,6 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         if (entity instanceof LivingEntity livingEntity)
             livingEntity.yBodyRot = yBodyRot;
     }
-
-//    @Override
-//    public void travel(@NotNull Vec3 travelVector) {
-//        if (!isAlive()) return;
-//        if (isVehicle() && hasPassenger())
-//            travelWithPassenger(travelVector);
-//        else {
-////            this.flyingSpeed = 0.02F;
-//            super.travel(travelVector);
-//        }
-//    }
 
     @Override
     public float getFlyingSpeed() {
@@ -319,15 +284,12 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
     }
 
     private Vec3 calculateDesiredMotion(Vec3 look, float forward, float strafe, float vertical) {
-        // Горизонтальное движение (вперед/назад и влево/вправо)
-        Vec3 horizontal = new Vec3(look.x, 0, look.z).normalize()
+        var horizontal = new Vec3(look.x, 0, look.z).normalize()
                 .scale(forward)
                 .add(new Vec3(look.z, 0, -look.x).normalize().scale(strafe));
 
-        // Вертикальное движение
-        Vec3 verticalVec = new Vec3(0, vertical, 0);
+        var verticalVec = new Vec3(0, vertical, 0);
 
-        // Комбинируем и нормализуем
         return horizontal.add(verticalVec).normalize();
     }
 
@@ -536,27 +498,6 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
     private double getCustomJump() {
         return this.getAttributeValue(Attributes.JUMP_STRENGTH);
     }
-
-//    @Override
-//    public boolean causeFallDamage(float height, float p_225503_2_, @NotNull DamageSource damageSource) {
-//        pushEntitiesAround();
-//
-//        int immune = 5;
-//        int damage = this.calculateFallDamage(height, p_225503_2_) / 2;
-//        if (damage <= immune) {
-//            return false;
-//        } else {
-//            if (this.isVehicle()) {
-//                for(Entity entity : getIndirectPassengers()) {
-//                    entity.hurt(DamageSource.FALL, damage - immune);
-//                }
-//            }
-//            animateHurt();
-//            playBlockFallSound();
-//            return true;
-
-//        }
-//    }
 
     private void travelWithPassenger(Vec3 travelVector) {
         var entity = getControllingPassenger();
