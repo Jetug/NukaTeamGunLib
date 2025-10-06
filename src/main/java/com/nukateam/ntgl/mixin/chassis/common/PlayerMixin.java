@@ -9,7 +9,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ForgeHooks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,22 +47,13 @@ public abstract class PlayerMixin extends Entity {
             ordinal = 0,
             argsOnly = true)
     private float modifyDamageAmount(float amount, DamageSource source) {
-        var player = (Player) (Object) this;
+        var player = this;
 
         if(PlayerUtils.isWearingChassis(player)){
-            var newValue = amount;
-
             var chassis = PlayerUtils.getEntityChassis(player);
-
-            chassis.damageArmor();
-
-            return newValue;
+            assert chassis != null;
+            return chassis.getDamageAfterAbsorb(source, amount);
         }
         else return amount;
     }
-
-//    @Inject(method = "hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z", at = @At(value = "HEAD"))
-//    public void hurt(DamageSource pSource, float pAmount, CallbackInfoReturnable<Boolean> cir) {
-//
-//    }
 }

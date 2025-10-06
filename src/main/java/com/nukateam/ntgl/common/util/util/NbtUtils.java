@@ -116,21 +116,6 @@ public class NbtUtils {
         return map;
     }
 
-
-//
-//
-//    public static HashMap<String, ResourceLocation> deserializeRLMap(CompoundTag tag){
-//        var map = new HashMap<String, ResourceLocation>();
-//
-//        for (var key: tag.getAllKeys()) {
-//            if(tag.contains(key, Tag.TAG_STRING)) {
-//                map.put(key, ResourceLocation.tryParse(tag.getString(key)));
-//            }
-//        }
-//
-//        return map;
-//    }
-
     public static <V> LinkedHashMap<ResourceLocation, V> deserializeLinkedMap(CompoundTag tag, Function<CompoundTag, V> deserializer){
         var map = new LinkedHashMap<ResourceLocation, V>();
 

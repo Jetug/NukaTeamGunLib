@@ -110,35 +110,42 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         return super.getStepHeight();
     }
 
+//    @Override
+//    public boolean hurt(DamageSource damageSource, float damage) {
+//        float finalDamage = getDamageAfterAbsorb(damage);
+//        damageArmor(damageSource, damage);
+//
+//        var passenger = getControllingPassenger();
+//
+//        if (damageSource.is(DamageTypes.CACTUS) || (hasPassenger() && damageSource.getEntity() == passenger))
+//            return false;
+//
+//        if (passenger != null)
+//            passenger.hurt(damageSource, finalDamage);
+//
+//        return true;
+//    }
+
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
-        float finalDamage = getDamageAfterAbsorb(damage);
-        damageArmor(damageSource, damage);
-
         var passenger = getControllingPassenger();
 
-        if (damageSource.is(DamageTypes.CACTUS) || (hasPassenger() && damageSource.getEntity() == passenger))
-            return false;
-
         if (passenger != null)
-            passenger.hurt(damageSource, finalDamage);
+            passenger.hurt(damageSource, damage);
 
-        return true;
+        return false;
     }
 
-    public boolean getDamageAfterAbsorb(DamageSource damageSource, float damage) {
+    public float getDamageAfterAbsorb(DamageSource damageSource, float damage) {
         float finalDamage = getDamageAfterAbsorb(damage);
         damageArmor(damageSource, damage);
 
         var passenger = getControllingPassenger();
 
-        if (damageSource.is(DamageTypes.CACTUS) || (hasPassenger() && damageSource.getEntity() == passenger))
-            return false;
+        if ((hasPassenger() && damageSource.getEntity() == passenger))
+            return 0;
 
-        if (passenger != null)
-            passenger.hurt(damageSource, finalDamage);
-
-        return true;
+        return finalDamage;
     }
 
     @Override
@@ -147,16 +154,6 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         super.aiStep();
         if (hasPassenger()) this.yHeadRot = this.getYRot();
     }
-
-//    @Override
-//    public boolean isInvisible() {
-//        var clientPlayer = Minecraft.getInstance().player;
-//        var pov = Minecraft.getInstance().options.getCameraType();
-//
-//        if (hasPassenger(clientPlayer) && pov == CameraType.FIRST_PERSON)
-//            return true;
-//        return super.isInvisible();
-//    }
 
     @Override
     public boolean isInvulnerableTo(DamageSource damageSource) {
@@ -527,7 +524,7 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         return getControllingPassenger() instanceof Player player && player.isCreative() && player.getAbilities().flying;
     }
 
-    public float getDamageAfterAbsorb(float damage) {
+    private float getDamageAfterAbsorb(float damage) {
         updateTotalArmor();
         return CombatRules.getDamageAfterAbsorb(damage, totalDefense, totalToughness);
     }
