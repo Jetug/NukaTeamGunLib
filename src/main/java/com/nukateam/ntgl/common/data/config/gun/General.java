@@ -16,7 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class General implements INBTSerializable<CompoundTag> {
+public class General implements INBTSerializable<CompoundTag>, IGeneral {
     public static final String LOADING_TYPE = "LoadingType";
     public static final String AUTO_RELOAD = "AutoReload";
     public static final String RATE = "Rate";
@@ -323,10 +323,12 @@ public class General implements INBTSerializable<CompoundTag> {
         return general;
     }
 
+    @Override
     public Set<AmmoHolder> getAmmo() {
         return this.ammo;
     }
 
+    @Override
     public Set<AmmoHolder> getFuel() {
         return this.fuel;
     }
@@ -334,6 +336,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The type of grip this weapon uses
      */
+    @Override
     public Set<FireMode> getFireModes() {
 //            if(fireMode == null || fireMode.isEmpty())
 //                fireMode = new ArrayList<>(List.of(FireMode.SEMI_AUTO));
@@ -343,14 +346,17 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return If this gun need a full charge to fire
      */
+    @Override
     public boolean isFullCharge() {
         return this.fullCharge;
     }
 
+    @Override
     public boolean isEnchantable() {
         return this.enchantable;
     }
 
+    @Override
     public boolean isSilenced() {
         return this.silenced;
     }
@@ -358,6 +364,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The fire rate of this weapon in ticks
      */
+    @Override
     public int getRate() {
         return this.rate;
     }
@@ -365,6 +372,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The delay before firing
      */
+    @Override
     public int getFireDelay() {
         return this.fireTimer;
     }
@@ -372,6 +380,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The type of grip this weapon uses
      */
+    @Override
     public GripType getGripType() {
         return this.gripType;
     }
@@ -379,6 +388,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The maximum amount of projectile this weapon can hold
      */
+    @Override
     public int getMaxAmmo() {
         return this.maxAmmo;
     }
@@ -386,10 +396,12 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The amount of projectile to add to the weapon each reload cycle
      */
+    @Override
     public int getReloadAmount() {
         return this.reloadAmount;
     }
 
+    @Override
     public int getReloadStart() {
         return this.reloadStart;
     }
@@ -397,22 +409,27 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return Time to reload the gun
      */
+    @Override
     public int getReloadTime() {
         return this.reloadTime;
     }
 
+    @Override
     public int getReloadEnd() {
         return this.reloadEnd;
     }
 
+    @Override
     public int getEquipTime() {
         return this.equipTime;
     }
 
+    @Override
     public int getAmmoPerShot() {
         return this.ammoPerShot;
     }
 
+    @Override
     public WeaponMode getWeaponMode() {
         return weaponMode;
     }
@@ -420,6 +437,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return Type of loading
      */
+    @Override
     public LoadingType getLoadingType() {
         return this.loadingType;
     }
@@ -427,6 +445,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return If weapon should automatically reload if it's empty
      */
+    @Override
     public boolean isAutoReloading() {
         return this.autoReload;
     }
@@ -434,6 +453,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return If weapon HUD should be rendered
      */
+    @Override
     public boolean shouldRenderHud() {
         return this.renderHud;
     }
@@ -441,6 +461,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return Weapon category
      */
+    @Override
     public String getCategory() {
         return this.category;
     }
@@ -448,6 +469,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The amount of recoil this gun produces upon firing in degrees
      */
+    @Override
     public float getRecoilAngle() {
         return this.recoilAngle;
     }
@@ -455,6 +477,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The damage caused by this gun
      */
+    @Override
     public float getDamage() {
         return this.damage;
     }
@@ -462,6 +485,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The amount of kick this gun produces upon firing
      */
+    @Override
     public float getRecoilKick() {
         return this.recoilKick;
     }
@@ -469,6 +493,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The duration offset for recoil. This reduces the duration of recoil animation
      */
+    @Override
     public float getRecoilDurationOffset() {
         return this.recoilDurationOffset;
     }
@@ -476,6 +501,7 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The amount of reduction applied when aiming down this weapon's sight
      */
+    @Override
     public float getRecoilAdsReduction() {
         return this.recoilAdsReduction;
     }
@@ -483,10 +509,12 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The amount of ammoData this weapon fires
      */
+    @Override
     public int getProjectileAmount() {
         return this.projectileAmount;
     }
 
+    @Override
     public int getMultishotAmount() {
         return multishotAmount;
     }
@@ -494,14 +522,17 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return If this weapon should always spread its ammoData according to {@link #getSpread()}
      */
+    @Override
     public boolean isAlwaysSpread() {
         return this.alwaysSpread;
     }
 
+    @Override
     public boolean isOneTimeCharge() {
         return this.oneTimeCharge;
     }
 
+    @Override
     public boolean canMelee() {
         return melee;
     }
@@ -510,10 +541,12 @@ public class General implements INBTSerializable<CompoundTag> {
      * @return The maximum amount of degrees applied to the initial pitch and yaw direction of
      * the fired projectile.
      */
+    @Override
     public float getSpread() {
         return this.spread;
     }
 
+    @Override
     public float getMovementSpeed() {
         return this.movementSpeed;
     }
