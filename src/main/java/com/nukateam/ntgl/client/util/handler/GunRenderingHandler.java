@@ -180,7 +180,7 @@ public class GunRenderingHandler {
 
         var heldItem = event.getStack();
         var gunItem = (WeaponItem) heldItem.getItem();
-        var modifiedGun = gunItem.getModifiedGun(heldItem);
+        var modifiedGun = gunItem.getModifiedConfig(heldItem);
         if (modifiedGun.getDisplay().getFlash() != null) {
             this.showMuzzleFlashForPlayer(Minecraft.getInstance().player.getId());
         }
@@ -209,7 +209,7 @@ public class GunRenderingHandler {
         if (!(heldItem.getItem() instanceof WeaponItem weaponItem))
             return;
 
-        var modifiedGun = weaponItem.getModifiedGun(heldItem);
+        var modifiedGun = weaponItem.getModifiedConfig(heldItem);
         if (!modifiedGun.canAimDownSight())
             return;
 
@@ -266,7 +266,7 @@ public class GunRenderingHandler {
                 int offset = isRight ? 1 : -1;
 
                 if (heldItem.getItem() instanceof WeaponItem weaponItem) {
-                    var modifiedGun = weaponItem.getModifiedGun(heldItem);
+                    var modifiedGun = weaponItem.getModifiedConfig(heldItem);
                     var pos = model.getTransforms().firstPersonRightHand.translation;
                     this.applyIronSightTransforms(event, poseStack, model, isRight, heldItem, modifiedGun);
                     this.applyAimingTransforms(poseStack, heldItem, modifiedGun, pos, offset);
@@ -641,7 +641,7 @@ public class GunRenderingHandler {
 //    }
 //
 //    public static ArrayList<ItemStack> getAttachments(ItemStack stack){
-//        var modifiedGun = ((WeaponItem) stack.getItem()).getModifiedGun(stack);
+//        var modifiedGun = ((WeaponItem) stack.getItem()).getModifiedConfig(stack);
 //        var gunTag = stack.getOrCreateTag();
 //        var attachments = gunTag.getCompound("Attachments");
 //        var result = new ArrayList<ItemStack>();

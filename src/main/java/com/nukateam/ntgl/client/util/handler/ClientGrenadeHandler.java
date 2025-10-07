@@ -96,9 +96,9 @@ public class ClientGrenadeHandler {
             this.entity = entity;
             this.stack = entity.getItemInHand(arm);
             this.throwable = (IThrowable) stack.getItem();
-            this.maxPrepare = throwable.getConfig().getGeneral().getPrepareTime();
-            this.maxThrow = throwable.getConfig().getGeneral().getThrowTime();
-            this.maxLife = throwable.getConfig().getProjectile().getLife();
+            this.maxPrepare = throwable.getConfig().getThrowable().getPrepareTime();
+            this.maxThrow = throwable.getConfig().getThrowable().getThrowTime();
+            this.maxLife = throwable.getConfig().getThrowable().getProjectile().getLife();
 
             prepareTick = maxPrepare;
             throwTick = maxThrow;

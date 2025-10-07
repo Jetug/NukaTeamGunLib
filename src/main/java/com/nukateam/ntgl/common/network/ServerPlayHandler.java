@@ -96,7 +96,7 @@ public class ServerPlayHandler {
 
         if (heldItem.getItem() instanceof WeaponItem weaponItem
                 && (GunStateHelper.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
-            var modifiedGun = weaponItem.getModifiedGun(heldItem);
+            var modifiedGun = weaponItem.getModifiedConfig(heldItem);
             var data = new GunData(heldItem, shooter);
 
             if (modifiedGun != null) {
@@ -224,7 +224,7 @@ public class ServerPlayHandler {
         Level world = player.level();
         ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
         if (heldItem.getItem() instanceof WeaponItem item && (GunStateHelper.hasAmmo(heldItem) || player.isCreative())) {
-            Gun modifiedGun = item.getModifiedGun(heldItem);
+            Gun modifiedGun = item.getModifiedConfig(heldItem);
             ResourceLocation fireSound = getPreFireSound(heldItem, modifiedGun);
             if (fireSound != null) {
                 var posX = player.getX();
@@ -379,7 +379,7 @@ public class ServerPlayHandler {
 
     public static void handleAttachments(ServerPlayer player) {
         var heldItem = player.getMainHandItem();
-        if (heldItem.getItem() instanceof WeaponItem && ((WeaponItem)heldItem.getItem()).getModifiedGun(heldItem).getModules().attachmentScreen()) {
+        if (heldItem.getItem() instanceof WeaponItem && ((WeaponItem)heldItem.getItem()).getModifiedConfig(heldItem).getModules().attachmentScreen()) {
             NetworkHooks.openScreen(player, new SimpleMenuProvider((windowId, playerInventory, player1) ->
                     new AttachmentContainer(windowId, playerInventory, heldItem), Component.translatable("container.ntgl.attachments")));
         }

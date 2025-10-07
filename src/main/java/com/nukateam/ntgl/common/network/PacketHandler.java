@@ -5,7 +5,6 @@ import com.nukateam.ntgl.*;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
-import com.nukateam.ntgl.modules.datapack.managers.NetworkGrenadeManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
 import com.nukateam.ntgl.common.network.message.*;
 import com.mrcrayfish.framework.api.*;
@@ -44,7 +43,6 @@ public class PacketHandler {
                 .registerPlayMessage(S2CMessageUpdateGuns.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageUpdateAmmo.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageUpdateAttachments.class, MessageDirection.PLAY_CLIENT_BOUND)
-                .registerPlayMessage(S2CMessageUpdateThrowable.class, MessageDirection.PLAY_CLIENT_BOUND)
 
                 .registerPlayMessage(S2CMessageBlood.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageGunSound.class, MessageDirection.PLAY_CLIENT_BOUND)
@@ -58,7 +56,6 @@ public class PacketHandler {
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_gun_manager"), NetworkGunManager.LoginData::new);
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_ammo_manager"), NetworkAmmoManager.LoginData::new);
         FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_attachment_manager"), NetworkAttachmentManager.LoginData::new);
-        FrameworkAPI.registerLoginData(ResourceLocation.tryBuild(Ntgl.MOD_ID, "network_grenade_manager"), NetworkGrenadeManager.LoginData::new);
     }
 
     public static void sendAnimation(LivingEntity entity, InteractionHand hand, AnimationType animation) {

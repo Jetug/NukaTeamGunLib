@@ -17,7 +17,6 @@ public class NetworkManagerHandler {
         NetworkGunManager.onServerStopped();
         NetworkAmmoManager.onServerStopped();
         NetworkAttachmentManager.onServerStopped();
-        NetworkGrenadeManager.onServerStopped();
     }
 
     @SubscribeEvent
@@ -25,7 +24,6 @@ public class NetworkManagerHandler {
         NetworkGunManager.register(event);
         NetworkAmmoManager.register(event);
         NetworkAttachmentManager.register(event);
-        NetworkGrenadeManager.register(event);
     }
 
     @SubscribeEvent
@@ -34,7 +32,6 @@ public class NetworkManagerHandler {
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateGuns());
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateAmmo());
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateAttachments());
-            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateThrowable());
         }
     }
 }

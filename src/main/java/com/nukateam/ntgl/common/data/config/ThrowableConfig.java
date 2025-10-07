@@ -26,103 +26,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
-    public static final String EQUIP_TIME = "equipTime";
     public static final String PREPARE_TIME = "prepareTime";
     public static final String THROW_TIME = "throwTime";
-    public static final String GENERAL = "General";
     public static final String AMMO_DATA = "AmmoData";
     public static final String SOUNDS = "Sounds";
-    public static final String TEXTURES = "Textures";
-    public static final String GRIP_TYPE = "GripType";
 
-    public static class General implements INBTSerializable<CompoundTag>{
-        @Optional LinkedHashSet<ThrowMode> mode = new LinkedHashSet<>(List.of(ThrowMode.SAFE));
-        private int equipTime = 0;
-        private int prepareTime = 0;
-        private int throwTime = 1;
-        @Ignored GripType gripType = GripType.ONE_HANDED;
-
-        public static General create(CompoundTag tag) {
-            var config = new General();
-            config.deserializeNBT(tag);
-            return config;
-        }
-
-        @Override
-        public CompoundTag serializeNBT() {
-            var tag = new CompoundTag();
-            tag.put("mode", NbtUtils.serializeSet(this.mode));
-            tag.putInt(EQUIP_TIME, equipTime);
-            tag.putInt(PREPARE_TIME, prepareTime);
-            tag.putInt(THROW_TIME, throwTime);
-            tag.putString   (GRIP_TYPE, this.gripType.getId().toString());
-            return tag;
-        }
-
-        @Override
-        public void deserializeNBT(CompoundTag tag) {
-            if (tag.contains("mode", Tag.TAG_COMPOUND)) {
-                this.mode = NbtUtils.deserializeSet(tag.getCompound("mode"), ThrowMode::getType);
-            }
-            if (tag.contains(EQUIP_TIME, Tag.TAG_INT)) {
-                this.equipTime = tag.getInt(EQUIP_TIME);
-            }
-            if (tag.contains(PREPARE_TIME, Tag.TAG_INT)) {
-                this.prepareTime = tag.getInt(PREPARE_TIME);
-            }
-            if (tag.contains(THROW_TIME, Tag.TAG_INT)) {
-                this.throwTime = tag.getInt(THROW_TIME);
-            }
-            if (tag.contains(GRIP_TYPE, Tag.TAG_STRING)) {
-                this.gripType = GripType.getType(ResourceLocation.tryParse(tag.getString(GRIP_TYPE)));
-            }
-        }
-
-        public JsonObject toJsonObject() {
-            var object = new JsonObject();
-            object.addProperty("mode", this.mode.toString());
-            object.addProperty("equipTime", this.equipTime);
-            object.addProperty("prepareTime", this.prepareTime);
-            object.addProperty("throwTime", this.throwTime);
-            object.addProperty("gripType", this.gripType.toString());
-            return object;
-        }
-
-        public General copy() {
-            var config = new General();
-            config.mode = (LinkedHashSet<ThrowMode>)mode.clone();
-            config.equipTime = equipTime;
-            config.prepareTime = prepareTime;
-            config.throwTime = throwTime;
-            config.gripType = this.gripType;
-            return config;
-        }
-
-        public LinkedHashSet<ThrowMode> getThrowModes() {
-            return mode;
-        }
-
-        public int getEquipTime() {
-            return equipTime;
-        }
-
-        public int getPrepareTime() {
-            return prepareTime;
-        }
-
-        public int getThrowTime() {
-            return throwTime;
-        }
-
-        public GripType getGripType() {
-            return this.gripType;
-        }
-    }
-
-    protected General general = new General();
+    @Optional LinkedHashSet<ThrowMode> mode = new LinkedHashSet<>(List.of(ThrowMode.SAFE));
+    private int prepareTime = 0;
+    private int throwTime = 1;
     protected AmmoData ammoData = new AmmoData();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
-    protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     @Ignored
     protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
 
@@ -139,17 +52,24 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
-        tag.put(GENERAL, general.serializeNBT());
+        tag.put("mode", NbtUtils.serializeSet(this.mode));
+        tag.putInt(PREPARE_TIME, prepareTime);
+        tag.putInt(THROW_TIME, throwTime);
         tag.put(AMMO_DATA, ammoData.serializeNBT());
         tag.put(SOUNDS, NbtUtils.serializeStringMap(this.sounds));
-        tag.put(TEXTURES, NbtUtils.serializeStringMap(this.textures));
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        if (tag.contains(GENERAL, Tag.TAG_COMPOUND)) {
-            this.general = General.create(tag.getCompound(GENERAL));
+        if (tag.contains("mode", Tag.TAG_COMPOUND)) {
+            this.mode = NbtUtils.deserializeSet(tag.getCompound("mode"), ThrowMode::getType);
+        }
+        if (tag.contains(PREPARE_TIME, Tag.TAG_INT)) {
+            this.prepareTime = tag.getInt(PREPARE_TIME);
+        }
+        if (tag.contains(THROW_TIME, Tag.TAG_INT)) {
+            this.throwTime = tag.getInt(THROW_TIME);
         }
         if (tag.contains(AMMO_DATA, Tag.TAG_COMPOUND)) {
             this.ammoData = AmmoData.create(tag.getCompound(AMMO_DATA));
@@ -157,32 +77,27 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         if (tag.contains(SOUNDS, Tag.TAG_COMPOUND)) {
             this.sounds = deserializeSounds(tag.getCompound(SOUNDS));
         }
-        if (tag.contains(TEXTURES, Tag.TAG_COMPOUND)) {
-            this.textures = NbtUtils.deserializeRLMap(tag.getCompound(TEXTURES));
-        }
     }
 
     public JsonObject toJsonObject() {
         var gson = new Gson();
         var object = new JsonObject();
+        object.addProperty("mode", this.mode.toString());
+        object.addProperty("prepareTime", this.prepareTime);
+        object.addProperty("throwTime", this.throwTime);
         object.add("projectile", this.ammoData.toJsonObject());
-        object.add("general", this.general.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object,"sounds", gson.toJsonTree(sounds).getAsJsonObject());
-        GunJsonUtil.addObjectIfNotEmpty(object,"textures", gson.toJsonTree(textures).getAsJsonObject());
         return object;
     }
 
     public ThrowableConfig copy() {
-        var gun = new ThrowableConfig();
-        gun.general = general;
-        gun.ammoData = ammoData;
-        gun.sounds = (HashMap<String, ResourceLocation>) this.sounds.clone();
-        gun.textures = (HashMap<String, ResourceLocation>) this.textures.clone();
-        return gun;
-    }
-
-    public General getGeneral() {
-        return general;
+        var config = new ThrowableConfig();
+        config.mode = (LinkedHashSet<ThrowMode>)mode.clone();
+        config.prepareTime = prepareTime;
+        config.throwTime = throwTime;
+        config.ammoData = ammoData;
+        config.sounds = (HashMap<String, ResourceLocation>) this.sounds.clone();
+        return config;
     }
 
     public ProjectileConfig getProjectile() {
@@ -216,33 +131,25 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         return sound.isEmpty() ? null : ResourceLocation.tryParse(sound);
     }
 
+    public int getPrepareTime() {
+        return prepareTime;
+    }
+
+    public int getThrowTime() {
+        return throwTime;
+    }
+
+    public LinkedHashSet<ThrowMode> getThrowModes() {
+        return mode;
+    }
+
     public static ThrowableConfig create(ResourceLocation id, CompoundTag tag) {
         var gun = new ThrowableConfig();
         gun.deserializeNBT(tag);
-        prepareTextures(id.getPath(), gun);
         return gun;
     }
 
-    public void onCreated(String id){
-        prepareTextures(id, this);
-    }
-
-    private static void prepareTextures(String itemId, ThrowableConfig gun) {
-        if(FMLEnvironment.dist == Dist.CLIENT) {
-            CompletableFuture.runAsync(() -> {
-                gun.textures.forEach((variant, path) -> {
-//                        var texture = resourceExists(path) ? path : getTexture(itemId, path);
-                    var texture = getTexture(itemId, path);
-                    gun.preparedTextures.put(variant, texture);
-                });
-            });
-        }
-    }
-
-    @NotNull
-    private static ResourceLocation getTexture(String itemId, ResourceLocation path) {
-        return ResourceLocation.tryBuild(path.getNamespace(), "textures/guns/" + itemId + "/" + path.getPath() + ".png");
-    }
+    public void onCreated(String id){}
 
     public static class Builder {
         private final ThrowableConfig gun;

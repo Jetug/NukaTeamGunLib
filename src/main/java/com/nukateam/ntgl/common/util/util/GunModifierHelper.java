@@ -12,6 +12,7 @@ import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +25,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static net.minecraftforge.registries.ForgeRegistries.*;
@@ -47,7 +47,7 @@ public class GunModifierHelper {
 
     public static boolean isWeaponFull(GunData data) {
         var tag = data.gun.getOrCreateTag();
-        var gun = ((WeaponItem)data.gun.getItem()).getModifiedGun(data.gun);
+        var gun = ((WeaponItem)data.gun.getItem()).getModifiedConfig(data.gun);
         return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(data);
     }
 
@@ -65,8 +65,8 @@ public class GunModifierHelper {
     }
 
     public static Gun getGun(ItemStack stack) {
-        var gunItem = (WeaponItem) stack.getItem();
-        return gunItem.getModifiedGun(stack);
+        var gunItem = (IWeapon) stack.getItem();
+        return gunItem.getModifiedConfig(stack);
     }
 
     public static General getGeneral(Gun gun) {

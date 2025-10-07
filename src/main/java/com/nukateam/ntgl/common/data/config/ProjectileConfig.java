@@ -249,7 +249,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         return this.spread;
     }
 
-    public ProjectileType getProjectile() {
+    public ProjectileType getProjectileType() {
         return this.projectile;
     }
 

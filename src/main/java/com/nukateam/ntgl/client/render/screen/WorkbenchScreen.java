@@ -2,7 +2,6 @@ package com.nukateam.ntgl.client.render.screen;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
-import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMelee;
 import com.nukateam.ntgl.common.util.interfaces.IMeleeWeapon;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
@@ -468,7 +467,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             for (var recipe : weapons){
                 var weaponStack = recipe.getItem();
                 var gunItem = (WeaponItem)weaponStack.getItem();
-                var category = gunItem.getModifiedGun(weaponStack).getGeneral().getCategory();
+                var category = gunItem.getModifiedConfig(weaponStack).getGeneral().getCategory();
                 var buff = categoryRecipes.getOrDefault(category, new ArrayList<>());
 
                 buff.add(recipe);
@@ -527,7 +526,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         Objects.requireNonNull(id);
 
         for (var gunItem : NetworkGunManager.getClientRegisteredGuns()) {
-            var ammo = gunItem.getModifiedGun(stack).getGeneral().getAmmo();
+            var ammo = gunItem.getConfig().getGeneral().getAmmo();
 
             for (var a : ammo) {
                 if(a.getId().equals(id)){

@@ -7,6 +7,7 @@ import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.model.gun.ThrowableItemModel;
 import com.nukateam.ntgl.client.render.renderers.weapon.ThrowableItemRenderer;
 import com.nukateam.ntgl.client.util.handler.ClientEquipHandler;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.holders.ThrowMode;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.data.config.ThrowableConfig;
@@ -43,7 +44,7 @@ import static mod.azure.azurelib.core.animation.Animation.LoopType.*;
 import static mod.azure.azurelib.core.animation.RawAnimation.begin;
 
 @OnlyIn(Dist.CLIENT)
-public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<ThrowableConfig> {
+public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     public static final String PREPARE = "prepare";
     public static final String PREPARE_SAFE = "prepare_safe";
     public static final String THROW = "throw";
@@ -84,12 +85,12 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
     }
 
     @Override
-    public ThrowableConfig getConfig() {
+    public Gun getConfig() {
         if (getStack().getItem() instanceof IThrowable item) {
             return item.getConfig();
         }
 
-        return new ThrowableConfig();
+        return new Gun();
     }
 
     public void tick(TickEvent event) {
@@ -102,8 +103,8 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<T
 
     protected void tickStart() {
         if (getStack().getItem() instanceof IThrowable throwable) {
-            prepareTime = throwable.getConfig().getGeneral().getPrepareTime();
-            throwingTime = throwable.getConfig().getGeneral().getThrowTime();
+            prepareTime = throwable.getConfig().getThrowable().getPrepareTime();
+            throwingTime = throwable.getConfig().getThrowable().getThrowTime();
             equipTime = throwable.getConfig().getGeneral().getEquipTime();
             isEquiping = EquipTracker.isEquiping(getEntity(), getArm());
             mode = ThrowableStateHelper.getThrowMode(getStack());

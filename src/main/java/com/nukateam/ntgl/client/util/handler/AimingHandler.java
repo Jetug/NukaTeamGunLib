@@ -4,7 +4,6 @@ package com.nukateam.ntgl.client.util.handler;
 import com.nukateam.ntgl.client.util.util.PropertyHelper;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
-import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -162,7 +161,7 @@ public class AimingHandler {
         if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player))
             return;
 
-        var modifiedGun = weaponItem.getModifiedGun(heldItem);
+        var modifiedGun = weaponItem.getModifiedConfig(heldItem);
 
         if (modifiedGun.getModules().getZoom() == null)
             return;
@@ -208,7 +207,7 @@ public class AimingHandler {
         if(!mainHandItem.isEmpty() && !offhandItem.isEmpty() && mainOneHanded && offOneHanded)
             return false;
 
-        var gun = ((WeaponItem) mainHandItem.getItem()).getModifiedGun(mainHandItem);
+        var gun = ((WeaponItem) mainHandItem.getItem()).getModifiedConfig(mainHandItem);
 
         if (!gun.canAimDownSight())
             return false;

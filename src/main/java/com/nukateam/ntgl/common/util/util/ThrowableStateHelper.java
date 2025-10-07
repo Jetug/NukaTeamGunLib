@@ -16,7 +16,7 @@ public class ThrowableStateHelper {
 
     public static void switchThrowMode(ItemStack stack){
         if(stack.getItem() instanceof IThrowable throwable) {
-            var modes = throwable.getConfig().getGeneral().getThrowModes();
+            var modes = throwable.getConfig().getThrowable().getThrowModes();
             var current = getThrowMode(stack);
             var newMode = SetUtils.cycleSet(modes, current);
             setThrowMode(stack, newMode);
@@ -26,7 +26,7 @@ public class ThrowableStateHelper {
     public static ThrowMode getThrowMode(ItemStack stack) {
         var throwable = (IThrowable)stack.getItem();
 
-        var modes = throwable.getConfig().getGeneral().getThrowModes();
+        var modes = throwable.getConfig().getThrowable().getThrowModes();
         var tag = stack.getOrCreateTag();
         ThrowMode currentMode = null;
 

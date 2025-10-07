@@ -26,7 +26,7 @@ public class EntityModelHandler {
         if(!heldItem.isEmpty() && heldItem.getItem() instanceof WeaponItem)
         {
             poseStack.pushPose();
-            Gun gun = ((WeaponItem) heldItem.getItem()).getModifiedGun(heldItem);
+            Gun gun = ((WeaponItem) heldItem.getItem()).getModifiedConfig(heldItem);
             if(gun.getGeneral().getGripType().getHeldAnimation().applyOffhandTransforms(player, event.getPlayerModel(), heldItem, poseStack, event.getDeltaTicks()))
             {
                 MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();

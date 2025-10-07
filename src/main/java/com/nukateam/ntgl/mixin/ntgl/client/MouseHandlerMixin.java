@@ -28,7 +28,7 @@ public class MouseHandlerMixin {
             var heldItem = mc.player.getMainHandItem();
             if (heldItem.getItem() instanceof WeaponItem weaponItem) {
                 if (AimingHandler.get().isAiming() && !ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player)) {
-                    var modifiedGun = weaponItem.getModifiedGun(heldItem);
+                    var modifiedGun = weaponItem.getModifiedConfig(heldItem);
                     if (modifiedGun.getModules().getZoom() != null) {
                         float modifier = GunStateHelper.getFovModifier(heldItem, modifiedGun);
                         additionalAdsSensitivity = Mth.clamp(1.0F - (1.0F / modifier) / 10F, 0.0F, 1.0F);

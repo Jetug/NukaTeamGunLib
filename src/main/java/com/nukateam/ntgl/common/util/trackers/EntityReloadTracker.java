@@ -36,7 +36,7 @@ public class EntityReloadTracker {
         this.arm = arm;
         this.stack = entity.getItemInHand(getInteractionHand(arm));
         this.weaponItem = ((WeaponItem) stack.getItem());
-        this.gun = weaponItem.getModifiedGun(stack);
+        this.gun = weaponItem.getModifiedConfig(stack);
         this.reloadTick = gun.getGeneral().getReloadTime();
     }
 

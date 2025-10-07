@@ -171,7 +171,7 @@ public class GunStateHelper {
     public static void fillAmmo(GunData data) {
         if (data.gun.getItem() instanceof WeaponItem weaponItem) {
             var tag = data.gun.getOrCreateTag();
-//            var maxAmmo = weaponItem.getModifiedGun(gunStack).getGeneral().getMaxAmmo(gunStack);
+//            var maxAmmo = weaponItem.getModifiedConfig(gunStack).getGeneral().getMaxAmmo(gunStack);
             var maxAmmo = GunModifierHelper.getMaxAmmo(data);
 
             tag.putInt(Tags.AMMO_COUNT, maxAmmo);

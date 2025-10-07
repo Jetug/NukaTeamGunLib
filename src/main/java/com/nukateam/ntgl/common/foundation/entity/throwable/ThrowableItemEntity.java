@@ -43,7 +43,7 @@ public abstract class ThrowableItemEntity<T extends Item & IThrowable> extends T
 
     public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity thrower, T item) {
         super(entityType, thrower, world);
-        this.projectile = item.getConfig().getProjectile();
+        this.projectile = item.getConfig().getThrowable().getProjectile();
         this.setItem(new ItemStack(item));
     }
 

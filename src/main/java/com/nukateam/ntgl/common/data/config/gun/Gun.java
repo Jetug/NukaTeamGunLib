@@ -40,17 +40,14 @@ import java.util.function.Supplier;
 import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
-    private static final ResourceLocation RELOAD = ResourceLocation.tryBuild(Ntgl.MOD_ID, "gun_reload");
-
     protected General general = new General();
     protected Melee melee = new Melee();
+    protected ThrowableConfig throwable = new ThrowableConfig();
     protected Display display = new Display();
     protected Modules modules = new Modules();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     protected HashMap<AnimationType, ResourceLocation> animations = new HashMap<>();
-//    @Ignored
-//    protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
     protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
     protected LinkedHashMap<ResourceLocation, Fuel> fuel = new LinkedHashMap<>();
 
@@ -81,6 +78,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         var tag = new CompoundTag();
         tag.put("General", this.general.serializeNBT());
         tag.put("Melee", this.melee.serializeNBT());
+        tag.put("throwable", this.throwable.serializeNBT());
         tag.put("Sounds", NbtUtils.serializeStringMap(this.sounds));
         tag.put("Display", this.display.serializeNBT());
         tag.put("Modules", this.modules.serializeNBT());
@@ -98,6 +96,9 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
         if (tag.contains("Melee", Tag.TAG_COMPOUND)) {
             this.melee.deserializeNBT(tag.getCompound("Melee"));
+        }
+        if (tag.contains("throwable", Tag.TAG_COMPOUND)) {
+            this.throwable.deserializeNBT(tag.getCompound("throwable"));
         }
         if (tag.contains("Sounds", Tag.TAG_COMPOUND)) {
             this.sounds = deserializeSounds(tag.getCompound("Sounds"));
@@ -130,6 +131,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         var object = new JsonObject();
         object.add("general", this.general.toJsonObject());
         object.add("melee", this.melee.toJsonObject());
+        object.add("throwable", this.throwable.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object,"ammoData", gson.toJsonTree(this.ammoData).getAsJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object,"sounds", gson.toJsonTree(this.sounds).getAsJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
@@ -141,6 +143,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         var gun = new Gun();
         gun.general = this.general.copy();
         gun.melee = this.melee.copy();
+        gun.throwable = this.throwable.copy();
         gun.sounds   = (HashMap<String, ResourceLocation>)  this.sounds.clone();
         gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
         gun.animations = (HashMap<AnimationType, ResourceLocation>) this.animations.clone();
@@ -168,6 +171,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public Melee getMelee() {
         return this.melee;
+    }
+
+    public ThrowableConfig getThrowable() {
+        return this.throwable;
     }
 
     public Sounds getSounds() {
@@ -209,7 +216,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         if(attachments == null)
             return false;
         return attachments.containsKey(type);
-    }
+    } 
 
     public boolean canAimDownSight() {
         return this.modules.zoom != null;

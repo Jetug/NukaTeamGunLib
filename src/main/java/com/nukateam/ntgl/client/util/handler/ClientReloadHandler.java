@@ -99,7 +99,7 @@ public class ClientReloadHandler {
                 var isMaxAmmo = GunStateHelper.isMaxAmmo(data);
 
                 if (!isAmmoIgnored && hasAmmo && !isMaxAmmo) {
-                    var gun = ((WeaponItem) stack.getItem()).getModifiedGun(stack);
+                    var gun = ((WeaponItem) stack.getItem()).getModifiedConfig(stack);
                     reloadTicks = GunModifierHelper.getReloadTime(data);
 
                     if (GunStateHelper.getAmmoCount(data) >= GunEnchantmentHelper.getAmmoCapacity(data))

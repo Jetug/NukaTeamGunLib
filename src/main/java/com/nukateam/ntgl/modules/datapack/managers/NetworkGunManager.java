@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -28,8 +28,8 @@ import static net.minecraftforge.registries.ForgeRegistries.*;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public class NetworkGunManager extends SimplePreparableReloadListener<Map<WeaponItem, Gun>> {
-    private static final List<WeaponItem> clientRegisteredGuns = new ArrayList<>();
+public class NetworkGunManager extends SimplePreparableReloadListener<Map<IWeapon, Gun>> {
+    private static final List<IWeapon> clientRegisteredGuns = new ArrayList<>();
     private static NetworkGunManager instance;
 
     private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
@@ -45,18 +45,20 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<Weapon
     }
 
     @Override
-    protected Map<WeaponItem, Gun> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return DataUtils.getConfigMap(manager, (v) -> v instanceof WeaponItem, Gun.class, "guns");
+    protected Map<IWeapon, Gun> prepare(ResourceManager manager, ProfilerFiller profiler) {
+        return DataUtils.getConfigMap(manager, (v) -> v instanceof IWeapon, Gun.class, "guns");
     }
 
     @Override
-    protected void apply(Map<WeaponItem, Gun> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
+    protected void apply(Map<IWeapon, Gun> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
         ImmutableMap.Builder<ResourceLocation, Gun> builder = ImmutableMap.builder();
 
-        objects.forEach((item, gun) -> {
-            Validate.notNull(ITEMS.getKey(item));
-            builder.put(ITEMS.getKey(item), gun);
-            item.setConfig(new ConfigSupplier<>(gun));
+        objects.forEach((abstractItem, gun) -> {
+            if(abstractItem instanceof Item item) {
+                Validate.notNull(ITEMS.getKey(item));
+                builder.put(ITEMS.getKey(item), gun);
+                abstractItem.setConfig(new ConfigSupplier<>(gun));
+            }
         });
 
         this.registeredGuns = builder.build();
@@ -111,11 +113,11 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<Weapon
         if (registeredGuns != null) {
             for (Map.Entry<ResourceLocation, Gun> entry : registeredGuns.entrySet()) {
                 Item item = ITEMS.getValue(entry.getKey());
-                if (!(item instanceof WeaponItem)) {
+                if (!(item instanceof IWeapon)) {
                     return false;
                 }
-                ((WeaponItem) item).setConfig(new ConfigSupplier<>(entry.getValue()));
-                clientRegisteredGuns.add((WeaponItem) item);
+                ((IWeapon) item).setConfig(new ConfigSupplier<>(entry.getValue()));
+                clientRegisteredGuns.add((IWeapon) item);
             }
             return true;
         }
@@ -136,7 +138,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<Weapon
      *
      * @return a list of guns registered on the client
      */
-    public static List<WeaponItem> getClientRegisteredGuns() {
+    public static List<IWeapon> getClientRegisteredGuns() {
         return ImmutableList.copyOf(clientRegisteredGuns);
     }
 

@@ -5,11 +5,11 @@ import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.client.animators.ThrowableAnimator;
 import com.nukateam.ntgl.client.model.gun.ThrowableItemModel;
 import com.nukateam.ntgl.client.render.renderers.weapon.ThrowableItemRenderer;
-import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.ExplosionConfig;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
-import com.nukateam.ntgl.common.data.config.ThrowableConfig;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
+import com.nukateam.ntgl.common.util.util.ResourceUtils;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import mod.azure.azurelib.animatable.GeoItem;
@@ -17,6 +17,7 @@ import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -41,20 +43,31 @@ public class ThrowableItem extends Item implements DynamicGeoItem, IThrowable {
     private final Lazy<ThrowableItemRenderer<?>> RENDERER = Lazy.of(() ->
             new ThrowableItemRenderer<ThrowableAnimator>(new ThrowableItemModel()));
     private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
-    private ThrowableConfig projectile = new ThrowableConfig();
+    private Gun projectile = new Gun();
+    private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
 
     public ThrowableItem(Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public ThrowableConfig getConfig() {
+    public Gun getConfig() {
         return projectile;
     }
 
     @Override
-    public void setConfig(ConfigSupplier<ThrowableConfig> supplier) {
+    public void setConfig(ConfigSupplier<Gun> supplier) {
         projectile = supplier.getConfig();
+    }
+
+    @Override
+    public String getName() {
+        return name.get();
+    }
+
+    @Override
+    public String getNamespace() {
+        return getRegistryName().getNamespace();
     }
 
     @Override
@@ -105,7 +118,7 @@ public class ThrowableItem extends Item implements DynamicGeoItem, IThrowable {
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
         addDamageTip(tooltip);
 
-        var explosion = getConfig().getProjectile().getExplosion();
+        var explosion = getConfig().getThrowable().getProjectile().getExplosion();
         if(explosion.getRadius() > 0){
             addExplosionTip(tooltip, explosion);
         }
@@ -124,7 +137,7 @@ public class ThrowableItem extends Item implements DynamicGeoItem, IThrowable {
     }
 
     private void addDamageTip(List<Component> tooltip) {
-        var damage = getConfig().getProjectile().getDamage();
+        var damage = getConfig().getThrowable().getProjectile().getDamage();
         tooltip.add(Component.translatable("info.ntgl.damage",
                 ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage))
                 .withStyle(ChatFormatting.GRAY));
@@ -135,11 +148,15 @@ public class ThrowableItem extends Item implements DynamicGeoItem, IThrowable {
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
 
     public ThrowableItemEntity create(Level world, LivingEntity entity, int timeLeft) {
-        var projectile = getConfig().getProjectile().getProjectile();
+        var projectile = getConfig().getThrowable().getProjectile().getProjectileType();
         return ProjectileManager.getInstance()
                 .getFactory(projectile)
                 .create(world, entity, this, timeLeft);
     }
 
     protected void onThrown(Level world, ThrowableItemEntity entity) {}
+
+    private ResourceLocation getRegistryName() {
+        return ForgeRegistries.ITEMS.getKey(this);
+    }
 }

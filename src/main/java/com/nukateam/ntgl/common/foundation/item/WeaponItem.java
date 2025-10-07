@@ -3,7 +3,6 @@ package com.nukateam.ntgl.common.foundation.item;
 import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
@@ -249,18 +248,19 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
 //    @Override
 //    public boolean isBarVisible(ItemStack stack) {
 //        CompoundTag tagCompound = stack.getOrCreateTag();
-//        Gun modifiedGun = this.getModifiedGun(stack);
+//        Gun modifiedGun = this.getModifiedConfig(stack);
 //        return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt(Tags.AMMO_COUNT) != GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun);
 //    }
 
 //    @Override
 //    public int getBarWidth(ItemStack stack) {
 //        CompoundTag tagCompound = stack.getOrCreateTag();
-//        Gun modifiedGun = this.getModifiedGun(stack);
+//        Gun modifiedGun = this.getModifiedConfig(stack);
 //        return (int) (13.0 * (tagCompound.getInt(Tags.AMMO_COUNT) / (double) GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)));
 //    }
 
-    public Gun getModifiedGun(ItemStack stack) {
+    @Override
+    public Gun getModifiedConfig(ItemStack stack) {
         var tagCompound = stack.getTag();
         if (tagCompound != null && tagCompound.contains("Gun", Tag.TAG_COMPOUND)) {
             return this.modifiedGunCache.computeIfAbsent(tagCompound, item ->

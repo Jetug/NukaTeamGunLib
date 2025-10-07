@@ -127,7 +127,7 @@ public class GunEventHandler {
 
 //    public static void ejectCasing(Level level, LivingEntity livingEntity) {
 //        var heldItem = livingEntity.getMainHandItem();
-//        var gun = ((WeaponItem) heldItem.getItem()).getModifiedGun(heldItem);
+//        var gun = ((WeaponItem) heldItem.getItem()).getModifiedConfig(heldItem);
 //
 //        var lookVec = livingEntity.getLookAngle(); //Get the player's look vector
 //        var rightVec = new Vec3(-lookVec.z, 0, lookVec.x).normalize();

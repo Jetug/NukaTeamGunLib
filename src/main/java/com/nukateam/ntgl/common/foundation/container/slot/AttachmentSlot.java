@@ -48,7 +48,7 @@ public class AttachmentSlot extends Slot {
 
         var gun = getGun(weapon);
         var item = (WeaponItem) this.weapon.getItem();
-        var modifiedGun = item.getModifiedGun(this.weapon);
+        var modifiedGun = item.getModifiedConfig(this.weapon);
         return modifiedGun.canAttachType(this.type, gun);
     }
 
@@ -58,7 +58,7 @@ public class AttachmentSlot extends Slot {
             return false;
         }
 
-        var modifiedGun = item.getModifiedGun(this.weapon);
+        var modifiedGun = item.getModifiedConfig(this.weapon);
 
         if (stack.getItem() instanceof IAttachment<?> attachment) {
             var attachments = modifiedGun.getModules().getAttachments().get(attachment.getType());
