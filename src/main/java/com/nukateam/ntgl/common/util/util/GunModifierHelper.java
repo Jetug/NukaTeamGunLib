@@ -78,6 +78,10 @@ public class GunModifierHelper {
         return gun.getModules().getAttachments().keySet();
     }
 
+    public static boolean isThrowable(GunData data) {
+        return GunModifierHelper.getGun(data.gun).getGeneral().getWeaponMode() == WeaponMode.THROWABLE;
+    }
+
 //    public static ArrayList<AttachmentType> getSortedAttachmentTypes(GunData data) {
 //        var attachments = getAttachmentTypes(data);
 //        var sortedTypes = new ArrayList<>(attachments.keySet());

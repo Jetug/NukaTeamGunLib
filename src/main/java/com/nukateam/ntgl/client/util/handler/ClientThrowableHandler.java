@@ -1,13 +1,18 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.KeyAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageGrenade;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
@@ -28,24 +33,35 @@ public class ClientThrowableHandler {
     @SubscribeEvent
     public static void tick(TickEvent.ClientTickEvent event){
         var minecraft = Minecraft.getInstance();
-        if(event.phase == TickEvent.Phase.END){
-            var hand = InteractionHand.MAIN_HAND;
-
+        if(event.phase == TickEvent.Phase.END && minecraft.player != null){
             if(minecraft.options.keyAttack.isDown()){
-                var stack = minecraft.player.getItemInHand(hand);
-                if(stack.getItem() instanceof IThrowable && !TRACKER_MAP.containsKey(hand)){
-                    TRACKER_MAP.put(hand, new Tracker(minecraft.player, hand));
-                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.HOLD, hand));
-                }
+                addTracker(minecraft.player, InteractionHand.MAIN_HAND);
             }
             else {
-                if(TRACKER_MAP.containsKey(hand)) {
-                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.RELEASE, hand));
-                    TRACKER_MAP.remove(hand);
-                }
+                removeTracker(InteractionHand.MAIN_HAND);
             }
 
-//            TRACKER_MAP.forEach((k, v) -> v.tick());
+            if(minecraft.options.keyUse.isDown()){
+                addTracker(minecraft.player, InteractionHand.OFF_HAND);
+            }
+            else {
+                removeTracker(InteractionHand.OFF_HAND);
+            }
+        }
+    }
+
+    private static void addTracker(Player player, InteractionHand hand) {
+        var heldItem = player.getItemInHand(hand);
+        if(isThrowable(heldItem, player) && !TRACKER_MAP.containsKey(hand)){
+            TRACKER_MAP.put(hand, new Tracker(player, hand));
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.HOLD, hand));
+        }
+    }
+
+    private static void removeTracker(InteractionHand hand) {
+        if(TRACKER_MAP.containsKey(hand)) {
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.RELEASE, hand));
+            TRACKER_MAP.remove(hand);
         }
     }
 
@@ -61,18 +77,22 @@ public class ClientThrowableHandler {
         if (event.isAttack()) {
             var heldItem = player.getMainHandItem();
 
-            if (heldItem.getItem() instanceof IThrowable) {
+            if (isThrowable(heldItem, player)) {
                 event.setCanceled(true);
                 event.setSwingHand(false);
             }
         } else if (event.isUseItem()) {
             var offhandItem = player.getOffhandItem();
 
-            if (offhandItem.getItem() instanceof IThrowable && canRenderInOffhand(player)) {
+            if (isThrowable(offhandItem, player) && canRenderInOffhand(player)) {
                 event.setCanceled(true);
                 event.setSwingHand(false);
             }
         }
+    }
+
+    private static boolean isThrowable(ItemStack heldItem, Player player) {
+        return heldItem.getItem() instanceof IThrowable && GunModifierHelper.isThrowable(new GunData(heldItem, player));
     }
 
     private static class Tracker {

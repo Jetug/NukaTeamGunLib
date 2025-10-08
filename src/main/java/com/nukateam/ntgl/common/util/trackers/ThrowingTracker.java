@@ -65,25 +65,20 @@ public class ThrowingTracker {
     }
 
     public static void start(LivingEntity entity, InteractionHand arm){
-        addTracker(entity, arm);
-    }
-
-    public static void onRelease(LivingEntity entity, InteractionHand arm){
-        var tracker = TRACKER_MAP.get(Pair.of(arm, entity));
-        tracker.onRelease();
-    }
-
-    private static boolean addTracker(LivingEntity entity, InteractionHand arm) {
         var gunItem = entity.getItemInHand(arm).getItem();
         var key = Pair.of(arm, entity);
 
         if (!TRACKER_MAP.containsKey(key)) {
             if (!(gunItem instanceof IThrowable)) {
-                return true;
+                return;
             }
             TRACKER_MAP.put(key, new Tracker(entity, arm, () -> TRACKER_MAP.remove(Pair.of(arm, entity))));
         }
-        return false;
+    }
+
+    public static void onRelease(LivingEntity entity, InteractionHand arm){
+        var tracker = TRACKER_MAP.get(Pair.of(arm, entity));
+        tracker.onRelease();
     }
 
     private static void onEntityTick(LivingEntity entity) {

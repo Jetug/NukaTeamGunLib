@@ -433,7 +433,6 @@ public class ServerPlayHandler {
                 && GunModifierHelper.canMelee(gunData)
                 && !EquipTracker.isEquiping(player,InteractionHand.MAIN_HAND)) {
             MeleeTracker.start(player, InteractionHand.MAIN_HAND);
-//            ModSyncedDataKeys.MELEE_RIGHT.setValue(player, true);
         }
     }
 
