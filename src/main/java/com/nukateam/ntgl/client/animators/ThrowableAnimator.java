@@ -219,7 +219,6 @@ public class ThrowableAnimator extends ItemAnimator implements IConfigProvider<G
 
     protected RawAnimation getTickingAnimation(AnimationState<ThrowableAnimator> event) {
         var animation = playGunAnim(TICKING, LOOP);
-//        animationHelper.syncAnimation(event, equipTime, TICKING);
         return animation;
     }
 

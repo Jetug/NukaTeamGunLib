@@ -9,6 +9,8 @@ import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.model.gun.*;
 import com.nukateam.ntgl.client.render.renderers.weapon.*;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
+import com.nukateam.ntgl.common.data.holders.ThrowMode;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -42,6 +44,11 @@ import static mod.azure.azurelib.core.animation.RawAnimation.begin;
 @OnlyIn(Dist.CLIENT)
 public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     public static final String STATIC = "static";
+    public static final String PREPARE = "prepare";
+    public static final String PREPARE_SAFE = "prepare_safe";
+    public static final String THROW = "throw";
+    public static final String THROW_SAFE = "throw_safe";
+
     protected final DynamicGunRenderer<GunAnimator> renderer;
     protected final Minecraft minecraft = Minecraft.getInstance();
     protected final ShootingHandler shootingHandler = ShootingHandler.get();
@@ -52,6 +59,8 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected final AnimationController<GunAnimator> MAIN_CONTROLLER;
     protected final AnimationController<GunAnimator> REVOLVER_CONTROLLER;
     protected final AnimationController<GunAnimator> BARREL_CONTROLLER;
+    protected final AnimationController<GunAnimator> TICKING_CONTROLLER;
+
     protected final InteractionHand arm;
 
     protected Cycler barrelCycler = new Cycler(1, getBarrelAmount());
@@ -68,6 +77,9 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected int reloadEndTime;
     protected boolean isEquiping;
     protected ItemStack itemCache = ItemStack.EMPTY;
+    protected ThrowMode throwMode;
+    protected int prepareTime;
+    protected int throwingTime;
 
     public GunAnimator(ItemDisplayContext transformType, DynamicGunRenderer<GunAnimator> renderer) {
         super(transformType);
@@ -81,6 +93,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 .triggerableAnim(EQUIP, begin().then(EQUIP, LOOP));
         REVOLVER_CONTROLLER = createController("revolverController", animateRevolver());
         BARREL_CONTROLLER = createController("barrelController", animateBarrels());
+        TICKING_CONTROLLER = createController("tickingController", animateTick());
         animationHelper = new AnimationHelper<>(this, GeoGunModel.INSTANCE);
     }
 
@@ -111,7 +124,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     protected void tickStart() {
-        if (!(getStack().getItem() instanceof WeaponItem))
+        if (!(getStack().getItem() instanceof IWeapon weapon))
             return;
         var data = getGunData();
         this.rate = GunModifierHelper.getRate(data);
@@ -123,6 +136,12 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         this.reloadTime = GunModifierHelper.getReloadTime(data);
         this.reloadStartTime = GunModifierHelper.getReloadStart(data);
         this.reloadEndTime = GunModifierHelper.getReloadEnd(data);
+
+        var conging = weapon.getModifiedConfig(getStack());
+        this.prepareTime  = conging.getThrowable().getPrepareTime();
+        this.throwingTime = conging.getThrowable().getThrowTime();
+        this.throwMode = ThrowableStateHelper.getThrowMode(getStack());
+
 //        Ntgl.LOGGER.info("! Is equiping: " + isEquiping);
 
 //        if(isEquiping) {
@@ -184,6 +203,12 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                     animation = getEquipAnimation(event);
 //                    Ntgl.LOGGER.debug("!Equip");
                 }
+                else if(isPreparing()){
+                    animation = getPrepareAnimation(event);
+                }
+                else if(isThrowing()){
+                    animation = getThrowingAnimation(event);
+                }
                 else if(ClientMeleeHandler.isOnDelay(shooter, arm)){
                     animation = getMeleeDelayAnimation(event);
                 }
@@ -223,12 +248,45 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         };
     }
 
+    protected AnimationStateHandler<GunAnimator> animateTick() {
+        return event -> {
+            var controller = event.getController();
+            controller.setAnimationSpeed(1);
+            var holdAnimation = getHoldAnimation(event);
+
+            if (!isHandTransform(transformType))
+                return PlayState.STOP;
+
+            var animation = begin();
+            if(throwMode == ThrowMode.UNSAFE && (isHolding() || isThrowing())){
+                animation = getTickingAnimation(event);
+            }
+            else {
+                return PlayState.STOP;
+            }
+
+            return event.setAndContinue(animation);
+        };
+    }
+
     protected AnimationStateHandler<GunAnimator> animateRevolver() {
         return (event) -> getCycledAnimation(event, Animations.CHAMBER, this.chamberCycler);
     }
 
     protected AnimationStateHandler<GunAnimator> animateBarrels() {
         return (event) -> getCycledAnimation(event, Animations.BARREL, this.barrelCycler);
+    }
+
+    protected boolean isPreparing() {
+        return ModSyncedDataKeys.getPreparingDataKey(getArm()).getValue(getEntity());
+    }
+
+    protected boolean isHolding() {
+        return ModSyncedDataKeys.getHoldingDataKey(getArm()).getValue(getEntity());
+    }
+
+    protected boolean isThrowing() {
+        return ModSyncedDataKeys.getThrowingDataKey(getArm()).getValue(getEntity());
     }
 
     protected PlayState getCycledAnimation(AnimationState<GunAnimator> event, String animationName, Cycler cycler) {
@@ -278,6 +336,11 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
                 animationHelper.syncAnimation(event, Animations.CHARGE, fireDelay);
             }
             return animation;
+    }
+
+    protected RawAnimation getTickingAnimation(AnimationState<GunAnimator> event) {
+        var animation = playGunAnim(TICKING, LOOP);
+        return animation;
     }
 
 //    protected RawAnimation getMeleeAnimation(AnimationState<GunAnimator> event) {
@@ -351,6 +414,27 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected RawAnimation getStartReloadAnimation(AnimationState<GunAnimator> event) {
         var animation = playGunAnim(Animations.RELOAD_START, PLAY_ONCE);
         animationHelper.syncAnimation(event, Animations.RELOAD_START, reloadStartTime);
+        return animation;
+    }
+
+    protected RawAnimation getPrepareAnimation(AnimationState<GunAnimator> event) {
+        var name = PREPARE;
+        if(throwMode == ThrowMode.SAFE && animationHelper.hasAnimation(PREPARE_SAFE)){
+            name = PREPARE_SAFE;
+        }
+
+        var animation = playGunAnim(name, HOLD_ON_LAST_FRAME);
+        animationHelper.syncAnimation(event, prepareTime, name);
+        return animation;
+    }
+
+    protected RawAnimation getThrowingAnimation(AnimationState<GunAnimator> event) {
+        var name = THROW;
+        if(throwMode == ThrowMode.SAFE && animationHelper.hasAnimation(THROW_SAFE)){
+            name = THROW_SAFE;
+        }
+        var animation = playGunAnim(name, HOLD_ON_LAST_FRAME);
+        animationHelper.syncAnimation(event, throwingTime, name);
         return animation;
     }
 

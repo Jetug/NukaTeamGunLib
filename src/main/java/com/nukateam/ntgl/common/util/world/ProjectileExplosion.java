@@ -27,6 +27,7 @@ import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
@@ -77,6 +78,7 @@ public class ProjectileExplosion extends Explosion {
     @Override
     public void explode() {
         destroyBlocks();
+        this.world.gameEvent(this.exploder, GameEvent.EXPLODE, new Vec3(this.pos.x, this.pos.y, this.pos.z));
 
         var diameter = this.radius * 2.0D;
         int minX = Mth.floor(this.pos.x - diameter - 1.0D);

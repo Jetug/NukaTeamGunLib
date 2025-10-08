@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.foundation.item;
 import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.config.ExplosionConfig;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
@@ -27,7 +28,9 @@ import net.minecraft.nbt.*;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.*;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.*;
 import net.minecraft.world.level.Level;
@@ -39,7 +42,6 @@ import java.util.*;
 import java.util.function.*;
 
 import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
-import static com.nukateam.ntgl.common.foundation.item.ThrowableItem.addExplosionTip;
 import static com.nukateam.ntgl.common.util.util.GunStateHelper.AMMO_TAG;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
@@ -174,6 +176,18 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
 
 
 //        Component.keybind("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH))
+    }
+
+    public static void addExplosionTip(List<Component> tooltip, ExplosionConfig explosion) {
+        var damage = explosion.getDamage();
+        tooltip.add(Component.translatable("info.ntgl.explosionDamage",
+                        ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage))
+                .withStyle(ChatFormatting.GRAY));
+
+        var radius = explosion.getRadius();
+        tooltip.add(Component.translatable("info.ntgl.explosionRadius",
+                        ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(radius))
+                .withStyle(ChatFormatting.GRAY));
     }
 
     private static void addAmmoType(List<Component> tooltip, GunData data) {
@@ -352,8 +366,23 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
 
     @Override
     public void throwItem(ItemStack stack, LivingEntity entityLiving, int timeLeft) {
+        var level = entityLiving.level();
 
+        if (!(entityLiving instanceof Player player) || !player.isCreative()) {
+            stack.shrink(1);
+        }
+
+        var grenade = this.create(level, entityLiving, timeLeft);
+        grenade.shootFromRotation(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0.0F, Math.min(1.0F, timeLeft / 20F), 1.0F);
+        level.addFreshEntity(grenade);
+        this.onThrown(level, grenade);
+
+        if (entityLiving instanceof Player) {
+            ((Player) entityLiving).awardStat(Stats.ITEM_USED.get(this));
+        }
     }
+
+    protected void onThrown(Level world, ThrowableItemEntity entity) {}
 
     public ThrowableItemEntity create(Level world, LivingEntity entity, int timeLeft) {
         var projectile = getConfig().getThrowable().getProjectile().getProjectileType();

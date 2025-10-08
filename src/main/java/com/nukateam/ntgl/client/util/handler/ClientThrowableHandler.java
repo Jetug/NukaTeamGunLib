@@ -22,7 +22,7 @@ import java.util.Map;
 import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canRenderInOffhand;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
-public class ClientGrenadeHandler {
+public class ClientThrowableHandler {
     private static final Map<InteractionHand, Tracker> TRACKER_MAP = new HashMap<>();
 
     @SubscribeEvent
@@ -78,31 +78,12 @@ public class ClientGrenadeHandler {
     private static class Tracker {
         private final InteractionHand arm;
         private final ItemStack stack;
-        private final IThrowable throwable;
-        private final int maxPrepare;
-        private final int maxThrow;
-        private final int maxLife;
         private final LivingEntity entity;
-
-        private int prepareTick = 0;
-        private int throwTick = 0;
-        private int lifeTick = 0;
-
-        private boolean isPreparing = true;
-        private boolean isThrowing = false;
 
         private Tracker(LivingEntity entity, InteractionHand arm) {
             this.arm = arm;
             this.entity = entity;
             this.stack = entity.getItemInHand(arm);
-            this.throwable = (IThrowable) stack.getItem();
-            this.maxPrepare = throwable.getConfig().getThrowable().getPrepareTime();
-            this.maxThrow = throwable.getConfig().getThrowable().getThrowTime();
-            this.maxLife = throwable.getConfig().getThrowable().getProjectile().getLife();
-
-            prepareTick = maxPrepare;
-            throwTick = maxThrow;
-            lifeTick = maxLife;
         }
 
         private void explode() {

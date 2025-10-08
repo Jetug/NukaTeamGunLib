@@ -10,7 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
 
-public class StunGrenadeItem extends ThrowableItem {
+public class StunGrenadeItem extends WeaponItem {
     public StunGrenadeItem(Item.Properties properties) {
         super(properties);
     }

@@ -29,13 +29,13 @@ public class ModGuns {
     public static final RegistryObject<WeaponItem> HAMMER = registerGun("hammer");
 
     public static final RegistryObject<Item> GRENADE = ITEMS.register("grenade",
-            () -> new ThrowableItem(new Item.Properties()));
+            () -> new WeaponItem(new Item.Properties()));
 
 //    public static final RegistryObject<Item> MISSILE = ITEMS.register("missile",
 //            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 
     public static final RegistryObject<Item> GRENADE_OG = ITEMS.register("grenade_old",
-            () -> new ThrowableItem(new Item.Properties()));
+            () -> new WeaponItem(new Item.Properties()));
 
     public static final RegistryObject<Item> STUN_GRENADE = ITEMS.register("stun_grenade",
             () -> new StunGrenadeItem(new Item.Properties()));

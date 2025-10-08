@@ -9,12 +9,14 @@ import java.util.Map;
 public class WeaponMode extends ResourceHolder {
     public static final WeaponMode GUN = new WeaponMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "gun"));
     public static final WeaponMode MELEE = new WeaponMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "melee"));
+    public static final WeaponMode THROWABLE = new WeaponMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "throwable"));
 
     private static final Map<ResourceLocation, WeaponMode> loadingTypeMap = new HashMap<>();
 
     static {
         registerType(GUN);
         registerType(MELEE);
+        registerType(THROWABLE);
     }
 
     public WeaponMode(ResourceLocation id) {

@@ -7,7 +7,10 @@ import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.util.RgbUtils;
 import com.nukateam.ntgl.client.util.util.render.Figures;
+import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.holders.CounterType;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
@@ -216,17 +219,30 @@ public class GunHud implements IGuiOverlay {
         return ICON_X;
     }
 
+    protected boolean isThrowable(ItemStack stack){
+        return getGun(stack).getGeneral().getWeaponMode() == WeaponMode.THROWABLE;
+    }
+
+    protected Gun getConfig(ItemStack stack){
+        var weapon = (IWeapon)stack.getItem();
+        return weapon.getModifiedConfig(stack);
+    }
+
     protected void updateCache(GunHudCache handCache, LocalPlayer player, ItemStack weapon) {
         if ((System.currentTimeMillis() - handCache.checkAmmoTimestamp) > 200) {
             var data = new GunData(weapon, player);
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
             handCache.maxAmmoCount = GunModifierHelper.getMaxAmmo(data);
             handCache.fireMode = GunStateHelper.getFireMode(data);
-            handCache.ammoCount = GunStateHelper.getAmmoCount(data);
-//            handCache.ammoConfig = GunStateHelper.getAmmoConfig(data);
-//            GunStateHelper.getAmmoHolder(data).getId();
-            handCache.ammoConfig = getGun(weapon).getAmmoConfig(GunStateHelper.getCurrentAmmo(data).getId());
-//            handCache.counterType = GunStateHelper.getAmmoConfig(data).getCounter();
+
+            if(isThrowable(weapon)){
+                handCache.ammoCount = weapon.getCount();
+                handCache.ammoConfig = getGun(weapon).getThrowable().getAmmo();
+            }
+            else {
+                handCache.ammoCount = GunStateHelper.getAmmoCount(data);
+                handCache.ammoConfig = getGun(weapon).getAmmoConfig(GunStateHelper.getCurrentAmmo(data).getId());
+            }
             var fuels = GunModifierHelper.getAllFuel(data);
             handCache.fuels.clear();
             for (var id : fuels) {
@@ -235,7 +251,9 @@ public class GunHud implements IGuiOverlay {
             }
 
             if (!player.isCreative()) {
-                handCache.inventoryAmmoCount = getInventoryAmmoCount(weapon, player.getInventory());
+                if(isThrowable(weapon))
+                    handCache.inventoryAmmoCount = getInventoryThrowableCount(weapon, player.getInventory());
+                else handCache.inventoryAmmoCount = getInventoryAmmoCount(weapon, player.getInventory());
             } else {
                 handCache.inventoryAmmoCount = 9999;
             }
@@ -253,10 +271,19 @@ public class GunHud implements IGuiOverlay {
             if (ammoHolder.isAcceptable(inventoryStack)) {
                 inventoryAmmoCount += inventoryStack.getCount() * ammoHolder.getValue(inventoryStack);
             }
-//            else if (inventoryItem instanceof AmmoBoxItem iAmmoBox) {
-//                var currentAmmo = GunStateHelper.getAmmoItem(gunData);
-//                inventoryAmmoCount += iAmmoBox.getAmmoCount(inventoryStack, currentAmmo);
-//            }
+        }
+        return inventoryAmmoCount;
+    }
+
+    protected int getInventoryThrowableCount(ItemStack stack, Inventory inventory) {
+        var inventoryAmmoCount = 0;
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            var inventoryStack = inventory.getItem(i);
+            var inventoryItem = inventoryStack.getItem();
+
+            if (inventoryItem == stack.getItem() && inventoryStack != stack) {
+                inventoryAmmoCount += inventoryStack.getCount();
+            }
         }
         return inventoryAmmoCount;
     }

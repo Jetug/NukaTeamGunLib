@@ -1,6 +1,7 @@
 {
   "general": {
     "damage": 40.0,
+    "weaponMode": "ntgl:throwable",
     "gripType": "ntgl:two_handed",
     "equipTime": 60
   },
@@ -17,7 +18,7 @@
         "type": "ntgl:explosive"
       },
       "projectile": {
-        "damage": "+10.0",
+        "damage": 10.0,
         "size": 1.0,
         "speed": 50.0,
         "life": 80,
