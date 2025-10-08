@@ -237,16 +237,16 @@ public interface IGunModifier {
         return gripType;
     }
 
-    default int modifyFireDelay(int chargeTime, GunData data) {
-        return chargeTime;
+    default int modifyFireDelay(int value, GunData data) {
+        return value;
     }
 
-    default boolean modifyNeedsFullCharge(boolean needsFullCharge, GunData data) {
-        return needsFullCharge;
+    default boolean modifyNeedsFullCharge(boolean value, GunData data) {
+        return value;
     }
 
-    default boolean modifyIsOneTimeCharge(boolean oneTimeCharge, GunData data) {
-        return oneTimeCharge;
+    default boolean modifyIsOneTimeCharge(boolean value, GunData data) {
+        return value;
     }
 
     default boolean modifyCanMelee(boolean value, GunData data) {
@@ -261,32 +261,32 @@ public interface IGunModifier {
         return item;
     }
 
-    default int modifyReloadStart(int reloadTime, GunData data) {
-        return reloadTime;
+    default int modifyReloadStart(int value, GunData data) {
+        return value;
     }
 
-    default int modifyReloadTime(int reloadTime, GunData data) {
-        return reloadTime;
+    default int modifyReloadTime(int value, GunData data) {
+        return value;
     }
 
-    default int modifyReloadEnd(int reloadTime, GunData data) {
-        return reloadTime;
+    default int modifyReloadEnd(int value, GunData data) {
+        return value;
     }
 
     default int modifyEquipTime(int equipTime, GunData data) {
         return equipTime;
     }
 
-    default int modifyAmmoPerShot(int ammoPerShot, GunData data) {
-        return ammoPerShot;
+    default int modifyAmmoPerShot(int value, GunData data) {
+        return value;
     }
 
-    default boolean modifyAutoReloading(boolean autoReload, GunData data) {
-        return autoReload;
+    default boolean modifyAutoReloading(boolean value, GunData data) {
+        return value;
     }
 
-    default boolean modifyShouldRenderHud(boolean isRenderHud, GunData data) {
-        return isRenderHud;
+    default boolean modifyShouldRenderHud(boolean value, GunData data) {
+        return value;
     }
 
     default float modifyMovementSpeed(float value, GunData data) {
@@ -301,12 +301,16 @@ public interface IGunModifier {
         return loadingType;
     }
 
-    default int modifyMeleeCooldown(int time, GunData data) {
-        return time;
+    default MeleeMode modifyMeleeMode(MeleeMode value, GunData data) {
+        return value;
     }
 
-    default int modifyMeleeDelay(int time, GunData data) {
-        return time;
+    default int modifyMeleeCooldown(int value, GunData data) {
+        return value;
+    }
+
+    default int modifyMeleeDelay(int value, GunData data) {
+        return value;
     }
 
     default float modifyMeleeDamage (float value, GunData data) {

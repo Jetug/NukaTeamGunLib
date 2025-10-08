@@ -2,9 +2,10 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.util.PlayerAnimations;
+import com.nukateam.ntgl.common.data.config.WeaponAction;
 import com.nukateam.ntgl.common.data.holders.MeleeMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -54,18 +55,18 @@ public class ClientMeleeHandler {
         return TRACKER_MAP.containsKey(key) && TRACKER_MAP.get(key).cooldownTick > 0;
     }
 
-    public static void addTracker(LivingEntity entity, InteractionHand arm) {
-        var doMelee = ModSyncedDataKeys.getDoMelee(arm);
-        var gun = entity.getItemInHand(arm);
-        var data = new GunData(gun, entity);
+    public static void addTracker(GunData data, InteractionHand hand) {
+        var entity = data.shooter;
+        var doMelee = ModSyncedDataKeys.getDoMelee(hand);
+        var gun = data.gun;
 
         if (gun.getItem() instanceof WeaponItem
                 && GunModifierHelper.canMelee(data)
-                && !TRACKER_MAP.containsKey(Pair.of(entity, arm))
+                && !TRACKER_MAP.containsKey(Pair.of(entity, hand))
                 && !doMelee.getValue(entity))
         {
-            TRACKER_MAP.put(Pair.of(entity, arm), new ClientMeleeHandler(entity, arm));
-            PacketHandler.getPlayChannel().sendToServer(new C2SMessageMeleeAttack());
+            TRACKER_MAP.put(Pair.of(entity, hand), new ClientMeleeHandler(entity, hand));
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageMeleeAttack(hand, data.weaponAction));
         }
     }
  
@@ -108,26 +109,30 @@ public class ClientMeleeHandler {
                 mc.options.keyAttack :
                 mc.options.keyUse;
 
-        attack(player, heldItem, hand);
+        var data = new GunData(heldItem, player).setWeaponAction(WeaponAction.PRIMARY);
+        attack(data, hand);
 
-        if(heldItem.getItem() instanceof WeaponItem weaponItem && isMelee(heldItem, player)){
-            var mode = weaponItem.getGun().getMelee().getMode();
+        if(heldItem.getItem() instanceof IWeapon && isMelee(data)){
+            var mode = GunModifierHelper.getMeleeMode(data);
             if (mode == MeleeMode.SINGLE) {
                 key.setDown(false);
             }
         }
     }
 
-    private static void attack(LivingEntity shooter, ItemStack heldItem, InteractionHand hand) {
-        if (heldItem.getItem() instanceof WeaponItem
-                && isMelee(heldItem, shooter)
+    private static void attack(GunData data, InteractionHand hand) {
+        var heldItem = data.gun;
+        var shooter = data.shooter;
+
+        if (heldItem != null && heldItem.getItem() instanceof IWeapon
+                && isMelee(data)
                 && !EquipTracker.isEquiping(shooter, hand)
                 && !shooter.isSpectator()) {
 
             var key = new Pair<>(shooter, hand);
 
             if(!TRACKER_MAP.containsKey(key)) {
-                addTracker(shooter, hand);
+                addTracker(data, hand);
             }
         }
     }
@@ -156,7 +161,7 @@ public class ClientMeleeHandler {
         TRACKER_MAP.remove(Pair.of(entity, arm));
     }
 
-    private static boolean isMelee(ItemStack heldItem, LivingEntity entity) {
-        return GunModifierHelper.getWeaponMode(new GunData(heldItem, entity)) == WeaponMode.MELEE;
+    private static boolean isMelee(GunData data) {
+        return GunModifierHelper.getWeaponMode(data) == WeaponMode.MELEE;
     }
 }

@@ -311,7 +311,19 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return getFuelData(ammo).getAmmo();
     }
 
-//    private void prepareTextures(String itemId) {
+    public WeaponSettings getSecondry() {
+        return secondry;
+    }
+
+    public WeaponSettings getAttack() {
+        return attack;
+    }
+
+    public WeaponSettings getAlternative() {
+        return alternative;
+    }
+
+    //    private void prepareTextures(String itemId) {
 //        if(FMLEnvironment.dist == Dist.CLIENT) {
 //            CompletableFuture.runAsync(() -> {
 //                this.textures.forEach((variant, path) -> {

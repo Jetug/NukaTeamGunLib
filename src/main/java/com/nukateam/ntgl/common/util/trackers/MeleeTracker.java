@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.util.trackers;
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.config.WeaponAction;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.event.MeleeAttackEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -74,25 +75,25 @@ public class MeleeTracker {
         }
     }
 
-    public static void start(LivingEntity entity, InteractionHand arm){
+    public static void start(LivingEntity entity, InteractionHand arm, WeaponAction action){
         var dataKey = getDataKey(arm);
         dataKey.setValue(entity, true);
-        addTracker(entity, arm);
+        addTracker(entity, arm, action);
     }
 
-    private static boolean addTracker(LivingEntity entity, InteractionHand hand) {
+    private static void addTracker(LivingEntity entity, InteractionHand hand, WeaponAction action) {
         var dataKey = getDataKey(hand);
-        var gunItem = entity.getItemInHand(hand).getItem();
+        var heldItem = entity.getItemInHand(hand);
 
         if (!TRACKER_MAP.containsKey(entity)) {
-            if (!(gunItem instanceof WeaponItem)) {
+            if (!(heldItem.getItem() instanceof WeaponItem)) {
                 dataKey.setValue(entity, false);
-                return true;
+                return;
             }
-            TRACKER_MAP.put(entity, new Tracker(entity, hand));
+            var data = new GunData(heldItem, entity).setWeaponAction(action);
+            TRACKER_MAP.put(entity, new Tracker(data, hand));
             PacketHandler.sendAnimation(entity, hand, AnimationType.MELEE);
         }
-        return false;
     }
 
     private static void stopMelee(LivingEntity entity, InteractionHand arm) {
@@ -154,11 +155,10 @@ public class MeleeTracker {
         private final double attackAngle;
         private final int maxTargets;
 
-        private Tracker(LivingEntity entity, InteractionHand arm) {
+        private Tracker(GunData data, InteractionHand arm) {
             this.arm = arm;
             this.stack = entity.getItemInHand(arm);
             this.weaponItem = ((WeaponItem) stack.getItem());
-            var data = new GunData(stack, entity);
             this.cooldown = GunModifierHelper.getMeleeCooldown(data);
             this.attackDelay = GunModifierHelper.getMeleeDelay(data);
             this.meleeTick = attackDelay + cooldown;

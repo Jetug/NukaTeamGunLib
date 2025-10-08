@@ -1,8 +1,11 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.client.handlers.ClientHandler;
+import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.config.WeaponAction;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageHandAction;
@@ -35,9 +38,9 @@ public class ClientActions {
     }
 
     public static void meleeAttack(LocalPlayer player) {
-        if(player.getMainHandItem().getItem() instanceof WeaponItem){
-            ClientMeleeHandler.addTracker(player, InteractionHand.MAIN_HAND);
-//            PacketHandler.getPlayChannel().sendToServer(new C2SMessageMeleeAttack());
+        var weapon = player.getMainHandItem();
+        if(weapon.getItem() instanceof IWeapon){
+            ClientMeleeHandler.addTracker(new GunData(weapon, player).setWeaponAction(WeaponAction.ATTACK), InteractionHand.MAIN_HAND);
         }
     }
 }

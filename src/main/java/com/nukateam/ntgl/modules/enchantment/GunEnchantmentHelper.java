@@ -36,8 +36,7 @@ public class GunEnchantmentHelper {
         return Math.max(interval, 1);
     }
 
-    public static int getRate(ItemStack weapon, Gun modifiedGun) {
-        var rate = modifiedGun.getGeneral().getRate();
+    public static int getRate(ItemStack weapon, int rate) {
         var level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.TRIGGER_FINGER.get(), weapon);
 
         if (level > 0) {
