@@ -159,4 +159,9 @@ public class ThrowableItem extends Item implements DynamicGeoItem, IThrowable {
     private ResourceLocation getRegistryName() {
         return ForgeRegistries.ITEMS.getKey(this);
     }
+
+    @Override
+    public Gun getModifiedConfig(ItemStack stack) {
+        return getConfig();
+    }
 }

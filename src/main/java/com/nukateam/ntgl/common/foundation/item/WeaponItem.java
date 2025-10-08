@@ -3,7 +3,9 @@ package com.nukateam.ntgl.common.foundation.item;
 import com.nukateam.ntgl.client.animators.GunAnimator;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
+import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
@@ -41,7 +43,7 @@ import static com.nukateam.ntgl.common.foundation.item.ThrowableItem.addExplosio
 import static com.nukateam.ntgl.common.util.util.GunStateHelper.AMMO_TAG;
 import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
 
-public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColored, IMeta{
+public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable, IColored, IMeta{
     public static final String VARIANT = "variant";
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
@@ -342,4 +344,21 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
     }
 
 
+    @Override
+    public void expire(LivingEntity entityLiving) {
+        var throwableEntity = this.create(entityLiving.level(), entityLiving, 0);
+        throwableEntity.onDeath();
+    }
+
+    @Override
+    public void throwItem(ItemStack stack, LivingEntity entityLiving, int timeLeft) {
+
+    }
+
+    public ThrowableItemEntity create(Level world, LivingEntity entity, int timeLeft) {
+        var projectile = getConfig().getThrowable().getProjectile().getProjectileType();
+        return ProjectileManager.getInstance()
+                .getFactory(projectile)
+                .create(world, entity, this, timeLeft);
+    }
 }

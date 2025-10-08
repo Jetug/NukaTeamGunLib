@@ -16,9 +16,7 @@ public interface IGeneral {
 
     boolean isEnchantable();
 
-    default boolean isSilenced(boolean silenced, GunData data) {
-        return silenced;
-    }
+    boolean isSilenced();
 
     int getRate();
 
