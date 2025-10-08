@@ -27,10 +27,6 @@ public class ClientActions {
         PacketHandler.getPlayChannel().sendToServer(new C2SMessageHandAction(hand, HandAction.SWITCH_FIRE_MODE));
     }
 
-    public static void switchThrowMode(InteractionHand hand) {
-        PacketHandler.getPlayChannel().sendToServer(new C2SMessageHandAction(hand, HandAction.SWITCH_THROW_MODE));
-    }
-
     public static void switchAmmo(InteractionHand hand, LocalPlayer player) {
         if (!getReloadKey(hand).getValue(player)) {
 

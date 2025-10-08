@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.client.event.*;
 import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
+import com.nukateam.ntgl.client.render.hud.cache.ThrowableHudCache;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.util.RgbUtils;
 import com.nukateam.ntgl.client.util.util.render.Figures;
@@ -16,6 +17,7 @@ import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.ThrowableStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -115,7 +117,9 @@ public class GunHud implements IGuiOverlay {
 
             Figures.drawLine(graphics, x - COUNTER_POS_X, y - 31, 27, 2, RgbUtils.toRgba(colors.hud));
 
-            renderFireModeIcon(graphics, handCache, x - COUNTER_POS_X - ICON_SIZE - 2 , y - INVENTORY_AMMO_POS_Y - 6);
+            if(isThrowable(stack))
+                renderThrowModeIcon(graphics, handCache, x - COUNTER_POS_X - ICON_SIZE - 2 , y - INVENTORY_AMMO_POS_Y - 6);
+            else renderFireModeIcon(graphics, handCache, x - COUNTER_POS_X - ICON_SIZE - 2 , y - INVENTORY_AMMO_POS_Y - 6);
             renderInventoryAmmo(graphics, handCache, x - COUNTER_POS_X + 3, y - INVENTORY_AMMO_POS_Y, poseStack, minecraft.font);
 
             renderFuelCounters(graphics, handCache, stack, x - BAR_START_X + 8 + ClientDebug.X, y - BAR_START_Y - 3 + ClientDebug.Y);
@@ -127,7 +131,6 @@ public class GunHud implements IGuiOverlay {
                                      int x, int y,
                                      PoseStack poseStack) {
         var currentAmmoCountText = "";
-
         if(handCache.ammoConfig.getCounter() == CounterType.NUMBER) {
             currentAmmoCountText = CURRENT_AMMO_FORMAT.format(handCache.ammoCount);
             renderCounter(graphics, handCache, x, y, poseStack, currentAmmoCountText);
@@ -198,6 +201,13 @@ public class GunHud implements IGuiOverlay {
         renderIcon(graphics, icon, x, y);
     }
 
+    protected void renderThrowModeIcon(GuiGraphics graphics, GunHudCache handCache, int x, int y) {
+        var mode = handCache.throwMode;
+        var icon = mode.getIcon();
+
+        renderIcon(graphics, icon, x, y);
+    }
+
     protected void renderFireModeIcon(GuiGraphics graphics, GunHudCache handCache, int x, int y) {
         var fireMode = handCache.fireMode;
         var icon = fireMode.getIcon();
@@ -236,6 +246,7 @@ public class GunHud implements IGuiOverlay {
             handCache.fireMode = GunStateHelper.getFireMode(data);
 
             if(isThrowable(weapon)){
+                handCache.throwMode = ThrowableStateHelper.getThrowMode(weapon);
                 handCache.ammoCount = weapon.getCount();
                 handCache.ammoConfig = getGun(weapon).getThrowable().getAmmo();
             }

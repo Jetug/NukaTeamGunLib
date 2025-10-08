@@ -18,6 +18,7 @@ import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
@@ -129,7 +130,7 @@ public class ControllerHandler {
         if (player != null && world != null && Minecraft.getInstance().screen == null) {
             var heldItem = player.getMainHandItem();
 
-            if (heldItem.getItem() instanceof WeaponItem) {
+            if (heldItem.getItem() instanceof IWeapon) {
                 if (isEquals(originalButton, GunButtonBindings.SHOOT)) {
                     shouldCancel = true;
                     if (state) {
@@ -159,13 +160,7 @@ public class ControllerHandler {
                     shouldCancel = true;
                     ClientActions.switchFireMode(hand);
                 }
-            } else if (heldItem.getItem() instanceof IThrowable){
-                if (isEquals(originalButton, GunButtonBindings.SELECT_FIRE)) {
-                    shouldCancel = true;
-                    ClientActions.switchThrowMode(hand);
-                }
             }
-
         }
         return shouldCancel;
     }

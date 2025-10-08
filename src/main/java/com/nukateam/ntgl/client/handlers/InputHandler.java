@@ -9,6 +9,7 @@ import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import net.minecraft.client.Minecraft;
@@ -42,7 +43,7 @@ public class InputHandler {
 
         var heldItem = player.getItemInHand(hand).getItem();
 
-        if(heldItem instanceof WeaponItem) {
+        if(heldItem instanceof IWeapon) {
             if (KeyBinds.KEY_ATTACHMENTS.consumeClick()) {
                 PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
             }
@@ -64,11 +65,6 @@ public class InputHandler {
             }
             if (KeyBinds.KEY_MELEE.consumeClick()) {
                 ClientActions.meleeAttack(player);
-            }
-        }
-        else if (heldItem instanceof IThrowable){
-            if (KeyBinds.KEY_FIRE_SELECT.consumeClick()) {
-                ClientActions.switchThrowMode(hand);
             }
         }
     }
