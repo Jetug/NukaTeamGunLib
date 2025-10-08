@@ -14,7 +14,6 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 public class ScopeHud implements IGuiOverlay {
-    protected static final ResourceLocation SPYGLASS_SCOPE_LOCATION = new ResourceLocation("textures/misc/spyglass_scope.png");
     public static final IGuiOverlay SCOPE_HUD = new ScopeHud();
     private float scopeScale;
 

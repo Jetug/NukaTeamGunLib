@@ -50,6 +50,15 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected HashMap<AnimationType, ResourceLocation> animations = new HashMap<>();
     protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
     protected LinkedHashMap<ResourceLocation, Fuel> fuel = new LinkedHashMap<>();
+    protected WeaponSettings secondry = getGun();
+    protected WeaponSettings attack = getGun();
+    protected WeaponSettings alternative = getGun();
+
+    private static WeaponSettings getGun(){
+        var gun = new WeaponSettings();
+        gun.general.weaponMode = WeaponMode.NONE;
+        return gun;
+    }
 
     @Override
     public Component getEditorLabel() {
