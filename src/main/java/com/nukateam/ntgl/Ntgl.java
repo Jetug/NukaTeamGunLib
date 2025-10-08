@@ -13,7 +13,7 @@ import com.nukateam.ntgl.common.data.holders.AmmoHolders;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.datagen.*;
-import com.nukateam.ntgl.common.registry.ProjectileRegistry;
+import com.nukateam.ntgl.common.regestry.ProjectileRegistry;
 import com.nukateam.ntgl.modules.enchantment.EnchantmentModule;
 import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
@@ -23,21 +23,19 @@ import com.nukateam.ntgl.modules.gunpack.GunPackModule;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -46,7 +44,6 @@ import java.util.*;
 public class Ntgl {
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final String MOD_ID = "ntgl";
-    public static final IEventBus MOD_EVENT_BUS = FMLJavaModLoadingContext.get().getModEventBus();
 
     public static boolean controllableLoaded = false;
     public static boolean backpackedLoaded = false;
@@ -56,10 +53,10 @@ public class Ntgl {
     public static boolean playerReviveLoaded = false;
     public static boolean playerAnimatorLoaded = false;
 
-    public Ntgl() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
+    public Ntgl(IEventBus MOD_EVENT_BUS, ModContainer container) {
+        container.registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
+        container.registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
+        container.registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
         //ModBlocks.REGISTER.register(bus);
         ModContainers.REGISTER.register(MOD_EVENT_BUS);
         ModEffects.REGISTER.register(MOD_EVENT_BUS);
@@ -79,16 +76,16 @@ public class Ntgl {
         MOD_EVENT_BUS.addListener(this::onCommonSetup);
         MOD_EVENT_BUS.addListener(this::onClientSetup);
         MOD_EVENT_BUS.addListener(this::onGatherData);
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
             FrameworkClientAPI.registerDataLoader(MetaLoader.getInstance());
             MOD_EVENT_BUS.addListener(KeyBinds::registerKeyMappings);
             MOD_EVENT_BUS.addListener(CrosshairHandler::onConfigReload);
             MOD_EVENT_BUS.addListener(ClientHandler::onRegisterReloadListener);
-        });
+        }
 
         GunPackModule.init(MOD_EVENT_BUS);
         EnchantmentModule.init(MOD_EVENT_BUS);
-        NtglGameEvents.register(MOD_EVENT_BUS);
 
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
@@ -100,7 +97,7 @@ public class Ntgl {
 
         AmmoHolders.register();
         AnimationType.register();
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
     }
 
     public static boolean isDebugging() {
@@ -119,13 +116,13 @@ public class Ntgl {
         event.enqueueWork(() -> {
             PacketHandler.init();
             ModSyncedDataKeys.register();
-            CraftingHelper.register(new ResourceLocation(MOD_ID, "workbench_ingredient"),
+            CraftingHelper.register(ResourceLocation.fromNamespaceAndPath(MOD_ID, "workbench_ingredient"),
                     WorkbenchIngredient.Serializer.INSTANCE);
 
             ProjectileRegistry.registerProjectiles();
 
             if (Config.COMMON.gameplay.improvedHitboxes.get()) {
-                MinecraftForge.EVENT_BUS.register(new BoundingBoxManager());
+                NeoForge.EVENT_BUS.register(new BoundingBoxManager());
             }
         });
     }
