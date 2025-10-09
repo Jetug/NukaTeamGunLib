@@ -7,9 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.TickEvent;
 
 public class StunRingingSound extends AbstractTickableSoundInstance {
     public StunRingingSound() {
@@ -23,7 +20,7 @@ public class StunRingingSound extends AbstractTickableSoundInstance {
     public void tick() {
         var player = Minecraft.getInstance().player;
         if (player != null && player.isAlive()) {
-            var effect = player.getEffect(ModEffects.DEAFENED.get());
+            var effect = player.getEffect(ModEffects.DEAFENED);
             if (effect != null) {
                 this.x = (float) player.getX();
                 this.y = (float) player.getY();
