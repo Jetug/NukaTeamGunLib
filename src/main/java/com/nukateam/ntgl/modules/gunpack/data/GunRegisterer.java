@@ -1,6 +1,8 @@
 package com.nukateam.ntgl.modules.gunpack.data;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.item.AmmoItem;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.GenericAttachmentItem;
@@ -13,10 +15,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -30,11 +32,13 @@ import java.util.regex.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static net.minecraft.util.datafix.fixes.BlockEntitySignTextStrictJsonFix.GSON;
 import static net.minecraft.world.item.CreativeModeTab.builder;
+import net.minecraft.core.registries.BuiltInRegistries;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+
+@EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class GunRegisterer {
+    private static final Gson GSON = new Gson();
     private static final String REGISTRY_FILE = "registry.json";
     private static final Pattern CONFIG_PATTERN = Pattern.compile("^data/([^/]+)/guns/([^/]+\\.json)$");
     private static final Pattern RECIPE_PATTERN = Pattern.compile("^data/([^/]+)/recipes/([^/]+\\.json)$");
@@ -148,7 +152,7 @@ public class GunRegisterer {
         var guns = manifestJson.getAsJsonArray(name);
         guns.forEach(item -> {
             var id = ResourceLocation.tryParse(item.getAsString());
-            if (id != null && !ForgeRegistries.ITEMS.containsKey(id)) {
+            if (id != null && !BuiltInRegistries.ITEM.containsKey(id)) {
                 consumer.accept(id);
             }
         });
@@ -198,7 +202,7 @@ public class GunRegisterer {
     }
 
     private static @NotNull DeferredRegister<Item> getItemRegister(ResourceLocation itemId) {
-        return ITEMS.computeIfAbsent(itemId.getNamespace(), id -> DeferredRegister.create(ForgeRegistries.ITEMS, id));
+        return ITEMS.computeIfAbsent(itemId.getNamespace(), id -> DeferredRegister.create(Registries.ITEM, id));
     }
 
     private static void registerGun(ResourceLocation itemId) {
