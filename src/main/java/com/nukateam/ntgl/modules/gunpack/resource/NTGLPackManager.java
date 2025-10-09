@@ -1,13 +1,18 @@
 package com.nukateam.ntgl.modules.gunpack.resource;
 
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
-import net.minecraftforge.event.AddPackFindersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLPaths;
+
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -15,8 +20,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NTGLPackManager {
     private static final List<Path> RESOURCE_PACKS = new ArrayList<>();
     private static final List<Path> DATA_PACKS = new ArrayList<>();
@@ -76,32 +82,37 @@ public class NTGLPackManager {
 
     private static void addPacks(AddPackFindersEvent event, List<Path> packs, String type) {
         for (Path packPath : packs) {
-            Pack.ResourcesSupplier supplier = (packId) -> {
-                try {
-                    return new NTGLPackResources(packPath, type, packId);
-                } catch (IOException e) {
-                    throw new RuntimeException("Failed to create pack resources for " + packPath, e);
+            PackLocationInfo locInfo = new PackLocationInfo(
+                    "ntgl/" + packPath.getFileName(),
+                    Component.literal("NTGL Pack: " + packPath.getFileName()),
+                    PackSource.BUILT_IN,
+                    Optional.empty()
+            );
+
+
+            Pack.ResourcesSupplier supplier = new Pack.ResourcesSupplier() {
+                @Override
+                public PackResources openPrimary(PackLocationInfo info) {
+                    try {
+                        return new NTGLPackResources(packPath, type, info.id());
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to create pack resources for " + packPath, e);
+                    }
+                }
+                @Override
+                public PackResources openFull(PackLocationInfo info, Pack.Metadata meta) {
+                    return openPrimary(info);
                 }
             };
 
-            var packInfo = Pack.readPackInfo(
-                    "ntgl/" + packPath.getFileName(),
-                    supplier
+            Pack pack = Pack.readMetaAndCreate(
+                    locInfo,
+                    supplier,
+                    event.getPackType(),
+                    new PackSelectionConfig(true, Pack.Position.TOP, false)
             );
 
-            if (packInfo != null) {
-                var pack = Pack.create(
-                        "ntgl/" + packPath.getFileName(),  // ID
-                        Component.literal("NTGL Pack: " + packPath.getFileName()),  // Title
-                        true,  // Required
-                        supplier,  // ResourcesSupplier
-                        packInfo,  // Info
-                        event.getPackType(),  // PackType
-                        Pack.Position.TOP,  // Position
-                        false,  // FixedPosition
-                        PackSource.BUILT_IN  // PackSource
-                );
-
+            if (pack != null) {
                 event.addRepositorySource(consumer -> consumer.accept(pack));
             }
         }
