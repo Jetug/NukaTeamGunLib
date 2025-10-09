@@ -15,10 +15,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
+
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -51,15 +52,14 @@ public class SoundHandler {
         this.playingSounds = ObfuscationReflectionHelper.findField(SoundEngine.class, "f_120226_");
     }
 
-    @SuppressWarnings("unchecked")
     @SubscribeEvent
-    public void deafenPlayer(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START || Minecraft.getInstance().player == null || this.soundEngine == null) {
+    public void deafenPlayer(ClientTickEvent.Pre event) {
+        if (Minecraft.getInstance().player == null || this.soundEngine == null) {
             return;
         }
 
         /* If deafened, play ringing sound if not already playing, otherwise return */
-        MobEffectInstance effect = Minecraft.getInstance().player.getEffect(ModEffects.DEAFENED.get());
+        MobEffectInstance effect = Minecraft.getInstance().player.getEffect(ModEffects.DEAFENED);
         if (effect == null) {
             if (!this.isDeafened) {
                 return;
@@ -126,7 +126,7 @@ public class SoundHandler {
 
         // Exempt initial explosion from muting
         ResourceLocation loc = event.getSound().getLocation();
-        MobEffectInstance effect = Minecraft.getInstance().player.getEffect(ModEffects.DEAFENED.get());
+        MobEffectInstance effect = Minecraft.getInstance().player.getEffect(ModEffects.DEAFENED);
         int duration = effect != null ? effect.getDuration() : 0;
         boolean isStunGrenade = isStunGrenade(loc);
         if (duration == 0 && isStunGrenade) return;
@@ -226,7 +226,7 @@ public class SoundHandler {
         }
 
         @Override
-        public SoundInstance.Attenuation getAttenuation() {
+        public Attenuation getAttenuation() {
             return parent.getAttenuation();
         }
     }
