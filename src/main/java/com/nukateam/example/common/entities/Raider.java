@@ -101,7 +101,7 @@ public class Raider extends PathfinderMob implements IGunUser {
 
     @Override
     public void performRangedAttack(LivingEntity pTarget, float pVelocity) {
-        GunAttackGoal.shoot(this, true);
+        GunAttackGoal.shoot(this, InteractionHand.MAIN_HAND);
     }
 
     public ResourceLocation getTexture() {

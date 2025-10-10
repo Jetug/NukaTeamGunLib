@@ -24,11 +24,17 @@ import java.util.function.Supplier;
 import static com.nukateam.ntgl.client.handlers.ClientHandler.createEditorScreen;
 
 public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMenu {
+    public static final String GENERAL = "General";
+    public static final String MELEE = "Melee";
+    public static final String THROWABLE = "Throwable";
+    public static final String AMMO_DATA = "AmmoData";
+    public static final String SECONDARY_AMMO = "SecondaryAmmo";
     protected General general = new General();
     protected Melee melee = new Melee();
     protected ThrowableConfig throwable = new ThrowableConfig();
     protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
     protected LinkedHashMap<ResourceLocation, Fuel> fuel = new LinkedHashMap<>();
+
 
     @Override
     public Component getEditorLabel() {
@@ -51,30 +57,30 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
-        tag.put("General", this.general.serializeNBT());
-        tag.put("Melee", this.melee.serializeNBT());
-        tag.put("throwable", this.throwable.serializeNBT());
-        tag.put("AmmoData", NbtUtils.serializeMap(this.ammoData));
-        tag.put("SecondaryAmmo", NbtUtils.serializeMap(this.fuel));
+        tag.put(GENERAL, this.general.serializeNBT());
+        tag.put(MELEE, this.melee.serializeNBT());
+        tag.put(THROWABLE, this.throwable.serializeNBT());
+        tag.put(AMMO_DATA, NbtUtils.serializeMap(this.ammoData));
+        tag.put(SECONDARY_AMMO, NbtUtils.serializeMap(this.fuel));
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        if (tag.contains("General", Tag.TAG_COMPOUND)) {
-            this.general.deserializeNBT(tag.getCompound("General"));
+        if (tag.contains(GENERAL, Tag.TAG_COMPOUND)) {
+            this.general.deserializeNBT(tag.getCompound(GENERAL));
         }
-        if (tag.contains("Melee", Tag.TAG_COMPOUND)) {
-            this.melee.deserializeNBT(tag.getCompound("Melee"));
+        if (tag.contains(MELEE, Tag.TAG_COMPOUND)) {
+            this.melee.deserializeNBT(tag.getCompound(MELEE));
         }
-        if (tag.contains("throwable", Tag.TAG_COMPOUND)) {
-            this.throwable.deserializeNBT(tag.getCompound("throwable"));
+        if (tag.contains(THROWABLE, Tag.TAG_COMPOUND)) {
+            this.throwable.deserializeNBT(tag.getCompound(THROWABLE));
         }
-        if (tag.contains("AmmoData", Tag.TAG_COMPOUND)) {
-            this.ammoData = NbtUtils.deserializeLinkedMap(tag.getCompound("AmmoData"), (nbt) -> AmmoData.create(nbt));
+        if (tag.contains(AMMO_DATA, Tag.TAG_COMPOUND)) {
+            this.ammoData = NbtUtils.deserializeLinkedMap(tag.getCompound(AMMO_DATA), (nbt) -> AmmoData.create(nbt));
         }
-        if (tag.contains("SecondaryAmmo", Tag.TAG_COMPOUND)) {
-            this.fuel = NbtUtils.deserializeLinkedMap(tag.getCompound("SecondaryAmmo"), (nbt) -> Fuel.create(nbt));
+        if (tag.contains(SECONDARY_AMMO, Tag.TAG_COMPOUND)) {
+            this.fuel = NbtUtils.deserializeLinkedMap(tag.getCompound(SECONDARY_AMMO), (nbt) -> Fuel.create(nbt));
         }
     }
 

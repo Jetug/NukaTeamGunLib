@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.util.interfaces;
 
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
@@ -20,11 +21,8 @@ public interface IProjectileFactory {
      * Creates a new projectile entity.
      *
      * @param worldIn     the world the projectile is going to be spawned into
-     * @param entity      the entity who fired the weapon
-     * @param weapon      the item stack of the weapon
-     * @param item        the gun item
-     * @param modifiedGun the properties of the gun
+     * @param gunData     weapon related information
      * @return a projectile entity
      */
-    ProjectileEntity create(Level worldIn, LivingEntity entity, ItemStack weapon, WeaponItem item, Gun modifiedGun);
+    ProjectileEntity create(Level worldIn, GunData gunData);
 }

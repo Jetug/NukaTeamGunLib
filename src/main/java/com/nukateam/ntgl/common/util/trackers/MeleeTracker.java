@@ -3,8 +3,8 @@ package com.nukateam.ntgl.common.util.trackers;
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.data.config.WeaponAction;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
+import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.event.MeleeAttackEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -75,13 +75,13 @@ public class MeleeTracker {
         }
     }
 
-    public static void start(LivingEntity entity, InteractionHand arm, WeaponAction action){
+    public static void start(LivingEntity entity, InteractionHand arm, AttackMode action){
         var dataKey = getDataKey(arm);
         dataKey.setValue(entity, true);
         addTracker(entity, arm, action);
     }
 
-    private static void addTracker(LivingEntity entity, InteractionHand hand, WeaponAction action) {
+    private static void addTracker(LivingEntity entity, InteractionHand hand, AttackMode action) {
         var dataKey = getDataKey(hand);
         var heldItem = entity.getItemInHand(hand);
 
@@ -157,7 +157,8 @@ public class MeleeTracker {
 
         private Tracker(GunData data, InteractionHand arm) {
             this.arm = arm;
-            this.stack = entity.getItemInHand(arm);
+            this.stack = data.gun;
+            assert stack != null;
             this.weaponItem = ((WeaponItem) stack.getItem());
             this.cooldown = GunModifierHelper.getMeleeCooldown(data);
             this.attackDelay = GunModifierHelper.getMeleeDelay(data);

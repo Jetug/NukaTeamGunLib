@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import net.minecraft.world.entity.EntityType;
@@ -15,7 +16,7 @@ public class GrenadeEntity extends ProjectileEntity {
         super(entityType, world);
     }
 
-    public GrenadeEntity(EntityType<? extends ProjectileEntity> entityType, Level world, LivingEntity shooter, ItemStack weapon, WeaponItem item, Gun modifiedGun) {
-        super(entityType, world, shooter, weapon, item, modifiedGun);
+    public GrenadeEntity(EntityType<? extends ProjectileEntity> entityType, Level world, GunData data) {
+        super(entityType, world, data);
     }
 }

@@ -2,14 +2,12 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.KeyAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageGrenade;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;

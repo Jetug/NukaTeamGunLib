@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import net.minecraft.core.BlockPos;
@@ -37,14 +38,12 @@ public class TeslaProjectile extends AbstractBeamProjectile {
         this.entityType = entityType;
     }
 
-    public TeslaProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, LivingEntity shooter,
-                           ItemStack weapon, WeaponItem item, Gun modifiedGun) {
-          this(entityType, worldIn, shooter, weapon, item, modifiedGun, CHAIN_TARGETS);
+    public TeslaProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, GunData data) {
+          this(entityType, worldIn, data, CHAIN_TARGETS);
     }
 
-    public TeslaProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, LivingEntity shooter,
-                           ItemStack weapon, WeaponItem item, Gun modifiedGun, int chainTargets) {
-        super(entityType, worldIn, shooter, weapon, item, modifiedGun);
+    public TeslaProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, GunData data, int chainTargets) {
+        super(entityType, worldIn, data);
         this.chainTargets = chainTargets;
         this.entityType = entityType;
         trace();
@@ -54,10 +53,10 @@ public class TeslaProjectile extends AbstractBeamProjectile {
     public static final double R2D = 180.0 / Math.PI;
 
     public TeslaProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn,
-                           LivingEntity shooter, Entity source, LivingEntity target,
-                           ItemStack weapon, WeaponItem item, Gun modifiedGun, int chainTargets) {
+                           Entity source, LivingEntity target,
+                           GunData data, int chainTargets) {
 
-        super(entityType, worldIn, shooter, weapon, item, modifiedGun);
+        super(entityType, worldIn, data);
 
         maxTicks = (short) this.life;
         this.chainTargets = chainTargets;
@@ -105,8 +104,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
                 var nextTarget = findNextTarget(entity);
                 if (nextTarget != null) {
                     var projectile = new TeslaProjectile(
-                            TESLA_PROJECTILE.get(), level(), this.shooter, entity, nextTarget, weapon, (WeaponItem) weapon.getItem(),
-                            modifiedGun, chainTargets - 1);
+                            TESLA_PROJECTILE.get(), level(), entity, nextTarget, gunData,chainTargets - 1);
                     level().addFreshEntity(projectile);
                 }
             }

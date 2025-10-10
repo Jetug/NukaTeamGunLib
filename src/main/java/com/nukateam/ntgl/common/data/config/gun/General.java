@@ -55,7 +55,8 @@ public class General implements INBTSerializable<CompoundTag>, IGeneral {
     int rate;
     int maxAmmo;
     @Optional LinkedHashSet<FireMode> fireMode = new LinkedHashSet<>(List.of(FireMode.SEMI_AUTO));
-    @Optional WeaponMode weaponMode = WeaponMode.GUN;
+    @Optional
+    WeaponMode weaponMode = WeaponMode.GUN;
     @Optional boolean fullCharge = false;
     @Optional boolean enchantable = true;
     @Optional boolean silenced = false;

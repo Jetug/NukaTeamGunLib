@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.data.config.gun;
 
-import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.holders.*;
 
 import java.util.Set;

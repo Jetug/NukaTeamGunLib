@@ -1,11 +1,9 @@
 package com.nukateam.ntgl.modules.enchantment;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 /**

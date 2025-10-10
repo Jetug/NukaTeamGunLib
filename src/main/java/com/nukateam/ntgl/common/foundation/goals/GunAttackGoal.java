@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.goals;
 
+import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.trackers.EntityReloadTracker;
@@ -9,6 +10,7 @@ import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -143,16 +145,16 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
         var msg = new C2SMessageShoot(mob.getId(),
                 mob.getViewYRot(1),
                 mob.getViewXRot(1),
-                0, 0, true);
+                0, 0, InteractionHand.MAIN_HAND, AttackMode.PRIMARY);
 
         ServerPlayHandler.handleShoot(msg, mob);
     }
 
-    public static void shoot(LivingEntity shooter, boolean isRightHand){
+    public static void shoot(LivingEntity shooter, InteractionHand hand){
         var msg = new C2SMessageShoot(shooter.getId(),
                 shooter.getViewYRot(1),
                 shooter.getViewXRot(1),
-                0, 0, isRightHand);
+                0, 0, hand, AttackMode.PRIMARY);
 
         ServerPlayHandler.handleShoot(msg, shooter);
     }

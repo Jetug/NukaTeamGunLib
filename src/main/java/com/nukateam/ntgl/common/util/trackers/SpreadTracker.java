@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.util.trackers;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -25,9 +25,9 @@ import java.util.WeakHashMap;
 public class SpreadTracker {
     private static final Map<LivingEntity, SpreadTracker> TRACKER_MAP = new WeakHashMap<>();
 
-    private final Map<WeaponItem, Pair<MutableLong, MutableInt>> SPREAD_TRACKER_MAP = new HashMap<>();
+    private final Map<IWeapon, Pair<MutableLong, MutableInt>> SPREAD_TRACKER_MAP = new HashMap<>();
 
-    public void update(LivingEntity entity, WeaponItem item) {
+    public void update(LivingEntity entity, IWeapon item) {
         var entry = SPREAD_TRACKER_MAP.computeIfAbsent(item, gun -> Pair.of(new MutableLong(-1), new MutableInt()));
         var lastFire = entry.getLeft();
 
@@ -50,7 +50,7 @@ public class SpreadTracker {
         lastFire.setValue(System.currentTimeMillis());
     }
 
-    public float getSpread(WeaponItem item) {
+    public float getSpread(IWeapon item) {
         var entry = SPREAD_TRACKER_MAP.get(item);
         if (entry != null) {
             return (float) entry.getRight().getValue() / (float) Config.COMMON.projectileSpread.maxCount.get();

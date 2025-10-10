@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import net.minecraft.core.BlockPos;
@@ -25,8 +26,8 @@ public class LaserProjectile extends AbstractBeamProjectile {
         super(entityType, worldIn);
     }
 
-    public LaserProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, LivingEntity shooter, ItemStack weapon, WeaponItem item, Gun modifiedGun) {
-        super(entityType, worldIn, shooter, weapon, item, modifiedGun);
+    public LaserProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn,  GunData data) {
+        super(entityType, worldIn, data);
         trace();
     }
 

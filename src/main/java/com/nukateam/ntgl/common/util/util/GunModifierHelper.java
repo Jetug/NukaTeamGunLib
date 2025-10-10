@@ -4,8 +4,8 @@ import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.*;
 import com.nukateam.ntgl.common.data.config.gun.General;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 
+import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -69,35 +69,17 @@ public class GunModifierHelper {
 
     public static General getGeneral(GunData gunData) {
         var config = getGun(gunData.gun);
-
-        return switch (gunData.weaponAction) {
-            case PRIMARY -> config.getGeneral();
-            case SECONDARY -> config.getSecondry().getGeneral();
-            case ATTACK -> config.getAttack().getGeneral();
-            case ALTERNATIVE -> config.getAlternative().getGeneral();
-        };
+        return config.getGeneral(gunData.weaponAction);
     }
 
     public static Melee getMelee(GunData gunData) {
         var config = getGun(gunData.gun);
-
-        return switch (gunData.weaponAction) {
-            case PRIMARY -> config.getMelee();
-            case SECONDARY -> config.getSecondry().getMelee();
-            case ATTACK -> config.getAttack().getMelee();
-            case ALTERNATIVE -> config.getAlternative().getMelee();
-        };
+        return config.getMelee(gunData.weaponAction);
     }
 
     public static ThrowableConfig getThrowable(GunData gunData) {
         var config = getGun(gunData.gun);
-
-        return switch (gunData.weaponAction) {
-            case PRIMARY -> config.getThrowable();
-            case SECONDARY -> config.getSecondry().getThrowable();
-            case ATTACK -> config.getAttack().getThrowable();
-            case ALTERNATIVE -> config.getAlternative().getThrowable();
-        };
+        return config.getThrowable(gunData.weaponAction);
     }
 
     public static Set<AttachmentType> getAttachmentTypes(GunData data) {

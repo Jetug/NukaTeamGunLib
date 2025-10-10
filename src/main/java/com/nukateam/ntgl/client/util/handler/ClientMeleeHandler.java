@@ -2,9 +2,9 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.config.WeaponAction;
-import com.nukateam.ntgl.common.data.holders.MeleeMode;
+import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.data.holders.MeleeMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -109,7 +109,7 @@ public class ClientMeleeHandler {
                 mc.options.keyAttack :
                 mc.options.keyUse;
 
-        var data = new GunData(heldItem, player).setWeaponAction(WeaponAction.PRIMARY);
+        var data = new GunData(heldItem, player).setWeaponAction(AttackMode.PRIMARY);
         attack(data, hand);
 
         if(heldItem.getItem() instanceof IWeapon && isMelee(data)){

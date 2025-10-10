@@ -15,6 +15,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
+import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
@@ -134,7 +135,7 @@ public class ControllerHandler {
                 if (isEquals(originalButton, GunButtonBindings.SHOOT)) {
                     shouldCancel = true;
                     if (state) {
-                        ShootingHandler.get().fire(player, heldItem);
+                        ShootingHandler.get().fire(new GunData(heldItem, player).setWeaponAction(AttackMode.PRIMARY));
                     }
                 } else if (isEquals(originalButton, GunButtonBindings.AIM)) {
                     shouldCancel = true;
@@ -166,7 +167,7 @@ public class ControllerHandler {
     }
 
     @SubscribeEvent
-    public void onRender(TickEvent.RenderTickEvent event) {
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
         var controller = Controllable.getController();
         var mc = Minecraft.getInstance();
         var player = mc.player;
@@ -181,7 +182,7 @@ public class ControllerHandler {
 
             if (heldItem.getItem() instanceof WeaponItem) {
                 if (GunModifierHelper.isAuto(gunData)) {
-                    ShootingHandler.get().fire(player, heldItem);
+                    ShootingHandler.get().fire(new GunData(heldItem, player).setWeaponAction(AttackMode.PRIMARY));
                 }
             }
         }

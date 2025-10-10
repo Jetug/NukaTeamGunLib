@@ -5,7 +5,6 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
@@ -84,11 +83,8 @@ public class ServerPlayHandler {
             return;
 
         var world = shooter.level();
-        var hand = message.isMainHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-
-        var reloadKey = message.isMainHand() ?
-                ModSyncedDataKeys.RELOADING_RIGHT:
-                ModSyncedDataKeys.RELOADING_LEFT;
+        var hand = message.getHand();
+        var reloadKey = ModSyncedDataKeys.getReloadKey(hand);
 
         if(reloadKey.getValue(shooter)){
             return;
@@ -99,7 +95,7 @@ public class ServerPlayHandler {
         if (heldItem.getItem() instanceof WeaponItem weaponItem
                 && (GunStateHelper.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
             var modifiedGun = weaponItem.getModifiedConfig(heldItem);
-            var data = new GunData(heldItem, shooter);
+            var data = new GunData(heldItem, shooter).setWeaponAction(message.getMode());
 
             if (modifiedGun != null) {
                 if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand))) {
@@ -151,7 +147,7 @@ public class ServerPlayHandler {
 
                 for (int i = 0; i < count; i++) {
                     var factory = ProjectileManager.getInstance().getFactory(data);
-                    var projectileEntity = factory.create(world, shooter, heldItem, weaponItem, modifiedGun);
+                    var projectileEntity = factory.create(world, data);
                     projectileEntity.setWeapon(heldItem);
                     projectileEntity.setAdditionalDamage(GunStateHelper.getAdditionalDamage(heldItem));
                     world.addFreshEntity(projectileEntity);

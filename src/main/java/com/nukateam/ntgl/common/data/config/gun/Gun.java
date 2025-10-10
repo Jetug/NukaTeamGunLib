@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.data.config.gun;
 import com.google.gson.Gson;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.*;
 import com.nukateam.ntgl.common.data.holders.*;
 
@@ -45,16 +45,18 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected ThrowableConfig throwable = new ThrowableConfig();
     protected Display display = new Display();
     protected Modules modules = new Modules();
-    protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
-    protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     protected HashMap<AnimationType, ResourceLocation> animations = new HashMap<>();
     protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
     protected LinkedHashMap<ResourceLocation, Fuel> fuel = new LinkedHashMap<>();
-    protected WeaponSettings secondry = getGun();
-    protected WeaponSettings attack = getGun();
-    protected WeaponSettings alternative = getGun();
+    protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
+    protected HashMap<String, ResourceLocation> textures = new HashMap<>();
+    protected HashMap<AttackMode, WeaponSettings> modes = new HashMap<>();
 
-    private static WeaponSettings getGun(){
+    protected WeaponSettings secondry = getWeapon();
+    protected WeaponSettings attack = getWeapon();
+    protected WeaponSettings alternative = getWeapon();
+
+    private static WeaponSettings getWeapon(){
         var gun = new WeaponSettings();
         gun.general.weaponMode = WeaponMode.NONE;
         return gun;
@@ -323,17 +325,35 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return alternative;
     }
 
-    //    private void prepareTextures(String itemId) {
-//        if(FMLEnvironment.dist == Dist.CLIENT) {
-//            CompletableFuture.runAsync(() -> {
-//                this.textures.forEach((variant, path) -> {
-////                        var texture = resourceExists(path) ? path : getTexture(itemId, path);
-//                    var texture = prepareTexture(itemId, path);
-//                    this.preparedTextures.put(variant, texture);
-//                });
-//            });
-//        }
-//    }
+    public WeaponMode getWeaponMode(AttackMode mode){
+        if(mode == AttackMode.PRIMARY){
+            return general.weaponMode;
+        }
+        else {
+            var value = modes.get(mode);
+            if(value != null)
+                return value.getGeneral().getWeaponMode();
+            else return WeaponMode.NONE;
+        }
+    }
+
+    public General getGeneral(AttackMode mode) {
+        if(mode == AttackMode.PRIMARY)
+            return general;
+        else return modes.getOrDefault(mode, getWeapon()).getGeneral();
+    }
+
+    public Melee getMelee(AttackMode mode) {
+        if(mode == AttackMode.PRIMARY)
+            return melee;
+        else return modes.getOrDefault(mode, getWeapon()).getMelee();
+    }
+
+    public ThrowableConfig getThrowable(AttackMode mode) {
+        if(mode == AttackMode.PRIMARY)
+            return throwable;
+        else return modes.getOrDefault(mode, getWeapon()).getThrowable();
+    }
 
     private static ResourceLocation prepareTexture(String itemId, ResourceLocation path) {
         return ResourceLocation.tryBuild(path.getNamespace(), "textures/guns/" + itemId + "/" + path.getPath() + ".png");

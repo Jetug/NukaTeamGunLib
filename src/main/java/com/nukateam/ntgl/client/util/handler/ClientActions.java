@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.data.config.WeaponAction;
+import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -40,7 +40,7 @@ public class ClientActions {
     public static void meleeAttack(LocalPlayer player) {
         var weapon = player.getMainHandItem();
         if(weapon.getItem() instanceof IWeapon){
-            ClientMeleeHandler.addTracker(new GunData(weapon, player).setWeaponAction(WeaponAction.ATTACK), InteractionHand.MAIN_HAND);
+            ClientMeleeHandler.addTracker(new GunData(weapon, player).setWeaponAction(AttackMode.ATTACK), InteractionHand.MAIN_HAND);
         }
     }
 }

@@ -2,10 +2,12 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.ibm.icu.impl.Pair;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.holders.FireMode;
+import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
@@ -13,11 +15,8 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -82,20 +81,21 @@ public class ShootingHandler {
                 player.getMainHandItem() :
                 player.getOffhandItem();
 
-        if (heldItem.getItem() instanceof WeaponItem) {
+        if (heldItem.getItem() instanceof IWeapon) {
+            var data = new GunData(heldItem, player).setWeaponAction(AttackMode.PRIMARY);
             if (event.getAction() == GLFW.GLFW_PRESS) {
                 if (isRightHand) {
-                    setupShootingData(heldItem, player, InteractionHand.MAIN_HAND);
+                    setupShootingData(data, InteractionHand.MAIN_HAND);
                 }
                 if (isLeftHand) {
-                    setupShootingData(heldItem, player, InteractionHand.OFF_HAND);
+                    setupShootingData(data, InteractionHand.OFF_HAND);
                 }
             } else if(event.getAction() == GLFW.GLFW_RELEASE) {
                 if (isRightHand) {
-                    resetShootingData(heldItem, player, InteractionHand.MAIN_HAND);
+                    resetShootingData(data, InteractionHand.MAIN_HAND);
                 }
                 if (isLeftHand) {
-                    resetShootingData(heldItem, player, InteractionHand.OFF_HAND);
+                    resetShootingData(data, InteractionHand.OFF_HAND);
                 }
             }
         }
@@ -160,12 +160,14 @@ public class ShootingHandler {
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
 
-        if (mainHandItem.getItem() instanceof WeaponItem && isKeyAttackDown()) {
-            handleAutoFire(player, mainHandItem, InteractionHand.MAIN_HAND);
+        if (mainHandItem.getItem() instanceof IWeapon && isKeyAttackDown()) {
+            var data = new GunData(mainHandItem, player).setWeaponAction(AttackMode.PRIMARY);
+            handleFireInput(data, InteractionHand.MAIN_HAND);
         }
 
-        if (offhandItem.getItem() instanceof WeaponItem && isUseKeyDown() && canRenderInOffhand(player)) {
-            handleAutoFire(player, offhandItem, InteractionHand.OFF_HAND);
+        if (offhandItem.getItem() instanceof IWeapon && isUseKeyDown() && canRenderInOffhand(player)) {
+            var data = new GunData(offhandItem, player).setWeaponAction(AttackMode.PRIMARY);
+            handleFireInput(data, InteractionHand.OFF_HAND);
         }
     }
 
@@ -252,14 +254,13 @@ public class ShootingHandler {
         return shootTickGap;
     }
 
-    private static boolean isGun(ItemStack heldItem, LivingEntity entity) {
-        return GunModifierHelper.getWeaponMode(new GunData(heldItem, entity)) == WeaponMode.GUN;
-    }
+    public void fire(GunData data) {
+        var shooter = data.shooter;
+        var heldItem = data.gun;
 
-    public void fire(LivingEntity shooter, ItemStack heldItem) {
         if (heldItem.getItem() instanceof WeaponItem
                 && (GunStateHelper.hasAmmo(heldItem) /*|| (shooter instanceof Player player && player.isCreative())*/)
-                && isGun(heldItem, shooter)
+                && isGunMode(data)
                 && !shooter.isSpectator()) {
             var isMainHand = shooter.getMainHandItem() == heldItem;
             var hand = isMainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
@@ -282,7 +283,7 @@ public class ShootingHandler {
                 try {
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
                             shooter.getViewXRot(1),
-                            RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, isMainHand));
+                            RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, hand, data.weaponAction));
                 } catch (NullPointerException e) {
                     Ntgl.LOGGER.error(e.getMessage(), e);
                 }
@@ -309,35 +310,38 @@ public class ShootingHandler {
         } );
     }
 
-    private void setupShootingData(ItemStack stack, Player player, InteractionHand arm) {
-        if(!GunStateHelper.hasAmmo(stack)) return;
+    private void setupShootingData(GunData gunData, InteractionHand arm) {
+        assert gunData.gun != null;
+        if(!GunStateHelper.hasAmmo(gunData.gun)) return;
         var data = shootingData.get(arm);
-        var gunData = new GunData(stack, player);
 
         data.fireTimer = GunModifierHelper.getFireDelay(gunData);
-        data.gun = (WeaponItem) stack.getItem();
+        data.gun = (WeaponItem) gunData.gun.getItem();
     }
 
-    private void resetShootingData(ItemStack stack, Player player, InteractionHand arm) {
+    private void resetShootingData(GunData gunData, InteractionHand arm) {
         var data = shootingData.get(arm);
-        var gunData = new GunData(stack, player);
         if(data.fireTimer != 0 && ! GunModifierHelper.needsFullCharge(gunData)){
-            this.fire(Minecraft.getInstance().player, stack);
+            this.fire(gunData);
         }
 
         data.fireTimer = 0;
         data.gun = null;
     }
 
-    private void handleAutoFire(LocalPlayer player, ItemStack heldItem, InteractionHand arm) {
+    private static boolean isGunMode(GunData gunData) {
+        return GunModifierHelper.getWeaponMode(gunData) == WeaponMode.GUN;
+    }
+
+    private void handleFireInput(GunData gunData, InteractionHand arm) {
         var mc = Minecraft.getInstance();
+        var player = mc.player;
         var key = arm == InteractionHand.MAIN_HAND ? mc.options.keyAttack : mc.options.keyUse;
         var data = shootingData.get(arm);
-        var gunData = new GunData(heldItem, player);
         var fireMode =  GunStateHelper.getFireMode(gunData);
         var maxChargeTime = GunModifierHelper.getFireDelay(gunData);
 
-        if (!(heldItem.getItem() instanceof WeaponItem weaponItem) || !isGun(heldItem, player)) {
+        if (!isGunMode(gunData)) {
             return;
         }
 
@@ -350,16 +354,16 @@ public class ShootingHandler {
                 }
                 data.fireTimer--;
             } else {
-                this.fire(player, heldItem);
+                this.fire(gunData);
                 if (data.fireTimer == 0 && !GunModifierHelper.isOneTimeCharge(gunData))
-                    setupShootingData(heldItem, player, arm);
+                    setupShootingData(gunData, arm);
                 if (maxChargeTime > 0) {
                     if (fireMode != FireMode.AUTO)
                         key.setDown(false);
                 }
             }
         } else {
-            this.fire(player, heldItem);
+            this.fire(gunData);
             if (fireMode != FireMode.AUTO) {
                 key.setDown(false);
             }

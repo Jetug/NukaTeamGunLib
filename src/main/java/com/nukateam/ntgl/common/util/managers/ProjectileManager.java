@@ -22,8 +22,8 @@ import java.util.Map;
  */
 public class ProjectileManager {
     private static ProjectileManager instance = null;
-    private final IProjectileFactory DEFAULT_FACTORY = (level, entity, weapon, item, modifiedGun) ->
-            new ProjectileEntity(Projectiles.PROJECTILE.get(), level, entity, weapon, item, modifiedGun);
+    private final IProjectileFactory DEFAULT_FACTORY = (level,gunData) ->
+            new ProjectileEntity(Projectiles.PROJECTILE.get(), level, gunData);
     
     private final IThrowableProjectileFactory DEFAULT_THROWABLE_FACTORY = ThrowableGrenadeEntity::new;
 

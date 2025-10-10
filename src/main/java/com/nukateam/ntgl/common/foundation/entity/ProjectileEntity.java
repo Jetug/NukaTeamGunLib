@@ -6,10 +6,9 @@ import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.util.trackers.SpreadTracker;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
 import com.nukateam.ntgl.common.util.interfaces.*;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
@@ -60,6 +59,7 @@ import java.util.function.Predicate;
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData {
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
+    protected GunData gunData;
     protected boolean isServerSide = !level().isClientSide();
     protected boolean isRightHand;
     protected int shooterId;
@@ -78,13 +78,20 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         super(entityType, worldIn);
     }
 
-    public ProjectileEntity(EntityType<? extends Entity> entityType, Level level, LivingEntity shooter, ItemStack weapon, WeaponItem item, Gun modifiedGun) {
+    public ProjectileEntity(EntityType<? extends Entity> entityType, Level level, GunData data) {
         this(entityType, level);
-        var data = new GunData(weapon, shooter);
+
+        assert data.gun != null;
+        assert data.shooter != null;
+
+        var item = (IWeapon) data.gun.getItem();
+        var weapon = data.gun;
+
+        this.gunData = data;
+        this.shooter = data.shooter;
         this.shooterId = shooter.getId();
-        this.shooter = shooter;
         this.weapon = weapon;
-        this.general = GunModifierHelper.getGeneral(GunModifierHelper.getGun(weapon));
+        this.general = GunModifierHelper.getGeneral(data);
         this.projectile = GunStateHelper.getProjectileConfig(data);
         this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
         setBoundingBox(new AABB(
@@ -669,7 +676,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return ItemStack.EMPTY;
     }
 
-    protected void setupDirection(LivingEntity shooter, ItemStack weapon, WeaponItem item) {
+    protected void setupDirection(LivingEntity shooter, ItemStack weapon, IWeapon item) {
         /* Get speed and set motion */
         var dir = this.getDirection(shooter, weapon, item);
         var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
@@ -688,7 +695,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return damage;
     }
 
-    protected Vec3 getDirection(LivingEntity shooter, ItemStack weapon, WeaponItem item) {
+    protected Vec3 getDirection(LivingEntity shooter, ItemStack weapon, IWeapon item) {
         var data = new GunData(weapon, shooter);
         float gunSpread = GunModifierHelper.getModifiedSpread(data);
 

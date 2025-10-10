@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -45,9 +46,8 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		maxTicks = (short) life;
 	}
 
-	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn,
-                                  LivingEntity shooter, ItemStack weapon, WeaponItem item, Gun modifiedGun) {
-		super(entityType, worldIn, shooter, weapon, item, modifiedGun);
+	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn, GunData data) {
+		super(entityType, worldIn, data);
 	}
 
 	@Override
