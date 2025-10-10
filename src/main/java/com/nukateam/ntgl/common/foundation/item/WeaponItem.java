@@ -1,9 +1,8 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.client.animators.GunAnimator;
-import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.data.holders.AmmoHolder;
+import com.nukateam.ntgl.common.foundation.components.NTGLComponents;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
@@ -18,42 +17,46 @@ import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.item.interfaces.*;
 import com.nukateam.ntgl.modules.enchantment.EnchantmentTypes;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
-import mod.azure.azurelib.animatable.GeoItem;
+import mod.azure.azurelib.common.api.common.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.*;
 import mod.azure.azurelib.core.animation.*;
 import net.minecraft.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.enchantment.*;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.*;
-import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.*;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
 import javax.annotation.*;
 import java.util.*;
 import java.util.function.*;
+import net.neoforged.neoforge.common.util.Lazy;
 
 import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
 import static com.nukateam.ntgl.common.foundation.item.ThrowableItem.addExplosionTip;
 import static com.nukateam.ntgl.common.util.util.GunStateHelper.AMMO_TAG;
-import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
+import static mod.azure.azurelib.common.internal.common.util.AzureLibUtil.createInstanceCache;
+import static net.minecraft.world.item.component.ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT;
+
 
 public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColored, IMeta{
     public static final String VARIANT = "variant";
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, Gun> modifiedGunCache = new WeakHashMap<>();
-    private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
+    private final Supplier<Object> renderProvider = GeoItem.makeRenderer( this);
     private final Lazy<DefaultGunRendererGeo> GUN_RENDERER = Lazy.of(() -> new DefaultGunRendererGeo());
     private Gun gun = new Gun();
 
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     protected IGunModifier[] modifiers;
 
-    public WeaponItem(Item.Properties properties, IGunModifier... modifiers) {
+    public WeaponItem(Properties properties, IGunModifier... modifiers) {
         super(properties);
         this.modifiers = modifiers;
     }
@@ -99,12 +102,13 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
     }
 
     public static String getVariant(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        if (!tag.contains(VARIANT, Tag.TAG_STRING)) {
-            tag.putString(VARIANT, "default");
+        CompoundTag gunTag = stack.get(NTGLComponents.GUNCOMPONENT);
+        if (!gunTag.contains(VARIANT, Tag.TAG_STRING)) {
+            gunTag.putString(VARIANT, "default");
+            stack.set(NTGLComponents.GUNCOMPONENT, gunTag);
         }
 
-        return tag.getString(VARIANT);
+        return gunTag.getString(VARIANT);
     }
 
     public void setDefaultTag(CompoundTag tag){
@@ -114,7 +118,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if(entity instanceof LivingEntity livingEntity) {
-            var tag = stack.getOrCreateTag();
+            var tag = stack.get(NTGLComponents.GUNCOMPONENT);
             var data = new GunData(stack, livingEntity);
             var ammoItems = GunModifierHelper.getAmmoItems(data);
 
@@ -143,15 +147,15 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
         }
     }
 
-    @Override
+    @Override //related problems, does not override its superclass aka method had changed
     public Supplier<Object> getRenderProvider() {
         return renderProvider;
     }
 
-    @Override
+    @Override //related problems, does not override its superclass aka method had changed
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
         var data = new GunData(stack, null);
-        var tagCompound = stack.getOrCreateTag();
+        var tagCompound = stack.get(NTGLComponents.GUNCOMPONENT);
         addAmmoType(tooltip, data);
         addFireRate(tooltip, data);
         addDamage(tooltip, tagCompound, data);
@@ -165,14 +169,9 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
         addAmmo(tooltip, tagCompound, data);
         addFuel(tooltip, data);
 
-
-        var name = KeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
-
-        tooltip.add(Component.translatable("info.ntgl.attachment_help", name)
+        tooltip.add(Component.translatable("info.ntgl.attachment_help", Component.keybind("key.ntgl.attachments")
+         .getString().toUpperCase(Locale.ENGLISH))
          .withStyle(ChatFormatting.YELLOW));
-
-
-//        Component.keybind("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH))
     }
 
     private static void addAmmoType(List<Component> tooltip, GunData data) {
@@ -188,7 +187,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
         rate = rate == 0 ? 0 : 20 / rate;
 
         tooltip.add(Component.translatable("info.ntgl.rate",
-                ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(rate))
+                        ChatFormatting.WHITE + ATTRIBUTE_MODIFIER_FORMAT.format(rate))
                 .withStyle(ChatFormatting.GRAY));
     }
 
@@ -225,16 +224,16 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
             additionalDamage += GunModifierHelper.getAdditionalDamage(gunData);
 
             if (additionalDamage > 0) {
-                additionalDamageText = ChatFormatting.YELLOW + " +" + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
+                additionalDamageText = ChatFormatting.YELLOW + " +" + ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
             } else if (additionalDamage < 0) {
-                additionalDamageText = ChatFormatting.RED + " " + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
+                additionalDamageText = ChatFormatting.RED + " " + ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
             }
         }
 
         var damage = GunModifierHelper.getModifiedDamage(gunData);
         damage = GunEnchantmentHelper.getAcceleratorDamage(gunData.gun, damage);
         tooltip.add(Component.translatable("info.ntgl.damage", ChatFormatting.WHITE
-                        + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)
+                        + ATTRIBUTE_MODIFIER_FORMAT.format(damage)
                         + additionalDamageText).withStyle(ChatFormatting.GRAY));
     }
 
@@ -242,31 +241,17 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
         var damage = GunModifierHelper.getMeleeDamage(gunData);
 
         tooltip.add(Component.translatable("info.ntgl.melee_damage",
-                ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)
+                ChatFormatting.WHITE + ATTRIBUTE_MODIFIER_FORMAT.format(damage)
         ).withStyle(ChatFormatting.GRAY));
     }
 
-//    @Override
-//    public boolean isBarVisible(ItemStack stack) {
-//        CompoundTag tagCompound = stack.getOrCreateTag();
-//        Gun modifiedGun = this.getModifiedGun(stack);
-//        return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt(Tags.AMMO_COUNT) != GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun);
-//    }
-
-//    @Override
-//    public int getBarWidth(ItemStack stack) {
-//        CompoundTag tagCompound = stack.getOrCreateTag();
-//        Gun modifiedGun = this.getModifiedGun(stack);
-//        return (int) (13.0 * (tagCompound.getInt(Tags.AMMO_COUNT) / (double) GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)));
-//    }
-
     public Gun getModifiedGun(ItemStack stack) {
-        var tagCompound = stack.getTag();
+        var tagCompound = stack.get(NTGLComponents.GUNCOMPONENT);
         if (tagCompound != null && tagCompound.contains("Gun", Tag.TAG_COMPOUND)) {
             return this.modifiedGunCache.computeIfAbsent(tagCompound, item ->
             {
                 if (tagCompound.getBoolean("Custom")) {
-                    var key = ForgeRegistries.ITEMS.getKey(stack.getItem());
+                    var key = BuiltInRegistries.ITEM.getKey(stack.getItem());
                     return Gun.create(key, tagCompound.getCompound("Gun"));
                 } else {
                     var gunCopy = this.gun.copy();
@@ -287,7 +272,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
         return this.gun.getGeneral().isEnchantable() && super.isBookEnchantable(stack, book);
     }
 
-    @Override
+    @Override //related problems, does not override its superclass
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         if (this.gun.getGeneral().isEnchantable()) {
             var data = new GunData(stack, null);
@@ -299,7 +284,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
         else return false;
     }
 
-    @Override
+    @Override //Deprecated, two usages, where? idk
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
         return true;
     }
@@ -308,11 +293,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
     }
-
-//    @Override
-//    public int getBarColor(ItemStack stack) {
-//        return requireNonNull(ChatFormatting.YELLOW.getColor());
-//    }
 
     @Override
     public boolean isEnchantable(ItemStack stack) {
@@ -329,16 +309,16 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IColore
         return this.gun.getGeneral().isEnchantable() ? 5 : 0;
     }
 
-    @Override
+    @Override //Deprecated, also no usages but related problems
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
 
-    @Override
+    @Override //Deprecated, also no usages but related problems
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
     }
 
     private ResourceLocation getRegistryName() {
-        return ForgeRegistries.ITEMS.getKey(this);
+        return BuiltInRegistries.ITEM.getKey(this);
     }
 
 
