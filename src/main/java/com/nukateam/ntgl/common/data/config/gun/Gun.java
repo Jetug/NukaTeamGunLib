@@ -27,10 +27,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.registries.ForgeRegistries;
+
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
