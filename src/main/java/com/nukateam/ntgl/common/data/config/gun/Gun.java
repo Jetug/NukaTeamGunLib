@@ -40,6 +40,17 @@ import java.util.function.Supplier;
 import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
 
 public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
+    public static final String GENERAL = "General";
+    public static final String MELEE = "Melee";
+    public static final String THROWABLE = "Throwable";
+    public static final String SOUNDS = "Sounds";
+    public static final String DISPLAY = "Display";
+    public static final String MODULES = "Modules";
+    public static final String TEXTURES = "Textures";
+    public static final String ANIMATIONS = "Animations";
+    public static final String AMMO_DATA = "AmmoData";
+    public static final String SECONDARY_AMMO = "SecondaryAmmo";
+    public static final String MODES = "Modes";
     protected General general = new General();
     protected Melee melee = new Melee();
     protected ThrowableConfig throwable = new ThrowableConfig();
@@ -51,10 +62,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
     protected HashMap<AttackMode, WeaponSettings> modes = new HashMap<>();
-
-    protected WeaponSettings secondry = getWeapon();
-    protected WeaponSettings attack = getWeapon();
-    protected WeaponSettings alternative = getWeapon();
 
     private static WeaponSettings getWeapon(){
         var gun = new WeaponSettings();
@@ -87,53 +94,59 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Override
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
-        tag.put("General", this.general.serializeNBT());
-        tag.put("Melee", this.melee.serializeNBT());
-        tag.put("throwable", this.throwable.serializeNBT());
-        tag.put("Sounds", NbtUtils.serializeStringMap(this.sounds));
-        tag.put("Display", this.display.serializeNBT());
-        tag.put("Modules", this.modules.serializeNBT());
-        tag.put("Textures", NbtUtils.serializeStringMap(this.textures));
-        tag.put("Animations", NbtUtils.serializeStringMap(this.animations));
-        tag.put("AmmoData", NbtUtils.serializeMap(this.ammoData));
-        tag.put("SecondaryAmmo", NbtUtils.serializeMap(this.fuel));
+        tag.put(GENERAL, this.general.serializeNBT());
+        tag.put(MELEE, this.melee.serializeNBT());
+        tag.put(THROWABLE, this.throwable.serializeNBT());
+        tag.put(SOUNDS, NbtUtils.serializeStringMap(this.sounds));
+        tag.put(DISPLAY, this.display.serializeNBT());
+        tag.put(MODULES, this.modules.serializeNBT());
+        tag.put(TEXTURES, NbtUtils.serializeStringMap(this.textures));
+        tag.put(ANIMATIONS, NbtUtils.serializeStringMap(this.animations));
+        tag.put(AMMO_DATA, NbtUtils.serializeMap(this.ammoData));
+        tag.put(SECONDARY_AMMO, NbtUtils.serializeMap(this.fuel));
+        tag.put(MODES, NbtUtils.serializeMap(this.modes));
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        if (tag.contains("General", Tag.TAG_COMPOUND)) {
-            this.general.deserializeNBT(tag.getCompound("General"));
+        if (tag.contains(GENERAL, Tag.TAG_COMPOUND)) {
+            this.general.deserializeNBT(tag.getCompound(GENERAL));
         }
-        if (tag.contains("Melee", Tag.TAG_COMPOUND)) {
-            this.melee.deserializeNBT(tag.getCompound("Melee"));
+        if (tag.contains(MELEE, Tag.TAG_COMPOUND)) {
+            this.melee.deserializeNBT(tag.getCompound(MELEE));
         }
-        if (tag.contains("throwable", Tag.TAG_COMPOUND)) {
-            this.throwable.deserializeNBT(tag.getCompound("throwable"));
+        if (tag.contains(THROWABLE, Tag.TAG_COMPOUND)) {
+            this.throwable.deserializeNBT(tag.getCompound(THROWABLE));
         }
-        if (tag.contains("Sounds", Tag.TAG_COMPOUND)) {
-            this.sounds = deserializeSounds(tag.getCompound("Sounds"));
+        if (tag.contains(SOUNDS, Tag.TAG_COMPOUND)) {
+            this.sounds = deserializeSounds(tag.getCompound(SOUNDS));
         }
-        if (tag.contains("Display", Tag.TAG_COMPOUND)) {
-            this.display.deserializeNBT(tag.getCompound("Display"));
+        if (tag.contains(DISPLAY, Tag.TAG_COMPOUND)) {
+            this.display.deserializeNBT(tag.getCompound(DISPLAY));
         }
-        if (tag.contains("Modules", Tag.TAG_COMPOUND)) {
-            this.modules.deserializeNBT(tag.getCompound("Modules"));
+        if (tag.contains(MODULES, Tag.TAG_COMPOUND)) {
+            this.modules.deserializeNBT(tag.getCompound(MODULES));
         }
-        if (tag.contains("Textures", Tag.TAG_COMPOUND)) {
-            this.textures = NbtUtils.deserializeRLMap(tag.getCompound("Textures"));
+        if (tag.contains(TEXTURES, Tag.TAG_COMPOUND)) {
+            this.textures = NbtUtils.deserializeRLMap(tag.getCompound(TEXTURES));
         }
-        if (tag.contains("Animations", Tag.TAG_COMPOUND)) {
-            this.animations = NbtUtils.deserializeMap(tag.getCompound("Animations"),
+        if (tag.contains(ANIMATIONS, Tag.TAG_COMPOUND)) {
+            this.animations = NbtUtils.deserializeMap(tag.getCompound(ANIMATIONS),
                     (nbt) -> AnimationType.getType(nbt),
                     (nbt, key) -> ResourceLocation.tryParse(nbt.getString(key))
             );
         }
-        if (tag.contains("AmmoData", Tag.TAG_COMPOUND)) {
-            this.ammoData = NbtUtils.deserializeLinkedMap(tag.getCompound("AmmoData"), (nbt) -> AmmoData.create(nbt));
+        if (tag.contains(AMMO_DATA, Tag.TAG_COMPOUND)) {
+            this.ammoData = NbtUtils.deserializeLinkedMap(tag.getCompound(AMMO_DATA), (nbt) -> AmmoData.create(nbt));
         }
-        if (tag.contains("SecondaryAmmo", Tag.TAG_COMPOUND)) {
-            this.fuel = NbtUtils.deserializeLinkedMap(tag.getCompound("SecondaryAmmo"), (nbt) -> Fuel.create(nbt));
+        if (tag.contains(SECONDARY_AMMO, Tag.TAG_COMPOUND)) {
+            this.fuel = NbtUtils.deserializeLinkedMap(tag.getCompound(SECONDARY_AMMO), (nbt) -> Fuel.create(nbt));
+        }
+        if (tag.contains(MODES, Tag.TAG_COMPOUND)) {
+            this.modes = NbtUtils.deserializeMap(tag.getCompound(MODES),
+                    (nbt) -> AttackMode.getType(nbt),
+                    (nbt, s) -> WeaponSettings.create(nbt));
         }
     }
 
@@ -147,6 +160,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         GunJsonUtil.addObjectIfNotEmpty(object,"sounds", gson.toJsonTree(this.sounds).getAsJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modules", this.modules.toJsonObject());
+        GunJsonUtil.addObjectIfNotEmpty(object, "modes", gson.toJsonTree(this.modes).getAsJsonObject());
         return object;
     }
 
@@ -168,13 +182,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static Gun create(ResourceLocation id, CompoundTag tag) {
         var gun = new Gun();
         gun.deserializeNBT(tag);
-//        gun.prepareTextures(id.getPath());
         return gun;
     }
 
-    public void onCreated(String id){
-//        prepareTextures(id);
-    }
+    public void onCreated(String id){}
 
     public General getGeneral() {
         return this.general;
@@ -311,18 +322,6 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public AmmoConfig getFuelAmmoConfig(ResourceLocation ammo){
         return getFuelData(ammo).getAmmo();
-    }
-
-    public WeaponSettings getSecondry() {
-        return secondry;
-    }
-
-    public WeaponSettings getAttack() {
-        return attack;
-    }
-
-    public WeaponSettings getAlternative() {
-        return alternative;
     }
 
     public WeaponMode getWeaponMode(AttackMode mode){

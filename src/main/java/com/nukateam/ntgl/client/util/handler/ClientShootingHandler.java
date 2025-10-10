@@ -36,8 +36,8 @@ import static net.minecraftforge.event.TickEvent.Type.RENDER;
 /**
  * Author: MrCrayfish
  */
-public class ShootingHandler {
-    private static ShootingHandler instance;
+public class ClientShootingHandler {
+    private static ClientShootingHandler instance;
     public static float shootMsGap = 0F;
     private boolean shooting;
 
@@ -47,11 +47,11 @@ public class ShootingHandler {
             InteractionHand.OFF_HAND, new ShootingData(0, null)
     );
 
-    private ShootingHandler() {}
+    private ClientShootingHandler() {}
 
-    public static ShootingHandler get() {
+    public static ClientShootingHandler get() {
         if (instance == null) {
-            instance = new ShootingHandler();
+            instance = new ClientShootingHandler();
         }
         return instance;
     }
@@ -346,7 +346,7 @@ public class ShootingHandler {
         }
 
         if (maxChargeTime != 0) {
-            var isOnCooldown = ShootingHandler.get().isOnCooldown(player, arm);
+            var isOnCooldown = ClientShootingHandler.get().isOnCooldown(player, arm);
 
             if (data.fireTimer > 0 && !isOnCooldown) {
                 if (data.fireTimer == maxChargeTime - 2) {

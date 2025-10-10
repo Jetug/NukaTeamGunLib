@@ -104,7 +104,7 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
         return gun;
     }
 
-    public static WeaponSettings create(ResourceLocation id, CompoundTag tag) {
+    public static WeaponSettings create(CompoundTag tag) {
         var gun = new WeaponSettings();
         gun.deserializeNBT(tag);
         return gun;

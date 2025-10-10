@@ -103,7 +103,7 @@ public class RecoilHandler {
             return;
 
         var modifiedGun = weaponItem.getModifiedConfig(heldItem);
-        var cooldown = ShootingHandler.get().getCooldownPercent(Minecraft.getInstance().player, event.getHand());
+        var cooldown = ClientShootingHandler.get().getCooldownPercent(Minecraft.getInstance().player, event.getHand());
         var recoilDurationOffset = modifiedGun.getGeneral().getRecoilDurationOffset();
 
         cooldown = cooldown >= recoilDurationOffset ?

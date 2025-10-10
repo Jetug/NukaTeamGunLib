@@ -25,15 +25,27 @@
       "ntgl:burnable"
     ]
   },
-  "melee": {
-    "mode": "ntgl:single",
-    "damage": 10,
-    "delay": 4,
-    "cooldown": 20,
-    "distance": 6,
-    "angle": 20,
-    "maxTargets": 1,
-    "knockback": 0.4
+  "modes": {
+    "ntgl:secondary": {
+      "general": {
+        "type": "ntgl:none"
+      }
+    },
+    "ntgl:attack": {
+      "general": {
+        "type": "ntgl:melee"
+      },
+      "melee": {
+        "mode": "ntgl:single",
+        "damage": 10,
+        "delay": 4,
+        "cooldown": 20,
+        "distance": 6,
+        "angle": 20,
+        "maxTargets": 1,
+        "knockback": 0.4
+      }
+    }
   },
   "fuel": {
     "ntgl:burnable":{

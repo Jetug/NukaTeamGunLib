@@ -26,7 +26,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.nukateam.ntgl.client.util.handler.ShootingHandler.isInGame;
+import static com.nukateam.ntgl.client.util.handler.ClientShootingHandler.isInGame;
 import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canRenderInOffhand;
 
 
@@ -57,8 +57,9 @@ public class ClientMeleeHandler {
 
     public static void addTracker(GunData data, InteractionHand hand) {
         var entity = data.shooter;
-        var doMelee = ModSyncedDataKeys.getDoMelee(hand);
         var gun = data.gun;
+        var doMelee = ModSyncedDataKeys.getDoMelee(hand);
+        assert gun != null && entity != null;
 
         if (gun.getItem() instanceof WeaponItem
                 && GunModifierHelper.canMelee(data)

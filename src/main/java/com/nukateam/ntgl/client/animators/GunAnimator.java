@@ -51,7 +51,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
 
     protected final DynamicGunRenderer<GunAnimator> renderer;
     protected final Minecraft minecraft = Minecraft.getInstance();
-    protected final ShootingHandler shootingHandler = ShootingHandler.get();
+    protected final ClientShootingHandler shootingHandler = ClientShootingHandler.get();
     protected final ClientReloadHandler reloadHandler = ClientReloadHandler.get();
     protected final AnimationHelper<GunAnimator> animationHelper;
 

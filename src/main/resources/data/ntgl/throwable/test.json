@@ -8,8 +8,10 @@
     ]
   },
   "modes": {
-    "primary": {
-      "type": "ntgl:gun",
+    "ntgl:primary": {
+      "general": {
+        "type": "ntgl:gun"
+      },
       "gun": {
         "rate": 4,
         "fireMode": ["ntgl:auto", "ntgl:semi"],
@@ -26,11 +28,15 @@
         "spread": 1.0
       }
     },
-    "secondary": {
-      "type": "ntgl:none"
+    "ntgl:secondary": {
+      "general": {
+        "type": "ntgl:none"
+      }
     },
-    "alternative": {
-      "type": "ntgl:melee",
+    "ntgl:attack": {
+      "general": {
+        "type": "ntgl:melee"
+      },
       "melee": {
         "damage": 5,
         "delay": 5,

@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AttackMode extends ResourceHolder {
-    public static final AttackMode PRIMARY      = new AttackMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "none"));
-    public static final AttackMode SECONDARY    = new AttackMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "gun"));
-    public static final AttackMode ATTACK       = new AttackMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "melee"));
-    public static final AttackMode ALTERNATIVE  = new AttackMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "throwable"));
+    public static final AttackMode PRIMARY      = new AttackMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "primary"));
+    public static final AttackMode SECONDARY    = new AttackMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "secondary"));
+    public static final AttackMode ATTACK       = new AttackMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "attack"));
+    public static final AttackMode ALTERNATIVE  = new AttackMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "alternative"));
 
     private static final Map<ResourceLocation, AttackMode> loadingTypeMap = new HashMap<>();
 

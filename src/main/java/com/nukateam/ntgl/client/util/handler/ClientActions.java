@@ -3,12 +3,14 @@ package com.nukateam.ntgl.client.util.handler;
 import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageHandAction;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 
@@ -40,7 +42,18 @@ public class ClientActions {
     public static void meleeAttack(LocalPlayer player) {
         var weapon = player.getMainHandItem();
         if(weapon.getItem() instanceof IWeapon){
-            ClientMeleeHandler.addTracker(new GunData(weapon, player).setWeaponAction(AttackMode.ATTACK), InteractionHand.MAIN_HAND);
+            var gunData = new GunData(weapon, player).setWeaponAction(AttackMode.ATTACK);
+            var weaponMode = GunModifierHelper.getWeaponMode(gunData);
+
+            if(weaponMode == WeaponMode.GUN) {
+                ClientShootingHandler.get().fire(gunData);
+            }
+            else if(weaponMode == WeaponMode.MELEE) {
+                ClientMeleeHandler.addTracker(gunData, InteractionHand.MAIN_HAND);
+            }
+            else if(weaponMode == WeaponMode.THROWABLE) {
+                ClientThrowableHandler.addTracker(gunData, InteractionHand.MAIN_HAND);
+            }
         }
     }
 }

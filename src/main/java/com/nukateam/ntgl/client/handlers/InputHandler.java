@@ -7,8 +7,6 @@ import com.nukateam.ntgl.client.util.handler.ClientActions;
 import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
@@ -21,7 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import static com.nukateam.ntgl.client.input.KeyBinds.*;
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
-import static com.nukateam.ntgl.client.util.handler.ShootingHandler.isInGame;
+import static com.nukateam.ntgl.client.util.handler.ClientShootingHandler.isInGame;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class InputHandler {

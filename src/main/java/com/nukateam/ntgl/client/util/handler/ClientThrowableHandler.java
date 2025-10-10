@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.KeyAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
@@ -33,14 +34,18 @@ public class ClientThrowableHandler {
         var minecraft = Minecraft.getInstance();
         if(event.phase == TickEvent.Phase.END && minecraft.player != null){
             if(minecraft.options.keyAttack.isDown()){
-                addTracker(minecraft.player, InteractionHand.MAIN_HAND);
+                var gunData = new GunData(minecraft.player.getMainHandItem(), minecraft.player)
+                        .setWeaponAction(AttackMode.PRIMARY);
+                addTracker(gunData, InteractionHand.MAIN_HAND);
             }
             else {
                 removeTracker(InteractionHand.MAIN_HAND);
             }
 
             if(minecraft.options.keyUse.isDown()){
-                addTracker(minecraft.player, InteractionHand.OFF_HAND);
+                var gunData = new GunData(minecraft.player.getOffhandItem(), minecraft.player)
+                        .setWeaponAction(AttackMode.PRIMARY);
+                addTracker(gunData, InteractionHand.OFF_HAND);
             }
             else {
                 removeTracker(InteractionHand.OFF_HAND);
@@ -48,7 +53,8 @@ public class ClientThrowableHandler {
         }
     }
 
-    private static void addTracker(Player player, InteractionHand hand) {
+    public static void addTracker(GunData gunData, InteractionHand hand) {
+        var player = gunData.shooter;
         var heldItem = player.getItemInHand(hand);
         if(isThrowable(heldItem, player) && !TRACKER_MAP.containsKey(hand)){
             TRACKER_MAP.put(hand, new Tracker(player, hand));
@@ -89,7 +95,7 @@ public class ClientThrowableHandler {
         }
     }
 
-    private static boolean isThrowable(ItemStack heldItem, Player player) {
+    private static boolean isThrowable(ItemStack heldItem, LivingEntity player) {
         return heldItem.getItem() instanceof IThrowable && GunModifierHelper.isThrowable(new GunData(heldItem, player));
     }
 

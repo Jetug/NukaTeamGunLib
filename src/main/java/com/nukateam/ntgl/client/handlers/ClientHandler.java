@@ -51,7 +51,7 @@ public class ClientHandler {
         MinecraftForge.EVENT_BUS.register(GunRenderingHandler.get());
         MinecraftForge.EVENT_BUS.register(RecoilHandler.get());
         MinecraftForge.EVENT_BUS.register(ClientReloadHandler.get());
-        MinecraftForge.EVENT_BUS.register(ShootingHandler.get());
+        MinecraftForge.EVENT_BUS.register(ClientShootingHandler.get());
         MinecraftForge.EVENT_BUS.register(ClientEquipHandler.get());
         MinecraftForge.EVENT_BUS.register(SoundHandler.get());
         MinecraftForge.EVENT_BUS.register(new EntityModelHandler());

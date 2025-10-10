@@ -2,7 +2,7 @@
   "general": {
     "damage": 40.0,
     "weaponMode": "ntgl:throwable",
-    "gripType": "ntgl:two_handed",
+    "gripType": "ntgl:one_handed",
     "equipTime": 60
   },
   "throwable": {
