@@ -64,7 +64,10 @@ public class GunModifierHelper {
 
     public static Gun getGun(ItemStack stack) {
         var gunItem = (IWeapon) stack.getItem();
-        return gunItem.getModifiedConfig(stack);
+        var config = gunItem.getConfig();
+        var s = config;
+        var mod = gunItem.getModifiedConfig(stack);
+        return mod;
     }
 
     public static General getGeneral(GunData gunData) {
@@ -224,10 +227,19 @@ public class GunModifierHelper {
         return oneTimeCharge.get();
     }
 
+    public static boolean canShoot(GunData data) {
+        var value = getWeaponMode(data);
+        return value == WeaponMode.GUN;
+    }
+
     public static boolean canMelee(GunData data) {
-        var value = new AtomicBoolean(getGeneral(data).canMelee());
-        forEachAttachment(data, (modifier -> value.set(modifier.modifyCanMelee(value.get(), data))));
-        return value.get();
+        var value = getWeaponMode(data);
+        return value == WeaponMode.MELEE;
+    }
+
+    public static boolean canThrow(GunData data) {
+        var value = getWeaponMode(data);
+        return value == WeaponMode.THROWABLE;
     }
 
     public static Set<AmmoHolder> getAmmoItems(GunData data) {

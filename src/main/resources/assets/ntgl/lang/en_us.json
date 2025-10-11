@@ -54,7 +54,13 @@
   "death.attack.ntgl.bullet.annihilated": "%1$s was annihilated by %2$s",
   "death.attack.ntgl.bullet.decimated": "%1$s was decimated by %2$s",
 
-  "key.categories.ntgl": "NTGL",
+
+  "key.categories.ntgl.armor": "NTGL Armor",
+  "key.ntgl.leave": "Exit armor",
+
+  "key.categories.ntgl": "NTGL Weapons",
+  "key.ntgl.melee": "Melee Attack",
+  "key.ntgl.alt": "Alternative Attack",
   "key.ntgl.reload": "Reload",
   "key.ntgl.unload": "Unload",
   "key.ntgl.attachments": "Modify Attachments",
@@ -196,9 +202,5 @@
   "ntgl.action.steady_aim": "Steady Aim",
   "ntgl.button.config.tooltip": "Config Options",
   "ntgl.chat.open_curseforge_page": "Open CurseForge Page",
-  "ntgl.chat.install_configured": "Install %s to access config options",
-  "key.ntgl.melee": "Melee Attack",
-
-  "key.ntgl.leave": "Exit armor",
-  "key.categories.ntgl.armor": "Armor controls"
+  "ntgl.chat.install_configured": "Install %s to access config options"
 }

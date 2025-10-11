@@ -424,11 +424,14 @@ public class ServerPlayHandler {
 
     public static void handleMeleeAttack(C2SMessageMeleeAttack message, ServerPlayer player) {
         var stack = player.getItemInHand(message.getHand());
-        var gunData = new GunData(stack, player);
+        var gunData = new GunData(stack, player).setWeaponAction(message.getAction());
         if(stack.getItem() instanceof WeaponItem
                 && GunModifierHelper.canMelee(gunData)
                 && !EquipTracker.isEquiping(player, message.getHand())) {
-            MeleeTracker.start(player, message.getHand(), message.getAction());
+            var heldItem = player.getItemInHand(message.getHand());
+
+
+            MeleeTracker.start(new GunData(heldItem, player).setWeaponAction(message.getAction()), message.getHand());
         }
     }
 

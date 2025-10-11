@@ -249,10 +249,6 @@ public interface IGunModifier {
         return value;
     }
 
-    default boolean modifyCanMelee(boolean value, GunData data) {
-        return value;
-    }
-
     default Set<AmmoHolder> modifyAmmoItems(Set<AmmoHolder> item, GunData data) {
         return item;
     }

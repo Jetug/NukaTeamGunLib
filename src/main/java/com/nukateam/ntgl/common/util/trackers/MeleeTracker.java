@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.event.MeleeAttackEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.util.util.*;
 import net.minecraft.core.particles.ParticleTypes;
@@ -75,22 +76,22 @@ public class MeleeTracker {
         }
     }
 
-    public static void start(LivingEntity entity, InteractionHand arm, AttackMode action){
+    public static void start(GunData data, InteractionHand arm){
         var dataKey = getDataKey(arm);
-        dataKey.setValue(entity, true);
-        addTracker(entity, arm, action);
+        dataKey.setValue(data.shooter, true);
+        addTracker(data, arm);
     }
 
-    private static void addTracker(LivingEntity entity, InteractionHand hand, AttackMode action) {
+    private static void addTracker(GunData data, InteractionHand hand) {
         var dataKey = getDataKey(hand);
-        var heldItem = entity.getItemInHand(hand);
+        var heldItem = data.gun;
+        var entity = data.shooter;
 
         if (!TRACKER_MAP.containsKey(entity)) {
-            if (!(heldItem.getItem() instanceof WeaponItem)) {
+            if (!(heldItem.getItem() instanceof IWeapon)) {
                 dataKey.setValue(entity, false);
                 return;
             }
-            var data = new GunData(heldItem, entity).setWeaponAction(action);
             TRACKER_MAP.put(entity, new Tracker(data, hand));
             PacketHandler.sendAnimation(entity, hand, AnimationType.MELEE);
         }
@@ -128,7 +129,7 @@ public class MeleeTracker {
             tracker.meleeTick--;
 
         if(tracker.meleeTick == tracker.cooldown){
-            tracker.tryMeleeAttack(shooter, tracker.stack);
+            tracker.tryMeleeAttack(tracker.data);
         }
 
         if(tracker.meleeTick == 0){
@@ -144,9 +145,9 @@ public class MeleeTracker {
     private static class Tracker{
         private final InteractionHand arm;
         private final ItemStack stack;
-        private final WeaponItem weaponItem;
 
         private final int cooldown;
+        private final GunData data;
         private int meleeTick;
         private final int attackDelay;
         private final float meleeDamage;
@@ -157,9 +158,9 @@ public class MeleeTracker {
 
         private Tracker(GunData data, InteractionHand arm) {
             this.arm = arm;
+            this.data = data;
             this.stack = data.gun;
             assert stack != null;
-            this.weaponItem = ((WeaponItem) stack.getItem());
             this.cooldown = GunModifierHelper.getMeleeCooldown(data);
             this.attackDelay = GunModifierHelper.getMeleeDelay(data);
             this.meleeTick = attackDelay + cooldown;
@@ -170,7 +171,9 @@ public class MeleeTracker {
             this.maxTargets = GunModifierHelper.getMeleeMaxTargets(data);
         }
 
-        private void tryMeleeAttack(LivingEntity player, ItemStack stack) {
+        private void tryMeleeAttack(GunData gunData) {
+            assert gunData.shooter != null && gunData.gun != null;
+            var player = gunData.shooter;
             var targets = getTargets(player);
 
             var targetsToAttack = new ArrayList<LivingEntity>();
@@ -180,7 +183,7 @@ public class MeleeTracker {
                 targetsToAttack.add(targets.get(i).entity);
             }
 
-            if (!MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(player, stack, arm, targetsToAttack))) {
+            if (!MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(player, gunData, arm, targetsToAttack))) {
                 if (!targetsToAttack.isEmpty()) {
                     for (var target : targetsToAttack) {
                         attackEntity(player, target);
@@ -188,7 +191,7 @@ public class MeleeTracker {
 
                     playAttackSound(player);
                     spawnAttackEffects(player, targetsToAttack);
-                    MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Post(player, stack, arm, targetsToAttack));
+                    MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Post(player, gunData, arm, targetsToAttack));
                 }
             }
         }

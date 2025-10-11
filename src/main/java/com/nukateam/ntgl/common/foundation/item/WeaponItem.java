@@ -291,9 +291,9 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
                 }
             });
         }
-        if (Ntgl.isDebugging()) {
-            return Debug.getGun(this);
-        }
+//        if (Ntgl.isDebugging()) {
+//            return Debug.getGun(this);
+//        }
 
         return this.gun;
     }

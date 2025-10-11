@@ -28,12 +28,12 @@
   "modes": {
     "ntgl:secondary": {
       "general": {
-        "type": "ntgl:none"
+        "weaponMode": "ntgl:none"
       }
     },
     "ntgl:attack": {
       "general": {
-        "type": "ntgl:melee"
+        "weaponMode": "ntgl:melee"
       },
       "melee": {
         "mode": "ntgl:single",

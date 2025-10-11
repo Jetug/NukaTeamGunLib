@@ -42,17 +42,7 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
     }
 
     @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            var heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
-            var scope = GunStateHelper.getScopeStack(heldItem);
-            if (scope.getItem() instanceof ScopeItem scopeItem) {
-                widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(Component.literal("Edit"), btn -> {
-                    Minecraft.getInstance().setScreen(createEditorScreen(Debug.getScope(scopeItem)));
-                })));
-            }
-        });
-    }
+    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {}
 
     @Override
     public CompoundTag serializeNBT() {

@@ -333,25 +333,6 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         int startX = (this.width - this.imageWidth) / 2;
         int startY = (this.height - this.imageHeight) / 2;
 
-//        clickedSlot = getSlotId((int)mouseX, (int)mouseY);
-//
-//        if(clickedSlot != -1 && attachmentButtons.isEmpty()) {
-//            var slot = (AttachmentSlot)menu.getSlot(clickedSlot);
-//            var attachments = findAttachments(playerInventory, slot.getType());
-//
-//            for (int i = 0; i < attachments.size(); i++) {
-//                var slotPos = getAttachmentSlotPos(clickedSlot, i);
-//
-//                this.addWidget(new SlotButton(slotPos.x, slotPos.y, attachments.get(i), (b) -> {
-//                    var stack = ((SlotButton) b).getStack();
-//                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachmentChanged(menu.containerId, stack, getGun()));
-//                }));
-//            }
-//        }
-//        else {
-//            attachmentButtons.clear();
-//        }
-
         if (isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70)) {
             if (!this.mouseGrabbed && (button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
                 this.mouseGrabbed = true;

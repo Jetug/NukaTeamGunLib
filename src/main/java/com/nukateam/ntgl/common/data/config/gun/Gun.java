@@ -51,9 +51,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String AMMO_DATA = "AmmoData";
     public static final String SECONDARY_AMMO = "SecondaryAmmo";
     public static final String MODES = "Modes";
-    protected General general = new General();
+    protected General general = getWeapon();
     protected Melee melee = new Melee();
     protected ThrowableConfig throwable = new ThrowableConfig();
+    protected HashMap<AttackMode, WeaponSettings> modes = new HashMap<>();
     protected Display display = new Display();
     protected Modules modules = new Modules();
     protected HashMap<AnimationType, ResourceLocation> animations = new HashMap<>();
@@ -61,11 +62,10 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     protected LinkedHashMap<ResourceLocation, Fuel> fuel = new LinkedHashMap<>();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
-    protected HashMap<AttackMode, WeaponSettings> modes = new HashMap<>();
 
-    private static WeaponSettings getWeapon(){
-        var gun = new WeaponSettings();
-        gun.general.weaponMode = WeaponMode.NONE;
+    private static General getWeapon(){
+        var gun = new General();
+        gun.weaponMode = WeaponMode.GUN;
         return gun;
     }
 
@@ -145,8 +145,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
         if (tag.contains(MODES, Tag.TAG_COMPOUND)) {
             this.modes = NbtUtils.deserializeMap(tag.getCompound(MODES),
-                    (nbt) -> AttackMode.getType(nbt),
-                    (nbt, s) -> WeaponSettings.create(nbt));
+                    AttackMode::getType,
+                    (nbt, key) -> WeaponSettings.create(nbt.getCompound(key)));
         }
     }
 
@@ -339,19 +339,19 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     public General getGeneral(AttackMode mode) {
         if(mode == AttackMode.PRIMARY)
             return general;
-        else return modes.getOrDefault(mode, getWeapon()).getGeneral();
+        else return modes.getOrDefault(mode, new WeaponSettings()).getGeneral();
     }
 
     public Melee getMelee(AttackMode mode) {
         if(mode == AttackMode.PRIMARY)
             return melee;
-        else return modes.getOrDefault(mode, getWeapon()).getMelee();
+        else return modes.getOrDefault(mode, new WeaponSettings()).getMelee();
     }
 
     public ThrowableConfig getThrowable(AttackMode mode) {
         if(mode == AttackMode.PRIMARY)
             return throwable;
-        else return modes.getOrDefault(mode, getWeapon()).getThrowable();
+        else return modes.getOrDefault(mode, new WeaponSettings()).getThrowable();
     }
 
     private static ResourceLocation prepareTexture(String itemId, ResourceLocation path) {

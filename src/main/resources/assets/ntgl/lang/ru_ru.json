@@ -167,16 +167,21 @@
 
   "gui.ntgl.assemble": "Собрать %s",
   "gui.ntgl.show_remaining": "Показать оставшееся",
+
+  "key.categories.ntgl.armor": "NTGL броня",
+  "key.ntgl.leave": "Выйти из брони",
+
   "key.categories.ntgl": "NTGL Оружие",
-  "button.categories.ntgl": "NTGL Оружие",
   "key.ntgl.reload": "Перезарядить",
   "key.ntgl.unload": "Разрядить",
   "key.ntgl.attachments": "Изменить обвесы",
   "key.ntgl.inspect": "Осмотр оружия",
   "key.ntgl.fire_select": "Переключить режим огня",
   "key.ntgl.ammo_select": "Сменить тип боеприпаса",
-  "key.ntgl.melee": "Ближний бой",
+  "key.ntgl.melee": "Дополнительная атака",
+  "key.ntgl.alt": "Альтернативная атака",
 
+  "button.categories.ntgl": "NTGL Оружие",
   "button.controls.ntgl": "NTGL Оружие",
   "ntgl.button.shoot": "Стрельба из оружия",
   "ntgl.button.aim": "Прицелиться",
@@ -199,7 +204,4 @@
   "ntgl.chat.install_configured": "Install %s to access config options",
 
   "item.ntgl.classic10mm": "Кольт 6520",
-
-  "key.ntgl.leave": "Выйти из брони",
-  "key.categories.ntgl.armor": "Управление бронёй"
 }
