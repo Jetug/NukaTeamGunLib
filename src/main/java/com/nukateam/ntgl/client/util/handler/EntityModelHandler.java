@@ -23,7 +23,7 @@ public class EntityModelHandler {
         PoseStack poseStack = event.getPoseStack();
         Player player = event.getPlayer();
         ItemStack heldItem = player.getOffhandItem();
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof WeaponItem)
+        if(!heldItem.isEmpty() && heldItem.getItem() instanceof IWeapon)
         {
             poseStack.pushPose();
             Gun gun = ((WeaponItem) heldItem.getItem()).getModifiedConfig(heldItem);

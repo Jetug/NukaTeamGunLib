@@ -12,6 +12,7 @@ import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.data.Pos2I;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -93,7 +94,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     public void containerTick() {
         super.containerTick();
         if (this.minecraft != null && this.minecraft.player != null) {
-            if (!(this.minecraft.player.getMainHandItem().getItem() instanceof WeaponItem)) {
+            if (!(this.minecraft.player.getMainHandItem().getItem() instanceof IWeapon)) {
                 Minecraft.getInstance().setScreen(null);
             }
         }

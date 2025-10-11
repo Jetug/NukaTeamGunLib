@@ -61,7 +61,7 @@ public class ClientMeleeHandler {
         var doMelee = ModSyncedDataKeys.getDoMelee(hand);
         assert gun != null && entity != null;
 
-        if (gun.getItem() instanceof WeaponItem
+        if (gun.getItem() instanceof IWeapon
                 && GunModifierHelper.canMelee(data)
                 && !TRACKER_MAP.containsKey(Pair.of(entity, hand))
                 && !doMelee.getValue(entity))
@@ -80,11 +80,11 @@ public class ClientMeleeHandler {
             var mainHandItem = player.getMainHandItem();
             var offhandItem = player.getOffhandItem();
 
-            if (mainHandItem.getItem() instanceof WeaponItem && isKeyAttackDown()) {
+            if (mainHandItem.getItem() instanceof IWeapon && isKeyAttackDown()) {
                 handleAutoFire(player, mainHandItem, InteractionHand.MAIN_HAND);
             }
 
-            if (offhandItem.getItem() instanceof WeaponItem && canRenderInOffhand(player) && isUseKeyDown()) {
+            if (offhandItem.getItem() instanceof IWeapon && canRenderInOffhand(player) && isUseKeyDown()) {
                 handleAutoFire(player, offhandItem, InteractionHand.OFF_HAND);
             }
         }

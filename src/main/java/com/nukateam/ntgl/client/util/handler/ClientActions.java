@@ -21,7 +21,7 @@ public class ClientActions {
         var mainGun = player.getMainHandItem();
         var offGun = player.getOffhandItem();
 
-        if((mainGun.getItem() instanceof WeaponItem || offGun.getItem() instanceof WeaponItem
+        if((mainGun.getItem() instanceof IWeapon || offGun.getItem() instanceof IWeapon
                 || mainGun.getItem() instanceof IThrowable || offGun.getItem() instanceof IThrowable)
                 && !ClientHandler.isInspecting()){
             ClientHandler.resetInspectionTimer();

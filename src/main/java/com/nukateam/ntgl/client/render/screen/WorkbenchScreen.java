@@ -3,6 +3,7 @@ package com.nukateam.ntgl.client.render.screen;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMelee;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IMeleeWeapon;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
 import com.nukateam.ntgl.common.data.GunData;
@@ -444,7 +445,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             var output = recipe.getItem();
             if(output == null) continue;
 
-            if (output.getItem() instanceof WeaponItem) {
+            if (output.getItem() instanceof IWeapon) {
                 weapons.add(recipe);
             } else if (output.getItem() instanceof IAttachment) {
                 attachments.add(recipe);
@@ -466,7 +467,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
 
             for (var recipe : weapons){
                 var weaponStack = recipe.getItem();
-                var gunItem = (WeaponItem)weaponStack.getItem();
+                var gunItem = (IWeapon)weaponStack.getItem();
                 var category = gunItem.getModifiedConfig(weaponStack).getGeneral().getCategory();
                 var buff = categoryRecipes.getOrDefault(category, new ArrayList<>());
 

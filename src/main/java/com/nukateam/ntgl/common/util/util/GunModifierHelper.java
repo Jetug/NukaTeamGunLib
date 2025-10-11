@@ -59,7 +59,7 @@ public class GunModifierHelper {
 
     public static boolean isGun(ItemStack data){
         var gunItem = data.getItem();
-        return gunItem instanceof WeaponItem;
+        return gunItem instanceof IWeapon;
     }
 
     public static Gun getGun(ItemStack stack) {
@@ -110,7 +110,7 @@ public class GunModifierHelper {
         var finalMaxAmmo = new AtomicInteger(getGeneral(data).getMaxAmmo());
         var config = GunStateHelper.getProjectileConfig(data);
 
-        if (data != null && config != null && data.gun.getItem() instanceof WeaponItem) {
+        if (data != null && config != null && data.gun.getItem() instanceof IWeapon) {
             if (GunStateHelper.getProjectileConfig(data).isMagazineMode()) {
                 var id = GunStateHelper.getCurrentAmmo(data);
                 var item = ITEMS.getValue(id.getId());

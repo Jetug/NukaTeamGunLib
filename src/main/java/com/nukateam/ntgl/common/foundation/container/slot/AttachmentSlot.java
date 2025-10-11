@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.foundation.container.slot;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
@@ -42,7 +43,7 @@ public class AttachmentSlot extends Slot {
 
     @Override
     public boolean isActive() {
-        if (!(this.weapon.getItem() instanceof WeaponItem)) {
+        if (!(this.weapon.getItem() instanceof IWeapon)) {
             return false;
         }
 
@@ -54,7 +55,7 @@ public class AttachmentSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        if (!(this.weapon.getItem() instanceof WeaponItem item)) {
+        if (!(this.weapon.getItem() instanceof IWeapon item)) {
             return false;
         }
 

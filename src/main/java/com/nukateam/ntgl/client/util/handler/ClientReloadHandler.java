@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
@@ -71,12 +72,12 @@ public class ClientReloadHandler {
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
 
-        if (mainHandItem.getItem() instanceof WeaponItem
+        if (mainHandItem.getItem() instanceof IWeapon
                 && !GunModifierHelper.isWeaponFull(new GunData(mainHandItem, player))
                 && !isReloading(player, InteractionHand.MAIN_HAND)){
             setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
         }
-        else if (offhandItem.getItem() instanceof WeaponItem
+        else if (offhandItem.getItem() instanceof IWeapon
                 && GunModifierHelper.canRenderInOffhand(player)
                 && !GunModifierHelper.isWeaponFull(new GunData(offhandItem, player))
                 && !isReloading(player, InteractionHand.OFF_HAND)){
@@ -92,7 +93,7 @@ public class ClientReloadHandler {
         var stack = player.getItemInHand(hand);
 
         if (reloading) {
-            if (stack.getItem() instanceof WeaponItem) {
+            if (stack.getItem() instanceof IWeapon) {
                 var isAmmoIgnored = GunStateHelper.isAmmoIgnored(stack);
                 var hasAmmo = InventoryUtil.hasAmmo(player, stack);
                 var data = new GunData(stack, player);

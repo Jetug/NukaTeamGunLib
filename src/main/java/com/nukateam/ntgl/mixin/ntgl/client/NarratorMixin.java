@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.mixin.ntgl.client;
 
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.client.GameNarrator;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +14,7 @@ public class NarratorMixin {
     @Inject(method = "isActive()Z", at = @At(value = "HEAD"), cancellable = true)
     void active(CallbackInfoReturnable<Boolean> cir) {
         var player = Minecraft.getInstance().player;
-        if(player != null && player.getOffhandItem().getItem() instanceof WeaponItem)
+        if(player != null && player.getOffhandItem().getItem() instanceof IWeapon)
             cir.setReturnValue(false);
     }
 }

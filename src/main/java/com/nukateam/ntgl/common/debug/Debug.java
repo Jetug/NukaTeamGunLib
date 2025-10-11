@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -29,7 +30,7 @@ import java.util.function.Supplier;
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class Debug {
-    private static final Map<Item, Gun> GUNS = new HashMap<>();
+    private static final Map<IWeapon, Gun> GUNS = new HashMap<>();
     private static final Map<Item, Scope> SCOPES = new HashMap<>();
     private static boolean forceAim = false;
 
@@ -43,8 +44,8 @@ public class Debug {
         });
     }
 
-    public static Gun getGun(WeaponItem item) {
-        return GUNS.computeIfAbsent(item, item1 -> item.getGun().copy());
+    public static Gun getGun(IWeapon item) {
+        return GUNS.computeIfAbsent(item, item1 -> item.getConfig().copy());
     }
 
     public static Scope getScope(ScopeItem item) {
@@ -69,8 +70,8 @@ public class Debug {
         public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                 var heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
-                if (heldItem.getItem() instanceof WeaponItem weaponItem) {
-                    widgets.add(Pair.of(Component.translatable(weaponItem.getDescriptionId()), () -> new DebugButton(Component.literal("Edit"), btn -> {
+                if (heldItem.getItem() instanceof IWeapon weaponItem) {
+                    widgets.add(Pair.of(Component.translatable(heldItem.getDescriptionId()), () -> new DebugButton(Component.literal("Edit"), btn -> {
                         Minecraft.getInstance().setScreen(ClientHandler.createEditorScreen(getGun(weaponItem)));
                     })));
                 }

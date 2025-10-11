@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.mixin.ntgl.common;
 
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -21,7 +22,7 @@ public class EndPortalBlockMixin {
     private void beforeChangeDimension(BlockState state, Level worldIn, BlockPos pos, Entity entity, CallbackInfo ci) {
         if (worldIn.dimension() == Level.END && entity instanceof ItemEntity) {
             var stack = ((ItemEntity) entity).getItem();
-            if (stack.getItem() instanceof WeaponItem) {
+            if (stack.getItem() instanceof IWeapon) {
                 var gun = stack.copy();
                 gun.getOrCreateTag().putFloat("Scale", 2.0F);
                 ((ItemEntity) entity).setItem(gun);

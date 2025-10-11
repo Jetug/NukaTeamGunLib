@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.PacketHandler;
@@ -353,7 +354,7 @@ public class ReloadTracker {
         var gunItem = entity.getItemInHand(arm).getItem();
 
         if (!RELOAD_TRACKER_MAP.containsKey(entity)) {
-            if (!(gunItem instanceof WeaponItem)) {
+            if (!(gunItem instanceof IWeapon)) {
                 reloadKey.setValue(entity, false);
                 return true;
             }
@@ -374,7 +375,7 @@ public class ReloadTracker {
         var oppositeStack = entity.getItemInHand(oppositeHand);
 
         if (hand == InteractionHand.MAIN_HAND
-                && oppositeStack.getItem() instanceof WeaponItem
+                && oppositeStack.getItem() instanceof IWeapon
                 && !GunModifierHelper.isWeaponFull(new GunData(oppositeStack, entity))) {
             PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) entity, new S2CMessageReload(true, oppositeHand));
         }

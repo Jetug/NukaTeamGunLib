@@ -115,19 +115,19 @@ public class ClientShootingHandler {
         if (event.isAttack()) {
             var heldItem = player.getMainHandItem();
 
-            if (heldItem.getItem() instanceof WeaponItem) {
+            if (heldItem.getItem() instanceof IWeapon) {
                 cancelSwing(event);
             }
         } else if (event.isUseItem()) {
             var mainHandItem = player.getMainHandItem();
             var offhandItem = player.getOffhandItem();
 
-            if (offhandItem.getItem() instanceof WeaponItem && canRenderInOffhand(player)) {
+            if (offhandItem.getItem() instanceof IWeapon && canRenderInOffhand(player)) {
                 cancelSwing(event);
                 return;
             }
 
-            if (mainHandItem.getItem() instanceof WeaponItem) {
+            if (mainHandItem.getItem() instanceof IWeapon) {
                 if (event.getHand() == InteractionHand.OFF_HAND) {
                     // Allow shields to be used if weapon is one-handed
                     if (offhandItem.getItem() == Items.SHIELD) {
@@ -199,7 +199,7 @@ public class ClientShootingHandler {
 
 //            if (player != null) {
 //                var mainHandItem = player.getMainHandItem();
-//                if (mainHandItem.getItem() instanceof WeaponItem && (GunStateHelper.hasAmmo(mainHandItem) || player.isCreative())) {
+//                if (mainHandItem.getItem() instanceof IWeapon && (GunStateHelper.hasAmmo(mainHandItem) || player.isCreative())) {
 //                    var shooting = isKeyAttackDown();
 //                    if (Ntgl.controllableLoaded) {
 //                        shooting |= ControllerHandler.isShooting();
@@ -228,7 +228,7 @@ public class ClientShootingHandler {
     public float getCooldownPercent(LivingEntity entity, InteractionHand hand) {
         var heldItem = entity.getItemInHand(hand);
 
-        if (heldItem.getItem() instanceof WeaponItem weaponItem) {
+        if (heldItem.getItem() instanceof IWeapon) {
             var data = new GunData(heldItem, entity);
             var rate = GunModifierHelper.getRate(data);
             var cooldown = getCooldown(entity, hand);
@@ -258,7 +258,7 @@ public class ClientShootingHandler {
         var shooter = data.shooter;
         var heldItem = data.gun;
 
-        if (heldItem.getItem() instanceof WeaponItem
+        if (heldItem.getItem() instanceof IWeapon
                 && (GunStateHelper.hasAmmo(heldItem) /*|| (shooter instanceof Player player && player.isCreative())*/)
                 && isGunMode(data)
                 && !shooter.isSpectator()) {
@@ -394,7 +394,7 @@ public class ClientShootingHandler {
 //    public void renderTick(TickEvent.RenderTickEvent evt) {
 //        // Upper is to handle rendering, bellow is handling animation calls and burst tracking
 //
-//        if (Minecraft.getInstance().player == null || !Minecraft.getInstance().player.isAlive() || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof WeaponItem)
+//        if (Minecraft.getInstance().player == null || !Minecraft.getInstance().player.isAlive() || Minecraft.getInstance().player.getMainHandItem().getItem() instanceof IWeapon)
 //            return;
 //        GunAnimationController controller = GunAnimationController.fromItem(Minecraft.getInstance().player.getMainHandItem().getItem());
 //        if (controller == null)

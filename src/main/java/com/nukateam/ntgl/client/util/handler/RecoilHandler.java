@@ -4,6 +4,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import net.minecraft.client.Minecraft;
@@ -99,7 +100,7 @@ public class RecoilHandler {
             return;
 
         var heldItem = event.getItemStack();
-        if (!(heldItem.getItem() instanceof WeaponItem weaponItem))
+        if (!(heldItem.getItem() instanceof IWeapon weaponItem))
             return;
 
         var modifiedGun = weaponItem.getModifiedConfig(heldItem);

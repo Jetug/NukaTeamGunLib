@@ -206,7 +206,7 @@ public class GunRenderingHandler {
         // Test if the gun has a scope
         var player = Objects.requireNonNull(Minecraft.getInstance().player);
         var heldItem = player.getMainHandItem();
-        if (!(heldItem.getItem() instanceof WeaponItem weaponItem))
+        if (!(heldItem.getItem() instanceof IWeapon weaponItem))
             return;
 
         var modifiedGun = weaponItem.getModifiedConfig(heldItem);
@@ -265,7 +265,7 @@ public class GunRenderingHandler {
             {
                 int offset = isRight ? 1 : -1;
 
-                if (heldItem.getItem() instanceof WeaponItem weaponItem) {
+                if (heldItem.getItem() instanceof IWeapon weaponItem) {
                     var modifiedGun = weaponItem.getModifiedConfig(heldItem);
                     var pos = model.getTransforms().firstPersonRightHand.translation;
                     this.applyIronSightTransforms(event, poseStack, model, isRight, heldItem, modifiedGun);
@@ -690,7 +690,7 @@ public class GunRenderingHandler {
             return;
 
         var heldItem = mc.player.getMainHandItem();
-        var targetAngle = heldItem.getItem() instanceof WeaponItem || !Config.CLIENT.display.restrictCameraRollToWeapons.get() ? mc.player.input.leftImpulse : 0F;
+        var targetAngle = heldItem.getItem() instanceof IWeapon || !Config.CLIENT.display.restrictCameraRollToWeapons.get() ? mc.player.input.leftImpulse : 0F;
         var speed = mc.player.input.leftImpulse != 0 ? 0.1F : 0.15F;
         this.immersiveRoll = Mth.lerp(speed, this.immersiveRoll, targetAngle);
 

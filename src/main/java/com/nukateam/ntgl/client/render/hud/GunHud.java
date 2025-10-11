@@ -80,7 +80,7 @@ public class GunHud implements IGuiOverlay {
             var heldItem = player.getItemInHand(hand);
             var x = hand == InteractionHand.OFF_HAND ? OFFHAND_X_OFFSET : width;
 
-            if (heldItem.getItem() instanceof WeaponItem && shouldRender(hand, player)) {
+            if (heldItem.getItem() instanceof IWeapon && shouldRender(hand, player)) {
                 updateCache(cache, player, heldItem);
                 if (!MinecraftForge.EVENT_BUS.post(new GunHudEvent(this, hand, graphics, cache, GunHudEvent.Phase.START))) {
                     renderAmmoCounter(graphics, cache, heldItem, x, height);

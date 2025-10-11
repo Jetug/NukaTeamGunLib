@@ -4,6 +4,7 @@ import com.nukateam.ntgl.client.settings.GunOptions;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -26,7 +27,7 @@ public class MouseHandlerMixin {
 
         if (mc.player != null && !mc.player.getMainHandItem().isEmpty() && mc.options.getCameraType() == CameraType.FIRST_PERSON) {
             var heldItem = mc.player.getMainHandItem();
-            if (heldItem.getItem() instanceof WeaponItem weaponItem) {
+            if (heldItem.getItem() instanceof IWeapon weaponItem) {
                 if (AimingHandler.get().isAiming() && !ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player)) {
                     var modifiedGun = weaponItem.getModifiedConfig(heldItem);
                     if (modifiedGun.getModules().getZoom() != null) {

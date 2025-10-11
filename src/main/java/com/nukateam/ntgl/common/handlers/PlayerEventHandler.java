@@ -43,7 +43,7 @@ public class PlayerEventHandler {
             if (movementSpeed != null) {
                 movementSpeed.removeModifier(SPEED_MODIFIER_ID);
 
-                if (heldItem.getItem() instanceof WeaponItem) {
+                if (heldItem.getItem() instanceof IWeapon) {
                     movementSpeed.removeModifier(SPEED_MODIFIER_ID);
                     movementSpeed.addTransientModifier(new AttributeModifier(
                             SPEED_MODIFIER_ID,

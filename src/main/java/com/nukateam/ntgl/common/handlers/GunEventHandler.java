@@ -5,6 +5,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.foundation.init.NtglGameEvents;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.event.*;
@@ -40,7 +41,7 @@ public class GunEventHandler {
         var entity = event.getEntity();
         var heldItem = entity.getItemInHand(event.getHand());
 
-        if (heldItem.getItem() instanceof WeaponItem) {
+        if (heldItem.getItem() instanceof IWeapon) {
             if(event.getEntity() instanceof Player player && EquipTracker.isEquiping(player, event.getHand())){
                 event.setCanceled(true);
             }
@@ -62,7 +63,7 @@ public class GunEventHandler {
         var heldItem = entity.getItemInHand(event.getHand());
         var tag = heldItem.getTag();
 
-        if (heldItem.getItem() instanceof WeaponItem) {
+        if (heldItem.getItem() instanceof IWeapon) {
             if (heldItem.isDamageableItem() && tag != null) {
                 if (GunStateHelper.hasAmmo(heldItem)) {
                     damageGun(heldItem, level, entity);

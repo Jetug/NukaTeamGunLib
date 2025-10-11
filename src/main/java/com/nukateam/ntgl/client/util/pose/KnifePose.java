@@ -7,6 +7,7 @@ import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.IHeldAnimation;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
 import net.minecraft.client.Minecraft;
@@ -33,7 +34,7 @@ public class KnifePose implements IHeldAnimation {
         var flip = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT;
         var stack = entity.getItemInHand(InteractionHand.MAIN_HAND);
         var right = hand == InteractionHand.MAIN_HAND;
-        var isNotOneHanded = stack.getItem() instanceof WeaponItem
+        var isNotOneHanded = stack.getItem() instanceof IWeapon
                 && !GunModifierHelper.getGripType(new GunData(stack, entity)).isOneHanded();
 
         if(!right && isNotOneHanded)

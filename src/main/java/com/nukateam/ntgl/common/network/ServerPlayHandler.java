@@ -92,7 +92,7 @@ public class ServerPlayHandler {
 
         var heldItem = shooter.getItemInHand(hand);
 
-        if (heldItem.getItem() instanceof WeaponItem weaponItem
+        if (heldItem.getItem() instanceof IWeapon weaponItem
                 && (GunStateHelper.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
             var modifiedGun = weaponItem.getModifiedConfig(heldItem);
             var data = new GunData(heldItem, shooter).setWeaponAction(message.getMode());
@@ -208,7 +208,7 @@ public class ServerPlayHandler {
                 }
 
                 if (shooter instanceof Player player)
-                    player.awardStat(Stats.ITEM_USED.get(weaponItem));
+                    player.awardStat(Stats.ITEM_USED.get(heldItem.getItem()));
 
                 MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
             }
@@ -221,7 +221,7 @@ public class ServerPlayHandler {
     public static void handlePreFireSound(C2SMessagePreFireSound message, ServerPlayer player) {
         Level world = player.level();
         ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
-        if (heldItem.getItem() instanceof WeaponItem item && (GunStateHelper.hasAmmo(heldItem) || player.isCreative())) {
+        if (heldItem.getItem() instanceof IWeapon item && (GunStateHelper.hasAmmo(heldItem) || player.isCreative())) {
             Gun modifiedGun = item.getModifiedConfig(heldItem);
             ResourceLocation fireSound = getPreFireSound(heldItem, modifiedGun);
             if (fireSound != null) {
@@ -297,7 +297,7 @@ public class ServerPlayHandler {
 
     public static void handleUnload(ServerPlayer player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
-        if (stack.getItem() instanceof WeaponItem) {
+        if (stack.getItem() instanceof IWeapon) {
             unloadGun(player, stack);
         }
     }
@@ -310,7 +310,7 @@ public class ServerPlayHandler {
     }
 
     private static void unloadAmmo(ServerPlayer player, ItemStack stack) {
-        if (stack.getItem() instanceof WeaponItem) {
+        if (stack.getItem() instanceof IWeapon) {
             var tag = stack.getTag();
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
                 int count = tag.getInt(Tags.AMMO_COUNT);
@@ -331,7 +331,7 @@ public class ServerPlayHandler {
     }
 
     private static void unloadMagazine(ServerPlayer player, ItemStack stack) {
-        if (stack.getItem() instanceof WeaponItem) {
+        if (stack.getItem() instanceof IWeapon) {
             var tag = stack.getTag();
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
                 int count = tag.getInt(Tags.AMMO_COUNT);
@@ -377,7 +377,7 @@ public class ServerPlayHandler {
 
     public static void handleAttachments(ServerPlayer player) {
         var heldItem = player.getMainHandItem();
-        if (heldItem.getItem() instanceof WeaponItem && ((WeaponItem)heldItem.getItem()).getModifiedConfig(heldItem).getModules().attachmentScreen()) {
+        if (heldItem.getItem() instanceof IWeapon && ((WeaponItem)heldItem.getItem()).getModifiedConfig(heldItem).getModules().attachmentScreen()) {
             NetworkHooks.openScreen(player, new SimpleMenuProvider((windowId, playerInventory, player1) ->
                     new AttachmentContainer(windowId, playerInventory, heldItem), Component.translatable("container.ntgl.attachments")));
         }
@@ -425,7 +425,7 @@ public class ServerPlayHandler {
     public static void handleMeleeAttack(C2SMessageMeleeAttack message, ServerPlayer player) {
         var stack = player.getItemInHand(message.getHand());
         var gunData = new GunData(stack, player).setWeaponAction(message.getAction());
-        if(stack.getItem() instanceof WeaponItem
+        if(stack.getItem() instanceof IWeapon
                 && GunModifierHelper.canMelee(gunData)
                 && !EquipTracker.isEquiping(player, message.getHand())) {
             var heldItem = player.getItemInHand(message.getHand());
