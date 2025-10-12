@@ -45,6 +45,11 @@
         "maxTargets": 1,
         "knockback": 0.4
       }
+    },
+    "ntgl:alternative": {
+      "general": {
+        "weaponMode": "ntgl:throwable"
+      }
     }
   },
   "fuel": {

@@ -55,8 +55,7 @@ public class ClientThrowableHandler {
 
     public static void addTracker(GunData gunData, InteractionHand hand) {
         var player = gunData.shooter;
-        var heldItem = player.getItemInHand(hand);
-        if(isThrowable(heldItem, player) && !TRACKER_MAP.containsKey(hand)){
+        if(isThrowable(gunData) && !TRACKER_MAP.containsKey(hand)){
             TRACKER_MAP.put(hand, new Tracker(player, hand));
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.HOLD, hand));
         }
@@ -80,23 +79,25 @@ public class ClientThrowableHandler {
 
         if (event.isAttack()) {
             var heldItem = player.getMainHandItem();
+            var gunData = new GunData(heldItem, player).setWeaponAction(AttackMode.PRIMARY);
 
-            if (isThrowable(heldItem, player)) {
+            if (isThrowable(gunData)) {
                 event.setCanceled(true);
                 event.setSwingHand(false);
             }
         } else if (event.isUseItem()) {
             var offhandItem = player.getOffhandItem();
+            var gunData = new GunData(offhandItem, player).setWeaponAction(AttackMode.PRIMARY);
 
-            if (isThrowable(offhandItem, player) && canRenderInOffhand(player)) {
+            if (isThrowable(gunData) && canRenderInOffhand(player)) {
                 event.setCanceled(true);
                 event.setSwingHand(false);
             }
         }
     }
 
-    private static boolean isThrowable(ItemStack heldItem, LivingEntity player) {
-        return heldItem.getItem() instanceof IThrowable && GunModifierHelper.isThrowable(new GunData(heldItem, player));
+    private static boolean isThrowable(GunData gunData) {
+        return gunData.gun != null && gunData.gun.getItem() instanceof IThrowable && GunModifierHelper.isThrowable(gunData);
     }
 
     private static class Tracker {

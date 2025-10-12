@@ -60,10 +60,10 @@ public class ClientActions {
                 ClientShootingHandler.get().fire(gunData);
             }
             else if(weaponMode == WeaponMode.MELEE) {
-                ClientMeleeHandler.addTracker(gunData, InteractionHand.MAIN_HAND);
+                ClientMeleeHandler.addTracker(gunData, hand);
             }
             else if(weaponMode == WeaponMode.THROWABLE) {
-                ClientThrowableHandler.addTracker(gunData, InteractionHand.MAIN_HAND);
+                ClientThrowableHandler.addTracker(gunData, hand);
             }
         }
     }

@@ -63,8 +63,6 @@ public class GunModifierHelper {
 
     public static Gun getGun(ItemStack stack) {
         var gunItem = (IWeapon) stack.getItem();
-        var config = gunItem.getConfig();
-        var s = config;
         var mod = gunItem.getModifiedConfig(stack);
         return mod;
     }
@@ -90,7 +88,7 @@ public class GunModifierHelper {
     }
 
     public static boolean isThrowable(GunData data) {
-        return GunModifierHelper.getGun(data.gun).getGeneral().getWeaponMode() == WeaponMode.THROWABLE;
+        return getGeneral(data).getWeaponMode() == WeaponMode.THROWABLE;
     }
 
 //    public static ArrayList<AttachmentType> getSortedAttachmentTypes(GunData data) {
