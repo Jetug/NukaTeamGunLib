@@ -62,7 +62,10 @@ public class InputHandler {
                 ClientActions.switchAmmo(hand, player);
             }
             if (KeyBinds.KEY_MELEE.consumeClick()) {
-                ClientActions.meleeAttack(player);
+                ClientActions.meleeAttack();
+            }
+            if (KeyBinds.KEY_ALT_ATTACK.consumeClick()) {
+                ClientActions.alternativeAttack();
             }
         }
     }

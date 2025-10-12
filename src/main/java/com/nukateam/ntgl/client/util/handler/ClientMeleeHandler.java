@@ -32,14 +32,10 @@ import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canRenderInOf
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientMeleeHandler {
     private static final Map<Pair<LivingEntity, InteractionHand>, ClientMeleeHandler> TRACKER_MAP = new HashMap<>();
-    private final InteractionHand arm;
     private int delayTick;
     private int cooldownTick;
 
-    private ClientMeleeHandler(LivingEntity entity, InteractionHand arm) {
-        this.arm = arm;
-        var stack = entity.getItemInHand(arm);
-        var data = new GunData(stack, entity);
+    private ClientMeleeHandler(GunData data) {
         this.cooldownTick = GunModifierHelper.getMeleeCooldown(data);
         this.delayTick = GunModifierHelper.getMeleeDelay(data);
     }
@@ -65,7 +61,7 @@ public class ClientMeleeHandler {
                 && !TRACKER_MAP.containsKey(Pair.of(entity, hand))
                 && !doMelee.getValue(entity))
         {
-            TRACKER_MAP.put(Pair.of(entity, hand), new ClientMeleeHandler(entity, hand));
+            TRACKER_MAP.put(Pair.of(entity, hand), new ClientMeleeHandler(data));
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageMeleeAttack(hand, data.weaponAction));
         }
     }

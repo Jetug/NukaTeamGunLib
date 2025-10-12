@@ -7,7 +7,7 @@
     "maxAmmo": 6,
     "damage": 12.0,
     "reloadTime": 50,
-    "equipTime": 60,
+    "equipTime": 15,
     "reloadAmount": 1,
     "recoilAngle": 7.0,
     "recoilKick": 0.4,
@@ -31,7 +31,7 @@
         "weaponMode": "ntgl:none"
       }
     },
-    "ntgl:attack": {
+    "ntgl:additional": {
       "general": {
         "weaponMode": "ntgl:melee"
       },

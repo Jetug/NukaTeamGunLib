@@ -342,21 +342,6 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return animation;
     }
 
-//    protected RawAnimation getMeleeAnimation(AnimationState<GunAnimator> event) {
-//        if(animationHelper.hasAnimation(MELEE_END)){
-//            var animation = begin()
-//                    .then(getGunAnim(MELEE), PLAY_ONCE)
-//                    .then(getGunAnim(MELEE_END), LOOP);
-//            animationHelper.syncAnimation(event, meleeDelay + meleeCooldown, MELEE, MELEE_END);
-//            return animation;
-//        }
-//        else {
-//            var animation = begin().then(getGunAnim(MELEE), HOLD_ON_LAST_FRAME);
-//            animationHelper.syncAnimation(event, MELEE, meleeDelay);
-//            return animation;
-//        }
-//    }
-
     protected RawAnimation getMeleeDelayAnimation(AnimationState<GunAnimator> event) {
             var animation = playGunAnim(MELEE, LOOP);
             animationHelper.syncAnimation(event, MELEE, meleeDelay);

@@ -10,6 +10,7 @@ import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageHandAction;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 
@@ -38,10 +39,21 @@ public class ClientActions {
         }
     }
 
-    public static void meleeAttack(LocalPlayer player) {
-        var weapon = player.getMainHandItem();
+    public static void meleeAttack() {
+        doAttack(InteractionHand.MAIN_HAND, AttackMode.ADDITIONAL);
+    }
+
+    public static void alternativeAttack() {
+        doAttack(InteractionHand.MAIN_HAND, AttackMode.ALTERNATIVE);
+    }
+
+    public static void doAttack(InteractionHand hand, AttackMode mode) {
+        assert Minecraft.getInstance().player != null;
+        var player = Minecraft.getInstance().player;
+        var weapon = player.getItemInHand(hand);
+
         if(weapon.getItem() instanceof IWeapon){
-            var gunData = new GunData(weapon, player).setWeaponAction(AttackMode.ATTACK);
+            var gunData = new GunData(weapon, player).setWeaponAction(mode);
             var weaponMode = GunModifierHelper.getWeaponMode(gunData);
 
             if(weaponMode == WeaponMode.GUN) {
