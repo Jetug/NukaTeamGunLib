@@ -5,7 +5,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.handler.ClientEquipHandler;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;

@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -50,7 +50,7 @@ public class RecoilHandler {
             return;
 
         var heldItem = event.getStack();
-        var gunItem = (WeaponItem) heldItem.getItem();
+        var gunItem = (IWeapon) heldItem.getItem();
         var modifiedGun = gunItem.getModifiedConfig(heldItem);
         var data = new GunData(heldItem, event.getEntity());
         var recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(data);

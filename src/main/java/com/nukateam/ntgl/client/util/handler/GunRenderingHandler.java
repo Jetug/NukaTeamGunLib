@@ -179,7 +179,7 @@ public class GunRenderingHandler {
         this.sprintCooldown = 20; //TODO make a config option
 
         var heldItem = event.getStack();
-        var gunItem = (WeaponItem) heldItem.getItem();
+        var gunItem = (IWeapon) heldItem.getItem();
         var modifiedGun = gunItem.getModifiedConfig(heldItem);
         if (modifiedGun.getDisplay().getFlash() != null) {
             this.showMuzzleFlashForPlayer(Minecraft.getInstance().player.getId());
@@ -603,59 +603,6 @@ public class GunRenderingHandler {
             poseStack.popPose();
         }
     }
-
-//    private void renderGun(@Nullable LivingEntity entity, ItemDisplayContext transformType, ItemStack stack,
-//                           PoseStack poseStack, MultiBufferSource renderTypeBuffer, int light, float partialTicks) {
-//
-//        try {
-//            var gun = (WeaponItem) stack.getItem();
-//            if (!bannedTransforms.contains(transformType))
-//                animatedGunRenderer.renderByItem(
-//                        stack,
-//                        transformType,
-//                        poseStack,
-//                        renderTypeBuffer,
-//                        light,
-//                        PACKED_OVERLAY);
-//            else staticGunRenderer.render(
-//                        poseStack, new StaticGunItem(gun.getName()),
-//                        renderTypeBuffer,
-//                        null,
-//                        null,
-//                        light);
-//
-//        } catch (Exception ignored) {}
-//    }
-
-//    public static ArrayList<String> getAttachmentNames(ItemStack stack){
-//        var attachments = getAttachments(stack);
-//        var result = new ArrayList<String>();
-//
-//        for (var attachmentStack : attachments){
-//            if(attachmentStack.getItem() instanceof AttachmentItem<?> attachmentItem){
-//                result.add(attachmentItem.getName());
-//            }
-//        }
-//
-//        return result;
-//    }
-//
-//    public static ArrayList<ItemStack> getAttachments(ItemStack stack){
-//        var modifiedGun = ((WeaponItem) stack.getItem()).getModifiedConfig(stack);
-//        var gunTag = stack.getOrCreateTag();
-//        var attachments = gunTag.getCompound("Attachments");
-//        var result = new ArrayList<ItemStack>();
-//
-//        for (var tagKey : attachments.getAllKeys()) {
-//            var type = AttachmentType.getType(tagKey);
-//            if (type != null && modifiedGun.canAttachType(type, modifiedGun)) {
-//                var attachmentStack = Gun.getAttachmentItem(type, stack);
-//                result.add(attachmentStack);
-//            }
-//        }
-//
-//        return result;
-//    }
 
     /**
      * A temporary hack to get the equip progress until Forge fixes the issue.

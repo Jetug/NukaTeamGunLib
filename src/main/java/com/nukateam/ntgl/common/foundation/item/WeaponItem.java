@@ -13,10 +13,8 @@ import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
-import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.render.renderers.weapon.*;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.item.interfaces.*;
 import com.nukateam.ntgl.modules.enchantment.EnchantmentTypes;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
@@ -61,8 +59,8 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         this.modifiers = modifiers;
     }
 
-    @Nullable
-    public IGunModifier[] getGunModifiers() {
+    @Override
+    public IGunModifier[] getModifiers() {
         return modifiers;
     }
 

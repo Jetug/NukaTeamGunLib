@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.container.slot;
 
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -43,12 +43,11 @@ public class AttachmentSlot extends Slot {
 
     @Override
     public boolean isActive() {
-        if (!(this.weapon.getItem() instanceof IWeapon)) {
+        if (!(this.weapon.getItem() instanceof IWeapon item)) {
             return false;
         }
 
         var gun = getGun(weapon);
-        var item = (WeaponItem) this.weapon.getItem();
         var modifiedGun = item.getModifiedConfig(this.weapon);
         return modifiedGun.canAttachType(this.type, gun);
     }

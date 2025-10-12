@@ -8,7 +8,7 @@ import com.nukateam.ntgl.common.data.config.gun.General;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.holders.*;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
@@ -45,7 +45,6 @@ public class GunModifierHelper {
 
     public static boolean isWeaponFull(GunData data) {
         var tag = data.gun.getOrCreateTag();
-        var gun = ((WeaponItem)data.gun.getItem()).getModifiedConfig(data.gun);
         return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(data);
     }
 
@@ -552,15 +551,13 @@ public class GunModifierHelper {
             for (var modifier : modifiers) {
                 consumer.accept(modifier);
             }
-//            applyModifiers(consumer, modifiers);
         }
 
-        var gunItem = (WeaponItem) gun.getItem();
+        var gunItem = (IWeapon) gun.getItem();
 
-        for (var modifier : gunItem.getGunModifiers()) {
+        for (var modifier : gunItem.getModifiers()) {
             consumer.accept(modifier);
         }
-//        applyModifiers(consumer, gunItem.getGunModifiers());
     }
 
     private static IGunModifier[] getAttachmentModifiers(ItemStack attachmentItem) {

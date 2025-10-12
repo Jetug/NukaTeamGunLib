@@ -16,7 +16,6 @@ import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Animations;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
@@ -66,7 +65,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected Cycler barrelCycler = new Cycler(1, getBarrelAmount());
     protected Cycler chamberCycler = null;
 
-    protected WeaponItem currentGun = null;
+    protected IWeapon currentGun = null;
     protected int rate;
     protected int equipTime;
     protected int meleeDelay;
@@ -160,8 +159,8 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return renderer.getRenderEntity();
     }
 
-    protected WeaponItem getGunItem() {
-        return (WeaponItem) getStack().getItem();
+    protected IWeapon getGunItem() {
+        return (IWeapon) getStack().getItem();
     }
 
     protected @NotNull GunData getGunData() {
@@ -441,7 +440,7 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     protected void handleSoundEvent(SoundKeyframeEvent<GunAnimator> event) {
         var player = minecraft.player;
         var name = event.getKeyframeData().getSound();
-        var sounds = getGunItem().getGun().getSoundsMap();
+        var sounds = getGunItem().getConfig().getSoundsMap();
         var sound = sounds.get(name);
 
         if (sound != null && player != null) {

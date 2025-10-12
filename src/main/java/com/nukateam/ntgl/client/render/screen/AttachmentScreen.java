@@ -11,7 +11,7 @@ import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.data.Pos2I;
 import net.minecraft.ChatFormatting;
@@ -284,40 +284,6 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         poseStack.popPose();
         RenderSystem.applyModelViewMatrix();
     }
-
-//    public void renderGun(GuiGraphics graphics, int startX, int startY, int mouseX, int mouseY, ItemStack currentItem) {
-//        var poseStack = RenderSystem.getModelViewStack();
-//        poseStack.pushPose();
-//        {
-////            poseStack.mulPose(Axis.XP.rotation(InputEvents.X));
-////            poseStack.mulPose(Axis.YP.rotation(InputEvents.Y));
-////            poseStack.mulPose(Axis.ZP.rotation(InputEvents.Z));
-//
-////            poseStack.translate(startX + 88, startY + 60, 100);
-//            poseStack.translate(startX, startY, 0);
-////            poseStack.scale(50F, -50F, 50F);
-//
-//            poseStack.translate(InputEvents.X, InputEvents.Y, InputEvents.Z);
-//            RenderSystem.applyModelViewMatrix();
-//
-//            var buffer = minecraft.renderBuffers().bufferSource();
-////            minecraft.getItemRenderer().render(currentItem, ItemDisplayContext.FIXED,
-////                    false, graphics.pose(), buffer, 15728880,
-////                    OverlayTexture.NO_OVERLAY, ModelRenderUtil.getModel(currentItem));
-//
-//            var gun = (WeaponItem)currentItem.getItem();
-//
-//            Minecraft.getInstance().getItemRenderer().renderStatic(currentItem, ItemDisplayContext.NONE, OverlayTexture.NO_OVERLAY,
-//                    15728880, poseStack, buffer, minecraft.level, 0);
-//
-//            gun.getRenderer().render(minecraft.player,currentItem,ItemDisplayContext.FIXED,
-//                    poseStack, buffer, RenderType.solid(), buffer.getBuffer(RenderType.solid()), OverlayTexture.NO_OVERLAY);
-//
-//            buffer.endBatch();
-//        }
-//        poseStack.popPose();
-//        RenderSystem.applyModelViewMatrix();
-//    }
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {

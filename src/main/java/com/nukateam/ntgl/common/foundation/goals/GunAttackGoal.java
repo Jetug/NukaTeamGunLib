@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.goals;
 
 import com.nukateam.ntgl.common.data.holders.AttackMode;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.trackers.EntityReloadTracker;

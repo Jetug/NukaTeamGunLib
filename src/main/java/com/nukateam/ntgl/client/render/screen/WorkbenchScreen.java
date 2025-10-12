@@ -480,7 +480,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 var category = entry.getKey();
 
                 if (!recipeList.isEmpty()) {
-                    var item = (WeaponItem)recipeList.get(0).getItem().getItem();
+                    var item = recipeList.get(0).getItem().getItem();
                     var icon = new ItemStack(item);
                     var player = Minecraft.getInstance().player;
                     var gunData = new GunData(icon, player);

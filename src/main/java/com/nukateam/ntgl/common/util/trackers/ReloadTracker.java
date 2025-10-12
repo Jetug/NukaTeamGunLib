@@ -6,7 +6,7 @@ import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -43,7 +43,6 @@ public class ReloadTracker {
     private int slot = 0;
     private final InteractionHand arm;
     private final ItemStack weapon;
-    private final WeaponItem weaponItem;
     private final Gun gun;
 
     public int reloadTick;
@@ -54,7 +53,7 @@ public class ReloadTracker {
         this.startTick = entity.tickCount;
         this.arm = arm;
         this.weapon = entity.getItemInHand(arm);
-        this.weaponItem = ((WeaponItem) weapon.getItem());
+        var weaponItem = (IWeapon)weapon.getItem();
         this.gun = weaponItem.getModifiedConfig(weapon);
         this.shooter = entity;
 

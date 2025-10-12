@@ -8,7 +8,6 @@ import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAim;
@@ -208,7 +207,7 @@ public class AimingHandler {
         if(!mainHandItem.isEmpty() && !offhandItem.isEmpty() && mainOneHanded && offOneHanded)
             return false;
 
-        var gun = ((WeaponItem) mainHandItem.getItem()).getModifiedConfig(mainHandItem);
+        var gun = ((IWeapon)mainHandItem.getItem()).getModifiedConfig(mainHandItem);
 
         if (!gun.canAimDownSight())
             return false;

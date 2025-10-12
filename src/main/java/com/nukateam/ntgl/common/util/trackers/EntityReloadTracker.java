@@ -4,9 +4,12 @@ package com.nukateam.ntgl.common.util.trackers;
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,8 +28,6 @@ import static com.nukateam.ntgl.common.util.util.LivingEntityUtils.getInteractio
 public class EntityReloadTracker {
     private final HumanoidArm arm;
     private final ItemStack stack;
-    private final WeaponItem weaponItem;
-    private final Gun gun;
     private int reloadTick;
 
     private static final Map<LivingEntity, EntityReloadTracker> RELOAD_TRACKER_MAP = new HashMap<>();
@@ -35,9 +36,7 @@ public class EntityReloadTracker {
     private EntityReloadTracker(LivingEntity entity, HumanoidArm arm) {
         this.arm = arm;
         this.stack = entity.getItemInHand(getInteractionHand(arm));
-        this.weaponItem = ((WeaponItem) stack.getItem());
-        this.gun = weaponItem.getModifiedConfig(stack);
-        this.reloadTick = gun.getGeneral().getReloadTime();
+        this.reloadTick = GunModifierHelper.getReloadTime(new GunData(stack, entity).setWeaponAction(AttackMode.PRIMARY));
     }
 
     public static boolean isReloading(LivingEntity entity){

@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.client.util.handler;
 
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
@@ -100,15 +99,12 @@ public class ClientReloadHandler {
                 var isMaxAmmo = GunStateHelper.isMaxAmmo(data);
 
                 if (!isAmmoIgnored && hasAmmo && !isMaxAmmo) {
-                    var gun = ((WeaponItem) stack.getItem()).getModifiedConfig(stack);
                     reloadTicks = GunModifierHelper.getReloadTime(data);
 
                     if (GunStateHelper.getAmmoCount(data) >= GunEnchantmentHelper.getAmmoCapacity(data))
                         return;
                     if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack, hand)))
                         return;
-                      //JET
-//                    PlayerAnimations.playReloadAnimation(player, stack, arm);
 
                     dataKey.setValue(player, true);
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(true, hand));

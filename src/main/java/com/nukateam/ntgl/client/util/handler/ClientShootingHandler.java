@@ -5,7 +5,6 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -316,7 +315,7 @@ public class ClientShootingHandler {
         var data = shootingData.get(arm);
 
         data.fireTimer = GunModifierHelper.getFireDelay(gunData);
-        data.gun = (WeaponItem) gunData.gun.getItem();
+        data.gun = (IWeapon)gunData.gun.getItem();
     }
 
     private void resetShootingData(GunData gunData, InteractionHand arm) {

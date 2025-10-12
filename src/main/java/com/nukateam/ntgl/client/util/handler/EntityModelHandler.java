@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.util.handler;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -17,25 +17,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  * Author: MrCrayfish
  */
 public class EntityModelHandler {
-    /*@SubscribeEvent
-    public void onRenderEntity(PlayerModelEvent.Render.Post event)
-    {
-        PoseStack poseStack = event.getPoseStack();
-        Player player = event.getPlayer();
-        ItemStack heldItem = player.getOffhandItem();
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof IWeapon)
-        {
-            poseStack.pushPose();
-            Gun gun = ((WeaponItem) heldItem.getItem()).getModifiedConfig(heldItem);
-            if(gun.getGeneral().getGripType().getHeldAnimation().applyOffhandTransforms(player, event.getPlayerModel(), heldItem, poseStack, event.getDeltaTicks()))
-            {
-                MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-                GunRenderingHandler.get().renderWeapon(player, heldItem, ItemDisplayContext.FIXED, poseStack, buffer, event.getLight(), event.getDeltaTicks());
-            }
-            poseStack.popPose();
-        }
-    }*/
-
     @SubscribeEvent
     public void onRenderEntityPre(RenderLivingEvent.Pre<LivingEntity, EntityModel<LivingEntity>> event) {
         var entity = event.getEntity();

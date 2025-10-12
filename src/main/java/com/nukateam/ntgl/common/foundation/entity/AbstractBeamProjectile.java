@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.foundation.entity;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -94,12 +94,9 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	public void trace() {
 		if (shooter == null || level().isClientSide)
 			return;
-//		setupDirection(shooter, weapon, (WeaponItem)weapon.getItem(), modifiedGun);
 
 		var startVec = new Vec3(this.getX(), this.getY(), this.getZ());
 		var endVec = startVec.add(this.getDeltaMovement());
-
-//		setPos(shooter.getEyePosition());
 
 		HitResult raytraceresult = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER,
 				ClipContext.Fluid.NONE, this), IGNORE_LEAVES);

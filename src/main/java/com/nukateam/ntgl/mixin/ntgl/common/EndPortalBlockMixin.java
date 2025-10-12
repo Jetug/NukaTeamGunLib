@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.mixin.ntgl.common;
 
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;

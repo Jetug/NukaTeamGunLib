@@ -2,7 +2,7 @@ package com.nukateam.ntgl.mixin.ntgl.client;
 
 
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;

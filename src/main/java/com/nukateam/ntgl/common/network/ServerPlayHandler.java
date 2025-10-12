@@ -9,7 +9,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.trackers.*;
 import com.nukateam.ntgl.common.util.util.*;
@@ -377,7 +377,7 @@ public class ServerPlayHandler {
 
     public static void handleAttachments(ServerPlayer player) {
         var heldItem = player.getMainHandItem();
-        if (heldItem.getItem() instanceof IWeapon && ((WeaponItem)heldItem.getItem()).getModifiedConfig(heldItem).getModules().attachmentScreen()) {
+        if (heldItem.getItem() instanceof IWeapon && ((IWeapon)heldItem.getItem()).getModifiedConfig(heldItem).getModules().attachmentScreen()) {
             NetworkHooks.openScreen(player, new SimpleMenuProvider((windowId, playerInventory, player1) ->
                     new AttachmentContainer(windowId, playerInventory, heldItem), Component.translatable("container.ntgl.attachments")));
         }
