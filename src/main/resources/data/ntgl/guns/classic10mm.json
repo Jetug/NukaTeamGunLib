@@ -33,7 +33,7 @@
     },
     "ntgl:additional": {
       "general": {
-        "weaponMode": "ntgl:melee"
+        "weaponMode": "ntgl:gun"
       },
       "melee": {
         "mode": "ntgl:single",

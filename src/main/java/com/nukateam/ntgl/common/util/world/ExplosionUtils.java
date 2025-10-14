@@ -29,7 +29,7 @@ public class ExplosionUtils {
 
     public static void createExplosion(@NotNull Entity entity, @NotNull ExplosionConfig config, Vec3 hitPos) {
         var world = entity.level();
-        if (world.isClientSide() || hitPos == null || config.getRadius() > 0)
+        if (world.isClientSide() || hitPos == null || config.getRadius() <= 0)
             return;
 
         entity.setPos(hitPos);
