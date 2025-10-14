@@ -48,7 +48,7 @@ public class GunModifierHelper {
         return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(data);
     }
 
-    public static boolean canRenderInOffhand(LivingEntity player){
+    public static boolean canUseOffhandWeapon(LivingEntity player){
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
 

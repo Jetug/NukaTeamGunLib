@@ -90,7 +90,7 @@ public class GunHud implements IGuiOverlay {
     }
 
     private static boolean shouldRender(InteractionHand hand, LocalPlayer player) {
-        return hand == InteractionHand.MAIN_HAND || GunModifierHelper.canRenderInOffhand(player);
+        return hand == InteractionHand.MAIN_HAND || GunModifierHelper.canUseOffhandWeapon(player);
     }
 
     protected void renderAmmoCounter(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int x, int y) {

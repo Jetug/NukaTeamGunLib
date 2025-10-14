@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.MeleeMode;
@@ -13,10 +14,8 @@ import com.nukateam.ntgl.common.network.message.C2SMessageMeleeAttack;
 import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.nukateam.ntgl.client.util.handler.ClientShootingHandler.isInGame;
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canRenderInOffhand;
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canUseOffhandWeapon;
 
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
@@ -75,16 +74,45 @@ public class ClientMeleeHandler {
             var mainHandItem = player.getMainHandItem();
             var offhandItem = player.getOffhandItem();
 
-            if (mainHandItem.getItem() instanceof IWeapon && isKeyAttackDown()) {
-                handleAutoFire(player, mainHandItem, InteractionHand.MAIN_HAND);
+            if (mainHandItem.getItem() instanceof IWeapon) {
+                var data = new GunData(mainHandItem, player);
+
+                if(isKeyAttackDown()) {
+                    data.setWeaponAction(AttackMode.PRIMARY);
+                }
+                else if(isUseKeyDown()) {
+                    data.setWeaponAction(AttackMode.SECONDARY);
+                }
+                else if(KeyBinds.KEY_ADD_ATTACK.isDown()) {
+                    data.setWeaponAction(AttackMode.ADDITIONAL);
+                }
+                else if(KeyBinds.KEY_ALT_ATTACK.isDown()) {
+                    data.setWeaponAction(AttackMode.ALTERNATIVE);
+                }
+                else return;
+
+                handleAutoFire(data, InteractionHand.MAIN_HAND);
             }
 
-            if (offhandItem.getItem() instanceof IWeapon && canRenderInOffhand(player) && isUseKeyDown()) {
-                handleAutoFire(player, offhandItem, InteractionHand.OFF_HAND);
+            if (offhandItem.getItem() instanceof IWeapon && canUseOffhandWeapon(player) &&
+                    !(mainHandItem.getItem() instanceof IWeapon)) {
+                var data = new GunData(offhandItem, player);
+
+                if(isUseKeyDown()) {
+                    data.setWeaponAction(AttackMode.PRIMARY);
+                }
+                else if(KeyBinds.KEY_ADD_ATTACK.isDown()) {
+                    data.setWeaponAction(AttackMode.ADDITIONAL);
+                }
+                else if(KeyBinds.KEY_ALT_ATTACK.isDown()) {
+                    data.setWeaponAction(AttackMode.ALTERNATIVE);
+                }
+                else return;
+
+                handleAutoFire(data, InteractionHand.OFF_HAND);
             }
         }
     }
-
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         try {
@@ -99,16 +127,16 @@ public class ClientMeleeHandler {
         }
     }
 
-    private static void handleAutoFire(LocalPlayer player, ItemStack heldItem, InteractionHand hand) {
+    private static void handleAutoFire(GunData data, InteractionHand hand) {
         var mc = Minecraft.getInstance();
         var key = hand == InteractionHand.MAIN_HAND ?
                 mc.options.keyAttack :
                 mc.options.keyUse;
+        var shooter = data.shooter;
 
-        var data = new GunData(heldItem, player).setWeaponAction(AttackMode.PRIMARY);
-        attack(data, hand);
+        if(isMelee(data) && !EquipTracker.isEquiping(shooter, hand) && !shooter.isSpectator()){
+            attack(data, hand);
 
-        if(heldItem.getItem() instanceof IWeapon && isMelee(data)){
             var mode = GunModifierHelper.getMeleeMode(data);
             if (mode == MeleeMode.SINGLE) {
                 key.setDown(false);
@@ -117,19 +145,11 @@ public class ClientMeleeHandler {
     }
 
     private static void attack(GunData data, InteractionHand hand) {
-        var heldItem = data.gun;
         var shooter = data.shooter;
+        var key = new Pair<>(shooter, hand);
 
-        if (heldItem != null && heldItem.getItem() instanceof IWeapon
-                && isMelee(data)
-                && !EquipTracker.isEquiping(shooter, hand)
-                && !shooter.isSpectator()) {
-
-            var key = new Pair<>(shooter, hand);
-
-            if(!TRACKER_MAP.containsKey(key)) {
-                addTracker(data, hand);
-            }
+        if(!TRACKER_MAP.containsKey(key)) {
+            addTracker(data, hand);
         }
     }
 

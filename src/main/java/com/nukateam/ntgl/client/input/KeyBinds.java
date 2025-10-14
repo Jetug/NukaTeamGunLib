@@ -9,10 +9,6 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import org.lwjgl.glfw.GLFW;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 public class KeyBinds {
     public static final KeyMapping KEY_RELOAD = new KeyMapping("key.ntgl.reload", GLFW.GLFW_KEY_R, "key.categories.ntgl");
     public static final KeyMapping KEY_UNLOAD = new KeyMapping("key.ntgl.unload", GLFW.GLFW_KEY_U, "key.categories.ntgl");
@@ -20,7 +16,7 @@ public class KeyBinds {
     public static final KeyMapping KEY_INSPECT = new KeyMapping("key.ntgl.inspect", GLFW.GLFW_KEY_I, "key.categories.ntgl");
     public static final KeyMapping KEY_FIRE_SELECT = new KeyMapping("key.ntgl.fire_select", GLFW.GLFW_KEY_B, "key.categories.ntgl");
     public static final KeyMapping KEY_AMMO_SELECT = new KeyMapping("key.ntgl.ammo_select", GLFW.GLFW_KEY_N, "key.categories.ntgl");
-    public static final KeyMapping KEY_MELEE = new KeyMapping("key.ntgl.melee", GLFW.GLFW_KEY_V, "key.categories.ntgl");
+    public static final KeyMapping KEY_ADD_ATTACK = new KeyMapping("key.ntgl.melee", GLFW.GLFW_KEY_V, "key.categories.ntgl");
     public static final KeyMapping KEY_ALT_ATTACK = new KeyMapping("key.ntgl.alt", GLFW.GLFW_KEY_LEFT_ALT, "key.categories.ntgl");
 
     public static final KeyMapping KEY_DEBUG_X_ADD = new KeyMapping("key.ntgl.debug_x_add", GLFW.GLFW_KEY_KP_1, "key.categories.ntgl");
@@ -42,7 +38,7 @@ public class KeyBinds {
         event.register(KEY_INSPECT);
         event.register(KEY_FIRE_SELECT);
         event.register(KEY_AMMO_SELECT);
-        event.register(KEY_MELEE);
+        event.register(KEY_ADD_ATTACK);
         event.register(KEY_ALT_ATTACK);
         event.register(LEAVE);
 

@@ -77,7 +77,7 @@ public class ClientReloadHandler {
             setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
         }
         else if (offhandItem.getItem() instanceof IWeapon
-                && GunModifierHelper.canRenderInOffhand(player)
+                && GunModifierHelper.canUseOffhandWeapon(player)
                 && !GunModifierHelper.isWeaponFull(new GunData(offhandItem, player))
                 && !isReloading(player, InteractionHand.OFF_HAND)){
             setReloading(!ModSyncedDataKeys.RELOADING_LEFT.getValue(player), InteractionHand.OFF_HAND);

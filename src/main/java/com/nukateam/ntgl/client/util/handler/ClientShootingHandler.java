@@ -121,7 +121,7 @@ public class ClientShootingHandler {
             var mainHandItem = player.getMainHandItem();
             var offhandItem = player.getOffhandItem();
 
-            if (offhandItem.getItem() instanceof IWeapon && canRenderInOffhand(player)) {
+            if (offhandItem.getItem() instanceof IWeapon && canUseOffhandWeapon(player)) {
                 cancelSwing(event);
                 return;
             }
@@ -164,7 +164,7 @@ public class ClientShootingHandler {
             handleFireInput(data, InteractionHand.MAIN_HAND);
         }
 
-        if (offhandItem.getItem() instanceof IWeapon && isUseKeyDown() && canRenderInOffhand(player)) {
+        if (offhandItem.getItem() instanceof IWeapon && isUseKeyDown() && canUseOffhandWeapon(player)) {
             var data = new GunData(offhandItem, player).setWeaponAction(AttackMode.PRIMARY);
             handleFireInput(data, InteractionHand.OFF_HAND);
         }

@@ -11,7 +11,6 @@ import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
@@ -23,7 +22,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canRenderInOffhand;
+import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canUseOffhandWeapon;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientThrowableHandler {
@@ -89,7 +88,7 @@ public class ClientThrowableHandler {
             var offhandItem = player.getOffhandItem();
             var gunData = new GunData(offhandItem, player).setWeaponAction(AttackMode.PRIMARY);
 
-            if (isThrowable(gunData) && canRenderInOffhand(player)) {
+            if (isThrowable(gunData) && canUseOffhandWeapon(player)) {
                 event.setCanceled(true);
                 event.setSwingHand(false);
             }

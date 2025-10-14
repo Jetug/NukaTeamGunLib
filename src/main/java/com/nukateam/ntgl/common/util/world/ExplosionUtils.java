@@ -29,7 +29,7 @@ public class ExplosionUtils {
 
     public static void createExplosion(@NotNull Entity entity, @NotNull ExplosionConfig config, Vec3 hitPos) {
         var world = entity.level();
-        if (world.isClientSide() || hitPos == null)
+        if (world.isClientSide() || hitPos == null || config.getRadius() > 0)
             return;
 
         entity.setPos(hitPos);
@@ -70,11 +70,6 @@ public class ExplosionUtils {
                                 hitPos, explosion.getHitPlayers().get(player),
                                 config, explosion.getToBlow())
                 );
-
-//                player.connection.send(new ClientboundExplodePacket(
-//                        hitPos.x(), hitPos.y(), hitPos.z(),
-//                        config.getRadius(), explosion.getToBlow(),
-//                        explosion.getHitPlayers().get(player)));
             }
         }
     }
