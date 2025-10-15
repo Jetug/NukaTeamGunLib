@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.debug;
 
 import com.nukateam.ntgl.client.handlers.ClientHandler;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugButton;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugToggle;
 
@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class Debug {
-    private static final Map<IWeapon, Gun> GUNS = new HashMap<>();
+    private static final Map<IWeapon, WeaponConfig> GUNS = new HashMap<>();
     private static final Map<Item, Scope> SCOPES = new HashMap<>();
     private static boolean forceAim = false;
 
@@ -44,7 +44,7 @@ public class Debug {
         });
     }
 
-    public static Gun getGun(IWeapon item) {
+    public static WeaponConfig getGun(IWeapon item) {
         return GUNS.computeIfAbsent(item, item1 -> item.getConfig().copy());
     }
 

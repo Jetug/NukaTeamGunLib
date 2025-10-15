@@ -7,8 +7,8 @@ import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
+import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.item.attachment.BarrelItem;
@@ -34,7 +34,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmedMode
     protected ArrayList<Modules.Attachment> configAttachments;
     protected ArrayList<String> hiddenBones = new ArrayList<>();
     protected BarrelItem barrelItem;
-    protected Gun gun;
+    protected WeaponConfig weaponConfig;
     protected ItemStack gunStack;
     private ItemDisplayContext transformType;
 
@@ -48,10 +48,10 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmedMode
                        @Nullable RenderType renderType, @Nullable VertexConsumer buffer, int packedLight) {
         this.bufferSource = bufferSource;
         this.transformType = transformType;
-        this.gun = GunModifierHelper.getGun(stack);
+        this.weaponConfig = GunModifierHelper.getGun(stack);
         this.gunStack = stack;
         this.gunAttachments = GunStateHelper.getAttachmentItems(stack);
-        this.configAttachments = gun.getAttachmentConfigs(gunAttachments);
+        this.configAttachments = weaponConfig.getAttachmentConfigs(gunAttachments);
         this.currentEntity = entity;
 
         if (TransformUtils.isFirstPerson(transformType) && AimingHandler.isScoping(stack))
@@ -126,7 +126,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmedMode
         if(gunStack == null || gunStack.isEmpty()) return;
 
         hiddenBones.clear();
-        var gunAttachments = this.gun.getModules().getAttachments();
+        var gunAttachments = this.weaponConfig.getModules().getAttachments();
 
         var visibleBones = new ArrayList<String>();
 

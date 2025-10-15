@@ -2,10 +2,10 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.ibm.icu.impl.Pair;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
-import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
@@ -81,7 +81,7 @@ public class ClientShootingHandler {
                 player.getOffhandItem();
 
         if (heldItem.getItem() instanceof IWeapon) {
-            var data = new GunData(heldItem, player).setWeaponAction(AttackMode.PRIMARY);
+            var data = new WeaponData(heldItem, player).setWeaponAction(AttackMode.PRIMARY);
             if (event.getAction() == GLFW.GLFW_PRESS) {
                 if (isRightHand) {
                     setupShootingData(data, InteractionHand.MAIN_HAND);
@@ -130,7 +130,7 @@ public class ClientShootingHandler {
                 if (event.getHand() == InteractionHand.OFF_HAND) {
                     // Allow shields to be used if weapon is one-handed
                     if (offhandItem.getItem() == Items.SHIELD) {
-                        if (GunModifierHelper.getGripType(new GunData(mainHandItem, player)).isOneHanded()) {
+                        if (GunModifierHelper.getGripType(new WeaponData(mainHandItem, player)).isOneHanded()) {
                             return;
                         }
                     }
@@ -160,12 +160,12 @@ public class ClientShootingHandler {
         var offhandItem = player.getOffhandItem();
 
         if (mainHandItem.getItem() instanceof IWeapon && isKeyAttackDown()) {
-            var data = new GunData(mainHandItem, player).setWeaponAction(AttackMode.PRIMARY);
+            var data = new WeaponData(mainHandItem, player).setWeaponAction(AttackMode.PRIMARY);
             handleFireInput(data, InteractionHand.MAIN_HAND);
         }
 
         if (offhandItem.getItem() instanceof IWeapon && isUseKeyDown() && canUseOffhandWeapon(player)) {
-            var data = new GunData(offhandItem, player).setWeaponAction(AttackMode.PRIMARY);
+            var data = new WeaponData(offhandItem, player).setWeaponAction(AttackMode.PRIMARY);
             handleFireInput(data, InteractionHand.OFF_HAND);
         }
     }
@@ -228,7 +228,7 @@ public class ClientShootingHandler {
         var heldItem = entity.getItemInHand(hand);
 
         if (heldItem.getItem() instanceof IWeapon) {
-            var data = new GunData(heldItem, entity);
+            var data = new WeaponData(heldItem, entity);
             var rate = GunModifierHelper.getRate(data);
             var cooldown = getCooldown(entity, hand);
             return cooldown / (float)rate;
@@ -253,9 +253,9 @@ public class ClientShootingHandler {
         return shootTickGap;
     }
 
-    public void fire(GunData data) {
-        var shooter = data.shooter;
-        var heldItem = data.gun;
+    public void fire(WeaponData data) {
+        var shooter = data.wielder;
+        var heldItem = data.weapon;
 
         if (heldItem.getItem() instanceof IWeapon
                 && (GunStateHelper.hasAmmo(heldItem) /*|| (shooter instanceof Player player && player.isCreative())*/)
@@ -271,7 +271,7 @@ public class ClientShootingHandler {
 
                 // CHECK HERE: Change this to test different rpm settings.
                 // TODO: Test serverside, possible issues 0.3.4-alpha
-                var gunData = new GunData(heldItem, shooter);
+                var gunData = new WeaponData(heldItem, shooter);
                 final var rpm = GunModifierHelper.getRate(gunData); // Rounds per sec. Should come from gun properties in the end.
                 shootGap += rpm;
                 entityShootGaps.put(Pair.of(hand, shooter), shootGap);
@@ -309,38 +309,38 @@ public class ClientShootingHandler {
         } );
     }
 
-    private void setupShootingData(GunData gunData, InteractionHand arm) {
-        assert gunData.gun != null;
-        if(!GunStateHelper.hasAmmo(gunData.gun)) return;
+    private void setupShootingData(WeaponData weaponData, InteractionHand arm) {
+        assert weaponData.weapon != null;
+        if(!GunStateHelper.hasAmmo(weaponData.weapon)) return;
         var data = shootingData.get(arm);
 
-        data.fireTimer = GunModifierHelper.getFireDelay(gunData);
-        data.gun = (IWeapon)gunData.gun.getItem();
+        data.fireTimer = GunModifierHelper.getFireDelay(weaponData);
+        data.gun = (IWeapon) weaponData.weapon.getItem();
     }
 
-    private void resetShootingData(GunData gunData, InteractionHand arm) {
+    private void resetShootingData(WeaponData weaponData, InteractionHand arm) {
         var data = shootingData.get(arm);
-        if(data.fireTimer != 0 && ! GunModifierHelper.needsFullCharge(gunData)){
-            this.fire(gunData);
+        if(data.fireTimer != 0 && ! GunModifierHelper.needsFullCharge(weaponData)){
+            this.fire(weaponData);
         }
 
         data.fireTimer = 0;
         data.gun = null;
     }
 
-    private static boolean isGunMode(GunData gunData) {
-        return GunModifierHelper.getWeaponMode(gunData) == WeaponMode.GUN;
+    private static boolean isGunMode(WeaponData weaponData) {
+        return GunModifierHelper.getWeaponMode(weaponData) == WeaponMode.GUN;
     }
 
-    private void handleFireInput(GunData gunData, InteractionHand arm) {
+    private void handleFireInput(WeaponData weaponData, InteractionHand arm) {
         var mc = Minecraft.getInstance();
         var player = mc.player;
         var key = arm == InteractionHand.MAIN_HAND ? mc.options.keyAttack : mc.options.keyUse;
         var data = shootingData.get(arm);
-        var fireMode =  GunStateHelper.getFireMode(gunData);
-        var maxChargeTime = GunModifierHelper.getFireDelay(gunData);
+        var fireMode =  GunStateHelper.getFireMode(weaponData);
+        var maxChargeTime = GunModifierHelper.getFireDelay(weaponData);
 
-        if (!isGunMode(gunData)) {
+        if (!isGunMode(weaponData)) {
             return;
         }
 
@@ -353,16 +353,16 @@ public class ClientShootingHandler {
                 }
                 data.fireTimer--;
             } else {
-                this.fire(gunData);
-                if (data.fireTimer == 0 && !GunModifierHelper.isOneTimeCharge(gunData))
-                    setupShootingData(gunData, arm);
+                this.fire(weaponData);
+                if (data.fireTimer == 0 && !GunModifierHelper.isOneTimeCharge(weaponData))
+                    setupShootingData(weaponData, arm);
                 if (maxChargeTime > 0) {
                     if (fireMode != FireMode.AUTO)
                         key.setDown(false);
                 }
             }
         } else {
-            this.fire(gunData);
+            this.fire(weaponData);
             if (fireMode != FireMode.AUTO) {
                 key.setDown(false);
             }

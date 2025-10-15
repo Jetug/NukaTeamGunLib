@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -28,11 +28,11 @@ import static net.minecraftforge.registries.ForgeRegistries.*;
  * Author: MrCrayfish
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public class NetworkGunManager extends SimplePreparableReloadListener<Map<IWeapon, Gun>> {
+public class NetworkGunManager extends SimplePreparableReloadListener<Map<IWeapon, WeaponConfig>> {
     private static final List<IWeapon> clientRegisteredGuns = new ArrayList<>();
     private static NetworkGunManager instance;
 
-    private Map<ResourceLocation, Gun> registeredGuns = new HashMap<>();
+    private Map<ResourceLocation, WeaponConfig> registeredGuns = new HashMap<>();
 
     public static void onServerStopped() {
         NetworkGunManager.instance = null;
@@ -45,13 +45,13 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<IWeapo
     }
 
     @Override
-    protected Map<IWeapon, Gun> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return DataUtils.getConfigMap(manager, (v) -> v instanceof IWeapon, Gun.class, "guns");
+    protected Map<IWeapon, WeaponConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
+        return DataUtils.getConfigMap(manager, (v) -> v instanceof IWeapon, WeaponConfig.class, "guns");
     }
 
     @Override
-    protected void apply(Map<IWeapon, Gun> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
-        ImmutableMap.Builder<ResourceLocation, Gun> builder = ImmutableMap.builder();
+    protected void apply(Map<IWeapon, WeaponConfig> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
+        ImmutableMap.Builder<ResourceLocation, WeaponConfig> builder = ImmutableMap.builder();
 
         objects.forEach((abstractItem, gun) -> {
             if(abstractItem instanceof Item item) {
@@ -83,16 +83,16 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<IWeapo
      * @param buffer a packet buffer get
      * @return a map of registered guns from the server
      */
-    public static ImmutableMap<ResourceLocation, Gun> readRegisteredGuns(FriendlyByteBuf buffer) {
+    public static ImmutableMap<ResourceLocation, WeaponConfig> readRegisteredGuns(FriendlyByteBuf buffer) {
         var size = buffer.readVarInt();
 
         if (size > 0) {
-            ImmutableMap.Builder<ResourceLocation, Gun> builder = ImmutableMap.builder();
+            ImmutableMap.Builder<ResourceLocation, WeaponConfig> builder = ImmutableMap.builder();
 
             for (int i = 0; i < size; i++) {
                 var id = buffer.readResourceLocation();
-                Gun gun = Gun.create(id, buffer.readNbt());
-                builder.put(id, gun);
+                WeaponConfig weaponConfig = WeaponConfig.create(id, buffer.readNbt());
+                builder.put(id, weaponConfig);
             }
             return builder.build();
         }
@@ -108,10 +108,10 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<IWeapo
      *
      * @return true if all registered guns were able to update their corresponding gun item
      */
-    private static boolean updateRegisteredGuns(Map<ResourceLocation, Gun> registeredGuns) {
+    private static boolean updateRegisteredGuns(Map<ResourceLocation, WeaponConfig> registeredGuns) {
         clientRegisteredGuns.clear();
         if (registeredGuns != null) {
-            for (Map.Entry<ResourceLocation, Gun> entry : registeredGuns.entrySet()) {
+            for (Map.Entry<ResourceLocation, WeaponConfig> entry : registeredGuns.entrySet()) {
                 Item item = ITEMS.getValue(entry.getKey());
                 if (!(item instanceof IWeapon)) {
                     return false;
@@ -129,7 +129,7 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<IWeapo
      *
      * @return a map of registered gun objects
      */
-    public Map<ResourceLocation, Gun> getRegisteredGuns() {
+    public Map<ResourceLocation, WeaponConfig> getRegisteredGuns() {
         return this.registeredGuns;
     }
 

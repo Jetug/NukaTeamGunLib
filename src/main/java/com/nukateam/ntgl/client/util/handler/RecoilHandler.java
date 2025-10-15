@@ -1,9 +1,9 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 
-import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
@@ -52,7 +52,7 @@ public class RecoilHandler {
         var heldItem = event.getStack();
         var gunItem = (IWeapon) heldItem.getItem();
         var modifiedGun = gunItem.getModifiedConfig(heldItem);
-        var data = new GunData(heldItem, event.getEntity());
+        var data = new WeaponData(heldItem, event.getEntity());
         var recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(data);
 
         recoilModifier *= this.getAdsRecoilReduction(modifiedGun);
@@ -120,8 +120,8 @@ public class RecoilHandler {
         this.gunRecoilAngle = modifiedGun.getGeneral().getRecoilAngle();
     }
 
-    public double getAdsRecoilReduction(Gun gun) {
-        return 1.0 - gun.getGeneral().getRecoilAdsReduction() * AimingHandler.get().getNormalisedAdsProgress();
+    public double getAdsRecoilReduction(WeaponConfig weaponConfig) {
+        return 1.0 - weaponConfig.getGeneral().getRecoilAdsReduction() * AimingHandler.get().getNormalisedAdsProgress();
     }
 
     public double getGunRecoilNormal() {

@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.util.trackers;
 
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.Util;
 import net.minecraft.world.InteractionHand;
@@ -51,7 +51,7 @@ public class ShootTracker {
      * of the weapon to determine when it's allowed to fire again.
      */
     public void putCooldown(ItemStack weapon, LivingEntity shooter) {
-        var data = new GunData(weapon, shooter);
+        var data = new WeaponData(weapon, shooter);
         var rate = GunModifierHelper.getRate(data);
         this.cooldown = Pair.of(Util.getMillis(), rate * 50);
     }

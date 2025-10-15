@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 
@@ -12,7 +12,7 @@ public class GrenadeEntity extends ProjectileEntity {
         super(entityType, world);
     }
 
-    public GrenadeEntity(EntityType<? extends ProjectileEntity> entityType, Level world, GunData data) {
+    public GrenadeEntity(EntityType<? extends ProjectileEntity> entityType, Level world, WeaponData data) {
         super(entityType, world, data);
     }
 }

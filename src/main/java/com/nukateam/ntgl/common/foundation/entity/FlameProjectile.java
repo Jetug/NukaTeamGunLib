@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -25,7 +25,7 @@ public class FlameProjectile extends ProjectileEntity {
         super(entityType, worldIn);
     }
 
-    public FlameProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, GunData data) {
+    public FlameProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, WeaponData data) {
         super(entityType, worldIn, data);
     }
 

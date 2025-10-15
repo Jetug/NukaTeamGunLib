@@ -2,17 +2,16 @@ package com.nukateam.ntgl.client.render.screen;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMelee;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IMeleeWeapon;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
-import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.foundation.crafting.*;
-import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
@@ -483,7 +482,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                     var item = recipeList.get(0).getItem().getItem();
                     var icon = new ItemStack(item);
                     var player = Minecraft.getInstance().player;
-                    var gunData = new GunData(icon, player);
+                    var gunData = new WeaponData(icon, player);
 
                     icon.getOrCreateTag().putInt("AmmoCount", GunModifierHelper.getMaxAmmo(gunData));
                     this.tabs.add(new Tab(icon, category, recipeList));
@@ -521,7 +520,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         if (stack != null && stack.getItem() instanceof IAmmo)
             return true;
         var player = Minecraft.getInstance().player;
-        var gunData = new GunData(stack, player);
+        var gunData = new WeaponData(stack, player);
 
         var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
         Objects.requireNonNull(id);

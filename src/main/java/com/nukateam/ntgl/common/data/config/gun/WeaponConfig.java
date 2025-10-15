@@ -3,7 +3,6 @@ package com.nukateam.ntgl.common.data.config.gun;
 import com.google.gson.Gson;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.data.config.*;
 import com.nukateam.ntgl.common.data.holders.*;
 
@@ -39,7 +38,7 @@ import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
 
-public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String GENERAL = "General";
     public static final String MELEE = "Melee";
     public static final String THROWABLE = "Throwable";
@@ -164,8 +163,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return object;
     }
 
-    public Gun copy() {
-        var gun = new Gun();
+    public WeaponConfig copy() {
+        var gun = new WeaponConfig();
         gun.general = this.general.copy();
         gun.melee = this.melee.copy();
         gun.throwable = this.throwable.copy();
@@ -179,8 +178,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return gun;
     }
 
-    public static Gun create(ResourceLocation id, CompoundTag tag) {
-        var gun = new Gun();
+    public static WeaponConfig create(ResourceLocation id, CompoundTag tag) {
+        var gun = new WeaponConfig();
         gun.deserializeNBT(tag);
         return gun;
     }
@@ -233,8 +232,8 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
         return animations.get(type);
     }
 
-    public boolean canAttachType(@Nullable AttachmentType type, Gun gun) {
-        var attachments = gun.getModules().getAttachments();
+    public boolean canAttachType(@Nullable AttachmentType type, WeaponConfig weaponConfig) {
+        var attachments = weaponConfig.getModules().getAttachments();
         if(attachments == null)
             return false;
         return attachments.containsKey(type);
@@ -374,100 +373,100 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public static class Builder {
-        private final Gun gun;
+        private final WeaponConfig weaponConfig;
 
         private Builder() {
-            this.gun = new Gun();
+            this.weaponConfig = new WeaponConfig();
         }
 
-        private Builder(Gun gun) {
-            this.gun = gun.copy();
+        private Builder(WeaponConfig weaponConfig) {
+            this.weaponConfig = weaponConfig.copy();
         }
 
         public static Builder create() {
             return new Builder();
         }
 
-        public static Builder create(Gun gun) {
-            return new Builder(gun);
+        public static Builder create(WeaponConfig weaponConfig) {
+            return new Builder(weaponConfig);
         }
 
-        public Gun build() {
-            return this.gun.copy(); //Copy since the builder could be used again
+        public WeaponConfig build() {
+            return this.weaponConfig.copy(); //Copy since the builder could be used again
         }
 
-        public Gun.Builder addAmmo(AmmoHolder id) {
-            this.gun.general.ammo.add(id);
+        public WeaponConfig.Builder addAmmo(AmmoHolder id) {
+            this.weaponConfig.general.ammo.add(id);
             return this;
         }
 
         public Builder setFireRate(int rate) {
-            this.gun.general.rate = rate;
+            this.weaponConfig.general.rate = rate;
             return this;
         }
 
         public Builder setGripType(GripType gripType) {
-            this.gun.general.gripType = gripType;
+            this.weaponConfig.general.gripType = gripType;
             return this;
         }
 
         public Builder setMaxAmmo(int maxAmmo) {
-            this.gun.general.maxAmmo = maxAmmo;
+            this.weaponConfig.general.maxAmmo = maxAmmo;
             return this;
         }
 
         public Builder setReloadAmount(int reloadAmount) {
-            this.gun.general.reloadAmount = reloadAmount;
+            this.weaponConfig.general.reloadAmount = reloadAmount;
             return this;
         }
 
         public Builder setReloadTime(int reloadTime) {
-            this.gun.general.reloadTime = reloadTime;
+            this.weaponConfig.general.reloadTime = reloadTime;
             return this;
         }
 
         public Builder setLoadingType(LoadingType loadingType) {
-            this.gun.general.loadingType = loadingType;
+            this.weaponConfig.general.loadingType = loadingType;
             return this;
         }
 
         public Builder setCategory(String category) {
-            this.gun.general.category = category;
+            this.weaponConfig.general.category = category;
             return this;
         }
 
         public Builder setRecoilAngle(float recoilAngle) {
-            this.gun.general.recoilAngle = recoilAngle;
+            this.weaponConfig.general.recoilAngle = recoilAngle;
             return this;
         }
 
         public Builder setRecoilKick(float recoilKick) {
-            this.gun.general.recoilKick = recoilKick;
+            this.weaponConfig.general.recoilKick = recoilKick;
             return this;
         }
 
         public Builder setRecoilDurationOffset(float recoilDurationOffset) {
-            this.gun.general.recoilDurationOffset = recoilDurationOffset;
+            this.weaponConfig.general.recoilDurationOffset = recoilDurationOffset;
             return this;
         }
 
         public Builder setRecoilAdsReduction(float recoilAdsReduction) {
-            this.gun.general.recoilAdsReduction = recoilAdsReduction;
+            this.weaponConfig.general.recoilAdsReduction = recoilAdsReduction;
             return this;
         }
 
         public Builder setProjectileAmount(int projectileAmount) {
-            this.gun.general.projectileAmount = projectileAmount;
+            this.weaponConfig.general.projectileAmount = projectileAmount;
             return this;
         }
 
         public Builder setAlwaysSpread(boolean alwaysSpread) {
-            this.gun.general.alwaysSpread = alwaysSpread;
+            this.weaponConfig.general.alwaysSpread = alwaysSpread;
             return this;
         }
 
         public Builder setSpread(float spread) {
-            this.gun.general.spread = spread;
+            this.weaponConfig.general.spread = spread;
             return this;
         }
 
@@ -503,7 +502,7 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             flash.xOffset = xOffset;
             flash.yOffset = yOffset;
             flash.zOffset = zOffset;
-            this.gun.display.flash = flash;
+            this.weaponConfig.display.flash = flash;
             return this;
         }
 
@@ -513,13 +512,13 @@ public class Gun implements INBTSerializable<CompoundTag>, IEditorMenu {
             zoom.xOffset = xOffset;
             zoom.yOffset = yOffset;
             zoom.zOffset = zOffset;
-            this.gun.modules.zoom = zoom;
+            this.weaponConfig.modules.zoom = zoom;
             return this;
         }
 
         @Deprecated(since = "1.3.0", forRemoval = true)
         public Builder setZoom(Modules.Zoom.Builder builder) {
-            this.gun.modules.zoom = builder.build();
+            this.weaponConfig.modules.zoom = builder.build();
             return this;
         }
     }

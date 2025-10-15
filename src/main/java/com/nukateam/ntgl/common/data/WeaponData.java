@@ -6,23 +6,23 @@ import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
-public class GunData {
-    @Nullable public final ItemStack gun;
+public class WeaponData {
+    @Nullable public final ItemStack weapon;
     @Nullable public ItemStack attachment;
-    @Nullable public final LivingEntity shooter;
+    @Nullable public final LivingEntity wielder;
     public AttackMode weaponAction = AttackMode.PRIMARY;
 
-    public GunData(ItemStack gun, LivingEntity shooter) {
-        this.gun = gun;
-        this.shooter = shooter;
+    public WeaponData(ItemStack weapon, LivingEntity wielder) {
+        this.weapon = weapon;
+        this.wielder = wielder;
     }
 
-    public GunData setAttachment(@Nullable ItemStack attachment) {
+    public WeaponData setAttachment(@Nullable ItemStack attachment) {
         this.attachment = attachment;
         return this;
     }
 
-    public GunData setWeaponAction(AttackMode weaponAction) {
+    public WeaponData setWeaponAction(AttackMode weaponAction) {
         this.weaponAction = weaponAction;
         return this;
     }

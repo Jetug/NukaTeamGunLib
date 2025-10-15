@@ -1,9 +1,7 @@
 package com.nukateam.ntgl.common.event;
 
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
+import com.nukateam.ntgl.common.data.WeaponData;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -36,8 +34,8 @@ public class GunFireEvent extends LivingEvent {
         return arm;
     }
 
-    public GunData getGunData(){
-        return new GunData(getStack(), getEntity());
+    public WeaponData getGunData(){
+        return new WeaponData(getStack(), getEntity());
     }
 
     /**

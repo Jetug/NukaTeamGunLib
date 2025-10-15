@@ -1,8 +1,7 @@
 package com.nukateam.ntgl.common.handlers;
 
-import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.foundation.init.NtglGameEvents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -76,7 +75,7 @@ public class GunEventHandler {
             if(!event.isClient()){
                 PacketHandler.sendAnimation(entity, event.getHand(), AnimationType.FIRE);
 
-                if(!GunModifierHelper.isSilencedFire(new GunData(heldItem, entity))){
+                if(!GunModifierHelper.isSilencedFire(new WeaponData(heldItem, entity))){
                     NtglGameEvents.gunshotEvent(level, entity);
                     level.gameEvent(entity, GameEvent.PROJECTILE_SHOOT, entity.blockPosition());
                 }

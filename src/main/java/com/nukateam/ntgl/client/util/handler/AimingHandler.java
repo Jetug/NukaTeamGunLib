@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 
 import com.nukateam.ntgl.client.util.util.PropertyHelper;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -201,8 +201,8 @@ public class AimingHandler {
         if (!(mainHandItem.getItem() instanceof IWeapon))
             return false;
 
-        var mainOneHanded = isOneHanded(new GunData(mainHandItem, mc.player));
-        var offOneHanded = isOneHanded(new GunData(offhandItem, mc.player));
+        var mainOneHanded = isOneHanded(new WeaponData(mainHandItem, mc.player));
+        var offOneHanded = isOneHanded(new WeaponData(offhandItem, mc.player));
 
         if(!mainHandItem.isEmpty() && !offhandItem.isEmpty() && mainOneHanded && offOneHanded)
             return false;
@@ -213,7 +213,7 @@ public class AimingHandler {
             return false;
 
         if (mc.player.getOffhandItem().getItem() == Items.SHIELD
-                && GunStateHelper.isOneHanded(new GunData(mainHandItem, mc.player)))
+                && GunStateHelper.isOneHanded(new WeaponData(mainHandItem, mc.player)))
             return false;
 
         if (!this.localTracker.isAiming() && this.isLookingAtInteractableBlock())
@@ -223,7 +223,7 @@ public class AimingHandler {
             return false;
 
         if(mainHandItem.getItem() instanceof IWeapon && offhandItem.getItem() instanceof IWeapon) {
-            var off =  GunModifierHelper.getGripType(new GunData(offhandItem, mc.player));
+            var off =  GunModifierHelper.getGripType(new WeaponData(offhandItem, mc.player));
             if(off.isOneHanded()) {
                 return false;
             }
@@ -265,7 +265,7 @@ public class AimingHandler {
         private void handleAiming(Player player, ItemStack heldItem) {
             if(!(heldItem.getItem() instanceof IWeapon))
                 return;
-            var gunData = new GunData(heldItem, player);
+            var gunData = new WeaponData(heldItem, player);
             this.previousAim = this.currentAim;
             if (ModSyncedDataKeys.AIMING.getValue(player) || (player.isLocalPlayer() && AimingHandler.this.isAiming())) {
                 if (this.currentAim < MAX_AIM_PROGRESS) {

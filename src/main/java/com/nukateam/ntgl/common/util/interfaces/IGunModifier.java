@@ -1,12 +1,12 @@
 package com.nukateam.ntgl.common.util.interfaces;
 
 import com.nukateam.example.common.registery.GunModifiers;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
 import com.nukateam.ntgl.common.data.config.AmmoConfig;
 import com.nukateam.ntgl.common.data.config.Fuel;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.data.holders.*;
-import com.nukateam.ntgl.common.data.GunData;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Set;
@@ -27,11 +27,11 @@ public interface IGunModifier {
      * @param data
      * @return the new volume
      */
-    default float modifyFireSoundVolume(float volume, GunData data) {
+    default float modifyFireSoundVolume(float volume, WeaponData data) {
         return volume;
     }
 
-    default ResourceLocation modifyFireSound(ResourceLocation sound, GunData data) {
+    default ResourceLocation modifyFireSound(ResourceLocation sound, WeaponData data) {
         return sound;
     }
 
@@ -39,7 +39,7 @@ public interface IGunModifier {
      * Determines if the fire sound should be the silenced version.
      * @return if this fire sound should be silenced version
      */
-    default boolean silencedFire(boolean silenced, GunData data) {
+    default boolean silencedFire(boolean silenced, WeaponData data) {
         return silenced;
     }
 
@@ -52,7 +52,7 @@ public interface IGunModifier {
      * @param data
      * @return the new sound radius
      */
-    default double modifyFireSoundRadius(double radius, GunData data) {
+    default double modifyFireSoundRadius(double radius, WeaponData data) {
         return radius;
     }
 
@@ -62,7 +62,7 @@ public interface IGunModifier {
      *
      * @return additional damage to add on top of the weapon damage
      */
-    default float additionalDamage(GunData data) {
+    default float additionalDamage(WeaponData data) {
         return 0.0F;
     }
 
@@ -73,7 +73,7 @@ public interface IGunModifier {
      * @param data
      * @return a new damage for the projectile
      */
-    default float modifyDamage(float damage, GunData data) {
+    default float modifyDamage(float damage, WeaponData data) {
         return damage;
     }
 
@@ -84,7 +84,7 @@ public interface IGunModifier {
      * @param data
      * @return a new speed for the projectile
      */
-    default double modifyProjectileSpeed(double speed, GunData data) {
+    default double modifyProjectileSpeed(double speed, WeaponData data) {
         return speed;
     }
 
@@ -96,7 +96,7 @@ public interface IGunModifier {
      * @param data
      * @return a new spread for the weapon
      */
-    default float modifyProjectileSpread(float spread, GunData data) {
+    default float modifyProjectileSpread(float spread, WeaponData data) {
         return spread;
     }
 
@@ -105,7 +105,7 @@ public interface IGunModifier {
      *
      * @return additional gravity to add to the projectile
      */
-    default double additionalProjectileGravity(GunData data) {
+    default double additionalProjectileGravity(WeaponData data) {
         return 0;
     }
 
@@ -117,7 +117,7 @@ public interface IGunModifier {
      * @param data
      * @return a new gravity for the projectile
      */
-    default double modifyProjectileGravity(double gravity, GunData data) {
+    default double modifyProjectileGravity(double gravity, WeaponData data) {
         return gravity;
     }
 
@@ -130,7 +130,7 @@ public interface IGunModifier {
      * @param data
      * @return a new life for the projectile
      */
-    default int modifyProjectileLife(int life, GunData data) {
+    default int modifyProjectileLife(int life, WeaponData data) {
         return life;
     }
 
@@ -142,7 +142,7 @@ public interface IGunModifier {
      *
      * @return a value to multiply the weapon's kick
      */
-    default float recoilModifier(GunData data) {
+    default float recoilModifier(WeaponData data) {
         return 1.0F;
     }
 
@@ -154,7 +154,7 @@ public interface IGunModifier {
      *
      * @return a value to multiply the weapon's kick
      */
-    default float kickModifier(GunData data) {
+    default float kickModifier(WeaponData data) {
         return 1.0F;
     }
 
@@ -165,7 +165,7 @@ public interface IGunModifier {
      * @param data
      * @return the new size for the muzzle flash
      */
-    default double modifyMuzzleFlashSize(double size, GunData data) {
+    default double modifyMuzzleFlashSize(double size, WeaponData data) {
         return size;
     }
 
@@ -176,7 +176,7 @@ public interface IGunModifier {
      * @param data
      * @return the new scale for the muzzle flash
      */
-    default double modifyMuzzleFlashScale(double scale, GunData data) {
+    default double modifyMuzzleFlashScale(double scale, WeaponData data) {
         return scale;
     }
 
@@ -188,7 +188,7 @@ public interface IGunModifier {
      * @param data
      * @return the new speed
      */
-    default double modifyAimDownSightSpeed(double speed, GunData data) {
+    default double modifyAimDownSightSpeed(double speed, WeaponData data) {
         return speed;
     }
 
@@ -199,7 +199,7 @@ public interface IGunModifier {
      * @param data
      * @return the new fire rate
      */
-    default int modifyFireRate(int rate, GunData data) {
+    default int modifyFireRate(int rate, WeaponData data) {
         return rate;
     }
 
@@ -209,155 +209,155 @@ public interface IGunModifier {
      *
      * @return additional chance to include when determining critical hit
      */
-    default float criticalChance(GunData data) {
+    default float criticalChance(WeaponData data) {
         return 0F;
     }
 
-    default int modifyMaxAmmo(int maxAmmo, GunData data) {
+    default int modifyMaxAmmo(int maxAmmo, WeaponData data) {
         return maxAmmo;
     }
 
-    default int modifyProjectileAmount(int amount, GunData data) {
+    default int modifyProjectileAmount(int amount, WeaponData data) {
         return amount;
     }
 
-    default int modifyMultishotAmount(int amount, GunData data) {
+    default int modifyMultishotAmount(int amount, WeaponData data) {
         return amount;
     }
 
-    default int modifyReloadAmount(int amount, GunData data) {
+    default int modifyReloadAmount(int amount, WeaponData data) {
         return amount;
     }
 
-    default Set<FireMode> modifyFireModes(Set<FireMode> fireMode, GunData data) {
+    default Set<FireMode> modifyFireModes(Set<FireMode> fireMode, WeaponData data) {
         return fireMode;
     }
 
-    default GripType modifyGripType(GripType gripType, GunData data) {
+    default GripType modifyGripType(GripType gripType, WeaponData data) {
         return gripType;
     }
 
-    default int modifyFireDelay(int value, GunData data) {
+    default int modifyFireDelay(int value, WeaponData data) {
         return value;
     }
 
-    default boolean modifyNeedsFullCharge(boolean value, GunData data) {
+    default boolean modifyNeedsFullCharge(boolean value, WeaponData data) {
         return value;
     }
 
-    default boolean modifyIsOneTimeCharge(boolean value, GunData data) {
+    default boolean modifyIsOneTimeCharge(boolean value, WeaponData data) {
         return value;
     }
 
-    default Set<AmmoHolder> modifyAmmoItems(Set<AmmoHolder> item, GunData data) {
+    default Set<AmmoHolder> modifyAmmoItems(Set<AmmoHolder> item, WeaponData data) {
         return item;
     }
 
-    default Set<AmmoHolder> modifyFuelItems(Set<AmmoHolder> item, GunData data) {
+    default Set<AmmoHolder> modifyFuelItems(Set<AmmoHolder> item, WeaponData data) {
         return item;
     }
 
-    default int modifyReloadStart(int value, GunData data) {
+    default int modifyReloadStart(int value, WeaponData data) {
         return value;
     }
 
-    default int modifyReloadTime(int value, GunData data) {
+    default int modifyReloadTime(int value, WeaponData data) {
         return value;
     }
 
-    default int modifyReloadEnd(int value, GunData data) {
+    default int modifyReloadEnd(int value, WeaponData data) {
         return value;
     }
 
-    default int modifyEquipTime(int equipTime, GunData data) {
+    default int modifyEquipTime(int equipTime, WeaponData data) {
         return equipTime;
     }
 
-    default int modifyAmmoPerShot(int value, GunData data) {
+    default int modifyAmmoPerShot(int value, WeaponData data) {
         return value;
     }
 
-    default boolean modifyAutoReloading(boolean value, GunData data) {
+    default boolean modifyAutoReloading(boolean value, WeaponData data) {
         return value;
     }
 
-    default boolean modifyShouldRenderHud(boolean value, GunData data) {
+    default boolean modifyShouldRenderHud(boolean value, WeaponData data) {
         return value;
     }
 
-    default float modifyMovementSpeed(float value, GunData data) {
+    default float modifyMovementSpeed(float value, WeaponData data) {
         return value;
     }
 
-    default WeaponMode modifyWeaponMode(WeaponMode value, GunData data) {
+    default WeaponMode modifyWeaponMode(WeaponMode value, WeaponData data) {
         return value;
     }
 
-    default LoadingType modifyLoadingType(LoadingType loadingType, GunData data) {
+    default LoadingType modifyLoadingType(LoadingType loadingType, WeaponData data) {
         return loadingType;
     }
 
-    default MeleeMode modifyMeleeMode(MeleeMode value, GunData data) {
+    default MeleeMode modifyMeleeMode(MeleeMode value, WeaponData data) {
         return value;
     }
 
-    default int modifyMeleeCooldown(int value, GunData data) {
+    default int modifyMeleeCooldown(int value, WeaponData data) {
         return value;
     }
 
-    default int modifyMeleeDelay(int value, GunData data) {
+    default int modifyMeleeDelay(int value, WeaponData data) {
         return value;
     }
 
-    default float modifyMeleeDamage (float value, GunData data) {
+    default float modifyMeleeDamage (float value, WeaponData data) {
         return value;
     }
 
-    default float modifyMeleeDistance (float value, GunData data) {
+    default float modifyMeleeDistance (float value, WeaponData data) {
         return value;
     }
 
-    default float modifyMeleeAngle(float value, GunData data) {
+    default float modifyMeleeAngle(float value, WeaponData data) {
         return value;
     }
 
-    default float modifyMeleeKnockback(float value, GunData data) {
+    default float modifyMeleeKnockback(float value, WeaponData data) {
         return value;
     }
 
-    default int modifyMeleeMaxTargets(int value, GunData data) {
+    default int modifyMeleeMaxTargets(int value, WeaponData data) {
         return value;
     }
 
-    default ProjectileConfig modifyProjectile(ProjectileConfig value, GunData data) {
+    default ProjectileConfig modifyProjectile(ProjectileConfig value, WeaponData data) {
         return value;
     }
 
-    default Fuel modifyFuel(Fuel value, GunData data) {
+    default Fuel modifyFuel(Fuel value, WeaponData data) {
         return value;
     }
 
-    default ResourceLocation modifyAnimation(AnimationType tupe, ResourceLocation animation, GunData data) {
+    default ResourceLocation modifyAnimation(AnimationType tupe, ResourceLocation animation, WeaponData data) {
         return animation;
     }
 
-    default AmmoConfig modifyAmmo(AmmoConfig value, GunData data) {
+    default AmmoConfig modifyAmmo(AmmoConfig value, WeaponData data) {
         return value;
     }
 
-    default AmmoConfig modifyFuelAmmo(AmmoConfig value, GunData data) {
+    default AmmoConfig modifyFuelAmmo(AmmoConfig value, WeaponData data) {
         return value;
     }
 
-    default int modifyMaxFuel(ResourceLocation ammo, int max, GunData data) {
+    default int modifyMaxFuel(ResourceLocation ammo, int max, WeaponData data) {
         return max;
     }
 
-    default boolean modifyIsFuelMandatory(ResourceLocation ammo, boolean value, GunData data) {
+    default boolean modifyIsFuelMandatory(ResourceLocation ammo, boolean value, WeaponData data) {
         return value;
     }
 
-    default int modifyFuelAmountPerUse(ResourceLocation ammo, int value, GunData data) {
+    default int modifyFuelAmountPerUse(ResourceLocation ammo, int value, WeaponData data) {
         return value;
     }
 

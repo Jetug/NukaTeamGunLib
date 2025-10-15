@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.handlers;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,7 +33,7 @@ public class ServerEvent {
         if (!player.isCreative()
                 && isGun(stack)
                 && !isReloading
-                && isAutoReloading(new GunData(stack, player))
+                && isAutoReloading(new WeaponData(stack, player))
                 && shootTracker.cooldownEnded()
                 && !GunStateHelper.hasAmmo(stack)
         ) {

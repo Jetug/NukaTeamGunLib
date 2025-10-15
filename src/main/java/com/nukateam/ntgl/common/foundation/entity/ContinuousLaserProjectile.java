@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -13,7 +13,7 @@ public class ContinuousLaserProjectile extends LaserProjectile {
         super(entityType, worldIn);
     }
 
-    public ContinuousLaserProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn,  GunData data) {
+    public ContinuousLaserProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn,  WeaponData data) {
         super(entityType, worldIn, data);
     }
 

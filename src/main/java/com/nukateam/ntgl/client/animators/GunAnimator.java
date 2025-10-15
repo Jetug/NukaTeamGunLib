@@ -9,11 +9,11 @@ import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.model.gun.*;
 import com.nukateam.ntgl.client.render.renderers.weapon.*;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
+import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.ThrowMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Animations;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
@@ -41,7 +41,7 @@ import static mod.azure.azurelib.core.animation.Animation.LoopType.*;
 import static mod.azure.azurelib.core.animation.RawAnimation.begin;
 
 @OnlyIn(Dist.CLIENT)
-public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
+public class GunAnimator extends ItemAnimator implements IConfigProvider<WeaponConfig> {
     public static final String STATIC = "static";
     public static final String PREPARE = "prepare";
     public static final String PREPARE_SAFE = "prepare_safe";
@@ -105,13 +105,13 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
     }
 
     @Override
-    public Gun getConfig() {
+    public WeaponConfig getConfig() {
         if (getStack().getItem() instanceof IConfigProvider config) {
-            if (config.getConfig() instanceof Gun gun)
-                return gun;
+            if (config.getConfig() instanceof WeaponConfig weaponConfig)
+                return weaponConfig;
         }
 
-        return new Gun();
+        return new WeaponConfig();
     }
 
     public void tick(TickEvent event) {
@@ -163,12 +163,12 @@ public class GunAnimator extends ItemAnimator implements IConfigProvider<Gun> {
         return (IWeapon) getStack().getItem();
     }
 
-    protected @NotNull GunData getGunData() {
-        return new GunData(getStack(), getEntity());
+    protected @NotNull WeaponData getGunData() {
+        return new WeaponData(getStack(), getEntity());
     }
 
     protected boolean isOneHanded(ItemStack stack) {
-        return GunStateHelper.isOneHanded(new GunData(stack, getEntity()));
+        return GunStateHelper.isOneHanded(new WeaponData(stack, getEntity()));
     }
 
     @NotNull

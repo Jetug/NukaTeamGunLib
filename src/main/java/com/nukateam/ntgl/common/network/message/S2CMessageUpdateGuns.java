@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.network.message;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.Validate;
 
 public class S2CMessageUpdateGuns extends PlayMessage<S2CMessageUpdateGuns> {
-    private ImmutableMap<ResourceLocation, Gun> registeredGuns;
+    private ImmutableMap<ResourceLocation, WeaponConfig> registeredGuns;
 
     public S2CMessageUpdateGuns() {}
 
@@ -34,7 +34,7 @@ public class S2CMessageUpdateGuns extends PlayMessage<S2CMessageUpdateGuns> {
         supplier.setHandled(true);
     }
 
-    public ImmutableMap<ResourceLocation, Gun> getRegisteredGuns() {
+    public ImmutableMap<ResourceLocation, WeaponConfig> getRegisteredGuns() {
         return this.registeredGuns;
     }
 }

@@ -7,12 +7,12 @@ import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.util.RgbUtils;
 import com.nukateam.ntgl.client.util.util.render.Figures;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.CounterType;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.util.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -94,7 +94,7 @@ public class GunHud implements IGuiOverlay {
     }
 
     protected void renderAmmoCounter(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int x, int y) {
-        if(!GunModifierHelper.shouldRenderHud(new GunData(stack, minecraft.player))) return;
+        if(!GunModifierHelper.shouldRenderHud(new WeaponData(stack, minecraft.player))) return;
 
 
         var poseStack = graphics.pose();
@@ -146,7 +146,7 @@ public class GunHud implements IGuiOverlay {
         var barOffsetY = 0;
 
         for (var entry : handCache.fuels.entrySet()) {
-            var gunData = new GunData(stack, minecraft.player);
+            var gunData = new WeaponData(stack, minecraft.player);
             var fuelPercent = FuelUtils.getFuelPercent(stack, entry.getKey(), gunData);
 
             renderIcon(graphics, entry.getValue().getAmmo().getAmmoType().getIcon(), x - ICON_SIZE - 2, y - 5 - barOffsetY);
@@ -229,14 +229,14 @@ public class GunHud implements IGuiOverlay {
         return getGun(stack).getGeneral().getWeaponMode() == WeaponMode.THROWABLE;
     }
 
-    protected Gun getConfig(ItemStack stack){
+    protected WeaponConfig getConfig(ItemStack stack){
         var weapon = (IWeapon)stack.getItem();
         return weapon.getModifiedConfig(stack);
     }
 
     protected void updateCache(GunHudCache handCache, LocalPlayer player, ItemStack weapon) {
         if ((System.currentTimeMillis() - handCache.checkAmmoTimestamp) > 200) {
-            var data = new GunData(weapon, player);
+            var data = new WeaponData(weapon, player);
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
             handCache.maxAmmoCount = GunModifierHelper.getMaxAmmo(data);
             handCache.fireMode = GunStateHelper.getFireMode(data);
@@ -269,7 +269,7 @@ public class GunHud implements IGuiOverlay {
 
     protected int getInventoryAmmoCount(ItemStack weapon, Inventory inventory) {
         var inventoryAmmoCount = 0;
-        var gunData = new GunData(weapon, minecraft.player);
+        var gunData = new WeaponData(weapon, minecraft.player);
         var ammoHolder = GunStateHelper.getCurrentAmmo(gunData);
 
         for (int i = 0; i < inventory.getContainerSize(); i++) {

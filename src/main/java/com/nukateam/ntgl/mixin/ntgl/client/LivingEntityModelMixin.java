@@ -3,10 +3,8 @@ package com.nukateam.ntgl.mixin.ntgl.client;
 
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -56,7 +54,7 @@ public class LivingEntityModelMixin<T extends LivingEntity> {
             }
 
             var aimProgress = AimingHandler.get().getAimProgress(entity, Minecraft.getInstance().getFrameTime());
-            var gripType = GunStateHelper.getGripType(new GunData(heldItem, entity));
+            var gripType = GunStateHelper.getGripType(new WeaponData(heldItem, entity));
 
             gripType.getHeldAnimation().applyHumanoidModelRotation(
                             entity, model.rightArm, model.leftArm, model.head,

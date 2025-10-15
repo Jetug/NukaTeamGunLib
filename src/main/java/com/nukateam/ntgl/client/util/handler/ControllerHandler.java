@@ -14,6 +14,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -22,7 +23,6 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
-import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
@@ -86,7 +86,7 @@ public class ControllerHandler {
                 actions.put(GunButtonBindings.SHOOT, new Action(Component.translatable("ntgl.action.shoot"), Action.Side.RIGHT));
 
                 var tag = heldItem.getTag();
-                var data = new GunData(heldItem, player);
+                var data = new WeaponData(heldItem, player);
 
                 if (tag != null && GunStateHelper.getAmmoCount(data) < GunEnchantmentHelper.getAmmoCapacity(data)) {
                     actions.put(GunButtonBindings.RELOAD, new Action(Component.translatable("ntgl.action.reload"), Action.Side.LEFT));
@@ -134,7 +134,7 @@ public class ControllerHandler {
                 if (isEquals(originalButton, GunButtonBindings.SHOOT)) {
                     shouldCancel = true;
                     if (state) {
-                        ClientShootingHandler.get().fire(new GunData(heldItem, player).setWeaponAction(AttackMode.PRIMARY));
+                        ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponAction(AttackMode.PRIMARY));
                     }
                 } else if (isEquals(originalButton, GunButtonBindings.AIM)) {
                     shouldCancel = true;
@@ -177,11 +177,11 @@ public class ControllerHandler {
 
         if (controller.isButtonPressed(GunButtonBindings.SHOOT.getButton()) && Minecraft.getInstance().screen == null) {
             var heldItem = player.getMainHandItem();
-            var gunData = new GunData(heldItem, player);
+            var gunData = new WeaponData(heldItem, player);
 
             if (heldItem.getItem() instanceof IWeapon) {
                 if (GunModifierHelper.isAuto(gunData)) {
-                    ClientShootingHandler.get().fire(new GunData(heldItem, player).setWeaponAction(AttackMode.PRIMARY));
+                    ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponAction(AttackMode.PRIMARY));
                 }
             }
         }

@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.util.util;
 import com.nukateam.ntgl.client.util.MetaLoader;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 import com.nukateam.ntgl.common.data.properties.SightAnimation;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.util.data.ObjectCache;
@@ -70,23 +70,23 @@ public final class PropertyHelper {
         return ATTACHMENT_DEFAULT_ORIGIN;
     }
 
-    public static Vec3 getIronSightCamera(ItemStack stack, Gun modifiedGun) {
+    public static Vec3 getIronSightCamera(ItemStack stack, WeaponConfig modifiedWeaponConfig) {
         // Retrieve position from the model's data
         DataObject ironSightObject = getObjectByPath(stack, WEAPON_KEY, "ironSight");
         if (ironSightObject.has("camera", DataType.ARRAY)) {
             DataArray cameraArray = ironSightObject.getDataArray("camera");
             return arrayToVec3(cameraArray, Vec3.ZERO);
         }
-        var zoom = modifiedGun.getModules().getZoom();
+        var zoom = modifiedWeaponConfig.getModules().getZoom();
         if (zoom != null) {
-            double cameraX = modifiedGun.getModules().getZoom().getXOffset();
-            double cameraY = modifiedGun.getModules().getZoom().getYOffset();
-            double cameraZ = modifiedGun.getModules().getZoom().getZOffset();
+            double cameraX = modifiedWeaponConfig.getModules().getZoom().getXOffset();
+            double cameraY = modifiedWeaponConfig.getModules().getZoom().getYOffset();
+            double cameraZ = modifiedWeaponConfig.getModules().getZoom().getZOffset();
 
             var attachment = GunStateHelper.getAttachmentItem(AttachmentType.SCOPE, stack);
             if(!attachment.isEmpty() ){
                 var scope = (ScopeItem)attachment.getItem();
-                var attachmentConfig = modifiedGun.findAttachment(scope);
+                var attachmentConfig = modifiedWeaponConfig.findAttachment(scope);
                 cameraX += attachmentConfig.getXOffset();
                 cameraY += attachmentConfig.getYOffset();
                 cameraZ += attachmentConfig.getZOffset();

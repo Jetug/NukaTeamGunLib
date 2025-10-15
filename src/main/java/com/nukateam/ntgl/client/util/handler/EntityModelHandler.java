@@ -1,8 +1,7 @@
 package com.nukateam.ntgl.client.util.handler;
 
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.client.model.EntityModel;
@@ -25,7 +24,7 @@ public class EntityModelHandler {
 
         if (heldItem.getItem() instanceof INtglItem) {
             var heldAnimation = GunStateHelper
-                    .getGripType(new GunData(heldItem, entity))
+                    .getGripType(new WeaponData(heldItem, entity))
                     .getHeldAnimation();
 
             var aimProgress = AimingHandler.get()

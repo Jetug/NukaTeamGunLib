@@ -3,6 +3,7 @@ package com.nukateam.ntgl.client.util.handler;
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.KeyBinds;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.MeleeMode;
@@ -11,7 +12,6 @@ import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageMeleeAttack;
-import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
@@ -34,7 +34,7 @@ public class ClientMeleeHandler {
     private int delayTick;
     private int cooldownTick;
 
-    private ClientMeleeHandler(GunData data) {
+    private ClientMeleeHandler(WeaponData data) {
         this.cooldownTick = GunModifierHelper.getMeleeCooldown(data);
         this.delayTick = GunModifierHelper.getMeleeDelay(data);
     }
@@ -49,9 +49,9 @@ public class ClientMeleeHandler {
         return TRACKER_MAP.containsKey(key) && TRACKER_MAP.get(key).cooldownTick > 0;
     }
 
-    public static void addTracker(GunData data, InteractionHand hand) {
-        var entity = data.shooter;
-        var gun = data.gun;
+    public static void addTracker(WeaponData data, InteractionHand hand) {
+        var entity = data.wielder;
+        var gun = data.weapon;
         var doMelee = ModSyncedDataKeys.getDoMelee(hand);
         assert gun != null && entity != null;
 
@@ -75,7 +75,7 @@ public class ClientMeleeHandler {
             var offhandItem = player.getOffhandItem();
 
             if (mainHandItem.getItem() instanceof IWeapon) {
-                var data = new GunData(mainHandItem, player);
+                var data = new WeaponData(mainHandItem, player);
 
                 if(isKeyAttackDown()) {
                     data.setWeaponAction(AttackMode.PRIMARY);
@@ -96,7 +96,7 @@ public class ClientMeleeHandler {
 
             if (offhandItem.getItem() instanceof IWeapon && canUseOffhandWeapon(player) &&
                     !(mainHandItem.getItem() instanceof IWeapon)) {
-                var data = new GunData(offhandItem, player);
+                var data = new WeaponData(offhandItem, player);
 
                 if(isUseKeyDown()) {
                     data.setWeaponAction(AttackMode.PRIMARY);
@@ -127,12 +127,12 @@ public class ClientMeleeHandler {
         }
     }
 
-    private static void handleAutoFire(GunData data, InteractionHand hand) {
+    private static void handleAutoFire(WeaponData data, InteractionHand hand) {
         var mc = Minecraft.getInstance();
         var key = hand == InteractionHand.MAIN_HAND ?
                 mc.options.keyAttack :
                 mc.options.keyUse;
-        var shooter = data.shooter;
+        var shooter = data.wielder;
 
         if(isMelee(data) && !EquipTracker.isEquiping(shooter, hand) && !shooter.isSpectator()){
             attack(data, hand);
@@ -144,8 +144,8 @@ public class ClientMeleeHandler {
         }
     }
 
-    private static void attack(GunData data, InteractionHand hand) {
-        var shooter = data.shooter;
+    private static void attack(WeaponData data, InteractionHand hand) {
+        var shooter = data.wielder;
         var key = new Pair<>(shooter, hand);
 
         if(!TRACKER_MAP.containsKey(key)) {
@@ -177,7 +177,7 @@ public class ClientMeleeHandler {
         TRACKER_MAP.remove(Pair.of(entity, arm));
     }
 
-    private static boolean isMelee(GunData data) {
+    private static boolean isMelee(WeaponData data) {
         return GunModifierHelper.getWeaponMode(data) == WeaponMode.MELEE;
     }
 }

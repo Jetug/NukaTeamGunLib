@@ -2,9 +2,8 @@ package com.nukateam.ntgl.common.util.trackers;
 
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
-import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.event.MeleeAttackEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 
@@ -76,16 +75,16 @@ public class MeleeTracker {
         }
     }
 
-    public static void start(GunData data, InteractionHand arm){
+    public static void start(WeaponData data, InteractionHand arm){
         var dataKey = getDataKey(arm);
-        dataKey.setValue(data.shooter, true);
+        dataKey.setValue(data.wielder, true);
         addTracker(data, arm);
     }
 
-    private static void addTracker(GunData data, InteractionHand hand) {
+    private static void addTracker(WeaponData data, InteractionHand hand) {
         var dataKey = getDataKey(hand);
-        var heldItem = data.gun;
-        var entity = data.shooter;
+        var heldItem = data.weapon;
+        var entity = data.wielder;
 
         if (!TRACKER_MAP.containsKey(entity)) {
             if (!(heldItem.getItem() instanceof IWeapon)) {
@@ -147,7 +146,7 @@ public class MeleeTracker {
         private final ItemStack stack;
 
         private final int cooldown;
-        private final GunData data;
+        private final WeaponData data;
         private int meleeTick;
         private final int attackDelay;
         private final float meleeDamage;
@@ -156,10 +155,10 @@ public class MeleeTracker {
         private final double attackAngle;
         private final int maxTargets;
 
-        private Tracker(GunData data, InteractionHand arm) {
+        private Tracker(WeaponData data, InteractionHand arm) {
             this.arm = arm;
             this.data = data;
-            this.stack = data.gun;
+            this.stack = data.weapon;
             assert stack != null;
             this.cooldown = GunModifierHelper.getMeleeCooldown(data);
             this.attackDelay = GunModifierHelper.getMeleeDelay(data);
@@ -171,9 +170,9 @@ public class MeleeTracker {
             this.maxTargets = GunModifierHelper.getMeleeMaxTargets(data);
         }
 
-        private void tryMeleeAttack(GunData gunData) {
-            assert gunData.shooter != null && gunData.gun != null;
-            var player = gunData.shooter;
+        private void tryMeleeAttack(WeaponData weaponData) {
+            assert weaponData.wielder != null && weaponData.weapon != null;
+            var player = weaponData.wielder;
             var targets = getTargets(player);
 
             var targetsToAttack = new ArrayList<LivingEntity>();
@@ -183,7 +182,7 @@ public class MeleeTracker {
                 targetsToAttack.add(targets.get(i).entity);
             }
 
-            if (!MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(player, gunData, arm, targetsToAttack))) {
+            if (!MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(player, weaponData, arm, targetsToAttack))) {
                 if (!targetsToAttack.isEmpty()) {
                     for (var target : targetsToAttack) {
                         attackEntity(player, target);
@@ -191,7 +190,7 @@ public class MeleeTracker {
 
                     playAttackSound(player);
                     spawnAttackEffects(player, targetsToAttack);
-                    MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Post(player, gunData, arm, targetsToAttack));
+                    MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Post(player, weaponData, arm, targetsToAttack));
                 }
             }
         }

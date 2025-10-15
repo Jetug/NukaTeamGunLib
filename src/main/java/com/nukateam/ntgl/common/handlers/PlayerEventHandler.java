@@ -3,11 +3,11 @@ package com.nukateam.ntgl.common.handlers;
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.handler.ClientEquipHandler;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
-import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
@@ -48,7 +48,7 @@ public class PlayerEventHandler {
                     movementSpeed.addTransientModifier(new AttributeModifier(
                             SPEED_MODIFIER_ID,
                             MOVEMENT_SPEED,
-                            GunModifierHelper.getModifiedMovementSpeed(new GunData(heldItem, player)),
+                            GunModifierHelper.getModifiedMovementSpeed(new WeaponData(heldItem, player)),
                             AttributeModifier.Operation.MULTIPLY_BASE
                     ));
                 }

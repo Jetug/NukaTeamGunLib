@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.container;
 
 
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.foundation.container.slot.*;
@@ -12,7 +12,6 @@ import net.minecraft.world.*;
 import net.minecraft.world.entity.player.*;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.*;
 
 import java.util.ArrayList;
 
@@ -36,7 +35,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
 
     public AttachmentContainer(int windowId, Inventory playerInventory, ItemStack stack) {
         this(windowId, playerInventory);
-        var gunData = new GunData(stack, playerInventory.player);
+        var gunData = new WeaponData(stack, playerInventory.player);
         var sortedAttachments = getAttachmentTypes(gunData);
         var attachmentItems = new ArrayList<ItemStack>();
 
@@ -85,7 +84,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
         this.weapon = playerInventory.getSelected();
         this.playerInventory = playerInventory;
         this.player = playerInventory.player;
-        var gunData = new GunData(weapon, playerInventory.player);
+        var gunData = new WeaponData(weapon, playerInventory.player);
         var sortedTypes = getAttachmentTypes(gunData);
 
         weaponInventory = new SimpleContainer(sortedTypes.size()) {
@@ -125,7 +124,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
 
     @Override
     public void setItem(int slotId, int stateId, ItemStack stack) {
-        var gunData = new GunData(this.weapon, this.player);
+        var gunData = new WeaponData(this.weapon, this.player);
         var oldStack = this.getSlot(slotId).getItem();
         if(!EVENT_BUS.post(new AttachmentEvent.SlotUpdateEvent(this, gunData, oldStack, stack))) {
             super.setItem(slotId, stateId, stack);
@@ -136,13 +135,13 @@ public class AttachmentContainer extends AbstractContainerMenu {
     public void slotsChanged(Container inventoryIn) {
         var attachments = new ArrayList<ItemStack>();
 
-        EVENT_BUS.post(new AttachmentEvent.ContainerUpdateEvent(this, new GunData(this.weapon, this.player)));
+        EVENT_BUS.post(new AttachmentEvent.ContainerUpdateEvent(this, new WeaponData(this.weapon, this.player)));
 
         for (int i = 0; i < this.getWeaponInventory().getContainerSize(); i++) {
             var itemStack = this.getSlot(i).getItem();
             attachments.add(itemStack);
         }
-        GunStateHelper.saveAttachments(new GunData(this.weapon, player), attachments);
+        GunStateHelper.saveAttachments(new WeaponData(this.weapon, player), attachments);
         super.broadcastChanges();
     }
 

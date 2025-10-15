@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.modules.enchantment;
 
-import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.util.util.GunModifierHelper;
 import com.nukateam.ntgl.common.foundation.particles.TrailData;
 import net.minecraft.core.particles.ParticleOptions;
@@ -51,10 +50,10 @@ public class GunEnchantmentHelper {
         return level > 0 ? 1.5 : 1.0;
     }
 
-    public static int getAmmoCapacity(GunData data) {
+    public static int getAmmoCapacity(WeaponData data) {
 //        int capacity = modifiedGun.getGeneral().getMaxAmmo(weapon);
         int capacity = GunModifierHelper.getMaxAmmo(data);
-        int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), data.gun);
+        int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.OVER_CAPACITY.get(), data.weapon);
         if (level > 0) {
             capacity += Math.max(level, (capacity / 2) * level);
         }

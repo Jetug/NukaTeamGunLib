@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.util.util;
 
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.util.helpers.compatibility.BackpackHelper;
@@ -134,8 +134,8 @@ public class InventoryUtil {
         return new AmmoContext(ammo, null);
     }
 
-    public static IAmmoContext findAmmo(AmmoHolder ammoHandler, GunData data) {
-        if (data.shooter instanceof Player player) {
+    public static IAmmoContext findAmmo(AmmoHolder ammoHandler, WeaponData data) {
+        if (data.wielder instanceof Player player) {
             var context = findPlayerAmmo(player, ammoHandler);
 
             if(context == AmmoContext.NONE){
@@ -157,14 +157,14 @@ public class InventoryUtil {
     }
 
     public static IAmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
-        var data = new GunData(weapon, entity);
+        var data = new WeaponData(weapon, entity);
         var ammoHandler = GunStateHelper.getCurrentAmmo(data);
 
         return findAmmo(ammoHandler, data);
     }
 
     public static IAmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {
-        var data = new GunData(weapon, entity);
+        var data = new WeaponData(weapon, entity);
         var ammoHandler = GunStateHelper.getCurrentAmmo(data);
 
         if (entity instanceof Player player) {

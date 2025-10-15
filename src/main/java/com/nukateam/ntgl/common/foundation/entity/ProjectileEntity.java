@@ -1,11 +1,11 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.gun.General;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.util.trackers.SpreadTracker;
@@ -59,12 +59,12 @@ import java.util.function.Predicate;
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData {
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
-    protected GunData gunData;
+    protected WeaponData weaponData;
     protected boolean isServerSide = !level().isClientSide();
     protected boolean isRightHand;
     protected int shooterId;
     protected LivingEntity shooter;
-    protected Gun modifiedGun;
+    protected WeaponConfig modifiedWeaponConfig;
     protected General general;
     protected ProjectileConfig projectile = new ProjectileConfig();
     protected ItemStack weapon = ItemStack.EMPTY;
@@ -78,17 +78,17 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         super(entityType, worldIn);
     }
 
-    public ProjectileEntity(EntityType<? extends Entity> entityType, Level level, GunData data) {
+    public ProjectileEntity(EntityType<? extends Entity> entityType, Level level, WeaponData data) {
         this(entityType, level);
 
-        assert data.gun != null;
-        assert data.shooter != null;
+        assert data.weapon != null;
+        assert data.wielder != null;
 
-        var item = (IWeapon) data.gun.getItem();
-        var weapon = data.gun;
+        var item = (IWeapon) data.weapon.getItem();
+        var weapon = data.weapon;
 
-        this.gunData = data;
-        this.shooter = data.shooter;
+        this.weaponData = data;
+        this.shooter = data.wielder;
         this.shooterId = shooter.getId();
         this.weapon = weapon;
         this.general = GunModifierHelper.getGeneral(data);
@@ -245,7 +245,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if(weapon.isEmpty())
             return 0;
 
-        var data = new GunData(this.weapon, this.shooter);
+        var data = new WeaponData(this.weapon, this.shooter);
 
         float initialDamage = GunModifierHelper.getModifiedDamage(data)  + this.additionalDamage;
 
@@ -650,8 +650,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return onFinish.apply(context);
     }
 
-    private ItemStack setupAmmo(GunData data) {
-        var weapon = data.gun;
+    private ItemStack setupAmmo(WeaponData data) {
+        var weapon = data.weapon;
 
         var ammoHolder = GunStateHelper.getCurrentAmmo(data);
         if(ammoHolder.canReturnAmmo()) {
@@ -680,14 +680,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         /* Get speed and set motion */
         var dir = this.getDirection(shooter, weapon, item);
         var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
-        var data = new GunData(weapon, shooter);
+        var data = new WeaponData(weapon, shooter);
         var speed = GunModifierHelper.getModifiedProjectileSpeed(data, this.projectile.getSpeed() * speedModifier);
         this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
     }
 
     protected float getCriticalDamage(ItemStack weapon, RandomSource rand, float damage) {
-        var data = new GunData(weapon, shooter);
+        var data = new WeaponData(weapon, shooter);
         float chance = GunModifierHelper.getCriticalChance(data);
         if (rand.nextFloat() < chance) {
             return (float) (damage * Config.COMMON.gameplay.criticalDamageMultiplier.get());
@@ -696,7 +696,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     protected Vec3 getDirection(LivingEntity shooter, ItemStack weapon, IWeapon item) {
-        var data = new GunData(weapon, shooter);
+        var data = new WeaponData(weapon, shooter);
         float gunSpread = GunModifierHelper.getModifiedSpread(data);
 
         if (gunSpread == 0F) {

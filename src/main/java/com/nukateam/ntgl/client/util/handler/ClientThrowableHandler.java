@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.KeyAction;
@@ -33,7 +33,7 @@ public class ClientThrowableHandler {
         var minecraft = Minecraft.getInstance();
         if(event.phase == TickEvent.Phase.END && minecraft.player != null){
             if(minecraft.options.keyAttack.isDown()){
-                var gunData = new GunData(minecraft.player.getMainHandItem(), minecraft.player)
+                var gunData = new WeaponData(minecraft.player.getMainHandItem(), minecraft.player)
                         .setWeaponAction(AttackMode.PRIMARY);
                 addTracker(gunData, InteractionHand.MAIN_HAND);
             }
@@ -42,7 +42,7 @@ public class ClientThrowableHandler {
             }
 
             if(minecraft.options.keyUse.isDown()){
-                var gunData = new GunData(minecraft.player.getOffhandItem(), minecraft.player)
+                var gunData = new WeaponData(minecraft.player.getOffhandItem(), minecraft.player)
                         .setWeaponAction(AttackMode.PRIMARY);
                 addTracker(gunData, InteractionHand.OFF_HAND);
             }
@@ -52,9 +52,9 @@ public class ClientThrowableHandler {
         }
     }
 
-    public static void addTracker(GunData gunData, InteractionHand hand) {
-        var player = gunData.shooter;
-        if(isThrowable(gunData) && !TRACKER_MAP.containsKey(hand)){
+    public static void addTracker(WeaponData weaponData, InteractionHand hand) {
+        var player = weaponData.wielder;
+        if(isThrowable(weaponData) && !TRACKER_MAP.containsKey(hand)){
             TRACKER_MAP.put(hand, new Tracker(player, hand));
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.HOLD, hand));
         }
@@ -78,7 +78,7 @@ public class ClientThrowableHandler {
 
         if (event.isAttack()) {
             var heldItem = player.getMainHandItem();
-            var gunData = new GunData(heldItem, player).setWeaponAction(AttackMode.PRIMARY);
+            var gunData = new WeaponData(heldItem, player).setWeaponAction(AttackMode.PRIMARY);
 
             if (isThrowable(gunData)) {
                 event.setCanceled(true);
@@ -86,7 +86,7 @@ public class ClientThrowableHandler {
             }
         } else if (event.isUseItem()) {
             var offhandItem = player.getOffhandItem();
-            var gunData = new GunData(offhandItem, player).setWeaponAction(AttackMode.PRIMARY);
+            var gunData = new WeaponData(offhandItem, player).setWeaponAction(AttackMode.PRIMARY);
 
             if (isThrowable(gunData) && canUseOffhandWeapon(player)) {
                 event.setCanceled(true);
@@ -95,8 +95,8 @@ public class ClientThrowableHandler {
         }
     }
 
-    private static boolean isThrowable(GunData gunData) {
-        return gunData.gun != null && gunData.gun.getItem() instanceof IThrowable && GunModifierHelper.isThrowable(gunData);
+    private static boolean isThrowable(WeaponData weaponData) {
+        return weaponData.weapon != null && weaponData.weapon.getItem() instanceof IThrowable && GunModifierHelper.isThrowable(weaponData);
     }
 
     private static class Tracker {

@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.client.handlers.ClientHandler;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
@@ -53,7 +53,7 @@ public class ClientActions {
         var weapon = player.getItemInHand(hand);
 
         if(weapon.getItem() instanceof IWeapon){
-            var gunData = new GunData(weapon, player).setWeaponAction(mode);
+            var gunData = new WeaponData(weapon, player).setWeaponAction(mode);
             var weaponMode = GunModifierHelper.getWeaponMode(gunData);
 
             if(weaponMode == WeaponMode.GUN) {

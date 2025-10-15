@@ -5,10 +5,10 @@ import net.minecraft.resources.ResourceLocation;
 import javax.annotation.Nullable;
 
 public class Sounds{
-    private final Gun gun;
+    private final WeaponConfig weaponConfig;
 
-    public Sounds(Gun gun) {
-        this.gun = gun;
+    public Sounds(WeaponConfig weaponConfig) {
+        this.weaponConfig = weaponConfig;
     }
 
     /**
@@ -16,7 +16,7 @@ public class Sounds{
      */
     @Nullable
     public ResourceLocation getFire() {
-        return gun.sounds.get("fire");
+        return weaponConfig.sounds.get("fire");
     }
 
     /**
@@ -24,7 +24,7 @@ public class Sounds{
      */
     @Nullable
     public ResourceLocation getReload() {
-        return gun.sounds.get("reload");
+        return weaponConfig.sounds.get("reload");
     }
 
     /**
@@ -32,7 +32,7 @@ public class Sounds{
      */
     @Nullable
     public ResourceLocation getCock() {
-        return gun.sounds.get("cock");
+        return weaponConfig.sounds.get("cock");
     }
 
     /**
@@ -40,7 +40,7 @@ public class Sounds{
      */
     @Nullable
     public ResourceLocation getSilencedFire() {
-        return gun.sounds.get("silencedFire");
+        return weaponConfig.sounds.get("silencedFire");
     }
 
     /**
@@ -48,11 +48,11 @@ public class Sounds{
      */
     @Nullable
     public ResourceLocation getEnchantedFire() {
-        return gun.sounds.get("enchantedFire");
+        return weaponConfig.sounds.get("enchantedFire");
     }
 
     @Nullable
     public ResourceLocation getPreFire() {
-        return gun.sounds.get("preFire");
+        return weaponConfig.sounds.get("preFire");
     }
 }

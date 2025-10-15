@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -19,11 +19,11 @@ public class FuelUtils {
         return new CompoundTag();
     }
 
-    public static boolean hasFuel(GunData data){
+    public static boolean hasFuel(WeaponData data){
         return hasFuel(data, true);
     }
 
-    public static boolean hasFuel(GunData data, boolean requareAll){
+    public static boolean hasFuel(WeaponData data, boolean requareAll){
         var allFuel = GunModifierHelper.getAllFuel(data);
         for (var fuelType : allFuel) {
             var isMandatory = GunModifierHelper.isFuelMandatory(fuelType.getId(), data);
@@ -36,14 +36,14 @@ public class FuelUtils {
         return true;
     }
 
-    public static boolean hasFuel(ResourceLocation id, GunData data){
+    public static boolean hasFuel(ResourceLocation id, WeaponData data){
         var amount = GunModifierHelper.getFuelAmountPerUse(id, data);
-        var fuel = getFuel(data.gun, AmmoHolder.getType(id));
+        var fuel = getFuel(data.weapon, AmmoHolder.getType(id));
         return fuel >= amount;
     }
 
-    public static boolean isFull(GunData data, AmmoHolder ammoHolder) {
-        var fuel = getFuel(data.gun, ammoHolder);
+    public static boolean isFull(WeaponData data, AmmoHolder ammoHolder) {
+        var fuel = getFuel(data.weapon, ammoHolder);
         var max = GunModifierHelper.getMaxFuel(ammoHolder.getId(), data);
         return fuel >= max;
     }
@@ -66,20 +66,20 @@ public class FuelUtils {
         stack.setTag(tag);
     }
 
-    public static void addFuel(GunData data, AmmoHolder ammoHolder, int value) {
-        var oldValue = getFuel(data.gun, ammoHolder);
+    public static void addFuel(WeaponData data, AmmoHolder ammoHolder, int value) {
+        var oldValue = getFuel(data.weapon, ammoHolder);
         var max = GunModifierHelper.getMaxFuel(ammoHolder.getId(), data);
-        setFuel(data.gun, ammoHolder, Mth.clamp(oldValue + value, 0, max));
+        setFuel(data.weapon, ammoHolder, Mth.clamp(oldValue + value, 0, max));
     }
 
-    public static void consumeFuel(AmmoHolder ammoHolder, GunData data) {
-        var oldValue = getFuel(data.gun, ammoHolder);
+    public static void consumeFuel(AmmoHolder ammoHolder, WeaponData data) {
+        var oldValue = getFuel(data.weapon, ammoHolder);
         var max = GunModifierHelper.getMaxFuel(ammoHolder.getId(), data);
         var value = GunModifierHelper.getFuelAmountPerUse(ammoHolder.getId(), data);
-        setFuel(data.gun, ammoHolder, Mth.clamp(oldValue - value, 0, max));
+        setFuel(data.weapon, ammoHolder, Mth.clamp(oldValue - value, 0, max));
     }
 
-    public static float getFuelPercent(ItemStack stack, AmmoHolder ammoHolder, GunData data) {
+    public static float getFuelPercent(ItemStack stack, AmmoHolder ammoHolder, WeaponData data) {
         var fuel = getFuel(stack, ammoHolder);
         var maxFuel = GunModifierHelper.getMaxFuel(ammoHolder.getId(), data);
         var fuelPercent = (fuel / (float) maxFuel);

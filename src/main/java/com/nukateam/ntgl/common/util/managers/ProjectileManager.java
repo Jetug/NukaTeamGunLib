@@ -1,12 +1,12 @@
 package com.nukateam.ntgl.common.util.managers;
 
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.ProjectileType;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableGrenadeEntity;
 import com.nukateam.ntgl.common.util.interfaces.IProjectileFactory;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.util.interfaces.IThrowableProjectileFactory;
-import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -54,7 +54,7 @@ public class ProjectileManager {
         this.projectileForAmmoFactories.put(ForgeRegistries.ITEMS.getKey(ammo), factory);
     }
 
-    public IProjectileFactory getFactory(GunData data) {
+    public IProjectileFactory getFactory(WeaponData data) {
         var item = GunStateHelper.getCurrentAmmo(data);
         var projectileType = GunStateHelper.getProjectileConfig(data).getProjectileType();
         var factory = projectileForAmmoFactories.get(item);

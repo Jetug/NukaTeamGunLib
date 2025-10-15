@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.util.handler;
 
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.GunStateHelper;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
@@ -72,13 +72,13 @@ public class ClientReloadHandler {
         var offhandItem = player.getOffhandItem();
 
         if (mainHandItem.getItem() instanceof IWeapon
-                && !GunModifierHelper.isWeaponFull(new GunData(mainHandItem, player))
+                && !GunModifierHelper.isWeaponFull(new WeaponData(mainHandItem, player))
                 && !isReloading(player, InteractionHand.MAIN_HAND)){
             setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
         }
         else if (offhandItem.getItem() instanceof IWeapon
                 && GunModifierHelper.canUseOffhandWeapon(player)
-                && !GunModifierHelper.isWeaponFull(new GunData(offhandItem, player))
+                && !GunModifierHelper.isWeaponFull(new WeaponData(offhandItem, player))
                 && !isReloading(player, InteractionHand.OFF_HAND)){
             setReloading(!ModSyncedDataKeys.RELOADING_LEFT.getValue(player), InteractionHand.OFF_HAND);
         }
@@ -95,7 +95,7 @@ public class ClientReloadHandler {
             if (stack.getItem() instanceof IWeapon) {
                 var isAmmoIgnored = GunStateHelper.isAmmoIgnored(stack);
                 var hasAmmo = InventoryUtil.hasAmmo(player, stack);
-                var data = new GunData(stack, player);
+                var data = new WeaponData(stack, player);
                 var isMaxAmmo = GunStateHelper.isMaxAmmo(data);
 
                 if (!isAmmoIgnored && hasAmmo && !isMaxAmmo) {

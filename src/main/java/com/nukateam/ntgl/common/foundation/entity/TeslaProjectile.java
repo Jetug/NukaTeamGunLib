@@ -1,14 +1,12 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.WeaponData;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,11 +36,11 @@ public class TeslaProjectile extends AbstractBeamProjectile {
         this.entityType = entityType;
     }
 
-    public TeslaProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, GunData data) {
+    public TeslaProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, WeaponData data) {
           this(entityType, worldIn, data, CHAIN_TARGETS);
     }
 
-    public TeslaProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, GunData data, int chainTargets) {
+    public TeslaProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, WeaponData data, int chainTargets) {
         super(entityType, worldIn, data);
         this.chainTargets = chainTargets;
         this.entityType = entityType;
@@ -54,7 +52,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
 
     public TeslaProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn,
                            Entity source, LivingEntity target,
-                           GunData data, int chainTargets) {
+                           WeaponData data, int chainTargets) {
 
         super(entityType, worldIn, data);
 
@@ -104,7 +102,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
                 var nextTarget = findNextTarget(entity);
                 if (nextTarget != null) {
                     var projectile = new TeslaProjectile(
-                            TESLA_PROJECTILE.get(), level(), entity, nextTarget, gunData,chainTargets - 1);
+                            TESLA_PROJECTILE.get(), level(), entity, nextTarget, weaponData,chainTargets - 1);
                     level().addFreshEntity(projectile);
                 }
             }

@@ -1,11 +1,11 @@
 package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.data.config.AmmoConfig;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
@@ -38,7 +38,7 @@ public class GunStateHelper {
     public static final String ATTACHMENTS = "Attachments";
 
     //AMMO
-    public static void switchAmmo(GunData data){
+    public static void switchAmmo(WeaponData data){
         var ammoItems = GunModifierHelper.getAmmoItems(data);
         var current = getCurrentAmmo(data);
         var newAmmo = SetUtils.cycleSet(ammoItems, current);
@@ -46,32 +46,32 @@ public class GunStateHelper {
         setCurrentAmmo(data, newAmmo.getId());
     }
 
-    public static ResourceKey<DamageType> getDamageType(GunData data){
+    public static ResourceKey<DamageType> getDamageType(WeaponData data){
         var ammo = getProjectileConfig(data);
         return ammo.getDamageType();
     }
 
-    public static int getAmmoCount(GunData data) {
-        var tag = data.gun.getOrCreateTag();
+    public static int getAmmoCount(WeaponData data) {
+        var tag = data.weapon.getOrCreateTag();
         return tag.getInt(Tags.AMMO_COUNT);
     }
 
-    public static void addAmmo(GunData data, int amount) {
-        var tag = data.gun.getOrCreateTag();
+    public static void addAmmo(WeaponData data, int amount) {
+        var tag = data.weapon.getOrCreateTag();
         var maxAmmo = GunModifierHelper.getMaxAmmo(data);
         var result = Math.min(tag.getInt(Tags.AMMO_COUNT) + amount, maxAmmo);
         tag.putInt(Tags.AMMO_COUNT, result);
-        data.gun.setTag(tag);
+        data.weapon.setTag(tag);
     }
 
-    public static void setCurrentAmmo(GunData data, ResourceLocation ammo) {
-        var tag = data.gun.getOrCreateTag();
+    public static void setCurrentAmmo(WeaponData data, ResourceLocation ammo) {
+        var tag = data.weapon.getOrCreateTag();
         tag.putString(AMMO_TAG, ammo.toString());
-        data.gun.setTag(tag);
+        data.weapon.setTag(tag);
     }
 
-    public static AmmoHolder getCurrentAmmo(GunData data) {
-        var tag = data.gun.getOrCreateTag();
+    public static AmmoHolder getCurrentAmmo(WeaponData data) {
+        var tag = data.weapon.getOrCreateTag();
 
         if(tag.contains(AMMO_TAG, Tag.TAG_STRING)){
             var ammoId = tag.getString(AMMO_TAG);
@@ -83,8 +83,8 @@ public class GunStateHelper {
         }
     }
 
-    public static AmmoHolder getCurrentAmmoWithoutCheck(GunData data) {
-        var tag = data.gun.getOrCreateTag();
+    public static AmmoHolder getCurrentAmmoWithoutCheck(WeaponData data) {
+        var tag = data.weapon.getOrCreateTag();
         var ammoItems = GunModifierHelper.getAmmoItems(data);
 
         if(tag.contains(AMMO_TAG, Tag.TAG_STRING)) {
@@ -97,41 +97,41 @@ public class GunStateHelper {
         }
     }
 
-    public static boolean isAcceptable(GunData gunData, ItemStack item) {
-        return getCurrentAmmo(gunData).isAcceptable(item);
+    public static boolean isAcceptable(WeaponData weaponData, ItemStack item) {
+        return getCurrentAmmo(weaponData).isAcceptable(item);
     }
 
 //    public static Item getAmmoItem(GunData data) {
 //        return ITEMS.getValue(getAmmoHolder(data));
 //    }
 
-    public static AmmoConfig getAmmoConfig(GunData data) {
+    public static AmmoConfig getAmmoConfig(WeaponData data) {
         var ammoId = getCurrentAmmo(data).getId();
         return GunModifierHelper.getAmmoConfig(ammoId, data);
     }
 
-    public static @NotNull ProjectileConfig getProjectileConfig(GunData data) {
+    public static @NotNull ProjectileConfig getProjectileConfig(WeaponData data) {
         var ammoId = getCurrentAmmoWithoutCheck(data).getId();
         return GunModifierHelper.getProjectileConfig(ammoId, data);
     }
 
     //FIRE MODE______________________________________
-    public static void switchFireMode(GunData data){
+    public static void switchFireMode(WeaponData data){
         var fireModes = GunModifierHelper.getFireModes(data);
         var current = getFireMode(data);
         var newFireMode = SetUtils.cycleSet(fireModes, current);
         setFireMode(data, newFireMode);
     }
 
-    public static void setFireMode(GunData data, FireMode fireMode) {
-        var tag = data.gun.getOrCreateTag();
+    public static void setFireMode(WeaponData data, FireMode fireMode) {
+        var tag = data.weapon.getOrCreateTag();
         tag.putString(FIRE_MODE, fireMode.toString());
-        data.gun.setTag(tag);
+        data.weapon.setTag(tag);
     }
 
-    public static FireMode getFireMode(GunData data) {
+    public static FireMode getFireMode(WeaponData data) {
         var fireModes = GunModifierHelper.getFireModes(data);
-        var currentFireMode = getFireMode(data.gun);
+        var currentFireMode = getFireMode(data.weapon);
 
         if (currentFireMode == null || !fireModes.contains(currentFireMode)) {
             setFireMode(data, SetUtils.getFirst(fireModes));
@@ -148,7 +148,7 @@ public class GunStateHelper {
         else return null;
     }
 
-    public static boolean isMaxAmmo(GunData data) {
+    public static boolean isMaxAmmo(WeaponData data) {
         var ammo = getAmmoCount(data);
         var maxAmmo = GunModifierHelper.getMaxAmmo(data);
         return ammo == maxAmmo;
@@ -159,8 +159,8 @@ public class GunStateHelper {
         tag.putInt(Tags.AMMO_COUNT, amount);
     }
 
-    public static void setMaxAmmo(GunData data) {
-        GunStateHelper.setAmmo(data.gun, GunModifierHelper.getMaxAmmo(data));
+    public static void setMaxAmmo(WeaponData data) {
+        GunStateHelper.setAmmo(data.weapon, GunModifierHelper.getMaxAmmo(data));
     }
 
     public static boolean hasAmmo(ItemStack gunStack) {
@@ -168,9 +168,9 @@ public class GunStateHelper {
         return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) > 0;
     }
 
-    public static void fillAmmo(GunData data) {
-        if (data.gun.getItem() instanceof IWeapon) {
-            var tag = data.gun.getOrCreateTag();
+    public static void fillAmmo(WeaponData data) {
+        if (data.weapon.getItem() instanceof IWeapon) {
+            var tag = data.weapon.getOrCreateTag();
             var maxAmmo = GunModifierHelper.getMaxAmmo(data);
 
             tag.putInt(Tags.AMMO_COUNT, maxAmmo);
@@ -252,7 +252,7 @@ public class GunStateHelper {
         return null;
     }
 
-    public static float getFovModifier(ItemStack stack, Gun modifiedGun) {
+    public static float getFovModifier(ItemStack stack, WeaponConfig modifiedWeaponConfig) {
         float modifier = 0.0F;
         if (hasAttachmentEquipped(stack, AttachmentType.SCOPE)) {
             var scope = getScope(stack);
@@ -263,7 +263,7 @@ public class GunStateHelper {
                 modifier -= scope.getFovModifier();
             }
         }
-        var zoom = modifiedGun.getModules().getZoom();
+        var zoom = modifiedWeaponConfig.getModules().getZoom();
         return zoom != null ? modifier + zoom.getFovModifier() : 0F;
     }
 
@@ -272,8 +272,8 @@ public class GunStateHelper {
         return tag.contains("IgnoreAmmo", Tag.TAG_BYTE);
     }
 
-    public static void saveAttachments(GunData data, Collection<ItemStack> attachments){
-        var weapon = data.gun;
+    public static void saveAttachments(WeaponData data, Collection<ItemStack> attachments){
+        var weapon = data.weapon;
 //        var currentAttachments = getAttachmentItems(weapon);
 //        var isServerSide = data.shooter != null && !data.shooter.level().isClientSide;
 //        var attachmentsChanged = !containsItem(attachments, currentAttachments);
@@ -332,10 +332,10 @@ public class GunStateHelper {
         tag.put(Tags.ATTACHMENTS, attachmentsTag);
     }
 
-    public static GripType getGripType(GunData data){
-        if(data.gun == null) return GripType.ONE_HANDED;
+    public static GripType getGripType(WeaponData data){
+        if(data.weapon == null) return GripType.ONE_HANDED;
 
-        var item = data.gun.getItem();
+        var item = data.weapon.getItem();
         if(item instanceof IWeapon){
             return GunModifierHelper.getGripType(data);
         }
@@ -345,9 +345,9 @@ public class GunStateHelper {
         return GripType.ONE_HANDED;
     }
 
-    public static void consumeAmmo(GunData data) {
-        var shooter = data.shooter;
-        var heldItem = data.gun;
+    public static void consumeAmmo(WeaponData data) {
+        var shooter = data.wielder;
+        var heldItem = data.weapon;
         if(shooter != null && heldItem != null){
             var ammoPerShot = GunModifierHelper.getAmmoPerShot(data);
             var fireMode = GunStateHelper.getFireMode(data);
@@ -371,7 +371,7 @@ public class GunStateHelper {
     public static int getEquipTime(ItemStack slot, LivingEntity shooter) {
         var equipTime = 0;
         if (slot.getItem() instanceof IWeapon) {
-            var data = new GunData(slot, shooter);
+            var data = new WeaponData(slot, shooter);
             equipTime = GunModifierHelper.getEquipTime(data);
         }
         else if (slot.getItem() instanceof IThrowable throwable) {
@@ -380,9 +380,9 @@ public class GunStateHelper {
         return equipTime;
     }
 
-    public static boolean isOneHanded(GunData data){
-        if(data.gun == null) return true;
-        var item = data.gun.getItem();
+    public static boolean isOneHanded(WeaponData data){
+        if(data.weapon == null) return true;
+        var item = data.weapon.getItem();
         if(item instanceof IWeapon || item instanceof IThrowable){
             return getGripType(data).isOneHanded();
         }

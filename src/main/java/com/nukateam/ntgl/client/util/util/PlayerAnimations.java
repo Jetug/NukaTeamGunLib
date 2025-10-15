@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.util.util;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerAnimationHelper;
@@ -15,7 +15,7 @@ import net.minecraft.world.entity.player.Player;
 public class PlayerAnimations {
     public static void playFireAnimation(Player player, InteractionHand hand) {
         if (Ntgl.playerAnimatorLoaded) {
-            var gunData = new GunData(player.getItemInHand(hand), Minecraft.getInstance().player);
+            var gunData = new WeaponData(player.getItemInHand(hand), Minecraft.getInstance().player);
             var rate = GunModifierHelper.getRate(gunData);
             var animation = GunModifierHelper.getAnimation(AnimationType.FIRE, gunData);
 
@@ -25,7 +25,7 @@ public class PlayerAnimations {
 
     public static void playMeleeAnimation(Player player, InteractionHand hand) {
         if (Ntgl.playerAnimatorLoaded) {
-            var gunData = new GunData(player.getItemInHand(hand), Minecraft.getInstance().player);
+            var gunData = new WeaponData(player.getItemInHand(hand), Minecraft.getInstance().player);
             var delay = GunModifierHelper.getMeleeDelay(gunData);
             var cooldown = GunModifierHelper.getMeleeCooldown(gunData);
 
@@ -38,7 +38,7 @@ public class PlayerAnimations {
     public static void playReloadAnimation(Player player, InteractionHand hand) {
         if (Ntgl.playerAnimatorLoaded) {
             var reloadDuration = 0;
-            var gunData = new GunData(player.getItemInHand(hand), player);
+            var gunData = new WeaponData(player.getItemInHand(hand), player);
             var reloadTime = GunModifierHelper.getReloadTime(gunData);
             var loadingType = GunModifierHelper.getLoadingType(gunData);
 

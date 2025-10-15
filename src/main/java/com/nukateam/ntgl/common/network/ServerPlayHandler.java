@@ -3,14 +3,14 @@ package com.nukateam.ntgl.common.network;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.constants.Tags;
 
-import com.nukateam.ntgl.common.data.GunData;
 import com.nukateam.ntgl.common.util.trackers.*;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
@@ -95,7 +95,7 @@ public class ServerPlayHandler {
         if (heldItem.getItem() instanceof IWeapon weaponItem
                 && (GunStateHelper.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
             var modifiedGun = weaponItem.getModifiedConfig(heldItem);
-            var data = new GunData(heldItem, shooter).setWeaponAction(message.getMode());
+            var data = new WeaponData(heldItem, shooter).setWeaponAction(message.getMode());
 
             if (modifiedGun != null) {
                 if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand))) {
@@ -222,13 +222,13 @@ public class ServerPlayHandler {
         Level world = player.level();
         ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
         if (heldItem.getItem() instanceof IWeapon item && (GunStateHelper.hasAmmo(heldItem) || player.isCreative())) {
-            Gun modifiedGun = item.getModifiedConfig(heldItem);
-            ResourceLocation fireSound = getPreFireSound(heldItem, modifiedGun);
+            WeaponConfig modifiedWeaponConfig = item.getModifiedConfig(heldItem);
+            ResourceLocation fireSound = getPreFireSound(heldItem, modifiedWeaponConfig);
             if (fireSound != null) {
                 var posX = player.getX();
                 var posY = player.getY() + player.getEyeHeight();
                 var posZ = player.getZ();
-                var data = new GunData(heldItem, player);
+                var data = new WeaponData(heldItem, player);
                 var volume = GunModifierHelper.getFireSoundVolume(data);
                 var pitch = 0.9F + world.random.nextFloat() * 0.2F;
                 var radius = GunModifierHelper.getModifiedFireSoundRadius(data, Config.SERVER.gunShotMaxDistance.get());
@@ -238,12 +238,12 @@ public class ServerPlayHandler {
         }
     }
 
-    private static ResourceLocation getFireSound(GunData data, Gun modifiedGun) {
+    private static ResourceLocation getFireSound(WeaponData data, WeaponConfig modifiedWeaponConfig) {
         ResourceLocation fireSound = null;
         if (GunModifierHelper.isSilencedFire(data)) {
-            fireSound = modifiedGun.getSounds().getSilencedFire();
-        } else if (data.gun.isEnchanted()) {
-            fireSound = modifiedGun.getSounds().getEnchantedFire();
+            fireSound = modifiedWeaponConfig.getSounds().getSilencedFire();
+        } else if (data.weapon.isEnchanted()) {
+            fireSound = modifiedWeaponConfig.getSounds().getEnchantedFire();
         }
         if (fireSound != null) {
             return fireSound;
@@ -251,8 +251,8 @@ public class ServerPlayHandler {
         return GunModifierHelper.getFireSound(data);
     }
 
-    private static ResourceLocation getPreFireSound(ItemStack stack, Gun modifiedGun) {
-        return modifiedGun.getSounds().getPreFire();
+    private static ResourceLocation getPreFireSound(ItemStack stack, WeaponConfig modifiedWeaponConfig) {
+        return modifiedWeaponConfig.getSounds().getPreFire();
     }
 
     /**
@@ -303,7 +303,7 @@ public class ServerPlayHandler {
     }
 
     public static void unloadGun(ServerPlayer player, ItemStack stack) {
-        var data = new GunData(stack, player);
+        var data = new WeaponData(stack, player);
         if (GunStateHelper.getProjectileConfig(data).isMagazineMode())
             unloadMagazine(player, stack);
         else unloadAmmo(player, stack);
@@ -315,7 +315,7 @@ public class ServerPlayHandler {
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
                 int count = tag.getInt(Tags.AMMO_COUNT);
                 tag.putInt(Tags.AMMO_COUNT, 0);
-                var data = new GunData(stack, player);
+                var data = new WeaponData(stack, player);
                 var itemHolder = GunStateHelper.getCurrentAmmoWithoutCheck(data);
 
                 if(itemHolder.canReturnAmmo()) {
@@ -338,7 +338,7 @@ public class ServerPlayHandler {
                 if (count == 0) return;
 
                 tag.putInt(Tags.AMMO_COUNT, 0);
-                var data = new GunData(stack, player);
+                var data = new WeaponData(stack, player);
                 var ammoHolder = GunStateHelper.getCurrentAmmoWithoutCheck(data);
 
                 if(ammoHolder.canReturnAmmo()) {
@@ -424,14 +424,14 @@ public class ServerPlayHandler {
 
     public static void handleMeleeAttack(C2SMessageMeleeAttack message, ServerPlayer player) {
         var stack = player.getItemInHand(message.getHand());
-        var gunData = new GunData(stack, player).setWeaponAction(message.getAction());
+        var gunData = new WeaponData(stack, player).setWeaponAction(message.getAction());
         if(stack.getItem() instanceof IWeapon
                 && GunModifierHelper.canMelee(gunData)
                 && !EquipTracker.isEquiping(player, message.getHand())) {
             var heldItem = player.getItemInHand(message.getHand());
 
 
-            MeleeTracker.start(new GunData(heldItem, player).setWeaponAction(message.getAction()), message.getHand());
+            MeleeTracker.start(new WeaponData(heldItem, player).setWeaponAction(message.getAction()), message.getHand());
         }
     }
 
@@ -439,7 +439,7 @@ public class ServerPlayHandler {
         if(GunModifierHelper.getGun(stack).getGeneral().getWeaponMode() == WeaponMode.THROWABLE){
             handleThrowModeSwitch(player, stack, hand);
         } else {
-            var data = new GunData(stack, player);
+            var data = new WeaponData(stack, player);
             GunStateHelper.switchFireMode(data);
             player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
         }
@@ -457,7 +457,7 @@ public class ServerPlayHandler {
 
     public static void handleAmmoSwitch(InteractionHand hand, ServerPlayer player, ItemStack weapon) {
         var isReloading = getReloadKey(hand);
-        var data = new GunData(weapon, player);
+        var data = new WeaponData(weapon, player);
 
         if (!isReloading.getValue(player) && GunModifierHelper.getAmmoItems(data).size() > 1){
             handleUnload(player, hand);

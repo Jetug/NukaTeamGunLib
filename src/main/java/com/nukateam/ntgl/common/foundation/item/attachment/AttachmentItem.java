@@ -1,10 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.attachment;
 
-import com.nukateam.example.common.registery.ModGuns;
-import com.nukateam.ntgl.client.tooltip.ItemsClientTooltipComponent;
 import com.nukateam.ntgl.client.tooltip.ItemsTooltipData;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
@@ -13,20 +9,16 @@ import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

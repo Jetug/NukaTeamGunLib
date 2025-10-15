@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 
 import net.minecraft.nbt.CompoundTag;
@@ -9,9 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -46,7 +43,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		maxTicks = (short) life;
 	}
 
-	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn, GunData data) {
+	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn, WeaponData data) {
 		super(entityType, worldIn, data);
 	}
 
