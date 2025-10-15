@@ -160,8 +160,16 @@ public class ThrowingTracker {
                     lifeTick = Math.max(lifeTick - 1, 0);
                 }
 
-                setHolding(true);
-
+                if(!isThrowing()){
+                    if(released){
+                        setPreparing(false);
+                        setThrowing(true);
+                        setHolding(false);
+                    }
+                    else {
+                        setHolding(true);
+                    }
+                }
                 if(lifeTick == 0){
                     onExpire();
                 }
@@ -176,12 +184,7 @@ public class ThrowingTracker {
         }
 
         public void onRelease(){
-            if(prepareTick == 0){
-                setPreparing(false);
-                setThrowing(true);
-                setHolding(false);
-            }
-            else stop();
+            this.released = true;
         }
 
         private void throwItem(){
