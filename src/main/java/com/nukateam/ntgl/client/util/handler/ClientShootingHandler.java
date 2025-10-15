@@ -7,12 +7,12 @@ import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,16 +29,12 @@ import org.lwjgl.glfw.GLFW;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
+import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.*;
 import static net.minecraftforge.event.TickEvent.Type.RENDER;
 
-/**
- * Author: MrCrayfish
- */
 public class ClientShootingHandler {
     private static ClientShootingHandler instance;
     public static float shootMsGap = 0F;
-    private boolean shooting;
 
     private final HashMap<Pair<InteractionHand, LivingEntity>, Integer> entityShootGaps = new HashMap<>();
     private final Map<InteractionHand, ShootingData> shootingData = Map.of(
@@ -130,7 +126,7 @@ public class ClientShootingHandler {
                 if (event.getHand() == InteractionHand.OFF_HAND) {
                     // Allow shields to be used if weapon is one-handed
                     if (offhandItem.getItem() == Items.SHIELD) {
-                        if (GunModifierHelper.getGripType(new WeaponData(mainHandItem, player)).isOneHanded()) {
+                        if (WeaponModifierHelper.getGripType(new WeaponData(mainHandItem, player)).isOneHanded()) {
                             return;
                         }
                     }
@@ -229,7 +225,7 @@ public class ClientShootingHandler {
 
         if (heldItem.getItem() instanceof IWeapon) {
             var data = new WeaponData(heldItem, entity);
-            var rate = GunModifierHelper.getRate(data);
+            var rate = WeaponModifierHelper.getRate(data);
             var cooldown = getCooldown(entity, hand);
             return cooldown / (float)rate;
         }
@@ -258,7 +254,7 @@ public class ClientShootingHandler {
         var heldItem = data.weapon;
 
         if (heldItem.getItem() instanceof IWeapon
-                && (GunStateHelper.hasAmmo(heldItem) /*|| (shooter instanceof Player player && player.isCreative())*/)
+                && (WeaponStateHelper.hasAmmo(heldItem) /*|| (shooter instanceof Player player && player.isCreative())*/)
                 && isGunMode(data)
                 && !shooter.isSpectator()) {
             var isMainHand = shooter.getMainHandItem() == heldItem;
@@ -272,7 +268,7 @@ public class ClientShootingHandler {
                 // CHECK HERE: Change this to test different rpm settings.
                 // TODO: Test serverside, possible issues 0.3.4-alpha
                 var gunData = new WeaponData(heldItem, shooter);
-                final var rpm = GunModifierHelper.getRate(gunData); // Rounds per sec. Should come from gun properties in the end.
+                final var rpm = WeaponModifierHelper.getRate(gunData); // Rounds per sec. Should come from gun properties in the end.
                 shootGap += rpm;
                 entityShootGaps.put(Pair.of(hand, shooter), shootGap);
                 shootMsGap = calcShootTickGap(rpm);
@@ -311,16 +307,16 @@ public class ClientShootingHandler {
 
     private void setupShootingData(WeaponData weaponData, InteractionHand arm) {
         assert weaponData.weapon != null;
-        if(!GunStateHelper.hasAmmo(weaponData.weapon)) return;
+        if(!WeaponStateHelper.hasAmmo(weaponData.weapon)) return;
         var data = shootingData.get(arm);
 
-        data.fireTimer = GunModifierHelper.getFireDelay(weaponData);
+        data.fireTimer = WeaponModifierHelper.getFireDelay(weaponData);
         data.gun = (IWeapon) weaponData.weapon.getItem();
     }
 
     private void resetShootingData(WeaponData weaponData, InteractionHand arm) {
         var data = shootingData.get(arm);
-        if(data.fireTimer != 0 && ! GunModifierHelper.needsFullCharge(weaponData)){
+        if(data.fireTimer != 0 && ! WeaponModifierHelper.needsFullCharge(weaponData)){
             this.fire(weaponData);
         }
 
@@ -329,7 +325,7 @@ public class ClientShootingHandler {
     }
 
     private static boolean isGunMode(WeaponData weaponData) {
-        return GunModifierHelper.getWeaponMode(weaponData) == WeaponMode.GUN;
+        return WeaponModifierHelper.getWeaponMode(weaponData) == WeaponMode.GUN;
     }
 
     private void handleFireInput(WeaponData weaponData, InteractionHand arm) {
@@ -337,8 +333,8 @@ public class ClientShootingHandler {
         var player = mc.player;
         var key = arm == InteractionHand.MAIN_HAND ? mc.options.keyAttack : mc.options.keyUse;
         var data = shootingData.get(arm);
-        var fireMode =  GunStateHelper.getFireMode(weaponData);
-        var maxChargeTime = GunModifierHelper.getFireDelay(weaponData);
+        var fireMode =  WeaponStateHelper.getFireMode(weaponData);
+        var maxChargeTime = WeaponModifierHelper.getFireDelay(weaponData);
 
         if (!isGunMode(weaponData)) {
             return;
@@ -354,7 +350,7 @@ public class ClientShootingHandler {
                 data.fireTimer--;
             } else {
                 this.fire(weaponData);
-                if (data.fireTimer == 0 && !GunModifierHelper.isOneTimeCharge(weaponData))
+                if (data.fireTimer == 0 && !WeaponModifierHelper.isOneTimeCharge(weaponData))
                     setupShootingData(weaponData, arm);
                 if (maxChargeTime > 0) {
                     if (fireMode != FireMode.AUTO)

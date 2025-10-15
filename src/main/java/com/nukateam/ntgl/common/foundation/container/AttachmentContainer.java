@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.foundation.container.slot.*;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.util.data.*;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.*;
 import net.minecraft.world.inventory.*;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 import static com.nukateam.ntgl.client.render.screen.AttachmentScreen.ATTACHMENT_Y;
 import static com.nukateam.ntgl.client.render.screen.AttachmentScreen.SLOT_SIZE;
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
+import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.*;
 import static net.minecraftforge.common.MinecraftForge.*;
 
 /**
@@ -40,7 +40,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
         var attachmentItems = new ArrayList<ItemStack>();
 
         for (var attachmentType : sortedAttachments) {
-            attachmentItems.add(GunStateHelper.getAttachmentItem(attachmentType, stack));
+            attachmentItems.add(WeaponStateHelper.getAttachmentItem(attachmentType, stack));
         }
         for (int i = 0; i < attachmentItems.size(); i++) {
             this.weaponInventory.setItem(i, attachmentItems.get(i));
@@ -141,7 +141,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
             var itemStack = this.getSlot(i).getItem();
             attachments.add(itemStack);
         }
-        GunStateHelper.saveAttachments(new WeaponData(this.weapon, player), attachments);
+        WeaponStateHelper.saveAttachments(new WeaponData(this.weapon, player), attachments);
         super.broadcastChanges();
     }
 

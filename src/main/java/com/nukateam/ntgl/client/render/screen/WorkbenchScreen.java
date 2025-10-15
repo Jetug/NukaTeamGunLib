@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IMelee;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IMeleeWeapon;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
@@ -484,7 +484,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                     var player = Minecraft.getInstance().player;
                     var gunData = new WeaponData(icon, player);
 
-                    icon.getOrCreateTag().putInt("AmmoCount", GunModifierHelper.getMaxAmmo(gunData));
+                    icon.getOrCreateTag().putInt("AmmoCount", WeaponModifierHelper.getMaxAmmo(gunData));
                     this.tabs.add(new Tab(icon, category, recipeList));
                 }
             }

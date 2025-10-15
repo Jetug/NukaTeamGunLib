@@ -30,8 +30,6 @@ import net.minecraftforge.common.MinecraftForge;
 import java.text.DecimalFormat;
 import java.util.Map;
 
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.getGun;
-
 public class GunHud implements IGuiOverlay {
     public static final float COUNTER_SCALE = 0.9f;
     public static final int INVENTORY_AMMO_COUNT_COLOR = 0xAAAAAA;
@@ -90,11 +88,11 @@ public class GunHud implements IGuiOverlay {
     }
 
     private static boolean shouldRender(InteractionHand hand, LocalPlayer player) {
-        return hand == InteractionHand.MAIN_HAND || GunModifierHelper.canUseOffhandWeapon(player);
+        return hand == InteractionHand.MAIN_HAND || WeaponModifierHelper.canUseOffhandWeapon(player);
     }
 
     protected void renderAmmoCounter(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int x, int y) {
-        if(!GunModifierHelper.shouldRenderHud(new WeaponData(stack, minecraft.player))) return;
+        if(!WeaponModifierHelper.shouldRenderHud(new WeaponData(stack, minecraft.player))) return;
 
 
         var poseStack = graphics.pose();
@@ -226,7 +224,7 @@ public class GunHud implements IGuiOverlay {
     }
 
     protected boolean isThrowable(ItemStack stack){
-        return getGun(stack).getGeneral().getWeaponMode() == WeaponMode.THROWABLE;
+        return WeaponModifierHelper.getConfig(stack).getGeneral().getWeaponMode() == WeaponMode.THROWABLE;
     }
 
     protected WeaponConfig getConfig(ItemStack stack){
@@ -238,22 +236,22 @@ public class GunHud implements IGuiOverlay {
         if ((System.currentTimeMillis() - handCache.checkAmmoTimestamp) > 200) {
             var data = new WeaponData(weapon, player);
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
-            handCache.maxAmmoCount = GunModifierHelper.getMaxAmmo(data);
-            handCache.fireMode = GunStateHelper.getFireMode(data);
+            handCache.maxAmmoCount = WeaponModifierHelper.getMaxAmmo(data);
+            handCache.fireMode = WeaponStateHelper.getFireMode(data);
 
             if(isThrowable(weapon)){
                 handCache.throwMode = ThrowableStateHelper.getThrowMode(weapon);
                 handCache.ammoCount = weapon.getCount();
-                handCache.ammoConfig = getGun(weapon).getThrowable().getAmmo();
+                handCache.ammoConfig = WeaponModifierHelper.getConfig(weapon).getThrowable().getAmmo();
             }
             else {
-                handCache.ammoCount = GunStateHelper.getAmmoCount(data);
-                handCache.ammoConfig = getGun(weapon).getAmmoConfig(GunStateHelper.getCurrentAmmo(data).getId());
+                handCache.ammoCount = WeaponStateHelper.getAmmoCount(data);
+                handCache.ammoConfig = WeaponModifierHelper.getConfig(weapon).getAmmoConfig(WeaponStateHelper.getCurrentAmmo(data).getId());
             }
-            var fuels = GunModifierHelper.getAllFuel(data);
+            var fuels = WeaponModifierHelper.getAllFuel(data);
             handCache.fuels.clear();
             for (var id : fuels) {
-                var value = GunModifierHelper.getFuel(id.getId(), data);
+                var value = WeaponModifierHelper.getFuel(id.getId(), data);
                 handCache.fuels.put(id, value);
             }
 
@@ -270,7 +268,7 @@ public class GunHud implements IGuiOverlay {
     protected int getInventoryAmmoCount(ItemStack weapon, Inventory inventory) {
         var inventoryAmmoCount = 0;
         var gunData = new WeaponData(weapon, minecraft.player);
-        var ammoHolder = GunStateHelper.getCurrentAmmo(gunData);
+        var ammoHolder = WeaponStateHelper.getCurrentAmmo(gunData);
 
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             var inventoryStack = inventory.getItem(i);

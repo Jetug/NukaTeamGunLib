@@ -11,8 +11,8 @@ import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 
 import com.nukateam.ntgl.common.util.util.FuelUtils;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -64,7 +64,7 @@ public class GunEventHandler {
 
         if (heldItem.getItem() instanceof IWeapon) {
             if (heldItem.isDamageableItem() && tag != null) {
-                if (GunStateHelper.hasAmmo(heldItem)) {
+                if (WeaponStateHelper.hasAmmo(heldItem)) {
                     damageGun(heldItem, level, entity);
                 }
                 if (heldItem.getDamageValue() >= (heldItem.getMaxDamage() / 1.5)) {
@@ -75,7 +75,7 @@ public class GunEventHandler {
             if(!event.isClient()){
                 PacketHandler.sendAnimation(entity, event.getHand(), AnimationType.FIRE);
 
-                if(!GunModifierHelper.isSilencedFire(new WeaponData(heldItem, entity))){
+                if(!WeaponModifierHelper.isSilencedFire(new WeaponData(heldItem, entity))){
                     NtglGameEvents.gunshotEvent(level, entity);
                     level.gameEvent(entity, GameEvent.PROJECTILE_SHOOT, entity.blockPosition());
                 }
@@ -101,7 +101,7 @@ public class GunEventHandler {
             }
 
             if (currentDamage == maxDamage) {
-                GunModifierHelper.getGun(heldItem).playCockSound(shooter);
+                WeaponModifierHelper.getConfig(heldItem).playCockSound(shooter);
                 return true;
             }
         }

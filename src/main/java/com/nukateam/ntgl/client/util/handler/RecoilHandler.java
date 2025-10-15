@@ -5,7 +5,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
@@ -53,7 +53,7 @@ public class RecoilHandler {
         var gunItem = (IWeapon) heldItem.getItem();
         var modifiedGun = gunItem.getModifiedConfig(heldItem);
         var data = new WeaponData(heldItem, event.getEntity());
-        var recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(data);
+        var recoilModifier = 1.0F - WeaponModifierHelper.getRecoilModifier(data);
 
         recoilModifier *= this.getAdsRecoilReduction(modifiedGun);
         this.cameraRecoil = modifiedGun.getGeneral().getRecoilAngle() * recoilModifier;

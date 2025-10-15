@@ -8,7 +8,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -48,7 +48,7 @@ public class PlayerEventHandler {
                     movementSpeed.addTransientModifier(new AttributeModifier(
                             SPEED_MODIFIER_ID,
                             MOVEMENT_SPEED,
-                            GunModifierHelper.getModifiedMovementSpeed(new WeaponData(heldItem, player)),
+                            WeaponModifierHelper.getModifiedMovementSpeed(new WeaponData(heldItem, player)),
                             AttributeModifier.Operation.MULTIPLY_BASE
                     ));
                 }

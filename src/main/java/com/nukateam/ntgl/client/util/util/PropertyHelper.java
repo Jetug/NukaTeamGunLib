@@ -13,7 +13,7 @@ import com.mrcrayfish.framework.api.serialize.DataArray;
 import com.mrcrayfish.framework.api.serialize.DataNumber;
 import com.mrcrayfish.framework.api.serialize.DataObject;
 import com.mrcrayfish.framework.api.serialize.DataType;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -83,7 +83,7 @@ public final class PropertyHelper {
             double cameraY = modifiedWeaponConfig.getModules().getZoom().getYOffset();
             double cameraZ = modifiedWeaponConfig.getModules().getZoom().getZOffset();
 
-            var attachment = GunStateHelper.getAttachmentItem(AttachmentType.SCOPE, stack);
+            var attachment = WeaponStateHelper.getAttachmentItem(AttachmentType.SCOPE, stack);
             if(!attachment.isEmpty() ){
                 var scope = (ScopeItem)attachment.getItem();
                 var attachmentConfig = modifiedWeaponConfig.findAttachment(scope);
@@ -143,8 +143,8 @@ public final class PropertyHelper {
 
     public static SightAnimation getSightAnimations(ItemStack weapon) {
         // Try and get the animations from the scope
-        if (GunStateHelper.hasAttachmentEquipped(weapon, AttachmentType.SCOPE)) {
-            var scopeStack = GunStateHelper.getScopeStack(weapon);
+        if (WeaponStateHelper.hasAttachmentEquipped(weapon, AttachmentType.SCOPE)) {
+            var scopeStack = WeaponStateHelper.getScopeStack(weapon);
             if (scopeStack.getItem() instanceof IAttachment<?> attachment && attachment.getType() == AttachmentType.SCOPE) {
                 DataObject scopeObject = getObjectByPath(scopeStack, SCOPE_KEY);
                 if (scopeObject.get("sightAnimation") instanceof DataObject sightObject) {
@@ -164,8 +164,8 @@ public final class PropertyHelper {
 
     public static double getViewportFov(ItemStack weapon) {
         // Get the viewport from the attached scope
-        if (GunStateHelper.hasAttachmentEquipped(weapon, AttachmentType.SCOPE)) {
-            var scopeStack = GunStateHelper.getScopeStack(weapon);
+        if (WeaponStateHelper.hasAttachmentEquipped(weapon, AttachmentType.SCOPE)) {
+            var scopeStack = WeaponStateHelper.getScopeStack(weapon);
             var customObject = getObjectByPath(scopeStack, SCOPE_KEY);
             if (customObject.has("viewportFov", DataType.NUMBER)) {
                 return Mth.clamp(customObject.getDataNumber("viewportFov").asDouble(), 1.0, 100.0);

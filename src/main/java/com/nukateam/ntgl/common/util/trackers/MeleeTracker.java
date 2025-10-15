@@ -160,14 +160,14 @@ public class MeleeTracker {
             this.data = data;
             this.stack = data.weapon;
             assert stack != null;
-            this.cooldown = GunModifierHelper.getMeleeCooldown(data);
-            this.attackDelay = GunModifierHelper.getMeleeDelay(data);
+            this.cooldown = WeaponModifierHelper.getMeleeCooldown(data);
+            this.attackDelay = WeaponModifierHelper.getMeleeDelay(data);
             this.meleeTick = attackDelay + cooldown;
-            this.meleeDamage = GunModifierHelper.getMeleeDamage(data);
-            this.attackDistance = GunModifierHelper.getMeleeDistance(data);
-            this.attackAngle = GunModifierHelper.getMeleeAngle(data);
-            this.knockback = GunModifierHelper.getMeleeKnockback(data);
-            this.maxTargets = GunModifierHelper.getMeleeMaxTargets(data);
+            this.meleeDamage = WeaponModifierHelper.getMeleeDamage(data);
+            this.attackDistance = WeaponModifierHelper.getMeleeDistance(data);
+            this.attackAngle = WeaponModifierHelper.getMeleeAngle(data);
+            this.knockback = WeaponModifierHelper.getMeleeKnockback(data);
+            this.maxTargets = WeaponModifierHelper.getMeleeMaxTargets(data);
         }
 
         private void tryMeleeAttack(WeaponData weaponData) {

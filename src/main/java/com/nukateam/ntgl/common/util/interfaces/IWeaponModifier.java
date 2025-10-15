@@ -14,11 +14,11 @@ import java.util.Set;
 /**
  * An interface that allows control over the behaviour of weapons through attachments.
  * See {@link GunModifiers} for examples of how this can be implemented. Implementations can then
- * be passed to "create" method of attachment objects. See {@link Barrel#create(float, IGunModifier...)}
+ * be passed to "create" method of attachment objects. See {@link Barrel#create(float, IWeaponModifier...)}
  * <p>
- * Author: MrCrayfish
+ * Author: Jetug
  */
-public interface IGunModifier {
+public interface IWeaponModifier {
     /**
      * Modify the volume of the fire sound. This does not change the distance the sound can be heard
      * from, just the volume.

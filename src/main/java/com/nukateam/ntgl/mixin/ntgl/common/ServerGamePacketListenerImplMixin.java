@@ -3,7 +3,7 @@ package com.nukateam.ntgl.mixin.ntgl.common;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
@@ -34,7 +34,7 @@ public class ServerGamePacketListenerImplMixin {
         var isThrowable = item instanceof IThrowable;
         var hand = packet.getSlot() == Inventory.SLOT_OFFHAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         if (isGun || isThrowable) {
-            var equipTime = GunStateHelper.getEquipTime(slot.get(), player);
+            var equipTime = WeaponStateHelper.getEquipTime(slot.get(), player);
             EquipTracker.stopEquip(player, hand);
             EquipTracker.startEquip(player, hand, equipTime);
         }

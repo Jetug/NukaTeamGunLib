@@ -1,17 +1,17 @@
 package com.nukateam.ntgl.common.data.attachment.impl;
 
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 
 /**
  * An attachment class related to barrels. Barrels need to specify the length in order to render
- * the muzzle flash correctly. Use {@link #create(float, IGunModifier...)} to create an get.
+ * the muzzle flash correctly. Use {@link #create(float, IWeaponModifier...)} to create an get.
  * <p>
  * Author: MrCrayfish
  */
 public class Barrel extends Attachment {
     private final float length;
 
-    public Barrel(float length, IGunModifier... modifier) {
+    public Barrel(float length, IWeaponModifier... modifier) {
         super(modifier);
         this.length = length;
     }
@@ -30,7 +30,7 @@ public class Barrel extends Attachment {
      * @param modifiers an array of gun modifiers
      * @return a barrel get
      */
-    public static Barrel create(float length, IGunModifier... modifiers) {
+    public static Barrel create(float length, IWeaponModifier... modifiers) {
         return new Barrel(length, modifiers);
     }
 }

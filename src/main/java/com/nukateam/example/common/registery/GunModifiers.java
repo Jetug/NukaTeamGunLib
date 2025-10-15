@@ -3,7 +3,7 @@ package com.nukateam.example.common.registery;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.FireMode;
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import net.minecraft.util.Mth;
 
 import java.util.Set;
@@ -12,7 +12,7 @@ import java.util.Set;
  * Author: MrCrayfish
  */
 public class GunModifiers {
-    public static final IGunModifier SILENCED = new IGunModifier() {
+    public static final IWeaponModifier SILENCED = new IWeaponModifier() {
         @Override
         public boolean silencedFire(boolean value, WeaponData data) {
             return true;
@@ -29,42 +29,42 @@ public class GunModifiers {
         }
     };
 
-    public static final IGunModifier REDUCED_DAMAGE = new IGunModifier() {
+    public static final IWeaponModifier REDUCED_DAMAGE = new IWeaponModifier() {
         @Override
         public float modifyDamage(float damage, WeaponData data) {
             return damage * 0.75F;
         }
     };
 
-    public static final IGunModifier SLOW_ADS = new IGunModifier() {
+    public static final IWeaponModifier SLOW_ADS = new IWeaponModifier() {
         @Override
         public double modifyAimDownSightSpeed(double speed, WeaponData data) {
             return speed * 0.95F;
         }
     };
 
-    public static final IGunModifier SLOWER_ADS = new IGunModifier() {
+    public static final IWeaponModifier SLOWER_ADS = new IWeaponModifier() {
         @Override
         public double modifyAimDownSightSpeed(double speed, WeaponData data) {
             return speed * 0.9F;
         }
     };
 
-    public static final IGunModifier EXTENDED_MAG = new IGunModifier() {
+    public static final IWeaponModifier EXTENDED_MAG = new IWeaponModifier() {
         @Override
         public int modifyMaxAmmo(int maxAmmo, WeaponData data) {
             return (int) (maxAmmo * 1.5);
         }
     };
 
-    public static final IGunModifier DRUM_MAG = new IGunModifier() {
+    public static final IWeaponModifier DRUM_MAG = new IWeaponModifier() {
         @Override
         public int modifyMaxAmmo(int maxAmmo, WeaponData data) {
             return maxAmmo * 4;
         }
     };
 
-    public static final IGunModifier BETTER_CONTROL = new IGunModifier() {
+    public static final IWeaponModifier BETTER_CONTROL = new IWeaponModifier() {
         @Override
         public float recoilModifier(WeaponData data) {
             return 0.3F;
@@ -86,7 +86,7 @@ public class GunModifiers {
         }
     };
 
-    public static final IGunModifier STABILISED = new IGunModifier() {
+    public static final IWeaponModifier STABILISED = new IWeaponModifier() {
         @Override
         public float recoilModifier(WeaponData data) {
             return 0.4F;
@@ -113,7 +113,7 @@ public class GunModifiers {
         }
     };
 
-    public static final IGunModifier SUPER_STABILISED = new IGunModifier() {
+    public static final IWeaponModifier SUPER_STABILISED = new IWeaponModifier() {
         @Override
         public float recoilModifier(WeaponData data) {
             return 0.1F;
@@ -140,7 +140,7 @@ public class GunModifiers {
         }
     };
 
-    public static final IGunModifier LIGHT_RECOIL = new IGunModifier() {
+    public static final IWeaponModifier LIGHT_RECOIL = new IWeaponModifier() {
         @Override
         public int modifyMaxAmmo(int maxAmmo, WeaponData data) {
             return (int)(maxAmmo * 2.5);
@@ -148,12 +148,12 @@ public class GunModifiers {
 
         @Override
         public int modifyProjectileAmount(int amount, WeaponData data) {
-            return IGunModifier.super.modifyProjectileAmount(amount, data);
+            return IWeaponModifier.super.modifyProjectileAmount(amount, data);
         }
 
         @Override
         public Set<AmmoHolder> modifyAmmoItems(Set<AmmoHolder> item, WeaponData data) {
-            return IGunModifier.super.modifyAmmoItems(item, data);
+            return IWeaponModifier.super.modifyAmmoItems(item, data);
         }
 
         @Override
@@ -187,7 +187,7 @@ public class GunModifiers {
         }
     };
 
-    public static final IGunModifier REDUCED_RECOIL = new IGunModifier() {
+    public static final IWeaponModifier REDUCED_RECOIL = new IWeaponModifier() {
         @Override
         public Set<FireMode> modifyFireModes(Set<FireMode> fireMode, WeaponData data) {
             return Set.of(FireMode.AUTO, FireMode.MULTI);

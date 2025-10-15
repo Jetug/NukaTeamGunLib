@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.model.gun;
 
-import com.nukateam.ntgl.client.animators.GunAnimator;
+import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.client.model.IGlowingModel;
 import com.nukateam.ntgl.client.util.util.GeoModelHelper;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
@@ -8,8 +8,8 @@ import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
-public class GeoGunModel<T extends GunAnimator> extends GeoModel<T> implements IGlowingModel<T> {
-    public static final GeoGunModel<GunAnimator> INSTANCE = new GeoGunModel<>();
+public class GeoWeaponModel<T extends WeaponAnimator> extends GeoModel<T> implements IGlowingModel<T> {
+    public static final GeoWeaponModel<WeaponAnimator> INSTANCE = new GeoWeaponModel<>();
 
     @Override
     public ResourceLocation getModelResource(T animator) {

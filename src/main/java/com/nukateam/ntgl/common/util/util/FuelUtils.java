@@ -24,9 +24,9 @@ public class FuelUtils {
     }
 
     public static boolean hasFuel(WeaponData data, boolean requareAll){
-        var allFuel = GunModifierHelper.getAllFuel(data);
+        var allFuel = WeaponModifierHelper.getAllFuel(data);
         for (var fuelType : allFuel) {
-            var isMandatory = GunModifierHelper.isFuelMandatory(fuelType.getId(), data);
+            var isMandatory = WeaponModifierHelper.isFuelMandatory(fuelType.getId(), data);
 
             if(isMandatory || requareAll) {
                 if(!hasFuel(fuelType.getId(), data))
@@ -37,14 +37,14 @@ public class FuelUtils {
     }
 
     public static boolean hasFuel(ResourceLocation id, WeaponData data){
-        var amount = GunModifierHelper.getFuelAmountPerUse(id, data);
+        var amount = WeaponModifierHelper.getFuelAmountPerUse(id, data);
         var fuel = getFuel(data.weapon, AmmoHolder.getType(id));
         return fuel >= amount;
     }
 
     public static boolean isFull(WeaponData data, AmmoHolder ammoHolder) {
         var fuel = getFuel(data.weapon, ammoHolder);
-        var max = GunModifierHelper.getMaxFuel(ammoHolder.getId(), data);
+        var max = WeaponModifierHelper.getMaxFuel(ammoHolder.getId(), data);
         return fuel >= max;
     }
 
@@ -68,20 +68,20 @@ public class FuelUtils {
 
     public static void addFuel(WeaponData data, AmmoHolder ammoHolder, int value) {
         var oldValue = getFuel(data.weapon, ammoHolder);
-        var max = GunModifierHelper.getMaxFuel(ammoHolder.getId(), data);
+        var max = WeaponModifierHelper.getMaxFuel(ammoHolder.getId(), data);
         setFuel(data.weapon, ammoHolder, Mth.clamp(oldValue + value, 0, max));
     }
 
     public static void consumeFuel(AmmoHolder ammoHolder, WeaponData data) {
         var oldValue = getFuel(data.weapon, ammoHolder);
-        var max = GunModifierHelper.getMaxFuel(ammoHolder.getId(), data);
-        var value = GunModifierHelper.getFuelAmountPerUse(ammoHolder.getId(), data);
+        var max = WeaponModifierHelper.getMaxFuel(ammoHolder.getId(), data);
+        var value = WeaponModifierHelper.getFuelAmountPerUse(ammoHolder.getId(), data);
         setFuel(data.weapon, ammoHolder, Mth.clamp(oldValue - value, 0, max));
     }
 
     public static float getFuelPercent(ItemStack stack, AmmoHolder ammoHolder, WeaponData data) {
         var fuel = getFuel(stack, ammoHolder);
-        var maxFuel = GunModifierHelper.getMaxFuel(ammoHolder.getId(), data);
+        var maxFuel = WeaponModifierHelper.getMaxFuel(ammoHolder.getId(), data);
         var fuelPercent = (fuel / (float) maxFuel);
         return fuelPercent;
     }

@@ -8,7 +8,7 @@ import com.nukateam.ntgl.common.util.trackers.EntityReloadTracker;
 import com.nukateam.ntgl.common.util.interfaces.IGunUser;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
@@ -117,7 +117,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
 
         this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
 
-        if (GunStateHelper.hasAmmo(mob.getGun())) {
+        if (WeaponStateHelper.hasAmmo(mob.getGun())) {
             mob.performRangedAttack(target, 1);
         }
         else if(!EntityReloadTracker.isReloading(mob)) {

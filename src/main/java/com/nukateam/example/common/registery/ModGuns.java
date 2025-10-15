@@ -5,7 +5,7 @@ import com.nukateam.ntgl.common.foundation.item.attachment.*;
 import com.nukateam.ntgl.common.data.attachment.impl.*;
 import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.*;
@@ -99,7 +99,7 @@ public class ModGuns {
     public static final RegistryObject<Item> AMMO_BOX = ITEMS.register("ammo_box", () ->
             new AmmoBoxItem(new Item.Properties().stacksTo(1), 100));
 
-    public static RegistryObject<WeaponItem> registerGun(String name, IGunModifier... modifiers) {
+    public static RegistryObject<WeaponItem> registerGun(String name, IWeaponModifier... modifiers) {
         return ITEMS.register(name, () -> new WeaponItem(new Item.Properties().stacksTo(1), modifiers));
     }
 

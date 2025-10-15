@@ -7,8 +7,8 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +34,7 @@ public class EntityReloadTracker {
     private EntityReloadTracker(LivingEntity entity, HumanoidArm arm) {
         this.arm = arm;
         this.stack = entity.getItemInHand(getInteractionHand(arm));
-        this.reloadTick = GunModifierHelper.getReloadTime(new WeaponData(stack, entity).setWeaponAction(AttackMode.PRIMARY));
+        this.reloadTick = WeaponModifierHelper.getReloadTime(new WeaponData(stack, entity).setWeaponAction(AttackMode.PRIMARY));
     }
 
     public static boolean isReloading(LivingEntity entity){
@@ -77,7 +77,7 @@ public class EntityReloadTracker {
         }
         else{
             var data = new WeaponData(tracker.stack, entity);
-            GunStateHelper.fillAmmo(data);
+            WeaponStateHelper.fillAmmo(data);
             setReloading(entity, tracker.arm, false);
 //            RELOAD_TRACKER_MAP.remove(entity);
             FOR_REMOVE.add(entity);

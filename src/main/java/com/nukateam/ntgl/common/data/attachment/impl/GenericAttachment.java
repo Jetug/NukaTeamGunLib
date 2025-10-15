@@ -1,9 +1,9 @@
 package com.nukateam.ntgl.common.data.attachment.impl;
 
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 
 public class GenericAttachment extends Attachment {
-    private GenericAttachment(IGunModifier... modifier) {
+    private GenericAttachment(IWeaponModifier... modifier) {
         super(modifier);
     }
 
@@ -13,7 +13,7 @@ public class GenericAttachment extends Attachment {
      * @param modifiers an array of gun modifiers
      * @return a barrel get
      */
-    public static GenericAttachment create(IGunModifier... modifiers) {
+    public static GenericAttachment create(IWeaponModifier... modifiers) {
         return new GenericAttachment(modifiers);
     }
 }

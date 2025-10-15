@@ -2,10 +2,10 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.PacketHandler;
@@ -72,13 +72,13 @@ public class ClientReloadHandler {
         var offhandItem = player.getOffhandItem();
 
         if (mainHandItem.getItem() instanceof IWeapon
-                && !GunModifierHelper.isWeaponFull(new WeaponData(mainHandItem, player))
+                && !WeaponModifierHelper.isWeaponFull(new WeaponData(mainHandItem, player))
                 && !isReloading(player, InteractionHand.MAIN_HAND)){
             setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
         }
         else if (offhandItem.getItem() instanceof IWeapon
-                && GunModifierHelper.canUseOffhandWeapon(player)
-                && !GunModifierHelper.isWeaponFull(new WeaponData(offhandItem, player))
+                && WeaponModifierHelper.canUseOffhandWeapon(player)
+                && !WeaponModifierHelper.isWeaponFull(new WeaponData(offhandItem, player))
                 && !isReloading(player, InteractionHand.OFF_HAND)){
             setReloading(!ModSyncedDataKeys.RELOADING_LEFT.getValue(player), InteractionHand.OFF_HAND);
         }
@@ -93,15 +93,15 @@ public class ClientReloadHandler {
 
         if (reloading) {
             if (stack.getItem() instanceof IWeapon) {
-                var isAmmoIgnored = GunStateHelper.isAmmoIgnored(stack);
+                var isAmmoIgnored = WeaponStateHelper.isAmmoIgnored(stack);
                 var hasAmmo = InventoryUtil.hasAmmo(player, stack);
                 var data = new WeaponData(stack, player);
-                var isMaxAmmo = GunStateHelper.isMaxAmmo(data);
+                var isMaxAmmo = WeaponStateHelper.isMaxAmmo(data);
 
                 if (!isAmmoIgnored && hasAmmo && !isMaxAmmo) {
-                    reloadTicks = GunModifierHelper.getReloadTime(data);
+                    reloadTicks = WeaponModifierHelper.getReloadTime(data);
 
-                    if (GunStateHelper.getAmmoCount(data) >= GunEnchantmentHelper.getAmmoCapacity(data))
+                    if (WeaponStateHelper.getAmmoCount(data) >= GunEnchantmentHelper.getAmmoCapacity(data))
                         return;
                     if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack, hand)))
                         return;
@@ -109,7 +109,7 @@ public class ClientReloadHandler {
                     dataKey.setValue(player, true);
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(true, hand));
                     this.reloadingSlot = player.getInventory().selected;
-                    reloadTimer = GunModifierHelper.getReloadTime(data);
+                    reloadTimer = WeaponModifierHelper.getReloadTime(data);
 
                     MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack, hand));
                 }

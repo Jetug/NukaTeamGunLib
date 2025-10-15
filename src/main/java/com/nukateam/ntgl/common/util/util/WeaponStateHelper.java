@@ -32,14 +32,14 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class GunStateHelper {
+public class WeaponStateHelper {
     public static final String AMMO_TAG = "Ammo";
     public static final String FIRE_MODE = "FireMode";
     public static final String ATTACHMENTS = "Attachments";
 
     //AMMO
     public static void switchAmmo(WeaponData data){
-        var ammoItems = GunModifierHelper.getAmmoItems(data);
+        var ammoItems = WeaponModifierHelper.getAmmoItems(data);
         var current = getCurrentAmmo(data);
         var newAmmo = SetUtils.cycleSet(ammoItems, current);
 
@@ -58,7 +58,7 @@ public class GunStateHelper {
 
     public static void addAmmo(WeaponData data, int amount) {
         var tag = data.weapon.getOrCreateTag();
-        var maxAmmo = GunModifierHelper.getMaxAmmo(data);
+        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
         var result = Math.min(tag.getInt(Tags.AMMO_COUNT) + amount, maxAmmo);
         tag.putInt(Tags.AMMO_COUNT, result);
         data.weapon.setTag(tag);
@@ -78,14 +78,14 @@ public class GunStateHelper {
             return AmmoHolder.getType(ammoId);
         }
         else {
-            var ammoItems = GunModifierHelper.getAmmoItems(data);
+            var ammoItems = WeaponModifierHelper.getAmmoItems(data);
             return SetUtils.getFirst(ammoItems);
         }
     }
 
     public static AmmoHolder getCurrentAmmoWithoutCheck(WeaponData data) {
         var tag = data.weapon.getOrCreateTag();
-        var ammoItems = GunModifierHelper.getAmmoItems(data);
+        var ammoItems = WeaponModifierHelper.getAmmoItems(data);
 
         if(tag.contains(AMMO_TAG, Tag.TAG_STRING)) {
             return AmmoHolder.getType(tag.getString(AMMO_TAG));
@@ -107,17 +107,17 @@ public class GunStateHelper {
 
     public static AmmoConfig getAmmoConfig(WeaponData data) {
         var ammoId = getCurrentAmmo(data).getId();
-        return GunModifierHelper.getAmmoConfig(ammoId, data);
+        return WeaponModifierHelper.getAmmoConfig(ammoId, data);
     }
 
     public static @NotNull ProjectileConfig getProjectileConfig(WeaponData data) {
         var ammoId = getCurrentAmmoWithoutCheck(data).getId();
-        return GunModifierHelper.getProjectileConfig(ammoId, data);
+        return WeaponModifierHelper.getProjectileConfig(ammoId, data);
     }
 
     //FIRE MODE______________________________________
     public static void switchFireMode(WeaponData data){
-        var fireModes = GunModifierHelper.getFireModes(data);
+        var fireModes = WeaponModifierHelper.getFireModes(data);
         var current = getFireMode(data);
         var newFireMode = SetUtils.cycleSet(fireModes, current);
         setFireMode(data, newFireMode);
@@ -130,7 +130,7 @@ public class GunStateHelper {
     }
 
     public static FireMode getFireMode(WeaponData data) {
-        var fireModes = GunModifierHelper.getFireModes(data);
+        var fireModes = WeaponModifierHelper.getFireModes(data);
         var currentFireMode = getFireMode(data.weapon);
 
         if (currentFireMode == null || !fireModes.contains(currentFireMode)) {
@@ -150,7 +150,7 @@ public class GunStateHelper {
 
     public static boolean isMaxAmmo(WeaponData data) {
         var ammo = getAmmoCount(data);
-        var maxAmmo = GunModifierHelper.getMaxAmmo(data);
+        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
         return ammo == maxAmmo;
     }
 
@@ -160,7 +160,7 @@ public class GunStateHelper {
     }
 
     public static void setMaxAmmo(WeaponData data) {
-        GunStateHelper.setAmmo(data.weapon, GunModifierHelper.getMaxAmmo(data));
+        WeaponStateHelper.setAmmo(data.weapon, WeaponModifierHelper.getMaxAmmo(data));
     }
 
     public static boolean hasAmmo(ItemStack gunStack) {
@@ -171,7 +171,7 @@ public class GunStateHelper {
     public static void fillAmmo(WeaponData data) {
         if (data.weapon.getItem() instanceof IWeapon) {
             var tag = data.weapon.getOrCreateTag();
-            var maxAmmo = GunModifierHelper.getMaxAmmo(data);
+            var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
 
             tag.putInt(Tags.AMMO_COUNT, maxAmmo);
         }
@@ -223,7 +223,7 @@ public class GunStateHelper {
     }
 
     public static boolean hasAttachmentEquipped(ItemStack stack, AttachmentType type) {
-        var gun = GunModifierHelper.getGun(stack);
+        var gun = WeaponModifierHelper.getConfig(stack);
         if (!gun.canAttachType(type, gun))
             return false;
 
@@ -337,7 +337,7 @@ public class GunStateHelper {
 
         var item = data.weapon.getItem();
         if(item instanceof IWeapon){
-            return GunModifierHelper.getGripType(data);
+            return WeaponModifierHelper.getGripType(data);
         }
         else if(item instanceof IThrowable throwable){
             return throwable.getConfig().getGeneral().getGripType();
@@ -349,10 +349,10 @@ public class GunStateHelper {
         var shooter = data.wielder;
         var heldItem = data.weapon;
         if(shooter != null && heldItem != null){
-            var ammoPerShot = GunModifierHelper.getAmmoPerShot(data);
-            var fireMode = GunStateHelper.getFireMode(data);
-            var multishotAmount = GunModifierHelper.getMultishotAmount(data);
-            var ammoCount = GunStateHelper.getAmmoCount(data);
+            var ammoPerShot = WeaponModifierHelper.getAmmoPerShot(data);
+            var fireMode = WeaponStateHelper.getFireMode(data);
+            var multishotAmount = WeaponModifierHelper.getMultishotAmount(data);
+            var ammoCount = WeaponStateHelper.getAmmoCount(data);
 
             if(fireMode == FireMode.MULTI && multishotAmount > 1){
                 multishotAmount = Math.min(ammoCount, multishotAmount);
@@ -372,7 +372,7 @@ public class GunStateHelper {
         var equipTime = 0;
         if (slot.getItem() instanceof IWeapon) {
             var data = new WeaponData(slot, shooter);
-            equipTime = GunModifierHelper.getEquipTime(data);
+            equipTime = WeaponModifierHelper.getEquipTime(data);
         }
         else if (slot.getItem() instanceof IThrowable throwable) {
             equipTime = throwable.getConfig().getGeneral().getEquipTime();

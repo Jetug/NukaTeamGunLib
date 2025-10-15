@@ -77,7 +77,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
     public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             var heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
-            var scope = GunStateHelper.getScopeStack(heldItem);
+            var scope = WeaponStateHelper.getScopeStack(heldItem);
             if (scope.getItem() instanceof ScopeItem scopeItem) {
                 widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(Component.literal("Edit"), btn -> {
                     Minecraft.getInstance().setScreen(createEditorScreen(Debug.getScope(scopeItem)));

@@ -4,8 +4,8 @@ package com.nukateam.ntgl.client.util.handler;
 import com.nukateam.ntgl.client.util.util.PropertyHelper;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
@@ -40,7 +40,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import static com.nukateam.ntgl.common.util.util.GunStateHelper.isOneHanded;
+import static com.nukateam.ntgl.common.util.util.WeaponStateHelper.isOneHanded;
 
 /**
  * Author: MrCrayfish
@@ -73,7 +73,7 @@ public class AimingHandler {
     }
 
     public static boolean isScoping(ItemStack gun) {
-        return AimingHandler.isAiming(gun) && GunStateHelper.hasScopeOverlay(gun);
+        return AimingHandler.isAiming(gun) && WeaponStateHelper.hasScopeOverlay(gun);
     }
 
     @SubscribeEvent
@@ -167,7 +167,7 @@ public class AimingHandler {
             return;
 
         double time = PropertyHelper.getSightAnimations(heldItem).getFovCurve().apply(this.normalisedAdsProgress);
-        float modifier = GunStateHelper.getFovModifier(heldItem, modifiedGun);
+        float modifier = WeaponStateHelper.getFovModifier(heldItem, modifiedGun);
         modifier = (1.0F - modifier) * (float) time;
         event.setFOV(event.getFOV() - event.getFOV() * modifier);
     }
@@ -213,7 +213,7 @@ public class AimingHandler {
             return false;
 
         if (mc.player.getOffhandItem().getItem() == Items.SHIELD
-                && GunStateHelper.isOneHanded(new WeaponData(mainHandItem, mc.player)))
+                && WeaponStateHelper.isOneHanded(new WeaponData(mainHandItem, mc.player)))
             return false;
 
         if (!this.localTracker.isAiming() && this.isLookingAtInteractableBlock())
@@ -223,7 +223,7 @@ public class AimingHandler {
             return false;
 
         if(mainHandItem.getItem() instanceof IWeapon && offhandItem.getItem() instanceof IWeapon) {
-            var off =  GunModifierHelper.getGripType(new WeaponData(offhandItem, mc.player));
+            var off =  WeaponModifierHelper.getGripType(new WeaponData(offhandItem, mc.player));
             if(off.isOneHanded()) {
                 return false;
             }
@@ -269,7 +269,7 @@ public class AimingHandler {
             this.previousAim = this.currentAim;
             if (ModSyncedDataKeys.AIMING.getValue(player) || (player.isLocalPlayer() && AimingHandler.this.isAiming())) {
                 if (this.currentAim < MAX_AIM_PROGRESS) {
-                    var speed = GunModifierHelper.getModifiedAimDownSightSpeed(gunData);
+                    var speed = WeaponModifierHelper.getModifiedAimDownSightSpeed(gunData);
                     this.currentAim += speed;
                     if (this.currentAim > MAX_AIM_PROGRESS) {
                         this.currentAim = (int) MAX_AIM_PROGRESS;
@@ -277,7 +277,7 @@ public class AimingHandler {
                 }
             } else {
                 if (this.currentAim > 0) {
-                    var speed = GunModifierHelper.getModifiedAimDownSightSpeed(gunData);
+                    var speed = WeaponModifierHelper.getModifiedAimDownSightSpeed(gunData);
                     this.currentAim -= speed;
                     if (this.currentAim < 0) {
                         this.currentAim = 0;

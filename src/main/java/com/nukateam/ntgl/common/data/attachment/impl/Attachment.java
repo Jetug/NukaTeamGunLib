@@ -6,7 +6,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.WeaponHelper;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,15 +27,15 @@ import java.util.function.BiFunction;
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class Attachment {
-    protected IGunModifier[] modifiers;
+    protected IWeaponModifier[] modifiers;
     private List<Component> perks = null;
     private List<ItemStack> weapons = null;
 
-    public Attachment(IGunModifier... modifiers) {
+    public Attachment(IWeaponModifier... modifiers) {
         this.modifiers = modifiers;
     }
 
-    public IGunModifier[] getModifiers() {
+    public IWeaponModifier[] getModifiers() {
         return this.modifiers;
     }
 
@@ -206,11 +206,11 @@ public class Attachment {
                 (modifier, val) -> modifier.modifyMeleeDistance(val, data));
     }
 
-    private void getNumericPerk(ArrayList<Component> positivePerks, String name, BiFunction<IGunModifier, Float, Float> function) {
+    private void getNumericPerk(ArrayList<Component> positivePerks, String name, BiFunction<IWeaponModifier, Float, Float> function) {
         getNumericPerk(positivePerks,  name, false, function);
     }
 
-    private void getNumericPerk(ArrayList<Component> positivePerks, String name, boolean invert, BiFunction<IGunModifier, Float, Float> function) {
+    private void getNumericPerk(ArrayList<Component> positivePerks, String name, boolean invert, BiFunction<IWeaponModifier, Float, Float> function) {
         float input1 = 1.0f;
         float input2 = 2.0f;
         float output1 = input1;

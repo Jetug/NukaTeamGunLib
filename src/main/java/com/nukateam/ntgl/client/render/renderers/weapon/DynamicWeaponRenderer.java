@@ -9,10 +9,10 @@ import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.data.config.gun.Modules;
 import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.item.attachment.BarrelItem;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.model.GeoModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import static com.nukateam.ntgl.client.util.ClientDebug.*;
 
-public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmedModelRenderer<Animator> {
+public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedModelRenderer<Animator> {
     public static final String MUZZLE_FLASH = "muzzle_flash";
     protected MultiBufferSource bufferSource;
     protected ArrayList<ItemStack> gunAttachments;
@@ -38,7 +38,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmedMode
     protected ItemStack gunStack;
     private ItemDisplayContext transformType;
 
-    public DynamicGunRenderer(GeoModel<Animator> model) {
+    public DynamicWeaponRenderer(GeoModel<Animator> model) {
         super(model);
     }
 
@@ -48,16 +48,16 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmedMode
                        @Nullable RenderType renderType, @Nullable VertexConsumer buffer, int packedLight) {
         this.bufferSource = bufferSource;
         this.transformType = transformType;
-        this.weaponConfig = GunModifierHelper.getGun(stack);
+        this.weaponConfig = WeaponModifierHelper.getConfig(stack);
         this.gunStack = stack;
-        this.gunAttachments = GunStateHelper.getAttachmentItems(stack);
+        this.gunAttachments = WeaponStateHelper.getAttachmentItems(stack);
         this.configAttachments = weaponConfig.getAttachmentConfigs(gunAttachments);
         this.currentEntity = entity;
 
         if (TransformUtils.isFirstPerson(transformType) && AimingHandler.isScoping(stack))
             return;
 
-        var barrelStack = GunStateHelper.getAttachmentItem(AttachmentType.BARREL, stack);
+        var barrelStack = WeaponStateHelper.getAttachmentItem(AttachmentType.BARREL, stack);
 
         if(barrelStack.getItem() instanceof BarrelItem barrel) {
             this.barrelItem = barrel;
@@ -131,7 +131,7 @@ public class DynamicGunRenderer<Animator extends ItemAnimator> extends ArmedMode
         var visibleBones = new ArrayList<String>();
 
         gunAttachments.forEach((type, typeAttachments) -> {
-            var item = GunStateHelper.getAttachmentItem(type, gunStack);
+            var item = WeaponStateHelper.getAttachmentItem(type, gunStack);
 
             for (var attachment : typeAttachments) {
                 if (shouldRenderAttachment(attachment, item)) {

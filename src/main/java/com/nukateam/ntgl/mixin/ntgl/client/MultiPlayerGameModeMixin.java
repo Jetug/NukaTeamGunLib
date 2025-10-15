@@ -3,7 +3,7 @@ package com.nukateam.ntgl.mixin.ntgl.client;
 import com.nukateam.ntgl.client.util.handler.ClientEquipHandler;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.world.InteractionHand;
@@ -33,7 +33,7 @@ public class MultiPlayerGameModeMixin {
             var isThrowable = item instanceof IThrowable;
 
             if (isGun || isThrowable) {
-                var equipTime = GunStateHelper.getEquipTime(currentStack, player);
+                var equipTime = WeaponStateHelper.getEquipTime(currentStack, player);
                 ClientEquipHandler.get().setEquiping(hand, equipTime);
             }
         }

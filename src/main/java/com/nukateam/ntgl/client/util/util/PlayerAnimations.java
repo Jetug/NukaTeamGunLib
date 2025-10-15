@@ -5,8 +5,8 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerAnimationHelper;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.InteractionHand;
@@ -16,8 +16,8 @@ public class PlayerAnimations {
     public static void playFireAnimation(Player player, InteractionHand hand) {
         if (Ntgl.playerAnimatorLoaded) {
             var gunData = new WeaponData(player.getItemInHand(hand), Minecraft.getInstance().player);
-            var rate = GunModifierHelper.getRate(gunData);
-            var animation = GunModifierHelper.getAnimation(AnimationType.FIRE, gunData);
+            var rate = WeaponModifierHelper.getRate(gunData);
+            var animation = WeaponModifierHelper.getAnimation(AnimationType.FIRE, gunData);
 
             PlayerAnimationHelper.playAnim((AbstractClientPlayer)player, animation, rate, hand == InteractionHand.OFF_HAND);
         }
@@ -26,10 +26,10 @@ public class PlayerAnimations {
     public static void playMeleeAnimation(Player player, InteractionHand hand) {
         if (Ntgl.playerAnimatorLoaded) {
             var gunData = new WeaponData(player.getItemInHand(hand), Minecraft.getInstance().player);
-            var delay = GunModifierHelper.getMeleeDelay(gunData);
-            var cooldown = GunModifierHelper.getMeleeCooldown(gunData);
+            var delay = WeaponModifierHelper.getMeleeDelay(gunData);
+            var cooldown = WeaponModifierHelper.getMeleeCooldown(gunData);
 
-            var animation = GunModifierHelper.getAnimation(AnimationType.MELEE, gunData);
+            var animation = WeaponModifierHelper.getAnimation(AnimationType.MELEE, gunData);
 
             PlayerAnimationHelper.playAnim((AbstractClientPlayer)player, animation, delay + cooldown, hand == InteractionHand.OFF_HAND);
         }
@@ -39,11 +39,11 @@ public class PlayerAnimations {
         if (Ntgl.playerAnimatorLoaded) {
             var reloadDuration = 0;
             var gunData = new WeaponData(player.getItemInHand(hand), player);
-            var reloadTime = GunModifierHelper.getReloadTime(gunData);
-            var loadingType = GunModifierHelper.getLoadingType(gunData);
+            var reloadTime = WeaponModifierHelper.getReloadTime(gunData);
+            var loadingType = WeaponModifierHelper.getLoadingType(gunData);
 
             if(loadingType.equals(LoadingType.PER_CARTRIDGE)){
-                var ammoCount =  GunModifierHelper.getMaxAmmo(gunData) - GunStateHelper.getAmmoCount(gunData);
+                var ammoCount =  WeaponModifierHelper.getMaxAmmo(gunData) - WeaponStateHelper.getAmmoCount(gunData);
 
                 for (var i = 0; i < ammoCount; i++) {
                     reloadDuration += reloadTime;
@@ -51,7 +51,7 @@ public class PlayerAnimations {
             }
             else reloadDuration = reloadTime;
 
-            var reloadAnimation =  GunModifierHelper.getAnimation(AnimationType.RELOAD, gunData);
+            var reloadAnimation =  WeaponModifierHelper.getAnimation(AnimationType.RELOAD, gunData);
             PlayerAnimationHelper.playAnim((AbstractClientPlayer)player, reloadAnimation, reloadDuration, hand == InteractionHand.OFF_HAND);
         }
     }

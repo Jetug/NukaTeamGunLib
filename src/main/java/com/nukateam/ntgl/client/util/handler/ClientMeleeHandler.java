@@ -12,7 +12,7 @@ import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageMeleeAttack;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.nukateam.ntgl.client.util.handler.ClientShootingHandler.isInGame;
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canUseOffhandWeapon;
+import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.canUseOffhandWeapon;
 
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
@@ -35,8 +35,8 @@ public class ClientMeleeHandler {
     private int cooldownTick;
 
     private ClientMeleeHandler(WeaponData data) {
-        this.cooldownTick = GunModifierHelper.getMeleeCooldown(data);
-        this.delayTick = GunModifierHelper.getMeleeDelay(data);
+        this.cooldownTick = WeaponModifierHelper.getMeleeCooldown(data);
+        this.delayTick = WeaponModifierHelper.getMeleeDelay(data);
     }
 
     public static boolean isOnDelay(LivingEntity shooter, InteractionHand hand){
@@ -56,7 +56,7 @@ public class ClientMeleeHandler {
         assert gun != null && entity != null;
 
         if (gun.getItem() instanceof IWeapon
-                && GunModifierHelper.canMelee(data)
+                && WeaponModifierHelper.canMelee(data)
                 && !TRACKER_MAP.containsKey(Pair.of(entity, hand))
                 && !doMelee.getValue(entity))
         {
@@ -137,7 +137,7 @@ public class ClientMeleeHandler {
         if(isMelee(data) && !EquipTracker.isEquiping(shooter, hand) && !shooter.isSpectator()){
             attack(data, hand);
 
-            var mode = GunModifierHelper.getMeleeMode(data);
+            var mode = WeaponModifierHelper.getMeleeMode(data);
             if (mode == MeleeMode.SINGLE) {
                 key.setDown(false);
             }
@@ -178,6 +178,6 @@ public class ClientMeleeHandler {
     }
 
     private static boolean isMelee(WeaponData data) {
-        return GunModifierHelper.getWeaponMode(data) == WeaponMode.MELEE;
+        return WeaponModifierHelper.getWeaponMode(data) == WeaponMode.MELEE;
     }
 }

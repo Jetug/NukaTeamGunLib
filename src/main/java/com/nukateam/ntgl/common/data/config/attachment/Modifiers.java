@@ -10,7 +10,7 @@ import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.GripType;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.util.annotation.Optional;
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
+public class Modifiers implements INBTSerializable<CompoundTag>, IWeaponModifier {
     @Optional Set<FireMode> fireModes = new HashSet<>();
     @Optional float additionalDamage = 0;
     @Optional String damage = "";
@@ -332,17 +332,17 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
 
     @Override
     public float modifyFireSoundVolume(float volume, WeaponData data) {
-        return IGunModifier.super.modifyFireSoundVolume(volume, data);
+        return IWeaponModifier.super.modifyFireSoundVolume(volume, data);
     }
 
     @Override
     public ResourceLocation modifyFireSound(ResourceLocation sound, WeaponData data) {
-        return IGunModifier.super.modifyFireSound(sound, data);
+        return IWeaponModifier.super.modifyFireSound(sound, data);
     }
 
     @Override
     public double modifyFireSoundRadius(double radius, WeaponData data) {
-        return IGunModifier.super.modifyFireSoundRadius(radius, data);
+        return IWeaponModifier.super.modifyFireSoundRadius(radius, data);
     }
 
     @Override

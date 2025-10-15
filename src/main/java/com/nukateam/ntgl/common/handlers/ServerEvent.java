@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.handlers;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.event.TickEvent;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import static com.nukateam.ntgl.common.util.trackers.ShootTracker.*;
 import static com.nukateam.ntgl.common.network.ServerPlayHandler.*;
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.*;
+import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.*;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class ServerEvent {
@@ -35,7 +35,7 @@ public class ServerEvent {
                 && !isReloading
                 && isAutoReloading(new WeaponData(stack, player))
                 && shootTracker.cooldownEnded()
-                && !GunStateHelper.hasAmmo(stack)
+                && !WeaponStateHelper.hasAmmo(stack)
         ) {
             reloadGun(hand, player);
         }

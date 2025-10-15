@@ -5,7 +5,7 @@ import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
@@ -31,7 +31,7 @@ public class MouseHandlerMixin {
                 if (AimingHandler.get().isAiming() && !ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player)) {
                     var modifiedGun = weaponItem.getModifiedConfig(heldItem);
                     if (modifiedGun.getModules().getZoom() != null) {
-                        float modifier = GunStateHelper.getFovModifier(heldItem, modifiedGun);
+                        float modifier = WeaponStateHelper.getFovModifier(heldItem, modifiedGun);
                         additionalAdsSensitivity = Mth.clamp(1.0F - (1.0F / modifier) / 10F, 0.0F, 1.0F);
                     }
                 }

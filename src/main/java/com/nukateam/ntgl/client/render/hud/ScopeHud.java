@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.hud;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -28,9 +28,9 @@ public class ScopeHud implements IGuiOverlay {
         scopeScale = Mth.lerp(0.5F * frameTime, scopeScale, 1.125F);
 
         if (AimingHandler.isScoping(gun)) {
-            var attachment = GunStateHelper.getAttachmentItem(AttachmentType.SCOPE, gun);
+            var attachment = WeaponStateHelper.getAttachmentItem(AttachmentType.SCOPE, gun);
             if (!attachment.isEmpty()) {
-                var scope = GunStateHelper.getScopeItem(gun);
+                var scope = WeaponStateHelper.getScopeItem(gun);
                 var overlay = scope.getProperties().getOverlay();
                 setupOverlayRenderState(true);
                 renderScope(graphics, width, height, overlay);

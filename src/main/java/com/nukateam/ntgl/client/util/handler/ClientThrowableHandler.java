@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.KeyAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageGrenade;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.canUseOffhandWeapon;
+import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.canUseOffhandWeapon;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientThrowableHandler {
@@ -96,7 +96,7 @@ public class ClientThrowableHandler {
     }
 
     private static boolean isThrowable(WeaponData weaponData) {
-        return weaponData.weapon != null && weaponData.weapon.getItem() instanceof IThrowable && GunModifierHelper.isThrowable(weaponData);
+        return weaponData.weapon != null && weaponData.weapon.getItem() instanceof IThrowable && WeaponModifierHelper.isThrowable(weaponData);
     }
 
     private static class Tracker {

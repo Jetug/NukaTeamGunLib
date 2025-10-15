@@ -9,7 +9,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageHandAction;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
@@ -54,7 +54,7 @@ public class ClientActions {
 
         if(weapon.getItem() instanceof IWeapon){
             var gunData = new WeaponData(weapon, player).setWeaponAction(mode);
-            var weaponMode = GunModifierHelper.getWeaponMode(gunData);
+            var weaponMode = WeaponModifierHelper.getWeaponMode(gunData);
 
             if(weaponMode == WeaponMode.GUN) {
                 ClientShootingHandler.get().fire(gunData);

@@ -91,14 +91,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.shooter = data.wielder;
         this.shooterId = shooter.getId();
         this.weapon = weapon;
-        this.general = GunModifierHelper.getGeneral(data);
-        this.projectile = GunStateHelper.getProjectileConfig(data);
+        this.general = WeaponModifierHelper.getGeneral(data);
+        this.projectile = WeaponStateHelper.getProjectileConfig(data);
         this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
         setBoundingBox(new AABB(
                 projectile.getSize(), projectile.getSize(), projectile.getSize(),
                 -projectile.getSize(), -projectile.getSize(), -projectile.getSize()));
-        this.modifiedGravity = projectile.isGravity() ? GunModifierHelper.getModifiedProjectileGravity(data, -0.04) : 0.0;
-        this.life = GunModifierHelper.getModifiedProjectileLife(data, this.projectile.getLife());
+        this.modifiedGravity = projectile.isGravity() ? WeaponModifierHelper.getModifiedProjectileGravity(data, -0.04) : 0.0;
+        this.life = WeaponModifierHelper.getModifiedProjectileLife(data, this.projectile.getLife());
         var hand = shooter.getMainHandItem() == weapon ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         this.isRightHand =  hand == InteractionHand.MAIN_HAND; //shooter.getItemInHand(InteractionHand.MAIN_HAND) == weapon;
         this.ammo = setupAmmo(data);
@@ -106,7 +106,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         /* Get speed and set motion */
         var dir = this.getDirection(shooter, weapon, item);
         var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
-        var speed = GunModifierHelper.getModifiedProjectileSpeed(data, this.projectile.getSpeed() * speedModifier);
+        var speed = WeaponModifierHelper.getModifiedProjectileSpeed(data, this.projectile.getSpeed() * speedModifier);
 
         this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
@@ -247,14 +247,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         var data = new WeaponData(this.weapon, this.shooter);
 
-        float initialDamage = GunModifierHelper.getModifiedDamage(data)  + this.additionalDamage;
+        float initialDamage = WeaponModifierHelper.getModifiedDamage(data)  + this.additionalDamage;
 
         if (this.projectile.isDamageReduceOverLife()) {
             float modifier = ((float) this.projectile.getLife() - (float) (this.tickCount - 1)) / (float) this.projectile.getLife();
             initialDamage *= modifier;
         }
 
-        var projectileAmount = GunModifierHelper.getProjectileAmount(data);
+        var projectileAmount = WeaponModifierHelper.getProjectileAmount(data);
         var damage = initialDamage / projectileAmount;
         damage = GunEnchantmentHelper.getAcceleratorDamage(this.weapon, damage);
 
@@ -653,7 +653,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     private ItemStack setupAmmo(WeaponData data) {
         var weapon = data.weapon;
 
-        var ammoHolder = GunStateHelper.getCurrentAmmo(data);
+        var ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
         if(ammoHolder.canReturnAmmo()) {
             var ammo = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
             if (ammo != null) {
@@ -681,14 +681,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         var dir = this.getDirection(shooter, weapon, item);
         var speedModifier = GunEnchantmentHelper.getProjectileSpeedModifier(weapon);
         var data = new WeaponData(weapon, shooter);
-        var speed = GunModifierHelper.getModifiedProjectileSpeed(data, this.projectile.getSpeed() * speedModifier);
+        var speed = WeaponModifierHelper.getModifiedProjectileSpeed(data, this.projectile.getSpeed() * speedModifier);
         this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
     }
 
     protected float getCriticalDamage(ItemStack weapon, RandomSource rand, float damage) {
         var data = new WeaponData(weapon, shooter);
-        float chance = GunModifierHelper.getCriticalChance(data);
+        float chance = WeaponModifierHelper.getCriticalChance(data);
         if (rand.nextFloat() < chance) {
             return (float) (damage * Config.COMMON.gameplay.criticalDamageMultiplier.get());
         }
@@ -697,7 +697,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     protected Vec3 getDirection(LivingEntity shooter, ItemStack weapon, IWeapon item) {
         var data = new WeaponData(weapon, shooter);
-        float gunSpread = GunModifierHelper.getModifiedSpread(data);
+        float gunSpread = WeaponModifierHelper.getModifiedSpread(data);
 
         if (gunSpread == 0F) {
             return this.getVectorFromRotation(shooter.getXRot(), shooter.getYRot());
@@ -705,7 +705,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
 //        if (shooter instanceof LivingEntity) {
 
-        if (!GunModifierHelper.isAlwaysSpread(data)) {
+        if (!WeaponModifierHelper.isAlwaysSpread(data)) {
             gunSpread *= SpreadTracker.get(shooter).getSpread(item);
         }
 

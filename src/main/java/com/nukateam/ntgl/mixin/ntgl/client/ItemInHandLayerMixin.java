@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.*;
@@ -40,7 +40,7 @@ public class ItemInHandLayerMixin {
         var oppositeStack = entity.getItemInHand(oppositeHand);
 
         if (hand == InteractionHand.OFF_HAND) {
-            if(!GunStateHelper.isOneHanded(new WeaponData(stack, entity)) || !GunStateHelper.isOneHanded(new WeaponData(oppositeStack, entity))){
+            if(!WeaponStateHelper.isOneHanded(new WeaponData(stack, entity)) || !WeaponStateHelper.isOneHanded(new WeaponData(oppositeStack, entity))){
                 ci.cancel();
                 return;
             }
@@ -67,7 +67,7 @@ public class ItemInHandLayerMixin {
             poseStack.mulPose(Axis.YP.rotationDegrees(180F));
             GunRenderingHandler.get().applyWeaponScale(stack, poseStack);
 
-            var gripType = GunStateHelper.getGripType(new WeaponData(stack, entity));
+            var gripType = WeaponStateHelper.getGripType(new WeaponData(stack, entity));
             var aimProgress = AimingHandler.get().getAimProgress(entity, deltaTicks);
             gripType.getHeldAnimation()
                     .applyHeldItemTransforms(entity, hand, aimProgress, poseStack, source);

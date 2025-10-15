@@ -4,11 +4,11 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import static com.nukateam.ntgl.common.util.util.GunModifierHelper.getGun;
+import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.getConfig;
 
 /**
  * Author: MrCrayfish
@@ -47,7 +47,7 @@ public class AttachmentSlot extends Slot {
             return false;
         }
 
-        var gun = getGun(weapon);
+        var gun = getConfig(weapon);
         var modifiedGun = item.getModifiedConfig(this.weapon);
         return modifiedGun.canAttachType(this.type, gun);
     }
@@ -92,13 +92,13 @@ public class AttachmentSlot extends Slot {
 
     public static void checkAmmoCount(ItemStack stack, LivingEntity entity) {
         var gunData = new WeaponData(stack, entity);
-        var maxAmmo = GunModifierHelper.getMaxAmmo(gunData  );
-        var ammoCount = GunStateHelper.getAmmoCount(gunData);
+        var maxAmmo = WeaponModifierHelper.getMaxAmmo(gunData  );
+        var ammoCount = WeaponStateHelper.getAmmoCount(gunData);
         var diff = ammoCount - maxAmmo;
 
         if(diff > 0){
-            GunStateHelper.setAmmo(stack, maxAmmo);
-            var ammoHolder = GunStateHelper.getCurrentAmmo(gunData);
+            WeaponStateHelper.setAmmo(stack, maxAmmo);
+            var ammoHolder = WeaponStateHelper.getCurrentAmmo(gunData);
             if(ammoHolder.canReturnAmmo()) {
                 var ammoItem = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
                 var dropStack = new ItemStack(ammoItem, diff);

@@ -23,9 +23,9 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -88,11 +88,11 @@ public class ControllerHandler {
                 var tag = heldItem.getTag();
                 var data = new WeaponData(heldItem, player);
 
-                if (tag != null && GunStateHelper.getAmmoCount(data) < GunEnchantmentHelper.getAmmoCapacity(data)) {
+                if (tag != null && WeaponStateHelper.getAmmoCount(data) < GunEnchantmentHelper.getAmmoCapacity(data)) {
                     actions.put(GunButtonBindings.RELOAD, new Action(Component.translatable("ntgl.action.reload"), Action.Side.LEFT));
                 }
 
-                Scope scope = GunStateHelper.getScope(heldItem);
+                Scope scope = WeaponStateHelper.getScope(heldItem);
                 if (scope != null && scope.isStable() && AimingHandler.get().isAiming()) {
                     actions.put(GunButtonBindings.STEADY_AIM, new Action(Component.translatable("ntgl.action.steady_aim"), Action.Side.RIGHT));
                 }
@@ -109,7 +109,7 @@ public class ControllerHandler {
                 yawSpeed.set(10.0F * (float) adsSensitivity);
                 pitchSpeed.set(7.5F * (float) adsSensitivity);
 
-                var scope = GunStateHelper.getScope(heldItem);
+                var scope = WeaponStateHelper.getScope(heldItem);
                 var controller = Controllable.getController();
                 if (scope != null && scope.isStable() && controller != null && controller.isButtonPressed(GunButtonBindings.STEADY_AIM.getButton())) {
                     yawSpeed.set(yawSpeed.get() / 2.0F);
@@ -180,7 +180,7 @@ public class ControllerHandler {
             var gunData = new WeaponData(heldItem, player);
 
             if (heldItem.getItem() instanceof IWeapon) {
-                if (GunModifierHelper.isAuto(gunData)) {
+                if (WeaponModifierHelper.isAuto(gunData)) {
                     ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponAction(AttackMode.PRIMARY));
                 }
             }
