@@ -16,7 +16,7 @@ public class StunGrenadeItem extends WeaponItem {
     }
 
     @Override
-    public ThrowableGrenadeEntity<StunGrenadeItem> create(Level world, LivingEntity entity, int timeLeft) {
+    protected ThrowableGrenadeEntity<StunGrenadeItem> createThrowable(Level world, LivingEntity entity, int timeLeft) {
         return new StunGrenadeEntity<>(world, entity, this, 20 * 2);
     }
 

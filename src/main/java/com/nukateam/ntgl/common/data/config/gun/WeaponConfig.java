@@ -232,8 +232,8 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         return animations.get(type);
     }
 
-    public boolean canAttachType(@Nullable AttachmentType type, WeaponConfig weaponConfig) {
-        var attachments = weaponConfig.getModules().getAttachments();
+    public boolean canAttachType(@Nullable AttachmentType type) {
+        var attachments = this.getModules().getAttachments();
         if(attachments == null)
             return false;
         return attachments.containsKey(type);

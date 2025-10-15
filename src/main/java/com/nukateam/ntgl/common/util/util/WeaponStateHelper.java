@@ -224,7 +224,7 @@ public class WeaponStateHelper {
 
     public static boolean hasAttachmentEquipped(ItemStack stack, AttachmentType type) {
         var gun = WeaponModifierHelper.getConfig(stack);
-        if (!gun.canAttachType(type, gun))
+        if (!gun.canAttachType(type))
             return false;
 
         var compound = stack.getTag();

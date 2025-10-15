@@ -47,9 +47,9 @@ public class AttachmentSlot extends Slot {
             return false;
         }
 
-        var gun = getConfig(weapon);
+        var config = getConfig(weapon);
         var modifiedGun = item.getModifiedConfig(this.weapon);
-        return modifiedGun.canAttachType(this.type, gun);
+        return modifiedGun.canAttachType(this.type);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class AttachmentSlot extends Slot {
                 return false;
 
             var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
-            var canAttachType = modifiedGun.canAttachType(this.type, modifiedGun);
+            var canAttachType = modifiedGun.canAttachType(this.type);
             var isRightType = attachment.getType().equals(this.type);
             var canAttach = attachment.canAttachTo(this.weapon);
             var isItemAllowed = false;

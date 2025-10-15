@@ -354,7 +354,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
 
     @Override
     public void expire(LivingEntity entityLiving) {
-        var throwableEntity = this.create(entityLiving.level(), entityLiving, 0);
+        var throwableEntity = this.createThrowable(entityLiving.level(), entityLiving, 0);
         throwableEntity.onDeath();
     }
 
@@ -366,7 +366,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
             stack.shrink(1);
         }
 
-        var grenade = this.create(level, entityLiving, timeLeft);
+        var grenade = this.createThrowable(level, entityLiving, timeLeft);
         grenade.shootFromRotation(entityLiving, entityLiving.getXRot(), entityLiving.getYRot(), 0.0F, Math.min(1.0F, timeLeft / 20F), 1.0F);
         level.addFreshEntity(grenade);
         this.onThrown(level, grenade);
@@ -378,7 +378,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
 
     protected void onThrown(Level world, ThrowableItemEntity entity) {}
 
-    public ThrowableItemEntity create(Level world, LivingEntity entity, int timeLeft) {
+    protected ThrowableItemEntity createThrowable(Level world, LivingEntity entity, int timeLeft) {
         var projectile = getConfig().getThrowable().getProjectile().getProjectileType();
         return ProjectileManager.getInstance()
                 .getFactory(projectile)
