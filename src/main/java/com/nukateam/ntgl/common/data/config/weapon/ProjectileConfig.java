@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.data.config;
+package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.common.data.json.JsonDeserializers.getDamageTypeResourceKey;
-import static com.nukateam.ntgl.common.data.config.gun.General.PROJECTILE_AMOUNT;
-import static com.nukateam.ntgl.common.data.config.gun.General.SPREAD;
+import static com.nukateam.ntgl.common.data.config.weapon.General.PROJECTILE_AMOUNT;
+import static com.nukateam.ntgl.common.data.config.weapon.General.SPREAD;
 
 public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
     private float damage = 1;

@@ -3,9 +3,9 @@ package com.nukateam.ntgl.common.util.interfaces;
 import com.nukateam.example.common.registery.GunModifiers;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
-import com.nukateam.ntgl.common.data.config.AmmoConfig;
-import com.nukateam.ntgl.common.data.config.Fuel;
-import com.nukateam.ntgl.common.data.config.ProjectileConfig;
+import com.nukateam.ntgl.common.data.config.weapon.AmmoConfig;
+import com.nukateam.ntgl.common.data.config.weapon.Fuel;
+import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.data.holders.*;
 import net.minecraft.resources.ResourceLocation;
 

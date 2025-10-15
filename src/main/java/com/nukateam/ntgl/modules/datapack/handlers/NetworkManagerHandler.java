@@ -14,14 +14,14 @@ import net.minecraftforge.fml.common.Mod;
 public class NetworkManagerHandler {
     @SubscribeEvent
     public static void onServerStopped(ServerStoppedEvent event) {
-        NetworkGunManager.onServerStopped();
+        NetworkWeaponManager.onServerStopped();
         NetworkAmmoManager.onServerStopped();
         NetworkAttachmentManager.onServerStopped();
     }
 
     @SubscribeEvent
     public static void addReloadListenerEvent(AddReloadListenerEvent event) {
-        NetworkGunManager.register(event);
+        NetworkWeaponManager.register(event);
         NetworkAmmoManager.register(event);
         NetworkAttachmentManager.register(event);
     }
@@ -29,7 +29,7 @@ public class NetworkManagerHandler {
     @SubscribeEvent
     public static void onDatapackSync(OnDatapackSyncEvent event) {
         if (event.getPlayer() == null) {
-            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateGuns());
+            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateWeapons());
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateAmmo());
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateAttachments());
         }

@@ -12,7 +12,7 @@ import net.minecraftforge.registries.*;
 
 public class ModGuns {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Ntgl.MOD_ID);
-    ///GUNS
+    ///WEAPONS
     public static final RegistryObject<WeaponItem> PISTOL10MM = registerGun("pistol10mm", new TestModifier());
     public static final RegistryObject<WeaponItem> PIPE_PISTOL = registerGun("pipepistol");
     public static final RegistryObject<WeaponItem> CLASSIC10MM = registerGun("classic10mm", 10);

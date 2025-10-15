@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.interfaces;
 
-import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 

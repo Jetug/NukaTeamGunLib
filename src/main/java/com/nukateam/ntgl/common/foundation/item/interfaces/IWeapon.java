@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item.interfaces;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
-import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import net.minecraft.world.item.ItemStack;

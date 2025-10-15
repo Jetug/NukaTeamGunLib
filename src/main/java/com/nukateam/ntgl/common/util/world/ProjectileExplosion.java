@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.util.world;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.config.ExplosionConfig;
+import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.foundation.ModTags;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;

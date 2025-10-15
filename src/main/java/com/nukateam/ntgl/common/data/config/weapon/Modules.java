@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.data.config.gun;
+package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;

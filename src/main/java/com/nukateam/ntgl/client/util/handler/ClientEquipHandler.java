@@ -28,6 +28,7 @@ public class ClientEquipHandler {
         if (event.phase != TickEvent.Phase.END)
             return;
         tickHand(InteractionHand.MAIN_HAND);
+        tickHand(InteractionHand.OFF_HAND);
     }
 
     private void tickHand(InteractionHand hand) {

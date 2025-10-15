@@ -1,13 +1,11 @@
 package com.nukateam.ntgl.client.render.hud.cache;
 
-import com.nukateam.ntgl.common.data.config.AmmoConfig;
-import com.nukateam.ntgl.common.data.config.Fuel;
+import com.nukateam.ntgl.common.data.config.weapon.AmmoConfig;
+import com.nukateam.ntgl.common.data.config.weapon.Fuel;
 import com.nukateam.ntgl.common.data.holders.*;
 import net.minecraft.world.InteractionHand;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 public class GunHudCache{
     public FireMode fireMode = FireMode.SEMI_AUTO;

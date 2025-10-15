@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.data.config.gun;
+package com.nukateam.ntgl.common.data.config.weapon;
 
 import net.minecraft.resources.ResourceLocation;
 

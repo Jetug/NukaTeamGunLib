@@ -3,8 +3,8 @@ package com.nukateam.ntgl.common.foundation.item;
 import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.config.ExplosionConfig;
-import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
+import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
@@ -76,7 +76,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
 
     @Override
     public void setConfig(ConfigSupplier<WeaponConfig> supplier) {
-        this.weaponConfig = supplier.getConfig();
+        this.weaponConfig = supplier.config();
         weaponConfig.onCreated(getName());
     }
 

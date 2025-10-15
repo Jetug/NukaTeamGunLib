@@ -57,7 +57,7 @@ public class ModSyncedDataKeys {
     public static final SyncedDataKey<LivingEntity, Boolean> THROW_RIGHT  = registerBooleanKey("throw_right" );
     public static final SyncedDataKey<LivingEntity, Boolean> THROW_LEFT   = registerBooleanKey("throw_left" );
 
-    public static SyncedDataKey<LivingEntity, Boolean> getDoMelee(InteractionHand hand){
+    public static SyncedDataKey<LivingEntity, Boolean> getMeleeKey(InteractionHand hand){
         return getHandObject(hand, MELEE_RIGHT, MELEE_LEFT);
     }
 

@@ -8,7 +8,7 @@ import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.util.PropertyHelper;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;

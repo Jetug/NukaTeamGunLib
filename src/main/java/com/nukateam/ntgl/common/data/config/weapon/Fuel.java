@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.data.config;
+package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
-    public static final String TYPE = "Type";
     @Optional
     private int max = 100;
     private boolean mandatory = true;

@@ -1,16 +1,15 @@
 package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
-import com.nukateam.ntgl.common.data.config.ProjectileConfig;
-import com.nukateam.ntgl.common.data.config.Fuel;
-import com.nukateam.ntgl.common.data.config.gun.Modules;
+import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
+import com.nukateam.ntgl.common.data.config.weapon.Fuel;
+import com.nukateam.ntgl.common.data.config.weapon.Modules;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
-import org.checkerframework.checker.units.qual.K;
 
 import java.util.*;
 import java.util.function.BiFunction;

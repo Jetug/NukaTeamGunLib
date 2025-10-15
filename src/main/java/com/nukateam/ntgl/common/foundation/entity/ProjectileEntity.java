@@ -2,10 +2,10 @@ package com.nukateam.ntgl.common.foundation.entity;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.config.ProjectileConfig;
+import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.config.gun.General;
-import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
+import com.nukateam.ntgl.common.data.config.weapon.General;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.util.trackers.SpreadTracker;

@@ -33,7 +33,7 @@
     },
     "ntgl:additional": {
       "general": {
-        "weaponMode": "ntgl:gun"
+        "weaponMode": "ntgl:melee"
       },
       "melee": {
         "mode": "ntgl:single",
@@ -49,6 +49,32 @@
     "ntgl:alternative": {
       "general": {
         "weaponMode": "ntgl:throwable"
+      },
+      "throwable": {
+        "mode": [
+          "ntgl:unsafe"
+        ],
+        "prepareTime": 20,
+        "throwTime": 6,
+
+        "ammoData":{
+          "ammo": {
+            "type": "ntgl:explosive"
+          },
+          "projectile": {
+            "damage": 10.0,
+            "size": 1.0,
+            "speed": 50.0,
+            "life": 80,
+            "gravity": true,
+
+            "explosion": {
+              "damage": 40,
+              "radius": 10,
+              "knockback": 0.5
+            }
+          }
+        }
       }
     }
   },

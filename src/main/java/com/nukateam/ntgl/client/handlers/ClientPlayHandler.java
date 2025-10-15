@@ -4,27 +4,22 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.util.*;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.util.handler.*;
-import com.nukateam.ntgl.client.util.util.PlayerAnimations;
-import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
-import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
+import com.nukateam.ntgl.modules.datapack.managers.NetworkWeaponManager;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.particles.*;
 import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.*;
 import net.minecraft.core.particles.*;
-import net.minecraft.network.protocol.PacketUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.*;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
@@ -238,8 +233,8 @@ public class ClientPlayHandler {
         BulletTrailRenderingHandler.get().remove(message.getEntityId());
     }
 
-    public static void handleUpdateGuns(S2CMessageUpdateGuns message) {
-        NetworkGunManager.updateRegisteredGuns(message);
+    public static void handleUpdateWeapons(S2CMessageUpdateWeapons message) {
+        NetworkWeaponManager.updateRegisteredWeapons(message);
     }
 
     public static void handleUpdateAmmo(S2CMessageUpdateAmmo message) {

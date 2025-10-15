@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.data.config.gun;
+package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
@@ -53,8 +53,9 @@ public class General implements INBTSerializable<CompoundTag> {
     int rate;
     int maxAmmo;
     @Optional LinkedHashSet<FireMode> fireMode = new LinkedHashSet<>(List.of(FireMode.SEMI_AUTO));
-    @Optional
-    WeaponMode weaponMode = WeaponMode.NONE;
+    @Optional WeaponMode weaponMode = WeaponMode.NONE;
+    @Ignored GripType gripType = GripType.ONE_HANDED;
+    @Optional LoadingType loadingType = LoadingType.MAGAZINE;
     @Optional boolean fullCharge = false;
     @Optional boolean enchantable = true;
     @Optional boolean silenced = false;
@@ -65,8 +66,6 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional int reloadEnd = 0;
     @Optional int equipTime = 1;
     @Optional int ammoPerShot = 1;
-    @Ignored GripType gripType = GripType.ONE_HANDED;
-    @Optional LoadingType loadingType = LoadingType.MAGAZINE;
     @Optional String category = "pistol";
     @Optional boolean autoReload = false;
     @Optional boolean renderHud = true;

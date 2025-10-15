@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item.interfaces;
 
-import com.nukateam.ntgl.common.data.config.ProjectileConfig;
+import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 
 /**

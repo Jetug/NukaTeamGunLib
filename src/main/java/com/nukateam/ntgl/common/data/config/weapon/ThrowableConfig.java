@@ -1,8 +1,7 @@
-package com.nukateam.ntgl.common.data.config;
+package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.data.holders.GripType;
 import com.nukateam.ntgl.common.data.holders.ThrowMode;
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
@@ -17,12 +16,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMenu {

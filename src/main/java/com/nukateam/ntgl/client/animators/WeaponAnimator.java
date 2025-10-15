@@ -10,7 +10,7 @@ import com.nukateam.ntgl.client.model.gun.*;
 import com.nukateam.ntgl.client.render.renderers.weapon.*;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.ThrowMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;

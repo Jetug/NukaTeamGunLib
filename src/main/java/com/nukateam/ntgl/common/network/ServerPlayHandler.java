@@ -4,7 +4,7 @@ import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -429,7 +429,6 @@ public class ServerPlayHandler {
                 && WeaponModifierHelper.canMelee(gunData)
                 && !EquipTracker.isEquiping(player, message.getHand())) {
             var heldItem = player.getItemInHand(message.getHand());
-
 
             MeleeTracker.start(new WeaponData(heldItem, player).setWeaponAction(message.getAction()), message.getHand());
         }

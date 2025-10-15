@@ -41,7 +41,7 @@ public class AttachmentItem<T extends Attachment> extends Item implements IAttac
 
     @Override
     public void setConfig(ConfigSupplier<AttachmentConfig> supplier) {
-        this.config = supplier.getConfig();
+        this.config = supplier.config();
     }
 
     @Override

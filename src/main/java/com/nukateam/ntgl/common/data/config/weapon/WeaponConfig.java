@@ -1,9 +1,8 @@
-package com.nukateam.ntgl.common.data.config.gun;
+package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.gson.Gson;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.config.*;
 import com.nukateam.ntgl.common.data.holders.*;
 
 import com.nukateam.ntgl.common.util.util.*;

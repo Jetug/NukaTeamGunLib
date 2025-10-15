@@ -3,10 +3,9 @@ package com.nukateam.ntgl.client.render.screen;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IMelee;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IMeleeWeapon;
-import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
+import com.nukateam.ntgl.modules.datapack.managers.NetworkWeaponManager;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
@@ -437,7 +436,6 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         List<WorkbenchRecipe> weapons = new ArrayList<>();
         List<WorkbenchRecipe> attachments = new ArrayList<>();
         List<WorkbenchRecipe> ammo = new ArrayList<>();
-        List<WorkbenchRecipe> melee = new ArrayList<>();
         List<WorkbenchRecipe> misc = new ArrayList<>();
 
         for (var recipe : recipes) {
@@ -448,8 +446,6 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 weapons.add(recipe);
             } else if (output.getItem() instanceof IAttachment) {
                 attachments.add(recipe);
-            } else if(output.getItem() instanceof IMeleeWeapon || output.getItem() instanceof IMelee){
-                melee.add(recipe);
             } else if (this.isAmmo(output)) {
                 ammo.add(recipe);
             }else {
@@ -494,12 +490,6 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             this.tabs.add(new Tab(new ItemStack(ModGuns.GRENADE.get()), "attachments", attachments));
         }
 
-        if (!melee.isEmpty()) {
-            var item = melee.get(0).getItem().getItem();
-            var icon = new ItemStack(item);
-            this.tabs.add(new Tab(icon, "melee", melee));
-        }
-
         if (!ammo.isEmpty()) {
             var item = ammo.get(0).getItem().getItem();
             var icon = new ItemStack(item);
@@ -525,7 +515,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
         Objects.requireNonNull(id);
 
-        for (var gunItem : NetworkGunManager.getClientRegisteredGuns()) {
+        for (var gunItem : NetworkWeaponManager.getClientRegisteredWeapons()) {
             var ammo = gunItem.getConfig().getGeneral().getAmmo();
 
             for (var a : ammo) {

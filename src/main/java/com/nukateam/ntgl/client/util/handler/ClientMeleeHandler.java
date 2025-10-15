@@ -13,9 +13,11 @@ import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageMeleeAttack;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -52,13 +54,14 @@ public class ClientMeleeHandler {
     public static void addTracker(WeaponData data, InteractionHand hand) {
         var entity = data.wielder;
         var gun = data.weapon;
-        var doMelee = ModSyncedDataKeys.getDoMelee(hand);
+        var doMeleeKey = ModSyncedDataKeys.getMeleeKey(hand);
+        var doMelee = doMeleeKey.getValue(entity);
         assert gun != null && entity != null;
 
-        if (gun.getItem() instanceof IWeapon
+        if (isWeaponItem(gun)
                 && WeaponModifierHelper.canMelee(data)
                 && !TRACKER_MAP.containsKey(Pair.of(entity, hand))
-                && !doMelee.getValue(entity))
+                && !doMelee)
         {
             TRACKER_MAP.put(Pair.of(entity, hand), new ClientMeleeHandler(data));
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageMeleeAttack(hand, data.weaponAction));
@@ -69,50 +72,57 @@ public class ClientMeleeHandler {
     public static void onPostClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END && isInGame()) {
             var player = Minecraft.getInstance().player;
+            var options = Minecraft.getInstance().options;
             assert player != null;
 
             var mainHandItem = player.getMainHandItem();
             var offhandItem = player.getOffhandItem();
 
-            if (mainHandItem.getItem() instanceof IWeapon) {
+            if (isWeaponItem(mainHandItem)) {
                 var data = new WeaponData(mainHandItem, player);
 
                 if(isKeyAttackDown()) {
                     data.setWeaponAction(AttackMode.PRIMARY);
+                    handleAutoFire(data, InteractionHand.MAIN_HAND, options.keyAttack);
                 }
-                else if(isUseKeyDown()) {
+                else if(isUseKeyDown() && !(isWeaponItem(offhandItem) && canUseOffhandWeapon(player))) {
                     data.setWeaponAction(AttackMode.SECONDARY);
+                    handleAutoFire(data, InteractionHand.MAIN_HAND, options.keyUse);
                 }
                 else if(KeyBinds.KEY_ADD_ATTACK.isDown()) {
                     data.setWeaponAction(AttackMode.ADDITIONAL);
+                    handleAutoFire(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ADD_ATTACK);
                 }
                 else if(KeyBinds.KEY_ALT_ATTACK.isDown()) {
                     data.setWeaponAction(AttackMode.ALTERNATIVE);
+                    handleAutoFire(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ALT_ATTACK);
                 }
-                else return;
-
-                handleAutoFire(data, InteractionHand.MAIN_HAND);
             }
 
-            if (offhandItem.getItem() instanceof IWeapon && canUseOffhandWeapon(player) &&
-                    !(mainHandItem.getItem() instanceof IWeapon)) {
+            if (isWeaponItem(offhandItem) && canUseOffhandWeapon(player)) {
                 var data = new WeaponData(offhandItem, player);
 
                 if(isUseKeyDown()) {
                     data.setWeaponAction(AttackMode.PRIMARY);
+                    handleAutoFire(data, InteractionHand.OFF_HAND, options.keyUse);
                 }
-                else if(KeyBinds.KEY_ADD_ATTACK.isDown()) {
-                    data.setWeaponAction(AttackMode.ADDITIONAL);
+                else if(!isWeaponItem(mainHandItem)){
+                    if (KeyBinds.KEY_ADD_ATTACK.isDown()) {
+                        data.setWeaponAction(AttackMode.ADDITIONAL);
+                        handleAutoFire(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ADD_ATTACK);
+                    } else if (KeyBinds.KEY_ALT_ATTACK.isDown()) {
+                        data.setWeaponAction(AttackMode.ALTERNATIVE);
+                        handleAutoFire(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ALT_ATTACK);
+                    }
                 }
-                else if(KeyBinds.KEY_ALT_ATTACK.isDown()) {
-                    data.setWeaponAction(AttackMode.ALTERNATIVE);
-                }
-                else return;
-
-                handleAutoFire(data, InteractionHand.OFF_HAND);
             }
         }
     }
+
+    private static boolean isWeaponItem(ItemStack mainHandItem) {
+        return mainHandItem.getItem() instanceof IWeapon;
+    }
+
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         try {
@@ -127,11 +137,8 @@ public class ClientMeleeHandler {
         }
     }
 
-    private static void handleAutoFire(WeaponData data, InteractionHand hand) {
+    private static void handleAutoFire(WeaponData data, InteractionHand hand, KeyMapping key) {
         var mc = Minecraft.getInstance();
-        var key = hand == InteractionHand.MAIN_HAND ?
-                mc.options.keyAttack :
-                mc.options.keyUse;
         var shooter = data.wielder;
 
         if(isMelee(data) && !EquipTracker.isEquiping(shooter, hand) && !shooter.isSpectator()){

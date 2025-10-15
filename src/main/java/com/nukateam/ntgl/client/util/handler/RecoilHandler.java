@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;

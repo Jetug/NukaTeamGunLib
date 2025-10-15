@@ -1,26 +1,17 @@
 package com.nukateam.ntgl.common.util.world;
 
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.config.ExplosionConfig;
+import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageProjectileExplosion;
 import com.nukateam.ntgl.common.util.interfaces.IExplosionDamageable;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.*;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
 
 public class ExplosionUtils {
     public static boolean isExplosive(ExplosionConfig config) {

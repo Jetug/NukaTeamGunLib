@@ -40,7 +40,10 @@ public class EquipTracker {
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         MinecraftServer server = event.getEntity().getServer();
         if (server != null) {
-            server.execute(() -> TRACKER_MAP.remove(event.getEntity()));
+            server.execute(() -> {
+                TRACKER_MAP.remove(new Pair<InteractionHand, LivingEntity>(InteractionHand.MAIN_HAND, event.getEntity()));
+                TRACKER_MAP.remove(new Pair<InteractionHand, LivingEntity>(InteractionHand.OFF_HAND, event.getEntity()));
+            });
         }
     }
 

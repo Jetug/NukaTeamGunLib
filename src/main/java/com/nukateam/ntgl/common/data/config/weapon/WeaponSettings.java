@@ -1,27 +1,19 @@
-package com.nukateam.ntgl.common.data.config.gun;
+package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.nukateam.ntgl.common.data.config.*;
 import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.debug.*;
-import com.nukateam.ntgl.common.debug.screen.widget.DebugButton;
-import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.util.util.*;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.function.Supplier;
-
-import static com.nukateam.ntgl.client.handlers.ClientHandler.createEditorScreen;
 
 public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String GENERAL = "General";

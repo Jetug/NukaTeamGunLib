@@ -1,6 +1,5 @@
-package com.nukateam.ntgl.common.data.config;
+package com.nukateam.ntgl.common.data.config.weapon;
 
-import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -8,7 +7,6 @@ import com.nukateam.ntgl.common.util.annotation.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;

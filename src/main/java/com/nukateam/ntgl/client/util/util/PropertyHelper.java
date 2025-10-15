@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.util.util;
 import com.nukateam.ntgl.client.util.MetaLoader;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.properties.SightAnimation;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.util.data.ObjectCache;

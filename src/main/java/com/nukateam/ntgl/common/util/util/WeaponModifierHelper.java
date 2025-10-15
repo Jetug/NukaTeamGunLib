@@ -2,10 +2,8 @@ package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
-import com.nukateam.ntgl.common.data.config.*;
-import com.nukateam.ntgl.common.data.config.gun.General;
+import com.nukateam.ntgl.common.data.config.weapon.*;
 
-import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.holders.*;
 

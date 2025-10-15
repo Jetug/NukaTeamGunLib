@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.util.trackers;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.data.constants.Tags;

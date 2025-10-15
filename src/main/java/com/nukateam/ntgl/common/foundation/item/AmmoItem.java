@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
-import com.nukateam.ntgl.common.data.config.ProjectileConfig;
+import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IConfigConsumer;
 import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
@@ -31,7 +31,7 @@ public class AmmoItem extends Item implements IAmmo, IConfigConsumer<ProjectileC
 
     @Override
     public void setConfig(ConfigSupplier<ProjectileConfig> supplier) {
-        this.projectile = supplier.getConfig();
+        this.projectile = supplier.config();
     }
 
     public ProjectileConfig getAmmo() {

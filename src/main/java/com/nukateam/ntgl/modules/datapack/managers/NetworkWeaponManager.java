@@ -1,11 +1,12 @@
 package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.config.gun.WeaponConfig;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.modules.constants.Paths;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateGuns;
+import com.nukateam.ntgl.common.network.message.S2CMessageUpdateWeapons;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
@@ -24,29 +25,26 @@ import java.util.*;
 
 import static net.minecraftforge.registries.ForgeRegistries.*;
 
-/**
- * Author: MrCrayfish
- */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
-public class NetworkGunManager extends SimplePreparableReloadListener<Map<IWeapon, WeaponConfig>> {
-    private static final List<IWeapon> clientRegisteredGuns = new ArrayList<>();
-    private static NetworkGunManager instance;
+public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWeapon, WeaponConfig>> {
+    private static final List<IWeapon> clientRegisteredWeapons = new ArrayList<>();
+    private static NetworkWeaponManager instance;
 
-    private Map<ResourceLocation, WeaponConfig> registeredGuns = new HashMap<>();
+    private Map<ResourceLocation, WeaponConfig> registeredWeapons = new HashMap<>();
 
     public static void onServerStopped() {
-        NetworkGunManager.instance = null;
+        NetworkWeaponManager.instance = null;
     }
 
     public static void register(AddReloadListenerEvent event) {
-        NetworkGunManager networkGunManager = new NetworkGunManager();
-        event.addListener(networkGunManager);
-        NetworkGunManager.instance = networkGunManager;
+        NetworkWeaponManager networkWeaponManager = new NetworkWeaponManager();
+        event.addListener(networkWeaponManager);
+        NetworkWeaponManager.instance = networkWeaponManager;
     }
 
     @Override
     protected Map<IWeapon, WeaponConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return DataUtils.getConfigMap(manager, (v) -> v instanceof IWeapon, WeaponConfig.class, "guns");
+        return DataUtils.getConfigMap(manager, (v) -> v instanceof IWeapon, WeaponConfig.class, Paths.WEAPONS);
     }
 
     @Override
@@ -61,29 +59,29 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<IWeapo
             }
         });
 
-        this.registeredGuns = builder.build();
+        this.registeredWeapons = builder.build();
     }
 
     /**
-     * Writes all registered guns into the provided packet buffer
+     * Writes all registered weapons into the provided packet buffer
      *
      * @param buffer a packet buffer get
      */
     public void writeRegisteredGuns(FriendlyByteBuf buffer) {
-        buffer.writeVarInt(this.registeredGuns.size());
-        this.registeredGuns.forEach((id, gun) -> {
+        buffer.writeVarInt(this.registeredWeapons.size());
+        this.registeredWeapons.forEach((id, gun) -> {
             buffer.writeResourceLocation(id);
             buffer.writeNbt(gun.serializeNBT());
         });
     }
 
     /**
-     * Reads all registered guns from the provided packet buffer
+     * Reads all registered weapon from the provided packet buffer
      *
      * @param buffer a packet buffer get
-     * @return a map of registered guns from the server
+     * @return a map of registered weapons from the server
      */
-    public static ImmutableMap<ResourceLocation, WeaponConfig> readRegisteredGuns(FriendlyByteBuf buffer) {
+    public static ImmutableMap<ResourceLocation, WeaponConfig> readRegisteredWeapons(FriendlyByteBuf buffer) {
         var size = buffer.readVarInt();
 
         if (size > 0) {
@@ -99,25 +97,25 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<IWeapo
         return ImmutableMap.of();
     }
 
-    public static boolean updateRegisteredGuns(S2CMessageUpdateGuns message) {
-        return updateRegisteredGuns(message.getRegisteredGuns());
+    public static boolean updateRegisteredWeapons(S2CMessageUpdateWeapons message) {
+        return updateRegisteredWeapons(message.getRegisteredGuns());
     }
 
     /**
-     * Updates registered guns from data provided by the server
+     * Updates registered weapons from data provided by the server
      *
-     * @return true if all registered guns were able to update their corresponding gun item
+     * @return true if all registered weapons were able to update their corresponding weapon item
      */
-    private static boolean updateRegisteredGuns(Map<ResourceLocation, WeaponConfig> registeredGuns) {
-        clientRegisteredGuns.clear();
-        if (registeredGuns != null) {
-            for (Map.Entry<ResourceLocation, WeaponConfig> entry : registeredGuns.entrySet()) {
+    private static boolean updateRegisteredWeapons(Map<ResourceLocation, WeaponConfig> registeredConfigs) {
+        clientRegisteredWeapons.clear();
+        if (registeredConfigs != null) {
+            for (Map.Entry<ResourceLocation, WeaponConfig> entry : registeredConfigs.entrySet()) {
                 Item item = ITEMS.getValue(entry.getKey());
                 if (!(item instanceof IWeapon)) {
                     return false;
                 }
                 ((IWeapon) item).setConfig(new ConfigSupplier<>(entry.getValue()));
-                clientRegisteredGuns.add((IWeapon) item);
+                clientRegisteredWeapons.add((IWeapon) item);
             }
             return true;
         }
@@ -125,46 +123,46 @@ public class NetworkGunManager extends SimplePreparableReloadListener<Map<IWeapo
     }
 
     /**
-     * Gets a map of all the registered guns objects. Note, this is an immutable map.
+     * Gets a map of all the registered weapons objects. Note, this is an immutable map.
      *
-     * @return a map of registered gun objects
+     * @return a map of registered weapon objects
      */
-    public Map<ResourceLocation, WeaponConfig> getRegisteredGuns() {
-        return this.registeredGuns;
+    public Map<ResourceLocation, WeaponConfig> getRegisteredWeapons() {
+        return this.registeredWeapons;
     }
 
     /**
-     * Gets a list of all the guns registered on the client side. Note, this is an immutable list.
+     * Gets a list of all the weapons registered on the client side. Note, this is an immutable list.
      *
-     * @return a list of guns registered on the client
+     * @return a list of weapons registered on the client
      */
-    public static List<IWeapon> getClientRegisteredGuns() {
-        return ImmutableList.copyOf(clientRegisteredGuns);
+    public static List<IWeapon> getClientRegisteredWeapons() {
+        return ImmutableList.copyOf(clientRegisteredWeapons);
     }
 
 
     /**
-     * Gets the network gun manager. This will be null if the client isn't running an integrated
+     * Gets the network weapon manager. This will be null if the client isn't running an integrated
      * server or the client is connected to a dedicated server.
      *
-     * @return the network gun manager
+     * @return the network weapon manager
      */
     @Nullable
-    public static NetworkGunManager get() {
+    public static NetworkWeaponManager get() {
         return instance;
     }
 
     public static class LoginData implements ILoginData {
         @Override
         public void writeData(FriendlyByteBuf buffer) {
-            Validate.notNull(NetworkGunManager.get());
-            NetworkGunManager.get().writeRegisteredGuns(buffer);
+            Validate.notNull(NetworkWeaponManager.get());
+            NetworkWeaponManager.get().writeRegisteredGuns(buffer);
         }
 
         @Override
         public Optional<String> readData(FriendlyByteBuf buffer) {
-            var registeredGuns = NetworkGunManager.readRegisteredGuns(buffer);
-            NetworkGunManager.updateRegisteredGuns(registeredGuns);
+            var registeredGuns = NetworkWeaponManager.readRegisteredWeapons(buffer);
+            NetworkWeaponManager.updateRegisteredWeapons(registeredGuns);
             return Optional.empty();
         }
     }
