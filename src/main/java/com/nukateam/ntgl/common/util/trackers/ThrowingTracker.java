@@ -74,6 +74,9 @@ public class ThrowingTracker {
             }
             TRACKER_MAP.put(key, new Tracker(entity, arm, () -> TRACKER_MAP.remove(Pair.of(arm, entity))));
         }
+        else {
+            TRACKER_MAP.get(key).released = false;
+        }
     }
 
     public static void onRelease(LivingEntity entity, InteractionHand arm){
