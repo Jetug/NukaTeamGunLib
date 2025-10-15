@@ -115,7 +115,7 @@ public class ServerPlayHandler {
                     return;
                 }
 
-                tracker.putCooldown(heldItem, shooter);
+                tracker.putCooldown(data);
 
                 if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(shooter)) {
                     ModSyncedDataKeys.RELOADING_RIGHT.setValue(shooter, false);

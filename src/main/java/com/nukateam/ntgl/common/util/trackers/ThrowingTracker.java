@@ -107,7 +107,7 @@ public class ThrowingTracker {
         private final int maxLife;
         private final LivingEntity entity;
         private Runnable onStop;
-
+        private boolean released = false;
         private int prepareTick;
         private int throwTick;
         private int lifeTick;

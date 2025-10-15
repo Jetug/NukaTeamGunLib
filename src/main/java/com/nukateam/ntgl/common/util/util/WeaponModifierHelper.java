@@ -57,9 +57,11 @@ public class WeaponModifierHelper {
     }
 
     public static WeaponConfig getConfig(ItemStack stack) {
-        var gunItem = (IWeapon) stack.getItem();
-        var mod = gunItem.getModifiedConfig(stack);
-        return mod;
+        if(stack.getItem() instanceof IWeapon weapon) {
+            var mod = weapon.getModifiedConfig(stack);
+            return mod;
+        }
+        return new WeaponConfig();
     }
 
     public static General getGeneral(WeaponData weaponData) {

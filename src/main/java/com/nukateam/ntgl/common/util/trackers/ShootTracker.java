@@ -50,8 +50,7 @@ public class ShootTracker {
      * Puts a cooldown for the specified gun item. This stores the time it was fired and the rate
      * of the weapon to determine when it's allowed to fire again.
      */
-    public void putCooldown(ItemStack weapon, LivingEntity shooter) {
-        var data = new WeaponData(weapon, shooter);
+    public void putCooldown(WeaponData data) {
         var rate = WeaponModifierHelper.getRate(data);
         this.cooldown = Pair.of(Util.getMillis(), rate * 50);
     }

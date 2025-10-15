@@ -24,6 +24,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class ClientShootingHandler {
     private static ClientShootingHandler instance;
     public static float shootMsGap = 0F;
 
-    private final HashMap<Pair<InteractionHand, LivingEntity>, Integer> entityShootGaps = new HashMap<>();
+    private final HashMap<Pair<InteractionHand, LivingEntity>, Pair<WeaponData, Integer>> entityShootGaps = new HashMap<>();
     private final Map<InteractionHand, ShootingData> shootingData = Map.of(
             InteractionHand.MAIN_HAND, new ShootingData(0, null),
             InteractionHand.OFF_HAND, new ShootingData(0, null)
@@ -232,12 +233,19 @@ public class ClientShootingHandler {
         return 0;
     }
 
-    public void setCooldown(LivingEntity entity, InteractionHand arm, int cooldown) {
-        entityShootGaps.put(Pair.of(arm, entity), cooldown);
+    public int getCooldown(LivingEntity entity, InteractionHand arm) {
+        var key = entityShootGaps.get(Pair.of(arm, entity));
+        if(key != null)
+            return key.second;
+        return 0;
     }
 
-    public int getCooldown(LivingEntity entity, InteractionHand arm) {
-        return entityShootGaps.getOrDefault(Pair.of(arm, entity), 0);
+    @Nullable
+    public WeaponData getWeaponData(LivingEntity entity, InteractionHand arm) {
+        var key = entityShootGaps.get(Pair.of(arm, entity));
+        if(key != null)
+            return key.first;
+        return new WeaponData(entity.getItemInHand(arm), entity);
     }
 
     public boolean isShooting(LivingEntity entity, InteractionHand arm){
@@ -249,17 +257,17 @@ public class ClientShootingHandler {
         return shootTickGap;
     }
 
-    public void fire(WeaponData data) {
-        var shooter = data.wielder;
-        var heldItem = data.weapon;
+    public void fire(WeaponData gunData) {
+        var shooter = gunData.wielder;
+        var heldItem = gunData.weapon;
 
         if (heldItem.getItem() instanceof IWeapon
                 && (WeaponStateHelper.hasAmmo(heldItem) /*|| (shooter instanceof Player player && player.isCreative())*/)
-                && isGunMode(data)
+                && isGunMode(gunData)
                 && !shooter.isSpectator()) {
             var isMainHand = shooter.getMainHandItem() == heldItem;
             var hand = isMainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-            var shootGap = entityShootGaps.getOrDefault(Pair.of(hand, shooter), 0);
+            var shootGap = getCooldown(shooter, hand);
 
             if (shootGap <= 0) {
                 if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand)))
@@ -267,10 +275,9 @@ public class ClientShootingHandler {
 
                 // CHECK HERE: Change this to test different rpm settings.
                 // TODO: Test serverside, possible issues 0.3.4-alpha
-                var gunData = new WeaponData(heldItem, shooter);
                 final var rpm = WeaponModifierHelper.getRate(gunData); // Rounds per sec. Should come from gun properties in the end.
                 shootGap += rpm;
-                entityShootGaps.put(Pair.of(hand, shooter), shootGap);
+                entityShootGaps.put(Pair.of(hand, shooter), Pair.of(gunData, shootGap));
                 shootMsGap = calcShootTickGap(rpm);
                 RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
                 RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
@@ -278,7 +285,7 @@ public class ClientShootingHandler {
                 try {
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
                             shooter.getViewXRot(1),
-                            RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, hand, data.weaponAction));
+                            RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, hand, gunData.weaponAction));
                 } catch (NullPointerException e) {
                     Ntgl.LOGGER.error(e.getMessage(), e);
                 }
@@ -299,9 +306,11 @@ public class ClientShootingHandler {
     }
 
     private void reduceGaps(){
-        entityShootGaps.forEach((key, val) -> {
+        entityShootGaps.forEach((key, pair) -> {
+            var val = pair.second;
+
             if(val > 0) val--;
-            entityShootGaps.put(key, val);
+            entityShootGaps.put(key,  Pair.of(pair.first, val));
         } );
     }
 

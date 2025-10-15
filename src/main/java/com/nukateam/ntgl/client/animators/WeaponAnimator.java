@@ -126,7 +126,10 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         if (!(getStack().getItem() instanceof IWeapon weapon))
             return;
         var data = getGunData();
-        this.rate = WeaponModifierHelper.getRate(data);
+
+        if(getEntity().getItemInHand(getArm()).getItem() instanceof IWeapon) {
+            this.rate = WeaponModifierHelper.getRate(shootingHandler.getWeaponData(getEntity(), getArm()));
+        }
         this.equipTime = WeaponModifierHelper.getEquipTime(data);
         this.isEquiping = EquipTracker.isEquiping(getEntity(), getArm());
         this.meleeDelay = WeaponModifierHelper.getMeleeDelay(data);
