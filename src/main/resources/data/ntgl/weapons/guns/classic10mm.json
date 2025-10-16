@@ -52,7 +52,7 @@
       },
       "throwable": {
         "mode": [
-          "ntgl:unsafe"
+          "ntgl:safe"
         ],
         "prepareTime": 20,
         "throwTime": 6,

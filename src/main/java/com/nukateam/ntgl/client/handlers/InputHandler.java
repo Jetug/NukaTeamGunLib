@@ -3,13 +3,17 @@ package com.nukateam.ntgl.client.handlers;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.client.util.ClientDebug;
-import com.nukateam.ntgl.client.util.handler.ClientActions;
-import com.nukateam.ntgl.client.util.handler.ClientReloadHandler;
+import com.nukateam.ntgl.client.util.handler.*;
+import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,14 +24,96 @@ import net.minecraftforge.fml.common.Mod;
 import static com.nukateam.ntgl.client.input.KeyBinds.*;
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
 import static com.nukateam.ntgl.client.util.handler.ClientShootingHandler.isInGame;
+import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.canUseOffhandWeapon;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class InputHandler {
 
+
+
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
-        handleKeys();
-        handleDebugKeys();
+        if (event.phase == TickEvent.Phase.END && isInGame()) {
+            handleKeys();
+            handleDebugKeys();
+            handleWeaponKeys();
+        }
+    }
+
+    public static void handleWeaponKeys() {
+        var player = Minecraft.getInstance().player;
+        var options = Minecraft.getInstance().options;
+        assert player != null;
+
+        var mainHandItem = player.getMainHandItem();
+        var offhandItem = player.getOffhandItem();
+
+        if (WeaponModifierHelper.isWeaponItem(mainHandItem)) {
+            var data = new WeaponData(mainHandItem, player);
+
+            if(isKeyAttackDown()) {
+                data.setWeaponAction(AttackMode.PRIMARY);
+                handleInput(data, InteractionHand.MAIN_HAND, options.keyAttack);
+            }
+            else if(isUseKeyDown() && !(WeaponModifierHelper.isWeaponItem(offhandItem) && canUseOffhandWeapon(player))) {
+                data.setWeaponAction(AttackMode.SECONDARY);
+                handleInput(data, InteractionHand.MAIN_HAND, options.keyUse);
+            }
+            else if(KeyBinds.KEY_ADD_ATTACK.isDown()) {
+                data.setWeaponAction(AttackMode.ADDITIONAL);
+                handleInput(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ADD_ATTACK);
+            }
+            else if(KeyBinds.KEY_ALT_ATTACK.isDown()) {
+                data.setWeaponAction(AttackMode.ALTERNATIVE);
+                handleInput(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ALT_ATTACK);
+            }
+        }
+
+        if (WeaponModifierHelper.isWeaponItem(offhandItem) && canUseOffhandWeapon(player)) {
+            var data = new WeaponData(offhandItem, player);
+
+            if(isUseKeyDown()) {
+                data.setWeaponAction(AttackMode.PRIMARY);
+                handleInput(data, InteractionHand.OFF_HAND, options.keyUse);
+            }
+            else if(!WeaponModifierHelper.isWeaponItem(mainHandItem)){
+                if (KeyBinds.KEY_ADD_ATTACK.isDown()) {
+                    data.setWeaponAction(AttackMode.ADDITIONAL);
+                    handleInput(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ADD_ATTACK);
+                } else if (KeyBinds.KEY_ALT_ATTACK.isDown()) {
+                    data.setWeaponAction(AttackMode.ALTERNATIVE);
+                    handleInput(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ALT_ATTACK);
+                }
+            }
+        }
+    }
+
+    public static void handleInput(WeaponData gunData, InteractionHand hand, KeyMapping key) {
+        assert Minecraft.getInstance().player != null;
+        var player = Minecraft.getInstance().player;
+        var weapon = player.getItemInHand(hand);
+
+        if(weapon.getItem() instanceof IWeapon){
+            var weaponMode = WeaponModifierHelper.getWeaponMode(gunData);
+
+            if(weaponMode == WeaponMode.GUN) {
+                ClientShootingHandler.get().handleInput(gunData, hand, key);
+            }
+            else if(weaponMode == WeaponMode.MELEE) {
+                ClientMeleeHandler.handleInput(gunData, hand, key);
+            }
+            if(weaponMode == WeaponMode.THROWABLE) {
+                ClientThrowHandler.handleInput(gunData, hand, key);
+            }
+        }
+    }
+
+    private static boolean isKeyAttackDown() {
+        return Minecraft.getInstance().options.keyAttack.isDown();
+    }
+
+    private static boolean isUseKeyDown() {
+        return Minecraft.getInstance().options.keyUse.isDown();
     }
 
     private static void handleKeys() {
@@ -61,12 +147,12 @@ public class InputHandler {
             if (KeyBinds.KEY_AMMO_SELECT.consumeClick()) {
                 ClientActions.switchAmmo(hand, player);
             }
-            if (KeyBinds.KEY_ADD_ATTACK.consumeClick()) {
-                ClientActions.meleeAttack();
-            }
-            if (KeyBinds.KEY_ALT_ATTACK.consumeClick()) {
-                ClientActions.alternativeAttack();
-            }
+//            if (KeyBinds.KEY_ADD_ATTACK.consumeClick()) {
+//                ClientActions.meleeAttack();
+//            }
+//            if (KeyBinds.KEY_ALT_ATTACK.consumeClick()) {
+//                ClientActions.alternativeAttack();
+//            }
         }
     }
 

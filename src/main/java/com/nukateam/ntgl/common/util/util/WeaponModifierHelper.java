@@ -584,4 +584,8 @@ public class WeaponModifierHelper {
         }
         return EMPTY;
     }
+
+    public static boolean isWeaponItem(ItemStack mainHandItem) {
+        return mainHandItem.getItem() instanceof IWeapon;
+    }
 }

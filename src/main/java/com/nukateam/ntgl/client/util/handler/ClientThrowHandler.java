@@ -1,13 +1,17 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.KeyAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageGrenade;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -32,24 +36,34 @@ public class ClientThrowHandler {
     public static void onPostClientTick(TickEvent.ClientTickEvent event){
         var minecraft = Minecraft.getInstance();
         if(event.phase == TickEvent.Phase.END && minecraft.player != null){
-            if(minecraft.options.keyAttack.isDown()){
-                var gunData = new WeaponData(minecraft.player.getMainHandItem(), minecraft.player)
-                        .setWeaponAction(AttackMode.PRIMARY);
-                addTracker(gunData, InteractionHand.MAIN_HAND);
+            if(!minecraft.options.keyAttack.isDown()) {
+                removeTracker(InteractionHand.MAIN_HAND, AttackMode.PRIMARY);
+                removeTracker(InteractionHand.OFF_HAND, AttackMode.PRIMARY);
             }
-            else {
-                removeTracker(InteractionHand.MAIN_HAND);
+            if(!minecraft.options.keyUse.isDown()) {
+                removeTracker(InteractionHand.MAIN_HAND, AttackMode.SECONDARY);
+                removeTracker(InteractionHand.OFF_HAND , AttackMode.SECONDARY);
             }
-
-            if(minecraft.options.keyUse.isDown()){
-                var gunData = new WeaponData(minecraft.player.getOffhandItem(), minecraft.player)
-                        .setWeaponAction(AttackMode.PRIMARY);
-                addTracker(gunData, InteractionHand.OFF_HAND);
+            if(!KeyBinds.KEY_ADD_ATTACK.isDown()) {
+                removeTracker(InteractionHand.MAIN_HAND, AttackMode.ADDITIONAL);
+                removeTracker(InteractionHand.OFF_HAND , AttackMode.ADDITIONAL);
             }
-            else {
-                removeTracker(InteractionHand.OFF_HAND);
+            if(!KeyBinds.KEY_ALT_ATTACK.isDown()) {
+                removeTracker(InteractionHand.MAIN_HAND, AttackMode.ALTERNATIVE);
+                removeTracker(InteractionHand.OFF_HAND , AttackMode.ALTERNATIVE);
             }
         }
+    }
+
+    private static boolean isThrowMode(WeaponData weaponData) {
+        return WeaponModifierHelper.getWeaponMode(weaponData) == WeaponMode.THROWABLE;
+    }
+
+    public static void handleInput(WeaponData weaponData, InteractionHand hand, KeyMapping key) {
+        if (!isThrowMode(weaponData)) {
+            return;
+        }
+        addTracker(weaponData, hand);
     }
 
     public static void addTracker(WeaponData weaponData, InteractionHand hand) {
@@ -59,8 +73,8 @@ public class ClientThrowHandler {
         }
     }
 
-    private static void removeTracker(InteractionHand hand) {
-        if(TRACKER_MAP.containsKey(hand)) {
+    private static void removeTracker(InteractionHand hand, AttackMode mode) {
+        if(TRACKER_MAP.containsKey(hand) && TRACKER_MAP.get(hand).data.weaponAction == mode) {
             var action = TRACKER_MAP.get(hand).data.weaponAction;
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.RELEASE, hand, action));
             TRACKER_MAP.remove(hand);

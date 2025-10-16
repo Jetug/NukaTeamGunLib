@@ -47,6 +47,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     public static final String PREPARE_SAFE = "prepare_safe";
     public static final String THROW = "throw";
     public static final String THROW_SAFE = "throw_safe";
+    public static final String VOID = "void";
 
     protected final DynamicWeaponRenderer<WeaponAnimator> renderer;
     protected final Minecraft minecraft = Minecraft.getInstance();
@@ -187,7 +188,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         return event -> {
             if(itemCache != getStack()) {
                 itemCache = getStack();
-                return event.setAndContinue(begin().then("void", PLAY_ONCE));
+                return event.setAndContinue(playVoid());
             }
             try {
                 var controller = event.getController();
@@ -248,6 +249,13 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
                 return PlayState.STOP;
             }
         };
+    }
+
+    private @NotNull RawAnimation playVoid() {
+        if(animationHelper.hasAnimation(VOID)) {
+            return begin().then(VOID, PLAY_ONCE);
+        }
+        else return begin();
     }
 
     protected AnimationStateHandler<WeaponAnimator> animateTick() {
@@ -333,7 +341,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
             var animation = begin();
             if (animationHelper.hasAnimation(Animations.CHARGE)) {
                 BARREL_CONTROLLER.stop();
-                BARREL_CONTROLLER.setAnimation(begin().then("void", PLAY_ONCE));
+                BARREL_CONTROLLER.setAnimation(playVoid());
                 animation = playGunAnim(Animations.CHARGE, LOOP);
                 animationHelper.syncAnimation(event, Animations.CHARGE, fireDelay);
             }

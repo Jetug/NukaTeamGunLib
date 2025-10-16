@@ -56,15 +56,15 @@ public class ClientActions {
             var gunData = new WeaponData(weapon, player).setWeaponAction(mode);
             var weaponMode = WeaponModifierHelper.getWeaponMode(gunData);
 
-            if(weaponMode == WeaponMode.GUN) {
-                ClientShootingHandler.get().fire(gunData);
-            }
+//            if(weaponMode == WeaponMode.GUN) {
+//                ClientShootingHandler.get().fire(gunData);
+//            }
 //            else if(weaponMode == WeaponMode.MELEE) {
 //                ClientMeleeHandler.addTracker(gunData, hand);
 //            }
-            else if(weaponMode == WeaponMode.THROWABLE) {
-                ClientThrowHandler.addTracker(gunData, hand);
-            }
+//            if(weaponMode == WeaponMode.THROWABLE) {
+//                ClientThrowHandler.addTracker(gunData, hand);
+//            }
         }
     }
 }

@@ -13,6 +13,23 @@
       "cgs:stick"
     ]
   },
+  "modes": {
+    "ntgl:secondary": {
+      "general": {
+        "weaponMode": "ntgl:melee"
+      },
+      "melee": {
+        "mode": "ntgl:auto",
+        "damage": 10,
+        "delay": 4,
+        "cooldown": 20,
+        "distance": 16,
+        "angle": 20,
+        "maxTargets": 1,
+        "knockback": 0.4
+      }
+    }
+  },
   "melee": {
     "mode": "ntgl:single",
     "damage": 15,

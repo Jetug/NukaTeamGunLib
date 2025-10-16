@@ -173,25 +173,30 @@ public class MeleeTracker {
 
         private void tryMeleeAttack(WeaponData weaponData) {
             assert weaponData.wielder != null && weaponData.weapon != null;
-            var player = weaponData.wielder;
-            var targets = getTargets(player);
+            var wielder = weaponData.wielder;
+            var targets = getTargets(wielder);
 
             var targetsToAttack = new ArrayList<LivingEntity>();
             var limit = maxTargets > 0 ? maxTargets : Integer.MAX_VALUE;
 
             for (int i = 0; i < Math.min(limit, targets.size()); i++) {
-                targetsToAttack.add(targets.get(i).entity);
+                var target = targets.get(i).entity;
+                if(target != wielder.getVehicle()) {
+                    targetsToAttack.add(target);
+                }
             }
 
-            if (!MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(player, weaponData, hand, targetsToAttack))) {
+            if (!MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(wielder, weaponData, hand, targetsToAttack))) {
                 if (!targetsToAttack.isEmpty()) {
                     for (var target : targetsToAttack) {
-                        attackEntity(player, target);
+                        if(wielder.getVehicle() != target) {
+                            attackEntity(wielder, target);
+                        }
                     }
 
-                    playAttackSound(player);
-                    spawnAttackEffects(player, targetsToAttack);
-                    MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Post(player, weaponData, hand, targetsToAttack));
+                    playAttackSound(wielder);
+                    spawnAttackEffects(wielder, targetsToAttack);
+                    MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Post(wielder, weaponData, hand, targetsToAttack));
                 }
             }
         }
