@@ -65,57 +65,6 @@ public class ClientMeleeHandler {
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageMeleeAttack(hand, data.weaponAction));
         }
     }
- 
-//    @SubscribeEvent
-//    public static void onPostClientTick(TickEvent.ClientTickEvent event) {
-//        if (event.phase == TickEvent.Phase.END && isInGame()) {
-//            var player = Minecraft.getInstance().player;
-//            var options = Minecraft.getInstance().options;
-//            assert player != null;
-//
-//            var mainHandItem = player.getMainHandItem();
-//            var offhandItem = player.getOffhandItem();
-//
-//            if (WeaponModifierHelper.isWeaponItem(mainHandItem)) {
-//                var data = new WeaponData(mainHandItem, player);
-//
-//                if(isKeyAttackDown()) {
-//                    data.setWeaponAction(AttackMode.PRIMARY);
-//                    handleInput(data, InteractionHand.MAIN_HAND, options.keyAttack);
-//                }
-//                else if(isUseKeyDown() && !(WeaponModifierHelper.isWeaponItem(offhandItem) && canUseOffhandWeapon(player))) {
-//                    data.setWeaponAction(AttackMode.SECONDARY);
-//                    handleInput(data, InteractionHand.MAIN_HAND, options.keyUse);
-//                }
-//                else if(KeyBinds.KEY_ADD_ATTACK.isDown()) {
-//                    data.setWeaponAction(AttackMode.ADDITIONAL);
-//                    handleInput(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ADD_ATTACK);
-//                }
-//                else if(KeyBinds.KEY_ALT_ATTACK.isDown()) {
-//                    data.setWeaponAction(AttackMode.ALTERNATIVE);
-//                    handleInput(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ALT_ATTACK);
-//                }
-//            }
-//
-//            if (WeaponModifierHelper.isWeaponItem(offhandItem) && canUseOffhandWeapon(player)) {
-//                var data = new WeaponData(offhandItem, player);
-//
-//                if(isUseKeyDown()) {
-//                    data.setWeaponAction(AttackMode.PRIMARY);
-//                    handleInput(data, InteractionHand.OFF_HAND, options.keyUse);
-//                }
-//                else if(!WeaponModifierHelper.isWeaponItem(mainHandItem)){
-//                    if (KeyBinds.KEY_ADD_ATTACK.isDown()) {
-//                        data.setWeaponAction(AttackMode.ADDITIONAL);
-//                        handleInput(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ADD_ATTACK);
-//                    } else if (KeyBinds.KEY_ALT_ATTACK.isDown()) {
-//                        data.setWeaponAction(AttackMode.ALTERNATIVE);
-//                        handleInput(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ALT_ATTACK);
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {

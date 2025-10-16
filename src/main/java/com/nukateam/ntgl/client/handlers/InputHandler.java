@@ -65,6 +65,7 @@ public class InputHandler {
             }
             else if(KeyBinds.KEY_ALT_ATTACK.isDown()) {
                 data.setWeaponAction(AttackMode.ALTERNATIVE);
+                Ntgl.LOGGER.debug("!!! Alt down");
                 handleInput(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ALT_ATTACK);
             }
         }
@@ -82,6 +83,7 @@ public class InputHandler {
                     handleInput(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ADD_ATTACK);
                 } else if (KeyBinds.KEY_ALT_ATTACK.isDown()) {
                     data.setWeaponAction(AttackMode.ALTERNATIVE);
+                    Ntgl.LOGGER.debug("!!! Alt down");
                     handleInput(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ALT_ATTACK);
                 }
             }
@@ -147,12 +149,6 @@ public class InputHandler {
             if (KeyBinds.KEY_AMMO_SELECT.consumeClick()) {
                 ClientActions.switchAmmo(hand, player);
             }
-//            if (KeyBinds.KEY_ADD_ATTACK.consumeClick()) {
-//                ClientActions.meleeAttack();
-//            }
-//            if (KeyBinds.KEY_ALT_ATTACK.consumeClick()) {
-//                ClientActions.alternativeAttack();
-//            }
         }
     }
 

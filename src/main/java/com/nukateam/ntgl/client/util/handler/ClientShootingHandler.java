@@ -144,63 +144,6 @@ public class ClientShootingHandler {
         }
     }
 
-//    @SubscribeEvent
-//    public void onPostClientTick(TickEvent.ClientTickEvent event) {
-//        if (event.phase != TickEvent.Phase.END)
-//            return;
-//
-//        if (!isInGame()) return;
-//
-//        var mc = Minecraft.getInstance();
-//        var player = mc.player;
-//        var options = Minecraft.getInstance().options;
-//
-//        if (player == null || PlayerReviveHelper.isBleeding(player)) return;
-//
-//        var mainHandItem = player.getMainHandItem();
-//        var offhandItem = player.getOffhandItem();
-//
-//        if (isWeaponItem(mainHandItem)) {
-//            var data = new WeaponData(mainHandItem, player);
-//
-//            if(isKeyAttackDown()) {
-//                data.setWeaponAction(AttackMode.PRIMARY);
-//                handleInput(data, InteractionHand.MAIN_HAND, options.keyAttack);
-//            }
-//            else if(isUseKeyDown() && !(isWeaponItem(offhandItem) && canUseOffhandWeapon(player))) {
-//                data.setWeaponAction(AttackMode.SECONDARY);
-//                handleInput(data, InteractionHand.MAIN_HAND, options.keyUse);
-//            }
-//            else if(KeyBinds.KEY_ADD_ATTACK.isDown()) {
-//                data.setWeaponAction(AttackMode.ADDITIONAL);
-//                handleInput(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ADD_ATTACK);
-//            }
-//            else if(KeyBinds.KEY_ALT_ATTACK.isDown()) {
-//                Ntgl.LOGGER.debug("!!! Alt down");
-//                data.setWeaponAction(AttackMode.ALTERNATIVE);
-//                handleInput(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ALT_ATTACK);
-//            }
-//        }
-//
-//        if (isWeaponItem(offhandItem) && canUseOffhandWeapon(player)) {
-//            var data = new WeaponData(offhandItem, player);
-//
-//            if(isUseKeyDown()) {
-//                data.setWeaponAction(AttackMode.PRIMARY);
-//                handleInput(data, InteractionHand.OFF_HAND, options.keyUse);
-//            }
-//            else if(!isWeaponItem(mainHandItem)){
-//                if (KeyBinds.KEY_ADD_ATTACK.isDown()) {
-//                    data.setWeaponAction(AttackMode.ADDITIONAL);
-//                    handleInput(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ADD_ATTACK);
-//                } else if (KeyBinds.KEY_ALT_ATTACK.isDown()) {
-//                    data.setWeaponAction(AttackMode.ALTERNATIVE);
-//                    handleInput(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ALT_ATTACK);
-//                }
-//            }
-//        }
-//    }
-
     @SubscribeEvent(priority = EventPriority.LOW)
     public void renderTickLow(TickEvent.RenderTickEvent evt) {
         if (!evt.type.equals(RENDER) || evt.phase.equals(TickEvent.Phase.START))
@@ -397,12 +340,15 @@ public class ClientShootingHandler {
                 if (maxChargeTime > 0) {
                     if (fireMode != FireMode.AUTO)
                         key.setDown(false);
+                        Ntgl.LOGGER.debug("KEY down");
+
                 }
             }
         } else {
             this.fire(weaponData);
             if (fireMode != FireMode.AUTO) {
                 key.setDown(false);
+                Ntgl.LOGGER.debug("KEY down");
             }
         }
     }
