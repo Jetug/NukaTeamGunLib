@@ -5,6 +5,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
+import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -403,11 +404,14 @@ public class ServerPlayHandler {
     public static void handleGrenade(C2SMessageGrenade message, ServerPlayer player) {
         var action = message.getAction();
 
+        var weapon = player.getItemInHand(message.getHand());
+        var weaponData = new WeaponData(weapon, player).setWeaponAction(message.getAttackMode());
+
         if(action == KeyAction.HOLD){
-            ThrowingTracker.start(player, message.getHand());
+            ThrowingTracker.start(weaponData, message.getHand());
         }
         else if(action == KeyAction.RELEASE){
-            ThrowingTracker.onRelease(player, message.getHand());
+            ThrowingTracker.onRelease(weaponData, message.getHand());
         }
     }
 
@@ -436,7 +440,8 @@ public class ServerPlayHandler {
 
     public static void handleFireModeSwitch(ServerPlayer player, ItemStack stack, InteractionHand hand) {
         if(WeaponModifierHelper.getConfig(stack).getGeneral().getWeaponMode() == WeaponMode.THROWABLE){
-            handleThrowModeSwitch(player, stack, hand);
+            var data = new WeaponData(stack, player).setWeaponAction(AttackMode.PRIMARY);
+            handleThrowModeSwitch(data, hand);
         } else {
             var data = new WeaponData(stack, player);
             WeaponStateHelper.switchFireMode(data);
@@ -444,13 +449,13 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void handleThrowModeSwitch(ServerPlayer player, ItemStack stack, InteractionHand hand) {
-        var isNotPreparing = !ModSyncedDataKeys.getPreparingDataKey(hand).getValue(player);
-        var isNotThrowing = !ModSyncedDataKeys.getThrowingDataKey(hand).getValue(player);
+    public static void handleThrowModeSwitch(WeaponData data, InteractionHand hand) {
+        var isNotPreparing = !ModSyncedDataKeys.getPreparingDataKey(hand).getValue(data.wielder);
+        var isNotThrowing = !ModSyncedDataKeys.getThrowingDataKey(hand).getValue(data.wielder);
 
         if(isNotPreparing && isNotThrowing) {
-            ThrowableStateHelper.switchThrowMode(stack);
-            player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
+            ThrowableStateHelper.switchThrowMode(data);
+            data.wielder.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
         }
     }
 

@@ -63,7 +63,7 @@ public class ClientActions {
 //                ClientMeleeHandler.addTracker(gunData, hand);
 //            }
             else if(weaponMode == WeaponMode.THROWABLE) {
-                ClientThrowableHandler.addTracker(gunData, hand);
+                ClientThrowHandler.addTracker(gunData, hand);
             }
         }
     }

@@ -25,15 +25,11 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     public static final String PREPARE_TIME = "prepareTime";
     public static final String THROW_TIME = "throwTime";
     public static final String AMMO_DATA = "AmmoData";
-    public static final String SOUNDS = "Sounds";
 
     @Optional LinkedHashSet<ThrowMode> mode = new LinkedHashSet<>(List.of(ThrowMode.SAFE));
     private int prepareTime = 0;
     private int throwTime = 1;
     protected AmmoData ammoData = new AmmoData();
-    protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
-    @Ignored
-    protected HashMap<String, ResourceLocation> preparedTextures = new HashMap<>();
 
     @Override
     public Component getEditorLabel() {
@@ -52,7 +48,6 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         tag.putInt(PREPARE_TIME, prepareTime);
         tag.putInt(THROW_TIME, throwTime);
         tag.put(AMMO_DATA, ammoData.serializeNBT());
-        tag.put(SOUNDS, NbtUtils.serializeStringMap(this.sounds));
         return tag;
     }
 
@@ -70,9 +65,6 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         if (tag.contains(AMMO_DATA, Tag.TAG_COMPOUND)) {
             this.ammoData = AmmoData.create(tag.getCompound(AMMO_DATA));
         }
-        if (tag.contains(SOUNDS, Tag.TAG_COMPOUND)) {
-            this.sounds = deserializeSounds(tag.getCompound(SOUNDS));
-        }
     }
 
     public JsonObject toJsonObject() {
@@ -82,7 +74,6 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         object.addProperty("prepareTime", this.prepareTime);
         object.addProperty("throwTime", this.throwTime);
         object.add("projectile", this.ammoData.toJsonObject());
-        GunJsonUtil.addObjectIfNotEmpty(object,"sounds", gson.toJsonTree(sounds).getAsJsonObject());
         return object;
     }
 
@@ -92,7 +83,6 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         config.prepareTime = prepareTime;
         config.throwTime = throwTime;
         config.ammoData = ammoData;
-        config.sounds = (HashMap<String, ResourceLocation>) this.sounds.clone();
         return config;
     }
 
@@ -102,14 +92,6 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
 
     public AmmoConfig getAmmo(){
         return ammoData.getAmmo();
-    }
-
-    public HashMap<String, ResourceLocation> getSoundsMap() {
-        return sounds;
-    }
-
-    public Map<String, ResourceLocation> getTextures() {
-        return preparedTextures;
     }
 
     private HashMap<String, ResourceLocation> deserializeSounds(CompoundTag tag){

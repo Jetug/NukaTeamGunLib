@@ -17,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -236,18 +237,38 @@ public class WeaponModifierHelper {
         return value == WeaponMode.THROWABLE;
     }
 
+    public static int getPrepareTime(WeaponData data) {
+        var items = getThrowable(data).getPrepareTime();
+        var value = new AtomicReference<>(items);
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyPrepareTime(value.get(), data))));
+        return value.get();
+    }
+
+    public static int getThrowTime(WeaponData data) {
+        var items = getThrowable(data).getThrowTime();
+        var value = new AtomicReference<>(items);
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyThrowTime(value.get(), data))));
+        return value.get();
+    }
+
+    public static LinkedHashSet<ThrowMode> getThrowModes(WeaponData data) {
+        var value = new AtomicReference<>(getThrowable(data).getThrowModes());
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyThrowModes(value.get(), data))));
+        return value.get();
+    }
+
     public static Set<AmmoHolder> getAmmoItems(WeaponData data) {
         var items = getGeneral(data).getAmmo();
-        var ammoItem = new AtomicReference<>(items);
-        forEachAttachment(data, (modifier -> ammoItem.set(modifier.modifyAmmoItems(ammoItem.get(), data))));
-        return ammoItem.get();
+        var value = new AtomicReference<>(items);
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyAmmoItems(value.get(), data))));
+        return value.get();
     }
 
     public static Set<AmmoHolder> getAllFuel(WeaponData data) {
         var items = getGeneral(data).getFuel();
-        var ammoItem = new AtomicReference<>(items);
-        forEachAttachment(data, (modifier -> ammoItem.set(modifier.modifyFuelItems(ammoItem.get(), data))));
-        return ammoItem.get();
+        var weapon = new AtomicReference<>(items);
+        forEachAttachment(data, (modifier -> weapon.set(modifier.modifyFuelItems(weapon.get(), data))));
+        return weapon.get();
     }
 
     public static AmmoHolder getFirstAmmoItem(WeaponData data) {

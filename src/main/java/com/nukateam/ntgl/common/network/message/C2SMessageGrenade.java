@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.network.KeyAction;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,23 +12,30 @@ import net.minecraft.world.InteractionHand;
 public class C2SMessageGrenade extends PlayMessage<C2SMessageGrenade> {
     private KeyAction action;
     private InteractionHand hand = InteractionHand.MAIN_HAND;
+    AttackMode attackMode;
 
     public C2SMessageGrenade() {}
 
-    public C2SMessageGrenade(KeyAction reload, InteractionHand hand) {
+    public C2SMessageGrenade(KeyAction reload, InteractionHand hand, AttackMode attackMode) {
         this.action = reload;
         this.hand = hand;
+        this.attackMode = attackMode;
     }
 
     @Override
     public void encode(C2SMessageGrenade message, FriendlyByteBuf buffer) {
         buffer.writeEnum(message.action);
         buffer.writeEnum(message.hand);
+        buffer.writeUtf(message.attackMode.toString());
+
     }
 
     @Override
     public C2SMessageGrenade decode(FriendlyByteBuf buffer) {
-        return new C2SMessageGrenade(buffer.readEnum(KeyAction.class), buffer.readEnum(InteractionHand.class));
+        return new C2SMessageGrenade(
+                buffer.readEnum(KeyAction.class),
+                buffer.readEnum(InteractionHand.class),
+                AttackMode.getType(buffer.readUtf()));
     }
 
     @Override
@@ -48,5 +56,9 @@ public class C2SMessageGrenade extends PlayMessage<C2SMessageGrenade> {
 
     public InteractionHand getHand() {
         return hand;
+    }
+
+    public AttackMode getAttackMode() {
+        return attackMode;
     }
 }

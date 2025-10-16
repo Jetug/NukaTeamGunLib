@@ -36,7 +36,7 @@
         "weaponMode": "ntgl:melee"
       },
       "melee": {
-        "mode": "ntgl:single",
+        "mode": "ntgl:auto",
         "damage": 10,
         "delay": 4,
         "cooldown": 20,

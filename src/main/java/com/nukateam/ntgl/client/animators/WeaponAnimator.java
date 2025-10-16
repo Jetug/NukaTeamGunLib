@@ -140,9 +140,9 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         this.reloadEndTime = WeaponModifierHelper.getReloadEnd(data);
 
         var conging = weapon.getModifiedConfig(getStack());
-        this.prepareTime  = conging.getThrowable().getPrepareTime();
-        this.throwingTime = conging.getThrowable().getThrowTime();
-        this.throwMode = ThrowableStateHelper.getThrowMode(getStack());
+        this.prepareTime  = WeaponModifierHelper.getPrepareTime(data);
+        this.throwingTime = WeaponModifierHelper.getThrowTime(data);
+        this.throwMode = ThrowableStateHelper.getThrowMode(data);
 
 //        Ntgl.LOGGER.info("! Is equiping: " + isEquiping);
 

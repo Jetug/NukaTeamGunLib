@@ -240,7 +240,7 @@ public class GunHud implements IGuiOverlay {
             handCache.fireMode = WeaponStateHelper.getFireMode(data);
 
             if(isThrowable(weapon)){
-                handCache.throwMode = ThrowableStateHelper.getThrowMode(weapon);
+                handCache.throwMode = ThrowableStateHelper.getThrowMode(data);
                 handCache.ammoCount = weapon.getCount();
                 handCache.ammoConfig = WeaponModifierHelper.getConfig(weapon).getThrowable().getAmmo();
             }

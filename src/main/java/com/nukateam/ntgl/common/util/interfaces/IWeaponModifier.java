@@ -9,6 +9,7 @@ import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.data.holders.*;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -359,6 +360,18 @@ public interface IWeaponModifier {
 
     default int modifyFuelAmountPerUse(ResourceLocation ammo, int value, WeaponData data) {
         return value;
+    }
+
+    default int modifyPrepareTime(int item, WeaponData data) {
+        return item;
+    }
+
+    default int modifyThrowTime(int item, WeaponData data) {
+        return item;
+    }
+
+    default LinkedHashSet<ThrowMode> modifyThrowModes(LinkedHashSet<ThrowMode> item, WeaponData data) {
+        return item;
     }
 
 //    default boolean modifyDamageReduceOverDistance(boolean reduceOverDistance, GunData data) {

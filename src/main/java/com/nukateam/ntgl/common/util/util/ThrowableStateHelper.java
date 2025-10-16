@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.util.util;
 
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.ThrowMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import net.minecraft.nbt.Tag;
@@ -14,19 +15,20 @@ public class ThrowableStateHelper {
 //        return throwable.getConfig().getGeneral().getThrowModes();
 //    }
 
-    public static void switchThrowMode(ItemStack stack){
-        if(stack.getItem() instanceof IThrowable throwable) {
-            var modes = throwable.getConfig().getThrowable().getThrowModes();
-            var current = getThrowMode(stack);
+    public static void switchThrowMode(WeaponData data){
+        if(data.weapon.getItem() instanceof IThrowable) {
+            var stack = data.weapon;
+            var modes = WeaponModifierHelper.getThrowModes(data);
+            var current = getThrowMode(data);
             var newMode = SetUtils.cycleSet(modes, current);
             setThrowMode(stack, newMode);
         }
     }
 
-    public static ThrowMode getThrowMode(ItemStack stack) {
-        var throwable = (IThrowable)stack.getItem();
+    public static ThrowMode getThrowMode(WeaponData data) {
+        var stack = data.weapon;
 
-        var modes = throwable.getConfig().getThrowable().getThrowModes();
+        var modes = WeaponModifierHelper.getThrowModes(data);
         var tag = stack.getOrCreateTag();
         ThrowMode currentMode = null;
 

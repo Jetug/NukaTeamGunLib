@@ -25,11 +25,11 @@ import java.util.Map;
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.canUseOffhandWeapon;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
-public class ClientThrowableHandler {
+public class ClientThrowHandler {
     private static final Map<InteractionHand, Tracker> TRACKER_MAP = new HashMap<>();
 
     @SubscribeEvent
-    public static void tick(TickEvent.ClientTickEvent event){
+    public static void onPostClientTick(TickEvent.ClientTickEvent event){
         var minecraft = Minecraft.getInstance();
         if(event.phase == TickEvent.Phase.END && minecraft.player != null){
             if(minecraft.options.keyAttack.isDown()){
@@ -53,16 +53,16 @@ public class ClientThrowableHandler {
     }
 
     public static void addTracker(WeaponData weaponData, InteractionHand hand) {
-        var player = weaponData.wielder;
         if(isThrowable(weaponData) && !TRACKER_MAP.containsKey(hand)){
-            TRACKER_MAP.put(hand, new Tracker(player, hand));
-            PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.HOLD, hand));
+            TRACKER_MAP.put(hand, new Tracker(weaponData, hand));
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.HOLD, hand, weaponData.weaponAction));
         }
     }
 
     private static void removeTracker(InteractionHand hand) {
         if(TRACKER_MAP.containsKey(hand)) {
-            PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.RELEASE, hand));
+            var action = TRACKER_MAP.get(hand).data.weaponAction;
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.RELEASE, hand, action));
             TRACKER_MAP.remove(hand);
         }
     }
@@ -100,13 +100,15 @@ public class ClientThrowableHandler {
     }
 
     private static class Tracker {
+        private final WeaponData data;
         private final InteractionHand arm;
         private final ItemStack stack;
         private final LivingEntity entity;
 
-        private Tracker(LivingEntity entity, InteractionHand arm) {
+        private Tracker(WeaponData data, InteractionHand arm) {
+            this.data = data;
             this.arm = arm;
-            this.entity = entity;
+            this.entity = data.wielder;
             this.stack = entity.getItemInHand(arm);
         }
 

@@ -45,7 +45,7 @@
       "general": {
         "weaponMode": "ntgl:gun",
         "rate": 4,
-        "fireMode": ["ntgl:auto"],
+        "fireMode": ["ntgl:semi"],
         "damage" : 10,
         "maxAmmo": 20,
         "reloadTime": 30,
