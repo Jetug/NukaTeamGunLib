@@ -66,7 +66,6 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 				this.onExpired();
 			this.remove(RemovalReason.KILLED);
 		}
-//		updateClient();
 	}
 
 	public float getDistance() {

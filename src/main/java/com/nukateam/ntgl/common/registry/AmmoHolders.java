@@ -1,5 +1,6 @@
-package com.nukateam.ntgl.common.data.holders;
+package com.nukateam.ntgl.common.registry;
 
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.ForgeHooks;

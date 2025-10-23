@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -67,7 +68,7 @@ public class ItemInHandLayerMixin {
             poseStack.mulPose(Axis.YP.rotationDegrees(180F));
             GunRenderingHandler.get().applyWeaponScale(stack, poseStack);
 
-            var gripType = WeaponStateHelper.getGripType(new WeaponData(stack, entity));
+            var gripType = WeaponModifierHelper.getGripType(new WeaponData(stack, entity));
             var aimProgress = AimingHandler.get().getAimProgress(entity, deltaTicks);
             gripType.getHeldAnimation()
                     .applyHeldItemTransforms(entity, hand, aimProgress, poseStack, source);

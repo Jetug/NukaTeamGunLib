@@ -22,13 +22,14 @@ public class JsonDeserializers {
     public static final JsonDeserializer<ResourceLocation> RESOURCE_LOCATION = (json, typeOfT, context) -> ResourceLocation.tryParse(json.getAsString());
     public static final JsonDeserializer<GripType> GRIP_TYPE = (json, typeOfT, context) -> GripType.getType(ResourceLocation.tryParse(json.getAsString()));
     public static final JsonDeserializer<LoadingType> LOADING_TYPE = (json, typeOfT, context) -> LoadingType.getType(json.getAsString());
-    public static final JsonDeserializer<WeaponMode> WEAPON_TYPE = (json, typeOfT, context) -> WeaponMode.getType(json.getAsString());
+    public static final JsonDeserializer<WeaponAction> WEAPON_TYPE = (json, typeOfT, context) -> WeaponAction.getType(json.getAsString());
     public static final JsonDeserializer<AttackMode> WEAPON_MODE = (json, typeOfT, context) -> AttackMode.getType(json.getAsString());
     public static final JsonDeserializer<MeleeMode> MELEE_MODE = (json, typeOfT, context) -> MeleeMode.getType(json.getAsString());
     public static final JsonDeserializer<ThrowMode> GRENADE_MODE = (json, typeOfT, context) -> ThrowMode.getType(json.getAsString());
     public static final JsonDeserializer<AmmoHolder> SECONDARY_AMMO_TYPE = (json, typeOfT, context) -> AmmoHolder.getType(json.getAsString());
     public static final JsonDeserializer<CounterType> COUNTER_TYPE = (json, typeOfT, context) -> CounterType.getType(json.getAsString());
     public static final JsonDeserializer<AnimationType> ANIMATION_TYPE = (json, typeOfT, context) -> AnimationType.getType(json.getAsString());
+    public static final JsonDeserializer<CustomAttack> CUSTOM_ATTACK = (json, typeOfT, context) -> CustomAttack.getType(json.getAsString());
     public static final JsonDeserializer<ResourceKey<DamageType>> DAMAGE_TYPE = (json, typeOfT, context) -> getDamageTypeResourceKey(json.getAsString());
     public static final JsonDeserializer<Easings> EASING = (json, typeOfT, context) -> Easings.byName(json.getAsString());
 
@@ -37,7 +38,7 @@ public class JsonDeserializers {
         builder.registerTypeAdapter(ResourceLocation.class, RESOURCE_LOCATION);
         builder.registerTypeAdapter(GripType.class, GRIP_TYPE);
         builder.registerTypeAdapter(LoadingType.class, LOADING_TYPE);
-        builder.registerTypeAdapter(WeaponMode.class, WEAPON_TYPE);
+        builder.registerTypeAdapter(WeaponAction.class, WEAPON_TYPE);
         builder.registerTypeAdapter(AttackMode.class, WEAPON_MODE);
         builder.registerTypeAdapter(MeleeMode.class, MELEE_MODE);
         builder.registerTypeAdapter(ThrowMode.class, GRENADE_MODE);
@@ -50,6 +51,7 @@ public class JsonDeserializers {
         builder.registerTypeAdapter(ResourceKey.class, DAMAGE_TYPE);
         builder.registerTypeAdapter(CounterType.class, COUNTER_TYPE);
         builder.registerTypeAdapter(AnimationType.class, ANIMATION_TYPE);
+        builder.registerTypeAdapter(CustomAttack.class, CUSTOM_ATTACK);
         builder.excludeFieldsWithModifiers(Modifier.TRANSIENT);
         return builder.create();
     });

@@ -4,13 +4,12 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
-import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.KeyAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageGrenade;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
-import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
@@ -56,7 +55,7 @@ public class ClientThrowHandler {
     }
 
     private static boolean isThrowMode(WeaponData weaponData) {
-        return WeaponModifierHelper.getWeaponMode(weaponData) == WeaponMode.THROWABLE;
+        return WeaponModifierHelper.getWeaponMode(weaponData) == WeaponAction.THROW;
     }
 
     public static void handleInput(WeaponData weaponData, InteractionHand hand, KeyMapping key) {

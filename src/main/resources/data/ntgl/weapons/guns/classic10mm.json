@@ -28,11 +28,6 @@
   "modes": {
     "ntgl:secondary": {
       "general": {
-        "weaponMode": "ntgl:none"
-      }
-    },
-    "ntgl:additional": {
-      "general": {
         "weaponMode": "ntgl:melee"
       },
       "melee": {

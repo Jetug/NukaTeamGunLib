@@ -290,7 +290,7 @@ public interface IWeaponModifier {
         return value;
     }
 
-    default WeaponMode modifyWeaponMode(WeaponMode value, WeaponData data) {
+    default WeaponAction modifyWeaponMode(WeaponAction value, WeaponData data) {
         return value;
     }
 

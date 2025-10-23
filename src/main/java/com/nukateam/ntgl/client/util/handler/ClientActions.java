@@ -3,7 +3,6 @@ package com.nukateam.ntgl.client.util.handler;
 import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
-import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.HandAction;
@@ -62,7 +61,7 @@ public class ClientActions {
 //            else if(weaponMode == WeaponMode.MELEE) {
 //                ClientMeleeHandler.addTracker(gunData, hand);
 //            }
-//            if(weaponMode == WeaponMode.THROWABLE) {
+//            if(weaponMode == WeaponMode.THROW) {
 //                ClientThrowHandler.addTracker(gunData, hand);
 //            }
         }

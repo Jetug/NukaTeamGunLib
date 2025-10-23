@@ -29,12 +29,12 @@ public class FlameProjectile extends ProjectileEntity {
         super(entityType, worldIn, data);
     }
 
-    public float getBlockFireChance(){
-        return GROUND_FIRE_CHANCE;
-    }
-
-    public float getEntityFireChance(){
-        return ENTITY_FIRE_CHANCE;
+    @Override
+    public void tick() {
+        if(isInWater()) {
+            this.remove(RemovalReason.KILLED);
+        }
+        super.tick();
     }
 
     @Override
@@ -64,8 +64,6 @@ public class FlameProjectile extends ProjectileEntity {
 
     @Override
     protected void onHitBlock(BlockState blockstate, BlockPos blockpos, Direction face, double x, double y, double z) {
-//        super.onHitBlock(blockstate, blockpos, face, x, y, z);
-
         if(random.nextFloat() <= getBlockFireChance()) {
             if (!CampfireBlock.canLight(blockstate) && !CandleBlock.canLight(blockstate) && !CandleCakeBlock.canLight(blockstate)) {
                 var blockpos1 = blockpos.relative(face);
@@ -81,17 +79,11 @@ public class FlameProjectile extends ProjectileEntity {
         }
     }
 
-    @Override
-    public void tick() {
-        if(isInWater()) {
-            this.remove(RemovalReason.KILLED);
-        }
-        super.tick();
+    protected float getBlockFireChance(){
+        return GROUND_FIRE_CHANCE;
     }
 
-    //
-//    @Override
-//    public void onExpired() {
-//        createExplosion(this, Config.COMMON.missiles.explosionRadius.get().floatValue(), false);
-//    }
+    protected float getEntityFireChance(){
+        return ENTITY_FIRE_CHANCE;
+    }
 }

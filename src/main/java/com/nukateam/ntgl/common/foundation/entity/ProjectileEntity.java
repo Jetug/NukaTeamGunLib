@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.weapon.General;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
+import com.nukateam.ntgl.common.data.holders.AttackMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.util.trackers.SpreadTracker;
@@ -59,12 +60,12 @@ import java.util.function.Predicate;
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData {
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
+    protected AttackMode weaponAction;
     protected WeaponData weaponData;
     protected boolean isServerSide = !level().isClientSide();
     protected boolean isRightHand;
     protected int shooterId;
     protected LivingEntity shooter;
-    protected WeaponConfig modifiedWeaponConfig;
     protected General general;
     protected ProjectileConfig projectile = new ProjectileConfig();
     protected ItemStack weapon = ItemStack.EMPTY;
@@ -89,6 +90,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         this.weaponData = data;
         this.shooter = data.wielder;
+        this.weaponAction = data.weaponAction;
         this.shooterId = shooter.getId();
         this.weapon = weapon;
         this.general = WeaponModifierHelper.getGeneral(data);
@@ -120,6 +122,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         compound.put("Weapon", weapon.save(new CompoundTag()));
+        compound.putString("WeaponAction", weaponAction.toString());
         compound.put("Ammo", ammo.save(new CompoundTag()));
         compound.put("Projectile", this.projectile.serializeNBT());
         compound.put("General", this.general.serializeNBT());
@@ -131,6 +134,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         this.weapon = ItemStack.of(compound.getCompound("Weapon"));
+        this.weaponAction = AttackMode.getType(compound.getString("WeaponAction"));
         this.ammo = ItemStack.of(compound.getCompound("Ammo"));
         this.projectile = ProjectileConfig.create(compound.getCompound("Projectile"));
         this.general = General.create(compound.getCompound("General"));
@@ -148,6 +152,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         buffer.writeDouble(this.modifiedGravity);
         buffer.writeVarInt(this.life);
         buffer.writeBoolean(this.isRightHand);
+        buffer.writeUtf(this.weaponAction.toString());
     }
 
     @Override
@@ -159,6 +164,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.modifiedGravity = buffer.readDouble();
         this.life = buffer.readVarInt();
         this.isRightHand = buffer.readBoolean();
+        this.weaponAction = AttackMode.getType(buffer.readUtf());
+
         this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
         setBoundingBox(new AABB(
                 projectile.getSize(), projectile.getSize(), projectile.getSize(),
@@ -428,7 +435,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             this.onHitBlock(state, pos, blockHitResult.getDirection(), hitVec.x, hitVec.y, hitVec.z);
 
-
             if (block instanceof TargetBlock targetBlock) {
                 int power = ReflectionUtil.updateTargetBlock(targetBlock, this.level(), state, blockHitResult, this);
                 if (this.shooter instanceof ServerPlayer serverPlayer) {
@@ -525,18 +531,19 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    protected void handleBlockBreaking(BlockPos pos, BlockState state) {
+    protected boolean handleBlockBreaking(BlockPos pos, BlockState state) {
         if (ModTags.isFragile(state)) {
             float destroySpeed = state.getDestroySpeed(this.level(), pos);
             if (destroySpeed >= 0) {
                 float chance = Config.COMMON.gameplay.griefing.fragileBaseBreakChance.get().floatValue() / (destroySpeed + 1);
                 if (this.random.nextFloat() < chance) {
                     this.level().destroyBlock(pos, Config.COMMON.gameplay.griefing.fragileBlockDrops.get());
+                    return true;
                 }
             }
         }
+        return false;
     }
-
 
     protected void updateHeading() {
         double horizontalDistance = this.getDeltaMovement().horizontalDistance();

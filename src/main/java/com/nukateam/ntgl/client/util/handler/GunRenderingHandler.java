@@ -160,7 +160,7 @@ public class GunRenderingHandler {
         var heldItem = mc.player.getMainHandItem();
 
         if (heldItem.getItem() instanceof INtglItem) {
-            down = WeaponStateHelper.getGripType(new WeaponData(heldItem, mc.player))
+            down = WeaponModifierHelper.getGripType(new WeaponData(heldItem, mc.player))
                     .getHeldAnimation()
                     .canRenderOffhandItem();
         }

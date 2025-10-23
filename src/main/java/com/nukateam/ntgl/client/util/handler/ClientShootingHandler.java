@@ -2,10 +2,9 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.ibm.icu.impl.Pair;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
-import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
@@ -32,7 +31,6 @@ import org.lwjgl.glfw.GLFW;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.isWeaponItem;
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.*;
 import static net.minecraftforge.event.TickEvent.Type.RENDER;
 
@@ -311,7 +309,7 @@ public class ClientShootingHandler {
     }
 
     private static boolean isGunMode(WeaponData weaponData) {
-        return WeaponModifierHelper.getWeaponMode(weaponData) == WeaponMode.GUN;
+        return WeaponModifierHelper.getWeaponMode(weaponData) == WeaponAction.SHOT;
     }
 
     public void handleInput(WeaponData weaponData, InteractionHand arm, KeyMapping key) {

@@ -86,7 +86,7 @@ public class WeaponModifierHelper {
     }
 
     public static boolean isThrowable(WeaponData data) {
-        return getGeneral(data).getWeaponMode() == WeaponMode.THROWABLE;
+        return getGeneral(data).getAction() == WeaponAction.THROW;
     }
 
 //    public static ArrayList<AttachmentType> getSortedAttachmentTypes(GunData data) {
@@ -141,8 +141,8 @@ public class WeaponModifierHelper {
         return loadingType.get();
     }
 
-    public static WeaponMode getWeaponMode(WeaponData data) {
-        var loadingType = new AtomicReference<>(getGeneral(data).getWeaponMode());
+    public static WeaponAction getWeaponMode(WeaponData data) {
+        var loadingType = new AtomicReference<>(getGeneral(data).getAction());
         forEachAttachment(data, (modifier -> loadingType.set(modifier.modifyWeaponMode(loadingType.get(), data))));
         return loadingType.get();
     }
@@ -179,6 +179,7 @@ public class WeaponModifierHelper {
 
     public static GripType getGripType(WeaponData data) {
         if(data.weapon == null) return GripType.ONE_HANDED;
+
         var gripType = getGeneral(data).getGripType();
         var finalGripType = new AtomicReference<>(gripType);
         forEachAttachment(data, (modifier -> finalGripType.set(modifier.modifyGripType(finalGripType.get(), data))));
@@ -224,17 +225,17 @@ public class WeaponModifierHelper {
 
     public static boolean canShoot(WeaponData data) {
         var value = getWeaponMode(data);
-        return value == WeaponMode.GUN;
+        return value == WeaponAction.SHOT;
     }
 
     public static boolean canMelee(WeaponData data) {
         var value = getWeaponMode(data);
-        return value == WeaponMode.MELEE;
+        return value == WeaponAction.MELEE;
     }
 
     public static boolean canThrow(WeaponData data) {
         var value = getWeaponMode(data);
-        return value == WeaponMode.THROWABLE;
+        return value == WeaponAction.THROW;
     }
 
     public static int getPrepareTime(WeaponData data) {

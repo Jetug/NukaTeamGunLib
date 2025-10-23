@@ -42,6 +42,7 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String FULL_CHARGE = "FullCharge";
     public static final String ENCHANTABLE = "Enchantable";
     public static final String SILENCED = "silenced";
+    public static final String ONE_HANDED = "oneHanded";
     public static final String FIRE_TIMER = "FireTimer";
     public static final String FIRE_MODE = "FireMode";
     public static final String ONE_TIME_CHARGE = "OneTimeCharge";
@@ -53,12 +54,13 @@ public class General implements INBTSerializable<CompoundTag> {
     int rate;
     int maxAmmo;
     @Optional LinkedHashSet<FireMode> fireMode = new LinkedHashSet<>(List.of(FireMode.SEMI_AUTO));
-    @Optional WeaponMode weaponMode = WeaponMode.NONE;
+    @Optional WeaponAction action = WeaponAction.NONE;
     @Ignored GripType gripType = GripType.ONE_HANDED;
     @Optional LoadingType loadingType = LoadingType.MAGAZINE;
     @Optional boolean fullCharge = false;
     @Optional boolean enchantable = true;
     @Optional boolean silenced = false;
+    @Optional boolean oneHanded = false;
     @Optional float damage;
     @Optional int reloadAmount = 1;
     @Optional int reloadStart = 0;
@@ -90,6 +92,7 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putBoolean  (FULL_CHARGE, this.fullCharge);
         tag.putBoolean  (ENCHANTABLE, this.enchantable);
         tag.putBoolean  (SILENCED, this.silenced);
+        tag.putBoolean  (ONE_HANDED, this.oneHanded);
         tag.putInt      (FIRE_TIMER, this.fireTimer);
         tag.put         (FIRE_MODE, NbtUtils.serializeSet(this.fireMode));
         tag.putString   (GRIP_TYPE, this.gripType.getId().toString());
@@ -101,7 +104,7 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putInt      (EQUIP_TIME, this.equipTime);
         tag.putInt      (AMMO_PER_SHOT, this.ammoPerShot);
         tag.putString   (LOADING_TYPE, this.loadingType.toString());
-        tag.putString   (WEAPON_MODE, this.weaponMode.toString());
+        tag.putString   (WEAPON_MODE, this.action.toString());
         tag.putBoolean  (AUTO_RELOAD, this.autoReload);
         tag.putBoolean  (RENDER_HUD, this.renderHud);
         tag.putString   (CATEGORY, this.category);
@@ -134,6 +137,9 @@ public class General implements INBTSerializable<CompoundTag> {
         }
         if (tag.contains(SILENCED, Tag.TAG_ANY_NUMERIC)) {
             this.silenced = tag.getBoolean(SILENCED);
+        }
+        if (tag.contains(ONE_HANDED, Tag.TAG_ANY_NUMERIC)) {
+            this.oneHanded = tag.getBoolean(ONE_HANDED);
         }
         if (tag.contains(RATE, Tag.TAG_ANY_NUMERIC)) {
             this.rate = tag.getInt(RATE);
@@ -169,7 +175,7 @@ public class General implements INBTSerializable<CompoundTag> {
             this.loadingType = LoadingType.getType(tag.getString(LOADING_TYPE));
         }
         if (tag.contains(WEAPON_MODE, Tag.TAG_STRING)) {
-            this.weaponMode = WeaponMode.getType(tag.getString(WEAPON_MODE));
+            this.action = WeaponAction.getType(tag.getString(WEAPON_MODE));
         }
         if (tag.contains(AUTO_RELOAD, Tag.TAG_BYTE)) {
             this.autoReload = tag.getBoolean(AUTO_RELOAD);
@@ -242,10 +248,11 @@ public class General implements INBTSerializable<CompoundTag> {
 //            object.addProperty("fireMode", this.fireMode.getId().toString());
         object.addProperty("gripType", this.gripType.toString());
         object.addProperty("loadingType", this.loadingType.toString());
-        object.addProperty("weaponMode", this.weaponMode.toString());
+        object.addProperty("action", this.action.toString());
         object.addProperty("autoReload", this.autoReload);
         object.addProperty("renderHud", this.renderHud);
         object.addProperty("maxAmmo", this.maxAmmo);
+        object.addProperty("oneHanded", this.oneHanded);
         if (this.reloadAmount != 1) object.addProperty("reloadAmount", this.reloadAmount);
         if (this.reloadStart > 0 ) object.addProperty("reloadStart", this.reloadStart);
         if (this.reloadTime != 1) object.addProperty("reloadTime", this.reloadTime);
@@ -277,6 +284,7 @@ public class General implements INBTSerializable<CompoundTag> {
         general.fullCharge = this.fullCharge;
         general.enchantable = this.enchantable;
         general.silenced = this.silenced;
+        general.oneHanded = this.oneHanded;
         general.rate = this.rate;
         general.fireTimer = this.fireTimer;
         general.gripType = this.gripType;
@@ -288,7 +296,7 @@ public class General implements INBTSerializable<CompoundTag> {
         general.equipTime = this.equipTime;
         general.ammoPerShot = this.ammoPerShot;
         general.loadingType = this.loadingType;
-        general.weaponMode = this.weaponMode;
+        general.action = this.action;
         general.autoReload = this.autoReload;
         general.renderHud = this.renderHud;
         general.category = this.category;
@@ -344,15 +352,17 @@ public class General implements INBTSerializable<CompoundTag> {
         return this.enchantable;
     }
 
-
     public boolean isSilenced() {
         return this.silenced;
+    }
+
+    public boolean isOneHanded() {
+        return this.oneHanded;
     }
 
     /**
      * @return The fire rate of this weapon in ticks
      */
-
     public int getRate() {
         return this.rate;
     }
@@ -360,7 +370,6 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The delay before firing
      */
-
     public int getFireDelay() {
         return this.fireTimer;
     }
@@ -368,7 +377,6 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The type of grip this weapon uses
      */
-
     public GripType getGripType() {
         return this.gripType;
     }
@@ -376,7 +384,6 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The maximum amount of projectile this weapon can hold
      */
-
     public int getMaxAmmo() {
         return this.maxAmmo;
     }
@@ -384,7 +391,6 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return The amount of projectile to add to the weapon each reload cycle
      */
-
     public int getReloadAmount() {
         return this.reloadAmount;
     }
@@ -397,7 +403,6 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return Time to reload the gun
      */
-
     public int getReloadTime() {
         return this.reloadTime;
     }
@@ -418,14 +423,13 @@ public class General implements INBTSerializable<CompoundTag> {
     }
 
 
-    public WeaponMode getWeaponMode() {
-        return weaponMode;
+    public WeaponAction getAction() {
+        return action;
     }
 
     /**
      * @return Type of loading
      */
-
     public LoadingType getLoadingType() {
         return this.loadingType;
     }
@@ -433,7 +437,6 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return If weapon should automatically reload if it's empty
      */
-
     public boolean isAutoReloading() {
         return this.autoReload;
     }
@@ -441,7 +444,6 @@ public class General implements INBTSerializable<CompoundTag> {
     /**
      * @return If weapon HUD should be rendered
      */
-
     public boolean shouldRenderHud() {
         return this.renderHud;
     }

@@ -8,7 +8,7 @@ import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.util.RgbUtils;
 import com.nukateam.ntgl.client.util.util.render.Figures;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
-import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.data.holders.CounterType;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
@@ -224,7 +224,7 @@ public class GunHud implements IGuiOverlay {
     }
 
     protected boolean isThrowable(ItemStack stack){
-        return WeaponModifierHelper.getConfig(stack).getGeneral().getWeaponMode() == WeaponMode.THROWABLE;
+        return WeaponModifierHelper.getConfig(stack).getGeneral().getAction() == WeaponAction.THROW;
     }
 
     protected WeaponConfig getConfig(ItemStack stack){

@@ -63,7 +63,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
 
     private static General getWeapon(){
         var gun = new General();
-        gun.weaponMode = WeaponMode.GUN;
+        gun.action = WeaponAction.SHOT;
         return gun;
     }
 
@@ -322,15 +322,15 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         return getFuelData(ammo).getAmmo();
     }
 
-    public WeaponMode getWeaponMode(AttackMode mode){
+    public WeaponAction getWeaponMode(AttackMode mode){
         if(mode == AttackMode.PRIMARY){
-            return general.weaponMode;
+            return general.action;
         }
         else {
             var value = modes.get(mode);
             if(value != null)
-                return value.getGeneral().getWeaponMode();
-            else return WeaponMode.NONE;
+                return value.getGeneral().getAction();
+            else return WeaponAction.NONE;
         }
     }
 

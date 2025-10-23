@@ -2,10 +2,8 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.holders.AttackMode;
-import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.data.holders.MeleeMode;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -23,9 +21,6 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.nukateam.ntgl.client.util.handler.ClientShootingHandler.isInGame;
-import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.canUseOffhandWeapon;
 
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
@@ -127,6 +122,6 @@ public class ClientMeleeHandler {
     }
 
     private static boolean isMelee(WeaponData data) {
-        return WeaponModifierHelper.getWeaponMode(data) == WeaponMode.MELEE;
+        return WeaponModifierHelper.getWeaponMode(data) == WeaponAction.MELEE;
     }
 }

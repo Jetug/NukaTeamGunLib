@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.util.handler;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
 
-import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -20,11 +20,9 @@ public class EntityModelHandler {
     public void onRenderEntityPre(RenderLivingEvent.Pre<LivingEntity, EntityModel<LivingEntity>> event) {
         var entity = event.getEntity();
         var heldItem = entity.getMainHandItem();
-        var isHumanoidModel = true;//event.getRenderer().getModel() instanceof HumanoidModel<LivingEntity>;
 
         if (heldItem.getItem() instanceof INtglItem) {
-            var heldAnimation = WeaponStateHelper
-                    .getGripType(new WeaponData(heldItem, entity))
+            var heldAnimation = WeaponModifierHelper.getGripType(new WeaponData(heldItem, entity))
                     .getHeldAnimation();
 
             var aimProgress = AimingHandler.get()
@@ -45,15 +43,15 @@ public class EntityModelHandler {
         var model = event.getRenderer().getModel();
         boolean slim = event.getEntity() instanceof AbstractClientPlayer player
                 && player.getModelName().equals("slim");
-
-        if(model instanceof HumanoidModel<LivingEntity> humanoidModel) {
-            humanoidModel.rightArm.x = -5.0F;
-            humanoidModel.rightArm.y = slim ? 2.5F : 2.0F;
-            humanoidModel.rightArm.z = 0.0F;
-            humanoidModel.leftArm.x = 5.0F;
-            humanoidModel.leftArm.y = slim ? 2.5F : 2.0F;
-            humanoidModel.leftArm.z = 0.0F;
-        }
+//
+//        if(model instanceof HumanoidModel<LivingEntity> humanoidModel) {
+//            humanoidModel.rightArm.x = -5.0F;
+//            humanoidModel.rightArm.y = slim ? 2.5F : 2.0F;
+//            humanoidModel.rightArm.z = 0.0F;
+//            humanoidModel.leftArm.x = 5.0F;
+//            humanoidModel.leftArm.y = slim ? 2.5F : 2.0F;
+//            humanoidModel.leftArm.z = 0.0F;
+//        }
 
         /*model.head.x = 5.0F;
         model.leftArm.y = slim ? 2.5F : 2.0F;

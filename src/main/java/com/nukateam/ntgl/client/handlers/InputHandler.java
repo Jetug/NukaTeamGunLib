@@ -6,7 +6,7 @@ import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttackMode;
-import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -28,9 +28,6 @@ import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.canUseOffh
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class InputHandler {
-
-
-
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END && isInGame()) {
@@ -98,13 +95,13 @@ public class InputHandler {
         if(weapon.getItem() instanceof IWeapon){
             var weaponMode = WeaponModifierHelper.getWeaponMode(gunData);
 
-            if(weaponMode == WeaponMode.GUN) {
+            if(weaponMode == WeaponAction.SHOT) {
                 ClientShootingHandler.get().handleInput(gunData, hand, key);
             }
-            else if(weaponMode == WeaponMode.MELEE) {
+            else if(weaponMode == WeaponAction.MELEE) {
                 ClientMeleeHandler.handleInput(gunData, hand, key);
             }
-            if(weaponMode == WeaponMode.THROWABLE) {
+            if(weaponMode == WeaponAction.THROW) {
                 ClientThrowHandler.handleInput(gunData, hand, key);
             }
         }
