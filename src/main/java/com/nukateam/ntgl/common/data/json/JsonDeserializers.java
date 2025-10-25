@@ -10,11 +10,13 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Modifier;
 
 public class JsonDeserializers {
+    public static final JsonDeserializer<Easings> EASING = (json, typeOfT, context) -> Easings.byName(json.getAsString());
     public static final JsonDeserializer<FireMode>  FIRE_MODE = (json, typeOfT, context) -> FireMode.getType(ResourceLocation.tryParse(json.getAsString()));
     public static final JsonDeserializer<AttachmentType> ATTACHMENT_TYPE = (json, typeOfT, context) -> AttachmentType.getType(ResourceLocation.tryParse(json.getAsString()));
     public static final JsonDeserializer<AmmoType> AMMO_TYPE = (json, typeOfT, context) -> AmmoType.getType(ResourceLocation.tryParse(json.getAsString()));
@@ -31,7 +33,19 @@ public class JsonDeserializers {
     public static final JsonDeserializer<AnimationType> ANIMATION_TYPE = (json, typeOfT, context) -> AnimationType.getType(json.getAsString());
     public static final JsonDeserializer<CustomAttack> CUSTOM_ATTACK = (json, typeOfT, context) -> CustomAttack.getType(json.getAsString());
     public static final JsonDeserializer<ResourceKey<DamageType>> DAMAGE_TYPE = (json, typeOfT, context) -> getDamageTypeResourceKey(json.getAsString());
-    public static final JsonDeserializer<Easings> EASING = (json, typeOfT, context) -> Easings.byName(json.getAsString());
+
+    public static final JsonDeserializer<Vec3> VECTOR = (json, typeOfT, context) -> {
+        var array = json.getAsJsonArray();
+
+        if(array.size() >= 3){
+            var x = array.get(0).getAsDouble();
+            var y = array.get(1).getAsDouble();
+            var z = array.get(2).getAsDouble();
+            return new Vec3(x, y, z);
+        }
+
+        return Vec3.ZERO;
+    };
 
     public static final Gson GSON_INSTANCE = Util.make(() -> {
         var builder = new GsonBuilder();
@@ -52,6 +66,7 @@ public class JsonDeserializers {
         builder.registerTypeAdapter(CounterType.class, COUNTER_TYPE);
         builder.registerTypeAdapter(AnimationType.class, ANIMATION_TYPE);
         builder.registerTypeAdapter(CustomAttack.class, CUSTOM_ATTACK);
+        builder.registerTypeAdapter(Vec3.class, VECTOR);
         builder.excludeFieldsWithModifiers(Modifier.TRANSIENT);
         return builder.create();
     });

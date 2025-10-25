@@ -9,6 +9,7 @@ import com.nukateam.ntgl.common.data.holders.FireMode;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.*;
@@ -16,6 +17,22 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class NbtUtils {
+    public static CompoundTag writeVec3(Vec3 vec) {
+        var vecTag = new CompoundTag();
+        vecTag.putDouble("x", vec.x);
+        vecTag.putDouble("y", vec.y);
+        vecTag.putDouble("z", vec.z);
+        return vecTag;
+    }
+
+    public static Vec3 readVec3(CompoundTag tag) {
+        return new Vec3(
+            tag.getDouble("x"),
+            tag.getDouble("y"),
+            tag.getDouble("z")
+        );
+    }
+
     public static CompoundTag serializeStringArray(ArrayList<String> array){
         var tag = new CompoundTag();
         for (var i = 0; i < array.size(); i++)

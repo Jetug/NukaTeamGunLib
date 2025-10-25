@@ -207,10 +207,6 @@ public class GunRenderingHandler {
         if (!(heldItem.getItem() instanceof IWeapon weaponItem))
             return;
 
-        var modifiedGun = weaponItem.getModifiedConfig(heldItem);
-        if (!modifiedGun.canAimDownSight())
-            return;
-
         // Change the FOV of the first person viewport based on the scope and aim progress
         if (AimingHandler.get().getNormalisedAdsProgress() <= 0)
             return;
@@ -334,7 +330,7 @@ public class GunRenderingHandler {
         var translateY = model.getTransforms().firstPersonRightHand.translation.y();
         var translateZ = model.getTransforms().firstPersonRightHand.translation.z();
 
-        if (AimingHandler.get().getNormalisedAdsProgress() > 0 && modifiedWeaponConfig.canAimDownSight()) {
+        if (AimingHandler.get().getNormalisedAdsProgress() > 0) {
             if (event.getHand() == InteractionHand.MAIN_HAND) {
                 double xOffset = translateX;
                 double yOffset = translateY;

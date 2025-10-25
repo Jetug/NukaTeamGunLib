@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.LinkedHashSet;
@@ -73,6 +74,11 @@ public class WeaponModifierHelper {
     public static Melee getMelee(WeaponData weaponData) {
         var config = getConfig(weaponData.weapon);
         return config.getMelee(weaponData.weaponAction);
+    }
+
+    public static Zoom getZoom(WeaponData weaponData) {
+        var config = getConfig(weaponData.weapon);
+        return config.getZoom(weaponData.weaponAction);
     }
 
     public static ThrowableConfig getThrowable(WeaponData weaponData) {
@@ -483,29 +489,40 @@ public class WeaponModifierHelper {
 
     public static float getMeleeDamage(WeaponData data) {
         var value = getMelee(data).getDamage();
-        var finalValue = new AtomicReference<Float>(value);
+        var finalValue = new AtomicReference<>(value);
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMeleeDamage(finalValue.get(), data))));
         return finalValue.get();
     }
 
     public static float getMeleeDistance(WeaponData data) {
-        var value = getMelee(data).getDistance();
-        var finalValue = new AtomicReference<Float>(value);
+        var finalValue = new AtomicReference<>(getMelee(data).getDistance());
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMeleeDistance(finalValue.get(), data))));
         return finalValue.get();
     }
 
     public static float getMeleeAngle(WeaponData data) {
         var value = getMelee(data).getAngle();
-        var finalValue = new AtomicReference<Float>(value);
+        var finalValue = new AtomicReference<>(value);
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMeleeAngle(finalValue.get(), data))));
         return finalValue.get();
     }
 
     public static float getMeleeKnockback(WeaponData data) {
         var value = getMelee(data).getKnockback();
-        var finalValue = new AtomicReference<Float>(value);
+        var finalValue = new AtomicReference<>(value);
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMeleeKnockback(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+    public static float getFovModifier(WeaponData data) {
+        var finalValue = new AtomicReference<>(getZoom(data).getFovModifier());
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyFov(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+    public static Vec3 getSightOffset(WeaponData data) {
+        var finalValue = new AtomicReference<>(getZoom(data).getOffset());
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifySightOffset(finalValue.get(), data))));
         return finalValue.get();
     }
 

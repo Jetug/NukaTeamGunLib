@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.debug.*;
+import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.util.util.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -12,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -26,7 +28,7 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
     protected ThrowableConfig throwable = new ThrowableConfig();
     protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
     protected LinkedHashMap<ResourceLocation, Fuel> fuel = new LinkedHashMap<>();
-
+    @Optional @Nullable protected Zoom zoom;
 
     @Override
     public Component getEditorLabel() {
@@ -44,6 +46,9 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
         tag.put(THROWABLE, this.throwable.serializeNBT());
         tag.put(AMMO_DATA, NbtUtils.serializeMap(this.ammoData));
         tag.put(SECONDARY_AMMO, NbtUtils.serializeMap(this.fuel));
+        if (this.zoom != null) {
+            tag.put("Zoom", this.zoom.serializeNBT());
+        }
         return tag;
     }
 
@@ -64,6 +69,9 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
         if (tag.contains(SECONDARY_AMMO, Tag.TAG_COMPOUND)) {
             this.fuel = NbtUtils.deserializeLinkedMap(tag.getCompound(SECONDARY_AMMO), (nbt) -> Fuel.create(nbt));
         }
+        if(tag.contains("Zoom", Tag.TAG_COMPOUND)) {
+            this.zoom = Zoom.create(tag.getCompound("Zoom"));
+        }
     }
 
     public JsonObject toJsonObject() {
@@ -72,6 +80,8 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
         object.add("general", this.general.toJsonObject());
         object.add("melee", this.melee.toJsonObject());
         object.add("throwable", this.throwable.toJsonObject());
+        if (this.zoom != null)
+            object.add("zoom", this.zoom.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object,"ammoData", gson.toJsonTree(this.ammoData).getAsJsonObject());
         return object;
     }
@@ -81,6 +91,7 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
         gun.general = this.general.copy();
         gun.melee = this.melee.copy();
         gun.throwable = this.throwable.copy();
+        gun.zoom = this.zoom.copy();
         gun.ammoData = (LinkedHashMap<ResourceLocation, AmmoData>) this.ammoData.clone();
         gun.fuel = (LinkedHashMap<ResourceLocation, Fuel>) this.fuel.clone();
         return gun;
@@ -114,6 +125,11 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
 
     public boolean hasAmmo(ResourceLocation ammo){
         return ammoData.containsKey(ammo);
+    }
+
+    @Nullable
+    public Zoom getZoom() {
+        return zoom;
     }
 
     public ProjectileConfig getProjectileConfig(ResourceLocation ammo){

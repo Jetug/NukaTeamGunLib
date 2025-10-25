@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Author: MrCrayfish
  */
-public class GunModifiers {
+public class WeaponModifiers {
     public static final IWeaponModifier SILENCED = new IWeaponModifier() {
         @Override
         public boolean silencedFire(boolean value, WeaponData data) {
