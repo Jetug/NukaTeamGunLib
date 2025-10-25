@@ -48,8 +48,8 @@ public class WeaponModifierHelper {
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
 
-        return WeaponStateHelper.isOneHanded(new WeaponData(mainHandItem, player))
-                && WeaponStateHelper.isOneHanded(new WeaponData(offhandItem, player));
+        if (!isOneHanded(new WeaponData(mainHandItem, player))) return false;
+        return isOneHanded(new WeaponData(offhandItem, player));
     }
 
     public static boolean isGun(ItemStack data){
@@ -156,8 +156,6 @@ public class WeaponModifierHelper {
         return finalProjectileAmount.get();
     }
 
-
-
     public static int getReloadAmount(WeaponData data) {
         var value = new AtomicInteger(getGeneral(data).getReloadAmount());
         forEachAttachment(data, (modifier -> value.set(modifier.modifyReloadAmount(value.get(), data))));
@@ -184,6 +182,15 @@ public class WeaponModifierHelper {
         var finalGripType = new AtomicReference<>(gripType);
         forEachAttachment(data, (modifier -> finalGripType.set(modifier.modifyGripType(finalGripType.get(), data))));
         return finalGripType.get();
+    }
+
+    public static boolean isOneHanded(WeaponData data) {
+        if(data.weapon.getItem() instanceof IWeapon) {
+            var value = new AtomicReference<>(getGeneral(data).isOneHanded());
+            forEachAttachment(data, (modifier -> value.set(modifier.modifyOneHanded(value.get(), data))));
+            return value.get();
+        }
+        return true;
     }
 
     public static int getFireDelay(WeaponData data) {

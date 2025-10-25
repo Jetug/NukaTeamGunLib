@@ -21,6 +21,7 @@ import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.modules.gunpack.GunPackModule;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -51,6 +52,7 @@ public class Ntgl {
 
     public static boolean controllableLoaded = false;
     public static boolean backpackedLoaded = false;
+    public static boolean travelersLoaded = false;
     public static boolean sophisticatedLoaded = false;
     public static boolean curiosLoaded = false;
     public static boolean playerReviveLoaded = false;
@@ -90,9 +92,10 @@ public class Ntgl {
         EnchantmentModule.init(MOD_EVENT_BUS);
         NtglGameEvents.register(MOD_EVENT_BUS);
         new ChassisCore(MOD_EVENT_BUS);
-
+//        TravelersBackpack
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
+        travelersLoaded = ModList.get().isLoaded("travelersbackpack");
         sophisticatedLoaded = ModList.get().isLoaded("sophisticatedbackpacks");
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
         playerAnimatorLoaded = ModList.get().isLoaded("playeranimator");

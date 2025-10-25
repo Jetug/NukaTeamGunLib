@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.HandAction;
@@ -39,14 +39,14 @@ public class ClientActions {
     }
 
     public static void meleeAttack() {
-        doAttack(InteractionHand.MAIN_HAND, AttackMode.ADDITIONAL);
+        doAttack(InteractionHand.MAIN_HAND, WeaponMode.ADDITIONAL);
     }
 
     public static void alternativeAttack() {
-        doAttack(InteractionHand.MAIN_HAND, AttackMode.ALTERNATIVE);
+        doAttack(InteractionHand.MAIN_HAND, WeaponMode.ALTERNATIVE);
     }
 
-    public static void doAttack(InteractionHand hand, AttackMode mode) {
+    public static void doAttack(InteractionHand hand, WeaponMode mode) {
         assert Minecraft.getInstance().player != null;
         var player = Minecraft.getInstance().player;
         var weapon = player.getItemInHand(hand);

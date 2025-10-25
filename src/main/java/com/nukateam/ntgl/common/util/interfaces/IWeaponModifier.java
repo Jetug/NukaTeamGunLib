@@ -238,6 +238,10 @@ public interface IWeaponModifier {
         return gripType;
     }
 
+    default boolean modifyOneHanded(boolean value, WeaponData data) {
+        return value;
+    }
+
     default int modifyFireDelay(int value, WeaponData data) {
         return value;
     }

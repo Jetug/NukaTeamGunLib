@@ -4,7 +4,7 @@ package com.nukateam.ntgl.common.util.trackers;
 import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
@@ -34,7 +34,7 @@ public class EntityReloadTracker {
     private EntityReloadTracker(LivingEntity entity, HumanoidArm arm) {
         this.arm = arm;
         this.stack = entity.getItemInHand(getInteractionHand(arm));
-        this.reloadTick = WeaponModifierHelper.getReloadTime(new WeaponData(stack, entity).setWeaponAction(AttackMode.PRIMARY));
+        this.reloadTick = WeaponModifierHelper.getReloadTime(new WeaponData(stack, entity).setWeaponAction(WeaponMode.PRIMARY));
     }
 
     public static boolean isReloading(LivingEntity entity){

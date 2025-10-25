@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.goals;
 
-import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
@@ -146,7 +146,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
         var msg = new C2SMessageShoot(mob.getId(),
                 mob.getViewYRot(1),
                 mob.getViewXRot(1),
-                0, 0, InteractionHand.MAIN_HAND, AttackMode.PRIMARY);
+                0, 0, InteractionHand.MAIN_HAND, WeaponMode.PRIMARY);
 
         ServerPlayHandler.handleShoot(msg, mob);
     }
@@ -155,7 +155,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
         var msg = new C2SMessageShoot(shooter.getId(),
                 shooter.getViewYRot(1),
                 shooter.getViewXRot(1),
-                0, 0, hand, AttackMode.PRIMARY);
+                0, 0, hand, WeaponMode.PRIMARY);
 
         ServerPlayHandler.handleShoot(msg, shooter);
     }

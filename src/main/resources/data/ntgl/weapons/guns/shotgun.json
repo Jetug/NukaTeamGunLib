@@ -2,7 +2,7 @@
   "general": {
     "rate": 15,
     "damage": 40.0,
-    "weaponMode": "ntgl:gun",
+    "action": "ntgl:gun",
     "gripType": "ntgl:two_handed",
     "loadingType": "ntgl:per_cartridge",
     "maxAmmo": 5,
@@ -23,12 +23,12 @@
   "modes": {
     "ntgl:secondary": {
       "general": {
-        "weaponMode": "ntgl:none"
+        "action": "ntgl:none"
       }
     },
     "ntgl:additional": {
       "general": {
-        "weaponMode": "ntgl:melee"
+        "action": "ntgl:melee"
       },
       "melee": {
         "mode": "ntgl:single",
@@ -43,7 +43,7 @@
     },
     "ntgl:alternative": {
       "general": {
-        "weaponMode": "ntgl:gun",
+        "action": "ntgl:gun",
         "rate": 4,
         "fireMode": ["ntgl:semi"],
         "damage" : 10,

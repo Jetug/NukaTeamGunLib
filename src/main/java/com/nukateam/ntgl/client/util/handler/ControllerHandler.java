@@ -16,7 +16,7 @@ import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
-import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -134,7 +134,7 @@ public class ControllerHandler {
                 if (isEquals(originalButton, GunButtonBindings.SHOOT)) {
                     shouldCancel = true;
                     if (state) {
-                        ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponAction(AttackMode.PRIMARY));
+                        ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponAction(WeaponMode.PRIMARY));
                     }
                 } else if (isEquals(originalButton, GunButtonBindings.AIM)) {
                     shouldCancel = true;
@@ -181,7 +181,7 @@ public class ControllerHandler {
 
             if (heldItem.getItem() instanceof IWeapon) {
                 if (WeaponModifierHelper.isAuto(gunData)) {
-                    ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponAction(AttackMode.PRIMARY));
+                    ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponAction(WeaponMode.PRIMARY));
                 }
             }
         }

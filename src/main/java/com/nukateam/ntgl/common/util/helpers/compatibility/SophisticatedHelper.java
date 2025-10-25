@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.util.helpers.compatibility;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
+import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.SophisticatedAmmoContext;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
@@ -63,7 +64,7 @@ public class SophisticatedHelper {
         var inventory = getBackpackInventory(player);
 
         if (inventory == null)
-            return SophisticatedAmmoContext.NONE;
+            return AmmoContext.NONE;
 
 
         for (int i = 0; i < inventory.getSlots(); i++) {
@@ -73,13 +74,13 @@ public class SophisticatedHelper {
             }
         }
 
-        return SophisticatedAmmoContext.NONE;
+        return AmmoContext.NONE;
     }
 
     public static IAmmoContext findMagazine(Player player, AmmoHolder id) {
         var inventory = getBackpackInventory(player);
         if (inventory == null) {
-            return SophisticatedAmmoContext.NONE;
+            return AmmoContext.NONE;
         }
 
         ItemStack ammo = null;
@@ -96,6 +97,6 @@ public class SophisticatedHelper {
             }
         }
 
-        return ammo == null ? SophisticatedAmmoContext.NONE : new SophisticatedAmmoContext(ammo, inventory);
+        return ammo == null ? AmmoContext.NONE : new SophisticatedAmmoContext(ammo, inventory);
     }
 }

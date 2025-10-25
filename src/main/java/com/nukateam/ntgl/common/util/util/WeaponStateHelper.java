@@ -365,13 +365,4 @@ public class WeaponStateHelper {
         }
         return equipTime;
     }
-
-    public static boolean isOneHanded(WeaponData data){
-        if(data.weapon == null) return true;
-        var item = data.weapon.getItem();
-        if(item instanceof IWeapon){
-            return WeaponModifierHelper.getGripType(data).isOneHanded();
-        }
-        return true;
-    }
 }

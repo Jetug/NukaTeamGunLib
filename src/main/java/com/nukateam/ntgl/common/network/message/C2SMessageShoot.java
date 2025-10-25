@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,11 +15,11 @@ public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
     private float randP;
     private float randY;
     private InteractionHand hand;
-    AttackMode action;
+    WeaponMode action;
 
     public C2SMessageShoot() {}
 
-    public C2SMessageShoot(int shooterId, float yaw, float pitch, float randP, float randY, InteractionHand hand, AttackMode action) {
+    public C2SMessageShoot(int shooterId, float yaw, float pitch, float randP, float randY, InteractionHand hand, WeaponMode action) {
         this.shooterId = shooterId;
         this.rotationPitch = pitch;
         this.rotationYaw = yaw;
@@ -49,7 +49,7 @@ public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
                 buffer.readFloat(),
                 buffer.readFloat(),
                 buffer.readEnum(InteractionHand.class),
-                AttackMode.getType(buffer.readUtf()));
+                WeaponMode.getType(buffer.readUtf()));
     }
 
     @Override
@@ -70,7 +70,7 @@ public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
         return hand;
     }
 
-    public AttackMode getMode() {
+    public WeaponMode getMode() {
         return action;
     }
 

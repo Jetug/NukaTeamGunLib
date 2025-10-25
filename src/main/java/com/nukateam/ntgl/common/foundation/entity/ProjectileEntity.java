@@ -5,8 +5,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.weapon.General;
-import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
-import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.util.trackers.SpreadTracker;
@@ -60,7 +59,7 @@ import java.util.function.Predicate;
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData {
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
-    protected AttackMode weaponAction;
+    protected WeaponMode weaponAction;
     protected WeaponData weaponData;
     protected boolean isServerSide = !level().isClientSide();
     protected boolean isRightHand;
@@ -134,7 +133,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         this.weapon = ItemStack.of(compound.getCompound("Weapon"));
-        this.weaponAction = AttackMode.getType(compound.getString("WeaponAction"));
+        this.weaponAction = WeaponMode.getType(compound.getString("WeaponAction"));
         this.ammo = ItemStack.of(compound.getCompound("Ammo"));
         this.projectile = ProjectileConfig.create(compound.getCompound("Projectile"));
         this.general = General.create(compound.getCompound("General"));
@@ -164,7 +163,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.modifiedGravity = buffer.readDouble();
         this.life = buffer.readVarInt();
         this.isRightHand = buffer.readBoolean();
-        this.weaponAction = AttackMode.getType(buffer.readUtf());
+        this.weaponAction = WeaponMode.getType(buffer.readUtf());
 
         this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
         setBoundingBox(new AABB(

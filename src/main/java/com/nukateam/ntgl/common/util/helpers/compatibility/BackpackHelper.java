@@ -4,6 +4,8 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
+import com.nukateam.ntgl.common.util.helpers.context.SophisticatedAmmoContext;
+import com.nukateam.ntgl.common.util.helpers.context.TravelersBackpackAmmoContext;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -17,7 +19,9 @@ public class BackpackHelper {
         if(Ntgl.sophisticatedLoaded && context.equals(AmmoContext.NONE)){
             context = SophisticatedHelper.findAmmo(player, id);
         }
-
+        if(Ntgl.travelersLoaded && context.equals(AmmoContext.NONE)){
+            context = TravelersHelper.findAmmo(player, id);
+        }
         return context;
     }
 
@@ -29,6 +33,9 @@ public class BackpackHelper {
         }
         if(Ntgl.sophisticatedLoaded && context.equals(AmmoContext.NONE)){
             context = SophisticatedHelper.findMagazine(player, id);
+        }
+        if(Ntgl.travelersLoaded && context.equals(AmmoContext.NONE)){
+            context = TravelersHelper.findMagazine(player, id);
         }
 
         return context;

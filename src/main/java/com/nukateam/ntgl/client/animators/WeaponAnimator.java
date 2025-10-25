@@ -172,7 +172,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     }
 
     protected boolean isOneHanded(ItemStack stack) {
-        return WeaponStateHelper.isOneHanded(new WeaponData(stack, getEntity()));
+        return WeaponModifierHelper.isOneHanded(new WeaponData(stack, getEntity()));
     }
 
     @NotNull

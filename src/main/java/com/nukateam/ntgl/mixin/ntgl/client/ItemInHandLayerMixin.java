@@ -41,7 +41,7 @@ public class ItemInHandLayerMixin {
         var oppositeStack = entity.getItemInHand(oppositeHand);
 
         if (hand == InteractionHand.OFF_HAND) {
-            if(!WeaponStateHelper.isOneHanded(new WeaponData(stack, entity)) || !WeaponStateHelper.isOneHanded(new WeaponData(oppositeStack, entity))){
+            if(!WeaponModifierHelper.isOneHanded(new WeaponData(stack, entity)) || !WeaponModifierHelper.isOneHanded(new WeaponData(oppositeStack, entity))){
                 ci.cancel();
                 return;
             }

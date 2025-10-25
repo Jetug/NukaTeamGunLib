@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.util.handler;
 import com.ibm.icu.impl.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -79,7 +79,7 @@ public class ClientShootingHandler {
                 player.getOffhandItem();
 
         if (heldItem.getItem() instanceof IWeapon) {
-            var data = new WeaponData(heldItem, player).setWeaponAction(AttackMode.PRIMARY);
+            var data = new WeaponData(heldItem, player).setWeaponAction(WeaponMode.PRIMARY);
             if (event.getAction() == GLFW.GLFW_PRESS) {
                 if (isRightHand) {
                     setupShootingData(data, InteractionHand.MAIN_HAND);

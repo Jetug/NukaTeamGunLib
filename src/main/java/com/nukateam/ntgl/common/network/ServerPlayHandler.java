@@ -5,7 +5,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
-import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -440,7 +440,7 @@ public class ServerPlayHandler {
 
     public static void handleFireModeSwitch(ServerPlayer player, ItemStack stack, InteractionHand hand) {
         if(WeaponModifierHelper.getConfig(stack).getGeneral().getAction() == WeaponAction.THROW){
-            var data = new WeaponData(stack, player).setWeaponAction(AttackMode.PRIMARY);
+            var data = new WeaponData(stack, player).setWeaponAction(WeaponMode.PRIMARY);
             handleThrowModeSwitch(data, hand);
         } else {
             var data = new WeaponData(stack, player);

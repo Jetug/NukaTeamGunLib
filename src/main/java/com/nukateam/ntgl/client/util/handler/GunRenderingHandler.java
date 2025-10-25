@@ -53,7 +53,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import static com.nukateam.ntgl.client.util.util.PropertyHelper.*;
-import static com.nukateam.ntgl.common.util.util.WeaponStateHelper.isOneHanded;
 
 @SuppressWarnings("removal")
 public class GunRenderingHandler {
@@ -240,7 +239,7 @@ public class GunRenderingHandler {
         var oppositeStack = player.getItemInHand(oppositeHand);
 
         if (hand == InteractionHand.OFF_HAND) {
-            if(!isOneHanded(new WeaponData(heldItem, player)) || !isOneHanded(new WeaponData(oppositeStack, player))){
+            if(!WeaponModifierHelper.isOneHanded(new WeaponData(heldItem, player)) || !WeaponModifierHelper.isOneHanded(new WeaponData(oppositeStack, player))){
                 event.setCanceled(true);
                 return;
             }
@@ -501,11 +500,12 @@ public class GunRenderingHandler {
     }
 
     private void applyShieldTransforms(PoseStack poseStack, LocalPlayer player, ItemStack stack, float partialTick) {
-        if (player.isUsingItem() && player.getOffhandItem().getItem() == Items.SHIELD
-                && WeaponStateHelper.isOneHanded(new WeaponData(stack, player))) {
-            double time = Mth.clamp((player.getTicksUsingItem() + partialTick), 0.0, 4.0) / 4.0;
-            poseStack.translate(0, 0.35 * time, 0);
-            poseStack.mulPose(Axis.XP.rotationDegrees(45F * (float) time));
+        if (player.isUsingItem() && player.getOffhandItem().getItem() == Items.SHIELD) {
+            if (WeaponModifierHelper.isOneHanded(new WeaponData(stack, player))) {
+                double time = Mth.clamp((player.getTicksUsingItem() + partialTick), 0.0, 4.0) / 4.0;
+                poseStack.translate(0, 0.35 * time, 0);
+                poseStack.mulPose(Axis.XP.rotationDegrees(45F * (float) time));
+            }
         }
     }
 

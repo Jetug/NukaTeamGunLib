@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.util.handler;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.KeyAction;
@@ -36,20 +36,20 @@ public class ClientThrowHandler {
         var minecraft = Minecraft.getInstance();
         if(event.phase == TickEvent.Phase.END && minecraft.player != null){
             if(!minecraft.options.keyAttack.isDown()) {
-                removeTracker(InteractionHand.MAIN_HAND, AttackMode.PRIMARY);
-                removeTracker(InteractionHand.OFF_HAND, AttackMode.PRIMARY);
+                removeTracker(InteractionHand.MAIN_HAND, WeaponMode.PRIMARY);
+                removeTracker(InteractionHand.OFF_HAND, WeaponMode.PRIMARY);
             }
             if(!minecraft.options.keyUse.isDown()) {
-                removeTracker(InteractionHand.MAIN_HAND, AttackMode.SECONDARY);
-                removeTracker(InteractionHand.OFF_HAND , AttackMode.SECONDARY);
+                removeTracker(InteractionHand.MAIN_HAND, WeaponMode.SECONDARY);
+                removeTracker(InteractionHand.OFF_HAND , WeaponMode.SECONDARY);
             }
             if(!KeyBinds.KEY_ADD_ATTACK.isDown()) {
-                removeTracker(InteractionHand.MAIN_HAND, AttackMode.ADDITIONAL);
-                removeTracker(InteractionHand.OFF_HAND , AttackMode.ADDITIONAL);
+                removeTracker(InteractionHand.MAIN_HAND, WeaponMode.ADDITIONAL);
+                removeTracker(InteractionHand.OFF_HAND , WeaponMode.ADDITIONAL);
             }
             if(!KeyBinds.KEY_ALT_ATTACK.isDown()) {
-                removeTracker(InteractionHand.MAIN_HAND, AttackMode.ALTERNATIVE);
-                removeTracker(InteractionHand.OFF_HAND , AttackMode.ALTERNATIVE);
+                removeTracker(InteractionHand.MAIN_HAND, WeaponMode.ALTERNATIVE);
+                removeTracker(InteractionHand.OFF_HAND , WeaponMode.ALTERNATIVE);
             }
         }
     }
@@ -72,7 +72,7 @@ public class ClientThrowHandler {
         }
     }
 
-    private static void removeTracker(InteractionHand hand, AttackMode mode) {
+    private static void removeTracker(InteractionHand hand, WeaponMode mode) {
         if(TRACKER_MAP.containsKey(hand) && TRACKER_MAP.get(hand).data.weaponAction == mode) {
             var action = TRACKER_MAP.get(hand).data.weaponAction;
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.RELEASE, hand, action));
@@ -91,7 +91,7 @@ public class ClientThrowHandler {
 
         if (event.isAttack()) {
             var heldItem = player.getMainHandItem();
-            var gunData = new WeaponData(heldItem, player).setWeaponAction(AttackMode.PRIMARY);
+            var gunData = new WeaponData(heldItem, player).setWeaponAction(WeaponMode.PRIMARY);
 
             if (isThrowable(gunData)) {
                 event.setCanceled(true);
@@ -99,7 +99,7 @@ public class ClientThrowHandler {
             }
         } else if (event.isUseItem()) {
             var offhandItem = player.getOffhandItem();
-            var gunData = new WeaponData(offhandItem, player).setWeaponAction(AttackMode.PRIMARY);
+            var gunData = new WeaponData(offhandItem, player).setWeaponAction(WeaponMode.PRIMARY);
 
             if (isThrowable(gunData) && canUseOffhandWeapon(player)) {
                 event.setCanceled(true);

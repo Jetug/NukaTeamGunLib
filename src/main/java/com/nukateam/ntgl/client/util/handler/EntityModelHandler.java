@@ -40,10 +40,10 @@ public class EntityModelHandler {
     @SubscribeEvent
     public void onRenderEntityPost(RenderLivingEvent.Post<LivingEntity, EntityModel<LivingEntity>> event) {
         /* Makes sure the model part positions reset back to original definitions */
-        var model = event.getRenderer().getModel();
-        boolean slim = event.getEntity() instanceof AbstractClientPlayer player
-                && player.getModelName().equals("slim");
-//
+//        var model = event.getRenderer().getModel();
+//        boolean slim = event.getEntity() instanceof AbstractClientPlayer player
+//                && player.getModelName().equals("slim");
+
 //        if(model instanceof HumanoidModel<LivingEntity> humanoidModel) {
 //            humanoidModel.rightArm.x = -5.0F;
 //            humanoidModel.rightArm.y = slim ? 2.5F : 2.0F;

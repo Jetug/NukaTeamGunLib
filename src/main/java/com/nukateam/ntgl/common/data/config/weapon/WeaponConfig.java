@@ -52,7 +52,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
     protected General general = getWeapon();
     protected Melee melee = new Melee();
     protected ThrowableConfig throwable = new ThrowableConfig();
-    protected HashMap<AttackMode, WeaponSettings> modes = new HashMap<>();
+    protected HashMap<WeaponMode, WeaponSettings> modes = new HashMap<>(Map.of());
     protected Display display = new Display();
     protected Modules modules = new Modules();
     protected HashMap<AnimationType, ResourceLocation> animations = new HashMap<>();
@@ -143,7 +143,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         }
         if (tag.contains(MODES, Tag.TAG_COMPOUND)) {
             this.modes = NbtUtils.deserializeMap(tag.getCompound(MODES),
-                    AttackMode::getType,
+                    WeaponMode::getType,
                     (nbt, key) -> WeaponSettings.create(nbt.getCompound(key)));
         }
     }
@@ -322,8 +322,8 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         return getFuelData(ammo).getAmmo();
     }
 
-    public WeaponAction getWeaponMode(AttackMode mode){
-        if(mode == AttackMode.PRIMARY){
+    public WeaponAction getWeaponMode(WeaponMode mode){
+        if(mode == WeaponMode.PRIMARY){
             return general.action;
         }
         else {
@@ -334,20 +334,20 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         }
     }
 
-    public General getGeneral(AttackMode mode) {
-        if(mode == AttackMode.PRIMARY)
+    public General getGeneral(WeaponMode mode) {
+        if(mode == WeaponMode.PRIMARY)
             return general;
         else return modes.getOrDefault(mode, new WeaponSettings()).getGeneral();
     }
 
-    public Melee getMelee(AttackMode mode) {
-        if(mode == AttackMode.PRIMARY)
+    public Melee getMelee(WeaponMode mode) {
+        if(mode == WeaponMode.PRIMARY)
             return melee;
         else return modes.getOrDefault(mode, new WeaponSettings()).getMelee();
     }
 
-    public ThrowableConfig getThrowable(AttackMode mode) {
-        if(mode == AttackMode.PRIMARY)
+    public ThrowableConfig getThrowable(WeaponMode mode) {
+        if(mode == WeaponMode.PRIMARY)
             return throwable;
         else return modes.getOrDefault(mode, new WeaponSettings()).getThrowable();
     }

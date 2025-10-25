@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.data;
 
-import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -10,7 +10,7 @@ public class WeaponData {
     @Nullable public final ItemStack weapon;
     @Nullable public ItemStack attachment;
     @Nullable public final LivingEntity wielder;
-    public AttackMode weaponAction = AttackMode.PRIMARY;
+    public WeaponMode weaponAction = WeaponMode.PRIMARY;
 
     public WeaponData(ItemStack weapon, LivingEntity wielder) {
         this.weapon = weapon;
@@ -22,7 +22,7 @@ public class WeaponData {
         return this;
     }
 
-    public WeaponData setWeaponAction(AttackMode weaponAction) {
+    public WeaponData setWeaponAction(WeaponMode weaponAction) {
         this.weaponAction = weaponAction;
         return this;
     }

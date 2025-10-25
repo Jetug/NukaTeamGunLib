@@ -5,7 +5,7 @@ import com.nukateam.ntgl.client.input.KeyBinds;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.holders.AttackMode;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
@@ -49,19 +49,19 @@ public class InputHandler {
             var data = new WeaponData(mainHandItem, player);
 
             if(isKeyAttackDown()) {
-                data.setWeaponAction(AttackMode.PRIMARY);
+                data.setWeaponAction(WeaponMode.PRIMARY);
                 handleInput(data, InteractionHand.MAIN_HAND, options.keyAttack);
             }
             else if(isUseKeyDown() && !(WeaponModifierHelper.isWeaponItem(offhandItem) && canUseOffhandWeapon(player))) {
-                data.setWeaponAction(AttackMode.SECONDARY);
+                data.setWeaponAction(WeaponMode.SECONDARY);
                 handleInput(data, InteractionHand.MAIN_HAND, options.keyUse);
             }
             else if(KeyBinds.KEY_ADD_ATTACK.isDown()) {
-                data.setWeaponAction(AttackMode.ADDITIONAL);
+                data.setWeaponAction(WeaponMode.ADDITIONAL);
                 handleInput(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ADD_ATTACK);
             }
             else if(KeyBinds.KEY_ALT_ATTACK.isDown()) {
-                data.setWeaponAction(AttackMode.ALTERNATIVE);
+                data.setWeaponAction(WeaponMode.ALTERNATIVE);
                 Ntgl.LOGGER.debug("!!! Alt down");
                 handleInput(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ALT_ATTACK);
             }
@@ -71,15 +71,15 @@ public class InputHandler {
             var data = new WeaponData(offhandItem, player);
 
             if(isUseKeyDown()) {
-                data.setWeaponAction(AttackMode.PRIMARY);
+                data.setWeaponAction(WeaponMode.PRIMARY);
                 handleInput(data, InteractionHand.OFF_HAND, options.keyUse);
             }
             else if(!WeaponModifierHelper.isWeaponItem(mainHandItem)){
                 if (KeyBinds.KEY_ADD_ATTACK.isDown()) {
-                    data.setWeaponAction(AttackMode.ADDITIONAL);
+                    data.setWeaponAction(WeaponMode.ADDITIONAL);
                     handleInput(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ADD_ATTACK);
                 } else if (KeyBinds.KEY_ALT_ATTACK.isDown()) {
-                    data.setWeaponAction(AttackMode.ALTERNATIVE);
+                    data.setWeaponAction(WeaponMode.ALTERNATIVE);
                     Ntgl.LOGGER.debug("!!! Alt down");
                     handleInput(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ALT_ATTACK);
                 }

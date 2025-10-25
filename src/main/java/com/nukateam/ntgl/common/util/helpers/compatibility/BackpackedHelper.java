@@ -8,9 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-/**
- * Author: MrCrayfish
- */
 public class BackpackedHelper {
     public static AmmoContext findAmmo(Player player, AmmoHolder id) {
         var inventory = ((BackpackedInventoryAccess) player).backpacked$GetBackpackInventory();
