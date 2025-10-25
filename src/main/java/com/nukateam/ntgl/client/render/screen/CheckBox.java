@@ -17,7 +17,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 @OnlyIn(Dist.CLIENT)
 public class CheckBox extends AbstractWidget {
-//    private static final ResourceLocation GUI = ResourceLocation.parse("ntgl:textures/gui/components.png");
     private static final ResourceLocation GUI = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/gui/components.png");
 
     private boolean toggled = false;

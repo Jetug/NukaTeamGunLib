@@ -67,34 +67,34 @@ public class ModGuns {
 
     /* Barrel Attachments */
     public static final RegistryObject<Item> SILENCER = ITEMS.register("silencer",
-            () -> new BarrelItem(Barrel.create(8.0F, GunModifiers.SILENCED, GunModifiers.REDUCED_DAMAGE), new Item.Properties().stacksTo(1)));
+            () -> new BarrelItem(Barrel.create(8.0F, WeaponModifiers.SILENCED, WeaponModifiers.REDUCED_DAMAGE), new Item.Properties().stacksTo(1)));
 
     /* Stock Attachments */
     public static final RegistryObject<Item> LIGHT_STOCK = ITEMS.register("light_stock",
-            () -> new StockItem(Stock.create(GunModifiers.BETTER_CONTROL), new Item.Properties().stacksTo(1)));
+            () -> new StockItem(Stock.create(WeaponModifiers.BETTER_CONTROL), new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> TACTICAL_STOCK = ITEMS.register("tactical_stock",
-            () -> new StockItem(Stock.create(GunModifiers.STABILISED), new Item.Properties().stacksTo(1)));
+            () -> new StockItem(Stock.create(WeaponModifiers.STABILISED), new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> WEIGHTED_STOCK = ITEMS.register("weighted_stock",
-            () -> new StockItem(Stock.create(GunModifiers.SUPER_STABILISED), new Item.Properties().stacksTo(1)));
+            () -> new StockItem(Stock.create(WeaponModifiers.SUPER_STABILISED), new Item.Properties().stacksTo(1)));
 
     /* Under Barrel Attachments */
     public static final RegistryObject<Item> LIGHT_GRIP = ITEMS.register("light_grip",
-            () -> new GripItem(Grip.create(GunModifiers.LIGHT_RECOIL), new Item.Properties().stacksTo(1)));
+            () -> new GripItem(Grip.create(WeaponModifiers.LIGHT_RECOIL), new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> SPECIALISED_GRIP = ITEMS.register("specialised_grip",
-            () -> new GripItem(Grip.create(GunModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
+            () -> new GripItem(Grip.create(WeaponModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
 
     /* Magazine Attachments*/
     public static final RegistryObject<Item> EXTENDED_MAGAZINE = ITEMS.register("extended_magazine",
-            () -> new MagazineItem(Magazine.create(30, GunModifiers.SLOW_ADS), new Item.Properties().stacksTo(1)));
+            () -> new MagazineItem(Magazine.create(30, WeaponModifiers.SLOW_ADS), new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> DRUM_MAGAZINE = ITEMS.register("drum_magazine",
-            () -> new MagazineItem(Magazine.create(60, GunModifiers.SLOWER_ADS, GunModifiers.EXTENDED_MAG), new Item.Properties().stacksTo(1)));
+            () -> new MagazineItem(Magazine.create(60, WeaponModifiers.SLOWER_ADS, WeaponModifiers.EXTENDED_MAG), new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> HEAD_STONE = ITEMS.register("hammer_stone",
-            () -> new GripItem(Grip.create(GunModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
+            () -> new GripItem(Grip.create(WeaponModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> HAMMER_DIAMOND = ITEMS.register("hammer_diamond",
-            () -> new GripItem(Grip.create(GunModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
+            () -> new GripItem(Grip.create(WeaponModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> AMMO_BOX = ITEMS.register("ammo_box", () ->
             new AmmoBoxItem(new Item.Properties().stacksTo(1), 100));

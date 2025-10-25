@@ -62,7 +62,6 @@ public class InputHandler {
             }
             else if(KeyBinds.KEY_ALT_ATTACK.isDown()) {
                 data.setWeaponAction(WeaponMode.ALTERNATIVE);
-                Ntgl.LOGGER.debug("!!! Alt down");
                 handleInput(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ALT_ATTACK);
             }
         }
