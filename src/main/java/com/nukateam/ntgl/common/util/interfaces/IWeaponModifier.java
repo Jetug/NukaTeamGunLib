@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.util.interfaces;
 
+import com.nukateam.example.common.registery.WeaponModifiers;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
 import com.nukateam.ntgl.common.data.config.weapon.AmmoConfig;
@@ -14,7 +15,7 @@ import java.util.Set;
 
 /**
  * An interface that allows control over the behaviour of weapons through attachments.
- * Implementations can then
+ * See {@link WeaponModifiers} for examples of how this can be implemented. Implementations can then
  * be passed to "create" method of attachment objects. See {@link Barrel#create(float, IWeaponModifier...)}
  * <p>
  * Author: Jetug

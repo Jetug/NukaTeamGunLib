@@ -5,7 +5,6 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.data.config.weapon.AmmoConfig;
-import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
@@ -251,10 +250,11 @@ public class WeaponStateHelper {
         return null;
     }
 
-    public static float getFovModifier(ItemStack stack, WeaponConfig modifiedWeaponConfig) {
+    public static float getFovModifier(WeaponData data) {
         float modifier = 0.0F;
-        if (hasAttachmentEquipped(stack, AttachmentType.SCOPE)) {
-            var scope = getScope(stack);
+        var weapon = data.weapon;
+        if (hasAttachmentEquipped(weapon, AttachmentType.SCOPE)) {
+            var scope = getScope(weapon);
             if (scope != null) {
                 if (scope.getFovModifier() < 1.0F) {
                     return Mth.clamp(scope.getFovModifier(), 0.01F, 1.0F);
@@ -262,8 +262,9 @@ public class WeaponStateHelper {
                 modifier -= scope.getFovModifier();
             }
         }
-        var zoom = modifiedWeaponConfig.getModules().getZoom();
-        return zoom != null ? modifier + zoom.getFovModifier() : 0F;
+
+        var fovMod = WeaponModifierHelper.getFovModifier(data);
+        return modifier + fovMod;
     }
 
     public static boolean isAmmoIgnored(ItemStack stack) {

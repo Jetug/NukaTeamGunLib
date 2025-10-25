@@ -28,7 +28,7 @@
   "modes": {
     "ntgl:secondary": {
       "general": {
-        "action": "ntgl:melee"
+        "action": "ntgl:scope"
       },
       "melee": {
         "mode": "ntgl:auto",
@@ -41,9 +41,7 @@
         "knockback": 0.4
       },
       "zoom": {
-        "xOffset": 0.0,
-        "yOffset": 4.8,
-        "zOffset": 0.0,
+        "offset": [0.0, 4.8, 0.0],
         "fovModifier": 0.7,
         "movementModifier": 0.5
       }
@@ -112,13 +110,6 @@
   },
   "modules": {
     "attachmentScreen": false,
-    "zoom": {
-      "xOffset": 0.0,
-      "yOffset": 4.8,
-      "zOffset": 0.0,
-      "fovModifier": 0.7,
-      "movementModifier": 0.5
-    },
     "attachments": {
       "ntgl:scope": [
         {

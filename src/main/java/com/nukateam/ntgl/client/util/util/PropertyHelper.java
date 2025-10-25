@@ -1,6 +1,8 @@
 package com.nukateam.ntgl.client.util.util;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.MetaLoader;
+import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
@@ -13,6 +15,7 @@ import com.mrcrayfish.framework.api.serialize.DataArray;
 import com.mrcrayfish.framework.api.serialize.DataNumber;
 import com.mrcrayfish.framework.api.serialize.DataObject;
 import com.mrcrayfish.framework.api.serialize.DataType;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
@@ -28,14 +31,16 @@ import java.util.Optional;
  */
 @SuppressWarnings("ConstantConditions")
 public final class PropertyHelper {
-    public static final String CACHE_KEY = "properties";
-    public static final String MODEL_KEY = "ntgl:model";
-    public static final String WEAPON_KEY = "ntgl:weapon";
-    public static final String SCOPE_KEY = "ntgl:scope";
+    public static final String CACHE_KEY  = "properties";
+    public static final String MODEL_KEY  = Ntgl.MOD_ID + ":model";
+    public static final String WEAPON_KEY = Ntgl.MOD_ID + ":weapon";
+    public static final String SCOPE_KEY  = Ntgl.MOD_ID + ":scope";
     public static final Vec3 GUN_DEFAULT_ORIGIN = new Vec3(8.0, 0.0, 8.0);
     public static final Vec3 ATTACHMENT_DEFAULT_ORIGIN = new Vec3(8.0, 8.0, 8.0);
-    public static final Vec3 DEFAULT_SCALE = new Vec3(1.0, 1.0, 1.0);
     public static final Vec3 RED = new Vec3(255.0, 0.0, 0.0);
+    public static final String IRON_SIGHT = "ironSight";
+    public static final String CAMERA = "camera";
+    public static final String ORIGIN = "origin";
 
     public static void resetCache() {
         ObjectCache.getInstance(CACHE_KEY).reset();
@@ -55,8 +60,8 @@ public final class PropertyHelper {
         DataObject customObject = PropertyHelper.getCustomData(stack);
         if (customObject.has(SCOPE_KEY, DataType.OBJECT)) {
             DataObject scopeObject = customObject.getDataObject(SCOPE_KEY);
-            if (scopeObject.has("camera", DataType.ARRAY)) {
-                DataArray cameraArray = scopeObject.getDataArray("camera");
+            if (scopeObject.has(CAMERA, DataType.ARRAY)) {
+                DataArray cameraArray = scopeObject.getDataArray(CAMERA);
                 return arrayToVec3(cameraArray, Vec3.ZERO);
             }
         }
@@ -71,35 +76,32 @@ public final class PropertyHelper {
     }
 
     public static Vec3 getIronSightCamera(ItemStack stack, WeaponConfig modifiedWeaponConfig) {
-        // Retrieve position from the model's data
-        DataObject ironSightObject = getObjectByPath(stack, WEAPON_KEY, "ironSight");
-        if (ironSightObject.has("camera", DataType.ARRAY)) {
-            DataArray cameraArray = ironSightObject.getDataArray("camera");
+        var ironSightObject = getObjectByPath(stack, WEAPON_KEY, IRON_SIGHT);
+        if (ironSightObject.has(CAMERA, DataType.ARRAY)) {
+            DataArray cameraArray = ironSightObject.getDataArray(CAMERA);
             return arrayToVec3(cameraArray, Vec3.ZERO);
         }
-        var zoom = modifiedWeaponConfig.getModules().getZoom();
-        if (zoom != null) {
-            double cameraX = modifiedWeaponConfig.getModules().getZoom().getXOffset();
-            double cameraY = modifiedWeaponConfig.getModules().getZoom().getYOffset();
-            double cameraZ = modifiedWeaponConfig.getModules().getZoom().getZOffset();
+        var data = AimingHandler.get().getWeaponData();
+        var zoom = WeaponModifierHelper.getSightOffset(data);
+        var cameraX = zoom.x();
+        var cameraY = zoom.y();
+        var cameraZ = zoom.z();
 
-            var attachment = WeaponStateHelper.getAttachmentItem(AttachmentType.SCOPE, stack);
-            if(!attachment.isEmpty() ){
-                var scope = (ScopeItem)attachment.getItem();
-                var attachmentConfig = modifiedWeaponConfig.findAttachment(scope);
-                cameraX += attachmentConfig.getXOffset();
-                cameraY += attachmentConfig.getYOffset();
-                cameraZ += attachmentConfig.getZOffset();
-            }
-
-            return new Vec3(cameraX, cameraY, cameraZ);
+        var attachment = WeaponStateHelper.getAttachmentItem(AttachmentType.SCOPE, stack);
+        if(!attachment.isEmpty() ){
+            var scope = (ScopeItem)attachment.getItem();
+            var attachmentConfig = modifiedWeaponConfig.findAttachment(scope);
+            cameraX += attachmentConfig.getXOffset();
+            cameraY += attachmentConfig.getYOffset();
+            cameraZ += attachmentConfig.getZOffset();
         }
-        return Vec3.ZERO;
+
+        return new Vec3(cameraX, cameraY, cameraZ);
     }
 
     public static boolean isLegacyIronSight(ItemStack stack) {
-        var ironSightObject = getObjectByPath(stack, WEAPON_KEY, "ironSight");
-        return !ironSightObject.has("camera", DataType.ARRAY);
+        var ironSightObject = getObjectByPath(stack, WEAPON_KEY, IRON_SIGHT);
+        return !ironSightObject.has(CAMERA, DataType.ARRAY);
     }
 
     public static Vec3 getModelOrigin(ItemStack stack, Vec3 defaultOrigin) {
@@ -107,8 +109,8 @@ public final class PropertyHelper {
         var customObject = PropertyHelper.getCustomData(stack);
         if (customObject.has(MODEL_KEY, DataType.OBJECT)) {
             var modelObject = customObject.getDataObject(MODEL_KEY);
-            if (modelObject.has("origin", DataType.ARRAY)) {
-                var originArray = modelObject.getDataArray("origin");
+            if (modelObject.has(ORIGIN, DataType.ARRAY)) {
+                var originArray = modelObject.getDataArray(ORIGIN);
                 return arrayToVec3(originArray, defaultOrigin);
             }
         }
@@ -124,7 +126,7 @@ public final class PropertyHelper {
 
         // Attempt to get the colour from the item's meta
         var isScope = stack.getItem() instanceof IAttachment<?> attachment && attachment.getType() == AttachmentType.SCOPE;
-        var dataObject = isScope ? getObjectByPath(stack, SCOPE_KEY) : getObjectByPath(stack, WEAPON_KEY, "ironSight");
+        var dataObject = isScope ? getObjectByPath(stack, SCOPE_KEY) : getObjectByPath(stack, WEAPON_KEY, IRON_SIGHT);
         if (dataObject.has("reticleColor", DataType.NUMBER)) {
             return dataObject.getDataNumber("reticleColor").asInt();
         } else if (dataObject.has("reticleColor", DataType.ARRAY)) {
@@ -154,7 +156,7 @@ public final class PropertyHelper {
         }
 
         // Try and get the animations from the weapon
-        DataObject customObject = getObjectByPath(weapon, WEAPON_KEY, "ironSight");
+        DataObject customObject = getObjectByPath(weapon, WEAPON_KEY, IRON_SIGHT);
         if (customObject.get("sightAnimation") instanceof DataObject sightObject) {
             return objectToSightAnimation(sightObject);
         }
@@ -173,7 +175,7 @@ public final class PropertyHelper {
         }
 
         // Otherwise get it from the weapon
-        DataObject customObject = getObjectByPath(weapon, WEAPON_KEY, "ironSight");
+        DataObject customObject = getObjectByPath(weapon, WEAPON_KEY, IRON_SIGHT);
         if (customObject.has("viewportFov", DataType.NUMBER)) {
             return Mth.clamp(customObject.getDataNumber("viewportFov").asDouble(), 1.0, 100.0);
         }

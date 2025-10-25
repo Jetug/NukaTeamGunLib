@@ -7,7 +7,6 @@ import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugButton;
-import com.nukateam.ntgl.common.debug.screen.widget.DebugSlider;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugToggle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -30,17 +29,9 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
     private transient Zoom cachedZoom;
 
     @Optional
-    @Nullable
-    Zoom zoom;
-    @Optional
     boolean attachmentScreen = true;
     @Optional
     private LinkedHashMap<AttachmentType, ArrayList<Attachment>> attachments = new LinkedHashMap<>();
-
-    @Nullable
-    public Zoom getZoom() {
-        return this.zoom;
-    }
 
     public boolean attachmentScreen() {
         return this.attachmentScreen;
@@ -69,37 +60,11 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            widgets.add(Pair.of(Component.literal("Enabled Iron Sights"), () -> new DebugToggle(this.zoom != null, val -> {
-                if (val) {
-                    if (this.cachedZoom != null) {
-                        this.zoom = this.cachedZoom;
-                    } else {
-                        this.zoom = new Zoom();
-                        this.cachedZoom = this.zoom;
-                    }
-                } else {
-                    this.cachedZoom = this.zoom;
-                    this.zoom = null;
-                }
-            })));
-
-            widgets.add(Pair.of(Component.literal("Adjust Iron Sights"), () -> new DebugButton(Component.literal(">"), btn -> {
-                if (btn.active && this.zoom != null) {
-                    Minecraft.getInstance().setScreen(createEditorScreen(this.zoom));
-                }
-            }, () -> this.zoom != null)));
-        });
-    }
-
+    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {}
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        if (this.zoom != null)
-            tag.put("Zoom", this.zoom.serializeNBT());
-
+        var tag = new CompoundTag();
         tag.putBoolean("AttachmentScreen", attachmentScreen);
 
         if (attachments != null && !attachments.isEmpty())
@@ -110,11 +75,6 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        if (tag.contains("Zoom", Tag.TAG_COMPOUND)) {
-            var zoom = new Zoom();
-            zoom.deserializeNBT(tag.getCompound("Zoom"));
-            this.zoom = zoom;
-        }
         if (tag.contains("AttachmentScreen", Tag.TAG_BYTE)) {
             this.attachmentScreen = tag.getBoolean("AttachmentScreen");
         }
@@ -125,104 +85,13 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     public JsonObject toJsonObject() {
-        var object = new JsonObject();
-        if (this.zoom != null)
-            object.add("zoom", this.zoom.toJsonObject());
-        object.addProperty("attachmentScreen", attachmentScreen);
-
-        return object;
+        return new JsonObject();
     }
 
     public Modules copy() {
         Modules modules = new Modules();
         modules.attachments = new LinkedHashMap<>(this.attachments);
-        if (this.zoom != null) {
-            modules.zoom = this.zoom.copy();
-        }
         return modules;
-    }
-
-    public static class Zoom extends Positioned implements IEditorMenu {
-        @Optional
-        float fovModifier;
-
-        @Override
-        public CompoundTag serializeNBT() {
-            var tag = super.serializeNBT();
-            tag.putFloat("FovModifier", this.fovModifier);
-            return tag;
-        }
-
-        @Override
-        public void deserializeNBT(CompoundTag tag) {
-            super.deserializeNBT(tag);
-            if (tag.contains("FovModifier", Tag.TAG_ANY_NUMERIC)) {
-                this.fovModifier = tag.getFloat("FovModifier");
-            }
-        }
-
-        public JsonObject toJsonObject() {
-            var object = super.toJsonObject();
-            object.addProperty("fovModifier", this.fovModifier);
-            return object;
-        }
-
-        public Zoom copy() {
-            Zoom zoom = new Zoom();
-            zoom.fovModifier = this.fovModifier;
-            zoom.xOffset = this.xOffset;
-            zoom.yOffset = this.yOffset;
-            zoom.zOffset = this.zOffset;
-            return zoom;
-        }
-
-        @Override
-        public Component getEditorLabel() {
-            return Component.literal("Zoom");
-        }
-
-        @Override
-        public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                widgets.add(Pair.of(Component.literal("FOV Modifier"), () -> new DebugSlider(0.0, 1.0, this.fovModifier, 0.01, 3, val -> {
-                    this.fovModifier = val.floatValue();
-                })));
-            });
-        }
-
-        public float getFovModifier() {
-            return this.fovModifier;
-        }
-
-        public static Zoom.Builder builder() {
-            return new Zoom.Builder();
-        }
-
-        public static class Builder extends Zoom.AbstractBuilder<Zoom.Builder> {
-        }
-
-        protected static abstract class AbstractBuilder<T extends Zoom.AbstractBuilder<T>> extends Positioned.AbstractBuilder<T> {
-            protected final Zoom zoom;
-
-            protected AbstractBuilder() {
-                this(new Zoom());
-            }
-
-            protected AbstractBuilder(Zoom zoom) {
-                super(zoom);
-                this.zoom = zoom;
-            }
-
-            public T setFovModifier(float fovModifier) {
-                this.zoom.fovModifier = fovModifier;
-                return this.self();
-            }
-
-            @Override
-            public Zoom build() {
-                return this.zoom.copy();
-            }
-        }
     }
 
     public static class Attachment extends Positioned {

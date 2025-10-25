@@ -27,13 +27,11 @@ public class MouseHandlerMixin {
 
         if (mc.player != null && !mc.player.getMainHandItem().isEmpty() && mc.options.getCameraType() == CameraType.FIRST_PERSON) {
             var heldItem = mc.player.getMainHandItem();
-            if (heldItem.getItem() instanceof IWeapon weaponItem) {
-                if (AimingHandler.get().isAiming() && !ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player)) {
-                    var modifiedGun = weaponItem.getModifiedConfig(heldItem);
-                    if (modifiedGun.getModules().getZoom() != null) {
-                        float modifier = WeaponStateHelper.getFovModifier(heldItem, modifiedGun);
-                        additionalAdsSensitivity = Mth.clamp(1.0F - (1.0F / modifier) / 10F, 0.0F, 1.0F);
-                    }
+            if (heldItem.getItem() instanceof IWeapon) {
+                var aimHandler = AimingHandler.get();
+                if (aimHandler.isAiming() && !ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player)) {
+                    float modifier = WeaponStateHelper.getFovModifier(aimHandler.getWeaponData());
+                    additionalAdsSensitivity = Mth.clamp(1.0F - (1.0F / modifier) / 10F, 0.0F, 1.0F);
                 }
             }
         }

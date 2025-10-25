@@ -12,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.tuple.Pair;
-
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
@@ -29,7 +28,7 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
     protected ThrowableConfig throwable = new ThrowableConfig();
     protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
     protected LinkedHashMap<ResourceLocation, Fuel> fuel = new LinkedHashMap<>();
-    @Optional @Nullable protected Zoom zoom;
+    @Optional @Nullable protected Zoom zoom = new Zoom();
 
     @Override
     public Component getEditorLabel() {
@@ -81,8 +80,7 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
         object.add("general", this.general.toJsonObject());
         object.add("melee", this.melee.toJsonObject());
         object.add("throwable", this.throwable.toJsonObject());
-        if (this.zoom != null)
-            object.add("zoom", this.zoom.toJsonObject());
+        object.add("zoom", this.zoom.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object,"ammoData", gson.toJsonTree(this.ammoData).getAsJsonObject());
         return object;
     }

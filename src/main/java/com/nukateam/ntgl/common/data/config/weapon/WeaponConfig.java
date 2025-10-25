@@ -5,6 +5,7 @@ import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.holders.*;
 
+import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.network.PacketHandler;
@@ -55,6 +56,8 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
     protected HashMap<WeaponMode, WeaponSettings> modes = new HashMap<>(Map.of());
     protected Display display = new Display();
     protected Modules modules = new Modules();
+    @Optional
+    protected Zoom zoom = new Zoom();
     protected HashMap<AnimationType, ResourceLocation> animations = new HashMap<>();
     protected LinkedHashMap<ResourceLocation, AmmoData> ammoData = new LinkedHashMap<>();
     protected LinkedHashMap<ResourceLocation, Fuel> fuel = new LinkedHashMap<>();
@@ -103,6 +106,9 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         tag.put(AMMO_DATA, NbtUtils.serializeMap(this.ammoData));
         tag.put(SECONDARY_AMMO, NbtUtils.serializeMap(this.fuel));
         tag.put(MODES, NbtUtils.serializeMap(this.modes));
+        if (this.zoom != null) {
+            tag.put("Zoom", this.zoom.serializeNBT());
+        }
         return tag;
     }
 
@@ -131,49 +137,55 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         }
         if (tag.contains(ANIMATIONS, Tag.TAG_COMPOUND)) {
             this.animations = NbtUtils.deserializeMap(tag.getCompound(ANIMATIONS),
-                    (nbt) -> AnimationType.getType(nbt),
+                    AnimationType::getType,
                     (nbt, key) -> ResourceLocation.tryParse(nbt.getString(key))
             );
         }
         if (tag.contains(AMMO_DATA, Tag.TAG_COMPOUND)) {
-            this.ammoData = NbtUtils.deserializeLinkedMap(tag.getCompound(AMMO_DATA), (nbt) -> AmmoData.create(nbt));
+            this.ammoData = NbtUtils.deserializeLinkedMap(tag.getCompound(AMMO_DATA), AmmoData::create);
         }
         if (tag.contains(SECONDARY_AMMO, Tag.TAG_COMPOUND)) {
-            this.fuel = NbtUtils.deserializeLinkedMap(tag.getCompound(SECONDARY_AMMO), (nbt) -> Fuel.create(nbt));
+            this.fuel = NbtUtils.deserializeLinkedMap(tag.getCompound(SECONDARY_AMMO), Fuel::create);
         }
         if (tag.contains(MODES, Tag.TAG_COMPOUND)) {
             this.modes = NbtUtils.deserializeMap(tag.getCompound(MODES),
                     WeaponMode::getType,
                     (nbt, key) -> WeaponSettings.create(nbt.getCompound(key)));
         }
+        if(tag.contains("Zoom", Tag.TAG_COMPOUND)) {
+            this.zoom = Zoom.create(tag.getCompound("Zoom"));
+        }
     }
 
     public JsonObject toJsonObject() {
         var gson = new Gson();
         var object = new JsonObject();
-        object.add("general", this.general.toJsonObject());
-        object.add("melee", this.melee.toJsonObject());
-        object.add("throwable", this.throwable.toJsonObject());
-        GunJsonUtil.addObjectIfNotEmpty(object,"ammoData", gson.toJsonTree(this.ammoData).getAsJsonObject());
-        GunJsonUtil.addObjectIfNotEmpty(object,"sounds", gson.toJsonTree(this.sounds).getAsJsonObject());
-        GunJsonUtil.addObjectIfNotEmpty(object, "display", this.display.toJsonObject());
-        GunJsonUtil.addObjectIfNotEmpty(object, "modules", this.modules.toJsonObject());
-        GunJsonUtil.addObjectIfNotEmpty(object, "modes", gson.toJsonTree(this.modes).getAsJsonObject());
+        object.add("general"    , this.general.toJsonObject());
+        object.add("melee"      , this.melee.toJsonObject());
+        object.add("throwable"  , this.throwable.toJsonObject());
+        GunJsonUtil.addObjectIfNotEmpty(object, "ammoData", gson.toJsonTree(this.ammoData).getAsJsonObject());
+        GunJsonUtil.addObjectIfNotEmpty(object, "sounds"  , gson.toJsonTree(this.sounds).getAsJsonObject());
+        GunJsonUtil.addObjectIfNotEmpty(object, "display" , this.display.toJsonObject());
+        GunJsonUtil.addObjectIfNotEmpty(object, "modules" , this.modules.toJsonObject());
+        GunJsonUtil.addObjectIfNotEmpty(object, "modes"   , gson.toJsonTree(this.modes).getAsJsonObject());
+        if (this.zoom != null)
+            object.add("zoom", this.zoom.toJsonObject());
         return object;
     }
 
     public WeaponConfig copy() {
         var gun = new WeaponConfig();
-        gun.general = this.general.copy();
-        gun.melee = this.melee.copy();
-        gun.throwable = this.throwable.copy();
-        gun.sounds   = (HashMap<String, ResourceLocation>)  this.sounds.clone();
-        gun.textures = (HashMap<String, ResourceLocation>)  this.textures.clone();
-        gun.animations = (HashMap<AnimationType, ResourceLocation>) this.animations.clone();
-        gun.ammoData = (LinkedHashMap<ResourceLocation, AmmoData>) this.ammoData.clone();
-        gun.fuel = (LinkedHashMap<ResourceLocation, Fuel>) this.fuel.clone();
-        gun.display = this.display.copy();
-        gun.modules = this.modules.copy();
+        gun.general     = this.general.copy();
+        gun.melee       = this.melee.copy();
+        gun.throwable   = this.throwable.copy();
+        gun.sounds      = (HashMap<String, ResourceLocation>) this.sounds.clone();
+        gun.textures    = (HashMap<String, ResourceLocation>) this.textures.clone();
+        gun.animations  = (HashMap<AnimationType, ResourceLocation>) this.animations.clone();
+        gun.ammoData    = (LinkedHashMap<ResourceLocation, AmmoData>) this.ammoData.clone();
+        gun.fuel        = (LinkedHashMap<ResourceLocation, Fuel>) this.fuel.clone();
+        gun.display     = this.display.copy();
+        gun.modules     = this.modules.copy();
+        gun.zoom        = this.zoom.copy();
         return gun;
     }
 
@@ -212,7 +224,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
     public Modules getModules() {
         return this.modules;
     }
-
 //    public ResourceLocation getTexture(String variant) {
 //        return preparedTextures.computeIfAbsent(variant, v ->
 //                prepareTexture(textures.get(variant))
@@ -236,10 +247,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         if(attachments == null)
             return false;
         return attachments.containsKey(type);
-    } 
-
-    public boolean canAimDownSight() {
-        return this.modules.zoom != null;
     }
 
     public ArrayList<Modules.Attachment> getAttachmentConfigs(ArrayList<ItemStack> itemStacks) {
@@ -350,6 +357,12 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         if(mode == WeaponMode.PRIMARY)
             return throwable;
         else return modes.getOrDefault(mode, new WeaponSettings()).getThrowable();
+    }
+
+    public Zoom getZoom(WeaponMode mode) {
+        if(mode == WeaponMode.PRIMARY)
+            return zoom;
+        else return modes.getOrDefault(mode, new WeaponSettings()).getZoom();
     }
 
     private static ResourceLocation prepareTexture(String itemId, ResourceLocation path) {
@@ -466,58 +479,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
 
         public Builder setSpread(float spread) {
             this.weaponConfig.general.spread = spread;
-            return this;
-        }
-
-//        public Builder setFireSound(SoundEvent sound) {
-//            this.gun.sounds.fire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
-//            return this;
-//        }
-//
-//        public Builder setReloadSound(SoundEvent sound) {
-//            this.gun.sounds.reload = ForgeRegistries.SOUND_EVENTS.getKey(sound);
-//            return this;
-//        }
-//
-//        public Builder setCockSound(SoundEvent sound) {
-//            this.gun.sounds.cock = ForgeRegistries.SOUND_EVENTS.getKey(sound);
-//            return this;
-//        }
-//
-//        public Builder setSilencedFireSound(SoundEvent sound) {
-//            this.gun.sounds.silencedFire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
-//            return this;
-//        }
-//
-//        public Builder setEnchantedFireSound(SoundEvent sound) {
-//            this.gun.sounds.enchantedFire = ForgeRegistries.SOUND_EVENTS.getKey(sound);
-//            return this;
-//        }
-
-        @Deprecated(since = "1.3.0", forRemoval = true)
-        public Builder setMuzzleFlash(double size, double xOffset, double yOffset, double zOffset) {
-            var flash = new Display.Flash();
-            flash.size = size;
-            flash.xOffset = xOffset;
-            flash.yOffset = yOffset;
-            flash.zOffset = zOffset;
-            this.weaponConfig.display.flash = flash;
-            return this;
-        }
-
-        public Builder setZoom(float fovModifier, double xOffset, double yOffset, double zOffset) {
-            var zoom = new Modules.Zoom();
-            zoom.fovModifier = fovModifier;
-            zoom.xOffset = xOffset;
-            zoom.yOffset = yOffset;
-            zoom.zOffset = zOffset;
-            this.weaponConfig.modules.zoom = zoom;
-            return this;
-        }
-
-        @Deprecated(since = "1.3.0", forRemoval = true)
-        public Builder setZoom(Modules.Zoom.Builder builder) {
-            this.weaponConfig.modules.zoom = builder.build();
             return this;
         }
     }
