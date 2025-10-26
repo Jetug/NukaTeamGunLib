@@ -1,25 +1,15 @@
 package com.nukateam.ntgl.common.util.helpers.compatibility;
 
 
-import com.mrcrayfish.backpacked.inventory.BackpackInventory;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.SophisticatedAmmoContext;
-import com.nukateam.ntgl.common.util.helpers.context.TravelersBackpackAmmoContext;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.tiviacz.travelersbackpack.capability.*;
-import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
-import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 
@@ -28,41 +18,39 @@ public class TravelersHelper {
         var inventory = getBackpackInventory(player);
 
         if (inventory == null)
-            return TravelersBackpackAmmoContext.NONE;
+            return AmmoContext.NONE;
 
         for (int i = 0; i < inventory.getSlots(); i++) {
             ItemStack stack = inventory.getStackInSlot(i);
             if (InventoryUtil.isAmmo(stack, id)) {
-                return new TravelersBackpackAmmoContext(stack, inventory, i);
+                return new SophisticatedAmmoContext(stack, inventory);
             }
         }
 
-        return TravelersBackpackAmmoContext.NONE;
+        return AmmoContext.NONE;
     }
 
     public static IAmmoContext findMagazine(Player player, AmmoHolder id) {
         var inventory = getBackpackInventory(player);
 
         if (inventory == null)
-            return TravelersBackpackAmmoContext.NONE;
+            return AmmoContext.NONE;
 
         ItemStack ammo = null;
-        int ammoSlot = -1;
 
         for (int i = 0; i < inventory.getSlots(); i++) {
             ItemStack stack = inventory.getStackInSlot(i);
             if (InventoryUtil.isAmmo(stack, id)) {
                 if (stack.getDamageValue() == 0) {
-                    return new TravelersBackpackAmmoContext(stack, inventory, i);
+                    return new SophisticatedAmmoContext(stack, inventory);
                 }
                 if (ammo == null || (stack.getDamageValue() < ammo.getDamageValue() && ammo.getDamageValue() < ammo.getMaxDamage())) {
                     ammo = stack;
-                    ammoSlot = i;
                 }
             }
         }
 
-        return ammo == null ? TravelersBackpackAmmoContext.NONE : new TravelersBackpackAmmoContext(ammo, inventory, ammoSlot);
+        return ammo == null ? AmmoContext.NONE : new SophisticatedAmmoContext(ammo, inventory);
     }
 
     @Nullable

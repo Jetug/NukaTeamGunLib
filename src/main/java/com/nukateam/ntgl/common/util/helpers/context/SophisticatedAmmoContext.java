@@ -6,6 +6,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraft.world.item.ItemStack;
 
 public record SophisticatedAmmoContext(ItemStack stack, IItemHandler inventory) implements IAmmoContext {
+    @Override
     public void shrink(int amount, AmmoHolder ammoHolder, LivingEntity entity){
         for (int i = 0; i < inventory.getSlots() && amount > 0; i++) {
             var foundStack = inventory.getStackInSlot(i);

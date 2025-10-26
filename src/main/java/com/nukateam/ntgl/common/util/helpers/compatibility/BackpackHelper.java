@@ -4,9 +4,6 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
-import com.nukateam.ntgl.common.util.helpers.context.SophisticatedAmmoContext;
-import com.nukateam.ntgl.common.util.helpers.context.TravelersBackpackAmmoContext;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 public class BackpackHelper {
