@@ -133,8 +133,8 @@ dependencies {
 //    implementation fg.deobf("curse.maven:subtle-effects-1023913:7139104")
     compileOnly fg.deobf("curse.maven:fzzy-config-1005914:7085017")
 //    implementation fg.deobf("maven.modrinth:subtle-effects:1.13.1")
-//    implementation fg.deobf('einstein:subtleeffects-forge:1.20.1-1.13.1')
-
+    compileOnly fg.deobf('einstein:subtleeffects-forge:1.20.1-1.13.1')
+//    runtimeOnly fg.deobf('einstein:subtleeffects-forge:1.20.1-1.13.1')
 //    implementation fg.deobf("curse.maven:appleskin-248787:4770828")
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")
