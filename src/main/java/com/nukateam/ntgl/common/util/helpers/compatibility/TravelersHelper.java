@@ -4,7 +4,7 @@ package com.nukateam.ntgl.common.util.helpers.compatibility;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
-import com.nukateam.ntgl.common.util.helpers.context.SophisticatedAmmoContext;
+import com.nukateam.ntgl.common.util.helpers.context.ItemHandlerAmmoContext;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.tiviacz.travelersbackpack.capability.*;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +23,7 @@ public class TravelersHelper {
         for (int i = 0; i < inventory.getSlots(); i++) {
             ItemStack stack = inventory.getStackInSlot(i);
             if (InventoryUtil.isAmmo(stack, id)) {
-                return new SophisticatedAmmoContext(stack, inventory);
+                return new ItemHandlerAmmoContext(stack, inventory);
             }
         }
 
@@ -42,7 +42,7 @@ public class TravelersHelper {
             ItemStack stack = inventory.getStackInSlot(i);
             if (InventoryUtil.isAmmo(stack, id)) {
                 if (stack.getDamageValue() == 0) {
-                    return new SophisticatedAmmoContext(stack, inventory);
+                    return new ItemHandlerAmmoContext(stack, inventory);
                 }
                 if (ammo == null || (stack.getDamageValue() < ammo.getDamageValue() && ammo.getDamageValue() < ammo.getMaxDamage())) {
                     ammo = stack;
@@ -50,7 +50,7 @@ public class TravelersHelper {
             }
         }
 
-        return ammo == null ? AmmoContext.NONE : new SophisticatedAmmoContext(ammo, inventory);
+        return ammo == null ? AmmoContext.NONE : new ItemHandlerAmmoContext(ammo, inventory);
     }
 
     @Nullable

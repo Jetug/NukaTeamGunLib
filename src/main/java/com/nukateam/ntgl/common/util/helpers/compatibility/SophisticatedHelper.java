@@ -4,7 +4,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
-import com.nukateam.ntgl.common.util.helpers.context.SophisticatedAmmoContext;
+import com.nukateam.ntgl.common.util.helpers.context.ItemHandlerAmmoContext;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -70,7 +70,7 @@ public class SophisticatedHelper {
         for (int i = 0; i < inventory.getSlots(); i++) {
             var stack = inventory.getStackInSlot(i);
             if (InventoryUtil.isAmmo(stack, id)) {
-                return new SophisticatedAmmoContext(stack, inventory);
+                return new ItemHandlerAmmoContext(stack, inventory);
             }
         }
 
@@ -89,7 +89,7 @@ public class SophisticatedHelper {
             var stack = inventory.getStackInSlot(i);
             if (InventoryUtil.isAmmo(stack, id)) {
                 if (stack.getDamageValue() == 0) {
-                    return new SophisticatedAmmoContext(stack, inventory);
+                    return new ItemHandlerAmmoContext(stack, inventory);
                 }
                 if (ammo == null || (stack.getDamageValue() < ammo.getDamageValue() && ammo.getDamageValue() < ammo.getMaxDamage())) {
                     ammo = stack;
@@ -97,6 +97,6 @@ public class SophisticatedHelper {
             }
         }
 
-        return ammo == null ? AmmoContext.NONE : new SophisticatedAmmoContext(ammo, inventory);
+        return ammo == null ? AmmoContext.NONE : new ItemHandlerAmmoContext(ammo, inventory);
     }
 }

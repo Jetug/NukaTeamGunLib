@@ -34,7 +34,7 @@ side="BOTH"
 [[dependencies.ntgl]]
 modId="azurelib"
 mandatory=true
-versionRange="[2.0.20,)"
+versionRange="[2.0.20, 3.0.27)"
 ordering="AFTER"
 side="BOTH"
 [[dependencies.ntgl]]
