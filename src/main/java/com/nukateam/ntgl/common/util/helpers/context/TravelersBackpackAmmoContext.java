@@ -25,10 +25,18 @@ public class TravelersBackpackAmmoContext implements IAmmoContext {
 
     @Override
     public void shrink(int amount, AmmoHolder ammoHolder, LivingEntity entity) {
-        if (inventory != null && slot >= 0) {
-            ItemStack currentStack = inventory.getStackInSlot(slot);
-            if (!currentStack.isEmpty()) {
-                currentStack.shrink(amount);
+        for (int i = 0; i < inventory.getSlots() && amount > 0; i++) {
+            var foundStack = inventory.getStackInSlot(i);
+
+            if (foundStack.getItem() == stack.getItem()) {
+                var ammo = ammoHolder.onConsume().apply(stack, amount);
+                for (var stack : ammo) {
+                    entity.spawnAtLocation(stack);
+                }
+
+                var shrinkAmount = (int)Math.ceil((double) amount / (double)ammoHolder.getValue(stack));
+                inventory.extractItem(i, shrinkAmount, false);
+                return;
             }
         }
     }
