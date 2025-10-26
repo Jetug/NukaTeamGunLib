@@ -580,12 +580,12 @@ public class WeaponModifierHelper {
     }
 
     private static void forEachAttachment(WeaponData data, Consumer<IWeaponModifier> consumer){
-        var gun = data.weapon;
-        var config = getConfig(gun);
+        var weapon = data.weapon;
+        var config = getConfig(weapon);
         var attachments = config.getModules().getAttachments();
 
         for (var attachmentType : attachments.keySet()) {
-            var attachmentItem = WeaponStateHelper.getAttachmentItem(attachmentType, gun);
+            var attachmentItem = WeaponStateHelper.getAttachmentItem(attachmentType, weapon);
             data.attachment = attachmentItem;
             var modifiers = getAttachmentModifiers(attachmentItem);
 
@@ -594,10 +594,10 @@ public class WeaponModifierHelper {
             }
         }
 
-        var gunItem = (IWeapon) gun.getItem();
-
-        for (var modifier : gunItem.getModifiers()) {
-            consumer.accept(modifier);
+        if(weapon.getItem() instanceof IWeapon weaponItem) {
+            for (var modifier : weaponItem.getModifiers()) {
+                consumer.accept(modifier);
+            }
         }
     }
 

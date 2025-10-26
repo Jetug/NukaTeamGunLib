@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
-public class WeaponData {
+public class WeaponData{
     @Nullable public final ItemStack weapon;
     @Nullable public ItemStack attachment;
     @Nullable public final LivingEntity wielder;
@@ -25,5 +25,10 @@ public class WeaponData {
     public WeaponData setWeaponAction(WeaponMode weaponAction) {
         this.weaponAction = weaponAction;
         return this;
+    }
+
+    @Override
+    public WeaponData clone(){
+        return new WeaponData(weapon, wielder).setWeaponAction(weaponAction).setAttachment(attachment);
     }
 }

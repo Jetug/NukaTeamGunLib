@@ -10,6 +10,7 @@ import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
+import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -205,6 +206,11 @@ public class GunRenderingHandler {
         var player = Objects.requireNonNull(Minecraft.getInstance().player);
         var heldItem = player.getMainHandItem();
         if (!(heldItem.getItem() instanceof IWeapon weaponItem))
+            return;
+
+        var aimHandler = AimingHandler.get();
+
+        if (WeaponModifierHelper.getWeaponMode(aimHandler.getWeaponData()) != WeaponAction.SCOPE)
             return;
 
         // Change the FOV of the first person viewport based on the scope and aim progress

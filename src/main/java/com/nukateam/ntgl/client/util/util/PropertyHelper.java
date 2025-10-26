@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.properties.SightAnimation;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.data.ObjectCache;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IMeta;
 import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
@@ -82,21 +83,24 @@ public final class PropertyHelper {
             return arrayToVec3(cameraArray, Vec3.ZERO);
         }
         var data = AimingHandler.get().getWeaponData();
-        var zoom = WeaponModifierHelper.getSightOffset(data);
-        var cameraX = zoom.x();
-        var cameraY = zoom.y();
-        var cameraZ = zoom.z();
+        if(data.weapon.getItem() instanceof IWeapon) {
+            var zoom = WeaponModifierHelper.getSightOffset(data);
+            var cameraX = zoom.x();
+            var cameraY = zoom.y();
+            var cameraZ = zoom.z();
 
-        var attachment = WeaponStateHelper.getAttachmentItem(AttachmentType.SCOPE, stack);
-        if(!attachment.isEmpty() ){
-            var scope = (ScopeItem)attachment.getItem();
-            var attachmentConfig = modifiedWeaponConfig.findAttachment(scope);
-            cameraX += attachmentConfig.getXOffset();
-            cameraY += attachmentConfig.getYOffset();
-            cameraZ += attachmentConfig.getZOffset();
+            var attachment = WeaponStateHelper.getAttachmentItem(AttachmentType.SCOPE, stack);
+            if (!attachment.isEmpty()) {
+                var scope = (ScopeItem) attachment.getItem();
+                var attachmentConfig = modifiedWeaponConfig.findAttachment(scope);
+                cameraX += attachmentConfig.getXOffset();
+                cameraY += attachmentConfig.getYOffset();
+                cameraZ += attachmentConfig.getZOffset();
+            }
+
+            return new Vec3(cameraX, cameraY, cameraZ);
         }
-
-        return new Vec3(cameraX, cameraY, cameraZ);
+        return Vec3.ZERO;
     }
 
     public static boolean isLegacyIronSight(ItemStack stack) {

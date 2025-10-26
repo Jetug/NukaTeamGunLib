@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 public class Zoom implements INBTSerializable<CompoundTag>, IEditorMenu {
     public static final String OFFSET = "Offset";
     public static final String FOV_MODIFIER = "FovModifier";
-    @Optional protected float fovModifier = 0;
+    @Optional protected float fovModifier = 1;
     @Optional protected Vec3 offset = Vec3.ZERO;
 
     @Override

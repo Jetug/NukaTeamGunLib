@@ -48,7 +48,12 @@
     },
     "ntgl:alternative": {
       "general": {
-        "action": "ntgl:throwable"
+        "action": "ntgl:scope"
+      },
+      "zoom": {
+        "offset": [0.0, 4.8, 0.0],
+        "fovModifier": 0.7,
+        "movementModifier": 0.5
       },
       "throwable": {
         "mode": [
@@ -77,6 +82,11 @@
         }
       }
     }
+  },
+  "zoom": {
+    "offset": [0.0, 4.8, 0.0],
+    "fovModifier": 0.7,
+    "movementModifier": 0.5
   },
   "fuel": {
     "ntgl:burnable":{
