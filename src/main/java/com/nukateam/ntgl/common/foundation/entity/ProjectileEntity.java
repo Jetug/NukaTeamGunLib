@@ -278,7 +278,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 HitResult result = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this), getBlockFilter());
 
                 if (result.getType() != HitResult.Type.MISS) {
-                    endVec = result.getLocation();
+                    if (!(result instanceof BlockHitResult bhr && !level().getBlockState(bhr.getBlockPos()).getFluidState().isEmpty())) {
+                        endVec = result.getLocation();
+                    }
                 }
 
                 var hitEntities = getHitEntityResult(startVec, endVec);
@@ -423,15 +425,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             var pos = blockHitResult.getBlockPos();
             var state = this.level().getBlockState(pos);
             var block = state.getBlock();
+            var inFluid = false;
 
             if (!state.getFluidState().isEmpty()) {
                 this.onHitFluid(state, pos, blockHitResult.getDirection(), hitVec.x, hitVec.y, hitVec.z);
-                return;
+                inFluid = true;
             }
 
             handleBlockBreaking(pos, state);
 
-            if (!state.canBeReplaced() && removeOnHit()) {
+            if (!inFluid && !state.canBeReplaced() && removeOnHit()) {
                 this.remove(RemovalReason.KILLED);
             }
 
@@ -484,15 +487,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     protected void onHitFluid(BlockState state, BlockPos pos, Direction face, double x, double y, double z) {
-        PacketHandler.getPlayChannel().sendToTrackingChunk(
-                () -> this.level().getChunkAt(pos),
-                new S2CMessageProjectileHitBlock(x, y, z, pos, face));
-        var hitVec = new Vec3(x, y, z);
-        doImpactEffects(hitVec);
-
-        if (state.getBlock() instanceof LiquidBlock) {
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.5));
-        }
+//        PacketHandler.getPlayChannel().sendToTrackingChunk(
+//                () -> this.level().getChunkAt(pos),
+//                new S2CMessageProjectileHitBlock(x, y, z, pos, face));
+//        var hitVec = new Vec3(x, y, z);
+//        doImpactEffects(hitVec);
+//
+//        if (state.getBlock() instanceof LiquidBlock) {
+//            this.setDeltaMovement(this.getDeltaMovement().scale(0.5));
+//        }
     }
 
     protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
@@ -800,9 +803,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return new Vec3(f1 * f2, f3, f * f2);
     }
 
-    /**
-     * Author: MrCrayfish
-     */
     public static class EntityResult {
         private final Entity entity;
         private final Vec3 hitVec;
