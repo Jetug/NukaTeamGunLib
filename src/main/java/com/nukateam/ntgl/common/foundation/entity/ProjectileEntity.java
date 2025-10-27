@@ -40,9 +40,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.*;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
@@ -277,31 +275,20 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             if (isServerSide) {
                 var startVec = this.position();
                 var endVec = startVec.add(this.getDeltaMovement());
-                HitResult result = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this), getBlockFilter());
+                HitResult result = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this), getBlockFilter());
 
                 if (result.getType() != HitResult.Type.MISS) {
                     endVec = result.getLocation();
                 }
 
-                List<EntityResult> hitEntities = null;
-                int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.COLLATERAL.get(), this.weapon);
+                var hitEntities = getHitEntityResult(startVec, endVec);
 
-                if (level == 0) {
-                    var entityResult = this.findEntityOnPath(shooter, startVec, endVec);
-                    if (entityResult != null) {
-                        hitEntities = Collections.singletonList(entityResult);
-                    }
-                } else {
-                    hitEntities = this.findEntitiesOnPath(startVec, endVec);
-                }
-
-                if (hitEntities != null && hitEntities.size() > 0) {
+                if (hitEntities != null && !hitEntities.isEmpty()) {
                     for (var entityResult : hitEntities) {
                         result = new ExtendedEntityRayTraceResult(entityResult);
-                        if (((EntityHitResult)result).getEntity() instanceof Player) {
-                            var player = (Player) ((EntityHitResult) result).getEntity();
 
-                            if (this.shooter instanceof Player && !((Player) this.shooter).canHarmPlayer(player)) {
+                        if (((EntityHitResult) result).getEntity() instanceof Player playerTarget) {
+                            if (this.shooter instanceof Player playerShooter && !playerShooter.canHarmPlayer(playerTarget)) {
                                 result = null;
                             }
                         }
@@ -336,6 +323,21 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
             this.remove(RemovalReason.KILLED);
         }
+    }
+
+    private @Nullable List<EntityResult> getHitEntityResult(Vec3 startVec, Vec3 endVec) {
+        List<EntityResult> hitEntities = null;
+        int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.COLLATERAL.get(), this.weapon);
+
+        if (level == 0) {
+            var entityResult = this.findEntityOnPath(shooter, startVec, endVec);
+            if (entityResult != null) {
+                hitEntities = Collections.singletonList(entityResult);
+            }
+        } else {
+            hitEntities = this.findEntitiesOnPath(startVec, endVec);
+        }
+        return hitEntities;
     }
 
     protected Predicate<BlockState> getBlockFilter() {
@@ -422,6 +424,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             var state = this.level().getBlockState(pos);
             var block = state.getBlock();
 
+            if (!state.getFluidState().isEmpty()) {
+                this.onHitFluid(state, pos, blockHitResult.getDirection(), hitVec.x, hitVec.y, hitVec.z);
+                return;
+            }
+
             handleBlockBreaking(pos, state);
 
             if (!state.canBeReplaced() && removeOnHit()) {
@@ -445,24 +452,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             if (block instanceof BellBlock bell) {
                 bell.attemptToRing(this.level(), pos, blockHitResult.getDirection());
             }
-
-            // Fire
-            /*int fireStarterLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.FIRE_STARTER.get(), this.weapon);
-            if(fireStarterLevel > 0 && Config.COMMON.gameplay.griefing.setFireToBlocks.get())
-            {
-                BlockPos offsetPos = pos.relative(blockHitResult.getDirection());
-                if(BaseFireBlock.canBePlacedAt(this.level(), offsetPos, blockHitResult.getDirection()))
-                {
-                    BlockState fireState = BaseFireBlock.getState(this.level(), offsetPos);
-                    this.level().setBlock(offsetPos, fireState, 11);
-                    ((ServerLevel) this.level()).sendParticles(ParticleTypes.LAVA, hitVec.x - 1.0 + this.random.nextDouble() * 2.0, hitVec.y, hitVec.z - 1.0 + this.random.nextDouble() * 2.0, 4, 0, 0, 0, 0);
-                }
-            }*/
             return;
         }
 
         if (result instanceof ExtendedEntityRayTraceResult entityHitResult) {
-            Entity entity = entityHitResult.getEntity();
+            var entity = entityHitResult.getEntity();
             if (entity.getId() == this.shooter.getId()) {
                 return;
             }
@@ -486,6 +480,18 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
 
             entity.invulnerableTime = 0;
+        }
+    }
+
+    protected void onHitFluid(BlockState state, BlockPos pos, Direction face, double x, double y, double z) {
+        PacketHandler.getPlayChannel().sendToTrackingChunk(
+                () -> this.level().getChunkAt(pos),
+                new S2CMessageProjectileHitBlock(x, y, z, pos, face));
+        var hitVec = new Vec3(x, y, z);
+        doImpactEffects(hitVec);
+
+        if (state.getBlock() instanceof LiquidBlock) {
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.5));
         }
     }
 
@@ -556,25 +562,29 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
      * A custom implementation of ray tracing that allows you to pass a predicate to ignore certain
      * blocks when checking for collisions.
      *
-     * @param world           the world to perform the ray trace
+     * @param level           the world to perform the ray trace
      * @param context         the ray trace context
      * @param ignorePredicate the block state predicate
      * @return a result of the raytrace
      */
-    protected static BlockHitResult rayTraceBlocks(Level world, ClipContext context, Predicate<BlockState> ignorePredicate) {
+    protected static BlockHitResult rayTraceBlocks(Level level, ClipContext context, Predicate<BlockState> ignorePredicate) {
         return performRayTrace(context, (rayTraceContext, blockPos) -> {
-            BlockState blockState = world.getBlockState(blockPos);
+            var blockState = level.getBlockState(blockPos);
             if (ignorePredicate.test(blockState)) return null;
-            FluidState fluidState = world.getFluidState(blockPos);
-            Vec3 startVec = rayTraceContext.getFrom();
-            Vec3 endVec = rayTraceContext.getTo();
-            VoxelShape blockShape = rayTraceContext.getBlockShape(blockState, world, blockPos);
-            BlockHitResult blockResult = world.clipWithInteractionOverride(startVec, endVec, blockPos, blockShape, blockState);
-            VoxelShape fluidShape = rayTraceContext.getFluidShape(fluidState, world, blockPos);
-            BlockHitResult fluidResult = fluidShape.clip(startVec, endVec, blockPos);
-            double blockDistance = blockResult == null ? Double.MAX_VALUE : rayTraceContext.getFrom().distanceToSqr(blockResult.getLocation());
-            double fluidDistance = fluidResult == null ? Double.MAX_VALUE : rayTraceContext.getFrom().distanceToSqr(fluidResult.getLocation());
+
+            var fluidState = level.getFluidState(blockPos);
+            var startVec = rayTraceContext.getFrom();
+            var endVec = rayTraceContext.getTo();
+            var blockShape = rayTraceContext.getBlockShape(blockState, level, blockPos);
+            var blockResult = level.clipWithInteractionOverride(startVec, endVec, blockPos, blockShape, blockState);
+            var fluidShape = rayTraceContext.getFluidShape(fluidState, level, blockPos);
+            var fluidResult = fluidShape.clip(startVec, endVec, blockPos);
+
+            var blockDistance = blockResult == null ? Double.MAX_VALUE : rayTraceContext.getFrom().distanceToSqr(blockResult.getLocation());
+            var fluidDistance = fluidResult == null ? Double.MAX_VALUE : rayTraceContext.getFrom().distanceToSqr(fluidResult.getLocation());
+
             return blockDistance <= fluidDistance ? blockResult : fluidResult;
+
         }, (rayTraceContext) -> {
             Vec3 Vector3d = rayTraceContext.getFrom().subtract(rayTraceContext.getTo());
             return BlockHitResult.miss(rayTraceContext.getTo(), Direction.getNearest(Vector3d.x, Vector3d.y, Vector3d.z), BlockPos.containing(rayTraceContext.getTo()));
@@ -582,10 +592,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     private void setupStartPosition(LivingEntity shooter) {
-        /* Spawn the projectile halfway between the previous and current position */
-        double posX = shooter.xOld + (shooter.getX() - shooter.xOld) / 2.0;
-        double posY = shooter.yOld + (shooter.getY() - shooter.yOld) / 2.0 + shooter.getEyeHeight();
-        double posZ = shooter.zOld + (shooter.getZ() - shooter.zOld) / 2.0;
+        var posX = shooter.xOld + (shooter.getX() - shooter.xOld) / 2.0;
+        var posY = shooter.yOld + (shooter.getY() - shooter.yOld) / 2.0 + shooter.getEyeHeight();
+        var posZ = shooter.zOld + (shooter.getZ() - shooter.zOld) / 2.0;
         this.setPos(posX, posY, posZ);
     }
 
@@ -743,7 +752,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 Config.COMMON.gameplay.growBoundingBoxAmount.get()).clip(startVec, endVec).orElse(null);
 
         if (hitPos == null && grownHitPos != null) {
-            var clipContext = new ClipContext(startVec, grownHitPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this);
+            var clipContext = new ClipContext(startVec, grownHitPos, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this);
             var rayTraceResult = rayTraceBlocks(this.level(), clipContext, getBlockFilter());
 
             if (rayTraceResult.getType() == HitResult.Type.BLOCK)

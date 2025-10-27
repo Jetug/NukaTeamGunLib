@@ -1,5 +1,6 @@
 {
   "general": {
+    "action": "ntgl:gun",
     "auto": false,
     "rate": 10,
     "gripType": "ntgl:two_handed",

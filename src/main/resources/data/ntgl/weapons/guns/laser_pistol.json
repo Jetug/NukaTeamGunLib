@@ -1,5 +1,6 @@
 {
   "general": {
+    "action": "ntgl:gun",
     "rate": 4,
     "gripType": "ntgl:one_handed",
     "loadingType": "magazine",

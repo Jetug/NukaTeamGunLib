@@ -1,7 +1,7 @@
 {
   "general": {
-    "rate": 10,
     "action": "ntgl:gun",
+    "rate": 10,
     "gripType": "ntgl:one_handed",
     "loadingType": "magazine",
     "maxAmmo": 6,
@@ -20,10 +20,18 @@
     "melee": true,
     "ammo": [
       "minecraft:stick"
-    ],
-    "fuel":[
-      "ntgl:burnable"
     ]
+  },
+  "ammoData": {
+    "minecraft:stick": {
+      "projectile": {
+        "visible": true,
+        "damage": 1.0,
+        "size": 5.0,
+        "speed": 2.0,
+        "life": 180
+      }
+    }
   },
   "modes": {
     "ntgl:secondary": {

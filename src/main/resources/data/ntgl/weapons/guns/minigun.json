@@ -1,5 +1,6 @@
 {
   "general": {
+    "action": "ntgl:gun",
     "fireMode": ["ntgl:auto"],
     "fireTimer": 20,
     "fullCharge": true,

@@ -1,5 +1,6 @@
 {
   "general": {
+    "action": "ntgl:gun",
     "rate": 15,
     "damage": 40.0,
     "action": "ntgl:gun",

@@ -40,6 +40,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
     @Optional private double trailLengthMultiplier = 1.0;
     @Optional int projectileAmount = 1;
     @Optional float spread;
+    @Optional int pierceLevel = 0;
     @Optional ExplosionConfig explosion = new ExplosionConfig();
 
     @Override
@@ -59,6 +60,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
         tag.putInt(PROJECTILE_AMOUNT, this.projectileAmount);
         tag.putFloat(SPREAD, this.spread);
+        tag.putInt("pierceLevel", this.pierceLevel);
         tag.put("explosion", this.explosion.serializeNBT());
         return tag;
     }
@@ -82,6 +84,9 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         }
         if (tag.contains("Life", Tag.TAG_ANY_NUMERIC)) {
             this.life = tag.getInt("Life");
+        }
+        if (tag.contains("pierceLevel", Tag.TAG_ANY_NUMERIC)) {
+            this.pierceLevel = tag.getInt("pierceLevel");
         }
         if (tag.contains("Gravity", Tag.TAG_ANY_NUMERIC)) {
             this.gravity = tag.getBoolean("Gravity");
@@ -128,6 +133,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         object.addProperty("size", this.size);
         object.addProperty("speed", this.speed);
         object.addProperty("life", this.life);
+        object.addProperty("pierceLevel", this.pierceLevel);
         object.addProperty("projectile", this.projectile.toString());
         object.addProperty("damageType", this.damageType.location().toString());
         GunJsonUtil.addObjectIfNotEmpty(object,"explosion", this.explosion.toJsonObject());
@@ -149,6 +155,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         projectile.size = this.size;
         projectile.speed = this.speed;
         projectile.life = this.life;
+        projectile.pierceLevel = this.pierceLevel;
         projectile.gravity = this.gravity;
         projectile.damageReduceOverLife = this.damageReduceOverLife;
         projectile.magazineMode = this.magazineMode;
@@ -199,6 +206,10 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
      */
     public int getLife() {
         return this.life;
+    }
+
+    public int getPierceLevel() {
+        return pierceLevel;
     }
 
     /**
@@ -330,6 +341,11 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
 
         public ProjectileConfig.Builder setProjectileLife(int life) {
             this.projectile.life = life;
+            return this;
+        }
+
+        public ProjectileConfig.Builder setPierceLevel(int pierceLevel) {
+            this.projectile.pierceLevel = pierceLevel;
             return this;
         }
 

@@ -1,5 +1,6 @@
 {
   "general": {
+    "action": "ntgl:gun",
     "rate": 4,
     "action": "ntgl:gun",
     "fireMode": ["ntgl:auto", "ntgl:semi"],

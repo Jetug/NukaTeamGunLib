@@ -1,5 +1,6 @@
 {
   "general": {
+    "action": "ntgl:gun",
     "fireMode": ["ntgl:auto"],
     "rate": 1,
     "gripType": "ntgl:one_handed",
@@ -25,9 +26,9 @@
         "damageType": "ntgl:fire",
         "projectile": "ntgl:fire",
         "damage": 1.0,
-        "size": 1.0,
-        "speed": 50.0,
-        "life": 5,
+        "size": 5.0,
+        "speed": 3.0,
+        "life": 120,
         "projectileAmount": 1
       }
     }
