@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 
 import com.nukateam.example.common.registery.ModGuns;
-import com.nukateam.ntgl.client.input.KeyBinds;
+import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.client.util.util.PropertyHelper;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
@@ -280,13 +280,13 @@ public class AimingHandler {
                 return true;
             }
         }
-        else if(KeyBinds.KEY_ADD_ATTACK.isDown()) {
+        else if(NtglKeyBinds.KEY_ADD_ATTACK.isDown()) {
             data.setWeaponAction(WeaponMode.ADDITIONAL);
             if(isScopeAction(data)) {
                 return true;
             }
         }
-        else if(KeyBinds.KEY_ALT_ATTACK.isDown()) {
+        else if(NtglKeyBinds.KEY_ALT_ATTACK.isDown()) {
             data.setWeaponAction(WeaponMode.ALTERNATIVE);
             if(isScopeAction(data)) {
                 return true;
@@ -297,7 +297,7 @@ public class AimingHandler {
     }
 
     private static boolean isScopeAction(WeaponData data) {
-        return WeaponModifierHelper.getWeaponMode(data) == WeaponAction.SCOPE;
+        return WeaponModifierHelper.getWeaponAction(data) == WeaponAction.SCOPE;
     }
 
     public boolean isLookingAtInteractableBlock() {

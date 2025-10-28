@@ -14,9 +14,6 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.BiFunction;
 
-/**
- * Author: MrCrayfish
- */
 public class Projectiles {
     public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Ntgl.MOD_ID);
 
@@ -27,32 +24,8 @@ public class Projectiles {
     public static final RegistryObject<EntityType<FlameProjectile>> FLAME_PROJECTILE = registerBasic("flame_projectile", FlameProjectile::new);
     public static final RegistryObject<EntityType<GrenadeEntity>> GRENADE = registerBasic("grenade", GrenadeEntity::new);
     public static final RegistryObject<EntityType<MissileEntity>> MISSILE = registerBasic("missile", MissileEntity::new);
-//    public static final RegistryObject<EntityType<ThrowableEntity>> THROW = registerBasic("throwable", ThrowableEntity::new);
     public static final RegistryObject<EntityType<ThrowableGrenadeEntity>> THROWABLE_GRENADE = registerBasic("throwable_grenade", ThrowableGrenadeEntity::new);
     public static final RegistryObject<EntityType<StunGrenadeEntity>> THROWABLE_STUN_GRENADE = registerBasic("throwable_stun_grenade", StunGrenadeEntity::new);
-
-//    public static final RegistryObject<EntityType<FlyingGib>> FLYING_GIBS = register("flying_gibs", FlyingGib::new);
-
-    private static <T extends Entity> RegistryObject<EntityType<T>> registerEntity(String entityName, EntityType.Builder<T> builder) {
-        return REGISTER.register(entityName, () -> builder.build(ResourceLocation.tryBuild(Ntgl.MOD_ID, entityName).toString()));
-    }
-
-    private static <T extends Entity> RegistryObject<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function) {
-        return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
-                .sized(0.25F, 0.25F)
-                .setTrackingRange(100)
-                .setUpdateInterval(1)
-                .noSummon()
-                .fireImmune()
-                .setShouldReceiveVelocityUpdates(true).build(id));
-    }
-
-
-    private static <T extends Entity> RegistryObject<EntityType<T>> register(String id, BiFunction<EntityType<T>, Level, T> function) {
-        return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
-                .sized(1.25F, 1.25F)
-                .build(id));
-    }
 
     /**
      * Entity registration that prevents the entity from being sent and tracked by clients. Projectiles
@@ -72,9 +45,18 @@ public class Projectiles {
                 .setTrackingRange(0)
                 .noSummon()
                 .fireImmune()
-//                .noSave()
                 .setShouldReceiveVelocityUpdates(false)
                 .setCustomClientFactory((spawnEntity, world) -> null)
                 .build(id));
+    }
+
+    private static <T extends Entity> RegistryObject<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function) {
+        return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
+                .sized(0.25F, 0.25F)
+                .setTrackingRange(100)
+                .setUpdateInterval(1)
+                .noSummon()
+                .fireImmune()
+                .setShouldReceiveVelocityUpdates(true).build(id));
     }
 }

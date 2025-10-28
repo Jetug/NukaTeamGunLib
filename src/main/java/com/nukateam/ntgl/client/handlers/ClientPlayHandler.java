@@ -150,12 +150,13 @@ public class ClientPlayHandler {
         var mc = Minecraft.getInstance();
         var world = mc.level;
 
-        if (world != null) {
+        if (world != null && mc.player != null) {
             var state = world.getBlockState(message.getPos());
-            var holeX = message.getX() + 0.005 * message.getFace().getStepX();
-            var holeY = message.getY() + 0.005 * message.getFace().getStepY();
-            var holeZ = message.getZ() + 0.005 * message.getFace().getStepZ();
-            var distance = Math.sqrt(mc.player.distanceToSqr(message.getX(), message.getY(), message.getZ()));
+            var hitPos = message.getHitPos();
+            var holeX = hitPos.x + 0.005 * message.getFace().getStepX();
+            var holeY = hitPos.y + 0.005 * message.getFace().getStepY();
+            var holeZ = hitPos.z + 0.005 * message.getFace().getStepZ();
+            var distance = Math.sqrt(mc.player.distanceToSqr(message.getHitPos()));
 
             world.addParticle(
                     new BulletHoleData(message.getFace(), message.getPos()),
@@ -169,19 +170,17 @@ public class ClientPlayHandler {
                     motion.add(getRandomDir(world.random), getRandomDir(world.random), getRandomDir(world.random));
 
                     world.addParticle(
-                            new BlockParticleOption(ParticleTypes.BLOCK, state),
-                            false, message.getX(), message.getY(),
-                            message.getZ(), motion.x, motion.y, motion.z);
+                            new BlockParticleOption(ParticleTypes.BLOCK, state), false,
+                            hitPos.x, hitPos.y, hitPos.z,
+                            motion.x, motion.y, motion.z
+                    );
                 }
             }
 
             if (distance <= Config.CLIENT.sounds.impactSoundDistance.get()) {
-//                float volume = (float) (1.0F - (distance / Config.CLIENT.sounds.impactSoundDistance.get()));
-//                volume = Math.max(volume, 0.0F);
-
-                world.playLocalSound(message.getX(), message.getY(), message.getZ(),
+                world.playLocalSound(hitPos.x(), hitPos.y(), hitPos.z(),
                         state.getSoundType().getBreakSound(), SoundSource.BLOCKS,
-                        1.0F, 2.0F, false);
+                        0.8F, 2.0F, false);
             }
         }
     }

@@ -122,6 +122,6 @@ public class ClientMeleeHandler {
     }
 
     private static boolean isMelee(WeaponData data) {
-        return WeaponModifierHelper.getWeaponMode(data) == WeaponAction.MELEE;
+        return WeaponModifierHelper.getWeaponAction(data) == WeaponAction.MELEE;
     }
 }

@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.ntgl.client.animators.WeaponAnimator;
-import com.nukateam.ntgl.client.input.KeyBinds;
+import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
@@ -163,7 +163,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         addFuel(tooltip, data);
 
 
-        var name = KeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
+        var name = NtglKeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
 
         tooltip.add(Component.translatable("info.ntgl.attachment_help", name)
          .withStyle(ChatFormatting.YELLOW));

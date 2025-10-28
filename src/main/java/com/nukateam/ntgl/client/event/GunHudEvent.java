@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.event;
 
-import com.nukateam.ntgl.client.render.hud.GunHud;
+import com.nukateam.ntgl.client.render.hud.WeaponHud;
 import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.InteractionHand;
@@ -9,15 +9,15 @@ import net.minecraftforge.eventbus.api.Event;
 
 @Cancelable
 public class GunHudEvent extends Event {
-    private final GunHud gunHud;
+    private final WeaponHud weaponHud;
     private final InteractionHand hand;
     private final GuiGraphics graphics;
     private final GunHudCache cache;
     private final GunHudEvent.Phase phase;
 
 
-    public GunHudEvent(GunHud gunHud, InteractionHand hand, GuiGraphics graphics, GunHudCache cache, Phase phase) {
-        this.gunHud = gunHud;
+    public GunHudEvent(WeaponHud weaponHud, InteractionHand hand, GuiGraphics graphics, GunHudCache cache, Phase phase) {
+        this.weaponHud = weaponHud;
         this.hand = hand;
         this.graphics = graphics;
         this.cache = cache;
@@ -40,8 +40,8 @@ public class GunHudEvent extends Event {
         return phase;
     }
 
-    public GunHud getGunHud() {
-        return gunHud;
+    public WeaponHud getGunHud() {
+        return weaponHud;
     }
 
     public enum Phase {

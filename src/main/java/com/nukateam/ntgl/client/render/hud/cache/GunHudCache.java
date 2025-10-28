@@ -6,6 +6,8 @@ import com.nukateam.ntgl.common.data.holders.*;
 import net.minecraft.world.InteractionHand;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 public class GunHudCache{
     public FireMode fireMode = FireMode.SEMI_AUTO;
@@ -17,6 +19,10 @@ public class GunHudCache{
     public int ammoCount = 0;
     public AmmoConfig ammoConfig = new AmmoConfig();
     public ThrowMode throwMode = ThrowMode.SAFE;
+    public boolean fireModeKey = false;
+    public boolean ammoTypeKey = false;
+    public boolean isThrowable = false;
+    public Set<WeaponMode> weaponModes = Set.of();
 
     public GunHudCache(InteractionHand hand){
         this.hand = hand;

@@ -53,7 +53,7 @@ public class ClientActions {
 
         if(weapon.getItem() instanceof IWeapon){
             var gunData = new WeaponData(weapon, player).setWeaponAction(mode);
-            var weaponMode = WeaponModifierHelper.getWeaponMode(gunData);
+            var weaponMode = WeaponModifierHelper.getWeaponAction(gunData);
 
 //            if(weaponMode == WeaponMode.GUN) {
 //                ClientShootingHandler.get().fire(gunData);

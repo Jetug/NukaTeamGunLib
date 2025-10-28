@@ -6,10 +6,12 @@ import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
 import com.nukateam.ntgl.common.data.config.weapon.AmmoConfig;
 import com.nukateam.ntgl.common.data.config.weapon.Fuel;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponSettings;
 import com.nukateam.ntgl.common.data.holders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -295,7 +297,11 @@ public interface IWeaponModifier {
         return value;
     }
 
-    default WeaponAction modifyWeaponMode(WeaponAction value, WeaponData data) {
+    default WeaponAction modifyWeaponAction(WeaponAction value, WeaponData data) {
+        return value;
+    }
+
+    default HashMap<WeaponMode, WeaponSettings> modifyWeaponModes(HashMap<WeaponMode, WeaponSettings> value, WeaponData data) {
         return value;
     }
 

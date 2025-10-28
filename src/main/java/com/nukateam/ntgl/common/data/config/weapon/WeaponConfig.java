@@ -329,18 +329,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         return getFuelData(ammo).getAmmo();
     }
 
-    public WeaponAction getWeaponMode(WeaponMode mode){
-        if(mode == WeaponMode.PRIMARY){
-            return general.action;
-        }
-        else {
-            var value = modes.get(mode);
-            if(value != null)
-                return value.getGeneral().getAction();
-            else return WeaponAction.NONE;
-        }
-    }
-
     public General getGeneral(WeaponMode mode) {
         if(mode == WeaponMode.PRIMARY)
             return general;
@@ -363,6 +351,10 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         if(mode == WeaponMode.PRIMARY)
             return zoom;
         else return modes.getOrDefault(mode, new WeaponSettings()).getZoom();
+    }
+
+    public HashMap<WeaponMode, WeaponSettings> getModes() {
+        return modes;
     }
 
     private static ResourceLocation prepareTexture(String itemId, ResourceLocation path) {

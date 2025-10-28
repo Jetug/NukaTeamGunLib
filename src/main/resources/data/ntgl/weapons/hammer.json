@@ -1,7 +1,7 @@
 {
   "general": {
     "rate": 10,
-    "weaponMode": "ntgl:melee",
+    "action": "ntgl:melee",
     "gripType": "ntgl:knife",
     "loadingType": "magazine",
     "maxAmmo": 6,

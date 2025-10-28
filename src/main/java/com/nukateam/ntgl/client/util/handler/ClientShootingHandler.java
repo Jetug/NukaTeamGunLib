@@ -309,7 +309,7 @@ public class ClientShootingHandler {
     }
 
     private static boolean isGunMode(WeaponData weaponData) {
-        return WeaponModifierHelper.getWeaponMode(weaponData) == WeaponAction.SHOT;
+        return WeaponModifierHelper.getWeaponAction(weaponData) == WeaponAction.SHOT;
     }
 
     public void handleInput(WeaponData weaponData, InteractionHand arm, KeyMapping key) {

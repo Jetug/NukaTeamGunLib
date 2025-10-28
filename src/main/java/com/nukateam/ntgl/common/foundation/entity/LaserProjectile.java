@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.level.block.CandleCakeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class LaserProjectile extends AbstractBeamProjectile {
@@ -43,8 +44,9 @@ public class LaserProjectile extends AbstractBeamProjectile {
     }
 
     @Override
-    protected void onHitBlock(BlockState blockState, BlockPos blockPos, Direction face, double x, double y, double z) {
-        super.onHitBlock(blockState, blockPos, face, x, y, z);
+    protected void onHitBlock(BlockState blockState, BlockHitResult hitResult, Vec3 hitVec) {
+        var blockPos = hitResult.getBlockPos();
+        var face = hitResult.getDirection();
 
         if(random.nextFloat() <= getBlockFireChance()) {
             if (!CampfireBlock.canLight(blockState) && !CandleBlock.canLight(blockState) && !CandleCakeBlock.canLight(blockState)) {

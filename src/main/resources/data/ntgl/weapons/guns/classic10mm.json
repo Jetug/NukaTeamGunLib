@@ -22,14 +22,16 @@
       "minecraft:stick"
     ]
   },
-  "ammoData": {
+  "ammoData":{
     "minecraft:stick": {
       "projectile": {
         "visible": true,
+        "damageType": "ntgl:fire",
         "damage": 1.0,
         "size": 5.0,
-        "speed": 2.0,
-        "life": 180
+        "speed": 3.0,
+        "life": 120,
+        "projectileAmount": 1
       }
     }
   },

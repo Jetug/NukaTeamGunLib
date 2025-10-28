@@ -395,7 +395,6 @@ public class General implements INBTSerializable<CompoundTag> {
         return this.reloadAmount;
     }
 
-
     public int getReloadStart() {
         return this.reloadStart;
     }
@@ -407,21 +406,17 @@ public class General implements INBTSerializable<CompoundTag> {
         return this.reloadTime;
     }
 
-
     public int getReloadEnd() {
         return this.reloadEnd;
     }
-
 
     public int getEquipTime() {
         return this.equipTime;
     }
 
-
     public int getAmmoPerShot() {
         return this.ammoPerShot;
     }
-
 
     public WeaponAction getAction() {
         return action;

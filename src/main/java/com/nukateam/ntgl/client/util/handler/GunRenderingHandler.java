@@ -210,7 +210,7 @@ public class GunRenderingHandler {
 
         var aimHandler = AimingHandler.get();
 
-        if (WeaponModifierHelper.getWeaponMode(aimHandler.getWeaponData()) != WeaponAction.SCOPE)
+        if (WeaponModifierHelper.getWeaponAction(aimHandler.getWeaponData()) != WeaponAction.SCOPE)
             return;
 
         // Change the FOV of the first person viewport based on the scope and aim progress

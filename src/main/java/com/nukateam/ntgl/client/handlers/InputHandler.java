@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.input.KeyBinds;
+import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.common.data.WeaponData;
@@ -21,7 +21,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import static com.nukateam.ntgl.client.input.KeyBinds.*;
+import static com.nukateam.ntgl.client.input.NtglKeyBinds.*;
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
 import static com.nukateam.ntgl.client.util.handler.ClientShootingHandler.isInGame;
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.canUseOffhandWeapon;
@@ -56,13 +56,13 @@ public class InputHandler {
                 data.setWeaponAction(WeaponMode.SECONDARY);
                 handleInput(data, InteractionHand.MAIN_HAND, options.keyUse);
             }
-            else if(KeyBinds.KEY_ADD_ATTACK.isDown()) {
+            else if(NtglKeyBinds.KEY_ADD_ATTACK.isDown()) {
                 data.setWeaponAction(WeaponMode.ADDITIONAL);
-                handleInput(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ADD_ATTACK);
+                handleInput(data, InteractionHand.MAIN_HAND, NtglKeyBinds.KEY_ADD_ATTACK);
             }
-            else if(KeyBinds.KEY_ALT_ATTACK.isDown()) {
+            else if(NtglKeyBinds.KEY_ALT_ATTACK.isDown()) {
                 data.setWeaponAction(WeaponMode.ALTERNATIVE);
-                handleInput(data, InteractionHand.MAIN_HAND, KeyBinds.KEY_ALT_ATTACK);
+                handleInput(data, InteractionHand.MAIN_HAND, NtglKeyBinds.KEY_ALT_ATTACK);
             }
         }
 
@@ -74,13 +74,13 @@ public class InputHandler {
                 handleInput(data, InteractionHand.OFF_HAND, options.keyUse);
             }
             else if(!WeaponModifierHelper.isWeaponItem(mainHandItem)){
-                if (KeyBinds.KEY_ADD_ATTACK.isDown()) {
+                if (NtglKeyBinds.KEY_ADD_ATTACK.isDown()) {
                     data.setWeaponAction(WeaponMode.ADDITIONAL);
-                    handleInput(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ADD_ATTACK);
-                } else if (KeyBinds.KEY_ALT_ATTACK.isDown()) {
+                    handleInput(data, InteractionHand.OFF_HAND, NtglKeyBinds.KEY_ADD_ATTACK);
+                } else if (NtglKeyBinds.KEY_ALT_ATTACK.isDown()) {
                     data.setWeaponAction(WeaponMode.ALTERNATIVE);
                     Ntgl.LOGGER.debug("!!! Alt down");
-                    handleInput(data, InteractionHand.OFF_HAND, KeyBinds.KEY_ALT_ATTACK);
+                    handleInput(data, InteractionHand.OFF_HAND, NtglKeyBinds.KEY_ALT_ATTACK);
                 }
             }
         }
@@ -92,7 +92,7 @@ public class InputHandler {
         var weapon = player.getItemInHand(hand);
 
         if(weapon.getItem() instanceof IWeapon){
-            var weaponMode = WeaponModifierHelper.getWeaponMode(gunData);
+            var weaponMode = WeaponModifierHelper.getWeaponAction(gunData);
 
             if(weaponMode == WeaponAction.SHOT) {
                 ClientShootingHandler.get().handleInput(gunData, hand, key);
@@ -126,23 +126,23 @@ public class InputHandler {
         var heldItem = player.getItemInHand(hand).getItem();
 
         if(heldItem instanceof IWeapon) {
-            if (KeyBinds.KEY_ATTACHMENTS.consumeClick()) {
+            if (NtglKeyBinds.KEY_ATTACHMENTS.consumeClick()) {
                 PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
             }
-            if (KeyBinds.KEY_RELOAD.consumeClick()) {
+            if (NtglKeyBinds.KEY_RELOAD.consumeClick()) {
                 ClientReloadHandler.get().startReloading();
             }
-            if (KeyBinds.KEY_UNLOAD.consumeClick()) {
+            if (NtglKeyBinds.KEY_UNLOAD.consumeClick()) {
                 ClientReloadHandler.get().unloadAmmo(InteractionHand.MAIN_HAND);
                 ClientReloadHandler.get().unloadAmmo(InteractionHand.OFF_HAND);
             }
-            if (KeyBinds.KEY_INSPECT.consumeClick()) {
+            if (NtglKeyBinds.KEY_INSPECT.consumeClick()) {
                 ClientActions.inspectWeapon(player);
             }
-            if (KeyBinds.KEY_FIRE_SELECT.consumeClick()) {
+            if (NtglKeyBinds.KEY_FIRE_SELECT.consumeClick()) {
                 ClientActions.switchFireMode(hand);
             }
-            if (KeyBinds.KEY_AMMO_SELECT.consumeClick()) {
+            if (NtglKeyBinds.KEY_AMMO_SELECT.consumeClick()) {
                 ClientActions.switchAmmo(hand, player);
             }
         }

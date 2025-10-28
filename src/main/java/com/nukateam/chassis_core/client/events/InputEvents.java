@@ -4,7 +4,7 @@ import com.nukateam.chassis_core.client.utils.KeyUtils;
 import com.nukateam.chassis_core.common.input.CommonInputHandler;
 import com.nukateam.chassis_core.common.input.KeyAction;
 import com.nukateam.chassis_core.common.network.actions.InputAction;
-import com.nukateam.ntgl.client.input.KeyBinds;
+import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,7 +28,7 @@ public class InputEvents {
         KeyAction action;
         if (event.getAction() == GLFW.GLFW_PRESS) {
             action = KeyAction.PRESS;
-            if (event.getKey() == KeyBinds.LEAVE.getKey().getValue())
+            if (event.getKey() == NtglKeyBinds.LEAVE.getKey().getValue())
                 stopWearingArmor(Minecraft.getInstance().player);
         } else if (event.getAction() == GLFW.GLFW_RELEASE)
             action = KeyAction.RELEASE;

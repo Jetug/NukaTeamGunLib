@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -147,10 +148,16 @@ public class WeaponModifierHelper {
         return loadingType.get();
     }
 
-    public static WeaponAction getWeaponMode(WeaponData data) {
+    public static WeaponAction getWeaponAction(WeaponData data) {
         var loadingType = new AtomicReference<>(getGeneral(data).getAction());
-        forEachAttachment(data, (modifier -> loadingType.set(modifier.modifyWeaponMode(loadingType.get(), data))));
+        forEachAttachment(data, (modifier -> loadingType.set(modifier.modifyWeaponAction(loadingType.get(), data))));
         return loadingType.get();
+    }
+
+    public static HashMap<WeaponMode, WeaponSettings> getWeaponModes(WeaponData data) {
+        var value = new AtomicReference<>(getConfig(data.weapon).getModes());
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyWeaponModes(value.get(), data))));
+        return value.get();
     }
 
     public static int getProjectileAmount(WeaponData data) {
@@ -237,17 +244,17 @@ public class WeaponModifierHelper {
     }
 
     public static boolean canShoot(WeaponData data) {
-        var value = getWeaponMode(data);
+        var value = getWeaponAction(data);
         return value == WeaponAction.SHOT;
     }
 
     public static boolean canMelee(WeaponData data) {
-        var value = getWeaponMode(data);
+        var value = getWeaponAction(data);
         return value == WeaponAction.MELEE;
     }
 
     public static boolean canThrow(WeaponData data) {
-        var value = getWeaponMode(data);
+        var value = getWeaponAction(data);
         return value == WeaponAction.THROW;
     }
 

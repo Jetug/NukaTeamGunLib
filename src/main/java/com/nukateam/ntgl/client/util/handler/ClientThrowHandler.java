@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.input.KeyBinds;
+import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
@@ -43,11 +43,11 @@ public class ClientThrowHandler {
                 removeTracker(InteractionHand.MAIN_HAND, WeaponMode.SECONDARY);
                 removeTracker(InteractionHand.OFF_HAND , WeaponMode.SECONDARY);
             }
-            if(!KeyBinds.KEY_ADD_ATTACK.isDown()) {
+            if(!NtglKeyBinds.KEY_ADD_ATTACK.isDown()) {
                 removeTracker(InteractionHand.MAIN_HAND, WeaponMode.ADDITIONAL);
                 removeTracker(InteractionHand.OFF_HAND , WeaponMode.ADDITIONAL);
             }
-            if(!KeyBinds.KEY_ALT_ATTACK.isDown()) {
+            if(!NtglKeyBinds.KEY_ALT_ATTACK.isDown()) {
                 removeTracker(InteractionHand.MAIN_HAND, WeaponMode.ALTERNATIVE);
                 removeTracker(InteractionHand.OFF_HAND , WeaponMode.ALTERNATIVE);
             }
@@ -55,7 +55,7 @@ public class ClientThrowHandler {
     }
 
     private static boolean isThrowMode(WeaponData weaponData) {
-        return WeaponModifierHelper.getWeaponMode(weaponData) == WeaponAction.THROW;
+        return WeaponModifierHelper.getWeaponAction(weaponData) == WeaponAction.THROW;
     }
 
     public static void handleInput(WeaponData weaponData, InteractionHand hand, KeyMapping key) {

@@ -439,7 +439,7 @@ public class ServerPlayHandler {
     }
 
     public static void handleFireModeSwitch(ServerPlayer player, ItemStack stack, InteractionHand hand) {
-        if(WeaponModifierHelper.getConfig(stack).getGeneral().getAction() == WeaponAction.THROW){
+        if(WeaponModifierHelper.getWeaponAction(new WeaponData(stack, player)) == WeaponAction.THROW){
             var data = new WeaponData(stack, player).setWeaponAction(WeaponMode.PRIMARY);
             handleThrowModeSwitch(data, hand);
         } else {

@@ -6,10 +6,8 @@ import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.Vec3;
 
-/**
- * Author: MrCrayfish
- */
 public class S2CMessageProjectileHitBlock extends PlayMessage<S2CMessageProjectileHitBlock> {
     private double x;
     private double y;
@@ -17,14 +15,13 @@ public class S2CMessageProjectileHitBlock extends PlayMessage<S2CMessageProjecti
     private BlockPos pos;
     private Direction face;
 
-    public S2CMessageProjectileHitBlock() {
-    }
+    public S2CMessageProjectileHitBlock() {}
 
-    public S2CMessageProjectileHitBlock(double x, double y, double z, BlockPos pos, Direction face) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.pos = pos;
+    public S2CMessageProjectileHitBlock(Vec3 hitPos, BlockPos blockPos, Direction face) {
+        this.x = hitPos.x;
+        this.y = hitPos.y;
+        this.z = hitPos.z;
+        this.pos = blockPos;
         this.face = face;
     }
 
@@ -39,12 +36,12 @@ public class S2CMessageProjectileHitBlock extends PlayMessage<S2CMessageProjecti
 
     @Override
     public S2CMessageProjectileHitBlock decode(FriendlyByteBuf buffer) {
-        double x = buffer.readDouble();
-        double y = buffer.readDouble();
-        double z = buffer.readDouble();
-        BlockPos pos = buffer.readBlockPos();
-        Direction face = buffer.readEnum(Direction.class);
-        return new S2CMessageProjectileHitBlock(x, y, z, pos, face);
+        var x = buffer.readDouble();
+        var y = buffer.readDouble();
+        var z = buffer.readDouble();
+        var pos = buffer.readBlockPos();
+        var face = buffer.readEnum(Direction.class);
+        return new S2CMessageProjectileHitBlock(new Vec3(x, y, z), pos, face);
     }
 
     @Override
@@ -53,16 +50,8 @@ public class S2CMessageProjectileHitBlock extends PlayMessage<S2CMessageProjecti
         supplier.setHandled(true);
     }
 
-    public double getX() {
-        return this.x;
-    }
-
-    public double getY() {
-        return this.y;
-    }
-
-    public double getZ() {
-        return this.z;
+    public Vec3 getHitPos() {
+        return new Vec3(x, y, z);
     }
 
     public BlockPos getPos() {

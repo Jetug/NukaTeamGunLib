@@ -9,7 +9,7 @@ import com.nukateam.ntgl.client.handlers.ClientHandler;
 import com.nukateam.ntgl.client.util.MetaLoader;
 import com.nukateam.ntgl.client.settings.GunOptions;
 import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
-import com.nukateam.ntgl.client.input.KeyBinds;
+import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.common.registry.AmmoHolders;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
@@ -21,7 +21,6 @@ import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.modules.gunpack.GunPackModule;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -83,7 +82,7 @@ public class Ntgl {
         MOD_EVENT_BUS.addListener(this::onGatherData);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             FrameworkClientAPI.registerDataLoader(MetaLoader.getInstance());
-            MOD_EVENT_BUS.addListener(KeyBinds::registerKeyMappings);
+            MOD_EVENT_BUS.addListener(NtglKeyBinds::registerKeyMappings);
             MOD_EVENT_BUS.addListener(CrosshairHandler::onConfigReload);
             MOD_EVENT_BUS.addListener(ClientHandler::onRegisterReloadListener);
         });
