@@ -4,6 +4,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.util.*;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.util.handler.*;
+import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
@@ -208,6 +209,16 @@ public class ClientPlayHandler {
         if (event == null) return;
 
         mc.getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F, 0.8F + world.random.nextFloat() * 0.2F));
+    }
+
+    public static void handleProjectileHitFluid(S2CMessageProjectileHitFluid message) {
+        var level = Minecraft.getInstance().level;
+        var projectile = level.getEntity(message.getProjectileId());
+
+        if(projectile instanceof ProjectileEntity projectileEntity){
+            projectileEntity.setPos(message.getPos());
+            projectileEntity.doWaterSplashEffect(message.getPos());
+        }
     }
 
     @Nullable

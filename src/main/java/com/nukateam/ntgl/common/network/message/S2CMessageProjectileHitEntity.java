@@ -15,8 +15,7 @@ public class S2CMessageProjectileHitEntity extends PlayMessage<S2CMessageProject
     private int type;
     private boolean player;
 
-    public S2CMessageProjectileHitEntity() {
-    }
+    public S2CMessageProjectileHitEntity() {}
 
     public S2CMessageProjectileHitEntity(double x, double y, double z, int type, boolean player) {
         this.x = x;

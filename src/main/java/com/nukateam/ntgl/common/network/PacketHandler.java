@@ -48,6 +48,7 @@ public class PacketHandler {
                 .registerPlayMessage(S2CMessageGunSound.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageProjectileHitBlock.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageProjectileHitEntity.class, MessageDirection.PLAY_CLIENT_BOUND)
+                .registerPlayMessage(S2CMessageProjectileHitFluid.class, MessageDirection.PLAY_CLIENT_BOUND)
                 .registerPlayMessage(S2CMessageRemoveProjectile.class, MessageDirection.PLAY_CLIENT_BOUND)
 
                 .registerPlayMessage(S2CMessageProjectileExplosion.class, MessageDirection.PLAY_CLIENT_BOUND)

@@ -72,7 +72,7 @@ public class ThrowingTracker {
         var entity = weaponData.wielder;
         var key = Pair.of(arm, entity);
 
-        if (!TRACKER_MAP.containsKey(key)) {
+        if (!TRACKER_MAP.containsKey(key) && !EquipTracker.isEquiping(weaponData.wielder, arm)) {
             if (!(weaponData.weapon.getItem() instanceof IThrowable)) {
                 return;
             }

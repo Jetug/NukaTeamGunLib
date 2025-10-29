@@ -22,9 +22,12 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.modules.enchantment.ModEnchantments;
+import einstein.subtle_effects.init.ModParticles;
+import einstein.subtle_effects.util.ParticleSpawnUtil;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,6 +35,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -42,6 +46,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
@@ -431,7 +436,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             var inFluid = false;
 
             if (!state.getFluidState().isEmpty()) {
-                this.onHitFluid(state, blockHitResult, hitVec);
+                this.onHitFluid(blockHitResult);
                 inFluid = true;
             }
 
@@ -489,9 +494,80 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
+    protected void onHitFluid(BlockHitResult hitResult) {
+        var pos = hitResult.getLocation();
+//        doWaterSplashEffect(pos);
+
+        if(pos != null) {
+            PacketHandler.getPlayChannel().sendToNearbyPlayers(
+                    () -> LevelLocation.create(level(), pos, 16),
+                    new S2CMessageProjectileHitFluid(pos, this.getId()));
+        }
+    }
+
     @Override
     protected void doWaterSplashEffect() {
         super.doWaterSplashEffect();
+    }
+
+    public void doWaterSplashEffect(Vec3 pos) {
+//        ParticleSpawnUtil.spawnSplashEffects(this, this.level(), ModParticles.WATER_SPLASH_EMITTER.get(), FluidTags.WATER);
+
+        var velocity = this.getDeltaMovement();
+
+        if(isInWater()) {
+            playSplashSound(velocity);
+        }
+
+        var waterLevelY = Mth.floor(pos.y);
+
+        for(int i = 0; i < 1.0F + this.getBbWidth() * 20.0F; ++i) {
+            var offsetX = (this.random.nextDouble() * 2.0D - 1.0D) * this.getBbWidth();
+            var offsetZ  = (this.random.nextDouble() * 2.0D - 1.0D) * this.getBbWidth();
+            this.level().addParticle(
+                    ParticleTypes.BUBBLE,
+                    pos.x + offsetX,
+                    waterLevelY + 1.0F,
+                    pos.z + offsetZ,
+                    velocity.x,
+                    velocity.y - this.random.nextDouble() * 0.2D,
+                    velocity.z
+            );
+        }
+
+        for(int j = 0; j < 1.0F + this.getBbWidth() * 20.0F; ++j) {
+            var offsetX = (this.random.nextDouble() * 2.0D - 1.0D) * this.getBbWidth();
+            var offsetZ = (this.random.nextDouble() * 2.0D - 1.0D) * this.getBbWidth();
+
+            this.level().addParticle(
+                    ParticleTypes.SPLASH,
+                    pos.x + offsetX,
+                    waterLevelY + 1.0F,
+                    pos.z + offsetZ,
+                    velocity.x,
+                    velocity.y,
+                    velocity.z
+            );
+        }
+
+        this.gameEvent(GameEvent.SPLASH);
+    }
+
+    private void playSplashSound(Vec3 velocity) {
+        var volumeModifier = 0.2F;
+        var splashStrength = (float) Math.sqrt(
+                velocity.x * velocity.x * 0.2D +
+                        velocity.y * velocity.y +
+                        velocity.z * velocity.z * 0.2D
+        ) * volumeModifier;
+        splashStrength = Math.min(1.0F, splashStrength);
+
+        var pitch = 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F;
+        if (splashStrength < 0.25F) {
+            this.playSound(this.getSwimSplashSound(), splashStrength, pitch);
+        } else {
+            this.playSound(this.getSwimHighSpeedSplashSound(), splashStrength, pitch);
+        }
     }
 
     protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
@@ -579,10 +655,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             Vec3 Vector3d = rayTraceContext.getFrom().subtract(rayTraceContext.getTo());
             return BlockHitResult.miss(rayTraceContext.getTo(), Direction.getNearest(Vector3d.x, Vector3d.y, Vector3d.z), BlockPos.containing(rayTraceContext.getTo()));
         });
-    }
-
-    protected void onHitFluid(BlockState state, BlockHitResult hitResult, Vec3 pos) {
-//        doWaterSplashEffect();
     }
 
     private void setupStartPosition(LivingEntity shooter) {

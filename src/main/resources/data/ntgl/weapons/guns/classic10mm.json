@@ -26,7 +26,6 @@
     "minecraft:stick": {
       "projectile": {
         "visible": true,
-        "damageType": "ntgl:fire",
         "damage": 1.0,
         "size": 5.0,
         "speed": 3.0,
