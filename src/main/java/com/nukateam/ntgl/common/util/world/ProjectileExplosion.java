@@ -3,20 +3,17 @@ package com.nukateam.ntgl.common.util.world;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.foundation.ModTags;
-import einstein.subtle_effects.init.ModConfigs;
-import einstein.subtle_effects.init.ModParticles;
-import einstein.subtle_effects.particle.option.SplashEmitterParticleOptions;
+import com.nukateam.ntgl.common.util.helpers.compatibility.SubtleEffectsHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -33,7 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
@@ -147,7 +143,6 @@ public class ProjectileExplosion extends Explosion {
 
     @Override
     public void finalizeExplosion(boolean spawnParticles) {
-        doEffect(spawnParticles);
 
         if (this.level.isClientSide) {
             this.level.playLocalSound(pos.x, pos.y, pos.z,
@@ -160,6 +155,9 @@ public class ProjectileExplosion extends Explosion {
         var toBlow = (ObjectArrayList<BlockPos>)getToBlow();
 
         if (spawnParticles) {
+            if(Ntgl.subtleEffectsLoaded)
+                SubtleEffectsHelper.doExplosionSplash(level, radius, getPosition());
+
             if (!(this.radius < 2.0F) && interactsWithBlocks) {
                 this.level.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
             } else {
@@ -220,47 +218,6 @@ public class ProjectileExplosion extends Explosion {
             }
         }
 
-    }
-
-    private void doEffect(boolean spawnParticles) {
-        if (spawnParticles && level.isClientSide && ModConfigs.ENTITIES.splashes.explosionsCauseSplashes) {
-            var pos = BlockPos.containing(getPosition());
-            var fluidState = level.getFluidState(pos);
-
-            if (!fluidState.isEmpty()) {
-                int blockY = pos.getY();
-
-                for (int y = blockY; y < blockY + (radius) + 1; y++) {
-                    var currentPos = pos.atY(y);
-                    var currentFluidState = level.getFluidState(currentPos);
-
-                    if (fluidState.getType().isSame(currentFluidState.getType())) {
-                        continue;
-                    }
-
-                    if (level.getBlockState(currentPos).isSolidRender(level, currentPos)) {
-                        return;
-                    }
-
-                    var type = fluidState.is(FluidTags.WATER) ?
-                            ModParticles.WATER_SPLASH_EMITTER.get() :
-                            fluidState.is(FluidTags.LAVA) ? ModParticles.LAVA_SPLASH_EMITTER.get() : null;
-
-                    if (type != null) {
-                        var surfacePos = currentPos.below();
-                        var surfaceFluidState = level.getFluidState(surfacePos);
-                        var scale = radius - ((y - blockY) / radius);
-
-                        level.addAlwaysVisibleParticle(new SplashEmitterParticleOptions(type, scale, scale * (scale * 0.1F), -1, -1),
-                                true, getPosition().x, surfacePos.getY() + surfaceFluidState.getHeight(level, surfacePos) + 0.01, getPosition().z,
-                                0, 0, 0
-                        );
-                    }
-                    return;
-                }
-            }
-        }
-        return;
     }
 
     private static void addBlockDrops(ObjectArrayList<Pair<ItemStack, BlockPos>> pDropPositionArray,

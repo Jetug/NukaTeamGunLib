@@ -338,7 +338,6 @@ public class ClientShootingHandler {
                 if (maxChargeTime > 0) {
                     if (fireMode != FireMode.AUTO)
                         key.setDown(false);
-                        Ntgl.LOGGER.debug("KEY down");
 
                 }
             }
@@ -346,7 +345,6 @@ public class ClientShootingHandler {
             this.fire(weaponData);
             if (fireMode != FireMode.AUTO) {
                 key.setDown(false);
-                Ntgl.LOGGER.debug("KEY down");
             }
         }
     }

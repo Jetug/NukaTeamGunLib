@@ -3,14 +3,14 @@
     "damage": 40.0,
     "action": "ntgl:throw",
     "gripType": "ntgl:one_handed",
-    "equipTime": 60
+    "equipTime": 15
   },
   "throwable": {
     "mode": [
       "ntgl:safe",
       "ntgl:unsafe"
     ],
-    "prepareTime": 20,
+    "prepareTime": 15,
     "throwTime": 6,
 
     "ammoData":{

@@ -217,7 +217,7 @@ public class ClientPlayHandler {
 
         if(projectile instanceof ProjectileEntity projectileEntity){
             projectileEntity.setPos(message.getPos());
-            projectileEntity.doWaterSplashEffect(message.getPos());
+            projectileEntity.doSplashEffect(message.getPos());
         }
     }
 

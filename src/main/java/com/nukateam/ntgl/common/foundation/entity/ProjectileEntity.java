@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.Config;
@@ -8,6 +9,7 @@ import com.nukateam.ntgl.common.data.config.weapon.General;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.init.NtglDamageTypes;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.util.helpers.compatibility.SubtleEffectsHelper;
 import com.nukateam.ntgl.common.util.interfaces.IDamageable;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.util.trackers.SpreadTracker;
@@ -22,8 +24,6 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
 import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.modules.enchantment.ModEnchantments;
-import einstein.subtle_effects.init.ModParticles;
-import einstein.subtle_effects.util.ParticleSpawnUtil;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,7 +35,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -496,13 +495,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     protected void onHitFluid(BlockHitResult hitResult) {
         var pos = hitResult.getLocation();
-//        doWaterSplashEffect(pos);
 
-        if(pos != null) {
-            PacketHandler.getPlayChannel().sendToNearbyPlayers(
-                    () -> LevelLocation.create(level(), pos, 16),
-                    new S2CMessageProjectileHitFluid(pos, this.getId()));
-        }
+        PacketHandler.getPlayChannel().sendToNearbyPlayers(
+                () -> LevelLocation.create(level(), pos, 32),
+                new S2CMessageProjectileHitFluid(pos, this.getId()));
     }
 
     @Override
@@ -510,15 +506,18 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         super.doWaterSplashEffect();
     }
 
-    public void doWaterSplashEffect(Vec3 pos) {
-//        ParticleSpawnUtil.spawnSplashEffects(this, this.level(), ModParticles.WATER_SPLASH_EMITTER.get(), FluidTags.WATER);
-
-        var velocity = this.getDeltaMovement();
+    public void doSplashEffect(Vec3 pos) {
+        if(Ntgl.subtleEffectsLoaded && SubtleEffectsHelper.doSplashEffect(this))
+            return;
 
         if(isInWater()) {
-            playSplashSound(velocity);
+            doWaterSplashEffect(pos);
         }
+    }
 
+    private void doWaterSplashEffect(Vec3 pos) {
+        var velocity = this.getDeltaMovement();
+        playSplashSound(velocity);
         var waterLevelY = Mth.floor(pos.y);
 
         for(int i = 0; i < 1.0F + this.getBbWidth() * 20.0F; ++i) {
@@ -599,10 +598,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         var blockPos = hitResult.getBlockPos();
         var dir = hitResult.getDirection();
         var channel = PacketHandler.getPlayChannel();
-        channel.sendToTrackingChunk(() -> this.level().getChunkAt(blockPos),
-                new S2CMessageProjectileHitBlock(hitVec, blockPos, dir));
-        doImpactEffects(hitVec);
-        onContact(hitVec);
+        if(state.getFluidState().isEmpty()) {
+            channel.sendToTrackingChunk(() -> this.level().getChunkAt(blockPos),
+                    new S2CMessageProjectileHitBlock(hitVec, blockPos, dir));
+            doImpactEffects(hitVec);
+            onContact(hitVec);
+        }
     }
 
     protected void onContact(Vec3 hitVec) {

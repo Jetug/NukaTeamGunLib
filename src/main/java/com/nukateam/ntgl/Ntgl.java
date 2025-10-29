@@ -56,6 +56,7 @@ public class Ntgl {
     public static boolean curiosLoaded = false;
     public static boolean playerReviveLoaded = false;
     public static boolean playerAnimatorLoaded = false;
+    public static boolean subtleEffectsLoaded = false;
 
     public Ntgl() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
@@ -92,13 +93,14 @@ public class Ntgl {
         NtglGameEvents.register(MOD_EVENT_BUS);
         new ChassisCore(MOD_EVENT_BUS);
 //        TravelersBackpack
+        curiosLoaded = ModList.get().isLoaded("curios");
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
         travelersLoaded = ModList.get().isLoaded("travelersbackpack");
         sophisticatedLoaded = ModList.get().isLoaded("sophisticatedbackpacks");
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
         playerAnimatorLoaded = ModList.get().isLoaded("playeranimator");
-        curiosLoaded = ModList.get().isLoaded("curios");
+        subtleEffectsLoaded = ModList.get().isLoaded("subtle_effects");
 
         AmmoHolders.register();
         AnimationType.register();
