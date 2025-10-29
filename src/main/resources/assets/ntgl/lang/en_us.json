@@ -67,6 +67,7 @@
   "key.ntgl.inspect": "Inspect",
   "key.ntgl.fire_select": "Fire Select",
   "key.ntgl.ammo_select": "Ammo Select",
+  "key.ntgl.key_tips": "Show key tips",
 
   "subtitle.ntgl.stun.explosion": "Stun Grenade Explosion",
   "subtitle.ntgl.stun.ring": "Ringing",
@@ -160,6 +161,17 @@
   "info.ntgl.attachment_help": "Press %s in-game for Attachments",
   "info.ntgl.burnable": "Fuel",
   "info.ntgl.water": "Water",
+
+  "info.ntgl.primary": "Primary",
+  "info.ntgl.secondary": "Secondary",
+  "info.ntgl.additional": "Additional",
+  "info.ntgl.alternative": "Alternative",
+
+  "info.ntgl.shot": "Shot",
+  "info.ntgl.melee": "Melee",
+  "info.ntgl.throw": "Throw",
+  "info.ntgl.scope": "Scope",
+  "info.ntgl.custom": "Custom",
 
   "perk.ntgl.title": "Perks:",
   "perk.ntgl.entry.positive": "+ %s",

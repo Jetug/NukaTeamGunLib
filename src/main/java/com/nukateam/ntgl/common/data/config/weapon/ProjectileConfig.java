@@ -34,6 +34,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
     @Optional private ResourceKey<DamageType> damageType = NtglDamageTypes.BULLET;
     @Optional private boolean visible;
     @Optional private boolean gravity;
+    @Optional private boolean affectedByFluid = true;
     @Optional private boolean damageReduceOverLife;
     @Optional private boolean magazineMode;
     @Optional private int trailColor = 0xFFD289;
@@ -54,6 +55,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         tag.putFloat("Speed", this.speed);
         tag.putInt("Life", this.life);
         tag.putBoolean("Gravity", this.gravity);
+        tag.putBoolean("affectedByFluid", this.affectedByFluid);
         tag.putBoolean("DamageReduceOverLife", this.damageReduceOverLife);
         tag.putBoolean("MagazineMode", this.magazineMode);
         tag.putInt("TrailColor", this.trailColor);
@@ -90,6 +92,9 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         }
         if (tag.contains("Gravity", Tag.TAG_ANY_NUMERIC)) {
             this.gravity = tag.getBoolean("Gravity");
+        }
+        if (tag.contains("affectedByFluid", Tag.TAG_ANY_NUMERIC)) {
+            this.affectedByFluid = tag.getBoolean("affectedByFluid");
         }
         if (tag.contains("DamageReduceOverLife", Tag.TAG_ANY_NUMERIC)) {
             this.damageReduceOverLife = tag.getBoolean("DamageReduceOverLife");
@@ -139,6 +144,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         GunJsonUtil.addObjectIfNotEmpty(object,"explosion", this.explosion.toJsonObject());
 
         if (this.gravity) object.addProperty("gravity", true);
+        object.addProperty("affectedByFluid", true);
         object.addProperty("damageReduceOverLife", this.damageReduceOverLife);
         object.addProperty("magazineMode", this.magazineMode);
         if (this.trailColor != 0xFFD289) object.addProperty("trailColor", this.trailColor);
@@ -157,6 +163,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         projectile.life = this.life;
         projectile.pierceLevel = this.pierceLevel;
         projectile.gravity = this.gravity;
+        projectile.affectedByFluid = this.affectedByFluid;
         projectile.damageReduceOverLife = this.damageReduceOverLife;
         projectile.magazineMode = this.magazineMode;
         projectile.trailColor = this.trailColor;
@@ -217,6 +224,10 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
      */
     public boolean isGravity() {
         return this.gravity;
+    }
+
+    public boolean affectedByFluid() {
+        return this.affectedByFluid;
     }
 
     /**

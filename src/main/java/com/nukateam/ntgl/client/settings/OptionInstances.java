@@ -1,7 +1,5 @@
 package com.nukateam.ntgl.client.settings;
 
-import com.electronwill.nightconfig.core.io.WritingException;
-import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.network.chat.CommonComponents;
@@ -10,17 +8,6 @@ import net.minecraft.network.chat.Component;
 import static net.minecraft.client.Options.genericValueLabel;
 
 public class OptionInstances {
-    //    public static final OptionInstance<Double> ADS_SENSITIVITY
-//            = new GunSliderPercentageOption("cgm.options.adsSensitivity",
-//            0.0, 2.0, 0.01F, gameSettings -> {
-//        return Ntgl.getOptions().adsSensitivity;
-//    }, (gameSettings, value) -> {
-//        Ntgl.getOptions().adsSensitivity = MathHelper.clamp(value, 0.0, 2.0);
-//    }, (gameSettings, option) -> {
-//        double adsSensitivity = Ntgl.getOptions().adsSensitivity;
-//        return I18n.format("cgm.options.adsSensitivity.format", FORMAT.format(adsSensitivity));
-//    });
-
     public static OptionInstance<Double> createSensitivitySlider() {
         return new OptionInstance<>(
                 "ntgl.options.adsSensitivity",
@@ -39,7 +26,7 @@ public class OptionInstances {
                 OptionInstances::createLabel,
                 OptionInstance.UnitDouble.INSTANCE,
                 Ntgl.getOptions().getGunVolume() ,
-                OptionInstances::onValueChanged
+                OptionInstances::onGunVolumeChanged
         );
     }
 
@@ -49,7 +36,7 @@ public class OptionInstances {
                 percentValueLabel(component, value);
     }
 
-    private static void onValueChanged(Double value) {
+    private static void onGunVolumeChanged(Double value) {
         Ntgl.getOptions().setGunVolume(value);
         Ntgl.getOptions().saveOptions();
     }

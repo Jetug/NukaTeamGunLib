@@ -96,7 +96,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         setBoundingBox(new AABB(
                 projectile.getSize(), projectile.getSize(), projectile.getSize(),
                 -projectile.getSize(), -projectile.getSize(), -projectile.getSize()));
-        this.modifiedGravity = projectile.isGravity() ? WeaponModifierHelper.getModifiedProjectileGravity(data, -0.04) : 0.0;
+        this.modifiedGravity = WeaponModifierHelper.getModifiedProjectileGravity(data, -0.04);
         this.life = WeaponModifierHelper.getModifiedProjectileLife(data, this.projectile.getLife());
         var hand = shooter.getMainHandItem() == weaponStack ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         this.isRightHand = hand == InteractionHand.MAIN_HAND;
@@ -188,6 +188,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+
+    protected double getGravity(){
+        return projectile.isGravity() || isAffectedByFluid() ? modifiedGravity : 0.0;
+    }
+
+    private boolean isAffectedByFluid() {
+        return projectile.affectedByFluid() && this.isInFluidType();
     }
 
     public boolean isVisible(){
@@ -302,10 +311,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             this.setPos(nextPosX, nextPosY, nextPosZ);
 
-            if (this.projectile.isGravity()) {
-                this.setDeltaMovement(this.getDeltaMovement().add(0, this.modifiedGravity, 0));
+            if (this.projectile.isGravity() || isAffectedByFluid()) {
+                this.setDeltaMovement(this.getDeltaMovement().add(0, this.getGravity(), 0));
             }
 
+            if (isAffectedByFluid()) {
+                var motion = this.getDeltaMovement();
+                double drag = this.getFluidDrag();
+                this.setDeltaMovement(motion.x * drag, motion.y * drag, motion.z * drag);
+            }
         }
 
         if (this.tickCount >= this.life) {
@@ -314,6 +328,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
             this.remove(RemovalReason.KILLED);
         }
+    }
+
+    protected double getFluidDrag() {
+        var fluidState = this.level().getFluidState(blockPosition());
+        var fluid = fluidState.getType();
+        var density = fluid.getFluidType().getDensity();
+        if (density <= 0) return 1.0;
+        return 1.0 / (1.0 + (density / 1000.0));
     }
 
     private @Nullable List<EntityResult> getHitEntityResult(Vec3 startVec, Vec3 endVec) {
@@ -467,7 +489,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    protected void onHitFluid(BlockState state, BlockHitResult hitResult, Vec3 pos) {
+    @Override
+    protected void doWaterSplashEffect() {
+        super.doWaterSplashEffect();
     }
 
     protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
@@ -498,8 +522,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void onHitBlock(BlockState state, BlockHitResult hitResult, Vec3 hitVec) {
         var blockPos = hitResult.getBlockPos();
         var dir = hitResult.getDirection();
-        PacketHandler.getPlayChannel().sendToTrackingChunk(
-                () -> this.level().getChunkAt(blockPos),
+        var channel = PacketHandler.getPlayChannel();
+        channel.sendToTrackingChunk(() -> this.level().getChunkAt(blockPos),
                 new S2CMessageProjectileHitBlock(hitVec, blockPos, dir));
         doImpactEffects(hitVec);
         onContact(hitVec);
@@ -555,6 +579,10 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             Vec3 Vector3d = rayTraceContext.getFrom().subtract(rayTraceContext.getTo());
             return BlockHitResult.miss(rayTraceContext.getTo(), Direction.getNearest(Vector3d.x, Vector3d.y, Vector3d.z), BlockPos.containing(rayTraceContext.getTo()));
         });
+    }
+
+    protected void onHitFluid(BlockState state, BlockHitResult hitResult, Vec3 pos) {
+//        doWaterSplashEffect();
     }
 
     private void setupStartPosition(LivingEntity shooter) {

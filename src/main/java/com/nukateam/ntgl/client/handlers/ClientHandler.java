@@ -148,10 +148,7 @@ public class ClientHandler {
                 mouseOptionsField.setAccessible(true);
             }
             try {
-                OptionsList list = (OptionsList) mouseOptionsField.get(screen);
-//                list.addBig(OptionInstance.createBoolean("t", true));
-//                list.addSmall(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
-
+                var list = (OptionsList) mouseOptionsField.get(screen);
                 list.addSmall(OptionInstances.createSensitivitySlider(), null);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

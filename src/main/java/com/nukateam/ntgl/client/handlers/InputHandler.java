@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
+import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.common.data.WeaponData;
@@ -144,6 +145,11 @@ public class InputHandler {
             }
             if (NtglKeyBinds.KEY_AMMO_SELECT.consumeClick()) {
                 ClientActions.switchAmmo(hand, player);
+            }
+            if(NtglKeyBinds.KEY_TIPS.consumeClick()){
+                var options = NtglOptions.getInstance();
+                options.setShowTips(!options.isShowTips());
+                options.saveOptions();
             }
         }
     }

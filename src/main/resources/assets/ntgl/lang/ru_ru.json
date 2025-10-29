@@ -180,6 +180,7 @@
   "key.ntgl.ammo_select": "Сменить тип боеприпаса",
   "key.ntgl.melee": "Дополнительная атака",
   "key.ntgl.alt": "Альтернативная атака",
+  "key.ntgl.key_tips": "Показать подсказки клавиш",
 
   "button.categories.ntgl": "NTGL Оружие",
   "button.controls.ntgl": "NTGL Оружие",
@@ -203,5 +204,5 @@
   "ntgl.chat.open_curseforge_page": "Открыть страницу на CurseForge",
   "ntgl.chat.install_configured": "Install %s to access config options",
 
-  "item.ntgl.classic10mm": "Кольт 6520",
+  "item.ntgl.classic10mm": "Кольт 6520"
 }

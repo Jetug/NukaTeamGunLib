@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.client.event.*;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
+import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.util.RgbUtils;
 import com.nukateam.ntgl.client.util.util.render.Figures;
@@ -213,6 +214,7 @@ public class WeaponHud implements IGuiOverlay {
     }
 
     private void renderKeyBinding(GuiGraphics graphics, PoseStack poseStack, InputConstants.Key key, int x, int y) {
+        if(!NtglOptions.getInstance().isShowTips()) return;
         var name = key.getDisplayName().getVisualOrderText();
         poseStack.pushPose();
         {

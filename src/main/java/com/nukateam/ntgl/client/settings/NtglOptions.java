@@ -3,48 +3,52 @@ package com.nukateam.ntgl.client.settings;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.nukateam.ntgl.Ntgl;
-import mod.azure.azurelib.core.math.functions.limit.Min;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.text.DecimalFormat;
 
 /**
  * Author: MrCrayfish
  */
-public class GunOptions {
-    private static GunOptions instance = null;
+public class NtglOptions {
+    private static final String ADS_SENSITIVITY = "adsSensitivity";
+    private static final String GUN_VOLUME = "gunVolume";
+    private static final String SHOW_TIPS = "showTips";
     private static final Splitter COLON_SPLITTER = Splitter.on(':');
+    private static NtglOptions instance = null;
     private final File optionsFile;
     private double adsSensitivity = 0.75;
     private double gunVolume = 1.0;
+    private boolean showTips = true;
 
-    public static GunOptions getInstance(){
+    public static NtglOptions getInstance(){
         if(instance == null)
-            instance = new GunOptions(Minecraft.getInstance().gameDirectory);
+            instance = new NtglOptions(Minecraft.getInstance().gameDirectory);
         return instance;
     }
 
-    protected GunOptions(File dataDir) {
+    protected NtglOptions(File dataDir) {
         this.optionsFile = new File(dataDir, "cgs-options.txt");
         this.loadOptions();
     }
 
-    /**
-     * Gets the ads sensitivity
-     */
     public double getAdsSensitivity() {
         return this.adsSensitivity;
     }
 
-    /**
-     * Gets the volume gun sounds
-     */
     public double getGunVolume() {
         return this.gunVolume;
+    }
+
+    public boolean isShowTips() {
+        return showTips;
+    }
+
+    public void setShowTips(boolean showTips) {
+        this.showTips = showTips;
     }
 
     public void setAdsSensitivity(double adsSensitivity) {
@@ -57,8 +61,9 @@ public class GunOptions {
 
     public void saveOptions() {
         try (var writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(this.optionsFile), StandardCharsets.UTF_8))) {
-            writer.println("adsSensitivity:" + this.adsSensitivity);
-            writer.println("gunVolume:" + this.gunVolume);
+            writer.println(ADS_SENSITIVITY + ":" + this.adsSensitivity);
+            writer.println(GUN_VOLUME + ":" + this.gunVolume);
+            writer.println(SHOW_TIPS + ":" + this.showTips);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -96,11 +101,14 @@ public class GunOptions {
 
     private void readOption(String key, String value) {
         switch (key) {
-            case "adsSensitivity":
+            case ADS_SENSITIVITY:
                 this.adsSensitivity = Double.parseDouble(value);
                 break;
-            case "gunVolume":
+            case GUN_VOLUME:
                 this.gunVolume = Double.parseDouble(value);
+                break;
+            case SHOW_TIPS:
+                this.showTips = Boolean.parseBoolean(value);
                 break;
         }
     }

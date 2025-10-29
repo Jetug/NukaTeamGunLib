@@ -6,8 +6,8 @@ import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.example.common.registery.EntityTypes;
 import com.nukateam.example.common.registery.*;
 import com.nukateam.ntgl.client.handlers.ClientHandler;
+import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.MetaLoader;
-import com.nukateam.ntgl.client.settings.GunOptions;
 import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.common.registry.AmmoHolders;
@@ -109,8 +109,8 @@ public class Ntgl {
         return !FMLEnvironment.production;
     }
 
-    public static GunOptions getOptions() {
-        return GunOptions.getInstance();
+    public static NtglOptions getOptions() {
+        return NtglOptions.getInstance();
     }
 
     public static ResourceLocation ntglResource(String name) {
