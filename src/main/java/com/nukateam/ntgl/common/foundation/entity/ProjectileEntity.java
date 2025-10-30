@@ -507,11 +507,14 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     public void doSplashEffect(Vec3 pos) {
-        if(Ntgl.subtleEffectsLoaded && SubtleEffectsHelper.doSplashEffect(this))
-            return;
+        if (!this.wasTouchingWater) {
+            wasTouchingWater = true;
+            if(Ntgl.subtleEffectsLoaded && SubtleEffectsHelper.doSplashEffect(this))
+                return;
 
-        if(isInWater()) {
-            doWaterSplashEffect(pos);
+            if(isInWater()) {
+                doWaterSplashEffect(pos);
+            }
         }
     }
 
