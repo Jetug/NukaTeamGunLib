@@ -2,9 +2,8 @@ package com.nukateam.ntgl.common.util.helpers.compatibility;
 
 import einstein.subtle_effects.init.ModConfigs;
 import einstein.subtle_effects.init.ModParticles;
-import einstein.subtle_effects.particle.emitter.SplashEmitter;
 import einstein.subtle_effects.particle.option.SplashEmitterParticleOptions;
-import einstein.subtle_effects.util.ParticleSpawnUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
@@ -12,11 +11,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class SubtleEffectsHelper {
-    public static boolean doSplashEffect(Entity entity) {
+    public static boolean doSplashEffect(Entity entity, Vec3 pos) {
         var delta = entity.getDeltaMovement();
         var particle = entity.isInLava() ? ModParticles.LAVA_SPLASH_EMITTER.get() : ModParticles.WATER_SPLASH_EMITTER.get();
-        var yPos = entity.getY() + entity.getFluidHeight(FluidTags.WATER);
-        var velocity = delta.length();
+        var yPos = pos.y() + entity.getFluidHeight(FluidTags.WATER);
+        var velocity = (float)delta.length();
 
         if (!ModConfigs.ENTITIES.splashes.splashEffects) {
             return false;
@@ -24,28 +23,45 @@ public class SubtleEffectsHelper {
             return false;
         } else {
             double offset = yPos + 0.01;
-            if (offset <= yPos + (double)entity.getBbHeight()) {
-                var splashEmitter = SplashEmitter.createForEntity(entity, particle, velocity);
+//            if (offset <= yPos + (double)entity.getBbHeight()) {
+                var splashEmitter = new SplashEmitterParticleOptions(particle, entity.getBbWidth(), entity.getBbHeight() * velocity, -1, -1);
+//                var splashEmitter = SplashEmitter.createForEntity(entity, particle, -1);
                 entity.level().addAlwaysVisibleParticle(splashEmitter, true,
-                        entity.getX(), offset, entity.getZ(),
+                        pos.x(), offset, pos.z(),
                         0.0F, 0.0F, 0.0F);
                 return true;
-            }
+//            }
 
-            return false;
+//            return false;
         }
 //        return ParticleSpawnUtil.spawnSplashEffects(entity, entity.level(),
 //                particle, yPos, delta.length() * 2);
     }
 
-    public static boolean doSplashEffect2(Entity entity) {
-        var delta = entity.getDeltaMovement();
-        var emitter = entity.isInLava() ? ModParticles.LAVA_SPLASH_EMITTER.get() : ModParticles.WATER_SPLASH_EMITTER.get();
+    public static boolean doSplashEffect(Vec3 pos, float size, float speed, boolean isInLava) {
+        var level = Minecraft.getInstance().level;
+        var particle = isInLava ? ModParticles.LAVA_SPLASH_EMITTER.get() : ModParticles.WATER_SPLASH_EMITTER.get();
 
-        var yPos = entity.getY() + entity.getFluidHeight(FluidTags.WATER);
+        if (!ModConfigs.ENTITIES.splashes.splashEffects) {
+            return false;
+        }
+        else {
+            var blockPos = BlockPos.containing(pos);
+            var fluidHeight = level.getFluidState(blockPos).getHeight(level, blockPos);
+            var yPos = pos.y() + fluidHeight;
+            var offset = yPos + 0.01;
+//            if (offset <= yPos + (double)entity.getBbHeight()) {
+//                var splashEmitter = SplashEmitter.createForEntity(entity, particle, velocity);
+            var splashEmitter = new SplashEmitterParticleOptions(particle, size, size * speed, -1, -1);
 
-        return ParticleSpawnUtil.spawnSplashEffects(entity, entity.level(),
-                emitter, yPos, delta.y * 2);
+            level.addAlwaysVisibleParticle(splashEmitter, true,
+                    pos.x(), offset, pos.z(),
+                        0.0F, 0.0F, 0.0F);
+                return true;
+//            }
+
+//            return false;
+        }
     }
 
     public static void doExplosionSplash(Level level, float radius, Vec3 position) {

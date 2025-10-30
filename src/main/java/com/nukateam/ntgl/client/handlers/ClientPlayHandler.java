@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.*;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.util.handler.*;
@@ -29,6 +30,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.createDeathEffectClient;
+import static com.nukateam.ntgl.common.util.helpers.compatibility.SubtleEffectsHelper.doSplashEffect;
 
 /**
  * Author: MrCrayfish
@@ -218,6 +220,10 @@ public class ClientPlayHandler {
         if(projectile instanceof ProjectileEntity projectileEntity){
             projectileEntity.setPos(message.getPos());
             projectileEntity.doSplashEffect(message.getPos());
+        }
+        else
+        if(Ntgl.subtleEffectsLoaded){
+            doSplashEffect(message.getPos(), message.getSize(), message.getSpeed(), message.isInLava());
         }
     }
 

@@ -35,6 +35,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -504,7 +505,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             wasTouchingWater = true;
             PacketHandler.getPlayChannel().sendToNearbyPlayers(
                     () -> LevelLocation.create(level(), pos, 32),
-                    new S2CMessageProjectileHitFluid(pos, this.getId()));
+                    new S2CMessageProjectileHitFluid(
+                            pos,
+                            getBbWidth(),
+                            (float)getDeltaMovement().length(),
+                            isInLava(),
+                            this.getId())
+            );
         }
     }
 
@@ -514,11 +521,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     public void doSplashEffect(Vec3 pos) {
-            if(Ntgl.subtleEffectsLoaded && SubtleEffectsHelper.doSplashEffect(this))
-                return;
-            if(isInWater()) {
-                doWaterSplashEffect(pos);
-            }
+        if(Ntgl.subtleEffectsLoaded && SubtleEffectsHelper.doSplashEffect(this, pos))
+            return;
+        if(isInWater()) {
+            doWaterSplashEffect(pos);
+        }
     }
 
     private void doWaterSplashEffect(Vec3 pos) {
