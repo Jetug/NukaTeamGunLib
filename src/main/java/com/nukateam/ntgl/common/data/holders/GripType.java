@@ -17,6 +17,9 @@ import java.util.Map;
  * Author: MrCrayfish
  */
 public class GripType extends ResourceHolder {
+    public static final GripType VANILLA =
+            new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "vanilla"), new VanillaPose(), true);
+
     /** A grip type designed for weapons that are held with only one hand, like a pistol. */
     public static final GripType ONE_HANDED =
             new GripType(ResourceLocation.tryBuild(Ntgl.MOD_ID, "one_handed"), new OneHandedPose(), true);
@@ -41,8 +44,8 @@ public class GripType extends ResourceHolder {
 
     private static final Map<ResourceLocation, GripType> gripTypeMap = new HashMap<>();
 
-    /* Registers the standard grip types when the class is loaded */
     static {
+        registerType(VANILLA);
         registerType(ONE_HANDED);
         registerType(TWO_HANDED);
         registerType(MINI_GUN);

@@ -78,6 +78,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected EntityDimensions entitySize;
     protected double modifiedGravity;
     protected int life;
+    protected boolean wasTouchingBlock;
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -441,9 +442,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             handleBlockBreaking(pos, state);
 
-            if (!inFluid && !state.canBeReplaced() && removeOnHit()) {
-                this.remove(RemovalReason.KILLED);
+            if(wasTouchingBlock) {
+                if (!inFluid && !state.canBeReplaced() && removeOnHit()) {
+                    this.remove(RemovalReason.KILLED);
+                }
             }
+            wasTouchingBlock = true;
 
             if (block instanceof IDamageable) {
                 ((IDamageable) block).onBlockDamaged(this.level(), state, pos, this, this.getDamage(), (int) Math.ceil(this.getDamage() / 2.0) + 1);
@@ -496,9 +500,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void onHitFluid(BlockHitResult hitResult) {
         var pos = hitResult.getLocation();
 
-        PacketHandler.getPlayChannel().sendToNearbyPlayers(
-                () -> LevelLocation.create(level(), pos, 32),
-                new S2CMessageProjectileHitFluid(pos, this.getId()));
+        if (!this.wasTouchingWater) {
+            wasTouchingWater = true;
+            PacketHandler.getPlayChannel().sendToNearbyPlayers(
+                    () -> LevelLocation.create(level(), pos, 32),
+                    new S2CMessageProjectileHitFluid(pos, this.getId()));
+        }
     }
 
     @Override
@@ -507,15 +514,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     public void doSplashEffect(Vec3 pos) {
-        if(Ntgl.subtleEffectsLoaded && SubtleEffectsHelper.doSplashEffect(this))
-            return;
-
-        if (!this.wasTouchingWater) {
-            wasTouchingWater = true;
+            if(Ntgl.subtleEffectsLoaded && SubtleEffectsHelper.doSplashEffect(this))
+                return;
             if(isInWater()) {
                 doWaterSplashEffect(pos);
             }
-        }
     }
 
     private void doWaterSplashEffect(Vec3 pos) {
