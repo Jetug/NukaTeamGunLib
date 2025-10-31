@@ -6,6 +6,7 @@ import com.nukateam.ntgl.client.util.*;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
+import com.nukateam.ntgl.common.util.helpers.compatibility.EffectHelper;
 import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
@@ -223,7 +224,7 @@ public class ClientPlayHandler {
 //        }
 //        else
         if(Ntgl.subtleEffectsLoaded){
-            doSplashEffect(message.getPos(), message.getSize(), message.getSpeed(), message.isInLava());
+            EffectHelper.doSplashEffect(message.getPos(), message.getSize(), message.getSpeed(), message.isInLava());
         }
     }
 

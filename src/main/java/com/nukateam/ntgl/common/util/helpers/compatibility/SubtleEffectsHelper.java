@@ -31,7 +31,7 @@ public class SubtleEffectsHelper {
         var level = Minecraft.getInstance().level;
         var particle = isInLava ? ModParticles.LAVA_SPLASH_EMITTER.get() : ModParticles.WATER_SPLASH_EMITTER.get();
 
-        var ratio = isInLava ? 2 : 1;
+        var ratio = isInLava ? 2f : 1f;
 
         if (!ModConfigs.ENTITIES.splashes.splashEffects) {
             return false;

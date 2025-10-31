@@ -514,19 +514,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                             isLava,
                             this.getId())
             );
-        }
-    }
-
-    @Override
-    protected void doWaterSplashEffect() {
-        super.doWaterSplashEffect();
-    }
-
-    public void doSplashEffect(S2CMessageProjectileHitFluid message) {
-        if(Ntgl.subtleEffectsLoaded && SubtleEffectsHelper.doSplashEffect(this, message.getPos(), message.isInLava()))
-            return;
-        if(isInWater()) {
-            doWaterSplashEffect(message.getPos());
+            this.gameEvent(GameEvent.SPLASH);
         }
     }
 

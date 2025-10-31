@@ -6,6 +6,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.foundation.ModTags;
+import com.nukateam.ntgl.common.util.helpers.compatibility.EffectHelper;
 import com.nukateam.ntgl.common.util.helpers.compatibility.SubtleEffectsHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
@@ -155,8 +156,7 @@ public class ProjectileExplosion extends Explosion {
         var toBlow = (ObjectArrayList<BlockPos>)getToBlow();
 
         if (spawnParticles) {
-            if(Ntgl.subtleEffectsLoaded)
-                SubtleEffectsHelper.doExplosionSplash(level, radius, getPosition());
+            EffectHelper.doExplosionSplash(level, radius, getPosition());
 
             if (!(this.radius < 2.0F) && interactsWithBlocks) {
                 this.level.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
