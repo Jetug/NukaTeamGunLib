@@ -14,15 +14,11 @@ public class SubtleEffectsHelper {
     public static boolean doSplashEffect(Entity entity, Vec3 pos, boolean inLava) {
         var delta = entity.getDeltaMovement();
         var particle = inLava ? ModParticles.LAVA_SPLASH_EMITTER.get() : ModParticles.WATER_SPLASH_EMITTER.get();
-        var fluid = inLava ? FluidTags.LAVA : FluidTags.WATER;
         var velocity = (float)delta.length();
 
         if (!ModConfigs.ENTITIES.splashes.splashEffects) {
             return false;
         } else {
-//            var fluidHeight = entity.getFluidHeight(fluid);
-//            var yPos = pos.y() + fluidHeight;
-//            var offset = yPos + 0.01;
             var splashEmitter = new SplashEmitterParticleOptions(particle, entity.getBbWidth(), entity.getBbHeight() * velocity, -1, -1);
             entity.level().addAlwaysVisibleParticle(splashEmitter, true,
                     pos.x(), pos.y() + 0.01, pos.z(),
@@ -35,25 +31,17 @@ public class SubtleEffectsHelper {
         var level = Minecraft.getInstance().level;
         var particle = isInLava ? ModParticles.LAVA_SPLASH_EMITTER.get() : ModParticles.WATER_SPLASH_EMITTER.get();
 
+        var ratio = isInLava ? 2 : 1;
+
         if (!ModConfigs.ENTITIES.splashes.splashEffects) {
             return false;
         }
         else {
-            var blockPos = BlockPos.containing(pos);
-            var fluidHeight = level.getFluidState(blockPos).getHeight(level, blockPos);
-            var yPos = pos.y() + fluidHeight;
-            var offset = yPos + 0.01;
-//            if (offset <= yPos + (double)entity.getBbHeight()) {
-//                var splashEmitter = SplashEmitter.createForEntity(entity, particle, velocity);
-            var splashEmitter = new SplashEmitterParticleOptions(particle, size, size * speed, -1, -1);
-
+            var splashEmitter = new SplashEmitterParticleOptions(particle, size, size * speed / ratio, -1, -1);
             level.addAlwaysVisibleParticle(splashEmitter, true,
-                    pos.x(), offset, pos.z(),
-                        0.0F, 0.0F, 0.0F);
-                return true;
-//            }
-
-//            return false;
+                    pos.x(), pos.y() + 0.01, pos.z(),
+                    0.0F, 0.0F, 0.0F);
+            return true;
         }
     }
 

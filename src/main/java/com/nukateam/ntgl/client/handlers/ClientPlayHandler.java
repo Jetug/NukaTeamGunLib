@@ -217,11 +217,11 @@ public class ClientPlayHandler {
         var level = Minecraft.getInstance().level;
         var projectile = level.getEntity(message.getProjectileId());
 
-        if(projectile instanceof ProjectileEntity projectileEntity){
-            projectileEntity.setPos(message.getPos());
-            projectileEntity.doSplashEffect(message);
-        }
-        else
+//        if(projectile instanceof ProjectileEntity projectileEntity){
+//            projectileEntity.setPos(message.getPos());
+//            projectileEntity.doSplashEffect(message);
+//        }
+//        else
         if(Ntgl.subtleEffectsLoaded){
             doSplashEffect(message.getPos(), message.getSize(), message.getSpeed(), message.isInLava());
         }
