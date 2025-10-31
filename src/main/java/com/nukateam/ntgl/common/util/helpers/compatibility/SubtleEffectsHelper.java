@@ -11,31 +11,24 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class SubtleEffectsHelper {
-    public static boolean doSplashEffect(Entity entity, Vec3 pos) {
+    public static boolean doSplashEffect(Entity entity, Vec3 pos, boolean inLava) {
         var delta = entity.getDeltaMovement();
-        var particle = entity.isInLava() ? ModParticles.LAVA_SPLASH_EMITTER.get() : ModParticles.WATER_SPLASH_EMITTER.get();
-        var yPos = pos.y() + entity.getFluidHeight(FluidTags.WATER);
+        var particle = inLava ? ModParticles.LAVA_SPLASH_EMITTER.get() : ModParticles.WATER_SPLASH_EMITTER.get();
+        var fluid = inLava ? FluidTags.LAVA : FluidTags.WATER;
         var velocity = (float)delta.length();
 
         if (!ModConfigs.ENTITIES.splashes.splashEffects) {
             return false;
-        } else if (ModConfigs.ENTITIES.splashes.entityBlocklist.contains(entity.getType())) {
-            return false;
         } else {
-            double offset = yPos + 0.01;
-//            if (offset <= yPos + (double)entity.getBbHeight()) {
-                var splashEmitter = new SplashEmitterParticleOptions(particle, entity.getBbWidth(), entity.getBbHeight() * velocity, -1, -1);
-//                var splashEmitter = SplashEmitter.createForEntity(entity, particle, -1);
-                entity.level().addAlwaysVisibleParticle(splashEmitter, true,
-                        pos.x(), offset, pos.z(),
-                        0.0F, 0.0F, 0.0F);
-                return true;
-//            }
-
-//            return false;
+//            var fluidHeight = entity.getFluidHeight(fluid);
+//            var yPos = pos.y() + fluidHeight;
+//            var offset = yPos + 0.01;
+            var splashEmitter = new SplashEmitterParticleOptions(particle, entity.getBbWidth(), entity.getBbHeight() * velocity, -1, -1);
+            entity.level().addAlwaysVisibleParticle(splashEmitter, true,
+                    pos.x(), pos.y() + 0.01, pos.z(),
+                    0.0F, 0.0F, 0.0F);
+            return true;
         }
-//        return ParticleSpawnUtil.spawnSplashEffects(entity, entity.level(),
-//                particle, yPos, delta.length() * 2);
     }
 
     public static boolean doSplashEffect(Vec3 pos, float size, float speed, boolean isInLava) {

@@ -219,7 +219,7 @@ public class ClientPlayHandler {
 
         if(projectile instanceof ProjectileEntity projectileEntity){
             projectileEntity.setPos(message.getPos());
-            projectileEntity.doSplashEffect(message.getPos());
+            projectileEntity.doSplashEffect(message);
         }
         else
         if(Ntgl.subtleEffectsLoaded){

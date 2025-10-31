@@ -500,6 +500,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     protected void onHitFluid(BlockHitResult hitResult) {
         var pos = hitResult.getLocation();
+        var state = level().getFluidState(hitResult.getBlockPos());
+        var isLava = state.is(FluidTags.LAVA);
 
         if (!this.wasTouchingWater) {
             wasTouchingWater = true;
@@ -509,7 +511,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                             pos,
                             getBbWidth(),
                             (float)getDeltaMovement().length(),
-                            isInLava(),
+                            isLava,
                             this.getId())
             );
         }
@@ -520,11 +522,11 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         super.doWaterSplashEffect();
     }
 
-    public void doSplashEffect(Vec3 pos) {
-        if(Ntgl.subtleEffectsLoaded && SubtleEffectsHelper.doSplashEffect(this, pos))
+    public void doSplashEffect(S2CMessageProjectileHitFluid message) {
+        if(Ntgl.subtleEffectsLoaded && SubtleEffectsHelper.doSplashEffect(this, message.getPos(), message.isInLava()))
             return;
         if(isInWater()) {
-            doWaterSplashEffect(pos);
+            doWaterSplashEffect(message.getPos());
         }
     }
 
