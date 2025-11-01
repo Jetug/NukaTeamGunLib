@@ -8,8 +8,8 @@ import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
 import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.ClientDebug;
-import com.nukateam.ntgl.client.util.util.RgbUtils;
-import com.nukateam.ntgl.client.util.util.render.Figures;
+import com.nukateam.ntgl.client.util.helpers.RgbHelper;
+import com.nukateam.ntgl.client.util.helpers.render.Figures;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.data.holders.CounterType;
@@ -108,7 +108,7 @@ public class WeaponHud implements IGuiOverlay {
             renderAmmoTypeIcon(graphics, poseStack, handCache, x - COUNTER_POS_X - ICON_SIZE - 2, y - COUNTER_POS_Y - 11);
             renderCurrentAmmo (graphics, poseStack, handCache, x - COUNTER_POS_X, y - COUNTER_POS_Y - fontHeight);
 
-            Figures.drawLine(graphics, x - COUNTER_POS_X, y - 31, 27, 2, RgbUtils.toRgba(colors.hud));
+            Figures.drawLine(graphics, x - COUNTER_POS_X, y - 31, 27, 2, RgbHelper.toRgba(colors.hud));
 
             if(handCache.isThrowable)
                 renderThrowModeIcon(graphics, poseStack, handCache, x - COUNTER_POS_X - ICON_SIZE - 2 , y - INVENTORY_AMMO_POS_Y - 6);
@@ -168,7 +168,7 @@ public class WeaponHud implements IGuiOverlay {
 
     protected void renderBarCounter(GuiGraphics graphics, float percent, int x, int y) {
         var color = percent < 0.25 ? colors.lowAmmo : colors.currentAmmo;
-        Figures.drawBar(graphics, x, y, BAR_WIDTH, BAR_HEIGHT, percent, RgbUtils.toRgba(color));
+        Figures.drawBar(graphics, x, y, BAR_WIDTH, BAR_HEIGHT, percent, RgbHelper.toRgba(color));
     }
 
     protected void renderInventoryAmmo(GuiGraphics graphics, PoseStack poseStack, GunHudCache handCache, int x, int y) {
@@ -248,7 +248,7 @@ public class WeaponHud implements IGuiOverlay {
     }
 
     protected void renderIcon(GuiGraphics graphics, ResourceLocation icon, int x, int y) {
-        var iconColor = RgbUtils.rgbToFloatRgba(colors.hud);
+        var iconColor = RgbHelper.rgbToFloatRgba(colors.hud);
         RenderSystem.setShaderColor(iconColor[0], iconColor[1], iconColor[2], iconColor[3]);
         graphics.blit(icon, x, y, 0F, 0F, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
         RenderSystem.setShaderColor(1, 1, 1, 1);

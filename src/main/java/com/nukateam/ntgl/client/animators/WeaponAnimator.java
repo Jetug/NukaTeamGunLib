@@ -8,7 +8,7 @@ import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.model.gun.*;
 import com.nukateam.ntgl.client.render.renderers.weapon.*;
-import com.nukateam.ntgl.client.util.util.TransformUtils;
+import com.nukateam.ntgl.client.util.helpers.TransformUtils;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.ThrowMode;
@@ -33,7 +33,7 @@ import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.event.TickEvent;
 import org.jetbrains.annotations.NotNull;
 
-import static com.nukateam.ntgl.client.util.util.TransformUtils.*;
+import static com.nukateam.ntgl.client.util.helpers.TransformUtils.*;
 import static com.nukateam.ntgl.common.data.constants.Animations.*;
 import static mod.azure.azurelib.core.animation.AnimatableManager.*;
 import static mod.azure.azurelib.core.animation.Animation.*;

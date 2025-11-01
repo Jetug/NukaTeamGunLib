@@ -1,7 +1,6 @@
-package com.nukateam.ntgl.client.util.util;
+package com.nukateam.ntgl.client.util.helpers;
 
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemDisplayContext;
 
 import java.util.Collections;

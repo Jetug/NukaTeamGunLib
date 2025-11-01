@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.util.util;
+package com.nukateam.ntgl.client.util.helpers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;

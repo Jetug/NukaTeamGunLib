@@ -5,8 +5,8 @@ import com.mojang.math.Axis;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.util.ClientDebug;
-import com.nukateam.ntgl.client.util.util.PropertyHelper;
-import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
+import com.nukateam.ntgl.client.util.helpers.PropertyHelper;
+import com.nukateam.ntgl.client.util.helpers.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
@@ -53,7 +53,7 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static com.nukateam.ntgl.client.util.util.PropertyHelper.*;
+import static com.nukateam.ntgl.client.util.helpers.PropertyHelper.*;
 
 @SuppressWarnings("removal")
 public class GunRenderingHandler {

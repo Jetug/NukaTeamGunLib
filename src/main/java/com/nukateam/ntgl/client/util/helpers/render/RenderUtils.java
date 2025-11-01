@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.util.util.render;
+package com.nukateam.ntgl.client.util.helpers.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

@@ -1,8 +1,8 @@
-package com.nukateam.ntgl.client.util.util;
+package com.nukateam.ntgl.client.util.helpers;
 
 import com.nukateam.ntgl.client.render.hud.WeaponHud;
 
-public class RgbUtils {
+public class RgbHelper {
     public static int toRgba(int rgb){
         int alpha = 0xFF;
         return (alpha << 24) | rgb;

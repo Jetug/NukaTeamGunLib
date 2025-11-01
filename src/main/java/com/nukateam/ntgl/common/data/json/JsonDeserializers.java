@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.data.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.nukateam.ntgl.client.util.util.Easings;
+import com.nukateam.ntgl.client.util.helpers.Easings;
 import com.google.gson.JsonDeserializer;
 import com.nukateam.ntgl.common.data.holders.*;
 import net.minecraft.Util;

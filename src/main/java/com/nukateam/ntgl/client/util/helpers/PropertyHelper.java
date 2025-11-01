@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.util.util;
+package com.nukateam.ntgl.client.util.helpers;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.MetaLoader;

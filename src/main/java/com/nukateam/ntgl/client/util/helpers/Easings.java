@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.util.util;
+package com.nukateam.ntgl.client.util.helpers;
 
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;

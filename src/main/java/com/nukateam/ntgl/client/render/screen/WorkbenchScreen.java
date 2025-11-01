@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.render.screen;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
+import com.nukateam.ntgl.client.util.helpers.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkWeaponManager;

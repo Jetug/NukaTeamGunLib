@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.client.util.util;
+package com.nukateam.ntgl.client.util.helpers;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
 import net.minecraft.resources.ResourceLocation;

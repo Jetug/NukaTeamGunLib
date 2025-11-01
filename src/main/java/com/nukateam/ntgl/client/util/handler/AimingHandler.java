@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
-import com.nukateam.ntgl.client.util.util.PropertyHelper;
+import com.nukateam.ntgl.client.util.helpers.PropertyHelper;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;

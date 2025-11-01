@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
-import com.nukateam.ntgl.client.util.util.TransformUtils;
+import com.nukateam.ntgl.client.util.helpers.TransformUtils;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.Modules;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
