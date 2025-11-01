@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class WeaponStateHelper {
     public static final String AMMO_TAG = "Ammo";
@@ -46,6 +47,11 @@ public class WeaponStateHelper {
     public static ResourceKey<DamageType> getDamageType(WeaponData data){
         var ammo = getProjectileConfig(data);
         return ammo.getDamageType();
+    }
+
+    public static float getProjectileDamage(WeaponData data) {
+        var ammo = getCurrentAmmo(data).getId();
+        return WeaponModifierHelper.getProjectileDamage(ammo, data);
     }
 
     public static int getAmmoCount(WeaponData data) {
@@ -220,7 +226,7 @@ public class WeaponStateHelper {
     }
 
     public static boolean hasAttachmentEquipped(ItemStack stack, AttachmentType type) {
-        var gun = WeaponModifierHelper.getConfig(stack);
+        var gun = WeaponModifierHelper.getConfig(new WeaponData(stack, null));
         if (!gun.canAttachType(type))
             return false;
 

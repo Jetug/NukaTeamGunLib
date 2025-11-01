@@ -50,19 +50,19 @@ public class InputHandler {
             var data = new WeaponData(mainHandItem, player);
 
             if(isKeyAttackDown()) {
-                data.setWeaponAction(WeaponMode.PRIMARY);
+                data.setWeaponMode(WeaponMode.PRIMARY);
                 handleInput(data, InteractionHand.MAIN_HAND, options.keyAttack);
             }
             else if(isUseKeyDown() && !(WeaponModifierHelper.isWeaponItem(offhandItem) && canUseOffhandWeapon(player))) {
-                data.setWeaponAction(WeaponMode.SECONDARY);
+                data.setWeaponMode(WeaponMode.SECONDARY);
                 handleInput(data, InteractionHand.MAIN_HAND, options.keyUse);
             }
             else if(NtglKeyBinds.KEY_ADD_ATTACK.isDown()) {
-                data.setWeaponAction(WeaponMode.ADDITIONAL);
+                data.setWeaponMode(WeaponMode.ADDITIONAL);
                 handleInput(data, InteractionHand.MAIN_HAND, NtglKeyBinds.KEY_ADD_ATTACK);
             }
             else if(NtglKeyBinds.KEY_ALT_ATTACK.isDown()) {
-                data.setWeaponAction(WeaponMode.ALTERNATIVE);
+                data.setWeaponMode(WeaponMode.ALTERNATIVE);
                 handleInput(data, InteractionHand.MAIN_HAND, NtglKeyBinds.KEY_ALT_ATTACK);
             }
         }
@@ -71,15 +71,15 @@ public class InputHandler {
             var data = new WeaponData(offhandItem, player);
 
             if(isUseKeyDown()) {
-                data.setWeaponAction(WeaponMode.PRIMARY);
+                data.setWeaponMode(WeaponMode.PRIMARY);
                 handleInput(data, InteractionHand.OFF_HAND, options.keyUse);
             }
             else if(!WeaponModifierHelper.isWeaponItem(mainHandItem)){
                 if (NtglKeyBinds.KEY_ADD_ATTACK.isDown()) {
-                    data.setWeaponAction(WeaponMode.ADDITIONAL);
+                    data.setWeaponMode(WeaponMode.ADDITIONAL);
                     handleInput(data, InteractionHand.OFF_HAND, NtglKeyBinds.KEY_ADD_ATTACK);
                 } else if (NtglKeyBinds.KEY_ALT_ATTACK.isDown()) {
-                    data.setWeaponAction(WeaponMode.ALTERNATIVE);
+                    data.setWeaponMode(WeaponMode.ALTERNATIVE);
                     Ntgl.LOGGER.debug("!!! Alt down");
                     handleInput(data, InteractionHand.OFF_HAND, NtglKeyBinds.KEY_ALT_ATTACK);
                 }

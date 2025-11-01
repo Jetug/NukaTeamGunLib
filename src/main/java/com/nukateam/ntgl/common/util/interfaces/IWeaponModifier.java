@@ -9,6 +9,7 @@ import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponSettings;
 import com.nukateam.ntgl.common.data.holders.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
@@ -65,9 +66,13 @@ public interface IWeaponModifier {
      *
      * @param damage the current projectile damage
      * @param data
-     * @return a new damage for the projectile
+     * @return new damage for the projectile
      */
     default float modifyDamage(float damage, WeaponData data) {
+        return damage;
+    }
+
+    default float modifyDamage(float damage, Item ammo, WeaponData data) {
         return damage;
     }
 

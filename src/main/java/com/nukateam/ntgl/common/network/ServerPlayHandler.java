@@ -94,7 +94,7 @@ public class ServerPlayHandler {
         if (heldItem.getItem() instanceof IWeapon weaponItem
                 && (WeaponStateHelper.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
             var modifiedGun = weaponItem.getModifiedConfig(heldItem);
-            var data = new WeaponData(heldItem, shooter).setWeaponAction(message.getMode());
+            var data = new WeaponData(heldItem, shooter).setWeaponMode(message.getMode());
 
             if (modifiedGun != null) {
                 if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand))) {
@@ -392,7 +392,7 @@ public class ServerPlayHandler {
         var action = message.getAction();
 
         var weapon = player.getItemInHand(message.getHand());
-        var weaponData = new WeaponData(weapon, player).setWeaponAction(message.getAttackMode());
+        var weaponData = new WeaponData(weapon, player).setWeaponMode(message.getAttackMode());
 
         if(action == KeyAction.HOLD){
             ThrowingTracker.start(weaponData, message.getHand());
@@ -415,19 +415,19 @@ public class ServerPlayHandler {
 
     public static void handleMeleeAttack(C2SMessageMeleeAttack message, ServerPlayer player) {
         var stack = player.getItemInHand(message.getHand());
-        var gunData = new WeaponData(stack, player).setWeaponAction(message.getAction());
+        var gunData = new WeaponData(stack, player).setWeaponMode(message.getAction());
         if(stack.getItem() instanceof IWeapon
                 && WeaponModifierHelper.canMelee(gunData)
                 && !EquipTracker.isEquiping(player, message.getHand())) {
             var heldItem = player.getItemInHand(message.getHand());
 
-            MeleeTracker.start(new WeaponData(heldItem, player).setWeaponAction(message.getAction()), message.getHand());
+            MeleeTracker.start(new WeaponData(heldItem, player).setWeaponMode(message.getAction()), message.getHand());
         }
     }
 
     public static void handleFireModeSwitch(ServerPlayer player, ItemStack stack, InteractionHand hand) {
         if(WeaponModifierHelper.getWeaponAction(new WeaponData(stack, player)) == WeaponAction.THROW){
-            var data = new WeaponData(stack, player).setWeaponAction(WeaponMode.PRIMARY);
+            var data = new WeaponData(stack, player).setWeaponMode(WeaponMode.PRIMARY);
             handleThrowModeSwitch(data, hand);
         } else {
             var data = new WeaponData(stack, player);

@@ -133,7 +133,7 @@ public class ControllerHandler {
                 if (isEquals(originalButton, GunButtonBindings.SHOOT)) {
                     shouldCancel = true;
                     if (state) {
-                        ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponAction(WeaponMode.PRIMARY));
+                        ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponMode(WeaponMode.PRIMARY));
                     }
                 } else if (isEquals(originalButton, GunButtonBindings.AIM)) {
                     shouldCancel = true;
@@ -180,7 +180,7 @@ public class ControllerHandler {
 
             if (heldItem.getItem() instanceof IWeapon) {
                 if (WeaponModifierHelper.isAuto(gunData)) {
-                    ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponAction(WeaponMode.PRIMARY));
+                    ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponMode(WeaponMode.PRIMARY));
                 }
             }
         }

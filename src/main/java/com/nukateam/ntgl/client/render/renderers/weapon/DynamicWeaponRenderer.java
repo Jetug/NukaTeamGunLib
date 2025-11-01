@@ -6,6 +6,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.util.TransformUtils;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.Modules;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
@@ -48,7 +49,7 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
                        @Nullable RenderType renderType, @Nullable VertexConsumer buffer, int packedLight) {
         this.bufferSource = bufferSource;
         this.transformType = transformType;
-        this.weaponConfig = WeaponModifierHelper.getConfig(stack);
+        this.weaponConfig = WeaponModifierHelper.getConfig(new WeaponData(stack, entity));
         this.gunStack = stack;
         this.gunAttachments = WeaponStateHelper.getAttachmentItems(stack);
         this.configAttachments = weaponConfig.getAttachmentConfigs(gunAttachments);

@@ -52,7 +52,7 @@ public class ClientActions {
         var weapon = player.getItemInHand(hand);
 
         if(weapon.getItem() instanceof IWeapon){
-            var gunData = new WeaponData(weapon, player).setWeaponAction(mode);
+            var gunData = new WeaponData(weapon, player).setWeaponMode(mode);
             var weaponMode = WeaponModifierHelper.getWeaponAction(gunData);
 
 //            if(weaponMode == WeaponMode.GUN) {

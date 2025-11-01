@@ -57,7 +57,7 @@ public class ClientMeleeHandler {
                 && !doMelee)
         {
             TRACKER_MAP.put(Pair.of(entity, hand), new ClientMeleeHandler(data));
-            PacketHandler.getPlayChannel().sendToServer(new C2SMessageMeleeAttack(hand, data.weaponAction));
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageMeleeAttack(hand, data.weaponMode));
         }
     }
 

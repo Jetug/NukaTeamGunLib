@@ -3,6 +3,7 @@
     "action": "ntgl:gun",
     "rate": 10,
     "gripType": "ntgl:one_handed",
+    "fireMode": ["ntgl:auto", "ntgl:semi"],
     "loadingType": "magazine",
     "maxAmmo": 6,
     "damage": 12.0,
@@ -19,7 +20,8 @@
     "movementSpeed": 1,
     "melee": true,
     "ammo": [
-      "minecraft:stick"
+      "minecraft:stick",
+      "ntgl:round10mm"
     ]
   },
   "ammoData":{

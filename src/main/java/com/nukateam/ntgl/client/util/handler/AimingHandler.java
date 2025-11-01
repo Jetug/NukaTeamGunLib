@@ -269,25 +269,25 @@ public class AimingHandler {
 //        }
 
         if(mc.options.keyAttack.isDown()) {
-            data.setWeaponAction(WeaponMode.PRIMARY);
+            data.setWeaponMode(WeaponMode.PRIMARY);
             if(isScopeAction(data)) {
                 return true;
             }
         }
         else if(mc.options.keyUse.isDown()) {
-            data.setWeaponAction(WeaponMode.SECONDARY);
+            data.setWeaponMode(WeaponMode.SECONDARY);
             if(isScopeAction(data)) {
                 return true;
             }
         }
         else if(NtglKeyBinds.KEY_ADD_ATTACK.isDown()) {
-            data.setWeaponAction(WeaponMode.ADDITIONAL);
+            data.setWeaponMode(WeaponMode.ADDITIONAL);
             if(isScopeAction(data)) {
                 return true;
             }
         }
         else if(NtglKeyBinds.KEY_ALT_ATTACK.isDown()) {
-            data.setWeaponAction(WeaponMode.ALTERNATIVE);
+            data.setWeaponMode(WeaponMode.ALTERNATIVE);
             if(isScopeAction(data)) {
                 return true;
             }

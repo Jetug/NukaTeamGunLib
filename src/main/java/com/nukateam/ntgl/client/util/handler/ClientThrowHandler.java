@@ -68,13 +68,13 @@ public class ClientThrowHandler {
     public static void addTracker(WeaponData weaponData, InteractionHand hand) {
         if(isThrowable(weaponData) && !TRACKER_MAP.containsKey(hand)){
             TRACKER_MAP.put(hand, new Tracker(weaponData, hand));
-            PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.HOLD, hand, weaponData.weaponAction));
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.HOLD, hand, weaponData.weaponMode));
         }
     }
 
     private static void removeTracker(InteractionHand hand, WeaponMode mode) {
-        if(TRACKER_MAP.containsKey(hand) && TRACKER_MAP.get(hand).data.weaponAction == mode) {
-            var action = TRACKER_MAP.get(hand).data.weaponAction;
+        if(TRACKER_MAP.containsKey(hand) && TRACKER_MAP.get(hand).data.weaponMode == mode) {
+            var action = TRACKER_MAP.get(hand).data.weaponMode;
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageGrenade(KeyAction.RELEASE, hand, action));
             TRACKER_MAP.remove(hand);
         }
@@ -91,7 +91,7 @@ public class ClientThrowHandler {
 
         if (event.isAttack()) {
             var heldItem = player.getMainHandItem();
-            var gunData = new WeaponData(heldItem, player).setWeaponAction(WeaponMode.PRIMARY);
+            var gunData = new WeaponData(heldItem, player).setWeaponMode(WeaponMode.PRIMARY);
 
             if (isThrowable(gunData)) {
                 event.setCanceled(true);
@@ -99,7 +99,7 @@ public class ClientThrowHandler {
             }
         } else if (event.isUseItem()) {
             var offhandItem = player.getOffhandItem();
-            var gunData = new WeaponData(offhandItem, player).setWeaponAction(WeaponMode.PRIMARY);
+            var gunData = new WeaponData(offhandItem, player).setWeaponMode(WeaponMode.PRIMARY);
 
             if (isThrowable(gunData) && canUseOffhandWeapon(player)) {
                 event.setCanceled(true);

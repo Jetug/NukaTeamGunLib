@@ -47,7 +47,7 @@ public class AttachmentSlot extends Slot {
             return false;
         }
 
-        var config = getConfig(weapon);
+        var config = getConfig(new WeaponData(weapon, player));
         var modifiedGun = item.getModifiedConfig(this.weapon);
         return modifiedGun.canAttachType(this.type);
     }

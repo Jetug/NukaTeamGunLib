@@ -101,7 +101,7 @@ public class GunEventHandler {
             }
 
             if (currentDamage == maxDamage) {
-                WeaponModifierHelper.getConfig(heldItem).playCockSound(shooter);
+                WeaponModifierHelper.getConfig(new WeaponData(heldItem, shooter)).playCockSound(shooter);
                 return true;
             }
         }

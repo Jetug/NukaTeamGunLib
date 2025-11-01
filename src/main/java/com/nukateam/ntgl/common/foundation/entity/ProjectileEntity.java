@@ -7,6 +7,8 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.weapon.General;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.util.helpers.EntityResult;
+import com.nukateam.ntgl.common.util.helpers.RayTraceHelper;
 import com.nukateam.ntgl.common.util.interfaces.IDamageable;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.util.trackers.SpreadTracker;
@@ -53,8 +55,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData {
@@ -90,7 +90,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         this.weaponData = data;
         this.shooter = data.wielder;
-        this.weaponAction = data.weaponAction;
+        this.weaponAction = data.weaponMode;
         this.shooterId = shooter.getId();
         this.weapon = weaponStack;
         this.general = WeaponModifierHelper.getGeneral(data);
@@ -458,7 +458,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         var block = state.getBlock();
         var hitVec = blockHitResult.getLocation();
 
-        sendHitBlockMessage(state, blockHitResult, hitVec);
+        sendHitBlockMessage(blockHitResult, hitVec);
         handleBlockBreaking(blockPos, state);
         doImpactEffects(hitVec);
         onContact(hitVec);
@@ -506,7 +506,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if (headshot) criticalDamage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
 
         entity.hurt(getDamageSource(), criticalDamage);
-        sendEntityHitS2C(entity, hitVec, headshot, isCritical);
+        sendEntityHitMessage(entity, hitVec, headshot, isCritical);
         PacketHandler.getPlayChannel().sendToTracking(() -> entity, new S2CMessageBlood(hitVec));
 
         doImpactEffects(hitVec);
@@ -516,29 +516,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             this.remove(RemovalReason.KILLED);
         }
         pierceCount = Math.max(0, pierceCount - 1);
-    }
-
-    private void sendEntityHitS2C(Entity entity, Vec3 hitVec, boolean headshot, boolean isCritical) {
-        if (this.shooter instanceof ServerPlayer playerShooter) {
-            var bodyHitType = headshot ? S2CMessageProjectileHitEntity.HitType.HEADSHOT : S2CMessageProjectileHitEntity.HitType.NORMAL;
-            var hitType = isCritical ? S2CMessageProjectileHitEntity.HitType.CRITICAL : bodyHitType;
-
-            PacketHandler.getPlayChannel().sendToPlayer(() -> playerShooter,
-                    new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
-        }
-    }
-
-    private @NotNull DamageSource getDamageSource() {
-        return new DamageSource(level().registryAccess()
-                .registryOrThrow(Registries.DAMAGE_TYPE)
-                .getHolderOrThrow( projectile.getDamageType()));
-    }
-
-    private void sendHitBlockMessage(BlockState state, BlockHitResult hitResult, Vec3 hitVec) {
-        var blockPos = hitResult.getBlockPos();
-        var message = new S2CMessageProjectileHitBlock(hitVec, blockPos, hitResult.getDirection());
-        PacketHandler.getPlayChannel()
-                .sendToTrackingChunk(() -> level().getChunkAt(blockPos), message);
     }
 
     protected void onContact(Vec3 hitVec) {
@@ -568,7 +545,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     protected static BlockHitResult rayTraceBlocks(Level level, ClipContext context, Predicate<BlockState> ignorePredicate) {
-        return performRayTrace(context, (rayTraceContext, blockPos) -> {
+        return RayTraceHelper.performRayTrace(context, (rayTraceContext, blockPos) -> {
             var blockState = level.getBlockState(blockPos);
             if (ignorePredicate.test(blockState)) return null;
 
@@ -600,69 +577,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     private LevelLocation getDeathTargetPoint() {
         return LevelLocation.create(this.level(), this.getX(), this.getY(), this.getZ(), 256);
-    }
-
-    private static <T> T performRayTrace(ClipContext context, BiFunction<ClipContext, BlockPos, T> hitFunction, Function<ClipContext, T> onFinish) {
-        var startVec = context.getFrom();
-        var endVec = context.getTo();
-
-        if (!startVec.equals(endVec)) {
-            var startX = Mth.lerp(-0.0000001, endVec.x, startVec.x);
-            var startY = Mth.lerp(-0.0000001, endVec.y, startVec.y);
-            var startZ = Mth.lerp(-0.0000001, endVec.z, startVec.z);
-
-            var endX = Mth.lerp(-0.0000001, startVec.x, endVec.x);
-            var endY = Mth.lerp(-0.0000001, startVec.y, endVec.y);
-            var endZ = Mth.lerp(-0.0000001, startVec.z, endVec.z);
-
-            var blockX = Mth.floor(endX);
-            var blockY = Mth.floor(endY);
-            var blockZ = Mth.floor(endZ);
-
-            var mutablePos = new BlockPos.MutableBlockPos(blockX, blockY, blockZ);
-            T t = hitFunction.apply(context, mutablePos);
-
-            if (t != null) return t;
-
-            double deltaX = startX - endX;
-            double deltaY = startY - endY;
-            double deltaZ = startZ - endZ;
-
-            int signX = Mth.sign(deltaX);
-            int signY = Mth.sign(deltaY);
-            int signZ = Mth.sign(deltaZ);
-
-            double d9 = signX == 0 ? Double.MAX_VALUE : (double) signX / deltaX;
-            double d10 = signY == 0 ? Double.MAX_VALUE : (double) signY / deltaY;
-            double d11 = signZ == 0 ? Double.MAX_VALUE : (double) signZ / deltaZ;
-            double d12 = d9 * (signX > 0 ? 1.0D - Mth.frac(endX) : Mth.frac(endX));
-            double d13 = d10 * (signY > 0 ? 1.0D - Mth.frac(endY) : Mth.frac(endY));
-            double d14 = d11 * (signZ > 0 ? 1.0D - Mth.frac(endZ) : Mth.frac(endZ));
-
-            while (d12 <= 1.0D || d13 <= 1.0D || d14 <= 1.0D) {
-                if (d12 < d13) {
-                    if (d12 < d14) {
-                        blockX += signX;
-                        d12 += d9;
-                    } else {
-                        blockZ += signZ;
-                        d14 += d11;
-                    }
-                } else if (d13 < d14) {
-                    blockY += signY;
-                    d13 += d10;
-                } else {
-                    blockZ += signZ;
-                    d14 += d11;
-                }
-
-                var t1 = hitFunction.apply(context, mutablePos.set(blockX, blockY, blockZ));
-                if (t1 != null)
-                    return t1;
-            }
-
-        }
-        return onFinish.apply(context);
     }
 
     private ItemStack setupAmmo(WeaponData data) {
@@ -726,8 +640,30 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return this.getVectorFromRotation(shooter.getXRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread, shooter.getYHeadRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread);
     }
 
+    private @NotNull DamageSource getDamageSource() {
+        return new DamageSource(level().registryAccess()
+                .registryOrThrow(Registries.DAMAGE_TYPE)
+                .getHolderOrThrow( projectile.getDamageType()));
+    }
+
+    private void sendEntityHitMessage(Entity entity, Vec3 hitVec, boolean headshot, boolean isCritical) {
+        if (this.shooter instanceof ServerPlayer playerShooter) {
+            var bodyHitType = headshot ? S2CMessageProjectileHitEntity.HitType.HEADSHOT : S2CMessageProjectileHitEntity.HitType.NORMAL;
+            var hitType = isCritical ? S2CMessageProjectileHitEntity.HitType.CRITICAL : bodyHitType;
+
+            PacketHandler.getPlayChannel().sendToPlayer(() -> playerShooter,
+                    new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
+        }
+    }
+
+    private void sendHitBlockMessage(BlockHitResult hitResult, Vec3 hitVec) {
+        var blockPos = hitResult.getBlockPos();
+        var message = new S2CMessageProjectileHitBlock(hitVec, blockPos, hitResult.getDirection());
+        PacketHandler.getPlayChannel()
+                .sendToTrackingChunk(() -> level().getChunkAt(blockPos), message);
+    }
+
     @Nullable
-    @SuppressWarnings("unchecked")
     private EntityResult getHitResult(Entity target, Vec3 startVec, Vec3 endVec) {
         var expandHeight = target instanceof Player && !target.isCrouching() ? 0.0625 : 0.0;
         var boundingBox = target.getBoundingBox();
@@ -793,8 +729,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return new Vec3(f1 * f2, f3, f * f2);
     }
 
-
-
     private void checkDamageable(BlockState state, BlockPos blockPos) {
         if (state.getBlock() instanceof IDamageable damageable) {
             damageable.onBlockDamaged(this, state, blockPos, this.getDamage());
@@ -814,30 +748,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 serverPlayer.awardStat(Stats.TARGET_HIT);
                 CriteriaTriggers.TARGET_BLOCK_HIT.trigger(serverPlayer, this, blockHitResult.getLocation(), power);
             }
-        }
-    }
-
-    public static class EntityResult {
-        private final Entity entity;
-        private final Vec3 hitVec;
-        private final boolean headshot;
-
-        public EntityResult(Entity entity, Vec3 hitVec, boolean headshot) {
-            this.entity = entity;
-            this.hitVec = hitVec;
-            this.headshot = headshot;
-        }
-
-        public Entity getEntity() {
-            return this.entity;
-        }
-
-        public Vec3 getHitPos() {
-            return this.hitVec;
-        }
-
-        public boolean isHeadshot() {
-            return this.headshot;
         }
     }
 }

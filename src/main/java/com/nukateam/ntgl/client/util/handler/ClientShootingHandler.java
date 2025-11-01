@@ -79,7 +79,7 @@ public class ClientShootingHandler {
                 player.getOffhandItem();
 
         if (heldItem.getItem() instanceof IWeapon) {
-            var data = new WeaponData(heldItem, player).setWeaponAction(WeaponMode.PRIMARY);
+            var data = new WeaponData(heldItem, player).setWeaponMode(WeaponMode.PRIMARY);
             if (event.getAction() == GLFW.GLFW_PRESS) {
                 if (isRightHand) {
                     setupShootingData(data, InteractionHand.MAIN_HAND);
@@ -260,7 +260,7 @@ public class ClientShootingHandler {
                 try {
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
                             shooter.getViewXRot(1),
-                            RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, hand, gunData.weaponAction));
+                            RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, hand, gunData.weaponMode));
                 } catch (NullPointerException e) {
                     Ntgl.LOGGER.error(e.getMessage(), e);
                 }

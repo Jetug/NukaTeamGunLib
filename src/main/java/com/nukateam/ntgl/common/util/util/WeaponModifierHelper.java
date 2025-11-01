@@ -58,37 +58,36 @@ public class WeaponModifierHelper {
         return gunItem instanceof IWeapon;
     }
 
-    public static WeaponConfig getConfig(ItemStack stack) {
-        if(stack.getItem() instanceof IWeapon weapon) {
-            var mod = weapon.getModifiedConfig(stack);
-            return mod;
+    public static WeaponConfig getConfig(WeaponData weaponData) {
+        var stack = weaponData.weapon;
+        if(stack != null && stack.getItem() instanceof IWeapon weapon) {
+            return weapon.getModifiedConfig(stack);
         }
         return new WeaponConfig();
     }
 
     public static General getGeneral(WeaponData weaponData) {
-        var config = getConfig(weaponData.weapon);
-        return config.getGeneral(weaponData.weaponAction);
+        var config = getConfig(weaponData);
+        return config.getGeneral(weaponData.weaponMode);
     }
 
     public static Melee getMelee(WeaponData weaponData) {
-        var config = getConfig(weaponData.weapon);
-        return config.getMelee(weaponData.weaponAction);
+        var config = getConfig(weaponData);
+        return config.getMelee(weaponData.weaponMode);
     }
 
     public static Zoom getZoom(WeaponData weaponData) {
-        var config = getConfig(weaponData.weapon);
-        return config.getZoom(weaponData.weaponAction);
+        var config = getConfig(weaponData);
+        return config.getZoom(weaponData.weaponMode);
     }
 
     public static ThrowableConfig getThrowable(WeaponData weaponData) {
-        var config = getConfig(weaponData.weapon);
-        return config.getThrowable(weaponData.weaponAction);
+        var config = getConfig(weaponData);
+        return config.getThrowable(weaponData.weaponMode);
     }
 
     public static Set<AttachmentType> getAttachmentTypes(WeaponData data) {
-        var gun = getConfig(data.weapon);
-        return gun.getModules().getAttachments().keySet();
+        return getConfig(data).getModules().getAttachments().keySet();
     }
 
     public static boolean isThrowable(WeaponData data) {
@@ -130,7 +129,7 @@ public class WeaponModifierHelper {
     }
 
     public static ResourceLocation getFireSound(WeaponData data) {
-        var fireSound = new AtomicReference<>(getConfig(data.weapon).getSounds().getFire());
+        var fireSound = new AtomicReference<>(getConfig(data).getSounds().getFire());
         forEachAttachment(data, (modifier -> fireSound.set(modifier.modifyFireSound(fireSound.get(), data))));
         return fireSound.get();
     }
@@ -154,7 +153,7 @@ public class WeaponModifierHelper {
     }
 
     public static HashMap<WeaponMode, WeaponSettings> getWeaponModes(WeaponData data) {
-        var value = new AtomicReference<>(getConfig(data.weapon).getModes());
+        var value = new AtomicReference<>(getConfig(data).getModes());
         forEachAttachment(data, (modifier -> value.set(modifier.modifyWeaponModes(value.get(), data))));
         return value.get();
     }
@@ -219,13 +218,13 @@ public class WeaponModifierHelper {
 //    }
 
     public static Fuel getFuel(ResourceLocation type, WeaponData data) {
-        var value = new AtomicReference<>(getConfig(data.weapon).getFuelConfig(type));
+        var value = new AtomicReference<>(getConfig(data).getFuelConfig(type));
         forEachAttachment(data, (modifier -> value.set(modifier.modifyFuel(value.get(), data))));
         return value.get();
     }
 
     public static ResourceLocation getAnimation(AnimationType type, WeaponData data) {
-        var value = new AtomicReference<>(getConfig(data.weapon).getAnimation(type));
+        var value = new AtomicReference<>(getConfig(data).getAnimation(type));
         forEachAttachment(data, (modifier -> value.set(modifier.modifyAnimation(type, value.get(), data))));
         return value.get();
     }
@@ -421,6 +420,14 @@ public class WeaponModifierHelper {
         return finalDamage.get();
     }
 
+    public static float getProjectileDamage(ResourceLocation ammo, WeaponData data) {
+        var damage = getConfig(data).getProjectileConfig(ammo).getDamage();
+        var finalDamage = new AtomicReference<>(damage);
+        forEachAttachment(data, (modifier -> finalDamage.set(modifier.modifyDamage(finalDamage.get(), data))));
+
+        return finalDamage.get();
+    }
+
     public static float getAmmoDamageMultiplier(WeaponData data){
         return WeaponStateHelper.getProjectileConfig(data).getDamage();
     }
@@ -513,7 +520,7 @@ public class WeaponModifierHelper {
     }
 
     public static ProjectileConfig getProjectileConfig(ResourceLocation ammoId, WeaponData data) {
-        var gun = getConfig(data.weapon);
+        var gun = getConfig(data);
         ProjectileConfig config = null;
         var item = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
@@ -533,13 +540,13 @@ public class WeaponModifierHelper {
     }
 
     public static AmmoConfig getAmmoConfig(ResourceLocation ammoId, WeaponData data) {
-        var finalValue = new AtomicReference<>(getConfig(data.weapon).getAmmoConfig(ammoId));
+        var finalValue = new AtomicReference<>(getConfig(data).getAmmoConfig(ammoId));
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyAmmo(finalValue.get(), data))));
         return finalValue.get();
     }
 
     public static AmmoConfig getFuelAmmoConfig(ResourceLocation ammoId, WeaponData data) {
-        var finalValue = new AtomicReference<>(getConfig(data.weapon).getFuelAmmoConfig(ammoId));
+        var finalValue = new AtomicReference<>(getConfig(data).getFuelAmmoConfig(ammoId));
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyFuelAmmo(finalValue.get(), data))));
         return finalValue.get();
     }
@@ -554,20 +561,20 @@ public class WeaponModifierHelper {
     }
 
     public static boolean isFuelMandatory(ResourceLocation ammoId, WeaponData data) {
-        var finalValue = new AtomicReference<>(getConfig(data.weapon).getFuelConfig(ammoId).isMandatory());
+        var finalValue = new AtomicReference<>(getConfig(data).getFuelConfig(ammoId).isMandatory());
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyIsFuelMandatory(ammoId, finalValue.get(), data))));
         return finalValue.get();
     }
 
     public static int getFuelAmountPerUse(ResourceLocation ammoId, WeaponData data) {
-        var finalValue = new AtomicReference<>(getConfig(data.weapon).getFuelConfig(ammoId).getAmountPerUse());
+        var finalValue = new AtomicReference<>(getConfig(data).getFuelConfig(ammoId).getAmountPerUse());
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyFuelAmountPerUse(ammoId, finalValue.get(), data))));
         return finalValue.get();
     }
 
     private static void forEachAttachment(WeaponData data, Consumer<IWeaponModifier> consumer){
         var weapon = data.weapon;
-        var config = getConfig(weapon);
+        var config = getConfig(data);
         var attachments = config.getModules().getAttachments();
 
         for (var attachmentType : attachments.keySet()) {

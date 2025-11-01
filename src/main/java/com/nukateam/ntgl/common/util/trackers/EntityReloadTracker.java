@@ -34,7 +34,7 @@ public class EntityReloadTracker {
     private EntityReloadTracker(LivingEntity entity, HumanoidArm arm) {
         this.arm = arm;
         this.stack = entity.getItemInHand(getInteractionHand(arm));
-        this.reloadTick = WeaponModifierHelper.getReloadTime(new WeaponData(stack, entity).setWeaponAction(WeaponMode.PRIMARY));
+        this.reloadTick = WeaponModifierHelper.getReloadTime(new WeaponData(stack, entity).setWeaponMode(WeaponMode.PRIMARY));
     }
 
     public static boolean isReloading(LivingEntity entity){

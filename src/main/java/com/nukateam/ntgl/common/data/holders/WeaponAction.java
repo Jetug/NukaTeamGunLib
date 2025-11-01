@@ -29,6 +29,11 @@ public class WeaponAction extends ResourceHolder {
         super(id);
     }
 
+    public ResourceLocation getIcon() {
+        assert id != null;
+        return ResourceLocation.tryBuild(id.getNamespace(), "textures/hud/weapon_action/" + id.getPath() + ".png");
+    }
+
     public static void registerType(WeaponAction mode) {
         loadingTypeMap.putIfAbsent(mode.getId(), mode);
     }

@@ -10,7 +10,7 @@ public class WeaponData{
     @Nullable public final ItemStack weapon;
     @Nullable public ItemStack attachment;
     @Nullable public final LivingEntity wielder;
-    public WeaponMode weaponAction = WeaponMode.PRIMARY;
+    public WeaponMode weaponMode = WeaponMode.PRIMARY;
 
     public WeaponData(ItemStack weapon, LivingEntity wielder) {
         this.weapon = weapon;
@@ -22,13 +22,13 @@ public class WeaponData{
         return this;
     }
 
-    public WeaponData setWeaponAction(WeaponMode weaponAction) {
-        this.weaponAction = weaponAction;
+    public WeaponData setWeaponMode(WeaponMode weaponMode) {
+        this.weaponMode = weaponMode;
         return this;
     }
 
     @Override
     public WeaponData clone(){
-        return new WeaponData(weapon, wielder).setWeaponAction(weaponAction).setAttachment(attachment);
+        return new WeaponData(weapon, wielder).setWeaponMode(weaponMode).setAttachment(attachment);
     }
 }

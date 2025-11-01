@@ -7,6 +7,7 @@ import net.minecraft.world.InteractionHand;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class GunHudCache{
@@ -22,7 +23,7 @@ public class GunHudCache{
     public boolean fireModeKey = false;
     public boolean ammoTypeKey = false;
     public boolean isThrowable = false;
-    public Set<WeaponMode> weaponModes = Set.of();
+    public Map<WeaponMode, WeaponAction> weaponModes = Map.of();
 
     public GunHudCache(InteractionHand hand){
         this.hand = hand;
