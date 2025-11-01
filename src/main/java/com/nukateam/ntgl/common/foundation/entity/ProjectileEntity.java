@@ -311,16 +311,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         var hitEntities = getHitEntityResult(startVec, endVec);
 
         if (hitEntities != null && !hitEntities.isEmpty()) {
-            for (var entityResult : hitEntities) {
-                result = new ExtendedEntityRayTraceResult(entityResult);
+            for (var hit : hitEntities) {
+                var entityHitResult = new ExtendedEntityRayTraceResult(hit);
 
-                if (((EntityHitResult) result).getEntity() instanceof Player playerTarget) {
+                if (entityHitResult.getEntity() instanceof Player playerTarget) {
                     if (this.shooter instanceof Player playerShooter && !playerShooter.canHarmPlayer(playerTarget)) {
-                        result = null;
+                        entityHitResult = null;
                     }
                 }
-                if (result != null) {
-                    this.onHit(result, startVec, endVec);
+                if (entityHitResult != null) {
+                    this.onHit(entityHitResult, startVec, endVec);
                 }
             }
         } else {
@@ -429,11 +429,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
             else {
                 onHitBlock(blockHitResult, state);
-                return;
             }
         }
-
-        if (result instanceof ExtendedEntityRayTraceResult entityHitResult) {
+        else if (result instanceof ExtendedEntityRayTraceResult entityHitResult) {
             var entity = entityHitResult.getEntity();
             if (entity.getId() == this.shooter.getId()) {
                 return;
@@ -451,16 +449,22 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
 
             this.onHitEntity(entity, result.getLocation(), startVec, endVec, entityHitResult.isHeadshot());
-
             entity.invulnerableTime = 0;
         }
     }
 
-    private void onHitBlock(BlockHitResult blockHitResult, BlockState state) {
+    protected void onHitBlock(BlockHitResult blockHitResult, BlockState state) {
         var blockPos = blockHitResult.getBlockPos();
         var block = state.getBlock();
+        var hitVec = blockHitResult.getLocation();
 
+        sendHitBlockMessage(state, blockHitResult, hitVec);
         handleBlockBreaking(blockPos, state);
+        doImpactEffects(hitVec);
+        onContact(hitVec);
+        checkDamageable(state, blockPos);
+        checkTargetBlock(blockHitResult, state);
+        checkBellBlock(blockHitResult, block, blockPos);
 
         if (wasTouchingBlock) {
             if (!state.canBeReplaced() && removeOnHit(HitTarget.BLOCK)) {
@@ -468,27 +472,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
         }
         wasTouchingBlock = true;
-
-        if (block instanceof IDamageable damageable) {
-            damageable.onBlockDamaged(this, state, blockPos, this.getDamage());
-        }
-
-        onHitBlock(state, blockHitResult, blockHitResult.getLocation());
-        updateTargetBlock(blockHitResult, state, block);
-
-        if (block instanceof BellBlock bell) {
-            bell.attemptToRing(this.level(), blockPos, blockHitResult.getDirection());
-        }
-    }
-
-    private void updateTargetBlock(BlockHitResult blockHitResult, BlockState state, Block block) {
-        if (block instanceof TargetBlock targetBlock) {
-            int power = ReflectionUtil.updateTargetBlock(targetBlock, this.level(), state, blockHitResult, this);
-            if (this.shooter instanceof ServerPlayer serverPlayer) {
-                serverPlayer.awardStat(Stats.TARGET_HIT);
-                CriteriaTriggers.TARGET_BLOCK_HIT.trigger(serverPlayer, this, blockHitResult.getLocation(), power);
-            }
-        }
     }
 
     protected void onHitFluid(BlockHitResult hitResult, BlockState state) {
@@ -546,21 +529,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     private @NotNull DamageSource getDamageSource() {
-        var damageSource = new DamageSource(level().registryAccess()
+        return new DamageSource(level().registryAccess()
                 .registryOrThrow(Registries.DAMAGE_TYPE)
                 .getHolderOrThrow( projectile.getDamageType()));
-        return damageSource;
     }
 
-    protected void onHitBlock(BlockState state, BlockHitResult hitResult, Vec3 hitVec) {
+    private void sendHitBlockMessage(BlockState state, BlockHitResult hitResult, Vec3 hitVec) {
         var blockPos = hitResult.getBlockPos();
-        var dir = hitResult.getDirection();
-        var channel = PacketHandler.getPlayChannel();
-
-        channel.sendToTrackingChunk(() -> this.level().getChunkAt(blockPos),
-                new S2CMessageProjectileHitBlock(hitVec, blockPos, dir));
-        doImpactEffects(hitVec);
-        onContact(hitVec);
+        var message = new S2CMessageProjectileHitBlock(hitVec, blockPos, hitResult.getDirection());
+        PacketHandler.getPlayChannel()
+                .sendToTrackingChunk(() -> level().getChunkAt(blockPos), message);
     }
 
     protected void onContact(Vec3 hitVec) {
@@ -569,18 +547,16 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    protected boolean handleBlockBreaking(BlockPos pos, BlockState state) {
+    protected void handleBlockBreaking(BlockPos pos, BlockState state) {
         if (ModTags.isFragile(state)) {
             float destroySpeed = state.getDestroySpeed(this.level(), pos);
             if (destroySpeed >= 0) {
                 float chance = Config.COMMON.gameplay.griefing.fragileBaseBreakChance.get().floatValue() / (destroySpeed + 1);
                 if (this.random.nextFloat() < chance) {
                     this.level().destroyBlock(pos, Config.COMMON.gameplay.griefing.fragileBlockDrops.get());
-                    return true;
                 }
             }
         }
-        return false;
     }
 
     protected void updateHeading() {
@@ -815,6 +791,30 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         float f2 = -Mth.cos(-pitch * 0.017453292F);
         float f3 = Mth.sin(-pitch * 0.017453292F);
         return new Vec3(f1 * f2, f3, f * f2);
+    }
+
+
+
+    private void checkDamageable(BlockState state, BlockPos blockPos) {
+        if (state.getBlock() instanceof IDamageable damageable) {
+            damageable.onBlockDamaged(this, state, blockPos, this.getDamage());
+        }
+    }
+
+    private void checkBellBlock(BlockHitResult blockHitResult, Block block, BlockPos blockPos) {
+        if (block instanceof BellBlock bell) {
+            bell.attemptToRing(this.level(), blockPos, blockHitResult.getDirection());
+        }
+    }
+
+    private void checkTargetBlock(BlockHitResult blockHitResult, BlockState state) {
+        if (state.getBlock() instanceof TargetBlock targetBlock) {
+            int power = ReflectionUtil.updateTargetBlock(targetBlock, this.level(), state, blockHitResult, this);
+            if (this.shooter instanceof ServerPlayer serverPlayer) {
+                serverPlayer.awardStat(Stats.TARGET_HIT);
+                CriteriaTriggers.TARGET_BLOCK_HIT.trigger(serverPlayer, this, blockHitResult.getLocation(), power);
+            }
+        }
     }
 
     public static class EntityResult {

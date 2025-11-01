@@ -3,45 +3,38 @@ package com.nukateam.ntgl.common.network.message;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.util.util.NbtUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
 
 public class S2CMessageProjectileHitBlock extends PlayMessage<S2CMessageProjectileHitBlock> {
-    private double x;
-    private double y;
-    private double z;
-    private BlockPos pos;
+    private Vec3 hitPos;
+    private BlockPos blockPos;
     private Direction face;
 
     public S2CMessageProjectileHitBlock() {}
 
     public S2CMessageProjectileHitBlock(Vec3 hitPos, BlockPos blockPos, Direction face) {
-        this.x = hitPos.x;
-        this.y = hitPos.y;
-        this.z = hitPos.z;
-        this.pos = blockPos;
+        this.hitPos = hitPos;
+        this.blockPos = blockPos;
         this.face = face;
     }
 
     @Override
     public void encode(S2CMessageProjectileHitBlock message, FriendlyByteBuf buffer) {
-        buffer.writeDouble(message.x);
-        buffer.writeDouble(message.y);
-        buffer.writeDouble(message.z);
-        buffer.writeBlockPos(message.pos);
+        buffer.writeNbt(NbtUtils.writeVec3(message.hitPos));
+        buffer.writeBlockPos(message.blockPos);
         buffer.writeEnum(message.face);
     }
 
     @Override
     public S2CMessageProjectileHitBlock decode(FriendlyByteBuf buffer) {
-        var x = buffer.readDouble();
-        var y = buffer.readDouble();
-        var z = buffer.readDouble();
-        var pos = buffer.readBlockPos();
+        var pos = NbtUtils.readVec3(buffer.readNbt());
+        var blockPos = buffer.readBlockPos();
         var face = buffer.readEnum(Direction.class);
-        return new S2CMessageProjectileHitBlock(new Vec3(x, y, z), pos, face);
+        return new S2CMessageProjectileHitBlock(pos, blockPos, face);
     }
 
     @Override
@@ -51,11 +44,11 @@ public class S2CMessageProjectileHitBlock extends PlayMessage<S2CMessageProjecti
     }
 
     public Vec3 getHitPos() {
-        return new Vec3(x, y, z);
+        return this.hitPos;
     }
 
-    public BlockPos getPos() {
-        return this.pos;
+    public BlockPos getBlockPos() {
+        return this.blockPos;
     }
 
     public Direction getFace() {

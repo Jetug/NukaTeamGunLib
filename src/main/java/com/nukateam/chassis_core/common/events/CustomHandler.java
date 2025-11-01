@@ -53,7 +53,7 @@ public class CustomHandler {
 //    @SubscribeEvent
 //    public static void onBlockBreak(BlockEvent.BreakEvent event) {
 //        var world = event.getWorld();
-//        BlockPos pos = event.getPos();
+//        BlockPos pos = event.getBlockPos();
 //
 //        Direction direction = event.getPlayer().getDirection();
 //        BlockPos centerPos = pos.offset(direction.getNormal());
@@ -93,7 +93,7 @@ public class CustomHandler {
 //        RayTraceResult result = minecraft.level.blocj.rayTraceBlocks(new RayTraceContext(playerPos, endVec, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, minecraft.player));
 //
 //        if (result.getType() == RayTraceResult.Type.BLOCK) {
-//            return result.getPos();
+//            return result.getBlockPos();
 //        }
 
         return null;

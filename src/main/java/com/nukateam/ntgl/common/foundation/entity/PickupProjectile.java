@@ -7,14 +7,17 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.CandleBlock;
+import net.minecraft.world.level.block.CandleCakeBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -82,8 +85,7 @@ public class PickupProjectile extends ProjectileEntity {
     }
 
     @Override
-    protected void onHitBlock(BlockState state, BlockHitResult hitResult, Vec3 hitVec) {
-        super.onHitBlock(state, hitResult, hitVec);
+    protected void onHitBlock(BlockHitResult hitResult, BlockState blockState) {
         if (!this.inGround) {
             this.inGround = true;
             this.inBlockPos = hitResult.getBlockPos().immutable();
@@ -93,6 +95,8 @@ public class PickupProjectile extends ProjectileEntity {
             this.setPos(hitResult.getLocation());
             playHitSound();
         }
+
+        super.onHitBlock(hitResult, blockState);
     }
 
     @Override

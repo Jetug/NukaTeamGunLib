@@ -44,7 +44,7 @@ public class LaserProjectile extends AbstractBeamProjectile {
     }
 
     @Override
-    protected void onHitBlock(BlockState blockState, BlockHitResult hitResult, Vec3 hitVec) {
+    protected void onHitBlock(BlockHitResult hitResult, BlockState blockState) {
         var blockPos = hitResult.getBlockPos();
         var face = hitResult.getDirection();
 
@@ -61,5 +61,7 @@ public class LaserProjectile extends AbstractBeamProjectile {
                 level().setBlock(blockPos, blockState.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)), 11);
             }
         }
+
+        super.onHitBlock(hitResult, blockState);
     }
 }

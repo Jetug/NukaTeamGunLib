@@ -29,7 +29,7 @@ public class EventHandler {
 //    @SubscribeEvent
 //    public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
 //        var world = event.getWorld();
-//        var pos = event.getPos();
+//        var pos = event.getBlockPos();
 //        var player = event.getPlayer();
 //        var state = world.getBlockState(pos);
 //        var blockEntity = world.getBlockEntity(pos);

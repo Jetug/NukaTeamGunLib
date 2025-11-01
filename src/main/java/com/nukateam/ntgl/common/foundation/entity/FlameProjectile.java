@@ -30,9 +30,6 @@ public class FlameProjectile extends ProjectileEntity {
 
     @Override
     public void tick() {
-//        if(isInWater()) {
-//            this.remove(RemovalReason.KILLED);
-//        }
         super.tick();
     }
 
@@ -55,6 +52,11 @@ public class FlameProjectile extends ProjectileEntity {
     }
 
     @Override
+    protected boolean removeOnHit(HitTarget hitTarget) {
+        return true;
+    }
+
+    @Override
     protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
         super.onHitEntity(entity, hitVec, startVec, endVec, headshot);
         if(random.nextFloat() <= getEntityFireChance())
@@ -62,7 +64,7 @@ public class FlameProjectile extends ProjectileEntity {
     }
 
     @Override
-    protected void onHitBlock(BlockState blockState, BlockHitResult hitResult, Vec3 hitVec) {
+    protected void onHitBlock(BlockHitResult hitResult, BlockState blockState) {
         var blockPos = hitResult.getBlockPos();
         var face = hitResult.getDirection();
         if(random.nextFloat() <= getBlockFireChance()) {
@@ -78,6 +80,8 @@ public class FlameProjectile extends ProjectileEntity {
                 level().setBlock(blockPos, blockState.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)), 11);
             }
         }
+
+        super.onHitBlock(hitResult, blockState);
     }
 
     protected float getBlockFireChance(){

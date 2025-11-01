@@ -88,8 +88,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
     }
 
     @Override
-    protected boolean handleBlockBreaking(BlockPos pos, BlockState state) {
-        return false;
+    protected void handleBlockBreaking(BlockPos pos, BlockState state) {
     }
 
     @Override

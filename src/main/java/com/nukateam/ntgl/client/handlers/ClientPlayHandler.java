@@ -2,10 +2,8 @@ package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.*;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.util.handler.*;
-import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.util.helpers.compatibility.EffectHelper;
 import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
@@ -131,7 +129,7 @@ public class ClientPlayHandler {
         var world = mc.level;
 
         if (world != null && mc.player != null) {
-            var state = world.getBlockState(message.getPos());
+            var state = world.getBlockState(message.getBlockPos());
             var hitPos = message.getHitPos();
             var holeX = hitPos.x + 0.005 * message.getFace().getStepX();
             var holeY = hitPos.y + 0.005 * message.getFace().getStepY();
@@ -139,7 +137,7 @@ public class ClientPlayHandler {
             var distance = Math.sqrt(mc.player.distanceToSqr(message.getHitPos()));
 
             world.addParticle(
-                    new BulletHoleData(message.getFace(), message.getPos()),
+                    new BulletHoleData(message.getFace(), message.getBlockPos()),
                     false, holeX, holeY, holeZ, 0, 0, 0
             );
 
@@ -195,7 +193,7 @@ public class ClientPlayHandler {
         var projectile = level.getEntity(message.getProjectileId());
 
 //        if(projectile instanceof ProjectileEntity projectileEntity){
-//            projectileEntity.setPos(message.getPos());
+//            projectileEntity.setPos(message.getBlockPos());
 //            projectileEntity.doSplashEffect(message);
 //        }
 //        else
