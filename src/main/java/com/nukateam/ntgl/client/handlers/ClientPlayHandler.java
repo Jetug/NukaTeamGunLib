@@ -65,35 +65,11 @@ public class ClientPlayHandler {
         var world = Minecraft.getInstance().level;
         if (world != null) {
             for (int i = 0; i < 10; i++) {
+                var pos = message.getPos();
                 world.addParticle(
                         ModParticleTypes.BLOOD.get(), true,
-                        message.getX(), message.getY(), message.getZ(),
+                        pos.x(), pos.y(), pos.z(),
                         0.5, 0, 0.5);
-            }
-        }
-    }
-
-    public static void handleMessageBulletTrail(S2CMessageBulletTrail message) {
-        var world = Minecraft.getInstance().level;
-        if (world != null) {
-            var entityIds = message.getEntityIds();
-            var positions = message.getPositions();
-            var motions = message.getMotions();
-            var item = message.getItem();
-            var trailColor = message.getTrailColor();
-            var trailLengthMultiplier = message.getTrailLengthMultiplier();
-            var life = message.getLife();
-            var gravity = message.getGravity();
-            var shooterId = message.getShooterId();
-            var enchanted = message.isEnchanted();
-            var data = message.getParticleData();
-
-            for (int i = 0; i < message.getCount(); i++) {
-                BulletTrailRenderingHandler.get().add(
-                        new BulletTrail(entityIds[i], positions[i], motions[i],
-                                item, trailColor, trailLengthMultiplier, life,
-                                gravity, shooterId, enchanted, data)
-                );
             }
         }
     }
@@ -244,10 +220,6 @@ public class ClientPlayHandler {
             return SoundEvents.PLAYER_HURT;
         }
         return null;
-    }
-
-    public static void handleRemoveProjectile(S2CMessageRemoveProjectile message) {
-        BulletTrailRenderingHandler.get().remove(message.getEntityId());
     }
 
     public static void handleUpdateWeapons(S2CMessageUpdateWeapons message) {

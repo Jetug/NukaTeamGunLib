@@ -46,7 +46,6 @@ public class ClientHandler {
 
     public static void setup() {
         MinecraftForge.EVENT_BUS.register(AimingHandler.get());
-        MinecraftForge.EVENT_BUS.register(BulletTrailRenderingHandler.get());
         MinecraftForge.EVENT_BUS.register(CrosshairHandler.get());
         MinecraftForge.EVENT_BUS.register(GunRenderingHandler.get());
         MinecraftForge.EVENT_BUS.register(RecoilHandler.get());

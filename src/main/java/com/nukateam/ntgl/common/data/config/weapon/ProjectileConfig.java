@@ -12,11 +12,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -29,7 +32,6 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
     private float size;
     @Optional private float speed = 20;
     private int life = 20;
-
     @Optional private ProjectileType projectile = ProjectileType.BULLET;
     @Optional private ResourceKey<DamageType> damageType = NtglDamageTypes.BULLET;
     @Optional private boolean visible;
@@ -42,7 +44,10 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
     @Optional int projectileAmount = 1;
     @Optional float spread;
     @Optional int pierceLevel = 0;
+    @Optional int burnSeconds = 0;
     @Optional ExplosionConfig explosion = new ExplosionConfig();
+    @Optional @Nullable
+    ResourceLocation hitSound;
 
     @Override
     public CompoundTag serializeNBT() {
@@ -63,7 +68,10 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         tag.putInt(PROJECTILE_AMOUNT, this.projectileAmount);
         tag.putFloat(SPREAD, this.spread);
         tag.putInt("pierceLevel", this.pierceLevel);
+        tag.putInt("burnSeconds", this.burnSeconds);
         tag.put("explosion", this.explosion.serializeNBT());
+        if(hitSound != null)
+            tag.putString("hitSound", this.hitSound.toString());
         return tag;
     }
 
@@ -89,6 +97,9 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         }
         if (tag.contains("pierceLevel", Tag.TAG_ANY_NUMERIC)) {
             this.pierceLevel = tag.getInt("pierceLevel");
+        }
+        if (tag.contains("burnSeconds", Tag.TAG_ANY_NUMERIC)) {
+            this.burnSeconds = tag.getInt("burnSeconds");
         }
         if (tag.contains("Gravity", Tag.TAG_ANY_NUMERIC)) {
             this.gravity = tag.getBoolean("Gravity");
@@ -120,6 +131,9 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         if (tag.contains("explosion", Tag.TAG_COMPOUND)) {
             this.explosion = ExplosionConfig.create(tag.getCompound("explosion"));
         }
+        if (tag.contains("hitSound", Tag.TAG_STRING)) {
+            this.hitSound = ResourceLocation.tryParse(tag.getString("hitSound"));
+        }
     }
 
     public JsonObject toJsonObject() {
@@ -131,7 +145,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         Preconditions.checkArgument(this.projectileAmount >= 1, "Projectile amount must be more than or equal to one");
         Preconditions.checkArgument(this.spread >= 0.0F, "Spread must be more than or equal to zero");
 
-        JsonObject object = new JsonObject();
+        var object = new JsonObject();
 
         if (this.visible) object.addProperty("visible", true);
         object.addProperty("damage", this.damage);
@@ -139,8 +153,10 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         object.addProperty("speed", this.speed);
         object.addProperty("life", this.life);
         object.addProperty("pierceLevel", this.pierceLevel);
+        object.addProperty("burnSeconds", this.burnSeconds);
         object.addProperty("projectile", this.projectile.toString());
         object.addProperty("damageType", this.damageType.location().toString());
+        object.addProperty("hitSound", this.hitSound.toString());
         GunJsonUtil.addObjectIfNotEmpty(object,"explosion", this.explosion.toJsonObject());
 
         if (this.gravity) object.addProperty("gravity", true);
@@ -162,6 +178,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         projectile.speed = this.speed;
         projectile.life = this.life;
         projectile.pierceLevel = this.pierceLevel;
+        projectile.burnSeconds = this.burnSeconds;
         projectile.gravity = this.gravity;
         projectile.affectedByFluid = this.affectedByFluid;
         projectile.damageReduceOverLife = this.damageReduceOverLife;
@@ -173,11 +190,16 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         projectile.projectileAmount = this.projectileAmount;
         projectile.spread = this.spread;
         projectile.explosion = this.explosion;
+        projectile.hitSound = this.hitSound;
         return projectile;
     }
 
     public ExplosionConfig getExplosion() {
         return explosion;
+    }
+
+    public @Nullable ResourceLocation getHitSound() {
+        return hitSound;
     }
 
     /**
@@ -217,6 +239,10 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
 
     public int getPierceLevel() {
         return pierceLevel;
+    }
+
+    public int getBurnSeconds() {
+        return burnSeconds;
     }
 
     /**

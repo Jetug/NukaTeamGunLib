@@ -14,7 +14,6 @@ import com.nukateam.ntgl.common.data.constants.Tags;
 
 import com.nukateam.ntgl.common.util.trackers.*;
 import com.nukateam.ntgl.common.util.util.*;
-import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
@@ -28,7 +27,6 @@ import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.common.network.message.C2SMessagePreFireSound;
 import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
-import com.nukateam.ntgl.common.network.message.S2CMessageBulletTrail;
 import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.Tag;
@@ -155,17 +153,6 @@ public class ServerPlayHandler {
                     spawnedProjectiles[i] = projectileEntity;
                     projectileEntity.tick();
                 }
-                if (!projectileProps.isVisible()) {
-                    var spawnX = shooter.getX();
-                    var spawnY = shooter.getY() + 1.0;
-                    var spawnZ = shooter.getZ();
-                    var radius = Config.COMMON.network.projectileTrackingRange.get();
-                    var particleOptions = GunEnchantmentHelper.getParticle(heldItem);
-                    var messageBulletTrail = new S2CMessageBulletTrail(spawnedProjectiles, projectileProps, shooter.getId(), particleOptions);
-
-                    PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(shooter.level(), spawnX, spawnY, spawnZ, radius), messageBulletTrail);
-                }
-
 
                 if (Config.COMMON.aggroMobs.enabled.get()) {
                     double radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.COMMON.aggroMobs.unsilencedRange.get());

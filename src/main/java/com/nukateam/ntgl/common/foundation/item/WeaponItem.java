@@ -16,8 +16,6 @@ import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.client.render.renderers.weapon.*;
 import com.nukateam.ntgl.common.foundation.item.interfaces.*;
-import com.nukateam.ntgl.modules.enchantment.EnchantmentTypes;
-import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.*;
 import mod.azure.azurelib.core.animation.*;
@@ -222,29 +220,15 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
             tooltip.add(Component.translatable("info.ntgl.ammo",
                     ChatFormatting.WHITE.toString()
                             + ammoCount + "/"
-                            + GunEnchantmentHelper.getAmmoCapacity(weaponData)).withStyle(ChatFormatting.GRAY));
+                            + WeaponModifierHelper.getMaxAmmo(weaponData)).withStyle(ChatFormatting.GRAY));
         }
     }
 
     private static void addDamage(List<Component> tooltip, CompoundTag tagCompound, WeaponData weaponData) {
-        var additionalDamageText = "";
-
-        if (tagCompound.contains("AdditionalDamage", Tag.TAG_ANY_NUMERIC)) {
-            var additionalDamage = tagCompound.getFloat("AdditionalDamage");
-            additionalDamage += WeaponModifierHelper.getAdditionalDamage(weaponData);
-
-            if (additionalDamage > 0) {
-                additionalDamageText = ChatFormatting.YELLOW + " +" + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
-            } else if (additionalDamage < 0) {
-                additionalDamageText = ChatFormatting.RED + " " + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(additionalDamage);
-            }
-        }
-
         var damage = WeaponModifierHelper.getModifiedDamage(weaponData);
-        damage = GunEnchantmentHelper.getAcceleratorDamage(weaponData.weapon, damage);
         tooltip.add(Component.translatable("info.ntgl.damage", ChatFormatting.WHITE
                         + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)
-                        + additionalDamageText).withStyle(ChatFormatting.GRAY));
+        ).withStyle(ChatFormatting.GRAY));
     }
 
     private static void addMelleDamage(List<Component> tooltip, WeaponData weaponData) {
@@ -259,14 +243,14 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
 //    public boolean isBarVisible(ItemStack stack) {
 //        CompoundTag tagCompound = stack.getOrCreateTag();
 //        Gun modifiedGun = this.getModifiedConfig(stack);
-//        return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt(Tags.AMMO_COUNT) != GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun);
+//        return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt(Tags.AMMO_COUNT) != WeaponModifierHelper.getMaxAmmo(stack, modifiedGun);
 //    }
 
 //    @Override
 //    public int getBarWidth(ItemStack stack) {
 //        CompoundTag tagCompound = stack.getOrCreateTag();
 //        Gun modifiedGun = this.getModifiedConfig(stack);
-//        return (int) (13.0 * (tagCompound.getInt(Tags.AMMO_COUNT) / (double) GunEnchantmentHelper.getAmmoCapacity(stack, modifiedGun)));
+//        return (int) (13.0 * (tagCompound.getInt(Tags.AMMO_COUNT) / (double) WeaponModifierHelper.getMaxAmmo(stack, modifiedGun)));
 //    }
 
     @Override
@@ -298,18 +282,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        if (this.weaponConfig.getGeneral().isEnchantable()) {
-            var data = new WeaponData(stack, null);
-            if (enchantment.category == EnchantmentTypes.SEMI_AUTO_GUN) {
-                return WeaponModifierHelper.isAuto(data);
-            }
-            return super.canApplyAtEnchantingTable(stack, enchantment);
-        }
-        else return false;
-    }
-
-    @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
         return true;
     }
@@ -318,11 +290,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
     }
-
-//    @Override
-//    public int getBarColor(ItemStack stack) {
-//        return requireNonNull(ChatFormatting.YELLOW.getColor());
-//    }
 
     @Override
     public boolean isEnchantable(ItemStack stack) {
@@ -350,7 +317,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     private ResourceLocation getRegistryName() {
         return ForgeRegistries.ITEMS.getKey(this);
     }
-
 
     @Override
     public void expire(LivingEntity entityLiving) {

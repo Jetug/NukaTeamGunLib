@@ -12,7 +12,6 @@ import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageReload;
-import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -125,17 +124,11 @@ public class ReloadTracker {
 
     private boolean isWeaponFull() {
         var data = new WeaponData(weapon, shooter);
-        return WeaponStateHelper.getAmmoCount(data) >= GunEnchantmentHelper.getAmmoCapacity(data);
+        return WeaponStateHelper.getAmmoCount(data) >= WeaponModifierHelper.getMaxAmmo(data);
     }
 
     private boolean hasNoAmmo(LivingEntity player) {
         return !InventoryUtil.hasAmmo(player, weapon);
-    }
-
-    private boolean canReload(Player player) {
-        int deltaTicks = player.tickCount - this.startTick;
-        int interval = GunEnchantmentHelper.getReloadInterval(this.weapon);
-        return deltaTicks > 0 && deltaTicks % interval == 0;
     }
 
     private static void addOrDropStack(Player player, ItemStack usedMagazine) {
@@ -275,7 +268,7 @@ public class ReloadTracker {
 
             if (tag != null) {
                 var gunData = new WeaponData(weapon, shooter);
-                var maxAmmo = GunEnchantmentHelper.getAmmoCapacity(gunData);
+                var maxAmmo = WeaponModifierHelper.getMaxAmmo(gunData);
                 amount = Math.min(amount, maxAmmo - tag.getInt(Tags.AMMO_COUNT));
                 WeaponStateHelper.addAmmo(gunData, amount);
             }
@@ -289,7 +282,7 @@ public class ReloadTracker {
         var tag = this.weapon.getTag();
         var hasAmmo = InventoryUtil.hasAmmo(entity, weapon);
         var ammoCount = WeaponStateHelper.getAmmoCount(data);
-        var ammoCapacity = GunEnchantmentHelper.getAmmoCapacity(data);
+        var ammoCapacity = WeaponModifierHelper.getMaxAmmo(data);
         return hasAmmo && ammoCount < ammoCapacity;
     }
 
@@ -299,7 +292,7 @@ public class ReloadTracker {
 //        var tag = this.weapon.getTag();
 //
 //        return !InventoryUtil.findAmmo(entity, weapon).stack().isEmpty() &&
-//                tag.getInt(Tags.AMMO_COUNT) < GunEnchantmentHelper.getAmmoCapacity(data);
+//                tag.getInt(Tags.AMMO_COUNT) < WeaponModifierHelper.getMaxAmmo(data);
 //    }
 
     private void addMagazine(LivingEntity entity) {
@@ -314,7 +307,7 @@ public class ReloadTracker {
             amount = Math.min(WeaponModifierHelper.getMaxAmmo(data), amount);
 
             if (tag != null) {
-                var maxAmmo = GunEnchantmentHelper.getAmmoCapacity(data);
+                var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
                 var currentAmmo = tag.getInt(Tags.AMMO_COUNT);
 
                 if(currentAmmo > 0 && ammoHolder.canReturnAmmo()) {

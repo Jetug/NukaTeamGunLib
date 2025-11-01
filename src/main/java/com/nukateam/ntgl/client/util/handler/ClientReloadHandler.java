@@ -4,7 +4,6 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
-import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -101,7 +100,7 @@ public class ClientReloadHandler {
                 if (!isAmmoIgnored && hasAmmo && !isMaxAmmo) {
                     reloadTicks = WeaponModifierHelper.getReloadTime(data);
 
-                    if (WeaponStateHelper.getAmmoCount(data) >= GunEnchantmentHelper.getAmmoCapacity(data))
+                    if (WeaponStateHelper.getAmmoCount(data) >= WeaponModifierHelper.getMaxAmmo(data))
                         return;
                     if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack, hand)))
                         return;

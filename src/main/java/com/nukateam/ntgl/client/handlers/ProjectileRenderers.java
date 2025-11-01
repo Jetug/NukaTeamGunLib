@@ -13,10 +13,11 @@ import net.minecraftforge.fml.common.Mod;
 
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class GunEntityRenderers {
+public class ProjectileRenderers {
     @SubscribeEvent
     public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(Projectiles.PROJECTILE.get(), ProjectileRenderer::new);
+        event.registerEntityRenderer(Projectiles.SPEAR.get(), ProjectileRenderer::new);
         event.registerEntityRenderer(Projectiles.LASER_PROJECTILE.get(), LaserProjectileRenderer::new);
         event.registerEntityRenderer(Projectiles.CONTINUOUS_LASER_PROJECTILE.get(), LaserProjectileRenderer::new);
         event.registerEntityRenderer(Projectiles.TESLA_PROJECTILE.get(), TeslaProjectileRenderer::new);

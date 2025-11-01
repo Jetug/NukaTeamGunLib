@@ -19,7 +19,6 @@
     "ntgl.client.GeoEntityRendererMixin",
     "ntgl.client.ItemInHandLayerMixin",
     "ntgl.client.ItemRendererMixin",
-    "ntgl.client.LevelRendererMixin",
     "ntgl.client.LivingEntityModelMixin",
     "ntgl.client.MinecraftMixin",
     "ntgl.client.MultiPlayerGameModeMixin",

@@ -3,35 +3,31 @@ package com.nukateam.ntgl.common.network.message;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.util.util.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Author: MrCrayfish
  */
 public class S2CMessageBlood extends PlayMessage<S2CMessageBlood> {
-    private double x;
-    private double y;
-    private double z;
+    private Vec3 pos;
 
-    public S2CMessageBlood() {
-    }
+    public S2CMessageBlood() {}
 
-    public S2CMessageBlood(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    public S2CMessageBlood(Vec3 pos) {
+        this.pos = pos;
     }
 
     @Override
     public void encode(S2CMessageBlood message, FriendlyByteBuf buffer) {
-        buffer.writeDouble(message.x);
-        buffer.writeDouble(message.y);
-        buffer.writeDouble(message.z);
+        buffer.writeNbt(NbtUtils.writeVec3(message.pos));
     }
 
     @Override
     public S2CMessageBlood decode(FriendlyByteBuf buffer) {
-        return new S2CMessageBlood(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+        var pos = NbtUtils.readVec3(buffer.readNbt());
+        return new S2CMessageBlood(pos);
     }
 
     @Override
@@ -40,15 +36,7 @@ public class S2CMessageBlood extends PlayMessage<S2CMessageBlood> {
         supplier.setHandled(true);
     }
 
-    public double getX() {
-        return this.x;
-    }
-
-    public double getY() {
-        return this.y;
-    }
-
-    public double getZ() {
-        return this.z;
+    public Vec3 getPos() {
+        return pos;
     }
 }

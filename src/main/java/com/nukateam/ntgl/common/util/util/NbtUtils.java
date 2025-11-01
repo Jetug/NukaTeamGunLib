@@ -11,6 +11,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -25,12 +26,15 @@ public class NbtUtils {
         return vecTag;
     }
 
-    public static Vec3 readVec3(CompoundTag tag) {
-        return new Vec3(
-            tag.getDouble("x"),
-            tag.getDouble("y"),
-            tag.getDouble("z")
-        );
+    public static Vec3 readVec3(@Nullable CompoundTag tag) {
+        if(tag != null) {
+            return new Vec3(
+                    tag.getDouble("x"),
+                    tag.getDouble("y"),
+                    tag.getDouble("z")
+            );
+        }
+        return Vec3.ZERO;
     }
 
     public static CompoundTag serializeStringArray(ArrayList<String> array){

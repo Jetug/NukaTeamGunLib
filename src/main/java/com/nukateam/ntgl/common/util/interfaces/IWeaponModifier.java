@@ -61,16 +61,6 @@ public interface IWeaponModifier {
     }
 
     /**
-     * Adds additional damage to the weapon. This can be positive or negative number, with negative
-     * reducing the damage of the weapon.
-     *
-     * @return additional damage to add on top of the weapon damage
-     */
-    default float additionalDamage(WeaponData data) {
-        return 0.0F;
-    }
-
-    /**
      * Modify the damage of the projectile. This is called before critical logic is
      *
      * @param damage the current projectile damage
@@ -79,17 +69,6 @@ public interface IWeaponModifier {
      */
     default float modifyDamage(float damage, WeaponData data) {
         return damage;
-    }
-
-    /**
-     * Modify the speed of the projectile.
-     *
-     * @param speed the current projectile speed
-     * @param data
-     * @return a new speed for the projectile
-     */
-    default double modifyProjectileSpeed(double speed, WeaponData data) {
-        return speed;
     }
 
     /**

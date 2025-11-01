@@ -10,7 +10,6 @@ import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
-import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,7 +42,7 @@ public class WeaponModifierHelper {
 
     public static boolean isWeaponFull(WeaponData data) {
         var tag = data.weapon.getOrCreateTag();
-        return tag.getInt(Tags.AMMO_COUNT) >= GunEnchantmentHelper.getAmmoCapacity(data);
+        return tag.getInt(Tags.AMMO_COUNT) >= WeaponModifierHelper.getMaxAmmo(data);
     }
 
     public static boolean canUseOffhandWeapon(LivingEntity player){
@@ -363,12 +362,6 @@ public class WeaponModifierHelper {
         return finalValue.get();
     }
 
-    public static double getModifiedProjectileSpeed(WeaponData data, double speed) {
-        var finalSpeed = new AtomicReference<>(speed);
-        forEachAttachment(data, (modifier -> finalSpeed.set(modifier.modifyProjectileSpeed(finalSpeed.get(), data))));
-        return finalSpeed.get();
-    }
-
     public static float getFireSoundVolume(WeaponData data) {
         var volume = new AtomicReference<>(1.0F);
         forEachAttachment(data, (modifier -> volume.set(modifier.modifyFireSoundVolume(volume.get(), data))));
@@ -419,19 +412,11 @@ public class WeaponModifierHelper {
         return Mth.clamp(minRadius.get(), 0.0, Double.MAX_VALUE);
     }
 
-    public static float getAdditionalDamage(WeaponData data) {
-        var additionalDamage = new AtomicReference<>(0.0F);
-        forEachAttachment(data, (modifier -> additionalDamage.updateAndGet(
-                v -> v + modifier.additionalDamage(data))));
-        return additionalDamage.get();
-    }
-
     public static float getModifiedDamage(WeaponData data) {
         var damage = getGeneral(data).getDamage();
         damage *= getAmmoDamageMultiplier(data);
         var finalDamage = new AtomicReference<>(damage);
         forEachAttachment(data, (modifier -> finalDamage.set(modifier.modifyDamage(finalDamage.get(), data))));
-        forEachAttachment(data, (modifier -> finalDamage.updateAndGet(v -> v + modifier.additionalDamage(data))));
 
         return finalDamage.get();
     }
@@ -441,28 +426,22 @@ public class WeaponModifierHelper {
     }
 
     public static double getModifiedAimDownSightSpeed(WeaponData data) {
-        double speed = GunEnchantmentHelper.getAimDownSightSpeed(data.weapon);
-        var buffSpeed = new AtomicReference<>(speed);
-
+        var value = new AtomicReference<>(1.0);
         forEachAttachment(data, (modifier ->
-                buffSpeed.set(modifier.modifyAimDownSightSpeed(buffSpeed.get(), data))));
-
-        return Mth.clamp(buffSpeed.get(), 0.01, Double.MAX_VALUE);
+                value.set(modifier.modifyAimDownSightSpeed(value.get(), data))));
+        return Mth.clamp(value.get(), 0.01, Double.MAX_VALUE);
     }
 
     public static int getRate(WeaponData data) {
-        var rate = getGeneral(data).getRate();
-        rate = GunEnchantmentHelper.getRate(data.weapon, rate);
-        var buffRate = new AtomicInteger(rate);
-        forEachAttachment(data, (modifier -> buffRate.set(modifier.modifyFireRate(buffRate.get(), data))));
-        return Mth.clamp(buffRate.get(), 0, Integer.MAX_VALUE);
+        var value = new AtomicInteger(getGeneral(data).getRate());
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyFireRate(value.get(), data))));
+        return Mth.clamp(value.get(), 0, Integer.MAX_VALUE);
     }
 
     public static float getCriticalChance(WeaponData data) {
         var chance = new AtomicReference<>(0F);
         forEachAttachment(data, (modifier ->
                 chance.updateAndGet(v -> v + modifier.criticalChance(data))));
-        chance.updateAndGet(v -> v + GunEnchantmentHelper.getPuncturingChance(data.weapon));
 
         return Mth.clamp(chance.get(), 0F, 1F);
     }

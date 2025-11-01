@@ -119,6 +119,7 @@ repositories {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.20.1-47.4.0'
     implementation fg.deobf("mod.azure.azurelib:azurelib-neo-1.20.1:2.0.41")
+    implementation fg.deobf("curse.maven:framework-549225:5911986")
     compileOnly fg.deobf('curse.maven:backpacked-352835:5813547')
     implementation fg.deobf("curse.maven:configured-457570:5180900")
     implementation fg.deobf("curse.maven:sophisticated-core-618298:6456062")
@@ -137,11 +138,11 @@ dependencies {
 //    implementation fg.deobf("maven.modrinth:subtle-effects:1.13.1")
 //    compileOnly fg.deobf('einstein:subtleeffects-forge:1.20.1-1.13.1')
 //    implementation fg.deobf("curse.maven:appleskin-248787:4770828")
+
+    implementation fg.deobf("snownee:jade:1.20.1-Forge-11.13.2")
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
-
-    implementation fg.deobf("curse.maven:framework-549225:5911986")
 
 
 //    implementation fg.deobf("curse.maven:forgified-fabric-api-889079:6289136")

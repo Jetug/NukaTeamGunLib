@@ -162,6 +162,13 @@
   "info.ntgl.burnable": "Fuel",
   "info.ntgl.water": "Water",
 
+  "entity.ntgl.projectile": "Projectile",
+  "entity.ntgl.spear": "Spear",
+  "entity.ntgl.grenade": "Grenade",
+  "entity.ntgl.throwable_grenade": "Grenade",
+  "entity.ntgl.throwable_stun_grenade": "Stun Grenade",
+  "entity.ntgl.flame_projectile": "Flame",
+
   "info.ntgl.primary": "Primary",
   "info.ntgl.secondary": "Secondary",
   "info.ntgl.additional": "Additional",

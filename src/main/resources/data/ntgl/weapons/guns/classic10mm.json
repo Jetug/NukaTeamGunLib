@@ -25,12 +25,17 @@
   "ammoData":{
     "minecraft:stick": {
       "projectile": {
+        "projectile": "ntgl:spear",
+        "damageType": "ntgl:fire",
         "visible": true,
         "damage": 1.0,
         "size": 5.0,
         "speed": 3.0,
         "life": 120,
-        "projectileAmount": 1
+        "pierceLevel": 0,
+        "burnSeconds": 5,
+        "projectileAmount": 1,
+        "hitSound": "minecraft:entity.arrow.hit"
       }
     }
   },

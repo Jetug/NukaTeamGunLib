@@ -11,7 +11,6 @@ public class S2CMessageProjectileHitFluid extends PlayMessage<S2CMessageProjecti
     private Vec3 pos;
     float size;
     float speed;
-    float fluidHeight;
     boolean isInLava;
     private int projectileId;
 
@@ -21,7 +20,6 @@ public class S2CMessageProjectileHitFluid extends PlayMessage<S2CMessageProjecti
         this.pos = pos;
         this.size = size;
         this.speed = speed;
-        this.fluidHeight = fluidHeight;
         this.isInLava = isInLava;
         this.projectileId = projectileId;
     }

@@ -138,7 +138,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	}
 
 	@Override
-	protected boolean removeOnHit() {
+	protected boolean removeOnHit(HitTarget hitTarget) {
 		return false;
 	}
 

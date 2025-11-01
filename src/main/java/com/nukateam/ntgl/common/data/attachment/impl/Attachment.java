@@ -105,7 +105,6 @@ public class Attachment {
         damage(data, perks);
         meleeDamage(data, perks);
         meleeDistance(data, perks);
-        speed(data, perks);
         spread(data, perks);
         life(data, perks);
         recoil(data, perks);
@@ -184,11 +183,6 @@ public class Attachment {
     private void spread(WeaponData data, ArrayList<Component> positivePerks) {
         getNumericPerk(positivePerks, "perk.ntgl.projectile_spread",
                 (modifier, val) -> modifier.modifyProjectileSpread(val, data));
-    }
-
-    private void speed(WeaponData data, ArrayList<Component> positivePerks) {
-        getNumericPerk(positivePerks, "perk.ntgl.projectile_speed", true,
-                (modifier, val) -> (float)modifier.modifyProjectileSpeed(val, data));
     }
 
     private void damage(WeaponData data, ArrayList<Component> positivePerks) {

@@ -15,7 +15,6 @@ import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.datagen.*;
 import com.nukateam.ntgl.common.registry.ProjectileRegistry;
-import com.nukateam.ntgl.modules.enchantment.EnchantmentModule;
 import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.foundation.init.*;
@@ -89,7 +88,6 @@ public class Ntgl {
         });
 
         GunPackModule.init(MOD_EVENT_BUS);
-        EnchantmentModule.init(MOD_EVENT_BUS);
         NtglGameEvents.register(MOD_EVENT_BUS);
         new ChassisCore(MOD_EVENT_BUS);
 //        TravelersBackpack

@@ -24,7 +24,6 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
-import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -88,7 +87,7 @@ public class ControllerHandler {
                 var tag = heldItem.getTag();
                 var data = new WeaponData(heldItem, player);
 
-                if (tag != null && WeaponStateHelper.getAmmoCount(data) < GunEnchantmentHelper.getAmmoCapacity(data)) {
+                if (tag != null && WeaponStateHelper.getAmmoCount(data) < WeaponModifierHelper.getMaxAmmo(data)) {
                     actions.put(GunButtonBindings.RELOAD, new Action(Component.translatable("ntgl.action.reload"), Action.Side.LEFT));
                 }
 
