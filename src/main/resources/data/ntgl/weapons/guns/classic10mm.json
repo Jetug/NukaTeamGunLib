@@ -2,7 +2,7 @@
   "general": {
     "action": "ntgl:gun",
     "rate": 10,
-    "gripType": "ntgl:one_handed",
+    "gripType": "ntgl:vanilla",
     "fireMode": ["ntgl:auto", "ntgl:semi"],
     "loadingType": "magazine",
     "maxAmmo": 6,

@@ -5,10 +5,7 @@ import com.nukateam.ntgl.common.data.config.weapon.Fuel;
 import com.nukateam.ntgl.common.data.holders.*;
 import net.minecraft.world.InteractionHand;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class GunHudCache{
     public FireMode fireMode = FireMode.SEMI_AUTO;
@@ -23,7 +20,7 @@ public class GunHudCache{
     public boolean fireModeKey = false;
     public boolean ammoTypeKey = false;
     public boolean isThrowable = false;
-    public Map<WeaponMode, WeaponAction> weaponModes = Map.of();
+    public LinkedHashMap<WeaponMode, WeaponAction> weaponModes = new LinkedHashMap<>(Map.of());
 
     public GunHudCache(InteractionHand hand){
         this.hand = hand;

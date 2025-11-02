@@ -36,4 +36,31 @@ public class VanillaPose implements IHeldAnimation {
     public double getFallSwayZOffset() {
         return 0.5;
     }
+
+    @Override
+    public void applyHeldItemTransforms(LivingEntity entity, InteractionHand hand, float aimProgress, PoseStack poseStack, MultiBufferSource buffer) {
+        var side = hand == InteractionHand.OFF_HAND ? 1 : -1;
+        poseStack.translate(0.45 * side, -0.5, -1.2);
+    }
+
+    @Override
+    public boolean applyOffhandTransforms(LivingEntity entity, HumanoidModel<LivingEntity> model, ItemStack stack, PoseStack poseStack, float partialTicks) {
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
+
+        if (entity.isCrouching()) {
+            poseStack.translate(-4.5 * 0.0625, -15 * 0.0625, -4 * 0.0625);
+        } else if (!entity.getItemBySlot(EquipmentSlot.LEGS).isEmpty()) {
+            poseStack.translate(-4.0 * 0.0625, -13 * 0.0625, 1 * 0.0625);
+        } else {
+            poseStack.translate(-3.5 * 0.0625, -13 * 0.0625, 1 * 0.0625);
+        }
+
+        poseStack.mulPose(Axis.YP.rotationDegrees(90F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(75F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees((float) (Math.toDegrees(model.rightLeg.xRot) / 10F)));
+        poseStack.scale(0.5F, 0.5F, 0.5F);
+
+        return true;
+    }
 }
