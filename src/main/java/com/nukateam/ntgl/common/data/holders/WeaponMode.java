@@ -8,16 +8,17 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class WeaponMode extends ResourceHolder {
     private static final Map<ResourceLocation, WeaponMode> loadingTypeMap = new HashMap<>();
 
-    public static final WeaponMode PRIMARY     = new WeaponMode("primary"    , getAttackKey());
-    public static final WeaponMode SECONDARY   = new WeaponMode("secondary"  , getKeyUseKey());
-    public static final WeaponMode ADDITIONAL  = new WeaponMode("additional" , NtglKeyBinds.KEY_ADD_ATTACK);
-    public static final WeaponMode ALTERNATIVE = new WeaponMode("alternative", NtglKeyBinds.KEY_ADD_ATTACK);
+    public static final WeaponMode PRIMARY     = new WeaponMode("primary"    , () -> getAttackKey());
+    public static final WeaponMode SECONDARY   = new WeaponMode("secondary"  , () -> getKeyUseKey());
+    public static final WeaponMode ADDITIONAL  = new WeaponMode("additional" , () -> NtglKeyBinds.KEY_ADD_ATTACK);
+    public static final WeaponMode ALTERNATIVE = new WeaponMode("alternative", () -> NtglKeyBinds.KEY_ALT_ATTACK);
 
-    private final KeyMapping key;
+    private final Supplier<KeyMapping> key;
 
     static {
         registerType(PRIMARY    );
@@ -26,18 +27,18 @@ public class WeaponMode extends ResourceHolder {
         registerType(ALTERNATIVE);
     }
 
-    private WeaponMode(String id, KeyMapping key) {
+    private WeaponMode(String id, Supplier<KeyMapping> key) {
         super(ResourceLocation.tryBuild(Ntgl.MOD_ID, id));
         this.key = key;
     }
 
-    public WeaponMode(ResourceLocation id, KeyMapping key) {
+    public WeaponMode(ResourceLocation id, Supplier<KeyMapping> key) {
         super(id);
         this.key = key;
     }
 
     public KeyMapping getKeyMapping() {
-        return key;
+        return key.get();
     }
 
     public static void registerType(WeaponMode mode) {

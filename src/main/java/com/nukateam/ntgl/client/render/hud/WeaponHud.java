@@ -8,6 +8,7 @@ import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
 import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.ClientDebug;
+import com.nukateam.ntgl.client.util.helpers.KeyIcons;
 import com.nukateam.ntgl.client.util.helpers.RgbHelper;
 import com.nukateam.ntgl.client.util.helpers.render.Figures;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
@@ -116,7 +117,7 @@ public class WeaponHud implements IGuiOverlay {
             renderInventoryAmmo(graphics, poseStack, handCache, x - COUNTER_POS_X + 3, y - INVENTORY_AMMO_POS_Y);
 
             renderFuelCounters(graphics, handCache, stack, x - BAR_START_X + 8, y - BAR_START_Y - 3 );
-            renderWeaponModes(graphics, poseStack, handCache, x - COUNTER_POS_X - 70, y - INVENTORY_AMMO_POS_Y - 5);
+            renderWeaponModes(graphics, poseStack, handCache, x - COUNTER_POS_X + 50 - ClientDebug.X, y - 10 - INVENTORY_AMMO_POS_Y - ClientDebug.Y);
         }
         poseStack.popPose();
     }
@@ -191,8 +192,8 @@ public class WeaponHud implements IGuiOverlay {
             var mode = entry.getKey();
             var action = entry.getValue();
             renderIcon(graphics, poseStack, action.getIcon(), x, iconPosY, WEAPON_MODE_SCALE);
-            renderKeyBinding(graphics, poseStack, mode.getKeyMapping().getKey(), x - 6 - ClientDebug.X, iconPosY + 3 - ClientDebug.Y);
-            iconPosY -= 10;
+            renderKey(graphics, poseStack, mode.getKeyMapping().getKey(), x - 6 , iconPosY + 3);
+            iconPosY -= 12;
         }
     }
 
@@ -200,8 +201,9 @@ public class WeaponHud implements IGuiOverlay {
         var ammoType = handCache.ammoConfig.getAmmoType();
         var icon = ammoType.getIcon();
         renderIcon(graphics, icon, x, y);
-        if(handCache.ammoTypeKey)
-            renderKeyBinding(graphics, poseStack, NtglKeyBinds.KEY_AMMO_SELECT.getKey(), x - 6 , y + 6);
+        if(handCache.ammoTypeKey) {
+            renderKey(graphics, poseStack, NtglKeyBinds.KEY_AMMO_SELECT.getKey(), x - 6, y + 6);
+        }
     }
 
     protected void renderThrowModeIcon(GuiGraphics graphics, PoseStack poseStack, GunHudCache handCache, int x, int y) {
@@ -209,8 +211,9 @@ public class WeaponHud implements IGuiOverlay {
         var icon = mode.getIcon();
 
         renderIcon(graphics, icon, x, y);
-        if(handCache.fireModeKey)
-            renderKeyBinding(graphics, poseStack, NtglKeyBinds.KEY_FIRE_SELECT.getKey(), x - 6, y + 6);
+        if(handCache.fireModeKey) {
+            renderKey(graphics, poseStack, NtglKeyBinds.KEY_FIRE_SELECT.getKey(), x - 6, y + 6);
+        }
     }
 
     protected void renderFireModeIcon(GuiGraphics graphics, PoseStack poseStack, GunHudCache handCache, int x, int y) {
@@ -218,21 +221,31 @@ public class WeaponHud implements IGuiOverlay {
         var icon = fireMode.getIcon();
 
         renderIcon(graphics, icon, x, y);
-        if(handCache.fireModeKey)
-            renderKeyBinding(graphics, poseStack, NtglKeyBinds.KEY_FIRE_SELECT.getKey(), x - 6, y + 6);
+        if(handCache.fireModeKey) {
+            renderKey(graphics, poseStack, NtglKeyBinds.KEY_FIRE_SELECT.getKey(), x - 6, y + 6);
+        }
     }
 
-    private void renderKeyBinding(GuiGraphics graphics, PoseStack poseStack, InputConstants.Key key, int x, int y) {
+    protected void renderKey(GuiGraphics graphics, PoseStack poseStack, InputConstants.Key key,  int x, int y) {
         if(!NtglOptions.getInstance().isShowTips()) return;
+        var icon = KeyIcons.getIcon(key.getValue());
+
+        if (icon != null) {
+            renderIcon(graphics, poseStack, icon, x - 5, y - 3, WEAPON_MODE_SCALE);
+        } else {
+            renderKeyName(graphics, poseStack, key, x, y, BINDING_SCALE);
+        }
+    }
+
+    private void renderKeyName(GuiGraphics graphics, PoseStack poseStack, InputConstants.Key key, int x, int y, float scale) {
         var name = key.getDisplayName().getVisualOrderText();
         poseStack.pushPose();
         {
             var textOffset = minecraft.font.width(name) / 2;
-
-            poseStack.scale(BINDING_SCALE, BINDING_SCALE, 1);
+            poseStack.scale(scale, scale, 1);
             graphics.drawString(minecraft.font, name,
-                    (x - textOffset) / BINDING_SCALE,
-                    y / BINDING_SCALE,
+                    (x - textOffset) / scale,
+                    y / scale,
                     colors.inventoryAmmo, true);
         }
         poseStack.popPose();
@@ -271,7 +284,9 @@ public class WeaponHud implements IGuiOverlay {
 
             for(var mode : weaponModes){
                 var action = WeaponModifierHelper.getWeaponAction(data.clone().setWeaponMode(mode));
-                handCache.weaponModes.put(mode, action);
+                if(action != WeaponAction.NONE) {
+                    handCache.weaponModes.put(mode, action);
+                }
             }
 
             if(handCache.isThrowable){
