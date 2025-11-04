@@ -16,7 +16,6 @@ import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.client.render.renderers.weapon.*;
 import com.nukateam.ntgl.common.foundation.item.interfaces.*;
-import mod.azure.azurelib.animatable.GeoItem;
 import mod.azure.azurelib.core.animatable.instance.*;
 import mod.azure.azurelib.core.animation.*;
 import net.minecraft.*;
@@ -39,7 +38,7 @@ import java.util.function.*;
 
 import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
 import static com.nukateam.ntgl.common.util.util.WeaponStateHelper.AMMO_TAG;
-import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
+import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
 public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable, IColored, IMeta{
     public static final String VARIANT = "variant";

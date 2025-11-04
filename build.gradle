@@ -105,7 +105,6 @@ repositories {
     flatDir {
         dirs 'libs'
     }
-    maven { url 'https://maven.azuredoom.com/mods' }
     maven {
         name "KosmX's maven"
         url 'https://maven.kosmx.dev/'
@@ -114,11 +113,22 @@ repositories {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
     }
+    maven {
+        name = 'GeckoLib'
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroupByRegex("software\\.bernie.*")
+            includeGroup("com.eliotlash.mclib")
+        }
+    }
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.20.1-47.4.0'
-    implementation fg.deobf("mod.azure.azurelib:azurelib-neo-1.20.1:2.0.41")
+
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:4.8.2")
+    implementation("com.eliotlash.mclib:mclib:20")
+
     implementation fg.deobf("curse.maven:framework-549225:5911986")
     compileOnly fg.deobf('curse.maven:backpacked-352835:5813547')
     implementation fg.deobf("curse.maven:configured-457570:5180900")
