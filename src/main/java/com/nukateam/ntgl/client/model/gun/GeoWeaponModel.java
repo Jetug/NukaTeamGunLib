@@ -4,7 +4,7 @@ import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.client.model.IGlowingModel;
 import com.nukateam.ntgl.client.util.helpers.GeoModelHelper;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import mod.azure.azurelib.model.GeoModel;
+import software.bernie.geckolib.model.GeoModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 

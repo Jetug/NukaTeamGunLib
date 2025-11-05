@@ -1,7 +1,7 @@
 package com.nukateam.chassis_core.client.model;
 
 import com.nukateam.chassis_core.client.animators.HandAnimator;
-import mod.azure.azurelib.model.GeoModel;
+import software.bernie.geckolib.model.GeoModel;
 import net.minecraft.resources.ResourceLocation;
 
 import static com.nukateam.chassis_core.client.render.utils.ResourceHelper.getChassisResource;

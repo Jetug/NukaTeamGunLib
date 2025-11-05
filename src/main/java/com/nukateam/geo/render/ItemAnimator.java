@@ -2,8 +2,6 @@ package com.nukateam.geo.render;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.geo.interfaces.IItemAnimator;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -12,8 +10,11 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 
-import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
+import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
+
 
 public abstract class ItemAnimator implements GeoEntity, IItemAnimator, IResourceProvider {
     protected final AnimatableInstanceCache cache = createInstanceCache(this);

@@ -19,11 +19,11 @@ import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
-import mod.azure.azurelib.core.animation.*;
-import mod.azure.azurelib.core.animation.AnimationController.*;
-import mod.azure.azurelib.core.animation.AnimationState;
-import mod.azure.azurelib.core.keyframe.event.SoundKeyframeEvent;
-import mod.azure.azurelib.core.object.PlayState;
+import software.bernie.geckolib.core.animation.*;
+import software.bernie.geckolib.core.animation.AnimationController.*;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.keyframe.event.SoundKeyframeEvent;
+import software.bernie.geckolib.core.object.PlayState;
 import net.minecraft.client.*;
 import net.minecraft.sounds.*;
 import net.minecraft.world.InteractionHand;
@@ -35,10 +35,10 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.nukateam.ntgl.client.util.helpers.TransformUtils.*;
 import static com.nukateam.ntgl.common.data.constants.Animations.*;
-import static mod.azure.azurelib.core.animation.AnimatableManager.*;
-import static mod.azure.azurelib.core.animation.Animation.*;
-import static mod.azure.azurelib.core.animation.Animation.LoopType.*;
-import static mod.azure.azurelib.core.animation.RawAnimation.begin;
+import static software.bernie.geckolib.core.animation.AnimatableManager.*;
+import static software.bernie.geckolib.core.animation.Animation.*;
+import static software.bernie.geckolib.core.animation.Animation.LoopType.*;
+import static software.bernie.geckolib.core.animation.RawAnimation.begin;
 
 @OnlyIn(Dist.CLIENT)
 public class WeaponAnimator extends ItemAnimator implements IConfigProvider<WeaponConfig> {

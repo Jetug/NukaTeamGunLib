@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
+import com.nukateam.geo.render.ProxyItemRenderer;
 import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
@@ -16,9 +17,8 @@ import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.client.render.renderers.weapon.*;
 import com.nukateam.ntgl.common.foundation.item.interfaces.*;
-import mod.azure.azurelib.core.animatable.instance.*;
-import mod.azure.azurelib.core.animation.*;
 import net.minecraft.*;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.*;
@@ -30,8 +30,12 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.*;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.*;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+
 import javax.annotation.*;
 import java.util.*;
 import java.util.function.*;
@@ -44,7 +48,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     public static final String VARIANT = "variant";
     private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
     private final WeakHashMap<CompoundTag, WeaponConfig> modifiedGunCache = new WeakHashMap<>();
-    private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
     private final Lazy<DefaultWeaponRendererGeo> WEAPON_RENDERER = Lazy.of(() -> new DefaultWeaponRendererGeo());
     private WeaponConfig weaponConfig = new WeaponConfig();
 
@@ -92,6 +95,21 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         return getRegistryName().getNamespace();
     }
 
+    @Override
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            private ProxyItemRenderer renderer;
+
+            @Override
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                if (this.renderer == null)
+                    this.renderer = new ProxyItemRenderer(getRenderer());
+
+                return this.renderer;
+            }
+        });
+    }
+
     public static String getVariant(ItemStack stack) {
         var tag = stack.getOrCreateTag();
         if (!tag.contains(VARIANT, Tag.TAG_STRING)) {
@@ -135,11 +153,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
                 }
             }
         }
-    }
-
-    @Override
-    public Supplier<Object> getRenderProvider() {
-        return renderProvider;
     }
 
     @Override

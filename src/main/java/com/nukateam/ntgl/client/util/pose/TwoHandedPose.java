@@ -5,7 +5,7 @@ import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.data.holders.GripType;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.*;
 import net.minecraft.client.model.geom.ModelPart;

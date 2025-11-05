@@ -8,9 +8,8 @@ import com.nukateam.chassis_core.client.render.renderers.CustomHandRenderer;
 import com.nukateam.chassis_core.common.data.holders.ChassisPart;
 import com.nukateam.chassis_core.common.foundation.item.ChassisEquipment;
 import com.nukateam.chassis_core.common.util.helpers.Speedometer;
-import mod.azure.azurelib.animatable.GeoEntity;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.util.AzureLibUtil;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -39,7 +38,7 @@ import java.util.Map;
 import static com.nukateam.chassis_core.common.data.constants.Resources.resourceLocation;
 import static net.minecraft.util.Mth.cos;
 import static net.minecraft.util.Mth.sin;
-import static org.apache.logging.log4j.Level.DEBUG;
+import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
 public abstract class WearableChassis extends Chassis implements GeoEntity {
     public static final float ROTATION = (float) Math.PI / 180F;
@@ -49,7 +48,7 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
     public static final ResourceLocation DEFAULT_ICON = resourceLocation("textures/item/chassis.png");
     public static final float STEP_HEIGHT = 0.5f;
     public final Speedometer speedometer = new Speedometer(this);
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
+    private final AnimatableInstanceCache cache = createInstanceCache(this);
     protected boolean isJumping;
     protected float jumpScale;
     public float bob;

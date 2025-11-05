@@ -5,9 +5,9 @@ import com.nukateam.chassis_core.common.config.EquipmentConfig;
 import com.nukateam.chassis_core.common.data.holders.ChassisPart;
 import com.nukateam.chassis_core.common.foundation.item.IChassisEquipment;
 import com.nukateam.chassis_core.common.network.managers.ConfigSupplier;
-import mod.azure.azurelib.animatable.GeoItem;
-import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
-import mod.azure.azurelib.core.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -20,15 +20,13 @@ import java.util.function.Supplier;
 
 import static com.nukateam.chassis_core.common.foundation.item.StackUtils.DEFAULT;
 import static com.nukateam.chassis_core.common.foundation.item.StackUtils.getVariant;
-import static mod.azure.azurelib.util.AzureLibUtil.createInstanceCache;
+import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
 public class ChassisEquipment extends Item implements IChassisEquipment, GeoItem {
     public final ChassisPart part;
     private final AnimatableInstanceCache cache = createInstanceCache(this);
     private final Lazy<String> name = Lazy.of(() -> ResourceHelper.getResourceName(ForgeRegistries.ITEMS.getKey(this)));
-//    private final Lazy<EquipmentConfig> config = Lazy.of(() -> modResourceManager.getEquipmentConfig(getName()));
     private  EquipmentConfig config = new EquipmentConfig();
-    private final Supplier<Object> renderProvider = GeoItem.makeRenderer(this);
 
     public ChassisEquipment(Properties pProperties, ChassisPart part) {
         super(pProperties);
@@ -62,13 +60,5 @@ public class ChassisEquipment extends Item implements IChassisEquipment, GeoItem
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    @Override
-    public void createRenderer(Consumer<Object> consumer) {}
-
-    @Override
-    public Supplier<Object> getRenderProvider() {
-        return renderProvider;
     }
 }

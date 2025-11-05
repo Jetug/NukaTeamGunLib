@@ -1,13 +1,13 @@
 package com.nukateam.geo.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.renderer.GeoItemRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.renderer.GeoItemRenderer;
 
 public class ProxyItemRenderer<T extends Item & GeoAnimatable> extends GeoItemRenderer<T> {
     private final DynamicGeoItemRenderer<ItemAnimator> renderer;

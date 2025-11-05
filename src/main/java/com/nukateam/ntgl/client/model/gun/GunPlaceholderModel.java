@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.client.model.gun;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
-import mod.azure.azurelib.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.model.GeoModel;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.model.GeoModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 

@@ -2,7 +2,7 @@ package com.nukateam.chassis_core.client.model;
 
 import com.nukateam.chassis_core.common.foundation.item.ChassisEquipment;
 import com.nukateam.chassis_core.common.foundation.item.StackUtils;
-import mod.azure.azurelib.model.GeoModel;
+import software.bernie.geckolib.model.GeoModel;
 import net.minecraft.resources.ResourceLocation;
 
 public class EquipmentModel<T extends ChassisEquipment> extends GeoModel<T> {

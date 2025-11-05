@@ -8,7 +8,7 @@ import com.mojang.math.Axis;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
-import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;

@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;

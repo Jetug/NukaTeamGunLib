@@ -1,14 +1,14 @@
 package com.nukateam.chassis_core.client.render.utils;
 
 import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
-import mod.azure.azurelib.cache.AzureLibCache;
-import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.cache.object.GeoBone;
-import mod.azure.azurelib.constant.DataTickets;
-import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
-import mod.azure.azurelib.core.animation.AnimationProcessor;
-import mod.azure.azurelib.core.animation.AnimationState;
-import mod.azure.azurelib.model.data.EntityModelData;
+import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationProcessor;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.data.EntityModelData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
@@ -49,7 +49,7 @@ public class GeoUtils {
     }
 
     public static BakedGeoModel getModel(ResourceLocation location) {
-        return AzureLibCache.getBakedModels().get(location);
+        return GeckoLibCache.getBakedModels().get(location);
     }
 
     @Nullable

@@ -4,10 +4,10 @@ import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.client.animators.HandAnimator;
 import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
 import com.nukateam.chassis_core.modules.example.common.container.ExampleChassisStationMenu;
-import mod.azure.azurelib.core.animation.AnimatableManager;
-import mod.azure.azurelib.core.animation.AnimationController;
-import mod.azure.azurelib.core.animation.RawAnimation;
-import mod.azure.azurelib.core.object.PlayState;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
@@ -20,9 +20,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 
 import static com.nukateam.chassis_core.modules.example.common.ArmorChassisAnimation.*;
-import static mod.azure.azurelib.core.animation.Animation.LoopType.LOOP;
-import static mod.azure.azurelib.core.animation.Animation.LoopType.PLAY_ONCE;
-import static mod.azure.azurelib.core.animation.RawAnimation.begin;
+import static software.bernie.geckolib.core.animation.Animation.LoopType.LOOP;
+import static software.bernie.geckolib.core.animation.Animation.LoopType.PLAY_ONCE;
+import static software.bernie.geckolib.core.animation.RawAnimation.begin;
 
 public class ExampleChassis extends WearableChassis {
     public static final ResourceLocation ICON

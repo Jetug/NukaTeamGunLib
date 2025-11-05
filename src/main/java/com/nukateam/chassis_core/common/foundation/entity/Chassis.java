@@ -17,7 +17,7 @@ import com.nukateam.chassis_core.common.network.managers.ConfigSupplier;
 import com.nukateam.chassis_core.common.network.managers.Configs;
 import com.nukateam.chassis_core.common.network.packet.S2CInventoryPacket;
 import com.nukateam.chassis_core.common.util.helpers.timer.TickTimer;
-import mod.azure.azurelib.cache.object.GeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;

@@ -1,8 +1,8 @@
 package com.nukateam.chassis_core.client.model;
 
 import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
-import mod.azure.azurelib.core.animation.AnimationState;
-import mod.azure.azurelib.model.GeoModel;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.GeoModel;
 import net.minecraft.resources.ResourceLocation;
 
 import static com.nukateam.chassis_core.client.render.utils.GeoUtils.setHeadAnimation;

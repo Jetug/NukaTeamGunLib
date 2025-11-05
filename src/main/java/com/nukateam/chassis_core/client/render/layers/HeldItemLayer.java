@@ -1,10 +1,10 @@
 package com.nukateam.chassis_core.client.render.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mod.azure.azurelib.cache.object.GeoBone;
-import mod.azure.azurelib.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.renderer.GeoRenderer;
-import mod.azure.azurelib.renderer.layer.BlockAndItemGeoLayer;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.renderer.GeoRenderer;
+import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
