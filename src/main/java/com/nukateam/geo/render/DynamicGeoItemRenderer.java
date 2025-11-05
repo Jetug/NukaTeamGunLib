@@ -127,7 +127,7 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
 
         animationState.setData(DataTickets.ITEM_RENDER_PERSPECTIVE, this.currentTransform);
         animationState.setData(DataTickets.ITEMSTACK, this.currentStack);
-        animationState.setData(DataTickets.TICK, animatable.getTick(animatable));
+//        animationState.setData(DataTickets.TICK, animatable.getTick(animatable));
         animationState.setData(DataTickets.ENTITY, currentEntity);
         animationState.setData(DataTickets.ENTITY_MODEL_DATA, new EntityModelData(shouldSit, false, -netHeadYaw, -headPitch));
         var var31 = this.model;

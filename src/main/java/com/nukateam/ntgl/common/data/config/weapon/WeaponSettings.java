@@ -215,11 +215,6 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
             return this;
         }
 
-        public Builder setRecoilKick(float recoilKick) {
-            this.gun.general.recoilKick = recoilKick;
-            return this;
-        }
-
         public Builder setRecoilDurationOffset(float recoilDurationOffset) {
             this.gun.general.recoilDurationOffset = recoilDurationOffset;
             return this;

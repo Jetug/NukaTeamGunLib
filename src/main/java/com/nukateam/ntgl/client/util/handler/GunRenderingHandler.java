@@ -479,27 +479,27 @@ public class GunRenderingHandler {
         poseStack.mulPose(Axis.XP.rotationDegrees(45F * reloadProgress));
     }
 
-    private void applyRecoilTransforms(PoseStack poseStack, Player player, ItemStack item, WeaponConfig weaponConfig) {
-        double recoilNormal = RecoilHandler.get().getGunRecoilNormal();
-        if (WeaponStateHelper.hasAttachmentEquipped(item, AttachmentType.SCOPE)) {
-            recoilNormal -= recoilNormal * (0.5 * AimingHandler.get().getNormalisedAdsProgress());
-        }
-
-        var data = new WeaponData(item, player);
-        var kickReduction = 1.0F - WeaponModifierHelper.getKickReduction(data);
-        var recoilReduction = 1.0F - WeaponModifierHelper.getRecoilModifier(data);
-        var kick = weaponConfig.getGeneral().getRecoilKick() * 0.0625 * recoilNormal * RecoilHandler.get().getAdsRecoilReduction(weaponConfig);
-        var recoilLift = (float) (weaponConfig.getGeneral().getRecoilAngle() * recoilNormal) * (float) RecoilHandler.get().getAdsRecoilReduction(weaponConfig);
-        var recoilSwayAmount = (float) (2F + 1F * (1.0 - AimingHandler.get().getNormalisedAdsProgress()));
-        var recoilSway = (float) ((RecoilHandler.get().getGunRecoilRandom() * recoilSwayAmount - recoilSwayAmount / 2F) * recoilNormal);
-
-        poseStack.translate(0, 0, kick * kickReduction);
-        poseStack.translate(0, 0, 0.15);
-        poseStack.mulPose(Axis.YP.rotationDegrees(recoilSway * recoilReduction));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(recoilSway * recoilReduction));
-        poseStack.mulPose(Axis.XP.rotationDegrees(recoilLift * recoilReduction));
-        poseStack.translate(0, 0, -0.15);
-    }
+//    private void applyRecoilTransforms(PoseStack poseStack, Player player, ItemStack item, WeaponConfig weaponConfig) {
+//        double recoilNormal = RecoilHandler.get().getGunRecoilNormal();
+//        if (WeaponStateHelper.hasAttachmentEquipped(item, AttachmentType.SCOPE)) {
+//            recoilNormal -= recoilNormal * (0.5 * AimingHandler.get().getNormalisedAdsProgress());
+//        }
+//
+//        var data = new WeaponData(item, player);
+//        var kickReduction = 1.0F - WeaponModifierHelper.getKickReduction(data);
+//        var recoilReduction = 1.0F - WeaponModifierHelper.getRecoilModifier(data);
+//        var kick = weaponConfig.getGeneral().getRecoilKick() * 0.0625 * recoilNormal * RecoilHandler.get().getAdsRecoilReduction(weaponConfig);
+//        var recoilLift = (float) (weaponConfig.getGeneral().getRecoilAngle() * recoilNormal) * (float) RecoilHandler.get().getAdsRecoilReduction(weaponConfig);
+//        var recoilSwayAmount = (float) (2F + 1F * (1.0 - AimingHandler.get().getNormalisedAdsProgress()));
+//        var recoilSway = (float) ((RecoilHandler.get().getGunRecoilRandom() * recoilSwayAmount - recoilSwayAmount / 2F) * recoilNormal);
+//
+//        poseStack.translate(0, 0, kick * kickReduction);
+//        poseStack.translate(0, 0, 0.15);
+//        poseStack.mulPose(Axis.YP.rotationDegrees(recoilSway * recoilReduction));
+//        poseStack.mulPose(Axis.ZP.rotationDegrees(recoilSway * recoilReduction));
+//        poseStack.mulPose(Axis.XP.rotationDegrees(recoilLift * recoilReduction));
+//        poseStack.translate(0, 0, -0.15);
+//    }
 
     private void applyShieldTransforms(PoseStack poseStack, LocalPlayer player, ItemStack stack, float partialTick) {
         if (player.isUsingItem() && player.getOffhandItem().getItem() == Items.SHIELD) {

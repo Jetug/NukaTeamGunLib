@@ -232,7 +232,6 @@ public class WeaponHud implements IGuiOverlay {
         renderKey(graphics, poseStack, key, x, y, true);
     }
 
-
     protected void renderKey(GuiGraphics graphics, PoseStack poseStack, InputConstants.Key key, int x, int y, boolean isLeft) {
         if(!NtglOptions.getInstance().isShowTips()) return;
         var icon = KeyIcons.getIcon(key.getValue());

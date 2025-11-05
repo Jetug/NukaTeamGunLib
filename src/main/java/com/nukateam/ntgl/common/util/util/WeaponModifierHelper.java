@@ -374,24 +374,19 @@ public class WeaponModifierHelper {
         return finalSize.get();
     }
 
-    public static double getMuzzleFlashScale(WeaponData data, double scale) {
-        var finalScale = new AtomicReference<>(scale);
-        forEachAttachment(data, (modifier -> finalScale.set(modifier.modifyMuzzleFlashScale(scale, data))));
-        return finalScale.get();
-    }
-
-    public static float getKickReduction(WeaponData data) {
-        var kickReduction = new AtomicReference<>(1.0F);
-        forEachAttachment(data, (modifier -> kickReduction.updateAndGet(v -> v * Mth.clamp(modifier.kickModifier(data), 0.0F, 1.0F))));
-        return 1.0F - kickReduction.get();
-    }
-
     public static float getRecoilModifier(WeaponData data) {
         var recoilReduction = new AtomicReference<>(1.0F);
         forEachAttachment(data, (modifier -> recoilReduction.updateAndGet(
                 v -> v * Mth.clamp(modifier.recoilModifier(data), 0.0F, 1.0F))));
 
         return 1.0F - recoilReduction.get();
+    }
+
+    public static float getRecoilAngle(WeaponData data) {
+        var value = new AtomicReference<>(getGeneral(data).getRecoilAngle());
+        forEachAttachment(data, modifier -> value.set(modifier.modifyRecoil(value.get(), data)));
+
+        return 1.0F - value.get();
     }
 
     public static boolean isSilencedFire(WeaponData data) {

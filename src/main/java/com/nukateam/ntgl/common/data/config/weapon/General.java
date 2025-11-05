@@ -28,7 +28,6 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String RELOAD_END = "ReloadEnd";
     public static final String RECOIL_ANGLE = "RecoilAngle";
     public static final String DAMAGE = "Damage";
-    public static final String RECOIL_KICK = "RecoilKick";
     public static final String RECOIL_DURATION_OFFSET = "RecoilDurationOffset";
     public static final String RECOIL_ADS_REDUCTION = "RecoilAdsReduction";
     public static final String PROJECTILE_AMOUNT = "ProjectileAmount";
@@ -72,7 +71,6 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional boolean autoReload = false;
     @Optional boolean renderHud = true;
     @Optional float recoilAngle;
-    @Optional float recoilKick;
     @Optional float recoilDurationOffset;
     @Optional float recoilAdsReduction = 0.2F;
     @Optional int projectileAmount = 1;
@@ -110,7 +108,6 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putString   (CATEGORY, this.category);
         tag.putFloat    (RECOIL_ANGLE, this.recoilAngle);
         tag.putFloat    (DAMAGE, this.damage);
-        tag.putFloat    (RECOIL_KICK, this.recoilKick);
         tag.putFloat    (RECOIL_DURATION_OFFSET, this.recoilDurationOffset);
         tag.putFloat    (RECOIL_ADS_REDUCTION, this.recoilAdsReduction);
         tag.putInt      (PROJECTILE_AMOUNT, this.projectileAmount);
@@ -192,9 +189,6 @@ public class General implements INBTSerializable<CompoundTag> {
         if (tag.contains(DAMAGE, Tag.TAG_ANY_NUMERIC)) {
             this.damage = tag.getFloat(DAMAGE);
         }
-        if (tag.contains(RECOIL_KICK, Tag.TAG_ANY_NUMERIC)) {
-            this.recoilKick = tag.getFloat(RECOIL_KICK);
-        }
         if (tag.contains(RECOIL_DURATION_OFFSET, Tag.TAG_ANY_NUMERIC)) {
             this.recoilDurationOffset = tag.getFloat(RECOIL_DURATION_OFFSET);
         }
@@ -234,7 +228,6 @@ public class General implements INBTSerializable<CompoundTag> {
         Preconditions.checkArgument(this.reloadTime >= 1, "Reload time must be more than or equal to zero");
         Preconditions.checkArgument(this.recoilAngle >= 0.0F, "Recoil angle must be more than or equal to zero");
         Preconditions.checkArgument(this.damage >= 0.0F, "Damage angle must be more than or equal to zero");
-        Preconditions.checkArgument(this.recoilKick >= 0.0F, "Recoil kick must be more than or equal to zero");
         Preconditions.checkArgument(this.recoilDurationOffset >= 0.0F && this.recoilDurationOffset <= 1.0F, "Recoil duration offset must be between 0.0 and 1.0");
         Preconditions.checkArgument(this.recoilAdsReduction >= 0.0F && this.recoilAdsReduction <= 1.0F, "Recoil ads reduction must be between 0.0 and 1.0");
         Preconditions.checkArgument(this.projectileAmount >= 1, "Projectile amount must be more than or equal to one");
@@ -261,7 +254,6 @@ public class General implements INBTSerializable<CompoundTag> {
         if (this.ammoPerShot > 0 ) object.addProperty("ammoPerShot", this.ammoPerShot);
         if (this.recoilAngle != 0.0F) object.addProperty("recoilAngle", this.recoilAngle);
         if (this.damage != 0.0F) object.addProperty("damage", this.damage);
-        if (this.recoilKick != 0.0F) object.addProperty("recoilKick", this.recoilKick);
         if (this.recoilDurationOffset != 0.0F)
             object.addProperty("recoilDurationOffset", this.recoilDurationOffset);
         if (this.recoilAdsReduction != 0.2F) object.addProperty("recoilAdsReduction", this.recoilAdsReduction);
@@ -302,7 +294,6 @@ public class General implements INBTSerializable<CompoundTag> {
         general.category = this.category;
         general.recoilAngle = this.recoilAngle;
         general.damage = this.damage;
-        general.recoilKick = this.recoilKick;
         general.recoilDurationOffset = this.recoilDurationOffset;
         general.recoilAdsReduction = this.recoilAdsReduction;
         general.projectileAmount = this.projectileAmount;
@@ -465,14 +456,6 @@ public class General implements INBTSerializable<CompoundTag> {
 
     public float getDamage() {
         return this.damage;
-    }
-
-    /**
-     * @return The amount of kick this gun produces upon firing
-     */
-
-    public float getRecoilKick() {
-        return this.recoilKick;
     }
 
     /**

@@ -32,9 +32,9 @@ versionRange="[0.6.16,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.ntgl]]
-modId="azurelib"
+modId="geckolib"
 mandatory=true
-versionRange="[2.0.20, 3.0.27)"
+versionRange="[4.8.2,)"
 ordering="AFTER"
 side="BOTH"
 [[dependencies.ntgl]]

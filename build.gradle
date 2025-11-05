@@ -154,7 +154,6 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
 
-
 //    implementation fg.deobf("curse.maven:forgified-fabric-api-889079:6289136")
 //    implementation fg.deobf('curse.maven:cloth-config-348521:5729105')
 //    implementation fg.deobf('curse.maven:splasher-844451:5235730')

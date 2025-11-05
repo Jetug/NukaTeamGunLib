@@ -134,6 +134,10 @@ public interface IWeaponModifier {
         return 1.0F;
     }
 
+    default float modifyRecoil(float value, WeaponData data) {
+        return value;
+    }
+
     /**
      * Changes the amount of kick given when firing a weapon. This value is multiplied with the kick
      * value of the weapon. Anything greater than one will result in the weapon having more kick, while

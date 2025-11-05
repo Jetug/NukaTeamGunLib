@@ -444,11 +444,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
             return this;
         }
 
-        public Builder setRecoilKick(float recoilKick) {
-            this.weaponConfig.general.recoilKick = recoilKick;
-            return this;
-        }
-
         public Builder setRecoilDurationOffset(float recoilDurationOffset) {
             this.weaponConfig.general.recoilDurationOffset = recoilDurationOffset;
             return this;
