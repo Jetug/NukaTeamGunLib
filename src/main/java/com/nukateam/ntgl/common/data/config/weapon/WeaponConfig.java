@@ -357,10 +357,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         return modes;
     }
 
-    private static ResourceLocation prepareTexture(String itemId, ResourceLocation path) {
-        return ResourceLocation.tryBuild(path.getNamespace(), "textures/guns/" + itemId + "/" + path.getPath() + ".png");
-    }
-
     private HashMap<String, ResourceLocation> deserializeSounds(CompoundTag tag){
         var result = new HashMap<String, ResourceLocation>();
         for (var key: tag.getAllKeys()) {

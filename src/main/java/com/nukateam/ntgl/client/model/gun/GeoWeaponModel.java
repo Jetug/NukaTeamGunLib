@@ -13,7 +13,7 @@ public class GeoWeaponModel<T extends WeaponAnimator> extends GeoModel<T> implem
 
     @Override
     public ResourceLocation getModelResource(T animator) {
-        return GeoModelHelper.getGunResource(animator, "geo/guns/", ".geo.json");
+        return GeoModelHelper.getGunResource(animator, "geo/weapons/", ".geo.json");
     }
 
     @Override
@@ -22,14 +22,14 @@ public class GeoWeaponModel<T extends WeaponAnimator> extends GeoModel<T> implem
         var variant = WeaponItem.getVariant(animator.getStack());
         var resource = textures.containsKey(variant) ?
                 textures.get(variant) :
-                GeoModelHelper.getGunResource(animator, "textures/guns/" + animator.getName() + "/", ".png".formatted());
+                GeoModelHelper.getGunResource(animator, "textures/weapons/" + animator.getId().getPath() + "/", ".png".formatted());
 
         return resource;
     }
 
     @Override
     public ResourceLocation getAnimationResource(T animator) {
-        return GeoModelHelper.getGunResource(animator, "animations/guns/", ".animation.json");
+        return GeoModelHelper.getGunResource(animator, "animations/weapons/", ".animation.json");
     }
 
     @Override
@@ -39,8 +39,9 @@ public class GeoWeaponModel<T extends WeaponAnimator> extends GeoModel<T> implem
 
     @Override
     public ResourceLocation getGlowingTextureResource(T animator) {
-        var name = animator.getName();
-        var modId = animator.getNamespace();
-        return ResourceLocation.tryBuild(modId, "textures/guns/" + name + "/" + name + "_glowmask" + ".png");
+        var name = animator.getId().getPath();
+        var modId = animator.getId().getNamespace();
+
+        return ResourceLocation.tryBuild(modId, "textures/weapons/" + name + "/" + name + "_glowmask" + ".png");
     }
 }

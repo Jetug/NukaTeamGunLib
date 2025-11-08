@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -20,8 +19,7 @@ public abstract class ItemAnimator implements GeoEntity, IItemAnimator, IResourc
     protected final AnimatableInstanceCache cache = createInstanceCache(this);
     protected final ItemDisplayContext transformType;
     protected ItemStack itemStack;
-    private final Lazy<String> name = Lazy.of(this::crateName);
-    private final Lazy<String> namespace = Lazy.of(this::createNamespace);
+    private final Lazy<ResourceLocation> id = Lazy.of(this::crateId);
 
     public ItemAnimator(ItemDisplayContext transformType) {
         this.transformType = transformType;
@@ -48,38 +46,16 @@ public abstract class ItemAnimator implements GeoEntity, IItemAnimator, IResourc
     }
 
     @Override
-    public String getName() {
-        return name.get();
-    }
-    
-    @Override
-    public String getNamespace() {
-        return namespace.get();
+    public ResourceLocation getId() {
+        return id.get();
     }
 
-    private String crateName() {
+    private ResourceLocation crateId() {
         var item = getStack().getItem();
         if (item instanceof IResourceProvider provider) {
-            return provider.getName();
+            return provider.getId();
         } else {
-            var registryName = getRegistryKey(item);
-            return getResourceName(registryName);
-        }
-    }
-
-    public static String getResourceName(ResourceLocation resourceLocation) {
-        String path = resourceLocation.getPath();
-        return FilenameUtils.removeExtension(FilenameUtils.getName(path));
-    }
-
-    private String createNamespace() {
-        var item = getStack().getItem();
-        if (item instanceof IResourceProvider provider) {
-            return provider.getNamespace();
-        }
-        else {
-            var registryName = getRegistryKey(item);
-            return registryName.getNamespace();
+            return getRegistryKey(item);
         }
     }
 

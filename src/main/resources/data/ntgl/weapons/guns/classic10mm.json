@@ -117,15 +117,15 @@
     "ntgl:reload": "ntgl:revolver_reload"
   },
   "textures": {
-    "default" : "ntgl:textures/guns/classic10mm/classic10mm.png",
-    "blue"    : "ntgl:textures/guns/classic10mm/classic10mm_blue.png",
-    "black"   : "ntgl:textures/guns/classic10mm/classic10mm_black.png",
-    "brown"   : "ntgl:textures/guns/classic10mm/classic10mm_brown.png",
-    "gray"    : "ntgl:textures/guns/classic10mm/classic10mm_gray.png",
-    "cyan"    : "ntgl:textures/guns/classic10mm/classic10mm_cyan.png",
-    "green"   : "ntgl:textures/guns/classic10mm/classic10mm_green.png",
-    "pink"    : "ntgl:textures/guns/classic10mm/classic10mm_pink.png",
-    "rust"    : "ntgl:textures/guns/classic10mm/classic10mm_rust.png"
+    "default" : "ntgl:textures/weapons/classic10mm/classic10mm.png",
+    "blue"    : "ntgl:textures/weapons/classic10mm/classic10mm_blue.png",
+    "black"   : "ntgl:textures/weapons/classic10mm/classic10mm_black.png",
+    "brown"   : "ntgl:textures/weapons/classic10mm/classic10mm_brown.png",
+    "gray"    : "ntgl:textures/weapons/classic10mm/classic10mm_gray.png",
+    "cyan"    : "ntgl:textures/weapons/classic10mm/classic10mm_cyan.png",
+    "green"   : "ntgl:textures/weapons/classic10mm/classic10mm_green.png",
+    "pink"    : "ntgl:textures/weapons/classic10mm/classic10mm_pink.png",
+    "rust"    : "ntgl:textures/weapons/classic10mm/classic10mm_rust.png"
   },
   "sounds": {
     "fire": "ntgl:item.pistol10mm.fire",

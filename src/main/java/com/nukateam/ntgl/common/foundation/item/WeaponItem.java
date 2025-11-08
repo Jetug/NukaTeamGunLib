@@ -27,7 +27,6 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.enchantment.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
@@ -46,7 +45,7 @@ import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
 public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable, IColored, IMeta{
     public static final String VARIANT = "variant";
-    private final Lazy<String> name = Lazy.of(() -> ResourceUtils.getResourceName(getRegistryName()));
+    private final Lazy<ResourceLocation> id = Lazy.of(this::getRegistryName);
     private final WeakHashMap<CompoundTag, WeaponConfig> modifiedGunCache = new WeakHashMap<>();
     private final Lazy<DefaultWeaponRendererGeo> WEAPON_RENDERER = Lazy.of(() -> new DefaultWeaponRendererGeo());
     private WeaponConfig weaponConfig = new WeaponConfig();
@@ -77,7 +76,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     @Override
     public void setConfig(ConfigSupplier<WeaponConfig> supplier) {
         this.weaponConfig = supplier.config();
-        weaponConfig.onCreated(getName());
+        weaponConfig.onCreated(getId().getPath());
     }
 
     @Override
@@ -86,13 +85,8 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     @Override
-    public String getName() {
-        return name.get();
-    }
-
-    @Override
-    public String getNamespace() {
-        return getRegistryName().getNamespace();
+    public ResourceLocation getId() {
+        return id.get();
     }
 
     @Override

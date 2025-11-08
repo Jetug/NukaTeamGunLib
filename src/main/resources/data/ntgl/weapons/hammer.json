@@ -16,7 +16,7 @@
   "modes": {
     "ntgl:secondary": {
       "general": {
-        "weaponMode": "ntgl:melee"
+        "action": "ntgl:melee"
       },
       "melee": {
         "mode": "ntgl:auto",

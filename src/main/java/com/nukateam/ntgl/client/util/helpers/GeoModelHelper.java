@@ -5,8 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class GeoModelHelper {
     public static ResourceLocation getGunResource(IResourceProvider animator, String path, String extension) {
-        var name = animator.getName();
-        var modId = animator.getNamespace();
+        var name  = animator.getId().getPath();
+        var modId = animator.getId().getNamespace();
 
         return ResourceLocation.tryBuild(modId, path + name + extension);
     }

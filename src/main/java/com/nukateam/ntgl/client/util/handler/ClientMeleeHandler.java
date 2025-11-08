@@ -11,7 +11,6 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageMeleeAttack;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,16 +21,26 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientMeleeHandler {
-    private static final Map<Pair<LivingEntity, InteractionHand>, ClientMeleeHandler> TRACKER_MAP = new HashMap<>();
-    private int delayTick;
-    private int cooldownTick;
+    private static final Map<Pair<LivingEntity, InteractionHand>, ClientMeleeTracker> TRACKER_MAP = new HashMap<>();
 
-    private ClientMeleeHandler(WeaponData data) {
-        this.cooldownTick = WeaponModifierHelper.getMeleeCooldown(data);
-        this.delayTick = WeaponModifierHelper.getMeleeDelay(data);
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        try {
+            if (event.phase == TickEvent.Phase.START) {
+                for (var pair: TRACKER_MAP.keySet()) {
+                    onEntityTick(pair.getFirst(), pair.getSecond());
+                }
+            }
+        }
+        catch (Exception e){
+            Ntgl.LOGGER.error(e.getMessage(), e);
+        }
+    }
+
+    public static ClientMeleeTracker getTracker(LivingEntity shooter, InteractionHand hand) {
+        return TRACKER_MAP.get(Pair.of(shooter, hand));
     }
 
     public static boolean isOnDelay(LivingEntity shooter, InteractionHand hand){
@@ -56,22 +65,8 @@ public class ClientMeleeHandler {
                 && !TRACKER_MAP.containsKey(Pair.of(entity, hand))
                 && !doMelee)
         {
-            TRACKER_MAP.put(Pair.of(entity, hand), new ClientMeleeHandler(data));
+            TRACKER_MAP.put(Pair.of(entity, hand), new ClientMeleeTracker(data));
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageMeleeAttack(hand, data.weaponMode));
-        }
-    }
-
-    @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
-        try {
-            if (event.phase == TickEvent.Phase.START) {
-                for (var pair: TRACKER_MAP.keySet()) {
-                    onEntityTick(pair.getFirst(), pair.getSecond());
-                }
-            }
-        }
-        catch (Exception e){
-            Ntgl.LOGGER.error(e.getMessage(), e);
         }
     }
 
@@ -97,14 +92,6 @@ public class ClientMeleeHandler {
         }
     }
 
-    private static boolean isKeyAttackDown() {
-        return Minecraft.getInstance().options.keyAttack.isDown();
-    }
-
-    private static boolean isUseKeyDown() {
-        return Minecraft.getInstance().options.keyUse.isDown();
-    }
-
     private static void onEntityTick(LivingEntity shooter, InteractionHand hand) {
         var tracker = TRACKER_MAP.get(Pair.of(shooter, hand));
         if(tracker.delayTick > 0) {
@@ -123,5 +110,22 @@ public class ClientMeleeHandler {
 
     private static boolean isMelee(WeaponData data) {
         return WeaponModifierHelper.getWeaponAction(data) == WeaponAction.MELEE;
+    }
+
+    public static class ClientMeleeTracker{
+        private int delayTick;
+        private int cooldownTick;
+        private final WeaponData data;
+
+        public ClientMeleeTracker(WeaponData data) {
+            this.cooldownTick = WeaponModifierHelper.getMeleeCooldown(data);
+            this.delayTick = WeaponModifierHelper.getMeleeDelay(data);
+            this.data = data;
+        }
+
+        public WeaponData getData() {
+            return data;
+        }
+
     }
 }

@@ -274,26 +274,26 @@ public class AimingHandler {
                 return true;
             }
         }
-        else if(mc.options.keyUse.isDown()) {
+        if(mc.options.keyUse.isDown()) {
             data.setWeaponMode(WeaponMode.SECONDARY);
             if(isScopeAction(data)) {
                 return true;
             }
         }
-        else if(NtglKeyBinds.KEY_ADD_ATTACK.isDown()) {
+        if(NtglKeyBinds.KEY_ADD_ATTACK.isDown()) {
             data.setWeaponMode(WeaponMode.ADDITIONAL);
             if(isScopeAction(data)) {
                 return true;
             }
         }
-        else if(NtglKeyBinds.KEY_ALT_ATTACK.isDown()) {
+        if(NtglKeyBinds.KEY_ALT_ATTACK.isDown()) {
             data.setWeaponMode(WeaponMode.ALTERNATIVE);
             if(isScopeAction(data)) {
                 return true;
             }
         }
 
-        return ControllerHandler.isAiming();
+        return Ntgl.controllableLoaded && ControllerHandler.isAiming();
     }
 
     private static boolean isScopeAction(WeaponData data) {

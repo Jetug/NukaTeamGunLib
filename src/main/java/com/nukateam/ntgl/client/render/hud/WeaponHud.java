@@ -270,6 +270,7 @@ public class WeaponHud implements IGuiOverlay {
 
     protected void renderIcon(GuiGraphics graphics, ResourceLocation icon, int x, int y) {
         var iconColor = RgbHelper.rgbToFloatRgba(colors.hud);
+        RenderSystem.setShaderTexture(0, icon);
         RenderSystem.setShaderColor(iconColor[0], iconColor[1], iconColor[2], iconColor[3]);
         graphics.blit(icon, x, y, 0F, 0F, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
         RenderSystem.setShaderColor(1, 1, 1, 1);

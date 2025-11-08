@@ -90,9 +90,7 @@ public class Display implements INBTSerializable<CompoundTag> {
         public Flash copy() {
             Flash flash = new Flash();
             flash.size = this.size;
-            flash.xOffset = this.xOffset;
-            flash.yOffset = this.yOffset;
-            flash.zOffset = this.zOffset;
+            flash.offset = this.offset;
             return flash;
         }
 

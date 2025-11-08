@@ -1,7 +1,7 @@
 package com.nukateam.geo.interfaces;
 
-public interface IResourceProvider {
-    String getName();
+import net.minecraft.resources.ResourceLocation;
 
-    String getNamespace();
+public interface IResourceProvider {
+    ResourceLocation getId();
 }

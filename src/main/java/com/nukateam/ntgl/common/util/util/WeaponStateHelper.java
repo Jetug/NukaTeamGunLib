@@ -171,6 +171,12 @@ public class WeaponStateHelper {
         return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) > 0;
     }
 
+    public static boolean hasEnoughAmmo(WeaponData data) {
+        var tag = data.weapon.getOrCreateTag();
+        var ammoPerShot = WeaponModifierHelper.getAmmoPerShot(data);
+        return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) >= ammoPerShot;
+    }
+
     public static void fillAmmo(WeaponData data) {
         if (data.weapon.getItem() instanceof IWeapon) {
             var tag = data.weapon.getOrCreateTag();

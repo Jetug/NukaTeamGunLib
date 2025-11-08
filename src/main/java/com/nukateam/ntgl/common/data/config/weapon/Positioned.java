@@ -2,72 +2,45 @@ package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.util.annotation.Optional;
+import com.nukateam.ntgl.common.util.util.NbtUtils;
 import com.nukateam.ntgl.common.util.util.SuperBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class Positioned implements INBTSerializable<CompoundTag> {
-    @Optional
-    protected double xOffset;
-    @Optional
-    protected double yOffset;
-    @Optional
-    protected double zOffset;
+    public static final String OFFSET = "Offset";
+
+    @Optional protected Vec3 offset = Vec3.ZERO;
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.putDouble("XOffset", this.xOffset);
-        tag.putDouble("YOffset", this.yOffset);
-        tag.putDouble("ZOffset", this.zOffset);
+        tag.put(OFFSET, NbtUtils.writeVec3(offset));
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag tag) {
-        if (tag.contains("XOffset", Tag.TAG_ANY_NUMERIC)) {
-            this.xOffset = tag.getDouble("XOffset");
-        }
-        if (tag.contains("YOffset", Tag.TAG_ANY_NUMERIC)) {
-            this.yOffset = tag.getDouble("YOffset");
-        }
-        if (tag.contains("ZOffset", Tag.TAG_ANY_NUMERIC)) {
-            this.zOffset = tag.getDouble("ZOffset");
+        if (tag.contains(OFFSET, Tag.TAG_COMPOUND)) {
+            this.offset = NbtUtils.readVec3(tag.getCompound(OFFSET));
         }
     }
 
     public JsonObject toJsonObject() {
         var object = new JsonObject();
-        if (this.xOffset != 0) {
-            object.addProperty("xOffset", this.xOffset);
-        }
-        if (this.yOffset != 0) {
-            object.addProperty("yOffset", this.yOffset);
-        }
-        if (this.zOffset != 0) {
-            object.addProperty("zOffset", this.zOffset);
-        }
         return object;
     }
 
-    public double getXOffset() {
-        return this.xOffset;
+    public Vec3 getOffset() {
+        return this.offset;
     }
 
-    public double getYOffset() {
-        return this.yOffset;
-    }
-
-    public double getZOffset() {
-        return this.zOffset;
-    }
 
     public Positioned copy() {
-        Positioned positioned = new Positioned();
-        positioned.xOffset = this.xOffset;
-        positioned.yOffset = this.yOffset;
-        positioned.zOffset = this.zOffset;
+        var positioned = new Positioned();
+        positioned.offset = this.offset;
         return positioned;
     }
 
@@ -85,25 +58,8 @@ public class Positioned implements INBTSerializable<CompoundTag> {
             this.positioned = positioned;
         }
 
-        public T setOffset(double xOffset, double yOffset, double zOffset) {
-            this.positioned.xOffset = xOffset;
-            this.positioned.yOffset = yOffset;
-            this.positioned.zOffset = zOffset;
-            return this.self();
-        }
-
-        public T setXOffset(double xOffset) {
-            this.positioned.xOffset = xOffset;
-            return this.self();
-        }
-
-        public T setYOffset(double yOffset) {
-            this.positioned.yOffset = yOffset;
-            return this.self();
-        }
-
-        public T setZOffset(double zOffset) {
-            this.positioned.zOffset = zOffset;
+        public T setOffset(Vec3 offset) {
+            this.positioned.offset = offset;
             return this.self();
         }
 
