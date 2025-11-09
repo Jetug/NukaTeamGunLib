@@ -147,9 +147,9 @@ public class WeaponModifierHelper {
     }
 
     public static WeaponAction getWeaponAction(WeaponData data) {
-        var loadingType = new AtomicReference<>(getGeneral(data).getAction());
-        forEachAttachment(data, (modifier -> loadingType.set(modifier.modifyWeaponAction(loadingType.get(), data))));
-        return loadingType.get();
+        var value = new AtomicReference<>(getGeneral(data).getAction());
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyWeaponAction(value.get(), data))));
+        return value.get();
     }
 
     public static HashMap<WeaponMode, WeaponSettings> getWeaponModes(WeaponData data) {
@@ -330,20 +330,26 @@ public class WeaponModifierHelper {
         return finalEquipTime.get();
     }
 
-    public static int getModifiedProjectileLife(WeaponData data, int life) {
+    public static int getProjectileSpeed(WeaponData data, int life) {
         var finalLife = new AtomicInteger(life);
         forEachAttachment(data, (modifier -> finalLife.set(modifier.modifyProjectileLife(finalLife.get(), data))));
         return finalLife.get();
     }
 
-    public static double getModifiedProjectileGravity(WeaponData data, double gravity) {
+    public static int getProjectileLife(WeaponData data, int life) {
+        var finalLife = new AtomicInteger(life);
+        forEachAttachment(data, (modifier -> finalLife.set(modifier.modifyProjectileLife(finalLife.get(), data))));
+        return finalLife.get();
+    }
+
+    public static double getProjectileGravity(WeaponData data, double gravity) {
         var finalGravity = new AtomicReference<>(gravity);
         forEachAttachment(data, (modifier -> finalGravity.set(modifier.modifyProjectileGravity(finalGravity.get(), data))));
         forEachAttachment(data, (modifier -> finalGravity.updateAndGet(v -> v + modifier.additionalProjectileGravity(data))));
         return finalGravity.get();
     }
 
-    public static float getModifiedSpread(WeaponData data) {
+    public static float getSpread(WeaponData data) {
         var gunSpread = getGeneral(data).getSpread();
         var ammoSpread = WeaponStateHelper.getProjectileConfig(data).getSpread();
         var spread = Math.max(gunSpread + ammoSpread, 0);
@@ -353,7 +359,7 @@ public class WeaponModifierHelper {
         return finalSpread.get();
     }
 
-    public static float getModifiedMovementSpeed(WeaponData data) {
+    public static float getMovementSpeed(WeaponData data) {
         var gunSpread = getGeneral(data).getMovementSpeed();
         var finalValue = new AtomicReference<>(gunSpread);
 

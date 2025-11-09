@@ -99,8 +99,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         setBoundingBox(new AABB(
                 projectile.getSize(), projectile.getSize(), projectile.getSize(),
                 -projectile.getSize(), -projectile.getSize(), -projectile.getSize()));
-        this.modifiedGravity = WeaponModifierHelper.getModifiedProjectileGravity(data, -0.04);
-        this.life = WeaponModifierHelper.getModifiedProjectileLife(data, this.projectile.getLife());
+        this.modifiedGravity = WeaponModifierHelper.getProjectileGravity(data, -0.04);
+        this.life = WeaponModifierHelper.getProjectileLife(data, this.projectile.getLife());
         var hand = shooter.getMainHandItem() == weaponStack ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         this.isRightHand = hand == InteractionHand.MAIN_HAND;
         this.ammo = setupAmmo(data);
@@ -623,7 +623,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     protected Vec3 getDirection(LivingEntity shooter, ItemStack weapon, IWeapon item) {
         var data = new WeaponData(weapon, shooter);
-        float gunSpread = WeaponModifierHelper.getModifiedSpread(data);
+        float gunSpread = WeaponModifierHelper.getSpread(data);
 
         if (gunSpread == 0F) {
             return this.getVectorFromRotation(shooter.getXRot(), shooter.getYRot());

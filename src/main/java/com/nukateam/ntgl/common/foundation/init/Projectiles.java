@@ -3,7 +3,6 @@ package com.nukateam.ntgl.common.foundation.init;
 import com.nukateam.ntgl.common.foundation.entity.*;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableGrenadeEntity;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -27,7 +26,7 @@ public class Projectiles {
     public static final RegistryObject<EntityType<ThrowableGrenadeEntity>> THROWABLE_GRENADE = registerBasic("throwable_grenade", ThrowableGrenadeEntity::new);
     public static final RegistryObject<EntityType<StunGrenadeEntity>> THROWABLE_STUN_GRENADE = registerBasic("throwable_stun_grenade", StunGrenadeEntity::new);
 
-    public static final RegistryObject<EntityType<ProjectileEntity>> SPEAR = registerBasic("spear", PickupProjectile::new);
+    public static final RegistryObject<EntityType<ProjectileEntity>> SPEAR = registerBasic("spear", ArrowLikeProjectile::new);
 
     /**
      * Entity registration that prevents the entity from being sent and tracked by clients. Projectiles

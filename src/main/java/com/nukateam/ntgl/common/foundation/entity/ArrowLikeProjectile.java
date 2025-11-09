@@ -12,25 +12,20 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseFireBlock;
-import net.minecraft.world.level.block.CampfireBlock;
-import net.minecraft.world.level.block.CandleBlock;
-import net.minecraft.world.level.block.CandleCakeBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class PickupProjectile extends ProjectileEntity {
+public class ArrowLikeProjectile extends ProjectileEntity {
     private boolean inGround;
     private BlockPos inBlockPos;
     private int shakeTime;
 
-    public PickupProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn) {
+    public ArrowLikeProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
 
-    public PickupProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, WeaponData data) {
+    public ArrowLikeProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, WeaponData data) {
         super(entityType, worldIn, data);
     }
 

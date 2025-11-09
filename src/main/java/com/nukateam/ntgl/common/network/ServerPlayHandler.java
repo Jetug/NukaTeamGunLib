@@ -124,7 +124,7 @@ public class ServerPlayHandler {
                     ModSyncedDataKeys.RELOADING_LEFT.setValue(shooter, false);
                 }
 
-                var gunSpread = WeaponModifierHelper.getModifiedSpread(data);
+                var gunSpread = WeaponModifierHelper.getSpread(data);
 
                 if (!WeaponModifierHelper.isAlwaysSpread(data) && gunSpread > 0.0F) {
                     SpreadTracker.get(shooter).update(shooter, weaponItem);

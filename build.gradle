@@ -141,15 +141,11 @@ dependencies {
 
     implementation fg.deobf('curse.maven:controllable-317269:4598985')
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:1.0.2-rc1+1.20")
-//    implementation fg.deobf("curse.maven:subtle-effects-1023913:7139104")
     implementation fg.deobf("curse.maven:kotlin-for-forge-351264:5402061")
     implementation fg.deobf("curse.maven:fzzy-config-1005914:7085017")
     implementation fg.deobf('einstein:subtleeffects-forge:1.20.1-1.13.1')
-//    implementation fg.deobf("maven.modrinth:subtle-effects:1.13.1")
-//    compileOnly fg.deobf('einstein:subtleeffects-forge:1.20.1-1.13.1')
-//    implementation fg.deobf("curse.maven:appleskin-248787:4770828")
-
     implementation fg.deobf("snownee:jade:1.20.1-Forge-11.13.2")
+
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")

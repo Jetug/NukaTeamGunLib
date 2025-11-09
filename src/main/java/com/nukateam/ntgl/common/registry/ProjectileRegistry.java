@@ -33,7 +33,7 @@ public class ProjectileRegistry {
             new ContinuousLaserProjectile(Projectiles.CONTINUOUS_LASER_PROJECTILE.get(), level, gunData);
 
     private static final IProjectileFactory SPEAR = (level, gunData) ->
-            new PickupProjectile(Projectiles.SPEAR.get(), level, gunData);
+            new ArrowLikeProjectile(Projectiles.SPEAR.get(), level, gunData);
 
     private static final IThrowableProjectileFactory THROWABLE_GRENADE = ThrowableGrenadeEntity::new;
     private static final IThrowableProjectileFactory THROWABLE_STUN_GRENADE = StunGrenadeEntity::new;

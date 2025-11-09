@@ -48,7 +48,7 @@ public class PlayerEventHandler {
                     movementSpeed.addTransientModifier(new AttributeModifier(
                             SPEED_MODIFIER_ID,
                             MOVEMENT_SPEED,
-                            WeaponModifierHelper.getModifiedMovementSpeed(new WeaponData(heldItem, player)),
+                            WeaponModifierHelper.getMovementSpeed(new WeaponData(heldItem, player)),
                             AttributeModifier.Operation.MULTIPLY_BASE
                     ));
                 }

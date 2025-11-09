@@ -15,6 +15,7 @@
     "recoilAdsReduction": 0.15,
     "alwaysSpread": true,
     "enchantable": false,
+    "oneHanded": true,
     "renderHud": true,
     "spread": 2.0,
     "movementSpeed": 1,
