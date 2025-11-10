@@ -40,9 +40,6 @@ public class ClientPlayHandler {
         if (mc.player == null || mc.level == null)
             return;
 
-        if (message.showMuzzleFlash())
-            GunRenderingHandler.get().showMuzzleFlashForPlayer(message.getShooterId());
-
         if (message.getShooterId() == mc.player.getId()) {
             mc.getSoundManager().play(new SimpleSoundInstance(message.getId(), SoundSource.PLAYERS,
                     GunShotSound.getVolume(message.getVolume()), message.getPitch(),

@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
@@ -26,8 +27,6 @@ import java.util.function.Supplier;
 import static com.nukateam.ntgl.client.handlers.ClientHandler.createEditorScreen;
 
 public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
-    private transient Zoom cachedZoom;
-
     @Optional
     boolean attachmentScreen = true;
     @Optional
@@ -39,19 +38,6 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public LinkedHashMap<AttachmentType, ArrayList<Attachment>> getAttachments() {
         return this.attachments;
-    }
-
-    @Nullable
-    public Attachment getAttachmentByBone(String name) {
-        if (getAttachments() == null) return null;
-        AtomicReference<Attachment> result = new AtomicReference<>();
-        getAttachments().forEach((k, v) -> {
-            var att = v.stream().filter((attachment) ->
-                    attachment.name.equals(name)).findFirst();
-            att.ifPresent(result::set);
-        });
-
-        return result.get();
     }
 
     @Override
@@ -94,33 +80,18 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
         return modules;
     }
 
-    public static class Attachment extends Positioned {
+    public static class Attachment implements INBTSerializable<CompoundTag> {
+        public static final String OFFSET = "Offset";
+
         @Optional @Nullable String name;
         @Optional @Nullable ResourceLocation item;
         @Optional ArrayList<String> hide = new ArrayList<>();
         @Optional ArrayList<String> bones = new ArrayList<>();
-
-        @Nullable
-        public String getName() {
-            return this.name;
-        }
-
-        @Nullable
-        public ResourceLocation getItemId() {
-            return this.item;
-        }
-
-        public ArrayList<String> getHidden() {
-            return this.hide;
-        }
-
-        public ArrayList<String> getBones() {
-            return this.bones;
-        }
+        @Optional Vec3 offset = Vec3.ZERO;
 
         @Override
         public CompoundTag serializeNBT() {
-            var tag = super.serializeNBT();
+            var tag = new CompoundTag();
 
             if (this.name != null) {
                 tag.putString("Name", this.name);
@@ -134,13 +105,12 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (this.bones != null) {
                 tag.put("Bones", NbtUtils.serializeStringArray(this.bones));
             }
+            tag.put(OFFSET, NbtUtils.writeVec3(offset));
             return tag;
         }
 
         @Override
         public void deserializeNBT(CompoundTag tag) {
-            super.deserializeNBT(tag);
-
             if (tag.contains("Name", Tag.TAG_STRING)) {
                 this.name = tag.getString("Name");
             }
@@ -152,6 +122,9 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
             }
             if (tag.contains("Bones", Tag.TAG_COMPOUND)) {
                 this.bones = NbtUtils.deserializeStringArray(tag.getCompound("Bones"));
+            }
+            if (tag.contains(OFFSET, Tag.TAG_COMPOUND)) {
+                this.offset = NbtUtils.readVec3(tag.getCompound(OFFSET));
             }
         }
 
@@ -180,7 +153,31 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
             if (this.bones != null) {
                 attachments.bones = this.bones;
             }
+            attachments.offset = this.offset;
+
             return attachments;
+        }
+
+        @Nullable
+        public String getName() {
+            return this.name;
+        }
+
+        @Nullable
+        public ResourceLocation getItemId() {
+            return this.item;
+        }
+
+        public ArrayList<String> getHidden() {
+            return this.hide;
+        }
+
+        public ArrayList<String> getBones() {
+            return this.bones;
+        }
+
+        public Vec3 getOffset() {
+            return this.offset;
         }
     }
 }

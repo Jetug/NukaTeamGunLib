@@ -176,18 +176,6 @@ public class GunRenderingHandler {
 
         this.sprintTransition = 0;
         this.sprintCooldown = 20; //TODO make a config option
-
-        var heldItem = event.getStack();
-        var gunItem = (IWeapon) heldItem.getItem();
-        var modifiedGun = gunItem.getModifiedConfig(heldItem);
-        if (modifiedGun.getDisplay().getFlash() != null) {
-            this.showMuzzleFlashForPlayer(Minecraft.getInstance().player.getId());
-        }
-    }
-
-    public void showMuzzleFlashForPlayer(int entityId) {
-        this.entityIdForMuzzleFlash.add(entityId);
-        this.entityIdToRandomValue.put(entityId, this.random.nextFloat());
     }
 
     /**
