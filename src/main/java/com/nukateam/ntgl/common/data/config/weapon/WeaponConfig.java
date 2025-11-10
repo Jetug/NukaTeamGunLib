@@ -283,7 +283,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
             var messageSound = new S2CMessageGunSound(cockSound,
                     SoundSource.PLAYERS, player,
                     1.0F, 1.0F,
-                    false, true);
+                    true);
 
             PacketHandler.getPlayChannel().sendToNearbyPlayers(
                     () -> LevelLocation.create(player.level(), player.getX(), player.getY() + 1.0, player.getZ(), radius),

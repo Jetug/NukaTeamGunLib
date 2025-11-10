@@ -180,8 +180,7 @@ public class ServerPlayHandler {
                     var volume = WeaponModifierHelper.getFireSoundVolume(data);
                     var pitch = 0.9F + world.random.nextFloat() * 0.2F;
                     var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.SERVER.gunShotMaxDistance.get());
-                    var muzzle = false;
-                    var messageSound = new S2CMessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, shooter.getId(), muzzle, false);
+                    var messageSound = new S2CMessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, shooter.getId(), false);
                     PacketHandler
                             .getPlayChannel()
                             .sendToNearbyPlayers(() ->
@@ -219,7 +218,7 @@ public class ServerPlayHandler {
                 var volume = WeaponModifierHelper.getFireSoundVolume(data);
                 var pitch = 0.9F + world.random.nextFloat() * 0.2F;
                 var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.SERVER.gunShotMaxDistance.get());
-                S2CMessageGunSound messageSound = new S2CMessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getId(), false, false);
+                S2CMessageGunSound messageSound = new S2CMessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getId(), false);
                 PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(player.level(), posX, posY, posZ, radius), messageSound);
             }
         }
