@@ -180,7 +180,7 @@ public class ServerPlayHandler {
                     var volume = WeaponModifierHelper.getFireSoundVolume(data);
                     var pitch = 0.9F + world.random.nextFloat() * 0.2F;
                     var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.SERVER.gunShotMaxDistance.get());
-                    var muzzle = modifiedGun.getDisplay().getFlash() != null;
+                    var muzzle = false;
                     var messageSound = new S2CMessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, shooter.getId(), muzzle, false);
                     PacketHandler
                             .getPlayChannel()

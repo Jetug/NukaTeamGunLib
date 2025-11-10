@@ -54,7 +54,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
     protected Melee melee = new Melee();
     protected ThrowableConfig throwable = new ThrowableConfig();
     protected HashMap<WeaponMode, WeaponSettings> modes = new HashMap<>(Map.of());
-    protected Display display = new Display();
     protected Modules modules = new Modules();
     @Optional
     protected Zoom zoom = new Zoom();
@@ -99,7 +98,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         tag.put(MELEE, this.melee.serializeNBT());
         tag.put(THROWABLE, this.throwable.serializeNBT());
         tag.put(SOUNDS, NbtUtils.serializeStringMap(this.sounds));
-        tag.put(DISPLAY, this.display.serializeNBT());
         tag.put(MODULES, this.modules.serializeNBT());
         tag.put(TEXTURES, NbtUtils.serializeStringMap(this.textures));
         tag.put(ANIMATIONS, NbtUtils.serializeStringMap(this.animations));
@@ -125,9 +123,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         }
         if (tag.contains(SOUNDS, Tag.TAG_COMPOUND)) {
             this.sounds = deserializeSounds(tag.getCompound(SOUNDS));
-        }
-        if (tag.contains(DISPLAY, Tag.TAG_COMPOUND)) {
-            this.display.deserializeNBT(tag.getCompound(DISPLAY));
         }
         if (tag.contains(MODULES, Tag.TAG_COMPOUND)) {
             this.modules.deserializeNBT(tag.getCompound(MODULES));
@@ -165,7 +160,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         object.add("throwable"  , this.throwable.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "ammoData", gson.toJsonTree(this.ammoData).getAsJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "sounds"  , gson.toJsonTree(this.sounds).getAsJsonObject());
-        GunJsonUtil.addObjectIfNotEmpty(object, "display" , this.display.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modules" , this.modules.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modes"   , gson.toJsonTree(this.modes).getAsJsonObject());
         if (this.zoom != null)
@@ -183,7 +177,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         gun.animations  = (HashMap<AnimationType, ResourceLocation>) this.animations.clone();
         gun.ammoData    = (LinkedHashMap<ResourceLocation, AmmoData>) this.ammoData.clone();
         gun.fuel        = (LinkedHashMap<ResourceLocation, Fuel>) this.fuel.clone();
-        gun.display     = this.display.copy();
         gun.modules     = this.modules.copy();
         gun.zoom        = this.zoom.copy();
         return gun;
@@ -217,9 +210,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         return sounds;
     }
 
-    public Display getDisplay() {
-        return this.display;
-    }
 
     public Modules getModules() {
         return this.modules;
