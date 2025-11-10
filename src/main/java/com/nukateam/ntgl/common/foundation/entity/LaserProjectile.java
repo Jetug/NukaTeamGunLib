@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
@@ -37,10 +38,11 @@ public class LaserProjectile extends AbstractBeamProjectile {
     }
 
     @Override
-    protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
-        super.onHitEntity(entity, hitVec, startVec, endVec, headshot);
-        if(random.nextFloat() <= getEntityFireChance())
-            entity.setRemainingFireTicks(20);
+    protected void burnEntity(Entity entity) {
+        var burnTime = projectile.getBurnSeconds();
+        if (burnTime > 0 && random.nextFloat() <= getEntityFireChance()) {
+            entity.setSecondsOnFire(burnTime);
+        }
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.registry;
 
-import com.nukateam.example.common.registery.ModGuns;
+import com.nukateam.example.common.registery.ExampleWeapons;
 import com.nukateam.ntgl.common.data.holders.ProjectileType;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableGrenadeEntity;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
@@ -32,8 +32,8 @@ public class ProjectileRegistry {
     private static final IProjectileFactory CONTINUOUS_LASER  = (level, gunData) ->
             new ContinuousLaserProjectile(Projectiles.CONTINUOUS_LASER_PROJECTILE.get(), level, gunData);
 
-    private static final IProjectileFactory SPEAR = (level, gunData) ->
-            new ArrowLikeProjectile(Projectiles.SPEAR.get(), level, gunData);
+    private static final IProjectileFactory ARROW_LIKE = (level, gunData) ->
+            new ArrowLikeProjectile(Projectiles.ARROW_LIKE.get(), level, gunData);
 
     private static final IThrowableProjectileFactory THROWABLE_GRENADE = ThrowableGrenadeEntity::new;
     private static final IThrowableProjectileFactory THROWABLE_STUN_GRENADE = StunGrenadeEntity::new;
@@ -46,14 +46,14 @@ public class ProjectileRegistry {
         ProjectileManager.getInstance().registerFactory(ProjectileType.TESLA    , TESLA);
         ProjectileManager.getInstance().registerFactory(ProjectileType.FIRE    , FIRE);
         ProjectileManager.getInstance().registerFactory(ProjectileType.CONTINUOUS_LASER, CONTINUOUS_LASER);
-        ProjectileManager.getInstance().registerFactory(ProjectileType.SPEAR, SPEAR);
+        ProjectileManager.getInstance().registerFactory(ProjectileType.ARROW_LIKE, ARROW_LIKE);
 
-        ProjectileManager.getInstance().registerFactory(ModGuns.GRENADE.get()   , GRENADE);
-        ProjectileManager.getInstance().registerFactory(ModGuns.ROUND10MM.get() , LASER);
-        ProjectileManager.getInstance().registerFactory(ModGuns.ROUND5MM.get()  , LASER);
-        ProjectileManager.getInstance().registerFactory(ModGuns.ROUND45.get()   , TESLA);
-        ProjectileManager.getInstance().registerFactory(ModGuns.ROUND38.get()   , CONTINUOUS_LASER);
-        ProjectileManager.getInstance().registerFactory(ModGuns.FUEL.get(), FIRE);
+        ProjectileManager.getInstance().registerFactory(ExampleWeapons.GRENADE.get()   , GRENADE);
+        ProjectileManager.getInstance().registerFactory(ExampleWeapons.ROUND10MM.get() , LASER);
+        ProjectileManager.getInstance().registerFactory(ExampleWeapons.ROUND5MM.get()  , LASER);
+        ProjectileManager.getInstance().registerFactory(ExampleWeapons.ROUND45.get()   , TESLA);
+        ProjectileManager.getInstance().registerFactory(ExampleWeapons.ROUND38.get()   , CONTINUOUS_LASER);
+        ProjectileManager.getInstance().registerFactory(ExampleWeapons.FUEL.get(), FIRE);
 
         ProjectileManager.getInstance().registerFactory(ProjectileType.GRENADE      , THROWABLE_GRENADE);
         ProjectileManager.getInstance().registerFactory(ProjectileType.STUN_GRENADE , THROWABLE_STUN_GRENADE);

@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.render.screen;
 
+import com.nukateam.example.common.registery.ExampleWeapons;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.helpers.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.data.WeaponData;
@@ -15,7 +16,6 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageCraft;
-import com.nukateam.example.common.registery.ModGuns;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -453,8 +453,8 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         }
 
         if (!weapons.isEmpty()) {
-//            ItemStack icon = new ItemStack(ModGuns.PISTOL.get());
-//            icon.getOrCreateTag().putInt("AmmoCount", ModGuns.PISTOL.get().getGun().getGeneral().getMaxAmmo());
+//            ItemStack icon = new ItemStack(ExampleWeapons.PISTOL.get());
+//            icon.getOrCreateTag().putInt("AmmoCount", ExampleWeapons.PISTOL.get().getGun().getGeneral().getMaxAmmo());
 //            this.tabs.add(new Tab(icon, "weapons", weapons));
 //            var cat = new ArrayList<String>();
             var categoryRecipes = new HashMap<String, List<WorkbenchRecipe>>();
@@ -486,13 +486,13 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         }
 
         if (!attachments.isEmpty()) {
-            this.tabs.add(new Tab(new ItemStack(ModGuns.GRENADE.get()), "attachments", attachments));
+            this.tabs.add(new Tab(new ItemStack(ExampleWeapons.GRENADE.get()), "attachments", attachments));
         }
 
         if (!ammo.isEmpty()) {
             var item = ammo.get(0).getItem().getItem();
             var icon = new ItemStack(item);
-//            this.tabs.add(new Tab(new ItemStack(ModGuns.ROUND10MM.get()), "projectile", projectile));
+//            this.tabs.add(new Tab(new ItemStack(ExampleWeapons.ROUND10MM.get()), "projectile", projectile));
             this.tabs.add(new Tab(icon, "projectile", ammo));
         }
 

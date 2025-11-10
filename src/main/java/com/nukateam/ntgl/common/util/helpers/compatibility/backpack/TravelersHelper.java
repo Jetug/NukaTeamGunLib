@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.util.helpers.compatibility;
+package com.nukateam.ntgl.common.util.helpers.compatibility.backpack;
 
 
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;

@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.util.handler;
 
 
-import com.nukateam.example.common.registery.ModGuns;
+import com.nukateam.example.common.registery.ExampleWeapons;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.client.util.helpers.PropertyHelper;
 import com.nukateam.ntgl.common.data.WeaponData;
@@ -49,7 +49,7 @@ import java.util.WeakHashMap;
  */
 public class AimingHandler {
     private static AimingHandler instance;
-    private WeaponData weaponData = new WeaponData(new ItemStack(ModGuns.CLASSIC10MM.get()), null);
+    private WeaponData weaponData = new WeaponData(new ItemStack(ExampleWeapons.CLASSIC10MM.get()), null);
 
     public static AimingHandler get() {
         if (instance == null) {

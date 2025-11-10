@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.util.util;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
-import com.nukateam.ntgl.common.util.helpers.compatibility.BackpackHelper;
+import com.nukateam.ntgl.common.util.helpers.compatibility.backpack.BackpackHelper;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import net.minecraft.resources.ResourceLocation;

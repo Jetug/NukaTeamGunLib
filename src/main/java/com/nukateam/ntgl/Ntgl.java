@@ -50,8 +50,9 @@ public class Ntgl {
 
     public static boolean controllableLoaded = false;
     public static boolean backpackedLoaded = false;
-    public static boolean travelersLoaded = false;
     public static boolean sophisticatedLoaded = false;
+    public static boolean travelersLoaded = false;
+    public static boolean yyzBackpackLoaded = false;
     public static boolean curiosLoaded = false;
     public static boolean playerReviveLoaded = false;
     public static boolean playerAnimatorLoaded = false;
@@ -69,7 +70,7 @@ public class Ntgl {
             ModItemTabs.register(MOD_EVENT_BUS);
         }
 
-        ModGuns.register(MOD_EVENT_BUS);
+        ExampleWeapons.register(MOD_EVENT_BUS);
         ModRecipeType.REGISTER.register(MOD_EVENT_BUS);
         ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
         ModRecipeSerializers.REGISTER.register(MOD_EVENT_BUS);
@@ -94,8 +95,10 @@ public class Ntgl {
         curiosLoaded = ModList.get().isLoaded("curios");
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
-        travelersLoaded = ModList.get().isLoaded("travelersbackpack");
         sophisticatedLoaded = ModList.get().isLoaded("sophisticatedbackpacks");
+        travelersLoaded = ModList.get().isLoaded("travelersbackpack");
+        yyzBackpackLoaded = ModList.get().isLoaded("yyzsbackpack");
+
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
         playerAnimatorLoaded = ModList.get().isLoaded("playeranimator");
         subtleEffectsLoaded = ModList.get().isLoaded("subtle_effects");

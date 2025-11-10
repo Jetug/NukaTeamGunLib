@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.foundation.entity;
 
 import com.nukateam.ntgl.common.data.WeaponData;
 
+import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -92,8 +93,10 @@ public class TeslaProjectile extends AbstractBeamProjectile {
     }
 
     @Override
-    protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
-        super.onHitEntity(entity, hitVec, startVec, endVec, headshot);
+    protected void onHitEntity(ExtendedEntityRayTraceResult entityHitResult) {
+        super.onHitEntity(entityHitResult);
+
+        var entity = getShooter();
 
         if (!level().isClientSide) {
             if(entity instanceof Creeper creeper)

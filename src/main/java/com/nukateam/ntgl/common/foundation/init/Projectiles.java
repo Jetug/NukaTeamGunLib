@@ -25,8 +25,7 @@ public class Projectiles {
     public static final RegistryObject<EntityType<MissileEntity>> MISSILE = registerBasic("missile", MissileEntity::new);
     public static final RegistryObject<EntityType<ThrowableGrenadeEntity>> THROWABLE_GRENADE = registerBasic("throwable_grenade", ThrowableGrenadeEntity::new);
     public static final RegistryObject<EntityType<StunGrenadeEntity>> THROWABLE_STUN_GRENADE = registerBasic("throwable_stun_grenade", StunGrenadeEntity::new);
-
-    public static final RegistryObject<EntityType<ProjectileEntity>> SPEAR = registerBasic("spear", ArrowLikeProjectile::new);
+    public static final RegistryObject<EntityType<ProjectileEntity>> ARROW_LIKE = registerBasic("arrow_like", ArrowLikeProjectile::new);
 
     /**
      * Entity registration that prevents the entity from being sent and tracked by clients. Projectiles

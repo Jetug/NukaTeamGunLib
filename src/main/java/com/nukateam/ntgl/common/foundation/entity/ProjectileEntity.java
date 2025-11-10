@@ -24,6 +24,7 @@ import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -75,7 +76,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected EntityDimensions entitySize;
     protected double modifiedGravity;
     protected int life;
-    protected boolean wasTouchingBlock;
     protected int pierceCount;
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn) {
@@ -362,8 +362,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    protected void doImpactEffects(Vec3 hitVec) {}
-
     protected boolean removeOnHit(HitTarget hitTarget) {
         return hitTarget != HitTarget.FLUID;
     }
@@ -432,26 +430,27 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             }
         }
         else if (result instanceof ExtendedEntityRayTraceResult entityHitResult) {
-            var entity = entityHitResult.getEntity();
-            if (entity.getId() == this.shooter.getId()) {
-                return;
-            }
-
-            if (this.shooter instanceof Player player) {
-                if (entity.hasIndirectPassenger(player)) {
-                    return;
-                }
-            }
-
-            var burnTime = projectile.getBurnSeconds();
-            if (burnTime > 0) {
-                entity.setSecondsOnFire(burnTime);
-            }
-
-            this.onHitEntity(entity, result.getLocation(), startVec, endVec, entityHitResult.isHeadshot());
-            entity.invulnerableTime = 0;
+            onHitEntity(entityHitResult);
         }
     }
+
+    protected void onHitEntity(ExtendedEntityRayTraceResult entityHitResult) {
+        var entity = entityHitResult.getEntity();
+        var hitVec = entityHitResult.getLocation();
+
+        if (entity.getId() == this.shooter.getId()) return;
+        if (this.shooter instanceof Player player && entity.hasIndirectPassenger(player)) return;
+
+        burnEntity(entity);
+        damageEntity(entity, entityHitResult);
+        PacketHandler.getPlayChannel().sendToTrackingEntity(() -> entity, new S2CMessageBlood(hitVec));
+        onContact(hitVec);
+        handlePierce(HitTarget.ENTITY);
+
+        entity.invulnerableTime = 0;
+    }
+
+    private BlockPos hitBlockpos = BlockPos.ZERO;
 
     protected void onHitBlock(BlockHitResult blockHitResult, BlockState state) {
         var blockPos = blockHitResult.getBlockPos();
@@ -460,18 +459,29 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         sendHitBlockMessage(blockHitResult, hitVec);
         handleBlockBreaking(blockPos, state);
-        doImpactEffects(hitVec);
         onContact(hitVec);
         checkDamageable(state, blockPos);
         checkTargetBlock(blockHitResult, state);
         checkBellBlock(blockHitResult, block, blockPos);
 
-        if (wasTouchingBlock) {
-            if (!state.canBeReplaced() && removeOnHit(HitTarget.BLOCK)) {
-                this.remove(RemovalReason.KILLED);
-            }
+        if(blockPos != hitBlockpos && !state.canBeReplaced()) {
+            handlePierce(HitTarget.BLOCK);
+            playHitSound();
         }
-        wasTouchingBlock = true;
+//        if (!state.canBeReplaced() && removeOnHit(HitTarget.BLOCK)) {
+//            this.remove(RemovalReason.KILLED);
+//        }
+
+        hitBlockpos = blockPos;
+    }
+
+
+    protected void playHitSound() {
+        var hitSound = projectile.getHitSound();
+        if(hitSound != null) {
+            var sound = BuiltInRegistries.SOUND_EVENT.get(hitSound);
+            this.playSound(sound, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
+        }
     }
 
     protected void onHitFluid(BlockHitResult hitResult, BlockState state) {
@@ -498,24 +508,29 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
+    protected void handlePierce(HitTarget hitTarget) {
+        if (pierceCount == 0 && removeOnHit(hitTarget)) {
+            this.remove(RemovalReason.KILLED);
+        }
+        pierceCount = Math.max(0, pierceCount - 1);
+    }
+
+    protected void burnEntity(Entity entity) {
+        var burnTime = projectile.getBurnSeconds();
+        if (burnTime > 0) {
+            entity.setSecondsOnFire(burnTime);
+        }
+    }
+
+    private void damageEntity(Entity entity, ExtendedEntityRayTraceResult hitResult) {
         var damage = this.getDamage();
         var criticalDamage = this.getCriticalDamage(this.weapon, this.random, damage);
         var isCritical = damage != criticalDamage;
 
-        if (headshot) criticalDamage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
+        if (hitResult.isHeadshot()) criticalDamage *= Config.COMMON.gameplay.headShotDamageMultiplier.get();
 
         entity.hurt(getDamageSource(), criticalDamage);
-        sendEntityHitMessage(entity, hitVec, headshot, isCritical);
-        PacketHandler.getPlayChannel().sendToTracking(() -> entity, new S2CMessageBlood(hitVec));
-
-        doImpactEffects(hitVec);
-        onContact(hitVec);
-
-        if (pierceCount == 0 && removeOnHit(HitTarget.ENTITY)) {
-            this.remove(RemovalReason.KILLED);
-        }
-        pierceCount = Math.max(0, pierceCount - 1);
+        sendEntityHitMessage(entity, hitResult.getLocation(), hitResult.isHeadshot(), isCritical);
     }
 
     protected void onContact(Vec3 hitVec) {

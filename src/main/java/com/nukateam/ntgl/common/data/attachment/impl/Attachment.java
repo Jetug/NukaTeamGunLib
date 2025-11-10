@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.data.attachment.impl;
 
-import com.nukateam.example.common.registery.ModGuns;
+import com.nukateam.example.common.registery.ExampleWeapons;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.WeaponHelper;
@@ -89,7 +89,7 @@ public class Attachment {
             return this.perks;
         }
 
-        var data = new WeaponData(new ItemStack(ModGuns.CLASSIC10MM.get()), null);
+        var data = new WeaponData(new ItemStack(ExampleWeapons.CLASSIC10MM.get()), null);
         data.attachment = stack;
         var perks = new ArrayList<Component>();
 

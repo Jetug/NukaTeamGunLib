@@ -1,10 +1,9 @@
-package com.nukateam.ntgl.common.util.helpers.compatibility;
+package com.nukateam.ntgl.common.util.helpers.compatibility.backpack;
 
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.mrcrayfish.backpacked.inventory.BackpackedInventoryAccess;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 

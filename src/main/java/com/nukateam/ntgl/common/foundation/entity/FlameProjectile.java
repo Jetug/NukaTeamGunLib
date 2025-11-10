@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
 import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -54,13 +55,6 @@ public class FlameProjectile extends ProjectileEntity {
     @Override
     protected boolean removeOnHit(HitTarget hitTarget) {
         return true;
-    }
-
-    @Override
-    protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
-        super.onHitEntity(entity, hitVec, startVec, endVec, headshot);
-        if(random.nextFloat() <= getEntityFireChance())
-            entity.setRemainingFireTicks(20);
     }
 
     @Override

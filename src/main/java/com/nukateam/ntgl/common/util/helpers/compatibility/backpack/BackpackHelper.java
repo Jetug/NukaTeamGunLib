@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.util.helpers.compatibility;
+package com.nukateam.ntgl.common.util.helpers.compatibility.backpack;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
@@ -19,6 +19,9 @@ public class BackpackHelper {
         if(Ntgl.travelersLoaded && context.equals(AmmoContext.NONE)){
             context = TravelersHelper.findAmmo(player, id);
         }
+        if(Ntgl.yyzBackpackLoaded && context.equals(AmmoContext.NONE)){
+            context = YyzBackpackHelper.findAmmo(player, id);
+        }
         return context;
     }
 
@@ -33,6 +36,9 @@ public class BackpackHelper {
         }
         if(Ntgl.travelersLoaded && context.equals(AmmoContext.NONE)){
             context = TravelersHelper.findMagazine(player, id);
+        }
+        if(Ntgl.yyzBackpackLoaded && context.equals(AmmoContext.NONE)){
+            context = YyzBackpackHelper.findMagazine(player, id);
         }
 
         return context;

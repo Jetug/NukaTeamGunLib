@@ -135,6 +135,9 @@ dependencies {
     implementation fg.deobf("curse.maven:sophisticated-core-618298:6456062")
     implementation fg.deobf("curse.maven:sophisticated-backpacks-422301:6456083")
     implementation fg.deobf("curse.maven:travelers-backpack-321117:7095256")
+//    implementation fg.deobf("curse.maven:yyzsbackpack-1285177:7065899")
+    implementation fg.deobf("com.yyz:YyzsBackpack-forge:20.1.6")
+
     implementation fg.deobf("curse.maven:kobolds-484967:5605622")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}:api")

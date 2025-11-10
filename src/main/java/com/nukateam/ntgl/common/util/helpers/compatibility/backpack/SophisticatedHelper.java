@@ -1,7 +1,8 @@
-package com.nukateam.ntgl.common.util.helpers.compatibility;
+package com.nukateam.ntgl.common.util.helpers.compatibility.backpack;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
+import com.nukateam.ntgl.common.util.helpers.compatibility.CuriosHelper;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.ItemHandlerAmmoContext;
@@ -18,54 +19,11 @@ import javax.annotation.Nullable;
 
 @SuppressWarnings({"UnstableApiUsage", "removal"})
 public class SophisticatedHelper {
-    @Nullable
-    private static ItemStack getBackpackItem(Player player) {
-        if(Ntgl.curiosLoaded){
-            var backpackItem = CuriosHelper.getItem(player, stack -> stack.getItem() instanceof BackpackItem);
-            if(backpackItem != null) return backpackItem;
-        }
-
-        var chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
-        if(chestStack.getItem() instanceof BackpackItem) {
-            return chestStack;
-        }
-        else return null;
-    }
-
-    public static IBackpackWrapper getBackpackWrapper(ItemStack stack) {
-        return stack.getCapability(CapabilityBackpackWrapper.getCapabilityInstance())
-                .resolve()
-                .orElse(null);
-    }
-
-//    private static ItemStack findAndOpenFirstBackpack(Player player) {
-//        var stack = new AtomicReference<ItemStack>(null);
-//
-//        PlayerInventoryProvider.get().runOnBackpacks(player, (backpack, inventoryName, identifier, slot) -> {
-//            stack.set(backpack);
-//            return true;
-//        });
-//
-//        return stack.get();
-//    }
-
-    @Nullable
-    private static IItemHandler getBackpackInventory(Player player) {
-        var backpackStack = getBackpackItem(player);
-
-        if (backpackStack != null) {
-            var wrapper = getBackpackWrapper(backpackStack);
-            return wrapper != null ? wrapper.getInventoryHandler() : null;
-        }
-        return null;
-    }
-
     public static IAmmoContext findAmmo(Player player, AmmoHolder id) {
         var inventory = getBackpackInventory(player);
 
         if (inventory == null)
             return AmmoContext.NONE;
-
 
         for (int i = 0; i < inventory.getSlots(); i++) {
             var stack = inventory.getStackInSlot(i);
@@ -99,4 +57,36 @@ public class SophisticatedHelper {
 
         return ammo == null ? AmmoContext.NONE : new ItemHandlerAmmoContext(ammo, inventory);
     }
+
+    @Nullable
+    private static ItemStack getBackpackItem(Player player) {
+        if(Ntgl.curiosLoaded){
+            var backpackItem = CuriosHelper.getItem(player, stack -> stack.getItem() instanceof BackpackItem);
+            if(backpackItem != null) return backpackItem;
+        }
+
+        var chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
+        if(chestStack.getItem() instanceof BackpackItem) {
+            return chestStack;
+        }
+        else return null;
+    }
+
+    public static IBackpackWrapper getBackpackWrapper(ItemStack stack) {
+        return stack.getCapability(CapabilityBackpackWrapper.getCapabilityInstance())
+                .resolve()
+                .orElse(null);
+    }
+
+    @Nullable
+    private static IItemHandler getBackpackInventory(Player player) {
+        var backpackStack = getBackpackItem(player);
+
+        if (backpackStack != null) {
+            var wrapper = getBackpackWrapper(backpackStack);
+            return wrapper != null ? wrapper.getInventoryHandler() : null;
+        }
+        return null;
+    }
+
 }

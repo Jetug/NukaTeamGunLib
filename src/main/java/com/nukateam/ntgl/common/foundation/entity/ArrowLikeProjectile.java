@@ -88,7 +88,6 @@ public class ArrowLikeProjectile extends ProjectileEntity {
             this.hasImpulse = false;
             this.setDeltaMovement(Vec3.ZERO);
             this.setPos(hitResult.getLocation());
-            playHitSound();
         }
 
         super.onHitBlock(hitResult, blockState);
@@ -119,11 +118,6 @@ public class ArrowLikeProjectile extends ProjectileEntity {
 
     protected ItemStack getPickupItem() {
         return this.ammo.copy();
-    }
-
-    protected void playHitSound() {
-        var sound = BuiltInRegistries.SOUND_EVENT.get(projectile.getHitSound());
-        this.playSound(sound, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
     }
 
     private void pickup(Player player) {
