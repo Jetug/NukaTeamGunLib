@@ -148,7 +148,6 @@ public class ServerPlayHandler {
                     var factory = ProjectileManager.getInstance().getFactory(data);
                     var projectileEntity = factory.create(world, data);
                     projectileEntity.setWeapon(heldItem);
-                    projectileEntity.setAdditionalDamage(WeaponStateHelper.getAdditionalDamage(heldItem));
                     world.addFreshEntity(projectileEntity);
                     spawnedProjectiles[i] = projectileEntity;
                     projectileEntity.tick();

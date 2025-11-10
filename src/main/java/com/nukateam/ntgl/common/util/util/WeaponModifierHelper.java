@@ -412,25 +412,12 @@ public class WeaponModifierHelper {
         return Mth.clamp(minRadius.get(), 0.0, Double.MAX_VALUE);
     }
 
-    public static float getModifiedDamage(WeaponData data) {
-        var damage = getGeneral(data).getDamage();
-        damage *= getAmmoDamageMultiplier(data);
-        var finalDamage = new AtomicReference<>(damage);
-        forEachAttachment(data, (modifier -> finalDamage.set(modifier.modifyDamage(finalDamage.get(), data))));
-
-        return finalDamage.get();
-    }
-
     public static float getProjectileDamage(ResourceLocation ammo, WeaponData data) {
-        var damage = getConfig(data).getProjectileConfig(ammo).getDamage();
+        var damage = getConfig(data).getProjectileConfig(ammo). getDamage();
         var finalDamage = new AtomicReference<>(damage);
-        forEachAttachment(data, (modifier -> finalDamage.set(modifier.modifyDamage(finalDamage.get(), data))));
+        forEachAttachment(data, (modifier -> finalDamage.set(modifier.modifyProjectileDamage(finalDamage.get(), ammo, data))));
 
         return finalDamage.get();
-    }
-
-    public static float getAmmoDamageMultiplier(WeaponData data){
-        return WeaponStateHelper.getProjectileConfig(data).getDamage();
     }
 
     public static double getModifiedAimDownSightSpeed(WeaponData data) {

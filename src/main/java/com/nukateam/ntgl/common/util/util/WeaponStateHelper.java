@@ -186,11 +186,6 @@ public class WeaponStateHelper {
         }
     }
 
-    public static float getAdditionalDamage(ItemStack gunStack) {
-        var tag = gunStack.getOrCreateTag();
-        return tag.getFloat("AdditionalDamage");
-    }
-
     public static ArrayList<ItemStack> getAttachmentItems(ItemStack gun) {
         var compound = gun.getTag();
         var result = new ArrayList<ItemStack>();

@@ -72,7 +72,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected ProjectileConfig projectile = new ProjectileConfig();
     protected ItemStack weapon = ItemStack.EMPTY;
     protected ItemStack ammo = ItemStack.EMPTY;
-    protected float additionalDamage = 0.0F;
     protected EntityDimensions entitySize;
     protected double modifiedGravity;
     protected int life;
@@ -236,10 +235,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return this.ammo;
     }
 
-    public void setAdditionalDamage(float additionalDamage) {
-        this.additionalDamage = additionalDamage;
-    }
-
     public double getModifiedGravity() {
         return this.modifiedGravity;
     }
@@ -266,7 +261,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         var data = new WeaponData(this.weapon, this.shooter);
 
-        float initialDamage = WeaponModifierHelper.getModifiedDamage(data) + this.additionalDamage;
+        float initialDamage = WeaponModifierHelper.getProjectileDamage(ForgeRegistries.ITEMS.getKey(ammo.getItem()), data);
 
         if (this.projectile.isDamageReduceOverLife()) {
             float modifier = ((float) this.projectile.getLife() - (float) (this.tickCount - 1)) / (float) this.projectile.getLife();
@@ -464,7 +459,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         checkTargetBlock(blockHitResult, state);
         checkBellBlock(blockHitResult, block, blockPos);
 
-        if(blockPos != hitBlockpos && !state.canBeReplaced()) {
+        if(blockPos.equals(hitBlockpos)&& !state.canBeReplaced()) {
             handlePierce(HitTarget.BLOCK);
             playHitSound();
         }

@@ -6,7 +6,6 @@
     "fireMode": ["ntgl:auto", "ntgl:semi"],
     "loadingType": "magazine",
     "maxAmmo": 6,
-    "damage": 12.0,
     "reloadTime": 50,
     "equipTime": 15,
     "reloadAmount": 1,
@@ -28,10 +27,10 @@
   "ammoData":{
     "minecraft:stick": {
       "projectile": {
+        "damage": 12.0,
         "projectile": "ntgl:arrow_like",
         "damageType": "ntgl:fire",
         "visible": true,
-        "damage": 1.0,
         "size": 5.0,
         "speed": 3.0,
         "life": 120,
@@ -44,7 +43,7 @@
     "ntgl:round10mm": {
       "projectile": {
         "visible": true,
-        "damage": 1.0,
+        "damage": 2.0,
         "size": 5.0,
         "speed": 3.0,
         "life": 120,

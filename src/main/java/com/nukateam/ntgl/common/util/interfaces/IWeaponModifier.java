@@ -72,7 +72,7 @@ public interface IWeaponModifier {
         return damage;
     }
 
-    default float modifyDamage(float damage, Item ammo, WeaponData data) {
+    default float modifyProjectileDamage(float damage, ResourceLocation ammo, WeaponData data) {
         return damage;
     }
 

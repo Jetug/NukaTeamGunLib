@@ -231,7 +231,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     private static void addDamage(List<Component> tooltip, CompoundTag tagCompound, WeaponData weaponData) {
-        var damage = WeaponModifierHelper.getModifiedDamage(weaponData);
+        var damage = WeaponStateHelper.getProjectileDamage(weaponData);
         tooltip.add(Component.translatable("info.ntgl.damage", ChatFormatting.WHITE
                         + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)
         ).withStyle(ChatFormatting.GRAY));
