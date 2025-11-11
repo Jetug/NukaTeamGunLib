@@ -459,7 +459,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         checkTargetBlock(blockHitResult, state);
         checkBellBlock(blockHitResult, block, blockPos);
 
-        if(blockPos.equals(hitBlockpos)&& !state.canBeReplaced()) {
+        if(blockPos.equals(hitBlockpos) && !state.canBeReplaced()) {
             handlePierce(HitTarget.BLOCK);
             playHitSound();
         }
