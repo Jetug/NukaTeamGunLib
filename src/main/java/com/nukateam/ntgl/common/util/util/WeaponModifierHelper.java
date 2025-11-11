@@ -413,7 +413,7 @@ public class WeaponModifierHelper {
     }
 
     public static float getProjectileDamage(ResourceLocation ammo, WeaponData data) {
-        var damage = getConfig(data).getProjectileConfig(ammo). getDamage();
+        var damage = getConfig(data).getProjectileConfig(ammo).getDamage();
         var finalDamage = new AtomicReference<>(damage);
         forEachAttachment(data, (modifier -> finalDamage.set(modifier.modifyProjectileDamage(finalDamage.get(), ammo, data))));
 

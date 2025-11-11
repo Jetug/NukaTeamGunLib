@@ -29,12 +29,7 @@ public class WeaponModifiers {
         }
     };
 
-    public static final IWeaponModifier REDUCED_DAMAGE = new IWeaponModifier() {
-        @Override
-        public float modifyDamage(float damage, WeaponData data) {
-            return damage * 0.75F;
-        }
-    };
+    public static final IWeaponModifier REDUCED_DAMAGE = new IWeaponModifier() {};
 
     public static final IWeaponModifier SLOW_ADS = new IWeaponModifier() {
         @Override
@@ -179,11 +174,6 @@ public class WeaponModifiers {
         @Override
         public int modifyFireRate(int rate, WeaponData data) {
             return rate * 2;
-        }
-
-        @Override
-        public float modifyDamage(float damage, WeaponData data) {
-            return damage + 20;
         }
     };
 

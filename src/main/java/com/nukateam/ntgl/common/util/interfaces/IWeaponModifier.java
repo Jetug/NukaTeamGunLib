@@ -68,13 +68,9 @@ public interface IWeaponModifier {
      * @param data
      * @return new damage for the projectile
      */
-    default float modifyDamage(float damage, WeaponData data) {
+     default float modifyProjectileDamage(float damage, ResourceLocation ammo, WeaponData data) {
         return damage;
-    }
-
-    default float modifyProjectileDamage(float damage, ResourceLocation ammo, WeaponData data) {
-        return damage;
-    }
+     }
 
     /**
      * Modify the spread when firing a projectile. This will affect the accuracy of weapons and only

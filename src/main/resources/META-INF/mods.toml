@@ -4,7 +4,7 @@ license="LGPL 2.1"
 
 [[mods]]
 modId="ntgl"
-version="${file.jarVersion}"
+version="3.0.0"
 displayName="NukaTeam's Gun Lib"
 updateJSONURL=""
 displayURL="https://discord.com/invite/njb6EKaDVJ"
@@ -12,7 +12,6 @@ logoFile="logo.png"
 authors="Dayton, Jetug"
 credits = "MrCrayfish, MigaMi"
 description="Core for gun mods"
-
 [[dependencies.ntgl]]
 modId="forge"
 mandatory=true

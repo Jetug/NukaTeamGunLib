@@ -187,7 +187,7 @@ public class Attachment {
 
     private void damage(WeaponData data, ArrayList<Component> positivePerks) {
         getNumericPerk(positivePerks, "perk.ntgl.modified_damage", true,
-                (modifier, val) -> modifier.modifyDamage(val, data));
+                (modifier, val) -> modifier.modifyProjectileDamage(val, ExampleWeapons.CLASSIC10MM.getId(), data));
     }
 
     private void meleeDamage(WeaponData data, ArrayList<Component> positivePerks) {
