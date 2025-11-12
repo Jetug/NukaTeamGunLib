@@ -1,24 +1,21 @@
 package com.nukateam.ntgl.client.render.screen;
 
+import com.nukateam.example.common.registery.ExampleWeapons;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
-import com.nukateam.ntgl.common.data.holders.AmmoHolder;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IMelee;
-import com.nukateam.ntgl.common.util.interfaces.IMeleeWeapon;
-import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.client.util.helpers.render.ModelRenderUtil;
+import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.modules.datapack.managers.NetworkWeaponManager;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.foundation.crafting.*;
-import com.nukateam.ntgl.common.foundation.item.*;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageCraft;
-import com.nukateam.example.common.registery.ModGuns;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -438,19 +435,16 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         List<WorkbenchRecipe> weapons = new ArrayList<>();
         List<WorkbenchRecipe> attachments = new ArrayList<>();
         List<WorkbenchRecipe> ammo = new ArrayList<>();
-        List<WorkbenchRecipe> melee = new ArrayList<>();
         List<WorkbenchRecipe> misc = new ArrayList<>();
 
         for (var recipe : recipes) {
             var output = recipe.getItem();
             if(output == null) continue;
 
-            if (output.getItem() instanceof WeaponItem) {
+            if (output.getItem() instanceof IWeapon) {
                 weapons.add(recipe);
             } else if (output.getItem() instanceof IAttachment) {
                 attachments.add(recipe);
-            } else if(output.getItem() instanceof IMeleeWeapon || output.getItem() instanceof IMelee){
-                melee.add(recipe);
             } else if (this.isAmmo(output)) {
                 ammo.add(recipe);
             }else {
@@ -459,16 +453,16 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         }
 
         if (!weapons.isEmpty()) {
-//            ItemStack icon = new ItemStack(ModGuns.PISTOL.get());
-//            icon.getOrCreateTag().putInt("AmmoCount", ModGuns.PISTOL.get().getGun().getGeneral().getMaxAmmo());
+//            ItemStack icon = new ItemStack(ExampleWeapons.PISTOL.get());
+//            icon.getOrCreateTag().putInt("AmmoCount", ExampleWeapons.PISTOL.get().getGun().getGeneral().getMaxAmmo());
 //            this.tabs.add(new Tab(icon, "weapons", weapons));
 //            var cat = new ArrayList<String>();
             var categoryRecipes = new HashMap<String, List<WorkbenchRecipe>>();
 
             for (var recipe : weapons){
                 var weaponStack = recipe.getItem();
-                var gunItem = (WeaponItem)weaponStack.getItem();
-                var category = gunItem.getModifiedGun(weaponStack).getGeneral().getCategory();
+                var gunItem = (IWeapon)weaponStack.getItem();
+                var category = gunItem.getModifiedConfig(weaponStack).getGeneral().getCategory();
                 var buff = categoryRecipes.getOrDefault(category, new ArrayList<>());
 
                 buff.add(recipe);
@@ -480,31 +474,25 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 var category = entry.getKey();
 
                 if (!recipeList.isEmpty()) {
-                    var item = (WeaponItem)recipeList.get(0).getItem().getItem();
+                    var item = recipeList.get(0).getItem().getItem();
                     var icon = new ItemStack(item);
                     var player = Minecraft.getInstance().player;
-                    var gunData = new GunData(icon, player);
+                    var gunData = new WeaponData(icon, player);
 
-                    icon.getOrCreateTag().putInt("AmmoCount", GunModifierHelper.getMaxAmmo(gunData));
+                    icon.getOrCreateTag().putInt("AmmoCount", WeaponModifierHelper.getMaxAmmo(gunData));
                     this.tabs.add(new Tab(icon, category, recipeList));
                 }
             }
         }
 
         if (!attachments.isEmpty()) {
-            this.tabs.add(new Tab(new ItemStack(ModGuns.GRENADE.get()), "attachments", attachments));
-        }
-
-        if (!melee.isEmpty()) {
-            var item = melee.get(0).getItem().getItem();
-            var icon = new ItemStack(item);
-            this.tabs.add(new Tab(icon, "melee", melee));
+            this.tabs.add(new Tab(new ItemStack(ExampleWeapons.GRENADE.get()), "attachments", attachments));
         }
 
         if (!ammo.isEmpty()) {
             var item = ammo.get(0).getItem().getItem();
             var icon = new ItemStack(item);
-//            this.tabs.add(new Tab(new ItemStack(ModGuns.ROUND10MM.get()), "projectile", projectile));
+//            this.tabs.add(new Tab(new ItemStack(ExampleWeapons.ROUND10MM.get()), "projectile", projectile));
             this.tabs.add(new Tab(icon, "projectile", ammo));
         }
 
@@ -521,13 +509,13 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         if (stack != null && stack.getItem() instanceof IAmmo)
             return true;
         var player = Minecraft.getInstance().player;
-        var gunData = new GunData(stack, player);
+        var gunData = new WeaponData(stack, player);
 
         var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
         Objects.requireNonNull(id);
 
-        for (var gunItem : NetworkGunManager.getClientRegisteredGuns()) {
-            var ammo = gunItem.getModifiedGun(stack).getGeneral().getAmmo();
+        for (var gunItem : NetworkWeaponManager.getClientRegisteredWeapons()) {
+            var ammo = gunItem.getConfig().getGeneral().getAmmo();
 
             for (var a : ammo) {
                 if(a.getId().equals(id)){

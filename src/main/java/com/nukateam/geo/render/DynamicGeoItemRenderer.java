@@ -3,13 +3,13 @@ package com.nukateam.geo.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
-import mod.azure.azurelib.cache.object.BakedGeoModel;
-import mod.azure.azurelib.cache.object.GeoBone;
-import mod.azure.azurelib.constant.DataTickets;
-import mod.azure.azurelib.core.animation.AnimationState;
-import mod.azure.azurelib.model.GeoModel;
-import mod.azure.azurelib.model.data.EntityModelData;
-import mod.azure.azurelib.renderer.GeoObjectRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
+import software.bernie.geckolib.renderer.GeoObjectRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -119,7 +119,7 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
     private void setupRender(Animator animatable, boolean isReRender, float partialTick, boolean shouldSit, float netHeadYaw, float limbSwingAmount, float limbSwing) {
         var headPitch = 0;
         var motionThreshold = 0;
-        var velocity = Vec3.ZERO;//jetug
+        var velocity = Vec3.ZERO;//nukateam
         var avgVelocity = (float)(Math.abs(velocity.x) + Math.abs(velocity.z)) / 2.0F;
         var animationState = new AnimationState(animatable, limbSwing, limbSwingAmount, partialTick,
                 avgVelocity >= motionThreshold && limbSwingAmount != 0.0F);
@@ -127,7 +127,7 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
 
         animationState.setData(DataTickets.ITEM_RENDER_PERSPECTIVE, this.currentTransform);
         animationState.setData(DataTickets.ITEMSTACK, this.currentStack);
-        animationState.setData(DataTickets.TICK, animatable.getTick(animatable));
+//        animationState.setData(DataTickets.TICK, animatable.getTick(animatable));
         animationState.setData(DataTickets.ENTITY, currentEntity);
         animationState.setData(DataTickets.ENTITY_MODEL_DATA, new EntityModelData(shouldSit, false, -netHeadYaw, -headPitch));
         var var31 = this.model;

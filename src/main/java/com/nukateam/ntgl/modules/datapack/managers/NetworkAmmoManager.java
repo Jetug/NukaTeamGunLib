@@ -2,9 +2,10 @@ package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
+import com.nukateam.ntgl.modules.constants.Paths;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
-import com.nukateam.ntgl.common.data.config.ProjectileConfig;
+import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAmmo;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,8 +23,6 @@ import java.util.*;
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
 public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, ProjectileConfig>> {
-    public static final String PATH = "ammo";
-    private static final List<IAmmo> clientRegisteredAmmo = new ArrayList<>();
     private static NetworkAmmoManager instance;
 
     private Map<ResourceLocation, ProjectileConfig> registeredAmmo = new HashMap<>();
@@ -41,7 +40,7 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
 
     @Override
     protected Map<IAmmo, ProjectileConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return DataUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, ProjectileConfig.class, PATH);
+        return DataUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, ProjectileConfig.class, Paths.AMMO);
     }
 
     @Override
@@ -102,7 +101,6 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
      * @return true if all registered projectile were able to update their corresponding projectile item
      */
     private static boolean updateRegisteredAmmo(Map<ResourceLocation, ProjectileConfig> registeredAmmo) {
-        clientRegisteredAmmo.clear();
         if (registeredAmmo != null) {
             for (var entry : registeredAmmo.entrySet()) {
                 Item item = ITEMS.getValue(entry.getKey());
@@ -110,7 +108,6 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
                     return false;
                 }
                 ((IAmmo) item).setConfig(new ConfigSupplier<>(entry.getValue()));
-                clientRegisteredAmmo.add((IAmmo) item);
             }
             return true;
         }

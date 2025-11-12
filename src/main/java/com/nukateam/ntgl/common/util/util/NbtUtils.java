@@ -1,22 +1,42 @@
 package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
-import com.nukateam.ntgl.common.data.config.ProjectileConfig;
-import com.nukateam.ntgl.common.data.config.Fuel;
-import com.nukateam.ntgl.common.data.config.gun.Modules;
+import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
+import com.nukateam.ntgl.common.data.config.weapon.Fuel;
+import com.nukateam.ntgl.common.data.config.weapon.Modules;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
-import org.checkerframework.checker.units.qual.K;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class NbtUtils {
+    public static CompoundTag writeVec3(Vec3 vec) {
+        var vecTag = new CompoundTag();
+        vecTag.putDouble("x", vec.x);
+        vecTag.putDouble("y", vec.y);
+        vecTag.putDouble("z", vec.z);
+        return vecTag;
+    }
+
+    public static Vec3 readVec3(@Nullable CompoundTag tag) {
+        if(tag != null) {
+            return new Vec3(
+                    tag.getDouble("x"),
+                    tag.getDouble("y"),
+                    tag.getDouble("z")
+            );
+        }
+        return Vec3.ZERO;
+    }
+
     public static CompoundTag serializeStringArray(ArrayList<String> array){
         var tag = new CompoundTag();
         for (var i = 0; i < array.size(); i++)
@@ -115,21 +135,6 @@ public class NbtUtils {
 
         return map;
     }
-
-
-//
-//
-//    public static HashMap<String, ResourceLocation> deserializeRLMap(CompoundTag tag){
-//        var map = new HashMap<String, ResourceLocation>();
-//
-//        for (var key: tag.getAllKeys()) {
-//            if(tag.contains(key, Tag.TAG_STRING)) {
-//                map.put(key, ResourceLocation.tryParse(tag.getString(key)));
-//            }
-//        }
-//
-//        return map;
-//    }
 
     public static <V> LinkedHashMap<ResourceLocation, V> deserializeLinkedMap(CompoundTag tag, Function<CompoundTag, V> deserializer){
         var map = new LinkedHashMap<ResourceLocation, V>();

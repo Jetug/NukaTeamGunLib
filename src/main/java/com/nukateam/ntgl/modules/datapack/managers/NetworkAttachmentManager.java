@@ -3,6 +3,7 @@ package com.nukateam.ntgl.modules.datapack.managers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
+import com.nukateam.ntgl.modules.constants.Paths;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
@@ -23,7 +24,6 @@ import java.util.*;
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
 public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map<IAttachment<?>, AttachmentConfig>> {
-    public static final String PATH = "attachments";
     private static List<IAttachment<?>> clientRegisteredAttachments = new ArrayList<>();
     private static NetworkAttachmentManager instance;
 
@@ -41,7 +41,7 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
 
     @Override
     protected Map<IAttachment<?>, AttachmentConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return DataUtils.getConfigMap(manager, (v) -> v instanceof IAttachment<?>, AttachmentConfig.class, PATH);
+        return DataUtils.getConfigMap(manager, (v) -> v instanceof IAttachment<?>, AttachmentConfig.class, Paths.ATTACHMENTS);
     }
 
     @Override

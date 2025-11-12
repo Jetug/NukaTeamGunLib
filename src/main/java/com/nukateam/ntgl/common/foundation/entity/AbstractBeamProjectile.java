@@ -1,16 +1,14 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.common.data.config.gun.Gun;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -45,9 +43,8 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		maxTicks = (short) life;
 	}
 
-	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn,
-                                  LivingEntity shooter, ItemStack weapon, WeaponItem item, Gun modifiedGun) {
-		super(entityType, worldIn, shooter, weapon, item, modifiedGun);
+	public AbstractBeamProjectile(EntityType<? extends Entity> entityType, Level worldIn, WeaponData data) {
+		super(entityType, worldIn, data);
 	}
 
 	@Override
@@ -69,7 +66,6 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 				this.onExpired();
 			this.remove(RemovalReason.KILLED);
 		}
-//		updateClient();
 	}
 
 	public float getDistance() {
@@ -94,12 +90,9 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	public void trace() {
 		if (shooter == null || level().isClientSide)
 			return;
-//		setupDirection(shooter, weapon, (WeaponItem)weapon.getItem(), modifiedGun);
 
 		var startVec = new Vec3(this.getX(), this.getY(), this.getZ());
 		var endVec = startVec.add(this.getDeltaMovement());
-
-//		setPos(shooter.getEyePosition());
 
 		HitResult raytraceresult = rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER,
 				ClipContext.Fluid.NONE, this), IGNORE_LEAVES);
@@ -145,7 +138,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	}
 
 	@Override
-	protected boolean removeOnHit() {
+	protected boolean removeOnHit(HitTarget hitTarget) {
 		return false;
 	}
 

@@ -1,14 +1,13 @@
 package com.nukateam.ntgl.common.data.attachment.impl;
 
-import com.nukateam.example.common.registery.ModGuns;
+import com.nukateam.example.common.registery.ExampleWeapons;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.WeaponHelper;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -28,15 +27,15 @@ import java.util.function.BiFunction;
  */
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class Attachment {
-    protected IGunModifier[] modifiers;
+    protected IWeaponModifier[] modifiers;
     private List<Component> perks = null;
     private List<ItemStack> weapons = null;
 
-    public Attachment(IGunModifier... modifiers) {
+    public Attachment(IWeaponModifier... modifiers) {
         this.modifiers = modifiers;
     }
 
-    public IGunModifier[] getModifiers() {
+    public IWeaponModifier[] getModifiers() {
         return this.modifiers;
     }
 
@@ -90,7 +89,7 @@ public class Attachment {
             return this.perks;
         }
 
-        var data = new GunData(new ItemStack(ModGuns.CLASSIC10MM.get()), null);
+        var data = new WeaponData(new ItemStack(ExampleWeapons.CLASSIC10MM.get()), null);
         data.attachment = stack;
         var perks = new ArrayList<Component>();
 
@@ -106,7 +105,6 @@ public class Attachment {
         damage(data, perks);
         meleeDamage(data, perks);
         meleeDistance(data, perks);
-        speed(data, perks);
         spread(data, perks);
         life(data, perks);
         recoil(data, perks);
@@ -117,12 +115,12 @@ public class Attachment {
         return this.perks;
     }
 
-    private void fireSoundVolume(GunData data, ArrayList<Component> positivePerks) {
+    private void fireSoundVolume(WeaponData data, ArrayList<Component> positivePerks) {
         getNumericPerk(positivePerks, "perk.ntgl.fire_volume",
                 (modifier, val) -> modifier.modifyFireSoundVolume(val, data));
     }
 
-    private void silenced(GunData data, ArrayList<Component> positivePerks) {
+    private void silenced(WeaponData data, ArrayList<Component> positivePerks) {
         for (var modifier : modifiers) {
             if (modifier.silencedFire(false, data)) {
                 addPerk(positivePerks, true, "perk.ntgl.silenced");
@@ -131,12 +129,12 @@ public class Attachment {
         }
     }
 
-    private void soundRadius(GunData data, ArrayList<Component> positivePerks) {
+    private void soundRadius(WeaponData data, ArrayList<Component> positivePerks) {
         getNumericPerk(positivePerks, "perk.ntgl.sound_radius",
                 (modifier, val) -> (float) modifier.modifyFireSoundRadius(val, data));
     }
 
-    private void fireModes(GunData data, ArrayList<Component> positivePerks) {
+    private void fireModes(WeaponData data, ArrayList<Component> positivePerks) {
         var inputFireModes = new HashSet<FireMode>();
         Set<FireMode> outputFireModes = new HashSet<>();
 
@@ -155,17 +153,17 @@ public class Attachment {
         }
     }
 
-    private void rate(GunData data, ArrayList<Component> positivePerks) {
+    private void rate(WeaponData data, ArrayList<Component> positivePerks) {
         getNumericPerk(positivePerks, "perk.ntgl.rate", (modifier, val) ->
                 (float)modifier.modifyFireRate((int)(float)val, data));
     }
 
-    private void adsSpeed(GunData data, ArrayList<Component> positivePerks) {
+    private void adsSpeed(WeaponData data, ArrayList<Component> positivePerks) {
         getNumericPerk(positivePerks, "perk.ntgl.ads_speed", true,
                 (modifier, val) -> (float)modifier.modifyAimDownSightSpeed(val, data));
     }
 
-    private void recoil(GunData data, ArrayList<Component> positivePerks) {
+    private void recoil(WeaponData data, ArrayList<Component> positivePerks) {
         float inputRecoil = 1.0f;
         float outputRecoil = inputRecoil;
         for (var modifier : modifiers) {
@@ -177,41 +175,36 @@ public class Attachment {
         }
     }
 
-    private void life(GunData data, ArrayList<Component> positivePerks) {
+    private void life(WeaponData data, ArrayList<Component> positivePerks) {
         getNumericPerk(positivePerks, "perk.ntgl.projectile_life", true,
                 (modifier, val) -> (float)modifier.modifyProjectileLife((int)(float)val, data));
     }
 
-    private void spread(GunData data, ArrayList<Component> positivePerks) {
+    private void spread(WeaponData data, ArrayList<Component> positivePerks) {
         getNumericPerk(positivePerks, "perk.ntgl.projectile_spread",
                 (modifier, val) -> modifier.modifyProjectileSpread(val, data));
     }
 
-    private void speed(GunData data, ArrayList<Component> positivePerks) {
-        getNumericPerk(positivePerks, "perk.ntgl.projectile_speed", true,
-                (modifier, val) -> (float)modifier.modifyProjectileSpeed(val, data));
-    }
-
-    private void damage(GunData data, ArrayList<Component> positivePerks) {
+    private void damage(WeaponData data, ArrayList<Component> positivePerks) {
         getNumericPerk(positivePerks, "perk.ntgl.modified_damage", true,
-                (modifier, val) -> modifier.modifyDamage(val, data));
+                (modifier, val) -> modifier.modifyProjectileDamage(val, ExampleWeapons.CLASSIC10MM.getId(), data));
     }
 
-    private void meleeDamage(GunData data, ArrayList<Component> positivePerks) {
+    private void meleeDamage(WeaponData data, ArrayList<Component> positivePerks) {
         getNumericPerk(positivePerks, "perk.ntgl.melee_damage", true,
                 (modifier, val) -> modifier.modifyMeleeDamage(val, data));
     }
 
-    private void meleeDistance(GunData data, ArrayList<Component> positivePerks) {
+    private void meleeDistance(WeaponData data, ArrayList<Component> positivePerks) {
         getNumericPerk(positivePerks, "perk.ntgl.melee_distance",
                 (modifier, val) -> modifier.modifyMeleeDistance(val, data));
     }
 
-    private void getNumericPerk(ArrayList<Component> positivePerks, String name, BiFunction<IGunModifier, Float, Float> function) {
+    private void getNumericPerk(ArrayList<Component> positivePerks, String name, BiFunction<IWeaponModifier, Float, Float> function) {
         getNumericPerk(positivePerks,  name, false, function);
     }
 
-    private void getNumericPerk(ArrayList<Component> positivePerks, String name, boolean invert, BiFunction<IGunModifier, Float, Float> function) {
+    private void getNumericPerk(ArrayList<Component> positivePerks, String name, boolean invert, BiFunction<IWeaponModifier, Float, Float> function) {
         float input1 = 1.0f;
         float input2 = 2.0f;
         float output1 = input1;

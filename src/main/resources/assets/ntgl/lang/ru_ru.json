@@ -153,8 +153,6 @@
   "perk.ntgl.fire_volume": "Звук огня",
   "perk.ntgl.silenced": "Заглушён",
   "perk.ntgl.sound_radius": "Радиус звука огня",
-  "perk.ntgl.additional_damage.positive": "Дополнительный урон §r(§l+%s ♥§r)",
-  "perk.ntgl.additional_damage.negative": "Отрицательный урон §r(§l-%s ♥§r)",
   "perk.ntgl.modified_damage": "Урон оружия %s",
   "perk.ntgl.projectile_speed": "Скорость снаряда %s",
   "perk.ntgl.projectile_spread": "Разброс снарядов %s",
@@ -164,19 +162,27 @@
   "perk.ntgl.rate": "Скорострельность %s",
   "perk.ntgl.max_ammo": "Вместимость %s",
   "perk.ntgl.projectile_amount": "Снарядов за выстрел: %s",
+  "perk.ntgl.melee_damage": "Урон в ближнем бою: %s",
+  "perk.ntgl.melee_distance": "Радиус ближнего боя: %s",
 
   "gui.ntgl.assemble": "Собрать %s",
   "gui.ntgl.show_remaining": "Показать оставшееся",
+
+  "key.categories.ntgl.armor": "NTGL броня",
+  "key.ntgl.leave": "Выйти из брони",
+
   "key.categories.ntgl": "NTGL Оружие",
-  "button.categories.ntgl": "NTGL Оружие",
   "key.ntgl.reload": "Перезарядить",
   "key.ntgl.unload": "Разрядить",
   "key.ntgl.attachments": "Изменить обвесы",
   "key.ntgl.inspect": "Осмотр оружия",
   "key.ntgl.fire_select": "Переключить режим огня",
   "key.ntgl.ammo_select": "Сменить тип боеприпаса",
-  "key.ntgl.melee": "Ближний бой",
+  "key.ntgl.melee": "Дополнительная атака",
+  "key.ntgl.alt": "Альтернативная атака",
+  "key.ntgl.key_tips": "Показать подсказки клавиш",
 
+  "button.categories.ntgl": "NTGL Оружие",
   "button.controls.ntgl": "NTGL Оружие",
   "ntgl.button.shoot": "Стрельба из оружия",
   "ntgl.button.aim": "Прицелиться",
@@ -195,8 +201,8 @@
   "ntgl.action.reload": "Перезарядка",
   "ntgl.action.steady_aim": "Твёрдая рука",
   "ntgl.button.config.tooltip": "Config Options",
-  "ntgl.chat.open_curseforge_page": "Open CurseForge Page",
+  "ntgl.chat.open_curseforge_page": "Открыть страницу на CurseForge",
   "ntgl.chat.install_configured": "Install %s to access config options",
 
-  "item.ntgl.classic10mm": "Кольт 6520",
+  "item.ntgl.classic10mm": "Кольт 6520"
 }

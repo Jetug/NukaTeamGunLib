@@ -2,7 +2,7 @@ package com.nukateam.ntgl.client.model;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import com.jetug.chassis_core.common.foundation.item.StackUtils;
+import com.nukateam.chassis_core.common.foundation.item.StackUtils;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;

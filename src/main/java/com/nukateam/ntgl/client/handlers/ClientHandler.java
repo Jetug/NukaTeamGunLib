@@ -6,7 +6,7 @@ import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.render.screen.AttachmentScreen;
 import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
-import com.nukateam.ntgl.client.util.util.PropertyHelper;
+import com.nukateam.ntgl.client.util.helpers.PropertyHelper;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.debug.screen.*;
 import com.nukateam.ntgl.common.foundation.init.ModContainers;
@@ -46,12 +46,11 @@ public class ClientHandler {
 
     public static void setup() {
         MinecraftForge.EVENT_BUS.register(AimingHandler.get());
-        MinecraftForge.EVENT_BUS.register(BulletTrailRenderingHandler.get());
         MinecraftForge.EVENT_BUS.register(CrosshairHandler.get());
         MinecraftForge.EVENT_BUS.register(GunRenderingHandler.get());
         MinecraftForge.EVENT_BUS.register(RecoilHandler.get());
         MinecraftForge.EVENT_BUS.register(ClientReloadHandler.get());
-        MinecraftForge.EVENT_BUS.register(ShootingHandler.get());
+        MinecraftForge.EVENT_BUS.register(ClientShootingHandler.get());
         MinecraftForge.EVENT_BUS.register(ClientEquipHandler.get());
         MinecraftForge.EVENT_BUS.register(SoundHandler.get());
         MinecraftForge.EVENT_BUS.register(new EntityModelHandler());
@@ -148,10 +147,7 @@ public class ClientHandler {
                 mouseOptionsField.setAccessible(true);
             }
             try {
-                OptionsList list = (OptionsList) mouseOptionsField.get(screen);
-//                list.addBig(OptionInstance.createBoolean("t", true));
-//                list.addSmall(GunOptions.ADS_SENSITIVITY, GunOptions.CROSSHAIR);
-
+                var list = (OptionsList) mouseOptionsField.get(screen);
                 list.addSmall(OptionInstances.createSensitivitySlider(), null);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

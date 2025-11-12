@@ -1,13 +1,13 @@
 package com.nukateam.ntgl.common.util.managers;
 
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.ProjectileType;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableGrenadeEntity;
 import com.nukateam.ntgl.common.util.interfaces.IProjectileFactory;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.util.interfaces.IThrowableProjectileFactory;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -22,8 +22,8 @@ import java.util.Map;
  */
 public class ProjectileManager {
     private static ProjectileManager instance = null;
-    private final IProjectileFactory DEFAULT_FACTORY = (level, entity, weapon, item, modifiedGun) ->
-            new ProjectileEntity(Projectiles.PROJECTILE.get(), level, entity, weapon, item, modifiedGun);
+    private final IProjectileFactory DEFAULT_FACTORY = (level,gunData) ->
+            new ProjectileEntity(Projectiles.PROJECTILE.get(), level, gunData);
     
     private final IThrowableProjectileFactory DEFAULT_THROWABLE_FACTORY = ThrowableGrenadeEntity::new;
 
@@ -54,9 +54,9 @@ public class ProjectileManager {
         this.projectileForAmmoFactories.put(ForgeRegistries.ITEMS.getKey(ammo), factory);
     }
 
-    public IProjectileFactory getFactory(GunData data) {
-        var item = GunStateHelper.getCurrentAmmo(data);
-        var projectileType = GunStateHelper.getProjectileConfig(data).getProjectile();
+    public IProjectileFactory getFactory(WeaponData data) {
+        var item = WeaponStateHelper.getCurrentAmmo(data);
+        var projectileType = WeaponStateHelper.getProjectileConfig(data).getProjectileType();
         var factory = projectileForAmmoFactories.get(item);
 
         if(projectileForAmmoFactories.containsKey(item)){

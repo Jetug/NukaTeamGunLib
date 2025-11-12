@@ -1,13 +1,11 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.CampfireBlock;
@@ -15,6 +13,7 @@ import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.level.block.CandleCakeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class LaserProjectile extends AbstractBeamProjectile {
@@ -25,8 +24,8 @@ public class LaserProjectile extends AbstractBeamProjectile {
         super(entityType, worldIn);
     }
 
-    public LaserProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, LivingEntity shooter, ItemStack weapon, WeaponItem item, Gun modifiedGun) {
-        super(entityType, worldIn, shooter, weapon, item, modifiedGun);
+    public LaserProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn,  WeaponData data) {
+        super(entityType, worldIn, data);
         trace();
     }
 
@@ -39,15 +38,17 @@ public class LaserProjectile extends AbstractBeamProjectile {
     }
 
     @Override
-    protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
-        super.onHitEntity(entity, hitVec, startVec, endVec, headshot);
-        if(random.nextFloat() <= getEntityFireChance())
-            entity.setRemainingFireTicks(20);
+    protected void burnEntity(Entity entity) {
+        var burnTime = projectile.getBurnSeconds();
+        if (burnTime > 0 && random.nextFloat() <= getEntityFireChance()) {
+            entity.setSecondsOnFire(burnTime);
+        }
     }
 
     @Override
-    protected void onHitBlock(BlockState blockState, BlockPos blockPos, Direction face, double x, double y, double z) {
-        super.onHitBlock(blockState, blockPos, face, x, y, z);
+    protected void onHitBlock(BlockHitResult hitResult, BlockState blockState) {
+        var blockPos = hitResult.getBlockPos();
+        var face = hitResult.getDirection();
 
         if(random.nextFloat() <= getBlockFireChance()) {
             if (!CampfireBlock.canLight(blockState) && !CandleBlock.canLight(blockState) && !CandleCakeBlock.canLight(blockState)) {
@@ -62,5 +63,7 @@ public class LaserProjectile extends AbstractBeamProjectile {
                 level().setBlock(blockPos, blockState.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)), 11);
             }
         }
+
+        super.onHitBlock(hitResult, blockState);
     }
 }

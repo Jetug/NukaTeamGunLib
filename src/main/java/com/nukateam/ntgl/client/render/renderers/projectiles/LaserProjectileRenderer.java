@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.renderers.projectiles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.util.render.RenderUtils;
+import com.nukateam.ntgl.client.util.helpers.render.RenderUtils;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.LaserProjectile;
 import net.minecraft.client.Minecraft;

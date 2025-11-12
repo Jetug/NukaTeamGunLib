@@ -4,13 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.Ntgl;
 
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.GripType;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.util.annotation.Optional;
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
+public class Modifiers implements INBTSerializable<CompoundTag>, IWeaponModifier {
     @Optional Set<FireMode> fireModes = new HashSet<>();
     @Optional float additionalDamage = 0;
     @Optional String damage = "";
@@ -331,160 +331,160 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IGunModifier {
     }
 
     @Override
-    public float modifyFireSoundVolume(float volume, GunData data) {
-        return IGunModifier.super.modifyFireSoundVolume(volume, data);
+    public float modifyFireSoundVolume(float volume, WeaponData data) {
+        return IWeaponModifier.super.modifyFireSoundVolume(volume, data);
     }
 
     @Override
-    public ResourceLocation modifyFireSound(ResourceLocation sound, GunData data) {
-        return IGunModifier.super.modifyFireSound(sound, data);
+    public ResourceLocation modifyFireSound(ResourceLocation sound, WeaponData data) {
+        return IWeaponModifier.super.modifyFireSound(sound, data);
     }
 
     @Override
-    public double modifyFireSoundRadius(double radius, GunData data) {
-        return IGunModifier.super.modifyFireSoundRadius(radius, data);
+    public double modifyFireSoundRadius(double radius, WeaponData data) {
+        return IWeaponModifier.super.modifyFireSoundRadius(radius, data);
     }
 
     @Override
-    public boolean silencedFire(boolean value, GunData data) {
+    public boolean silencedFire(boolean value, WeaponData data) {
         return getBoolean(value, silencedFire);
     }
 
     @Override
-    public boolean modifyNeedsFullCharge(boolean base, GunData data) {
+    public boolean modifyNeedsFullCharge(boolean base, WeaponData data) {
         return getBoolean(base, this.needsFullCharge);
     }
 
     @Override
-    public boolean modifyIsOneTimeCharge(boolean base, GunData data) {
+    public boolean modifyIsOneTimeCharge(boolean base, WeaponData data) {
         return getBoolean(base, oneTimeCharge);
     }
 
     @Override
-    public boolean modifyShouldRenderHud(boolean base, GunData data) {
+    public boolean modifyShouldRenderHud(boolean base, WeaponData data) {
         return getBoolean(base, renderHud);
     }
 
     @Override
-    public Set<AmmoHolder> modifyAmmoItems(Set<AmmoHolder> baseValue, GunData data) {
+    public Set<AmmoHolder> modifyAmmoItems(Set<AmmoHolder> baseValue, WeaponData data) {
         return ammoItems != null && !ammoItems.isEmpty() ? this.ammoItems : baseValue;
     }
 
     @Override
-    public boolean modifyAutoReloading(boolean base, GunData data) {
+    public boolean modifyAutoReloading(boolean base, WeaponData data) {
         return getBoolean(base, autoReload);
     }
 
     @Override
-    public LoadingType modifyLoadingType(LoadingType baseValue, GunData data) {
+    public LoadingType modifyLoadingType(LoadingType baseValue, WeaponData data) {
         return loadingType != null ? this.loadingType : baseValue;
     }
 
     @Override
-    public Set<AmmoHolder> modifyFuelItems(Set<AmmoHolder> baseValue, GunData data) {
+    public Set<AmmoHolder> modifyFuelItems(Set<AmmoHolder> baseValue, WeaponData data) {
         return fuel != null && !fuel.isEmpty() ? this.fuel : baseValue;
     }
 
     @Override
-    public Set<FireMode> modifyFireModes(Set<FireMode> baseValue, GunData data) {
+    public Set<FireMode> modifyFireModes(Set<FireMode> baseValue, WeaponData data) {
         return fireModes != null && !fireModes.isEmpty() ? this.fireModes : baseValue;
     }
 
     @Override
-    public GripType modifyGripType(GripType baseValue, GunData data) {
+    public GripType modifyGripType(GripType baseValue, WeaponData data) {
         return this.gripType != null ? this.gripType :  baseValue;
     }
 
     // Calculation methods for each numeric property
-    public float additionalDamage(GunData gunData) {
+    public float additionalDamage(WeaponData weaponData) {
         return additionalDamage;
     }
 
-    public float modifyDamage(float damage, GunData gunData) {
+    public float modifyDamage(float damage, WeaponData weaponData) {
         return calculate(damage, this.damage);
     }
 
-    public double modifyProjectileSpeed(double speed, GunData gunData) {
+    public double modifyProjectileSpeed(double speed, WeaponData weaponData) {
         return calculate((float) speed, projectileSpeed);
     }
 
-    public float modifyProjectileSpread(float spread, GunData gunData) {
+    public float modifyProjectileSpread(float spread, WeaponData weaponData) {
         return calculate(spread, this.spread);
     }
 
-    public double additionalProjectileGravity(GunData gunData) {
+    public double additionalProjectileGravity(WeaponData weaponData) {
         return additionalProjectileGravity;
     }
 
-    public double modifyProjectileGravity(double gravity, GunData gunData) {
+    public double modifyProjectileGravity(double gravity, WeaponData weaponData) {
         return calculate((float) gravity, projectileGravity);
     }
 
-    public int modifyProjectileLife(int life, GunData gunData) {
+    public int modifyProjectileLife(int life, WeaponData weaponData) {
         return (int) calculate(life, projectileLife);
     }
 
-    public float recoilModifier(GunData gunData) {
+    public float recoilModifier(WeaponData weaponData) {
         return recoilModifier;
     }
 
-    public float kickModifier(GunData gunData) {
+    public float kickModifier(WeaponData weaponData) {
         return kickModifier;
     }
 
-    public double modifyMuzzleFlashSize(double size, GunData gunData) {
+    public double modifyMuzzleFlashSize(double size, WeaponData weaponData) {
         return calculate((float) size, muzzleFlashSize);
     }
 
-    public double modifyMuzzleFlashScale(double scale, GunData gunData) {
+    public double modifyMuzzleFlashScale(double scale, WeaponData weaponData) {
         return calculate((float) scale, muzzleFlashScale);
     }
 
-    public double modifyAimDownSightSpeed(double speed, GunData gunData) {
+    public double modifyAimDownSightSpeed(double speed, WeaponData weaponData) {
         return calculate((float) speed, aimDownSightSpeed);
     }
 
-    public int modifyFireRate(int base, GunData gunData) {
+    public int modifyFireRate(int base, WeaponData weaponData) {
         return (int) calculate(base, this.rate);
     }
 
-    public float criticalChance(GunData gunData) {
+    public float criticalChance(WeaponData weaponData) {
         return criticalChance;
     }
 
-    public int modifyMaxAmmo(int maxAmmo, GunData gunData) {
+    public int modifyMaxAmmo(int maxAmmo, WeaponData weaponData) {
         return (int) calculate(maxAmmo, this.maxAmmo);
     }
 
-    public int modifyProjectileAmount(int amount, GunData gunData) {
+    public int modifyProjectileAmount(int amount, WeaponData weaponData) {
         return (int) calculate(amount, projectileAmount);
     }
 
-    public int modifyFireDelay(int delay, GunData gunData) {
+    public int modifyFireDelay(int delay, WeaponData weaponData) {
         return (int) calculate(delay, fireDelay);
     }
 
-    public int modifyReloadStart(int time, GunData gunData) {
+    public int modifyReloadStart(int time, WeaponData weaponData) {
         return (int) calculate(time, reloadStart);
     }
 
-    public int modifyReloadTime(int time, GunData gunData) {
+    public int modifyReloadTime(int time, WeaponData weaponData) {
         return (int) calculate(time, reloadTime);
     }
 
-    public int modifyReloadEnd(int time, GunData gunData) {
+    public int modifyReloadEnd(int time, WeaponData weaponData) {
         return (int) calculate(time, reloadEnd);
     }
 
-    public int modifyEquipTime(int time, GunData gunData) {
+    public int modifyEquipTime(int time, WeaponData weaponData) {
         return (int) calculate(time, equipTime);
     }
 
-    public int modifyAmmoPerShot(int ammo, GunData gunData) {
+    public int modifyAmmoPerShot(int ammo, WeaponData weaponData) {
         return (int) calculate(ammo, ammoPerShot);
     }
 
-    public int modifyMaxFuel(int max, AmmoHolder type, GunData gunData) {
+    public int modifyMaxFuel(int max, AmmoHolder type, WeaponData weaponData) {
         return maxFuel != null && maxFuel.get(type) != null ? maxFuel.get(type) : max;
     }
 

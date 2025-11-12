@@ -1,9 +1,11 @@
 package com.nukateam.ntgl.common.util.trackers;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.ThrowMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.util.util.ThrowableStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -64,26 +66,26 @@ public class ThrowingTracker {
         }
     }
 
-    public static void start(LivingEntity entity, InteractionHand arm){
-        addTracker(entity, arm);
-    }
+    public static void start(WeaponData weaponData, InteractionHand arm){
+        assert weaponData.wielder != null && weaponData.weapon != null;
 
-    public static void onRelease(LivingEntity entity, InteractionHand arm){
-        var tracker = TRACKER_MAP.get(Pair.of(arm, entity));
-        tracker.onRelease();
-    }
-
-    private static boolean addTracker(LivingEntity entity, InteractionHand arm) {
-        var gunItem = entity.getItemInHand(arm).getItem();
+        var entity = weaponData.wielder;
         var key = Pair.of(arm, entity);
 
-        if (!TRACKER_MAP.containsKey(key)) {
-            if (!(gunItem instanceof IThrowable)) {
-                return true;
+        if (!TRACKER_MAP.containsKey(key) && !EquipTracker.isEquiping(weaponData.wielder, arm)) {
+            if (!(weaponData.weapon.getItem() instanceof IThrowable)) {
+                return;
             }
-            TRACKER_MAP.put(key, new Tracker(entity, arm, () -> TRACKER_MAP.remove(Pair.of(arm, entity))));
+            TRACKER_MAP.put(key, new Tracker(weaponData, arm, () -> TRACKER_MAP.remove(Pair.of(arm, entity))));
         }
-        return false;
+        else {
+            TRACKER_MAP.get(key).released = false;
+        }
+    }
+
+    public static void onRelease(WeaponData weaponData, InteractionHand arm){
+        var tracker = TRACKER_MAP.get(Pair.of(arm, weaponData.wielder));
+        tracker.onRelease();
     }
 
     private static void onEntityTick(LivingEntity entity) {
@@ -104,6 +106,7 @@ public class ThrowingTracker {
     }
 
     private static class Tracker {
+        private final WeaponData weaponData;
         private final InteractionHand arm;
         private final ItemStack stack;
         private final IThrowable throwable;
@@ -112,20 +115,21 @@ public class ThrowingTracker {
         private final int maxLife;
         private final LivingEntity entity;
         private Runnable onStop;
-
+        private boolean released = false;
         private int prepareTick;
         private int throwTick;
         private int lifeTick;
 
-        private Tracker(LivingEntity entity, InteractionHand arm, Runnable onStop) {
+        private Tracker(WeaponData weaponData, InteractionHand arm, Runnable onStop) {
+            this.weaponData = weaponData;
             this.arm = arm;
-            this.entity = entity;
+            this.entity = weaponData.wielder;
             this.onStop = onStop;
             this.stack = entity.getItemInHand(arm);
             this.throwable = (IThrowable) stack.getItem();
-            this.maxPrepare = throwable.getConfig().getGeneral().getPrepareTime();
-            this.maxThrow = throwable.getConfig().getGeneral().getThrowTime();
-            this.maxLife = throwable.getConfig().getProjectile().getLife();
+            this.maxPrepare = WeaponModifierHelper.getPrepareTime(weaponData);
+            this.maxThrow = WeaponModifierHelper.getThrowTime(weaponData);
+            this.maxLife = WeaponModifierHelper.getThrowable(weaponData).getProjectile().getLife();
 
             prepareTick = maxPrepare;
             throwTick = maxThrow;
@@ -161,12 +165,20 @@ public class ThrowingTracker {
             prepareTick = Math.max(prepareTick - 1, 0);
 
             if(prepareTick == 0){
-                if(ThrowableStateHelper.getThrowMode(stack) == ThrowMode.UNSAFE) {
+                if(ThrowableStateHelper.getThrowMode(weaponData) == ThrowMode.UNSAFE) {
                     lifeTick = Math.max(lifeTick - 1, 0);
                 }
 
-                setHolding(true);
-
+                if(!isThrowing()){
+                    if(released){
+                        setPreparing(false);
+                        setThrowing(true);
+                        setHolding(false);
+                    }
+                    else {
+                        setHolding(true);
+                    }
+                }
                 if(lifeTick == 0){
                     onExpire();
                 }
@@ -181,12 +193,7 @@ public class ThrowingTracker {
         }
 
         public void onRelease(){
-            if(prepareTick == 0){
-                setPreparing(false);
-                setThrowing(true);
-                setHolding(false);
-            }
-            else stop();
+            this.released = true;
         }
 
         private void throwItem(){

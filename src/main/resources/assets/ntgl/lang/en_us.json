@@ -54,13 +54,20 @@
   "death.attack.ntgl.bullet.annihilated": "%1$s was annihilated by %2$s",
   "death.attack.ntgl.bullet.decimated": "%1$s was decimated by %2$s",
 
-  "key.categories.ntgl": "NTGL",
+
+  "key.categories.ntgl.armor": "NTGL Armor",
+  "key.ntgl.leave": "Exit armor",
+
+  "key.categories.ntgl": "NTGL Weapons",
+  "key.ntgl.melee": "Melee Attack",
+  "key.ntgl.alt": "Alternative Attack",
   "key.ntgl.reload": "Reload",
   "key.ntgl.unload": "Unload",
   "key.ntgl.attachments": "Modify Attachments",
   "key.ntgl.inspect": "Inspect",
   "key.ntgl.fire_select": "Fire Select",
   "key.ntgl.ammo_select": "Ammo Select",
+  "key.ntgl.key_tips": "Show key tips",
 
   "subtitle.ntgl.stun.explosion": "Stun Grenade Explosion",
   "subtitle.ntgl.stun.ring": "Ringing",
@@ -155,14 +162,30 @@
   "info.ntgl.burnable": "Fuel",
   "info.ntgl.water": "Water",
 
+  "entity.ntgl.projectile": "Projectile",
+  "entity.ntgl.spear": "Spear",
+  "entity.ntgl.grenade": "Grenade",
+  "entity.ntgl.throwable_grenade": "Grenade",
+  "entity.ntgl.throwable_stun_grenade": "Stun Grenade",
+  "entity.ntgl.flame_projectile": "Flame",
+
+  "info.ntgl.primary": "Primary",
+  "info.ntgl.secondary": "Secondary",
+  "info.ntgl.additional": "Additional",
+  "info.ntgl.alternative": "Alternative",
+
+  "info.ntgl.shot": "Shot",
+  "info.ntgl.melee": "Melee",
+  "info.ntgl.throw": "Throw",
+  "info.ntgl.scope": "Scope",
+  "info.ntgl.custom": "Custom",
+
   "perk.ntgl.title": "Perks:",
   "perk.ntgl.entry.positive": "+ %s",
   "perk.ntgl.entry.negative": "- %s",
   "perk.ntgl.fire_volume": "Fire Sound Volume",
   "perk.ntgl.silenced": "Silenced",
   "perk.ntgl.sound_radius": "Fire Sound Radius",
-  "perk.ntgl.additional_damage.positive": "Additional Damage §r(§l+%s ♥§r)",
-  "perk.ntgl.additional_damage.negative": "Negative Damage §r(§l-%s ♥§r)",
   "perk.ntgl.fire_modes": "Fire Modes: ",
   "perk.ntgl.projectile_speed": "Projectile Speed: %s",
   "perk.ntgl.modified_damage": "Weapon Damage: %s",
@@ -198,6 +221,5 @@
   "ntgl.action.steady_aim": "Steady Aim",
   "ntgl.button.config.tooltip": "Config Options",
   "ntgl.chat.open_curseforge_page": "Open CurseForge Page",
-  "ntgl.chat.install_configured": "Install %s to access config options",
-  "key.ntgl.melee": "Melee Attack"
+  "ntgl.chat.install_configured": "Install %s to access config options"
 }

@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.data.holders;
 
 import com.google.gson.JsonParseException;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.util.PlayerAnimations;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;

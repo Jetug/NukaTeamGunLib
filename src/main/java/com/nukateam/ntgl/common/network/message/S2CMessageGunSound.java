@@ -21,13 +21,12 @@ public class S2CMessageGunSound extends PlayMessage<S2CMessageGunSound> {
     private float volume;
     private float pitch;
     private int shooterId;
-    private boolean muzzle;
     private boolean reload;
 
     public S2CMessageGunSound() {}
 
     public S2CMessageGunSound(ResourceLocation id, SoundSource category, LivingEntity shooter,
-                              float volume, float pitch, boolean muzzle, boolean reload) {
+                              float volume, float pitch, boolean reload) {
         this.id = id;
         this.category = category;
         this.x = (float)shooter.position().x;
@@ -36,12 +35,11 @@ public class S2CMessageGunSound extends PlayMessage<S2CMessageGunSound> {
         this.volume = volume;
         this.pitch = pitch;
         this.shooterId = shooter.getId();
-        this.muzzle = muzzle;
         this.reload = reload;
     }
 
     public S2CMessageGunSound(ResourceLocation id, SoundSource category, Vec3 position,
-                              float volume, float pitch, int shooterId, boolean muzzle, boolean reload) {
+                              float volume, float pitch, int shooterId, boolean reload) {
         this.id = id;
         this.category = category;
         this.x = (float)position.x;
@@ -50,12 +48,11 @@ public class S2CMessageGunSound extends PlayMessage<S2CMessageGunSound> {
         this.volume = volume;
         this.pitch = pitch;
         this.shooterId = shooterId;
-        this.muzzle = muzzle;
         this.reload = reload;
     }
 
     public S2CMessageGunSound(ResourceLocation id, SoundSource category, float x, float y, float z,
-                              float volume, float pitch, int shooterId, boolean muzzle, boolean reload) {
+                              float volume, float pitch, int shooterId, boolean reload) {
         this.id = id;
         this.category = category;
         this.x = x;
@@ -64,7 +61,6 @@ public class S2CMessageGunSound extends PlayMessage<S2CMessageGunSound> {
         this.volume = volume;
         this.pitch = pitch;
         this.shooterId = shooterId;
-        this.muzzle = muzzle;
         this.reload = reload;
     }
 
@@ -78,7 +74,6 @@ public class S2CMessageGunSound extends PlayMessage<S2CMessageGunSound> {
         buffer.writeFloat(message.volume);
         buffer.writeFloat(message.pitch);
         buffer.writeInt(message.shooterId);
-        buffer.writeBoolean(message.muzzle);
         buffer.writeBoolean(message.reload);
     }
 
@@ -92,9 +87,8 @@ public class S2CMessageGunSound extends PlayMessage<S2CMessageGunSound> {
         float volume = buffer.readFloat();
         float pitch = buffer.readFloat();
         int shooterId = buffer.readInt();
-        boolean muzzle = buffer.readBoolean();
         boolean reload = buffer.readBoolean();
-        return new S2CMessageGunSound(id, category, x, y, z, volume, pitch, shooterId, muzzle, reload);
+        return new S2CMessageGunSound(id, category, x, y, z, volume, pitch, shooterId, reload);
     }
 
     @Override
@@ -133,10 +127,6 @@ public class S2CMessageGunSound extends PlayMessage<S2CMessageGunSound> {
 
     public int getShooterId() {
         return this.shooterId;
-    }
-
-    public boolean showMuzzleFlash() {
-        return this.muzzle;
     }
 
     public boolean isReload() {

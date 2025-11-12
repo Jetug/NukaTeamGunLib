@@ -4,10 +4,11 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.IHeldAnimation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import mod.azure.azurelib.core.animatable.model.CoreGeoBone;
+
+import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -16,7 +17,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
@@ -33,8 +33,8 @@ public class OneHandedPose implements IHeldAnimation {
         var flip = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT;
         var stack = entity.getItemInHand(InteractionHand.MAIN_HAND);
         var right = hand == InteractionHand.MAIN_HAND;
-        var isNotOneHanded = stack.getItem() instanceof WeaponItem
-                && !GunModifierHelper.getGripType(new GunData(stack, entity)).isOneHanded();
+        var isNotOneHanded = stack.getItem() instanceof IWeapon
+                && !WeaponModifierHelper.getGripType(new WeaponData(stack, entity)).isOneHanded();
 
         if(!right && isNotOneHanded)
             return;

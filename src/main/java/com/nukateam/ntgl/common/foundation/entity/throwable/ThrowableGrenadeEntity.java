@@ -1,7 +1,5 @@
 package com.nukateam.ntgl.common.foundation.entity.throwable;
 
-import com.nukateam.example.common.registery.ModGuns;
-import com.nukateam.ntgl.common.data.config.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.util.world.ExplosionUtils;

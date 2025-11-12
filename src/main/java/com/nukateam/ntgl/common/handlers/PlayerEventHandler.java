@@ -3,12 +3,12 @@ package com.nukateam.ntgl.common.handlers;
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.handler.ClientEquipHandler;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -43,12 +43,12 @@ public class PlayerEventHandler {
             if (movementSpeed != null) {
                 movementSpeed.removeModifier(SPEED_MODIFIER_ID);
 
-                if (heldItem.getItem() instanceof WeaponItem) {
+                if (heldItem.getItem() instanceof IWeapon) {
                     movementSpeed.removeModifier(SPEED_MODIFIER_ID);
                     movementSpeed.addTransientModifier(new AttributeModifier(
                             SPEED_MODIFIER_ID,
                             MOVEMENT_SPEED,
-                            GunModifierHelper.getModifiedMovementSpeed(new GunData(heldItem, player)),
+                            WeaponModifierHelper.getMovementSpeed(new WeaponData(heldItem, player)),
                             AttributeModifier.Operation.MULTIPLY_BASE
                     ));
                 }

@@ -1,14 +1,14 @@
 package com.nukateam.ntgl.common.data.attachment.impl;
 
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 
 /**
- * An attachment class related to stocks. Use {@link #create(IGunModifier...)} to create an get.
+ * An attachment class related to stocks. Use {@link #create(IWeaponModifier...)} to create an get.
  * <p>
  * Author: MrCrayfish
  */
 public class Grip extends Attachment {
-    public Grip(IGunModifier... modifier) {
+    public Grip(IWeaponModifier... modifier) {
         super(modifier);
     }
 
@@ -18,7 +18,7 @@ public class Grip extends Attachment {
      * @param modifier an array of gun modifiers
      * @return a stock get
      */
-    public static Grip create(IGunModifier... modifier) {
+    public static Grip create(IWeaponModifier... modifier) {
         return new Grip(modifier);
     }
 }

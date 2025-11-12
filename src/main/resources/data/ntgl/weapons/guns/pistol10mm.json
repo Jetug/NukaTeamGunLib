@@ -1,0 +1,136 @@
+{
+  "general": {
+    "rate": 4,
+    "action": "ntgl:gun",
+    "fireMode": ["ntgl:auto", "ntgl:semi"],
+    "gripType": "ntgl:one_handed",
+    "loadingType": "ntgl:magazine",
+    "damage" : 10,
+    "maxAmmo": 20,
+    "reloadTime": 30,
+    "reloadAmount": 2,
+    "recoilAngle": 5.0,
+	"recoilKick": 0.3,
+    "recoilAdsReduction": 0.25,
+    "alwaysSpread": true,
+    "spread": 1.0,
+    "melee": true,
+    "ammo": [
+      "ntgl:round10mm",
+      "ntgl:round45"
+    ]
+  },
+  "melee": {
+    "damage": 5,
+    "delay": 5,
+    "cooldown": 1,
+    "distance": 6,
+    "angle": 180,
+    "maxTargets": 0,
+    "knockback": 0.6
+  },
+  "sounds": {
+    "fire": "ntgl:item.pistol10mm.fire",
+    "reload": "ntgl:item.pistol10mm.reload",
+    "cock": "ntgl:item.pistol10mm.cock",
+    "silencedFire": "ntgl:item.pistol10mm.silenced_fire",
+    "enchantedFire": "ntgl:item.pistol10mm.enchanted_fire"
+  },
+  "modules": {
+    "zoom": {
+      "xOffset": 0,
+      "yOffset": 3.7,
+      "zOffset": 0,
+      "fovModifier": 0.9
+    },
+    "attachments": {
+      "ntgl:scope": [
+        {
+          "name": "scope_1",
+          "item": "ntgl:holographic_sight",
+          "xOffset": 0,
+          "yOffset": 10,
+          "zOffset": 0
+        },
+        {
+          "name": "scope_2",
+          "item": "ntgl:collimator_sight"
+        },
+        {
+          "name": "scope_3",
+          "item": "ntgl:placeholder"
+        },
+        {
+          "name": "scope_4",
+          "item": "ntgl:placeholder"
+        },
+        {
+          "name": "scope_5",
+          "item": "ntgl:placeholder"
+        }
+      ],
+      "ntgl:barrel": [
+        {
+          "name": "barrel_1",
+          "item": "ntgl:placeholder"
+        },
+        {
+          "name": "barrel_2",
+          "item": "ntgl:placeholder"
+        },
+        {
+          "name": "barrel_3",
+          "item": "ntgl:placeholder"
+        },
+        {
+          "name": "barrel_4",
+          "item": "ntgl:placeholder"
+        },
+        {
+          "name": "barrel_5",
+          "item": "ntgl:silencer",
+          "hide": ["muzzle_flash"]
+        }
+      ],
+      "ntgl:stock": [
+        {
+          "name": "grip_2",
+          "item": "ntgl:tactical_stock",
+          "hide": ["grip_1"]
+        },
+        {
+          "name": "grip_3",
+          "item": "ntgl:placeholder"
+        },
+        {
+          "name": "grip_4",
+          "item": "ntgl:weighted_stock"
+        }
+      ],
+      "ntgl:magazine":[
+        {
+          "name": "magazine_1",
+          "item": "ntgl:placeholder"
+        },
+        {
+          "name": "magazine_2",
+          "item": "ntgl:extended_magazine"
+        },
+        {
+          "name": "magazine_3",
+          "item": "ntgl:placeholder"
+        },
+        {
+          "name": "magazine_4",
+          "item": "ntgl:drum_magazine"
+        }
+      ],
+      "ntgl:grip": [
+        {
+          "name": "grip",
+          "item": "ntgl:light_grip"
+        }
+      ]
+    }
+  }
+}

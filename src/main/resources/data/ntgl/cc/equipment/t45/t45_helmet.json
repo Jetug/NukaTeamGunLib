@@ -1,0 +1,16 @@
+{
+  "part": "ntgl:head",
+  "chassis": ["ntgl:example_chassis"],
+  "model": "ntgl:geo/power_armor/t45.geo.json",
+  "texture": {
+    "default": "ntgl:textures/power_armor/t45.png"
+  },
+  "hide": ["head_frame"],
+
+  "attachments": [
+    {
+      "frame": "head",
+      "armor": "helmet"
+    }
+  ]
+}

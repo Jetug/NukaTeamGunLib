@@ -3,8 +3,11 @@ package com.nukateam.ntgl.common.util.world;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.config.ExplosionConfig;
+import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.foundation.ModTags;
+import com.nukateam.ntgl.common.util.helpers.compatibility.EffectHelper;
+import com.nukateam.ntgl.common.util.helpers.compatibility.SubtleEffectsHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -27,6 +30,7 @@ import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
@@ -39,7 +43,7 @@ import java.util.List;
 public class ProjectileExplosion extends Explosion {
     private static final ExplosionDamageCalculator DEFAULT_CONTEXT = new ExplosionDamageCalculator();
 
-    private final Level world;
+    private final Level level;
     private final float radius;
     private final Entity exploder;
     private final ExplosionDamageCalculator context;
@@ -51,12 +55,12 @@ public class ProjectileExplosion extends Explosion {
     private final BlockInteraction blockInteraction;
     private final Vec3 pos;
 
-    public ProjectileExplosion(Level world, Entity exploder,
+    public ProjectileExplosion(Level level, Entity exploder,
                                @Nullable DamageSource source,
                                @Nullable ExplosionDamageCalculator context, ExplosionConfig projectile,
                                Vec3 pos, BlockInteraction mode) {
-        super(world, exploder, source, context, pos.x, pos.y, pos.z, projectile.getRadius(), projectile.isCauseFire(), mode);
-        this.world = world;
+        super(level, exploder, source, context, pos.x, pos.y, pos.z, projectile.getRadius(), projectile.isCauseFire(), mode);
+        this.level = level;
         this.causesFire = projectile.isCauseFire();
         this.blockInteraction = mode;
         this.pos = pos;
@@ -68,15 +72,16 @@ public class ProjectileExplosion extends Explosion {
         this.damageDecreaseWithDistance = projectile.isDamageReduceOverDistance();
     }
 
-    public ProjectileExplosion(Level world, Entity exploder, ExplosionConfig projectile,
+    public ProjectileExplosion(Level level, Entity exploder, ExplosionConfig projectile,
                                Vec3 pos, BlockInteraction mode, List<BlockPos> toBlow) {
-        this(world, exploder, null, null, projectile, pos, mode);
+        this(level, exploder, null, null, projectile, pos, mode);
         this.getToBlow().addAll(toBlow);
     }
 
     @Override
     public void explode() {
         destroyBlocks();
+        this.level.gameEvent(this.exploder, GameEvent.EXPLODE, new Vec3(this.pos.x, this.pos.y, this.pos.z));
 
         var diameter = this.radius * 2.0D;
         int minX = Mth.floor(this.pos.x - diameter - 1.0D);
@@ -86,9 +91,9 @@ public class ProjectileExplosion extends Explosion {
         int minZ = Mth.floor(this.pos.z - diameter - 1.0D);
         int maxZ = Mth.floor(this.pos.z + diameter + 1.0D);
 
-        var entities = this.world.getEntities(null, new AABB(minX, minY, minZ, maxX, maxY, maxZ));
+        var entities = this.level.getEntities(null, new AABB(minX, minY, minZ, maxX, maxY, maxZ));
 
-        ForgeEventFactory.onExplosionDetonate(this.world, this, entities, diameter);
+        ForgeEventFactory.onExplosionDetonate(this.level, this, entities, diameter);
 
         for (var entity : entities) {
             if (entity.ignoreExplosion())
@@ -138,22 +143,25 @@ public class ProjectileExplosion extends Explosion {
     }
 
     @Override
-    public void finalizeExplosion(boolean pSpawnParticles) {
-        if (this.world.isClientSide) {
-            this.world.playLocalSound(pos.x, pos.y, pos.z,
+    public void finalizeExplosion(boolean spawnParticles) {
+
+        if (this.level.isClientSide) {
+            this.level.playLocalSound(pos.x, pos.y, pos.z,
                     SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F,
-                    (1.0F + (this.world.random.nextFloat() - this.world.random.nextFloat()) * 0.2F) * 0.7F,
+                    (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F,
                     false);
         }
 
         var interactsWithBlocks = this.interactsWithBlocks();
         var toBlow = (ObjectArrayList<BlockPos>)getToBlow();
 
-        if (pSpawnParticles) {
+        if (spawnParticles) {
+            EffectHelper.doExplosionSplash(level, radius, getPosition());
+
             if (!(this.radius < 2.0F) && interactsWithBlocks) {
-                this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
+                this.level.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
             } else {
-                this.world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
+                this.level.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);
             }
         }
 
@@ -164,17 +172,17 @@ public class ProjectileExplosion extends Explosion {
         if (interactsWithBlocks || canBrakeGlass) {
             var blockDrops = new ObjectArrayList<Pair<ItemStack, BlockPos>>();
             var isPlayer = this.getIndirectSourceEntity() instanceof Player;
-            Util.shuffle(toBlow, this.world.random);
+            Util.shuffle(toBlow, this.level.random);
 
             for(BlockPos blockpos : toBlow) {
-                var blockState = this.world.getBlockState(blockpos);
+                var blockState = this.level.getBlockState(blockpos);
 
                 if (!blockState.isAir() && ((canBrakeGlass && blockState.is(ModTags.Blocks.FRAGILE)) || interactsWithBlocks)) {
                     var immutableBLockPos = blockpos.immutable();
-                    this.world.getProfiler().push("explosion_blocks");
-                    if (blockState.canDropFromExplosion(this.world, blockpos, this)) {
-                        if (this.world instanceof ServerLevel serverLevel) {
-                            var blockEntity = blockState.hasBlockEntity() ? this.world.getBlockEntity(blockpos) : null;
+                    this.level.getProfiler().push("explosion_blocks");
+                    if (blockState.canDropFromExplosion(this.level, blockpos, this)) {
+                        if (this.level instanceof ServerLevel serverLevel) {
+                            var blockEntity = blockState.hasBlockEntity() ? this.level.getBlockEntity(blockpos) : null;
                             var builder = (new LootParams.Builder(serverLevel))
                                     .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockpos))
                                     .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
@@ -192,20 +200,20 @@ public class ProjectileExplosion extends Explosion {
                         }
                     }
 
-                    blockState.onBlockExploded(this.world, blockpos, this);
-                    this.world.getProfiler().pop();
+                    blockState.onBlockExploded(this.level, blockpos, this);
+                    this.level.getProfiler().pop();
                 }
             }
 
             for(Pair<ItemStack, BlockPos> pair : blockDrops) {
-                Block.popResource(this.world, pair.getSecond(), pair.getFirst());
+                Block.popResource(this.level, pair.getSecond(), pair.getFirst());
             }
         }
 
         if (this.causesFire) {
             for(BlockPos blockpos2 : toBlow) {
-                if (this.random.nextInt(2) == 0 && this.world.getBlockState(blockpos2).isAir() && this.world.getBlockState(blockpos2.below()).isSolidRender(this.world, blockpos2.below())) {
-                    this.world.setBlockAndUpdate(blockpos2, BaseFireBlock.getState(this.world, blockpos2));
+                if (this.random.nextInt(2) == 0 && this.level.getBlockState(blockpos2).isAir() && this.level.getBlockState(blockpos2.below()).isSolidRender(this.level, blockpos2.below())) {
+                    this.level.setBlockAndUpdate(blockpos2, BaseFireBlock.getState(this.level, blockpos2));
                 }
             }
         }
@@ -245,22 +253,22 @@ public class ProjectileExplosion extends Explosion {
                         d0 = d0 / d3;
                         d1 = d1 / d3;
                         d2 = d2 / d3;
-                        var f = this.radius * (0.7F + this.world.random.nextFloat() * 0.6F);
+                        var f = this.radius * (0.7F + this.level.random.nextFloat() * 0.6F);
                         var blockX = pos.x;
                         var blockY = pos.y;
                         var blockZ = pos.z;
 
                         for (; f > 0.0F; f -= 0.225F) {
                             var pos = BlockPos.containing(blockX, blockY, blockZ);
-                            var blockState = this.world.getBlockState(pos);
-                            var fluidState = this.world.getFluidState(pos);
-                            var optional = this.context.getBlockExplosionResistance(this, this.world, pos, blockState, fluidState);
+                            var blockState = this.level.getBlockState(pos);
+                            var fluidState = this.level.getFluidState(pos);
+                            var optional = this.context.getBlockExplosionResistance(this, this.level, pos, blockState, fluidState);
 
                             if (optional.isPresent()) {
                                 f -= (optional.get() + 0.3F) * 0.3F;
                             }
 
-                            if (f > 0.0F && this.context.shouldBlockExplode(this, this.world, pos, blockState, f)) {
+                            if (f > 0.0F && this.context.shouldBlockExplode(this, this.level, pos, blockState, f)) {
                                 set.add(pos);
                             }
 

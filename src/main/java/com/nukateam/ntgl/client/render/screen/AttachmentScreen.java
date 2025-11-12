@@ -6,12 +6,13 @@ import com.mojang.math.Axis;
 import com.nukateam.ntgl.*;
 import com.nukateam.ntgl.client.render.screen.widget.*;
 import com.nukateam.ntgl.client.util.ClientDebug;
-import com.nukateam.ntgl.client.util.util.render.ModelRenderUtil;
+import com.nukateam.ntgl.client.util.helpers.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.slot.AttachmentSlot;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.data.Pos2I;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -31,7 +32,7 @@ import net.minecraftforge.fml.ModList;
 import org.lwjgl.glfw.GLFW;
 import java.util.*;
 
-import static com.nukateam.ntgl.client.util.util.render.ModelRenderUtil.*;
+import static com.nukateam.ntgl.client.util.helpers.render.ModelRenderUtil.*;
 import static net.minecraft.network.chat.Component.*;
 
 /**
@@ -93,7 +94,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     public void containerTick() {
         super.containerTick();
         if (this.minecraft != null && this.minecraft.player != null) {
-            if (!(this.minecraft.player.getMainHandItem().getItem() instanceof WeaponItem)) {
+            if (!(this.minecraft.player.getMainHandItem().getItem() instanceof IWeapon)) {
                 Minecraft.getInstance().setScreen(null);
             }
         }
@@ -284,40 +285,6 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         RenderSystem.applyModelViewMatrix();
     }
 
-//    public void renderGun(GuiGraphics graphics, int startX, int startY, int mouseX, int mouseY, ItemStack currentItem) {
-//        var poseStack = RenderSystem.getModelViewStack();
-//        poseStack.pushPose();
-//        {
-////            poseStack.mulPose(Axis.XP.rotation(InputEvents.X));
-////            poseStack.mulPose(Axis.YP.rotation(InputEvents.Y));
-////            poseStack.mulPose(Axis.ZP.rotation(InputEvents.Z));
-//
-////            poseStack.translate(startX + 88, startY + 60, 100);
-//            poseStack.translate(startX, startY, 0);
-////            poseStack.scale(50F, -50F, 50F);
-//
-//            poseStack.translate(InputEvents.X, InputEvents.Y, InputEvents.Z);
-//            RenderSystem.applyModelViewMatrix();
-//
-//            var buffer = minecraft.renderBuffers().bufferSource();
-////            minecraft.getItemRenderer().render(currentItem, ItemDisplayContext.FIXED,
-////                    false, graphics.pose(), buffer, 15728880,
-////                    OverlayTexture.NO_OVERLAY, ModelRenderUtil.getModel(currentItem));
-//
-//            var gun = (WeaponItem)currentItem.getItem();
-//
-//            Minecraft.getInstance().getItemRenderer().renderStatic(currentItem, ItemDisplayContext.NONE, OverlayTexture.NO_OVERLAY,
-//                    15728880, poseStack, buffer, minecraft.level, 0);
-//
-//            gun.getRenderer().render(minecraft.player,currentItem,ItemDisplayContext.FIXED,
-//                    poseStack, buffer, RenderType.solid(), buffer.getBuffer(RenderType.solid()), OverlayTexture.NO_OVERLAY);
-//
-//            buffer.endBatch();
-//        }
-//        poseStack.popPose();
-//        RenderSystem.applyModelViewMatrix();
-//    }
-
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
 //        renderHelp(graphics);
@@ -332,25 +299,6 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int startX = (this.width - this.imageWidth) / 2;
         int startY = (this.height - this.imageHeight) / 2;
-
-//        clickedSlot = getSlotId((int)mouseX, (int)mouseY);
-//
-//        if(clickedSlot != -1 && attachmentButtons.isEmpty()) {
-//            var slot = (AttachmentSlot)menu.getSlot(clickedSlot);
-//            var attachments = findAttachments(playerInventory, slot.getType());
-//
-//            for (int i = 0; i < attachments.size(); i++) {
-//                var slotPos = getAttachmentSlotPos(clickedSlot, i);
-//
-//                this.addWidget(new SlotButton(slotPos.x, slotPos.y, attachments.get(i), (b) -> {
-//                    var stack = ((SlotButton) b).getStack();
-//                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachmentChanged(menu.containerId, stack, getGun()));
-//                }));
-//            }
-//        }
-//        else {
-//            attachmentButtons.clear();
-//        }
 
         if (isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70)) {
             if (!this.mouseGrabbed && (button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {

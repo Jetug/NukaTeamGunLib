@@ -1,18 +1,18 @@
 package com.nukateam.ntgl.common.handlers;
 
-import com.nukateam.example.common.registery.ModGuns;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.foundation.init.NtglGameEvents;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
 import com.nukateam.ntgl.common.util.util.FuelUtils;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,7 +40,7 @@ public class GunEventHandler {
         var entity = event.getEntity();
         var heldItem = entity.getItemInHand(event.getHand());
 
-        if (heldItem.getItem() instanceof WeaponItem) {
+        if (heldItem.getItem() instanceof IWeapon) {
             if(event.getEntity() instanceof Player player && EquipTracker.isEquiping(player, event.getHand())){
                 event.setCanceled(true);
             }
@@ -62,9 +62,9 @@ public class GunEventHandler {
         var heldItem = entity.getItemInHand(event.getHand());
         var tag = heldItem.getTag();
 
-        if (heldItem.getItem() instanceof WeaponItem) {
+        if (heldItem.getItem() instanceof IWeapon) {
             if (heldItem.isDamageableItem() && tag != null) {
-                if (GunStateHelper.hasAmmo(heldItem)) {
+                if (WeaponStateHelper.hasAmmo(heldItem)) {
                     damageGun(heldItem, level, entity);
                 }
                 if (heldItem.getDamageValue() >= (heldItem.getMaxDamage() / 1.5)) {
@@ -75,7 +75,7 @@ public class GunEventHandler {
             if(!event.isClient()){
                 PacketHandler.sendAnimation(entity, event.getHand(), AnimationType.FIRE);
 
-                if(!GunModifierHelper.isSilencedFire(new GunData(heldItem, entity))){
+                if(!WeaponModifierHelper.isSilencedFire(new WeaponData(heldItem, entity))){
                     NtglGameEvents.gunshotEvent(level, entity);
                     level.gameEvent(entity, GameEvent.PROJECTILE_SHOOT, entity.blockPosition());
                 }
@@ -101,7 +101,7 @@ public class GunEventHandler {
             }
 
             if (currentDamage == maxDamage) {
-                GunModifierHelper.getGun(heldItem).playCockSound(shooter);
+                WeaponModifierHelper.getConfig(new WeaponData(heldItem, shooter)).playCockSound(shooter);
                 return true;
             }
         }
@@ -127,7 +127,7 @@ public class GunEventHandler {
 
 //    public static void ejectCasing(Level level, LivingEntity livingEntity) {
 //        var heldItem = livingEntity.getMainHandItem();
-//        var gun = ((WeaponItem) heldItem.getItem()).getModifiedGun(heldItem);
+//        var gun = ((WeaponItem) heldItem.getItem()).getModifiedConfig(heldItem);
 //
 //        var lookVec = livingEntity.getLookAngle(); //Get the player's look vector
 //        var rightVec = new Vec3(-lookVec.z, 0, lookVec.x).normalize();

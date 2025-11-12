@@ -1,9 +1,9 @@
 package com.nukateam.ntgl.common.util.util;
 
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
-import com.nukateam.ntgl.common.util.helpers.compatibility.BackpackHelper;
+import com.nukateam.ntgl.common.util.helpers.compatibility.backpack.BackpackHelper;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import net.minecraft.resources.ResourceLocation;
@@ -134,18 +134,18 @@ public class InventoryUtil {
         return new AmmoContext(ammo, null);
     }
 
-    public static IAmmoContext findAmmo(AmmoHolder ammoHandler, GunData data) {
-        if (data.shooter instanceof Player player) {
+    public static IAmmoContext findAmmo(AmmoHolder ammoHandler, WeaponData data) {
+        if (data.wielder instanceof Player player) {
             var context = findPlayerAmmo(player, ammoHandler);
 
             if(context == AmmoContext.NONE){
-                var set = GunModifierHelper.getAmmoItems(data);
+                var set = WeaponModifierHelper.getAmmoItems(data);
                 for (var value: set) {
-                    if(!value.equals(ammoHandler.getId()) && GunStateHelper.getAmmoCount(data) == 0){
+                    if(!value.equals(ammoHandler.getId()) && WeaponStateHelper.getAmmoCount(data) == 0){
                         ammoHandler = value;
                         context = findPlayerAmmo(player, ammoHandler);
                         if(context != AmmoContext.NONE) {
-                            GunStateHelper.setCurrentAmmo(data, ammoHandler.getId());
+                            WeaponStateHelper.setCurrentAmmo(data, ammoHandler.getId());
                             return context;
                         }
                     }
@@ -157,27 +157,27 @@ public class InventoryUtil {
     }
 
     public static IAmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
-        var data = new GunData(weapon, entity);
-        var ammoHandler = GunStateHelper.getCurrentAmmo(data);
+        var data = new WeaponData(weapon, entity);
+        var ammoHandler = WeaponStateHelper.getCurrentAmmo(data);
 
         return findAmmo(ammoHandler, data);
     }
 
     public static IAmmoContext findMagazine(LivingEntity entity, ItemStack weapon) {
-        var data = new GunData(weapon, entity);
-        var ammoHandler = GunStateHelper.getCurrentAmmo(data);
+        var data = new WeaponData(weapon, entity);
+        var ammoHandler = WeaponStateHelper.getCurrentAmmo(data);
 
         if (entity instanceof Player player) {
             var context = findPlayerMagazine(player, ammoHandler);
 
             if(context == AmmoContext.NONE){
-                var set = GunModifierHelper.getAmmoItems(data);
+                var set = WeaponModifierHelper.getAmmoItems(data);
                 for (var value: set) {
-                    if(!value.equals(ammoHandler) && GunStateHelper.getAmmoCount(data) == 0){
+                    if(!value.equals(ammoHandler) && WeaponStateHelper.getAmmoCount(data) == 0){
                         ammoHandler = value;
                         context = findPlayerMagazine(player, ammoHandler);
                         if(context != AmmoContext.NONE) {
-                            GunStateHelper.setCurrentAmmo(data, ammoHandler.getId());
+                            WeaponStateHelper.setCurrentAmmo(data, ammoHandler.getId());
                             return context;
                         }
                     }

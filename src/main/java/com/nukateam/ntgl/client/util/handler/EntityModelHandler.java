@@ -1,10 +1,9 @@
 package com.nukateam.ntgl.client.util.handler;
 
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -17,34 +16,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  * Author: MrCrayfish
  */
 public class EntityModelHandler {
-    /*@SubscribeEvent
-    public void onRenderEntity(PlayerModelEvent.Render.Post event)
-    {
-        PoseStack poseStack = event.getPoseStack();
-        Player player = event.getPlayer();
-        ItemStack heldItem = player.getOffhandItem();
-        if(!heldItem.isEmpty() && heldItem.getItem() instanceof WeaponItem)
-        {
-            poseStack.pushPose();
-            Gun gun = ((WeaponItem) heldItem.getItem()).getModifiedGun(heldItem);
-            if(gun.getGeneral().getGripType().getHeldAnimation().applyOffhandTransforms(player, event.getPlayerModel(), heldItem, poseStack, event.getDeltaTicks()))
-            {
-                MultiBufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-                GunRenderingHandler.get().renderWeapon(player, heldItem, ItemDisplayContext.FIXED, poseStack, buffer, event.getLight(), event.getDeltaTicks());
-            }
-            poseStack.popPose();
-        }
-    }*/
-
     @SubscribeEvent
     public void onRenderEntityPre(RenderLivingEvent.Pre<LivingEntity, EntityModel<LivingEntity>> event) {
         var entity = event.getEntity();
         var heldItem = entity.getMainHandItem();
-        var isHumanoidModel = true;//event.getRenderer().getModel() instanceof HumanoidModel<LivingEntity>;
 
         if (heldItem.getItem() instanceof INtglItem) {
-            var heldAnimation = GunStateHelper
-                    .getGripType(new GunData(heldItem, entity))
+            var heldAnimation = WeaponModifierHelper.getGripType(new WeaponData(heldItem, entity))
                     .getHeldAnimation();
 
             var aimProgress = AimingHandler.get()
@@ -62,18 +40,18 @@ public class EntityModelHandler {
     @SubscribeEvent
     public void onRenderEntityPost(RenderLivingEvent.Post<LivingEntity, EntityModel<LivingEntity>> event) {
         /* Makes sure the model part positions reset back to original definitions */
-        var model = event.getRenderer().getModel();
-        boolean slim = event.getEntity() instanceof AbstractClientPlayer player
-                && player.getModelName().equals("slim");
+//        var model = event.getRenderer().getModel();
+//        boolean slim = event.getEntity() instanceof AbstractClientPlayer player
+//                && player.getModelName().equals("slim");
 
-        if(model instanceof HumanoidModel<LivingEntity> humanoidModel) {
-            humanoidModel.rightArm.x = -5.0F;
-            humanoidModel.rightArm.y = slim ? 2.5F : 2.0F;
-            humanoidModel.rightArm.z = 0.0F;
-            humanoidModel.leftArm.x = 5.0F;
-            humanoidModel.leftArm.y = slim ? 2.5F : 2.0F;
-            humanoidModel.leftArm.z = 0.0F;
-        }
+//        if(model instanceof HumanoidModel<LivingEntity> humanoidModel) {
+//            humanoidModel.rightArm.x = -5.0F;
+//            humanoidModel.rightArm.y = slim ? 2.5F : 2.0F;
+//            humanoidModel.rightArm.z = 0.0F;
+//            humanoidModel.leftArm.x = 5.0F;
+//            humanoidModel.leftArm.y = slim ? 2.5F : 2.0F;
+//            humanoidModel.leftArm.z = 0.0F;
+//        }
 
         /*model.head.x = 5.0F;
         model.leftArm.y = slim ? 2.5F : 2.0F;

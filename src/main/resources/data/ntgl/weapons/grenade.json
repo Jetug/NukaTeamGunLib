@@ -1,0 +1,39 @@
+{
+  "general": {
+    "damage": 40.0,
+    "action": "ntgl:throw",
+    "gripType": "ntgl:one_handed",
+    "equipTime": 15
+  },
+  "throwable": {
+    "mode": [
+      "ntgl:safe",
+      "ntgl:unsafe"
+    ],
+    "prepareTime": 15,
+    "throwTime": 6,
+
+    "ammoData":{
+      "ammo": {
+        "type": "ntgl:explosive"
+      },
+      "projectile": {
+        "damage": 10.0,
+        "size": 1.0,
+        "speed": 50.0,
+        "life": 80,
+        "gravity": true,
+
+        "explosion": {
+          "damage": 40,
+          "radius": 4,
+          "knockback": 0.5
+        }
+      }
+    }
+  },
+  "sounds": {
+    "throw": "ntgl:item.shotgun.fire",
+    "pin": "ntgl:item.shotgun.reload"
+  }
+}

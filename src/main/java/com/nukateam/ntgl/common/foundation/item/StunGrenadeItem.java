@@ -10,13 +10,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
 
-public class StunGrenadeItem extends ThrowableItem {
+public class StunGrenadeItem extends WeaponItem {
     public StunGrenadeItem(Item.Properties properties) {
         super(properties);
     }
 
     @Override
-    public ThrowableGrenadeEntity<StunGrenadeItem> create(Level world, LivingEntity entity, int timeLeft) {
+    protected ThrowableGrenadeEntity<StunGrenadeItem> createThrowable(Level world, LivingEntity entity, int timeLeft) {
         return new StunGrenadeEntity<>(world, entity, this, 20 * 2);
     }
 

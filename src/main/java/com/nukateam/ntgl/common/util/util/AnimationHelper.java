@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.common.util.util;
 
-import mod.azure.azurelib.cache.AzureLibCache;
-import mod.azure.azurelib.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.core.animation.Animation;
-import mod.azure.azurelib.core.animation.AnimationState;
-import mod.azure.azurelib.model.GeoModel;
+import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.GeoModel;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -66,7 +66,7 @@ public class AnimationHelper<T extends GeoAnimatable> {
 
     @Nullable
     public Animation getAnimation(String animationName){
-        var map = AzureLibCache.getBakedAnimations();
+        var map = GeckoLibCache.getBakedAnimations();
         var animationResource = model.getAnimationResource(animatable);
         var bakedAnimations = map.get(animationResource);
         return bakedAnimations.animations().get(animationName);

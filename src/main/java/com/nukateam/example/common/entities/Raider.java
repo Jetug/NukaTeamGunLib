@@ -30,11 +30,11 @@ public class Raider extends PathfinderMob implements IGunUser {
             SynchedEntityData.defineId(Raider.class, EntityDataSerializers.INT);
 
     private final WeaponItem[] guns = new WeaponItem[]{
-//            ModGuns.PISTOL10MM.get(),
-//            ModGuns.PIPE_REVOLVER.get(),
-//            ModGuns.PIPE_PISTOL.get(),
-//            ModGuns.SCOUT10MM.get(),
-//            ModGuns.MINIGUN.get(),
+//            ExampleWeapons.PISTOL10MM.get(),
+//            ExampleWeapons.PIPE_REVOLVER.get(),
+//            ExampleWeapons.PIPE_PISTOL.get(),
+//            ExampleWeapons.SCOUT10MM.get(),
+//            ExampleWeapons.MINIGUN.get(),
     };
 
     public Raider(EntityType<? extends PathfinderMob> entityType, Level pLevel) {
@@ -101,7 +101,7 @@ public class Raider extends PathfinderMob implements IGunUser {
 
     @Override
     public void performRangedAttack(LivingEntity pTarget, float pVelocity) {
-        GunAttackGoal.shoot(this, true);
+        GunAttackGoal.shoot(this, InteractionHand.MAIN_HAND);
     }
 
     public ResourceLocation getTexture() {

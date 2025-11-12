@@ -1,14 +1,17 @@
 package com.nukateam.ntgl.client.util.handler;
 
 
-import com.nukateam.ntgl.client.util.util.PropertyHelper;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
-import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.example.common.registery.ExampleWeapons;
+import com.nukateam.ntgl.client.input.NtglKeyBinds;
+import com.nukateam.ntgl.client.util.helpers.PropertyHelper;
+import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.holders.WeaponAction;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAim;
@@ -41,13 +44,12 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import static com.nukateam.ntgl.common.util.util.GunStateHelper.isOneHanded;
-
 /**
  * Author: MrCrayfish
  */
 public class AimingHandler {
     private static AimingHandler instance;
+    private WeaponData weaponData = new WeaponData(new ItemStack(ExampleWeapons.CLASSIC10MM.get()), null);
 
     public static AimingHandler get() {
         if (instance == null) {
@@ -62,19 +64,18 @@ public class AimingHandler {
     private double normalisedAdsProgress;
     private boolean aiming = false;
 
-    private AimingHandler() {
-    }
+    private AimingHandler() {}
 
     public static boolean isAiming(ItemStack gun) {
         var minecraft = Minecraft.getInstance();
         var progress = get().getAimProgress(minecraft.player, minecraft.getFrameTime());
-        return gun.getItem() instanceof WeaponItem
+        return gun.getItem() instanceof IWeapon
                 && get().isAiming()
                 && progress == 1;
     }
 
     public static boolean isScoping(ItemStack gun) {
-        return AimingHandler.isAiming(gun) && GunStateHelper.hasScopeOverlay(gun);
+        return AimingHandler.isAiming(gun) && WeaponStateHelper.hasScopeOverlay(gun);
     }
 
     @SubscribeEvent
@@ -86,7 +87,11 @@ public class AimingHandler {
         var tracker = getAimTracker(player);
 
         if (tracker != null) {
-            tracker.handleAiming(player, player.getItemInHand(InteractionHand.MAIN_HAND));
+            var heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
+            if(heldItem.getItem() instanceof IWeapon){
+                var weaponData = new WeaponData(heldItem, player);
+                tracker.handleAiming(weaponData);
+            }
             if (!tracker.isAiming()) {
                 this.aimingMap.remove(player);
             }
@@ -124,23 +129,29 @@ public class AimingHandler {
         if (event.phase != TickEvent.Phase.START)
             return;
 
-        Player player = Minecraft.getInstance().player;
-        if (player == null)
+        if (Minecraft.getInstance().player == null) {
             return;
-
-        if (this.isAiming()) {
-            if (!this.aiming) {
-                ModSyncedDataKeys.AIMING.setValue(player, true);
-                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAim(true));
-                this.aiming = true;
-            }
-        } else if (this.aiming) {
-            ModSyncedDataKeys.AIMING.setValue(player, false);
-            PacketHandler.getPlayChannel().sendToServer(new C2SMessageAim(false));
-            this.aiming = false;
         }
 
-        this.localTracker.handleAiming(player, player.getItemInHand(InteractionHand.MAIN_HAND));
+        var player = Minecraft.getInstance().player;
+        var heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
+        if(heldItem.getItem() instanceof IWeapon) {
+            weaponData = new WeaponData(heldItem, player);
+
+            if (this.isAiming()) {
+                if (!this.aiming) {
+                    ModSyncedDataKeys.AIMING.setValue(player, true);
+                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageAim(true));
+                    this.aiming = true;
+                }
+            } else if (this.aiming) {
+                ModSyncedDataKeys.AIMING.setValue(player, false);
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAim(false));
+                this.aiming = false;
+            }
+
+            this.localTracker.handleAiming(weaponData);
+        }
     }
 
     @SubscribeEvent
@@ -148,12 +159,13 @@ public class AimingHandler {
         if (!GunRenderingHandler.get().getUsedConfiguredFov())
             return;
 
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.player.getMainHandItem().isEmpty() || mc.options.getCameraType() != CameraType.FIRST_PERSON)
+        var mc = Minecraft.getInstance();
+        if (mc.player == null || mc.player.getMainHandItem().isEmpty()
+                || mc.options.getCameraType() != CameraType.FIRST_PERSON)
             return;
 
         var heldItem = mc.player.getMainHandItem();
-        if (!(heldItem.getItem() instanceof WeaponItem weaponItem))
+        if (!(heldItem.getItem() instanceof IWeapon))
             return;
 
         if (AimingHandler.get().getNormalisedAdsProgress() == 0)
@@ -162,13 +174,13 @@ public class AimingHandler {
         if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player))
             return;
 
-        var modifiedGun = weaponItem.getModifiedGun(heldItem);
+        var zoom = WeaponModifierHelper.getZoom(weaponData);
 
-        if (modifiedGun.getModules().getZoom() == null)
+        if (zoom == null)
             return;
 
-        double time = PropertyHelper.getSightAnimations(heldItem).getFovCurve().apply(this.normalisedAdsProgress);
-        float modifier = GunStateHelper.getFovModifier(heldItem, modifiedGun);
+        var time = PropertyHelper.getSightAnimations(heldItem).getFovCurve().apply(this.normalisedAdsProgress);
+        var modifier = WeaponStateHelper.getFovModifier(weaponData);
         modifier = (1.0F - modifier) * (float) time;
         event.setFOV(event.getFOV() - event.getFOV() * modifier);
     }
@@ -190,6 +202,10 @@ public class AimingHandler {
         return this.aiming;
     }
 
+    public WeaponData getWeaponData() {
+        return weaponData;
+    }
+
     public boolean isAiming() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.player.isSpectator()) return false;
@@ -199,23 +215,23 @@ public class AimingHandler {
         var mainHandItem = mc.player.getMainHandItem();
         var offhandItem = mc.player.getOffhandItem();
 
-        if (!(mainHandItem.getItem() instanceof WeaponItem))
+        if (!(mainHandItem.getItem() instanceof IWeapon))
             return false;
 
-        var mainOneHanded = isOneHanded(new GunData(mainHandItem, mc.player));
-        var offOneHanded = isOneHanded(new GunData(offhandItem, mc.player));
+        var mainOneHanded = WeaponModifierHelper.isOneHanded(new WeaponData(mainHandItem, mc.player));
+        var offOneHanded = WeaponModifierHelper.isOneHanded(new WeaponData(offhandItem, mc.player));
 
         if(!mainHandItem.isEmpty() && !offhandItem.isEmpty() && mainOneHanded && offOneHanded)
             return false;
 
-        var gun = ((WeaponItem) mainHandItem.getItem()).getModifiedGun(mainHandItem);
+        var gun = ((IWeapon)mainHandItem.getItem()).getModifiedConfig(mainHandItem);
 
-        if (!gun.canAimDownSight())
-            return false;
+//        if (!gun.canAimDownSight())
+//            return false;
 
-        if (mc.player.getOffhandItem().getItem() == Items.SHIELD
-                && GunStateHelper.isOneHanded(new GunData(mainHandItem, mc.player)))
-            return false;
+        if (mc.player.getOffhandItem().getItem() == Items.SHIELD) {
+            if (WeaponModifierHelper.isOneHanded(new WeaponData(mainHandItem, mc.player))) return false;
+        }
 
         if (!this.localTracker.isAiming() && this.isLookingAtInteractableBlock())
             return false;
@@ -223,21 +239,65 @@ public class AimingHandler {
         if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player))
             return false;
 
-        if(mainHandItem.getItem() instanceof WeaponItem && offhandItem.getItem() instanceof WeaponItem) {
-            var off =  GunModifierHelper.getGripType(new GunData(offhandItem, mc.player));
+        if(mainHandItem.getItem() instanceof IWeapon && offhandItem.getItem() instanceof IWeapon) {
+            var off =  WeaponModifierHelper.getGripType(new WeaponData(offhandItem, mc.player));
             if(off.isOneHanded()) {
                 return false;
             }
             return false;
         }
 
-        boolean zooming = mc.options.keyUse.isDown();
+//        this.weaponData = new WeaponData(mainHandItem, mc.player);
 
-        if (Ntgl.controllableLoaded) {
-            zooming |= ControllerHandler.isAiming();
+        return isAimKeyDown(weaponData);
+
+//        boolean zooming = mc.options.keyUse.isDown();
+//
+//        if (Ntgl.controllableLoaded) {
+//            zooming |= ControllerHandler.isAiming();
+//        }
+//
+//        return zooming;
+    }
+
+    private boolean isAimKeyDown(WeaponData data) {
+        var mc = Minecraft.getInstance();
+//        var zooming = mc.options.keyUse.isDown();
+//
+//        if (Ntgl.controllableLoaded) {
+//            zooming |= ControllerHandler.isAiming();
+//        }
+
+        if(mc.options.keyAttack.isDown()) {
+            data.setWeaponMode(WeaponMode.PRIMARY);
+            if(isScopeAction(data)) {
+                return true;
+            }
+        }
+        if(mc.options.keyUse.isDown()) {
+            data.setWeaponMode(WeaponMode.SECONDARY);
+            if(isScopeAction(data)) {
+                return true;
+            }
+        }
+        if(NtglKeyBinds.KEY_ADD_ATTACK.isDown()) {
+            data.setWeaponMode(WeaponMode.ADDITIONAL);
+            if(isScopeAction(data)) {
+                return true;
+            }
+        }
+        if(NtglKeyBinds.KEY_ALT_ATTACK.isDown()) {
+            data.setWeaponMode(WeaponMode.ALTERNATIVE);
+            if(isScopeAction(data)) {
+                return true;
+            }
         }
 
-        return zooming;
+        return Ntgl.controllableLoaded && ControllerHandler.isAiming();
+    }
+
+    private static boolean isScopeAction(WeaponData data) {
+        return WeaponModifierHelper.getWeaponAction(data) == WeaponAction.SCOPE;
     }
 
     public boolean isLookingAtInteractableBlock() {
@@ -263,14 +323,18 @@ public class AimingHandler {
         private double currentAim;
         private double previousAim;
 
-        private void handleAiming(Player player, ItemStack heldItem) {
-            if(!(heldItem.getItem() instanceof WeaponItem))
+        private void handleAiming(WeaponData weaponData) {
+            assert weaponData.weapon != null && weaponData.wielder instanceof Player;
+            var heldItem = weaponData.weapon;
+            var player = (Player)weaponData.wielder;
+
+            if(!(heldItem.getItem() instanceof IWeapon))
                 return;
-            var gunData = new GunData(heldItem, player);
+
             this.previousAim = this.currentAim;
             if (ModSyncedDataKeys.AIMING.getValue(player) || (player.isLocalPlayer() && AimingHandler.this.isAiming())) {
                 if (this.currentAim < MAX_AIM_PROGRESS) {
-                    var speed = GunModifierHelper.getModifiedAimDownSightSpeed(gunData);
+                    var speed = WeaponModifierHelper.getModifiedAimDownSightSpeed(weaponData);
                     this.currentAim += speed;
                     if (this.currentAim > MAX_AIM_PROGRESS) {
                         this.currentAim = (int) MAX_AIM_PROGRESS;
@@ -278,7 +342,7 @@ public class AimingHandler {
                 }
             } else {
                 if (this.currentAim > 0) {
-                    var speed = GunModifierHelper.getModifiedAimDownSightSpeed(gunData);
+                    var speed = WeaponModifierHelper.getModifiedAimDownSightSpeed(weaponData);
                     this.currentAim -= speed;
                     if (this.currentAim < 0) {
                         this.currentAim = 0;

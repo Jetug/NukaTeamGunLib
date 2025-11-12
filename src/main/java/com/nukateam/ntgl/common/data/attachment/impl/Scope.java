@@ -4,7 +4,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.debug.screen.widget.DebugSlider;
-import com.nukateam.ntgl.common.util.interfaces.IGunModifier;
+import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 /**
  * An attachment class related to scopes. Scopes need to at least specify the additional zoom (or fov)
  * they provide and the y-offset to the center of the scope for them to render correctly. Use
- * {@link #create(float, double, IGunModifier...)} to create an get.
+ * {@link #create(float, double, IWeaponModifier...)} to create an get.
  * <p>
  * Author: MrCrayfish
  */
@@ -34,14 +34,14 @@ public class Scope extends Attachment implements IEditorMenu {
     private Scope() {
     }
 
-    private Scope(float additionalZoom, double reticleOffset, IGunModifier... modifier) {
+    private Scope(float additionalZoom, double reticleOffset, IWeaponModifier... modifier) {
         super(modifier);
         this.aimFovModifier = 1.0F;
         this.additionalZoom = additionalZoom;
         this.reticleOffset = reticleOffset;
     }
 
-    private Scope(float aimFovModifier, float additionalZoom, double reticleOffset, boolean stable, double viewFinderDist, ResourceLocation overlayTexture, IGunModifier... modifiers) {
+    private Scope(float aimFovModifier, float additionalZoom, double reticleOffset, boolean stable, double viewFinderDist, ResourceLocation overlayTexture, IWeaponModifier... modifiers) {
         super(modifiers);
         this.aimFovModifier = aimFovModifier;
         this.additionalZoom = additionalZoom;
@@ -186,7 +186,7 @@ public class Scope extends Attachment implements IEditorMenu {
      * @return a scope get
      */
     @Deprecated(since = "1.3.0", forRemoval = true)
-    public static Scope create(float additionalZoom, double centerOffset, IGunModifier... modifiers) {
+    public static Scope create(float additionalZoom, double centerOffset, IWeaponModifier... modifiers) {
         // -1 to indicate that it should use the default fov
         return new Scope(additionalZoom, centerOffset, modifiers);
     }
@@ -202,7 +202,7 @@ public class Scope extends Attachment implements IEditorMenu {
         private boolean stable = false;
         private double viewFinderDist = 0.0;
         private ResourceLocation overlayTexture = null;
-        private IGunModifier[] modifiers = new IGunModifier[]{};
+        private IWeaponModifier[] modifiers = new IWeaponModifier[]{};
 
         private Builder() {
         }
@@ -272,7 +272,7 @@ public class Scope extends Attachment implements IEditorMenu {
             return this;
         }
 
-        public Builder modifiers(IGunModifier... modifiers) {
+        public Builder modifiers(IWeaponModifier... modifiers) {
             this.modifiers = modifiers;
             return this;
         }

@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.data.properties;
 
-import com.nukateam.ntgl.client.util.util.Easings;
+import com.nukateam.ntgl.client.util.helpers.Easings;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.debug.IDebugWidget;

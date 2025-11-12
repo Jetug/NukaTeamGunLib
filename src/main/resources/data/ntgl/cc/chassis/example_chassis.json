@@ -1,0 +1,10 @@
+{
+  "parts": [
+    "ntgl:head"     ,
+    "ntgl:body"     ,
+    "ntgl:left_arm" ,
+    "ntgl:right_arm",
+    "ntgl:left_leg" ,
+    "ntgl:right_leg"
+  ]
+}

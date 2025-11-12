@@ -1,0 +1,29 @@
+{
+  "part": "ntgl:right_arm",
+  "chassis": ["ntgl:example_chassis"],
+  "model": "ntgl:geo/power_armor/t45.geo.json",
+  "texture": {
+    "default": "ntgl:textures/power_armor/t45.png"
+  },
+
+  "hide": ["right_upper_arm_frame", "right_forearm_frame"],
+
+  "attachments": [
+    {
+      "frame": "body_top",
+      "armor": "right_shoulder_armor"
+    },
+    {
+      "frame": "right_arm",
+      "armor": "right_upper_arm_armor"
+    },
+    {
+      "frame": "right_lower_arm",
+      "armor": "right_forearm_armor"
+    },
+    {
+      "frame": "right_lower_arm_pov",
+      "armor": "pov_right_forearm_armor"
+    }
+  ]
+}

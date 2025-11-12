@@ -24,8 +24,8 @@ public class ClientEvents {
 
      @SubscribeEvent
      public static void registerHud(RegisterGuiOverlaysEvent event){
-         event.registerAboveAll("ammo", GunHud.AMMO_HUD);
-         event.registerAboveAll("throwable", ThrowableHud.AMMO_HUD);
+         event.registerAboveAll("ammo", WeaponHud.AMMO_HUD);
+//         event.registerAboveAll("throwable", ThrowableHud.AMMO_HUD);
          event.registerAboveAll("debug", DebugHud.DEBUG_HUD);
          event.registerBelowAll("scope", ScopeHud.SCOPE_HUD);
      }

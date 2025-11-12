@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.client.registry;
 
-import com.nukateam.ntgl.client.util.util.PlayerAnimations;
+import com.nukateam.ntgl.client.util.helpers.PlayerAnimations;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 
 public class AnimationRegistry {

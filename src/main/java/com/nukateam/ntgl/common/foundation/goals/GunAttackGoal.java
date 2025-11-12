@@ -1,14 +1,17 @@
 package com.nukateam.ntgl.common.foundation.goals;
 
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
+
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.trackers.EntityReloadTracker;
 import com.nukateam.ntgl.common.util.interfaces.IGunUser;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -43,7 +46,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
     }
 
     private boolean isHoldingGun() {
-        return this.mob.isHolding(is -> is.getItem() instanceof WeaponItem);
+        return this.mob.isHolding(is -> is.getItem() instanceof IWeapon);
     }
 
     /**
@@ -114,7 +117,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
 
         this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
 
-        if (GunStateHelper.hasAmmo(mob.getGun())) {
+        if (WeaponStateHelper.hasAmmo(mob.getGun())) {
             mob.performRangedAttack(target, 1);
         }
         else if(!EntityReloadTracker.isReloading(mob)) {
@@ -143,16 +146,16 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
         var msg = new C2SMessageShoot(mob.getId(),
                 mob.getViewYRot(1),
                 mob.getViewXRot(1),
-                0, 0, true);
+                0, 0, InteractionHand.MAIN_HAND, WeaponMode.PRIMARY);
 
         ServerPlayHandler.handleShoot(msg, mob);
     }
 
-    public static void shoot(LivingEntity shooter, boolean isRightHand){
+    public static void shoot(LivingEntity shooter, InteractionHand hand){
         var msg = new C2SMessageShoot(shooter.getId(),
                 shooter.getViewYRot(1),
                 shooter.getViewXRot(1),
-                0, 0, isRightHand);
+                0, 0, hand, WeaponMode.PRIMARY);
 
         ServerPlayHandler.handleShoot(msg, shooter);
     }

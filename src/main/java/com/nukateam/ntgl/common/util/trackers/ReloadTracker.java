@@ -1,22 +1,20 @@
 package com.nukateam.ntgl.common.util.trackers;
 
-import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.event.GunReloadEvent;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.data.constants.Tags;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageReload;
-import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -31,8 +29,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import static com.nukateam.ntgl.common.util.util.LivingEntityUtils.getInteractionHand;
-
 /**
  * Author: MrCrayfish
  */
@@ -46,8 +42,7 @@ public class ReloadTracker {
     private int slot = 0;
     private final InteractionHand arm;
     private final ItemStack weapon;
-    private final WeaponItem weaponItem;
-    private final Gun gun;
+    private final WeaponConfig weaponConfig;
 
     public int reloadTick;
     public boolean isStart = false;
@@ -57,21 +52,21 @@ public class ReloadTracker {
         this.startTick = entity.tickCount;
         this.arm = arm;
         this.weapon = entity.getItemInHand(arm);
-        this.weaponItem = ((WeaponItem) weapon.getItem());
-        this.gun = weaponItem.getModifiedGun(weapon);
+        var weaponItem = (IWeapon)weapon.getItem();
+        this.weaponConfig = weaponItem.getModifiedConfig(weapon);
         this.shooter = entity;
 
         if(entity instanceof Player player) {
             this.slot = arm == InteractionHand.MAIN_HAND ? player.getInventory().selected : Inventory.SLOT_OFFHAND;
         }
 
-        var data = new GunData(weapon, entity);
-        reloadTick = GunModifierHelper.getReloadTime(data);
+        var data = new WeaponData(weapon, entity);
+        reloadTick = WeaponModifierHelper.getReloadTime(data);
 
-        var loadingType = GunModifierHelper.getLoadingType(data);
+        var loadingType = WeaponModifierHelper.getLoadingType(data);
         if(loadingType == LoadingType.PER_CARTRIDGE){
             ModSyncedDataKeys.RELOAD_START.setValue(entity, true);
-            reloadTick = GunModifierHelper.getReloadStart(data);
+            reloadTick = WeaponModifierHelper.getReloadStart(data);
             isStart = true;
         }
 
@@ -128,18 +123,12 @@ public class ReloadTracker {
     }
 
     private boolean isWeaponFull() {
-        var data = new GunData(weapon, shooter);
-        return GunStateHelper.getAmmoCount(data) >= GunEnchantmentHelper.getAmmoCapacity(data);
+        var data = new WeaponData(weapon, shooter);
+        return WeaponStateHelper.getAmmoCount(data) >= WeaponModifierHelper.getMaxAmmo(data);
     }
 
     private boolean hasNoAmmo(LivingEntity player) {
         return !InventoryUtil.hasAmmo(player, weapon);
-    }
-
-    private boolean canReload(Player player) {
-        int deltaTicks = player.tickCount - this.startTick;
-        int interval = GunEnchantmentHelper.getReloadInterval(this.weapon);
-        return deltaTicks > 0 && deltaTicks % interval == 0;
     }
 
     private static void addOrDropStack(Player player, ItemStack usedMagazine) {
@@ -176,9 +165,9 @@ public class ReloadTracker {
     private static void handTick(LivingEntity shooter, InteractionHand arm) {
         if (addTracker(shooter, arm)) return;
         var tracker = RELOAD_TRACKER_MAP.get(shooter);
-        var data = new GunData(tracker.weapon, shooter);
-        var loadingType = GunModifierHelper.getLoadingType(data);
-        final var gun = tracker.gun;
+        var data = new WeaponData(tracker.weapon, shooter);
+        var loadingType = WeaponModifierHelper.getLoadingType(data);
+        final var gun = tracker.weaponConfig;
         var isSameWeapon = !tracker.isSameWeapon(shooter);
         var isWeaponFull = tracker.isWeaponFull();
         var hasNoAmmo    = tracker.hasNoAmmo(shooter);
@@ -217,7 +206,7 @@ public class ReloadTracker {
                         else {
                             tracker.isEnd = true;
                             ModSyncedDataKeys.RELOAD_END.setValue(shooter, true);
-                            tracker.reloadTick = GunModifierHelper.getReloadEnd(data);
+                            tracker.reloadTick = WeaponModifierHelper.getReloadEnd(data);
                         }
                     }
                     else resetTracker(tracker, data);
@@ -227,10 +216,10 @@ public class ReloadTracker {
     }
 
     private void reloadMagazine(LivingEntity entity) {
-        var data = new GunData(weapon, entity);
+        var data = new WeaponData(weapon, entity);
 
         if(entity instanceof Player player && !player.isCreative()) {
-            if(GunStateHelper.getProjectileConfig(data).isMagazineMode()){
+            if(WeaponStateHelper.getProjectileConfig(data).isMagazineMode()){
                 addMagazine(entity);
             }
             else{
@@ -238,25 +227,25 @@ public class ReloadTracker {
             }
         }
         else {
-            GunStateHelper.setMaxAmmo(data);
+            WeaponStateHelper.setMaxAmmo(data);
         }
     }
 
     private void addCartridge(LivingEntity entity) {
-        var gunData = new GunData(weapon, shooter);
-        var reloadAmount = GunModifierHelper.getReloadAmount(gunData);
+        var gunData = new WeaponData(weapon, shooter);
+        var reloadAmount = WeaponModifierHelper.getReloadAmount(gunData);
 
         if(entity instanceof Player player && !player.isCreative()) {
             addAmmo(entity, reloadAmount);
         }
         else {
-            GunStateHelper.addAmmo(gunData, reloadAmount);
+            WeaponStateHelper.addAmmo(gunData, reloadAmount);
         }
     }
 
     private void addAmmo(LivingEntity entity) {
-        var data = new GunData(weapon, entity);
-        var amount = GunModifierHelper.getMaxAmmo(data);
+        var data = new WeaponData(weapon, entity);
+        var amount = WeaponModifierHelper.getMaxAmmo(data);
 
         while (isNotReloaded(entity)){
             addAmmo(entity, amount);
@@ -267,21 +256,21 @@ public class ReloadTracker {
         var context = InventoryUtil.findAmmo(entity, weapon);
         var ammo = context.stack();
 
-        var data = new GunData(weapon, entity);
-        var ammoHandler = GunStateHelper.getCurrentAmmo(data);
+        var data = new WeaponData(weapon, entity);
+        var ammoHandler = WeaponStateHelper.getCurrentAmmo(data);
 
         if (!ammo.isEmpty()) {
             var tag = this.weapon.getTag();
             var value = ammoHandler.getValue(ammo);
-            var currentAmount = GunStateHelper.getAmmoCount(data);
+            var currentAmount = WeaponStateHelper.getAmmoCount(data);
 
             amount = Math.min(ammo.getCount() * value, amount);
 
             if (tag != null) {
-                var gunData = new GunData(weapon, shooter);
-                var maxAmmo = GunEnchantmentHelper.getAmmoCapacity(gunData);
+                var gunData = new WeaponData(weapon, shooter);
+                var maxAmmo = WeaponModifierHelper.getMaxAmmo(gunData);
                 amount = Math.min(amount, maxAmmo - tag.getInt(Tags.AMMO_COUNT));
-                GunStateHelper.addAmmo(gunData, amount);
+                WeaponStateHelper.addAmmo(gunData, amount);
             }
 
             context.shrink(amount, ammoHandler, entity);
@@ -289,11 +278,11 @@ public class ReloadTracker {
     }
 
     private boolean isNotReloaded(LivingEntity entity) {
-        var data = new GunData(weapon, entity);
+        var data = new WeaponData(weapon, entity);
         var tag = this.weapon.getTag();
         var hasAmmo = InventoryUtil.hasAmmo(entity, weapon);
-        var ammoCount = GunStateHelper.getAmmoCount(data);
-        var ammoCapacity = GunEnchantmentHelper.getAmmoCapacity(data);
+        var ammoCount = WeaponStateHelper.getAmmoCount(data);
+        var ammoCapacity = WeaponModifierHelper.getMaxAmmo(data);
         return hasAmmo && ammoCount < ammoCapacity;
     }
 
@@ -303,22 +292,22 @@ public class ReloadTracker {
 //        var tag = this.weapon.getTag();
 //
 //        return !InventoryUtil.findAmmo(entity, weapon).stack().isEmpty() &&
-//                tag.getInt(Tags.AMMO_COUNT) < GunEnchantmentHelper.getAmmoCapacity(data);
+//                tag.getInt(Tags.AMMO_COUNT) < WeaponModifierHelper.getMaxAmmo(data);
 //    }
 
     private void addMagazine(LivingEntity entity) {
-        var data = new GunData(weapon, entity);
-        var ammoHolder = GunStateHelper.getCurrentAmmo(data);
+        var data = new WeaponData(weapon, entity);
+        var ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
         var context = InventoryUtil.findMagazine(entity, weapon);
         var ammo = context.stack();
 
         if (!ammo.isEmpty()) {
             var amount = StackUtils.getDurability(ammo);
             var tag = this.weapon.getTag();
-            amount = Math.min(GunModifierHelper.getMaxAmmo(data), amount);
+            amount = Math.min(WeaponModifierHelper.getMaxAmmo(data), amount);
 
             if (tag != null) {
-                var maxAmmo = GunEnchantmentHelper.getAmmoCapacity(data);
+                var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
                 var currentAmmo = tag.getInt(Tags.AMMO_COUNT);
 
                 if(currentAmmo > 0 && ammoHolder.canReturnAmmo()) {
@@ -334,8 +323,8 @@ public class ReloadTracker {
         }
     }
 
-    private static void resetTracker(ReloadTracker tracker, GunData data) {
-        tracker.reloadTick = GunModifierHelper.getReloadTime(data);
+    private static void resetTracker(ReloadTracker tracker, WeaponData data) {
+        tracker.reloadTick = WeaponModifierHelper.getReloadTime(data);
     }
 
     public static void startReloading(LivingEntity entity, InteractionHand arm){
@@ -357,7 +346,7 @@ public class ReloadTracker {
         var gunItem = entity.getItemInHand(arm).getItem();
 
         if (!RELOAD_TRACKER_MAP.containsKey(entity)) {
-            if (!(gunItem instanceof WeaponItem)) {
+            if (!(gunItem instanceof IWeapon)) {
                 reloadKey.setValue(entity, false);
                 return true;
             }
@@ -366,9 +355,9 @@ public class ReloadTracker {
         return false;
     }
 
-    private static void stopReloading(GunData data, Gun gun, InteractionHand hand) {
+    private static void stopReloading(WeaponData data, WeaponConfig weaponConfig, InteractionHand hand) {
         var reloadKey = ModSyncedDataKeys.getReloadKey(hand);
-        var entity = data.shooter;
+        var entity = data.wielder;
         RELOAD_TRACKER_MAP.remove(entity);
         reloadKey.setValue(entity, false);
         final var finalPlayer = entity;
@@ -378,11 +367,11 @@ public class ReloadTracker {
         var oppositeStack = entity.getItemInHand(oppositeHand);
 
         if (hand == InteractionHand.MAIN_HAND
-                && oppositeStack.getItem() instanceof WeaponItem
-                && !GunModifierHelper.isWeaponFull(new GunData(oppositeStack, entity))) {
+                && oppositeStack.getItem() instanceof IWeapon
+                && !WeaponModifierHelper.isWeaponFull(new WeaponData(oppositeStack, entity))) {
             PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) entity, new S2CMessageReload(true, oppositeHand));
         }
 
-        MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post((ServerPlayer)entity, data.gun, hand));
+        MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post((ServerPlayer)entity, data.weapon, hand));
     }
 }

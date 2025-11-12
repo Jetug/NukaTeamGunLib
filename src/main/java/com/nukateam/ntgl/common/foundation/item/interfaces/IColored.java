@@ -135,7 +135,7 @@ public interface IColored {
 
     static boolean isDyeable(ItemStack stack) {
         if (stack.getItem() instanceof IColored colored) {
-            return colored.canColor(stack) || Config.SERVER.experimental.forceDyeableAttachments.get();
+            return colored.canColor(stack);
         }
         return false;
     }

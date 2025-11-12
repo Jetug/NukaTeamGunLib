@@ -14,17 +14,17 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.util.util.GunStateHelper;
-import com.nukateam.ntgl.modules.enchantment.GunEnchantmentHelper;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -80,18 +80,18 @@ public class ControllerHandler {
         var player = Minecraft.getInstance().player;
         if (player != null) {
             var heldItem = player.getMainHandItem();
-            if (heldItem.getItem() instanceof WeaponItem) {
+            if (heldItem.getItem() instanceof IWeapon) {
                 actions.put(GunButtonBindings.AIM, new Action(Component.translatable("ntgl.action.aim"), Action.Side.RIGHT));
                 actions.put(GunButtonBindings.SHOOT, new Action(Component.translatable("ntgl.action.shoot"), Action.Side.RIGHT));
 
                 var tag = heldItem.getTag();
-                var data = new GunData(heldItem, player);
+                var data = new WeaponData(heldItem, player);
 
-                if (tag != null && GunStateHelper.getAmmoCount(data) < GunEnchantmentHelper.getAmmoCapacity(data)) {
+                if (tag != null && WeaponStateHelper.getAmmoCount(data) < WeaponModifierHelper.getMaxAmmo(data)) {
                     actions.put(GunButtonBindings.RELOAD, new Action(Component.translatable("ntgl.action.reload"), Action.Side.LEFT));
                 }
 
-                Scope scope = GunStateHelper.getScope(heldItem);
+                Scope scope = WeaponStateHelper.getScope(heldItem);
                 if (scope != null && scope.isStable() && AimingHandler.get().isAiming()) {
                     actions.put(GunButtonBindings.STEADY_AIM, new Action(Component.translatable("ntgl.action.steady_aim"), Action.Side.RIGHT));
                 }
@@ -103,12 +103,12 @@ public class ControllerHandler {
         var player = Minecraft.getInstance().player;
         if (player != null) {
             var heldItem = player.getMainHandItem();
-            if (heldItem.getItem() instanceof WeaponItem && AimingHandler.get().isAiming()) {
+            if (heldItem.getItem() instanceof IWeapon && AimingHandler.get().isAiming()) {
                 double adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
                 yawSpeed.set(10.0F * (float) adsSensitivity);
                 pitchSpeed.set(7.5F * (float) adsSensitivity);
 
-                var scope = GunStateHelper.getScope(heldItem);
+                var scope = WeaponStateHelper.getScope(heldItem);
                 var controller = Controllable.getController();
                 if (scope != null && scope.isStable() && controller != null && controller.isButtonPressed(GunButtonBindings.STEADY_AIM.getButton())) {
                     yawSpeed.set(yawSpeed.get() / 2.0F);
@@ -129,11 +129,11 @@ public class ControllerHandler {
         if (player != null && world != null && Minecraft.getInstance().screen == null) {
             var heldItem = player.getMainHandItem();
 
-            if (heldItem.getItem() instanceof WeaponItem) {
+            if (heldItem.getItem() instanceof IWeapon) {
                 if (isEquals(originalButton, GunButtonBindings.SHOOT)) {
                     shouldCancel = true;
                     if (state) {
-                        ShootingHandler.get().fire(player, heldItem);
+                        ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponMode(WeaponMode.PRIMARY));
                     }
                 } else if (isEquals(originalButton, GunButtonBindings.AIM)) {
                     shouldCancel = true;
@@ -159,19 +159,13 @@ public class ControllerHandler {
                     shouldCancel = true;
                     ClientActions.switchFireMode(hand);
                 }
-            } else if (heldItem.getItem() instanceof IThrowable){
-                if (isEquals(originalButton, GunButtonBindings.SELECT_FIRE)) {
-                    shouldCancel = true;
-                    ClientActions.switchThrowMode(hand);
-                }
             }
-
         }
         return shouldCancel;
     }
 
     @SubscribeEvent
-    public void onRender(TickEvent.RenderTickEvent event) {
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
         var controller = Controllable.getController();
         var mc = Minecraft.getInstance();
         var player = mc.player;
@@ -182,11 +176,11 @@ public class ControllerHandler {
 
         if (controller.isButtonPressed(GunButtonBindings.SHOOT.getButton()) && Minecraft.getInstance().screen == null) {
             var heldItem = player.getMainHandItem();
-            var gunData = new GunData(heldItem, player);
+            var gunData = new WeaponData(heldItem, player);
 
-            if (heldItem.getItem() instanceof WeaponItem) {
-                if (GunModifierHelper.isAuto(gunData)) {
-                    ShootingHandler.get().fire(player, heldItem);
+            if (heldItem.getItem() instanceof IWeapon) {
+                if (WeaponModifierHelper.isAuto(gunData)) {
+                    ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponMode(WeaponMode.PRIMARY));
                 }
             }
         }

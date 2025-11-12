@@ -1,31 +1,32 @@
 package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 
-/**
- * Author: MrCrayfish
- */
 public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
     private int shooterId;
     private float rotationYaw;
     private float rotationPitch;
     private float randP;
     private float randY;
-    private boolean isMainHand;
+    private InteractionHand hand;
+    WeaponMode action;
 
     public C2SMessageShoot() {}
 
-    public C2SMessageShoot(int shooterId, float yaw, float pitch, float randP, float randY, boolean isMainHand) {
+    public C2SMessageShoot(int shooterId, float yaw, float pitch, float randP, float randY, InteractionHand hand, WeaponMode action) {
         this.shooterId = shooterId;
         this.rotationPitch = pitch;
         this.rotationYaw = yaw;
         this.randP = randP;
         this.randY = randY;
-        this.isMainHand = isMainHand;
+        this.hand = hand;
+        this.action = action;
     }
 
     @Override
@@ -35,7 +36,8 @@ public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
         buffer.writeFloat(messageShoot.rotationPitch);
         buffer.writeFloat(messageShoot.randP);
         buffer.writeFloat(messageShoot.randY);
-        buffer.writeBoolean(messageShoot.isMainHand);
+        buffer.writeEnum(messageShoot.hand);
+        buffer.writeUtf(messageShoot.action.toString());
     }
 
     @Override
@@ -46,7 +48,8 @@ public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
                 buffer.readFloat(),
                 buffer.readFloat(),
                 buffer.readFloat(),
-                buffer.readBoolean());
+                buffer.readEnum(InteractionHand.class),
+                WeaponMode.getType(buffer.readUtf()));
     }
 
     @Override
@@ -63,8 +66,12 @@ public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
         supplier.setHandled(true);
     }
 
-    public boolean isMainHand() {
-        return isMainHand;
+    public InteractionHand getHand() {
+        return hand;
+    }
+
+    public WeaponMode getMode() {
+        return action;
     }
 
     public float getRotationYaw() {

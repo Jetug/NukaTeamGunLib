@@ -14,9 +14,7 @@ public class ProjectileType extends ResourceHolder {
     public static ProjectileType TESLA   = new ProjectileType("tesla"  );
     public static ProjectileType FIRE    = new ProjectileType("fire"  );
     public static ProjectileType CONTINUOUS_LASER = new ProjectileType("continuous_laser");
-
-    public static ProjectileType THROWABLE = new ProjectileType("throwable");
-
+    public static ProjectileType ARROW_LIKE = new ProjectileType("arrow_like");
 
     private static final Map<ResourceLocation, ProjectileType> typeMap = new HashMap<>();
 
@@ -29,6 +27,7 @@ public class ProjectileType extends ResourceHolder {
         registerType(TESLA);
         registerType(FIRE );
         registerType(CONTINUOUS_LASER);
+        registerType(ARROW_LIKE);
     }
 
     public ProjectileType(ResourceLocation id) {

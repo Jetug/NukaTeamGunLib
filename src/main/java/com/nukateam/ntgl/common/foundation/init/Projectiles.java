@@ -14,9 +14,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.BiFunction;
 
-/**
- * Author: MrCrayfish
- */
 public class Projectiles {
     public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(Registries.ENTITY_TYPE, Ntgl.MOD_ID);
 
@@ -72,8 +69,18 @@ public class Projectiles {
                 .setTrackingRange(0)
                 .noSummon()
                 .fireImmune()
-//                .noSave()
                 .setShouldReceiveVelocityUpdates(false)
+                .setCustomClientFactory((spawnEntity, world) -> null)
                 .build(id));
+    }
+
+    private static <T extends Entity> RegistryObject<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function) {
+        return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
+                .sized(0.25F, 0.25F)
+                .setTrackingRange(100)
+                .setUpdateInterval(1)
+                .noSummon()
+                .fireImmune()
+                .setShouldReceiveVelocityUpdates(true).build(id));
     }
 }

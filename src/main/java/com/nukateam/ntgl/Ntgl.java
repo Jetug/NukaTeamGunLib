@@ -2,19 +2,19 @@ package com.nukateam.ntgl;
 
 import com.mojang.logging.LogUtils;
 import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
+import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.example.common.registery.EntityTypes;
 import com.nukateam.example.common.registery.*;
 import com.nukateam.ntgl.client.handlers.ClientHandler;
+import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.MetaLoader;
-import com.nukateam.ntgl.client.settings.GunOptions;
 import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
-import com.nukateam.ntgl.client.input.KeyBinds;
-import com.nukateam.ntgl.common.data.holders.AmmoHolders;
+import com.nukateam.ntgl.client.input.NtglKeyBinds;
+import com.nukateam.ntgl.common.registry.AmmoHolders;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.datagen.*;
-import com.nukateam.ntgl.common.regestry.ProjectileRegistry;
-import com.nukateam.ntgl.modules.enchantment.EnchantmentModule;
+import com.nukateam.ntgl.common.registry.ProjectileRegistry;
 import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.foundation.init.*;
@@ -47,11 +47,13 @@ public class Ntgl {
 
     public static boolean controllableLoaded = false;
     public static boolean backpackedLoaded = false;
-    public static boolean chassisCoreLoaded = false;
     public static boolean sophisticatedLoaded = false;
+    public static boolean travelersLoaded = false;
+    public static boolean yyzBackpackLoaded = false;
     public static boolean curiosLoaded = false;
     public static boolean playerReviveLoaded = false;
     public static boolean playerAnimatorLoaded = false;
+    public static boolean subtleEffectsLoaded = false;
 
     public Ntgl(IEventBus MOD_EVENT_BUS, ModContainer container) {
         container.registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
@@ -65,7 +67,7 @@ public class Ntgl {
             ModItemTabs.register(MOD_EVENT_BUS);
         }
 
-        ModGuns.register(MOD_EVENT_BUS);
+        ExampleWeapons.register(MOD_EVENT_BUS);
         ModRecipeType.REGISTER.register(MOD_EVENT_BUS);
         ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
         ModRecipeSerializers.REGISTER.register(MOD_EVENT_BUS);
@@ -79,21 +81,25 @@ public class Ntgl {
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             FrameworkClientAPI.registerDataLoader(MetaLoader.getInstance());
-            MOD_EVENT_BUS.addListener(KeyBinds::registerKeyMappings);
+            MOD_EVENT_BUS.addListener(NtglKeyBinds::registerKeyMappings);
             MOD_EVENT_BUS.addListener(CrosshairHandler::onConfigReload);
             MOD_EVENT_BUS.addListener(ClientHandler::onRegisterReloadListener);
         }
 
         GunPackModule.init(MOD_EVENT_BUS);
-        EnchantmentModule.init(MOD_EVENT_BUS);
-
+        NtglGameEvents.register(MOD_EVENT_BUS);
+        new ChassisCore(MOD_EVENT_BUS);
+//        TravelersBackpack
+        curiosLoaded = ModList.get().isLoaded("curios");
         controllableLoaded = ModList.get().isLoaded("controllable");
         backpackedLoaded = ModList.get().isLoaded("backpacked");
-        chassisCoreLoaded = ModList.get().isLoaded("chassis_core");
         sophisticatedLoaded = ModList.get().isLoaded("sophisticatedbackpacks");
+        travelersLoaded = ModList.get().isLoaded("travelersbackpack");
+        yyzBackpackLoaded = ModList.get().isLoaded("yyzsbackpack");
+
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
         playerAnimatorLoaded = ModList.get().isLoaded("playeranimator");
-        curiosLoaded = ModList.get().isLoaded("curios");
+        subtleEffectsLoaded = ModList.get().isLoaded("subtle_effects");
 
         AmmoHolders.register();
         AnimationType.register();
@@ -104,8 +110,8 @@ public class Ntgl {
         return !FMLEnvironment.production;
     }
 
-    public static GunOptions getOptions() {
-        return GunOptions.getInstance();
+    public static NtglOptions getOptions() {
+        return NtglOptions.getInstance();
     }
 
     public static ResourceLocation ntglResource(String name) {

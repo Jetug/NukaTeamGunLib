@@ -1,14 +1,10 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.CampfireBlock;
@@ -16,6 +12,7 @@ import net.minecraft.world.level.block.CandleBlock;
 import net.minecraft.world.level.block.CandleCakeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.function.Predicate;
@@ -28,16 +25,13 @@ public class FlameProjectile extends ProjectileEntity {
         super(entityType, worldIn);
     }
 
-    public FlameProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, LivingEntity shooter, ItemStack weapon, WeaponItem item, Gun modifiedGun) {
-        super(entityType, worldIn, shooter, weapon, item, modifiedGun);
+    public FlameProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, WeaponData data) {
+        super(entityType, worldIn, data);
     }
 
-    public float getBlockFireChance(){
-        return GROUND_FIRE_CHANCE;
-    }
-
-    public float getEntityFireChance(){
-        return ENTITY_FIRE_CHANCE;
+    @Override
+    public void tick() {
+        super.tick();
     }
 
     @Override
@@ -59,42 +53,36 @@ public class FlameProjectile extends ProjectileEntity {
     }
 
     @Override
-    protected void onHitEntity(Entity entity, Vec3 hitVec, Vec3 startVec, Vec3 endVec, boolean headshot) {
-        super.onHitEntity(entity, hitVec, startVec, endVec, headshot);
-        if(random.nextFloat() <= getEntityFireChance())
-            entity.setRemainingFireTicks(20);
+    protected boolean removeOnHit(HitTarget hitTarget) {
+        return true;
     }
 
     @Override
-    protected void onHitBlock(BlockState blockstate, BlockPos blockpos, Direction face, double x, double y, double z) {
-//        super.onHitBlock(blockstate, blockpos, face, x, y, z);
-
+    protected void onHitBlock(BlockHitResult hitResult, BlockState blockState) {
+        var blockPos = hitResult.getBlockPos();
+        var face = hitResult.getDirection();
         if(random.nextFloat() <= getBlockFireChance()) {
-            if (!CampfireBlock.canLight(blockstate) && !CandleBlock.canLight(blockstate) && !CandleCakeBlock.canLight(blockstate)) {
-                var blockpos1 = blockpos.relative(face);
+            if (!CampfireBlock.canLight(blockState) && !CandleBlock.canLight(blockState) && !CandleCakeBlock.canLight(blockState)) {
+                var relative = blockPos.relative(face);
 
-                if (BaseFireBlock.canBePlacedAt(level(), blockpos1, face)) {
-                    var blockstate1 = BaseFireBlock.getState(level(), blockpos1);
-                    level().setBlock(blockpos1, blockstate1, 11);
+                if (BaseFireBlock.canBePlacedAt(level(), relative, face)) {
+                    var blockstate1 = BaseFireBlock.getState(level(), relative);
+                    level().setBlock(relative, blockstate1, 11);
 
                 }
             } else {
-                level().setBlock(blockpos, blockstate.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)), 11);
+                level().setBlock(blockPos, blockState.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)), 11);
             }
         }
+
+        super.onHitBlock(hitResult, blockState);
     }
 
-    @Override
-    public void tick() {
-        if(isInWater()) {
-            this.remove(RemovalReason.KILLED);
-        }
-        super.tick();
+    protected float getBlockFireChance(){
+        return GROUND_FIRE_CHANCE;
     }
 
-    //
-//    @Override
-//    public void onExpired() {
-//        createExplosion(this, Config.COMMON.missiles.explosionRadius.get().floatValue(), false);
-//    }
+    protected float getEntityFireChance(){
+        return ENTITY_FIRE_CHANCE;
+    }
 }

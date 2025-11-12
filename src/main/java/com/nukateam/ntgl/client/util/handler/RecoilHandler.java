@@ -1,10 +1,11 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.data.GunData;
-import com.nukateam.ntgl.common.util.util.GunModifierHelper;
+import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
+
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
@@ -13,6 +14,8 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -36,6 +39,7 @@ public class RecoilHandler {
     private float gunRecoilRandom;
     private float cameraRecoil;
     private float progressCameraRecoil;
+    private Map<InteractionHand, WeaponData> weaponData = new HashMap<>();
 
     private RecoilHandler() {
     }
@@ -49,13 +53,15 @@ public class RecoilHandler {
             return;
 
         var heldItem = event.getStack();
-        var gunItem = (WeaponItem) heldItem.getItem();
-        var modifiedGun = gunItem.getModifiedGun(heldItem);
-        var data = new GunData(heldItem, event.getEntity());
-        var recoilModifier = 1.0F - GunModifierHelper.getRecoilModifier(data);
+        var gunItem = (IWeapon) heldItem.getItem();
+        var modifiedGun = gunItem.getModifiedConfig(heldItem);
+        var data = event.getGunData();
+        weaponData.put(event.getHand(), data);
+        var recoilModifier = 1.0F - WeaponModifierHelper.getRecoilModifier(data);
 
         recoilModifier *= this.getAdsRecoilReduction(modifiedGun);
-        this.cameraRecoil = modifiedGun.getGeneral().getRecoilAngle() * recoilModifier;
+        var recoilAngle = WeaponModifierHelper.getRecoilAngle(data);
+        this.cameraRecoil = recoilAngle * recoilModifier;
         this.progressCameraRecoil = 0F;
         this.gunRecoilRandom = random.nextFloat();
         this.lastRandPitch = random.nextFloat();
@@ -99,11 +105,11 @@ public class RecoilHandler {
             return;
 
         var heldItem = event.getItemStack();
-        if (!(heldItem.getItem() instanceof WeaponItem weaponItem))
+        if (!(heldItem.getItem() instanceof IWeapon weaponItem))
             return;
 
-        var modifiedGun = weaponItem.getModifiedGun(heldItem);
-        var cooldown = ShootingHandler.get().getCooldownPercent(Minecraft.getInstance().player, event.getHand());
+        var modifiedGun = weaponItem.getModifiedConfig(heldItem);
+        var cooldown = ClientShootingHandler.get().getCooldownPercent(Minecraft.getInstance().player, event.getHand());
         var recoilDurationOffset = modifiedGun.getGeneral().getRecoilDurationOffset();
 
         cooldown = cooldown >= recoilDurationOffset ?
@@ -116,11 +122,12 @@ public class RecoilHandler {
             this.gunRecoilNormal = amount < 0.5 ? 2 * amount * amount : -1 + (4 - 2 * amount) * amount;
         }
 
-        this.gunRecoilAngle = modifiedGun.getGeneral().getRecoilAngle();
+        var data = weaponData.getOrDefault(event.getHand(), new WeaponData(heldItem, Minecraft.getInstance().player));
+        this.gunRecoilAngle = WeaponModifierHelper.getRecoilAngle(data);
     }
 
-    public double getAdsRecoilReduction(Gun gun) {
-        return 1.0 - gun.getGeneral().getRecoilAdsReduction() * AimingHandler.get().getNormalisedAdsProgress();
+    public double getAdsRecoilReduction(WeaponConfig weaponConfig) {
+        return 1.0 - weaponConfig.getGeneral().getRecoilAdsReduction() * AimingHandler.get().getNormalisedAdsProgress();
     }
 
     public double getGunRecoilNormal() {

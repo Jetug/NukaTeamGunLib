@@ -20,7 +20,6 @@ public class Config
         public final Display display;
         public final Particle particle;
         public final Controls controls;
-        public final Experimental experimental;
         public final ModConfigSpec.BooleanValue hideConfigButton;
         public final ModConfigSpec.EnumValue<ButtonAlignment> buttonAlignment;
 
@@ -32,7 +31,6 @@ public class Config
                 this.display = new Display(builder);
                 this.particle = new Particle(builder);
                 this.controls = new Controls(builder);
-                this.experimental = new Experimental(builder);
             }
             builder.pop();
             this.hideConfigButton = builder.comment("If enabled, hides the config button from the backpack screen").define("hideConfigButton", false);
@@ -50,7 +48,6 @@ public class Config
         public final ModConfigSpec.BooleanValue playSoundWhenCritical;
         public final ModConfigSpec.ConfigValue<String> criticalSound;
         public final ModConfigSpec.DoubleValue impactSoundDistance;
-//        public final ModConfigSpec.DoubleValue gunVolume;
 
         public Sounds(ModConfigSpec.Builder builder)
         {
@@ -147,17 +144,6 @@ public class Config
         }
     }
 
-    public static class Experimental
-    {
-        public Experimental(ModConfigSpec.Builder builder)
-        {
-            builder.comment("Experimental options").push("experimental");
-            {
-            }
-            builder.pop();
-        }
-    }
-
     /**
      * Common config options
      */
@@ -166,8 +152,6 @@ public class Config
         public final Gameplay gameplay;
         public final Network network;
         public final AggroMobs aggroMobs;
-        public final Missiles missiles;
-        public final Grenades grenades;
         public final StunGrenades stunGrenades;
         public final ProjectileSpread projectileSpread;
 
@@ -178,8 +162,6 @@ public class Config
                 this.gameplay = new Gameplay(builder);
                 this.network = new Network(builder);
                 this.aggroMobs = new AggroMobs(builder);
-                this.missiles = new Missiles(builder);
-                this.grenades = new Grenades(builder);
                 this.stunGrenades = new StunGrenades(builder);
                 this.projectileSpread = new ProjectileSpread(builder);
             }
@@ -440,7 +422,6 @@ public class Config
         public final ModConfigSpec.DoubleValue reloadMaxDistance;
         public final ModConfigSpec.BooleanValue enableCameraRecoil;
         public final ModConfigSpec.IntValue cooldownThreshold;
-        public final Experimental experimental;
 
         public Server(ModConfigSpec.Builder builder)
         {
@@ -465,22 +446,8 @@ public class Config
 
                 this.enableCameraRecoil = builder.comment("If true, enables camera recoil when firing a weapon").define("enableCameraRecoil", true);
                 this.cooldownThreshold = builder.comment("The maximum amount of cooldown time remaining before the server will accept another shoot packet from a client. This allows for a litle slack since the server may be lagging").defineInRange("cooldownThreshold", 0, 75, 1000);
-
-                this.experimental = new Experimental(builder);
             }
             builder.pop();
-        }
-
-        public static class Experimental
-        {
-            public final ModConfigSpec.BooleanValue forceDyeableAttachments;
-
-            public Experimental(ModConfigSpec.Builder builder)
-            {
-                builder.push("experimental");
-                this.forceDyeableAttachments = builder.comment("Forces all attachments to be dyeable regardless if they have an affect on the model. This is useful if your server uses custom models for attachments and the models have dyeable elements").define("forceDyeableAttachments", false);
-                builder.pop();
-            }
         }
     }
 

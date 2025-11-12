@@ -1,31 +1,26 @@
 package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.client.util.*;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.util.handler.*;
-import com.nukateam.ntgl.client.util.util.PlayerAnimations;
-import com.nukateam.ntgl.common.data.holders.AnimationType;
+import com.nukateam.ntgl.common.util.helpers.compatibility.EffectHelper;
 import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
-import com.nukateam.ntgl.modules.datapack.managers.NetworkGrenadeManager;
-import com.nukateam.ntgl.modules.datapack.managers.NetworkGunManager;
+import com.nukateam.ntgl.modules.datapack.managers.NetworkWeaponManager;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.particles.*;
 import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.*;
 import net.minecraft.core.particles.*;
-import net.minecraft.network.protocol.PacketUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.*;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
@@ -34,6 +29,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.createDeathEffectClient;
+import static com.nukateam.ntgl.common.util.helpers.compatibility.SubtleEffectsHelper.doSplashEffect;
 
 /**
  * Author: MrCrayfish
@@ -43,9 +39,6 @@ public class ClientPlayHandler {
         var mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null)
             return;
-
-        if (message.showMuzzleFlash())
-            GunRenderingHandler.get().showMuzzleFlashForPlayer(message.getShooterId());
 
         if (message.getShooterId() == mc.player.getId()) {
             mc.getSoundManager().play(new SimpleSoundInstance(message.getId(), SoundSource.PLAYERS,
@@ -67,35 +60,11 @@ public class ClientPlayHandler {
         var world = Minecraft.getInstance().level;
         if (world != null) {
             for (int i = 0; i < 10; i++) {
+                var pos = message.getPos();
                 world.addParticle(
                         ModParticleTypes.BLOOD.get(), true,
-                        message.getX(), message.getY(), message.getZ(),
+                        pos.x(), pos.y(), pos.z(),
                         0.5, 0, 0.5);
-            }
-        }
-    }
-
-    public static void handleMessageBulletTrail(S2CMessageBulletTrail message) {
-        var world = Minecraft.getInstance().level;
-        if (world != null) {
-            var entityIds = message.getEntityIds();
-            var positions = message.getPositions();
-            var motions = message.getMotions();
-            var item = message.getItem();
-            var trailColor = message.getTrailColor();
-            var trailLengthMultiplier = message.getTrailLengthMultiplier();
-            var life = message.getLife();
-            var gravity = message.getGravity();
-            var shooterId = message.getShooterId();
-            var enchanted = message.isEnchanted();
-            var data = message.getParticleData();
-
-            for (int i = 0; i < message.getCount(); i++) {
-                BulletTrailRenderingHandler.get().add(
-                        new BulletTrail(entityIds[i], positions[i], motions[i],
-                                item, trailColor, trailLengthMultiplier, life,
-                                gravity, shooterId, enchanted, data)
-                );
             }
         }
     }
@@ -156,15 +125,16 @@ public class ClientPlayHandler {
         var mc = Minecraft.getInstance();
         var world = mc.level;
 
-        if (world != null) {
-            var state = world.getBlockState(message.getPos());
-            var holeX = message.getX() + 0.005 * message.getFace().getStepX();
-            var holeY = message.getY() + 0.005 * message.getFace().getStepY();
-            var holeZ = message.getZ() + 0.005 * message.getFace().getStepZ();
-            var distance = Math.sqrt(mc.player.distanceToSqr(message.getX(), message.getY(), message.getZ()));
+        if (world != null && mc.player != null) {
+            var state = world.getBlockState(message.getBlockPos());
+            var hitPos = message.getHitPos();
+            var holeX = hitPos.x + 0.005 * message.getFace().getStepX();
+            var holeY = hitPos.y + 0.005 * message.getFace().getStepY();
+            var holeZ = hitPos.z + 0.005 * message.getFace().getStepZ();
+            var distance = Math.sqrt(mc.player.distanceToSqr(message.getHitPos()));
 
             world.addParticle(
-                    new BulletHoleData(message.getFace(), message.getPos()),
+                    new BulletHoleData(message.getFace(), message.getBlockPos()),
                     false, holeX, holeY, holeZ, 0, 0, 0
             );
 
@@ -175,19 +145,17 @@ public class ClientPlayHandler {
                     motion.add(getRandomDir(world.random), getRandomDir(world.random), getRandomDir(world.random));
 
                     world.addParticle(
-                            new BlockParticleOption(ParticleTypes.BLOCK, state),
-                            false, message.getX(), message.getY(),
-                            message.getZ(), motion.x, motion.y, motion.z);
+                            new BlockParticleOption(ParticleTypes.BLOCK, state), false,
+                            hitPos.x, hitPos.y, hitPos.z,
+                            motion.x, motion.y, motion.z
+                    );
                 }
             }
 
             if (distance <= Config.CLIENT.sounds.impactSoundDistance.get()) {
-//                float volume = (float) (1.0F - (distance / Config.CLIENT.sounds.impactSoundDistance.get()));
-//                volume = Math.max(volume, 0.0F);
-
-                world.playLocalSound(message.getX(), message.getY(), message.getZ(),
+                world.playLocalSound(hitPos.x(), hitPos.y(), hitPos.z(),
                         state.getSoundType().getBreakSound(), SoundSource.BLOCKS,
-                        1.0F, 2.0F, false);
+                        0.8F, 2.0F, false);
             }
         }
     }
@@ -217,6 +185,20 @@ public class ClientPlayHandler {
         mc.getSoundManager().play(SimpleSoundInstance.forUI(event, 1.0F, 0.8F + world.random.nextFloat() * 0.2F));
     }
 
+    public static void handleProjectileHitFluid(S2CMessageProjectileHitFluid message) {
+        var level = Minecraft.getInstance().level;
+        var projectile = level.getEntity(message.getProjectileId());
+
+//        if(projectile instanceof ProjectileEntity projectileEntity){
+//            projectileEntity.setPos(message.getBlockPos());
+//            projectileEntity.doSplashEffect(message);
+//        }
+//        else
+        if(Ntgl.subtleEffectsLoaded){
+            EffectHelper.doSplashEffect(message.getPos(), message.getSize(), message.getSpeed(), message.isInLava());
+        }
+    }
+
     @Nullable
     private static SoundEvent getHitSound(boolean critical, boolean headshot, boolean player) {
         if (critical) {
@@ -235,12 +217,8 @@ public class ClientPlayHandler {
         return null;
     }
 
-    public static void handleRemoveProjectile(S2CMessageRemoveProjectile message) {
-        BulletTrailRenderingHandler.get().remove(message.getEntityId());
-    }
-
-    public static void handleUpdateGuns(S2CMessageUpdateGuns message) {
-        NetworkGunManager.updateRegisteredGuns(message);
+    public static void handleUpdateWeapons(S2CMessageUpdateWeapons message) {
+        NetworkWeaponManager.updateRegisteredWeapons(message);
     }
 
     public static void handleUpdateAmmo(S2CMessageUpdateAmmo message) {
@@ -249,10 +227,6 @@ public class ClientPlayHandler {
 
     public static void handleUpdateAttachments(S2CMessageUpdateAttachments message) {
         NetworkAttachmentManager.updateRegisteredAttachments(message);
-    }
-
-    public static void handleUpdateThrowable (S2CMessageUpdateThrowable message) {
-        NetworkGrenadeManager.updateRegisteredConfigs(message);
     }
 
     public static void handleReload(S2CMessageReload message) {

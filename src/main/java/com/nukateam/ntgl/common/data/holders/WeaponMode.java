@@ -1,24 +1,44 @@
 package com.nukateam.ntgl.common.data.holders;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.input.NtglKeyBinds;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class WeaponMode extends ResourceHolder {
-    public static final WeaponMode GUN = new WeaponMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "gun"));
-    public static final WeaponMode MELEE = new WeaponMode(ResourceLocation.tryBuild(Ntgl.MOD_ID, "melee"));
-
     private static final Map<ResourceLocation, WeaponMode> loadingTypeMap = new HashMap<>();
 
+    public static final WeaponMode PRIMARY     = new WeaponMode("primary"    , () -> getAttackKey());
+    public static final WeaponMode SECONDARY   = new WeaponMode("secondary"  , () -> getKeyUseKey());
+    public static final WeaponMode ADDITIONAL  = new WeaponMode("additional" , () -> NtglKeyBinds.KEY_ADD_ATTACK);
+    public static final WeaponMode ALTERNATIVE = new WeaponMode("alternative", () -> NtglKeyBinds.KEY_ALT_ATTACK);
+
+    private final Supplier<KeyMapping> key;
+
     static {
-        registerType(GUN);
-        registerType(MELEE);
+        registerType(PRIMARY    );
+        registerType(SECONDARY  );
+        registerType(ADDITIONAL );
+        registerType(ALTERNATIVE);
     }
 
-    public WeaponMode(ResourceLocation id) {
+    private WeaponMode(String id, Supplier<KeyMapping> key) {
+        super(ResourceLocation.tryBuild(Ntgl.MOD_ID, id));
+        this.key = key;
+    }
+
+    public WeaponMode(ResourceLocation id, Supplier<KeyMapping> key) {
         super(id);
+        this.key = key;
+    }
+
+    public KeyMapping getKeyMapping() {
+        return key.get();
     }
 
     public static void registerType(WeaponMode mode) {
@@ -26,10 +46,18 @@ public class WeaponMode extends ResourceHolder {
     }
 
     public static WeaponMode getType(ResourceLocation id) {
-        return loadingTypeMap.getOrDefault(id, GUN);
+        return loadingTypeMap.getOrDefault(id, PRIMARY);
     }
 
     public static WeaponMode getType(String id) {
         return getType(ResourceLocation.tryParse(id));
+    }
+
+    private static KeyMapping getAttackKey() {
+        return Minecraft.getInstance().options.keyAttack;
+    }
+
+    private static KeyMapping getKeyUseKey() {
+        return Minecraft.getInstance().options.keyUse;
     }
 }

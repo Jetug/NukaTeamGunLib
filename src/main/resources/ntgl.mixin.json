@@ -3,27 +3,38 @@
   "package": "com.nukateam.ntgl.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "common.EndPortalBlockMixin",
-    "common.LivingEntityMixin",
-    "common.ServerGamePacketListenerImplMixin",
-    "common.SittingPhaseMixin"
+    "ntgl.common.EndPortalBlockMixin",
+    "ntgl.common.LivingEntityMixin",
+    "ntgl.common.ServerGamePacketListenerImplMixin",
+    "ntgl.common.SittingPhaseMixin",
+
+    "chassis.common.LivingEntityMixin",
+    "chassis.common.MixinProjectileUtil",
+    "chassis.common.MobMixin",
+    "chassis.common.PlayerMixin"
   ],
   "client": [
-    "client.AgeableListModelAccessor",
-    "client.GameRendererMixin",
-    "client.GeoEntityRendererMixin",
-    "client.ItemInHandLayerMixin",
-    "client.ItemRendererMixin",
-    "client.LevelRendererMixin",
-    "client.LivingEntityModelMixin",
-    "client.MinecraftMixin",
-    "client.MultiPlayerGameModeMixin",
-    "client.MouseHandlerMixin",
-    "client.NarratorMixin",
-    "client.QuadrupedModelAccessor",
-    "client.RenderTypeLookupMixin",
-    "client.SoundOptionsScreenMixin",
-    "client.VillagerModelAccessor"
+    "ntgl.client.AgeableListModelAccessor",
+    "ntgl.client.GameRendererMixin",
+    "ntgl.client.GeoEntityRendererMixin",
+    "ntgl.client.ItemInHandLayerMixin",
+    "ntgl.client.ItemRendererMixin",
+    "ntgl.client.LivingEntityModelMixin",
+    "ntgl.client.MinecraftMixin",
+    "ntgl.client.MultiPlayerGameModeMixin",
+    "ntgl.client.MouseHandlerMixin",
+    "ntgl.client.NarratorMixin",
+    "ntgl.client.QuadrupedModelAccessor",
+    "ntgl.client.RenderTypeLookupMixin",
+    "ntgl.client.SoundOptionsScreenMixin",
+    "ntgl.client.VillagerModelAccessor",
+
+    "chassis.client.ClientPacketListenerMixin",
+    "chassis.client.CreativeInventoryScreenMixin",
+    "chassis.client.ForgeIngameGuiMixin",
+    "chassis.client.GameRendererMixin",
+    "chassis.client.InventoryScreenMixin",
+    "chassis.client.ModelPartMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,8 +1,8 @@
 package com.nukateam.geo.render;
 
-import mod.azure.azurelib.core.animatable.GeoAnimatable;
-import mod.azure.azurelib.model.GeoModel;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.model.GeoModel;
 
 public class PlaceholderModel<T extends GeoAnimatable> extends GeoModel<T> {
     @Override

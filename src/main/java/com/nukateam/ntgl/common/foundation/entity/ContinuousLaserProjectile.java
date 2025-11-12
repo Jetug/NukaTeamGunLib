@@ -1,10 +1,8 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.common.data.config.gun.Gun;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class ContinuousLaserProjectile extends LaserProjectile {
@@ -15,8 +13,8 @@ public class ContinuousLaserProjectile extends LaserProjectile {
         super(entityType, worldIn);
     }
 
-    public ContinuousLaserProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn, LivingEntity shooter, ItemStack weapon, WeaponItem item, Gun modifiedGun) {
-        super(entityType, worldIn, shooter, weapon, item, modifiedGun);
+    public ContinuousLaserProjectile(EntityType<? extends ProjectileEntity> entityType, Level worldIn,  WeaponData data) {
+        super(entityType, worldIn, data);
     }
 
     @Override
@@ -34,7 +32,7 @@ public class ContinuousLaserProjectile extends LaserProjectile {
     @Override
     public void trace() {
         if(shooter != null && isServerSide) {
-            setupDirection(shooter, weapon, (WeaponItem) weapon.getItem());
+            setupDirection(shooter, weapon, (IWeapon) weapon.getItem());
             setPos(shooter.getEyePosition());
         }
         super.trace();

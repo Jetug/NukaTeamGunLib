@@ -24,7 +24,7 @@ public class ModItemTabs {
     private static RegistryObject<CreativeModeTab> createNtglTab() {
         if(Ntgl.isDebugging()) {
             return CREATIVE_MODE_TABS.register("ntgl_items",
-                    () -> builder().icon(() -> new ItemStack(ModGuns.ROUND10MM.get()))
+                    () -> builder().icon(() -> new ItemStack(ExampleWeapons.ROUND10MM.get()))
                             .title(Component.translatable("itemGroup.ntgl.example"))
                             .displayItems((params, output) -> registerItems(output))
                             .build());
@@ -33,7 +33,7 @@ public class ModItemTabs {
     }
 
     private static void registerItems(Output output) {
-        for (var entry : ModGuns.ITEMS.getEntries()) {
+        for (var entry : ExampleWeapons.ITEMS.getEntries()) {
             RegistrationHelper.registerGunOrDefault(output, entry.get());
         }
     }

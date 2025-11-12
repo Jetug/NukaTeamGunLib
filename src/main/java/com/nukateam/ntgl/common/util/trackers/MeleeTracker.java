@@ -1,12 +1,13 @@
 package com.nukateam.ntgl.common.util.trackers;
 
-import com.mrcrayfish.framework.api.sync.SyncedDataKey;
+import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.GunData;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.event.MeleeAttackEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.util.util.*;
 import net.minecraft.core.particles.ParticleTypes;
@@ -36,14 +37,15 @@ import java.util.*;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class MeleeTracker {
-    private static final Map<LivingEntity, Tracker> TRACKER_MAP = new HashMap<>();
+    private static final Map<Pair<InteractionHand, LivingEntity>, Tracker> TRACKER_MAP = new HashMap<>();
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         try {
             if (event.phase == TickEvent.Phase.START && !event.player.level().isClientSide) {
                 var player = event.player;
-                onEntityTick(player);
+                handTick(player, InteractionHand.MAIN_HAND);
+                handTick(player, InteractionHand.OFF_HAND);
             }
         }
         catch (Exception e){
@@ -51,13 +53,17 @@ public class MeleeTracker {
         }
     }
 
+
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {
         try {
             if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
-                for (var entity: TRACKER_MAP.keySet()) {
+                for (var key: TRACKER_MAP.keySet()) {
+                    var entity = key.getSecond();
                     if(entity instanceof Player) continue;
-                    onEntityTick(entity);
+
+                    handTick(entity, InteractionHand.MAIN_HAND);
+                    handTick(entity, InteractionHand.OFF_HAND);
                 }
             }
         }
@@ -70,82 +76,78 @@ public class MeleeTracker {
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         MinecraftServer server = event.getEntity().getServer();
         if (server != null) {
-            server.execute(() -> TRACKER_MAP.remove(event.getEntity()));
+            TRACKER_MAP.remove(new Pair<InteractionHand, LivingEntity>(InteractionHand.MAIN_HAND, event.getEntity()));
+            TRACKER_MAP.remove(new Pair<InteractionHand, LivingEntity>(InteractionHand.OFF_HAND, event.getEntity()));
         }
     }
 
-    public static void start(LivingEntity entity, InteractionHand arm){
-        var dataKey = getDataKey(arm);
-        dataKey.setValue(entity, true);
-        addTracker(entity, arm);
+    public static void start(WeaponData data, InteractionHand hand){
+        var dataKey = ModSyncedDataKeys.getMeleeKey(hand);
+        dataKey.setValue(data.wielder, true);
+        addTracker(data, hand);
     }
 
-    private static boolean addTracker(LivingEntity entity, InteractionHand hand) {
-        var dataKey = getDataKey(hand);
-        var gunItem = entity.getItemInHand(hand).getItem();
+    private static void addTracker(WeaponData data, InteractionHand hand) {
+        assert data.weapon != null && data.wielder != null;
+        var dataKey = ModSyncedDataKeys.getMeleeKey(hand);
+        var entity = data.wielder;
+        var key = new Pair<>(hand, entity);
 
-        if (!TRACKER_MAP.containsKey(entity)) {
-            if (!(gunItem instanceof WeaponItem)) {
+        if (!TRACKER_MAP.containsKey(key)) {
+            if (!(data.weapon.getItem() instanceof IWeapon)) {
                 dataKey.setValue(entity, false);
-                return true;
+                return;
             }
-            TRACKER_MAP.put(entity, new Tracker(entity, hand));
+            TRACKER_MAP.put(key, new Tracker(data, hand));
             PacketHandler.sendAnimation(entity, hand, AnimationType.MELEE);
         }
-        return false;
     }
 
-    private static void stopMelee(LivingEntity entity, InteractionHand arm) {
-        var dataKey = getDataKey(arm);
-        TRACKER_MAP.remove(entity);
+    private static void stopMelee(LivingEntity entity, InteractionHand hand) {
+        var dataKey = ModSyncedDataKeys.getMeleeKey(hand);
+        TRACKER_MAP.remove(new Pair<>(hand, entity));
         dataKey.setValue(entity, false);
     }
 
-    private static void onEntityTick(LivingEntity entity) {
-        if (ModSyncedDataKeys.MELEE_RIGHT.getValue(entity)) {
-            handTick(entity, InteractionHand.MAIN_HAND);
-        }
-        else if (ModSyncedDataKeys.MELEE_LEFT.getValue(entity)) {
-            handTick(entity, InteractionHand.OFF_HAND);
-        }
-        else if (TRACKER_MAP.containsKey(entity)) {
-            TRACKER_MAP.remove(entity);
-        }
-    }
+//    private static void handTick(Player entity, InteractionHand arm) {
+//        var key = new Pair<>(arm, entity);
+//        var tracker = TRACKER_MAP.get(key);
+//        if(tracker != null){
+//            if(tracker.equipTick > 0 && tracker.isSameItem()){
+//                tracker.equipTick--;
+//            }
+//            else stopEquip(entity, arm);
+//        }
+//        else stopEquip(entity, arm);
+//    }
 
-    private static void handTick(LivingEntity shooter, InteractionHand arm) {
-        var tracker = TRACKER_MAP.get(shooter);
-        var isSameWeapon = !tracker.isSameWeapon(shooter);
+    private static void handTick(LivingEntity entity, InteractionHand hand) {
+        var key = new Pair<>(hand, entity);
+        var tracker = TRACKER_MAP.get(key);
+        if (tracker != null){
+            if (!tracker.isSameWeapon(entity)) {
+                stopMelee(entity, hand);
+            }
 
-        if (isSameWeapon) {
-            TRACKER_MAP.remove(shooter);
-            var dataKey = getDataKey(arm);
-            dataKey.setValue(shooter, false);
+            if (tracker.meleeTick > 0)
+                tracker.meleeTick--;
+
+            if (tracker.meleeTick == tracker.cooldown) {
+                tracker.tryMeleeAttack(tracker.data);
+            }
+
+            if (tracker.meleeTick == 0) {
+                stopMelee(entity, hand);
+            }
         }
-
-        if(tracker.meleeTick > 0)
-            tracker.meleeTick--;
-
-        if(tracker.meleeTick == tracker.cooldown){
-            tracker.tryMeleeAttack(shooter, tracker.stack);
-        }
-
-        if(tracker.meleeTick == 0){
-            stopMelee(shooter, arm);
-        }
-    }
-
-    private static SyncedDataKey<LivingEntity, Boolean> getDataKey(InteractionHand arm) {
-        return arm == InteractionHand.MAIN_HAND ?
-                ModSyncedDataKeys.MELEE_RIGHT : ModSyncedDataKeys.MELEE_LEFT;
     }
 
     private static class Tracker{
-        private final InteractionHand arm;
+        private final InteractionHand hand;
         private final ItemStack stack;
-        private final WeaponItem weaponItem;
 
         private final int cooldown;
+        private final WeaponData data;
         private int meleeTick;
         private final int attackDelay;
         private final float meleeDamage;
@@ -154,40 +156,47 @@ public class MeleeTracker {
         private final double attackAngle;
         private final int maxTargets;
 
-        private Tracker(LivingEntity entity, InteractionHand arm) {
-            this.arm = arm;
-            this.stack = entity.getItemInHand(arm);
-            this.weaponItem = ((WeaponItem) stack.getItem());
-            var data = new GunData(stack, entity);
-            this.cooldown = GunModifierHelper.getMeleeCooldown(data);
-            this.attackDelay = GunModifierHelper.getMeleeDelay(data);
+        private Tracker(WeaponData data, InteractionHand hand) {
+            this.hand = hand;
+            this.data = data;
+            this.stack = data.weapon;
+            assert stack != null;
+            this.cooldown = WeaponModifierHelper.getMeleeCooldown(data);
+            this.attackDelay = WeaponModifierHelper.getMeleeDelay(data);
             this.meleeTick = attackDelay + cooldown;
-            this.meleeDamage = GunModifierHelper.getMeleeDamage(data);
-            this.attackDistance = GunModifierHelper.getMeleeDistance(data);
-            this.attackAngle = GunModifierHelper.getMeleeAngle(data);
-            this.knockback = GunModifierHelper.getMeleeKnockback(data);
-            this.maxTargets = GunModifierHelper.getMeleeMaxTargets(data);
+            this.meleeDamage = WeaponModifierHelper.getMeleeDamage(data);
+            this.attackDistance = WeaponModifierHelper.getMeleeDistance(data);
+            this.attackAngle = WeaponModifierHelper.getMeleeAngle(data);
+            this.knockback = WeaponModifierHelper.getMeleeKnockback(data);
+            this.maxTargets = WeaponModifierHelper.getMeleeMaxTargets(data);
         }
 
-        private void tryMeleeAttack(LivingEntity player, ItemStack stack) {
-            var targets = getTargets(player);
+        private void tryMeleeAttack(WeaponData weaponData) {
+            assert weaponData.wielder != null && weaponData.weapon != null;
+            var wielder = weaponData.wielder;
+            var targets = getTargets(wielder);
 
             var targetsToAttack = new ArrayList<LivingEntity>();
             var limit = maxTargets > 0 ? maxTargets : Integer.MAX_VALUE;
 
             for (int i = 0; i < Math.min(limit, targets.size()); i++) {
-                targetsToAttack.add(targets.get(i).entity);
+                var target = targets.get(i).entity;
+                if(target != wielder.getVehicle()) {
+                    targetsToAttack.add(target);
+                }
             }
 
-            if (!MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(player, stack, arm, targetsToAttack))) {
+            if (!MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(wielder, weaponData, hand, targetsToAttack))) {
                 if (!targetsToAttack.isEmpty()) {
                     for (var target : targetsToAttack) {
-                        attackEntity(player, target);
+                        if(wielder.getVehicle() != target) {
+                            attackEntity(wielder, target);
+                        }
                     }
 
-                    playAttackSound(player);
-                    spawnAttackEffects(player, targetsToAttack);
-                    MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Post(player, stack, arm, targetsToAttack));
+                    playAttackSound(wielder);
+                    spawnAttackEffects(wielder, targetsToAttack);
+                    MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Post(wielder, weaponData, hand, targetsToAttack));
                 }
             }
         }
@@ -251,7 +260,7 @@ public class MeleeTracker {
         }
 
         private boolean isSameWeapon(LivingEntity entity) {
-            return !this.stack.isEmpty() && entity.getItemInHand(arm) == this.stack;
+            return !this.stack.isEmpty() && entity.getItemInHand(hand) == this.stack;
         }
 
         private boolean isInAttackCone(Vec3 playerPos, Vec3 lookVec, Vec3 point, double coneAngleCos) {

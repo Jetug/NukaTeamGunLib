@@ -1,0 +1,33 @@
+package com.nukateam.chassis_core;
+
+import com.nukateam.chassis_core.common.foundation.registery.ContainerRegistry;
+import com.nukateam.chassis_core.common.foundation.registery.ItemRegistry;
+import com.nukateam.chassis_core.common.network.PacketHandler;
+import com.nukateam.chassis_core.modules.example.Example;
+import com.nukateam.ntgl.Ntgl;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.slf4j.Logger;
+
+public class ChassisCore {
+    public static final String MOD_ID = Ntgl.MOD_ID;
+    public static final Logger LOGGER = Ntgl.LOGGER;
+
+    public static boolean isDebugging() {
+        return !FMLEnvironment.production;
+    }
+
+    public ChassisCore(IEventBus MOD_EVENT_BUS) {
+        ItemRegistry.register(MOD_EVENT_BUS);
+        ContainerRegistry.register(MOD_EVENT_BUS);
+        Example.init(MOD_EVENT_BUS);
+        MOD_EVENT_BUS.addListener(this::onCommonSetup);
+    }
+
+    private void onCommonSetup(FMLCommonSetupEvent event) {
+        PacketHandler.register();
+    }
+}

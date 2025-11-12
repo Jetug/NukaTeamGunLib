@@ -40,14 +40,11 @@ import net.minecraft.core.registries.BuiltInRegistries;
 public class GunRegisterer {
     private static final Gson GSON = new Gson();
     private static final String REGISTRY_FILE = "registry.json";
-    private static final Pattern CONFIG_PATTERN = Pattern.compile("^data/([^/]+)/guns/([^/]+\\.json)$");
+    private static final Pattern CONFIG_PATTERN = Pattern.compile("^data/([^/]+)/weapons/([^/]+\\.json)$");
     private static final Pattern RECIPE_PATTERN = Pattern.compile("^data/([^/]+)/recipes/([^/]+\\.json)$");
     private static final Map<String, DeferredRegister<Item>> ITEMS = new HashMap<>();
     private static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, GunPackModule.MOD_ID);
     private static final Map<String, Set<String>> MOD_CONFIGS = new HashMap<>();
-    public static final String GUNS = "guns";
-    public static final String ATTACHMENTS = "attachments";
-    public static final String AMMO = "ammo";
     private static boolean hasValidRecipe = false;
 
     public static void init(IEventBus eventBus) {
@@ -138,9 +135,9 @@ public class GunRegisterer {
                     JsonObject.class
             );
 
-            registerItems(manifestJson, GUNS, GunRegisterer::registerGun);
-            registerItems(manifestJson, ATTACHMENTS, GunRegisterer::registerAttachment);
-            registerItems(manifestJson, AMMO, GunRegisterer::registerAmmo);
+            registerItems(manifestJson, com.nukateam.ntgl.modules.constants.Paths.WEAPONS, GunRegisterer::registerGun);
+            registerItems(manifestJson, com.nukateam.ntgl.modules.constants.Paths.ATTACHMENTS, GunRegisterer::registerAttachment);
+            registerItems(manifestJson, com.nukateam.ntgl.modules.constants.Paths.AMMO, GunRegisterer::registerAmmo);
 
         } catch (Exception e) {
             GunPackModule.LOGGER.error("Error processing pack: {}", packPath.getFileName(), e);
