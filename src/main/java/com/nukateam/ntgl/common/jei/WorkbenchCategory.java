@@ -33,7 +33,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 
 import java.awt.*;
 import java.util.stream.Collectors;
@@ -63,7 +63,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
         this.dyeSlot = helper.createDrawable(BACKGROUND, 7, 101, 18, 18);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.WORKBENCH.get()));
         this.title = Component.translatable(TITLE_KEY);
-        this.dyes = ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof DyeItem).toArray(Item[]::new);
+        this.dyes = Registries.ITEM.getValues().stream().filter(item -> item instanceof DyeItem).toArray(Item[]::new);
     }
 
     @Override

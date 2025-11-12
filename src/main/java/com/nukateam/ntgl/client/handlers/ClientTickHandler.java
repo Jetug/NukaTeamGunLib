@@ -4,14 +4,14 @@ package com.nukateam.ntgl.client.handlers;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
+@EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class ClientTickHandler {
     private static final Map<ItemAnimator, Runnable> tickingAnimators = new HashMap();
     private static final Map<Object, Consumer<TickEvent>> tickers = new HashMap();

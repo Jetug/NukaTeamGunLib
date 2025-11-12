@@ -23,22 +23,22 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.InteractionHand;
-import net.minecraftforge.api.distmarker.Dist;
+import net.neoforged.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 
 import java.lang.reflect.Field;
 
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientHandler {
     public static final int INSPECTION_DURATION = 60;
     public static final int INSPECTION_OFFSET = 5;
@@ -93,7 +93,7 @@ public class ClientHandler {
             }
             return -1;
         };
-        ForgeRegistries.ITEMS.forEach(item ->
+        Registries.ITEM.forEach(item ->
         {
             if (item instanceof IColored) {
                 Minecraft.getInstance().getItemColors().register(color, item);

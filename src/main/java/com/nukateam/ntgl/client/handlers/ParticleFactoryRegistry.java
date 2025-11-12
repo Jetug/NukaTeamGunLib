@@ -5,15 +5,15 @@ import com.nukateam.ntgl.client.render.particle.BloodParticle;
 import com.nukateam.ntgl.client.render.particle.BulletHoleParticle;
 import com.nukateam.ntgl.client.render.particle.TrailParticle;
 import com.nukateam.ntgl.common.foundation.init.ModParticleTypes;
-import net.minecraftforge.api.distmarker.Dist;
+import net.neoforged.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ParticleFactoryRegistry {
     @SubscribeEvent
     public static void onRegisterParticleFactory(RegisterParticleProvidersEvent event) {

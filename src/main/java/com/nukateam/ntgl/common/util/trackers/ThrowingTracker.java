@@ -13,16 +13,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import com.mojang.datafixers.util.Pair;
 
 import java.util.*;
 
 import static com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys.*;
 
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
+@EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class ThrowingTracker {
     private static final Map<Pair<InteractionHand, LivingEntity>, Tracker> TRACKER_MAP = new HashMap<>();
 

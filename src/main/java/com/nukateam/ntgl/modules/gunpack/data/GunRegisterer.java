@@ -170,7 +170,7 @@ public class GunRegisterer {
 //                var weaponName = configName.replace(".json", "");
 //                var weaponId = ResourceLocation.tryBuild(modId, weaponName);
 //
-//                if(!ForgeRegistries.ITEMS.containsKey(weaponId)) {
+//                if(!Registries.ITEM.containsKey(weaponId)) {
 //                    registerGun(modId, weaponName);
 //                }
 //            });

@@ -2,8 +2,8 @@ package com.nukateam.ntgl.common.event;
 
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Cancelable;
+import net.neoforged.bus.api.Event;
 
 /**
  * <p>Fired when a projectile hits a block or entity.</p>

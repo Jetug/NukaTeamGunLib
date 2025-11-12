@@ -7,10 +7,10 @@ import com.nukateam.ntgl.modules.datapack.managers.*;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
+@EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkManagerHandler {
     @SubscribeEvent
     public static void onServerStopped(ServerStoppedEvent event) {

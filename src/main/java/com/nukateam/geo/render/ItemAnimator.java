@@ -7,7 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -61,6 +61,6 @@ public abstract class ItemAnimator implements GeoEntity, IItemAnimator, IResourc
 
     @Nullable
     private static ResourceLocation getRegistryKey(Item item) {
-        return ForgeRegistries.ITEMS.getKey(item);
+        return Registries.ITEM.getKey(item);
     }
 }

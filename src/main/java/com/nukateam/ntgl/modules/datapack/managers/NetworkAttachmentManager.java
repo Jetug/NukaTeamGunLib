@@ -21,7 +21,7 @@ import org.apache.commons.lang3.Validate;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
+import static net.minecraftforge.registries.Registries.ITEM;
 
 public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map<IAttachment<?>, AttachmentConfig>> {
     private static List<IAttachment<?>> clientRegisteredAttachments = new ArrayList<>();

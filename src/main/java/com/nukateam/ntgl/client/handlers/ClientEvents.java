@@ -7,10 +7,10 @@ import com.nukateam.ntgl.client.render.hud.*;
 import com.nukateam.ntgl.client.tooltip.ItemsTooltipData;
 import net.minecraftforge.api.distmarker.*;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.eventbus.api.*;
+import net.neoforged.bus.api.*;
 import net.minecraftforge.fml.common.*;
 
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Ntgl.MOD_ID@EventBusSubscriber, value = Dist.CLIENT)
 public class ClientEvents {
     @SubscribeEvent
     public static void onRegisterTooltip(RegisterClientTooltipComponentFactoriesEvent event) {

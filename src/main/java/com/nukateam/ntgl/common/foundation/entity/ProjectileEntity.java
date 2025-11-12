@@ -49,7 +49,7 @@ import net.minecraft.world.phys.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -261,7 +261,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         var data = new WeaponData(this.weapon, this.shooter);
 
-        float initialDamage = WeaponModifierHelper.getProjectileDamage(ForgeRegistries.ITEMS.getKey(ammo.getItem()), data);
+        float initialDamage = WeaponModifierHelper.getProjectileDamage(Registries.ITEM.getKey(ammo.getItem()), data);
 
         if (this.projectile.isDamageReduceOverLife()) {
             float modifier = ((float) this.projectile.getLife() - (float) (this.tickCount - 1)) / (float) this.projectile.getLife();
@@ -594,7 +594,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         var ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
         if(ammoHolder.canReturnAmmo()) {
-            var ammo = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
+            var ammo = Registries.ITEM.getValue(ammoHolder.getId());
             if (ammo != null) {
                 int customModelData = -1;
                 if (weapon.getTag() != null) {

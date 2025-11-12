@@ -24,11 +24,11 @@ public class Projectiles {
     public static final DeferredHolder<EntityType<?>, EntityType<FlameProjectile>> FLAME_PROJECTILE = registerBasic("flame_projectile", FlameProjectile::new);
     public static final DeferredHolder<EntityType<?>, EntityType<GrenadeEntity>> GRENADE = registerBasic("grenade", GrenadeEntity::new);
     public static final DeferredHolder<EntityType<?>, EntityType<MissileEntity>> MISSILE = registerBasic("missile", MissileEntity::new);
-//    public static final RegistryObject<EntityType<ThrowableEntity>> THROWABLE = registerBasic("throwable", ThrowableEntity::new);
+//    public static final DeferredHolder<EntityType<ThrowableEntity>> THROWABLE = registerBasic("throwable", ThrowableEntity::new);
     public static final DeferredHolder<EntityType<?>, EntityType<ThrowableGrenadeEntity>> THROWABLE_GRENADE = registerBasic("throwable_grenade", ThrowableGrenadeEntity::new);
     public static final DeferredHolder<EntityType<?>, EntityType<StunGrenadeEntity>> THROWABLE_STUN_GRENADE = registerBasic("throwable_stun_grenade", StunGrenadeEntity::new);
 
-//    public static final RegistryObject<EntityType<FlyingGib>> FLYING_GIBS = register("flying_gibs", FlyingGib::new);
+//    public static final DeferredHolder<EntityType<FlyingGib>> FLYING_GIBS = register("flying_gibs", FlyingGib::new);
 
     private static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> registerEntity(String entityName, EntityType.Builder<T> builder) {
         return REGISTER.register(entityName, () -> builder.build(ResourceLocation.tryBuild(Ntgl.MOD_ID, entityName).toString()));
@@ -74,7 +74,7 @@ public class Projectiles {
                 .build(id));
     }
 
-    private static <T extends Entity> RegistryObject<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function) {
+    private static <T extends Entity> DeferredHolder<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function) {
         return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
                 .sized(0.25F, 0.25F)
                 .setTrackingRange(100)

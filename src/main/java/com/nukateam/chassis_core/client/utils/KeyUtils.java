@@ -2,8 +2,8 @@ package com.nukateam.chassis_core.client.utils;
 
 import com.nukateam.chassis_core.common.input.InputKey;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Lazy;
 
 import java.util.HashMap;

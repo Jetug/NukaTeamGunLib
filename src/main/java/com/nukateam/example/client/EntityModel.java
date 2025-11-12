@@ -7,7 +7,7 @@ import software.bernie.geckolib.model.GeoModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 import org.apache.commons.io.FilenameUtils;
 
 
@@ -18,8 +18,8 @@ public class EntityModel<T extends LivingEntity & GeoAnimatable> extends GeoMode
     }
 
     public static ResourceLocation getResource(Entity animatable, String path, String extension) {
-        var name = getResourceName(ForgeRegistries.ENTITY_TYPES.getKey(animatable.getType()));
-        var modId = ForgeRegistries.ENTITY_TYPES.getKey(animatable.getType()).getNamespace();
+        var name = getResourceName(Registries.ENTITY_TYPE.getKey(animatable.getType()));
+        var modId = Registries.ENTITY_TYPE.getKey(animatable.getType()).getNamespace();
 
         return ResourceLocation.tryBuild(modId, path + name + extension);
     }

@@ -36,12 +36,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -63,7 +63,7 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
     protected final TickTimer timer = new TickTimer();
     protected final boolean isClientSide = level().isClientSide;
     protected final boolean isServerSide = !level().isClientSide;
-    private final Lazy<String> chassisId = Lazy.of(() -> ResourceHelper.getResourceName(ForgeRegistries.ENTITY_TYPES.getKey(this.getType())));
+    private final Lazy<String> chassisId = Lazy.of(() -> ResourceHelper.getResourceName(Registries.ENTITY_TYPE.getKey(this.getType())));
 
     public final HashMap<String, ArrayList<GeoBone>> attachmentForBone = new HashMap<>();
     public final HashMap<String, ResourceLocation> textureForBone = new HashMap<>();

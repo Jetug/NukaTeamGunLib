@@ -16,7 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.getConfig;
 
@@ -65,7 +65,7 @@ public class AttachmentSlot extends Slot {
             if(attachments == null)
                 return false;
 
-            var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
+            var id = Registries.ITEM.getKey(stack.getItem());
             var canAttachType = modifiedGun.canAttachType(this.type);
             var isRightType = attachment.getType().equals(this.type);
             var canAttach = attachment.canAttachTo(this.weapon);
@@ -100,7 +100,7 @@ public class AttachmentSlot extends Slot {
             WeaponStateHelper.setAmmo(stack, maxAmmo);
             var ammoHolder = WeaponStateHelper.getCurrentAmmo(gunData);
             if(ammoHolder.canReturnAmmo()) {
-                var ammoItem = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
+                var ammoItem = Registries.ITEM.getValue(ammoHolder.getId());
                 var dropStack = new ItemStack(ammoItem, diff);
 
                 if (entity instanceof Player player && !player.addItem(dropStack)) {

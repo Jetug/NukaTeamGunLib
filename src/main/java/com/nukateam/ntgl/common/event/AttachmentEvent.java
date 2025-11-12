@@ -3,8 +3,8 @@ package com.nukateam.ntgl.common.event;
 import com.nukateam.ntgl.common.data.WeaponData;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Cancelable;
+import net.neoforged.bus.api.Event;
 
 @Cancelable
 public class AttachmentEvent extends Event {

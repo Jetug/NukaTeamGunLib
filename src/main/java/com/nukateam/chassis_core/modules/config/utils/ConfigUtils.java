@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -32,8 +32,8 @@ public class ConfigUtils {
 //    public static<T, Y> Map<T, Y> getConfigMap(ResourceManager manager, Function<Item, Boolean> tClass, Class<Y> yClass, String resourcePath) {
 //        var map = new HashMap<T, Y>();
 //
-////        var registry = ForgeRegistries.ITEMS;
-//        var registry = ForgeRegistries.ENTITY_TYPES;
+////        var registry = Registries.ITEM;
+//        var registry = Registries.ENTITY_TYPE;
 //
 //        registry.getValues().stream().filter(tClass::apply).forEach(item ->
 //        {

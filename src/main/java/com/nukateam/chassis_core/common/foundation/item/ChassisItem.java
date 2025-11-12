@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
 import static com.nukateam.chassis_core.common.util.helpers.EntityHelper.clearItemTags;
@@ -20,9 +20,9 @@ import static com.nukateam.chassis_core.common.util.helpers.EntityHelper.entityF
 public class ChassisItem<T extends WearableChassis> extends Item {
 
     private final EntityType.EntityFactory<T> factory;
-    private final RegistryObject<EntityType<T>> type;
+    private final DeferredHolder<EntityType<T>> type;
 
-    public ChassisItem(Properties properties, RegistryObject<EntityType<T>> type, EntityType.EntityFactory<T> factory) {
+    public ChassisItem(Properties properties, DeferredHolder<EntityType<T>> type, EntityType.EntityFactory<T> factory) {
         super((properties.stacksTo(1)));
         this.factory = factory;
         this.type = type;

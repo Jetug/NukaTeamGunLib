@@ -9,9 +9,9 @@ displayName="NukaTeam's Gun Lib"
 updateJSONURL=""
 displayURL="https://discord.com/invite/njb6EKaDVJ"
 logoFile="logo.png"
-authors="Dayton, Jetug"
+authors="Jetug, Dayton"
 credits = "MrCrayfish, MigaMi"
-description="Core for gun mods"
+description="Core for weapon mods"
 [[dependencies.ntgl]]
 modId="forge"
 mandatory=true

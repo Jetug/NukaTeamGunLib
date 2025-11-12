@@ -21,7 +21,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -153,7 +153,7 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
 
     protected boolean shouldRenderAttachment(Modules.Attachment attachment, ItemStack item) {
         if (transformType != ItemDisplayContext.GUI) {
-            var itemId = ForgeRegistries.ITEMS.getKey(item.getItem());
+            var itemId = Registries.ITEM.getKey(item.getItem());
             return !item.isEmpty() && attachment.getItemId().equals(itemId);
         }
         return false;

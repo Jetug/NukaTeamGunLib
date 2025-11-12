@@ -22,9 +22,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.registries.Registries;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -33,7 +33,7 @@ import java.util.WeakHashMap;
  * Author: MrCrayfish
  */
 @SuppressWarnings("unused")
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
+@EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class ReloadTracker {
     private static final Map<LivingEntity, ReloadTracker> RELOAD_TRACKER_MAP = new WeakHashMap<>();
 
@@ -311,7 +311,7 @@ public class ReloadTracker {
                 var currentAmmo = tag.getInt(Tags.AMMO_COUNT);
 
                 if(currentAmmo > 0 && ammoHolder.canReturnAmmo()) {
-                    var usedMagazine = new ItemStack(ForgeRegistries.ITEMS.getValue(ammoHolder.getId()));
+                    var usedMagazine = new ItemStack(Registries.ITEM.getValue(ammoHolder.getId()));
                     StackUtils.setDurability(usedMagazine, currentAmmo);
 
                     if(entity instanceof Player player)

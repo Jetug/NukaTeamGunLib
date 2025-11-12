@@ -3,7 +3,7 @@ package com.nukateam.chassis_core.common.events;
 import com.nukateam.chassis_core.common.input.InputKey;
 import com.nukateam.chassis_core.common.input.KeyAction;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 
 public class CommonInputEvent extends Event {
     private final InputKey key;

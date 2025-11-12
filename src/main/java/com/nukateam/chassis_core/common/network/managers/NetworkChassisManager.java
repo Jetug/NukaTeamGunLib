@@ -13,8 +13,8 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.registries.Registries;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Mod.EventBusSubscriber(modid = ChassisCore.MOD_ID)
+@EventBusSubscriber(modid = ChassisCore.MOD_ID)
 public class NetworkChassisManager extends SimplePreparableReloadListener<Map<EntityType<Chassis>, ChassisConfig>> {
     public static final String PATH = "cc/chassis";
     private static NetworkChassisManager instance;
@@ -46,7 +46,7 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
 
     @Override
     protected Map<EntityType<Chassis>, ChassisConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, ForgeRegistries.ENTITY_TYPES, (v) -> true, ChassisConfig.class, PATH);
+        return ConfigUtils.getConfigMap(manager, Registries.ENTITY_TYPE, (v) -> true, ChassisConfig.class, PATH);
     }
 
     @Override
@@ -54,8 +54,8 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
         var builder = ImmutableMap.<ResourceLocation, ChassisConfig>builder();
 
         objects.forEach((chassis, config) -> {
-            Validate.notNull(ForgeRegistries.ENTITY_TYPES.getKey((chassis)));
-            builder.put(ForgeRegistries.ENTITY_TYPES.getKey(chassis), config);
+            Validate.notNull(Registries.ENTITY_TYPE.getKey((chassis)));
+            builder.put(Registries.ENTITY_TYPE.getKey(chassis), config);
             Configs.CHASSIS_CONFIGS.put(chassis, new ConfigSupplier<>(config));
         });
 
@@ -89,7 +89,7 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
     public static boolean updateRegisteredConfig(Map<ResourceLocation, ChassisConfig> registeredConfig) {
         if (registeredConfig != null) {
             for (Map.Entry<ResourceLocation, ChassisConfig> entry : registeredConfig.entrySet()) {
-                var item = ForgeRegistries.ENTITY_TYPES.getValue(entry.getKey());
+                var item = Registries.ENTITY_TYPE.getValue(entry.getKey());
                 Configs.CHASSIS_CONFIGS.put((EntityType<Chassis>) item, new ConfigSupplier<>(entry.getValue()));
             }
             return true;

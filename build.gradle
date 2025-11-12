@@ -2,29 +2,23 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'net.neoforged.gradle.userdev' version '7.0.192'
-    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
 tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
 
-version = "${minecraft_version}-${mod_version}"
-group = 'com.nukateam.ntgl'
+version = mod_version
+group = mod_group_id
+
 base {
     archivesName = mod_id
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-mixin {
-    add sourceSets.main, "ntgl.mixin-refmap.json"
-    config 'ntgl.mixin.json'
-}
-
 runs {
+    // applies to all the run configs below
     configureEach {
         // Recommended logging data for a userdev environment
         // The markers can be added/remove as needed separated by commas.
@@ -41,7 +35,6 @@ runs {
         modSource project.sourceSets.main
     }
 
-
     client {
         // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
@@ -52,6 +45,9 @@ runs {
         argument '--nogui'
     }
 
+    // This run config launches GameTestServer and runs all registered gametests, then exits.
+    // By default, the server will crash when no gametests are provided.
+    // The gametest system is also enabled by default for other run configs under the /test command.
     gameTestServer {
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
     }
@@ -94,39 +90,30 @@ repositories {
         name "KosmX's maven"
         url 'https://maven.kosmx.dev/'
     }
-    maven {
-        name = "Modrinth"
-        url = "https://api.modrinth.com/maven"
-    }
-    maven {
-        name = 'GeckoLib'
-        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-        content {
-            includeGroupByRegex("software\\.bernie.*")
-            includeGroup("com.eliotlash.mclib")
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'GeckoLib'
+                url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+            }
+        }
+        filter {
+            includeGroup('software.bernie.geckolib')
         }
     }
 }
 
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
-
     implementation "software.bernie.geckolib:geckolib-forge-${minecraft_version}:4.8.2"
-
-    implementation "mod.azure.azurelib:azurelib-neo-1.21.1:3.0.38"
     implementation "curse.maven:framework-549225:6531439"
     implementation "curse.maven:sophisticated-core-618298:7076819"
     implementation "curse.maven:sophisticated-backpacks-422301:7057664"
-    implementation "curse.maven:travelers-backpack-321117:7095271"
-    implementation "com.yyz:YyzsBackpack-neoforge:20.1.6"
-
     implementation 'curse.maven:controllable-317269:6850105'
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:2.0.1+1.21.1"
+
     compileOnly 'curse.maven:backpacked-352835:6918854'
     compileOnly "top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1:api"
-
-    implementation 'curse.maven:controllable-317269:6850105'
-    implementation "dev.kosmx.player-anim:player-animation-lib-forge:2.0.1+1.21.1"
 
     compileOnly "mezz.jei:jei-1.21.1-common-api:19.25.0.322"
     compileOnly "mezz.jei:jei-1.21.1-neoforge-api:19.25.0.322"
@@ -134,29 +121,27 @@ dependencies {
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    // Example mod dependency using a mod jar from ./libs with a flat dir repository
+    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
+    // The group id is ignored when searching -- in this case, it is "blank"
+    // implementation "blank:coolmod-${mc_version}:${coolmod_version}"
+
+    // Example mod dependency using a file as dependency
+    // implementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
+
+    // Example project dependency using a sister or child project:
+    // implementation project(":myproject")
+
+    // For more info:
+    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html
 }
 
-java {
-    withSourcesJar()
-}
-
-jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : "NukaTeam Gun Lib",
-                "Specification-Vendor"    : "NukaTeam",
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : "NukaTeam Gun Lib",
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "NukaTeam",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "TweakClass"              : "org.spongepowered.asm.launch.MixinTweaker",
-                "TweakOrder"              : 0,
-                "MixinConfigs"            : "ntgl.mixin.json"
-        ])
-    }
-}
-
+// This block of code expands all declared replace properties in the specified resource targets.
+// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
+// When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
+// See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
 tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
             minecraft_version      : minecraft_version,
@@ -177,6 +162,7 @@ tasks.withType(ProcessResources).configureEach {
     }
 }
 
+// Example configuration to allow publishing using the maven-publish plugin
 publishing {
     publications {
         register('mavenJava', MavenPublication) {

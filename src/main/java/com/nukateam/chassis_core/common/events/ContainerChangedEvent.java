@@ -1,7 +1,7 @@
 package com.nukateam.chassis_core.common.events;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 
 public class ContainerChangedEvent extends Event {
 

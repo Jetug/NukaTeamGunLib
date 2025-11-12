@@ -2,15 +2,15 @@ package com.nukateam.chassis_core.modules.example.client.events;
 
 import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.modules.example.client.ExampleChassisRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 import static com.nukateam.chassis_core.modules.example.common.registery.EntityTypes.EXAMPLE_CHASSIS;
 
-@Mod.EventBusSubscriber(modid = ChassisCore.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = ChassisCore.MOD_ID@EventBusSubscriber, value = Dist.CLIENT)
 public class SetupEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()

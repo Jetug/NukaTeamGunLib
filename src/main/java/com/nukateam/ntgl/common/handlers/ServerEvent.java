@@ -7,15 +7,15 @@ import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 
 import static com.nukateam.ntgl.common.util.trackers.ShootTracker.*;
 import static com.nukateam.ntgl.common.network.ServerPlayHandler.*;
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.*;
 
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
+@EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class ServerEvent {
     @SubscribeEvent
     public static void onServerTick(TickEvent.PlayerTickEvent event) {

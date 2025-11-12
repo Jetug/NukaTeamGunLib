@@ -16,7 +16,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -81,7 +81,7 @@ public class WorkbenchRecipeBuilder {
     }
 
     public void build(Consumer<FinishedRecipe> consumer) {
-        ResourceLocation resourcelocation = ForgeRegistries.ITEMS.getKey(this.result);
+        ResourceLocation resourcelocation = Registries.ITEM.getKey(this.result);
         this.build(consumer, resourcelocation);
     }
 
@@ -132,7 +132,7 @@ public class WorkbenchRecipeBuilder {
             json.add("materials", materials);
 
             JsonObject resultObject = new JsonObject();
-            resultObject.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(this.item)).toString());
+            resultObject.addProperty("item", Objects.requireNonNull(Registries.ITEM.getKey(this.item)).toString());
             if (this.count > 1) {
                 resultObject.addProperty("count", this.count);
             }

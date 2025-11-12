@@ -12,9 +12,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.registries.Registries;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,7 +25,7 @@ import java.util.function.BiFunction;
 /**
  * The base attachment object
  */
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class Attachment {
     protected IWeaponModifier[] modifiers;
     private List<Component> perks = null;
@@ -59,7 +59,7 @@ public class Attachment {
         weapons = new ArrayList<>();
 
         var weaponItems = WeaponHelper.getWeaponItems();
-        var id = ForgeRegistries.ITEMS.getKey(attachment);
+        var id = Registries.ITEM.getKey(attachment);
 
         for (var item : weaponItems) {
             var weapon = (IWeapon)item;

@@ -38,7 +38,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -511,7 +511,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         var player = Minecraft.getInstance().player;
         var gunData = new WeaponData(stack, player);
 
-        var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
+        var id = Registries.ITEM.getKey(stack.getItem());
         Objects.requireNonNull(id);
 
         for (var gunItem : NetworkWeaponManager.getClientRegisteredWeapons()) {

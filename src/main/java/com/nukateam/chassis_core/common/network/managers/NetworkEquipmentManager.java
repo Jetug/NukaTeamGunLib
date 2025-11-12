@@ -13,8 +13,8 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.registries.Registries;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
+import static net.minecraftforge.registries.Registries.ITEM;
 
-@Mod.EventBusSubscriber(modid = ChassisCore.MOD_ID)
+@EventBusSubscriber(modid = ChassisCore.MOD_ID)
 public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<IChassisEquipment, EquipmentConfig>> {
     public static final String PATH = "cc/equipment";
     private static NetworkEquipmentManager instance;
@@ -41,7 +41,7 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
 
     @Override
     protected Map<IChassisEquipment, EquipmentConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, ForgeRegistries.ITEMS, (v) -> true, EquipmentConfig.class, PATH);
+        return ConfigUtils.getConfigMap(manager, Registries.ITEM, (v) -> true, EquipmentConfig.class, PATH);
     }
 
     @Override

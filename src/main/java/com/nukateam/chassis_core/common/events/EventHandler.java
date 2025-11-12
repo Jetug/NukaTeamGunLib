@@ -3,10 +3,10 @@ package com.nukateam.chassis_core.common.events;
 import com.nukateam.chassis_core.Global;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber
+@EventBusSubscriber
 public class EventHandler {
     @SubscribeEvent
     public static void onTick(TickEvent event) {

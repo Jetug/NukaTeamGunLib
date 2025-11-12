@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.data.holders;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -62,7 +62,7 @@ public class AmmoHolder extends ResourceHolder {
                 .isAcceptable((stack) -> Objects.equals(getKey(stack), id))
                 .value((s) -> 1)
                 .descriptionId((ammo) -> {
-                    var item = ForgeRegistries.ITEMS.getValue(ammo.getId());
+                    var item = Registries.ITEM.getValue(ammo.getId());
                     if (item != null){
                         return item.getDescriptionId();
                     }
@@ -76,7 +76,7 @@ public class AmmoHolder extends ResourceHolder {
     }
 
     private static @Nullable ResourceLocation getKey(ItemStack stack) {
-        return ForgeRegistries.ITEMS.getKey(stack.getItem());
+        return Registries.ITEM.getKey(stack.getItem());
     }
 
     public static class Builder {

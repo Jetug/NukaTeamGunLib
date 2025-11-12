@@ -12,9 +12,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-
+Registries
 public class ExampleWeapons {
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Ntgl.MOD_ID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, Ntgl.MOD_ID);
     ///WEAPONS
     public static final DeferredHolder<Item, WeaponItem> PISTOL10MM = registerGun("pistol10mm", new TestModifier());
     public static final DeferredHolder<Item, WeaponItem> PIPE_PISTOL = registerGun("pipepistol");

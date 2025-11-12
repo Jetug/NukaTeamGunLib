@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.data.holders;
 import com.nukateam.ntgl.common.data.WeaponData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

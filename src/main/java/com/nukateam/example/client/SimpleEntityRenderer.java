@@ -1,5 +1,4 @@
 package com.nukateam.example.client;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import software.bernie.geckolib.cache.object.GeoBone;

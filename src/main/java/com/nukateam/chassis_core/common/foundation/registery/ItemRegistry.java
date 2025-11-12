@@ -2,15 +2,15 @@ package com.nukateam.chassis_core.common.foundation.registery;
 
 import com.nukateam.chassis_core.ChassisCore;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.Registries;
 
 import java.util.function.Supplier;
 
 public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS =
-            DeferredRegister.create(ForgeRegistries.ITEMS, ChassisCore.MOD_ID);
+            DeferredRegister.create(Registries.ITEM, ChassisCore.MOD_ID);
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

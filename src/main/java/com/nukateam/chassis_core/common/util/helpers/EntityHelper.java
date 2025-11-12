@@ -7,7 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +29,7 @@ public class EntityHelper {
 
         target.save(entityTag);
         newTag.put(ENTITY_TAG, entityTag);
-        newTag.putString(CHASSIS_ENTITY_ID, ForgeRegistries.ENTITY_TYPES.getKey(target.getType()).toString());
+        newTag.putString(CHASSIS_ENTITY_ID, Registries.ENTITY_TYPE.getKey(target.getType()).toString());
         stack.setTag(newTag);
         target.remove(Entity.RemovalReason.DISCARDED);
         return stack;

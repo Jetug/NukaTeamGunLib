@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.data;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,7 @@ public class WeaponHelper {
 
         var foundItems = new ArrayList<Item>();
 
-        ForgeRegistries.ITEMS.forEach(item ->{
+        Registries.ITEM.forEach(item ->{
             if (item instanceof IWeapon){
                 foundItems.add(item);
             }

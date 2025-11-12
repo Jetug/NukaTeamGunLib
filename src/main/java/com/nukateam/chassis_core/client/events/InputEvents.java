@@ -6,11 +6,11 @@ import com.nukateam.chassis_core.common.input.KeyAction;
 import com.nukateam.chassis_core.common.network.actions.InputAction;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import org.lwjgl.glfw.GLFW;
 
 import static com.nukateam.chassis_core.client.ClientConfig.OPTIONS;
@@ -18,7 +18,7 @@ import static com.nukateam.chassis_core.common.network.PacketSender.doServerActi
 import static com.nukateam.chassis_core.common.util.helpers.PlayerUtils.getLocalPlayer;
 import static com.nukateam.chassis_core.common.util.helpers.PlayerUtils.stopWearingArmor;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT)
 public class InputEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()

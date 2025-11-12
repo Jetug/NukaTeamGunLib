@@ -4,8 +4,8 @@ import com.nukateam.ntgl.client.render.hud.WeaponHud;
 import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.InteractionHand;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Cancelable;
+import net.neoforged.bus.api.Event;
 
 @Cancelable
 public class GunHudEvent extends Event {

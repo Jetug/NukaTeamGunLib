@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import static net.minecraftforge.registries.ForgeRegistries.*;
+import static net.minecraftforge.registries.Registries.*;
 
 public class WeaponModifierHelper {
     private static final IWeaponModifier[] EMPTY = {};

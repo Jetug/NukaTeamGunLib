@@ -20,7 +20,7 @@ import org.apache.commons.lang3.Validate;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
+import static net.minecraftforge.registries.Registries.ITEM;
 
 public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, ProjectileConfig>> {
     private static NetworkAmmoManager instance;

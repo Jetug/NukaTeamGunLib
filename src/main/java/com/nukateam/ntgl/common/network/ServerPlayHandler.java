@@ -53,7 +53,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 
 import java.util.function.Predicate;
 
@@ -306,7 +306,7 @@ public class ServerPlayHandler {
 
                 if(itemHolder.canReturnAmmo()) {
                     var id = itemHolder.getId();
-                    var item = ForgeRegistries.ITEMS.getValue(id);
+                    var item = Registries.ITEM.getValue(id);
 
                     if (item != null && !player.isCreative()) {
                         givePlayerAmmo(player, item, count);
@@ -328,7 +328,7 @@ public class ServerPlayHandler {
                 var ammoHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
                 if(ammoHolder.canReturnAmmo()) {
-                    var item = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
+                    var item = Registries.ITEM.getValue(ammoHolder.getId());
 
                     if (item != null && !player.isCreative()) {
                         var usedMagazine = new ItemStack(item);

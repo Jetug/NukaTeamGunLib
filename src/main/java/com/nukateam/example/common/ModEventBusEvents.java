@@ -6,10 +6,10 @@ import com.nukateam.example.common.entities.Raider;
 import com.nukateam.example.common.registery.EntityTypes;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class ModEventBusEvents {
 
     @SubscribeEvent

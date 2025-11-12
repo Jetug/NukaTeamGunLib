@@ -11,7 +11,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -129,7 +129,7 @@ public class InventoryUtil {
 
     @NotNull
     public static AmmoContext getCreativeAmmoContext(ResourceLocation id) {
-        var item = ForgeRegistries.ITEMS.getValue(id);
+        var item = Registries.ITEM.getValue(id);
         var ammo = item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
         return new AmmoContext(ammo, null);
     }

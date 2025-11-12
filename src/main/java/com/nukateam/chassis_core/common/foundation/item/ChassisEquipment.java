@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.Registries;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
@@ -25,7 +25,7 @@ import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 public class ChassisEquipment extends Item implements IChassisEquipment, GeoItem {
     public final ChassisPart part;
     private final AnimatableInstanceCache cache = createInstanceCache(this);
-    private final Lazy<String> name = Lazy.of(() -> ResourceHelper.getResourceName(ForgeRegistries.ITEMS.getKey(this)));
+    private final Lazy<String> name = Lazy.of(() -> ResourceHelper.getResourceName(Registries.ITEM.getKey(this)));
     private  EquipmentConfig config = new EquipmentConfig();
 
     public ChassisEquipment(Properties pProperties, ChassisPart part) {

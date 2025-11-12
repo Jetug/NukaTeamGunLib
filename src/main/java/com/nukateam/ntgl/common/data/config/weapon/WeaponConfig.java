@@ -252,7 +252,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
     }
 
     public Modules.Attachment findAttachment(Item item) {
-        var itemId = ForgeRegistries.ITEMS.getKey(item);
+        var itemId = Registries.ITEM.getKey(item);
 
         if(item instanceof IAttachment attachmentItem){
             var attachmentType = attachmentItem.getType();
