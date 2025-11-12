@@ -6,6 +6,7 @@ import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
+import com.nukateam.ntgl.common.foundation.components.NTGLComponents;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
@@ -29,6 +30,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -41,6 +43,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 
 import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
 import static com.nukateam.ntgl.common.util.util.WeaponStateHelper.AMMO_TAG;
+import static net.minecraft.world.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
 import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
 public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable, IColored, IMeta{
@@ -176,12 +179,12 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     public static void addExplosionTip(List<Component> tooltip, ExplosionConfig explosion) {
         var damage = explosion.getDamage();
         tooltip.add(Component.translatable("info.ntgl.explosionDamage",
-                        ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage))
+                        ChatFormatting.WHITE + ATTRIBUTE_MODIFIER_FORMAT.format(damage))
                 .withStyle(ChatFormatting.GRAY));
 
         var radius = explosion.getRadius();
         tooltip.add(Component.translatable("info.ntgl.explosionRadius",
-                        ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(radius))
+                        ChatFormatting.WHITE + ATTRIBUTE_MODIFIER_FORMAT.format(radius))
                 .withStyle(ChatFormatting.GRAY));
     }
 
@@ -242,7 +245,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         ).withStyle(ChatFormatting.GRAY));
     }
 
-    public Gun getModifiedConfig(ItemStack stack) {
+    public WeaponConfig getModifiedConfig(ItemStack stack) {
         var tagCompound = stack.get(NTGLComponents.GUNCOMPONENT);
         if (tagCompound != null && tagCompound.contains("Gun", Tag.TAG_COMPOUND)) {
             return this.modifiedGunCache.computeIfAbsent(tagCompound, item ->
