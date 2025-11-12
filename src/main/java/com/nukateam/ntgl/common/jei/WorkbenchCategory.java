@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.jei;
 
 import com.nukateam.ntgl.client.util.helpers.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import com.mojang.blaze3d.platform.Lighting;
@@ -54,7 +53,6 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
     private final IDrawableStatic dyeSlot;
     private final IDrawable icon;
     private final Component title;
-    private final Item[] dyes;
 
     public WorkbenchCategory(IGuiHelper helper) {
         this.background = helper.createBlankDrawable(162, 124);
@@ -63,7 +61,6 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
         this.dyeSlot = helper.createDrawable(BACKGROUND, 7, 101, 18, 18);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.WORKBENCH.get()));
         this.title = Component.translatable(TITLE_KEY);
-        this.dyes = Registries.ITEM.getValues().stream().filter(item -> item instanceof DyeItem).toArray(Item[]::new);
     }
 
     @Override
@@ -88,10 +85,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, WorkbenchRecipe recipe, IFocusGroup focuses) {
-        ItemStack output = recipe.getItem();
-        if (IColored.isDyeable(output)) {
-            builder.addSlot(RecipeIngredientRole.INPUT, 141, 52).addItemStacks(Stream.of(this.dyes).map(ItemStack::new).collect(Collectors.toList()));
-        }
+        var output = recipe.getItem();
         for (int i = 0; i < recipe.getMaterials().size(); i++) {
             builder.addSlot(RecipeIngredientRole.INPUT, (i % 8) * 18 + 1, 88 + (i / 8) * 18).addIngredients(recipe.getMaterials().get(i));
         }

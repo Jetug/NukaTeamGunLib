@@ -1,7 +1,6 @@
 package com.nukateam.ntgl;
 
 import com.mojang.logging.LogUtils;
-import com.mrcrayfish.framework.api.client.FrameworkClientAPI;
 import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.example.common.registery.EntityTypes;
 import com.nukateam.example.common.registery.*;
@@ -81,7 +80,6 @@ public class Ntgl {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             MOD_EVENT_BUS.addListener(NtglKeyBinds::registerKeyMappings);
             MOD_EVENT_BUS.addListener(CrosshairHandler::onConfigReload);
-            MOD_EVENT_BUS.addListener(ClientHandler::onRegisterReloadListener);
         }
 
         GunPackModule.init(MOD_EVENT_BUS);

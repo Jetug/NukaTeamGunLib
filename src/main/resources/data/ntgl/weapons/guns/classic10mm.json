@@ -148,7 +148,6 @@
     "enchantedFire": "ntgl:item.pistol10mm.enchanted_fire"
   },
   "modules": {
-    "attachmentScreen": false,
     "attachments": {
       "ntgl:scope": [
         {

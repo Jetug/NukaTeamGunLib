@@ -6,16 +6,11 @@ import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.render.screen.AttachmentScreen;
 import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
-import com.nukateam.ntgl.client.util.helpers.PropertyHelper;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.debug.screen.*;
 import com.nukateam.ntgl.common.foundation.init.ModContainers;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
-import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.components.OptionsList;
 import net.minecraft.client.gui.screens.*;
 import net.minecraft.client.gui.screens.options.MouseSettingsScreen;
@@ -65,44 +60,14 @@ public class ClientHandler {
             GunButtonBindings.register();
         }
 
-        setupRenderLayers();
-        registerColors();
+//        setupRenderLayers();
         registerScreenFactories();
         AnimationRegistry.register();
     }
 
-    private static void setupRenderLayers() {
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.WORKBENCH.get(), RenderType.cutout());
-    }
-
-    private static void registerColors() {
-        ItemColor color = (stack, index) ->
-        {
-            if (!IColored.isDyeable(stack)) {
-                return -1;
-            }
-            if (index == 0 && stack.hasTag() && stack.getTag().contains("Color", Tag.TAG_INT)) {
-                return stack.getTag().getInt("Color");
-            }
-            if (index == 0 && stack.getItem() instanceof IAttachment) {
-                var renderingWeapon = GunRenderingHandler.get().getRenderingWeapon();
-                if (renderingWeapon != null) {
-                    return Minecraft.getInstance().getItemColors().getColor(renderingWeapon, index);
-                }
-            }
-            if (index == 2) // Reticle colour
-            {
-                return PropertyHelper.getReticleColor(stack);
-            }
-            return -1;
-        };
-        Registries.ITEM.forEach(item ->
-        {
-            if (item instanceof IColored) {
-                Minecraft.getInstance().getItemColors().register(color, item);
-            }
-        });
-    }
+//    private static void setupRenderLayers() {
+//        ItemBlockRenderTypes.setRenderLayer(ModBlocks.WORKBENCH.get(), RenderType.cutout());
+//    }
 
     private static void registerScreenFactories() {
         MenuScreens.register(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
@@ -156,12 +121,6 @@ public class ClientHandler {
                 e.printStackTrace();
             }
         }
-    }
-
-    public static void onRegisterReloadListener(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener((ResourceManagerReloadListener) manager -> {
-            PropertyHelper.resetCache();
-        });
     }
 
     public static Screen createEditorScreen(IEditorMenu menu) {

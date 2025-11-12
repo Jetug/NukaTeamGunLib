@@ -46,7 +46,7 @@ import static com.nukateam.ntgl.common.util.util.WeaponStateHelper.AMMO_TAG;
 import static net.minecraft.world.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
 import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
-public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable, IColored, IMeta{
+public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable{
     public static final String VARIANT = "variant";
     private final Lazy<ResourceLocation> id = Lazy.of(this::getRegistryName);
     private final WeakHashMap<CompoundTag, WeaponConfig> modifiedGunCache = new WeakHashMap<>();

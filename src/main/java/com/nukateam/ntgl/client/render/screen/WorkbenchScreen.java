@@ -13,7 +13,6 @@ import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.foundation.crafting.*;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageCraft;
 import com.google.common.collect.ImmutableList;
@@ -34,8 +33,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.core.registries.Registries;
@@ -335,20 +332,6 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
     private void updateColor() {
         if (this.currentTab != null) {
             ItemStack item = this.displayStack;
-            if (IColored.isDyeable(item)) {
-                IColored colored = (IColored) item.getItem();
-                if (!this.workbench.getItem(0).isEmpty()) {
-                    ItemStack dyeStack = this.workbench.getItem(0);
-                    if (dyeStack.getItem() instanceof DyeItem) {
-                        DyeColor color = ((DyeItem) dyeStack.getItem()).getDyeColor();
-                        float[] components = color.getTextureDiffuseColors();
-                        int red = (int) (components[0] * 255F);
-                        int green = (int) (components[1] * 255F);
-                        int blue = (int) (components[2] * 255F);
-                        colored.setColor(item, ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | ((blue & 0xFF)));
-                    } else colored.removeColor(item);
-                } else colored.removeColor(item);
-            }
         }
     }
 

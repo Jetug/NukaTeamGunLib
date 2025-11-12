@@ -1,13 +1,18 @@
 package com.nukateam.ntgl.common.datagen;
 
 import com.google.gson.JsonObject;
+import com.nukateam.example.common.registery.ExampleWeapons;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
+import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipeBuilder;
 import com.nukateam.ntgl.common.foundation.init.ModRecipeSerializers;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
@@ -22,38 +27,6 @@ public class RecipeGen extends RecipeProvider
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> consumer)
     {
-        // Dye Item
-        consumer.accept(new FinishedRecipe()
-        {
-            @Override
-            public void serializeRecipeData(JsonObject json) {}
-
-            @Override
-            public RecipeSerializer<?> getType()
-            {
-                return ModRecipeSerializers.DYE_ITEM.get();
-            }
-
-            @Override
-            public ResourceLocation getId()
-            {
-                return ResourceLocation.tryBuild(Ntgl.MOD_ID, "dye_item");
-            }
-
-            @Override
-            @Nullable
-            public JsonObject serializeAdvancement()
-            {
-                return null;
-            }
-
-            @Override
-            public ResourceLocation getAdvancementId()
-            {
-                return null;
-            }
-        });
-
 //        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.WORKBENCH.get())
 //                .pattern("CCC")
 //                .pattern("III")

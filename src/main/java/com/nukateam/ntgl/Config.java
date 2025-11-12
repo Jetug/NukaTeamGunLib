@@ -58,7 +58,6 @@ public class Config
                 this.playSoundWhenCritical = builder.comment("If true, a sound will play when you successfully hit a critical on a entity with a gun").define("playSoundWhenCritical", true);
                 this.criticalSound = builder.comment("The sound to play when a critical occurs").define("criticalSound", "minecraft:entity.player.attack.crit");
                 this.impactSoundDistance = builder.comment("The maximum distance impact sounds from bullet can be heard").defineInRange("impactSoundDistance", 32.0, 0.0, 32.0);
-//                this.gunVolume = builder.comment("The gun sounds volume").defineInRange("gunVolume", 1.0, 0.0, 1.0);
             }
             builder.pop();
         }
@@ -262,44 +261,6 @@ public class Config
                 this.angerHostileMobs = builder.comment("If true, in addition to causing peaceful mobs to panic, firing a gun will also cause nearby hostile mobs to target the shooter.").define("angerHostileMobs", true);
                 this.unsilencedRange = builder.comment("Any mobs within a sphere of this radius will aggro on the shooter of an unsilenced gun.").defineInRange("unsilencedRange", 20.0, 0.0, Double.MAX_VALUE);
                 this.exemptEntities = builder.comment("Any mobs of defined will not aggro on shooters").defineList("exemptMobs", Collections.emptyList(), o -> true);
-            }
-            builder.pop();
-        }
-    }
-
-    /**
-     * Missile related config options
-     */
-    public static class Missiles
-    {
-        public final ModConfigSpec.BooleanValue enableBlockRemoval;
-        public final ModConfigSpec.DoubleValue explosionRadius;
-
-        public Missiles(ModConfigSpec.Builder builder)
-        {
-            builder.comment("Properties relating to missiles").push("missiles");
-            {
-                this.enableBlockRemoval = builder.comment("If enabled, allows block removal on explosions").define("enableBlockRemoval", false);
-                this.explosionRadius = builder.comment("The max distance which the explosion is effective to").defineInRange("explosionRadius", 5.0, 0.0, Double.MAX_VALUE);
-            }
-            builder.pop();
-        }
-    }
-
-    /**
-     * Grenade related config options
-     */
-    public static class Grenades
-    {
-        public final ModConfigSpec.BooleanValue enableBlockRemoval;
-        public final ModConfigSpec.DoubleValue explosionRadius;
-
-        public Grenades(ModConfigSpec.Builder builder)
-        {
-            builder.comment("Properties relating to grenades").push("grenades");
-            {
-                this.enableBlockRemoval = builder.comment("If enabled, allows block removal on explosions").define("enableBlockRemoval", false);
-                this.explosionRadius = builder.comment("The max distance which the explosion is effective to").defineInRange("explosionRadius", 5.0, 0.0, Double.MAX_VALUE);
             }
             builder.pop();
         }

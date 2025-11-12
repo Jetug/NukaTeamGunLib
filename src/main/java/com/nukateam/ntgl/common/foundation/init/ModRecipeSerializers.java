@@ -15,6 +15,5 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModRecipeSerializers {
     public static final DeferredRegister<RecipeSerializer<?>> REGISTER = DeferredRegister.create(Registries.RECIPE_SERIALIZER, Ntgl.MOD_ID);
 
-    public static final DeferredHolder<RecipeSerializer<?>, SimpleCraftingRecipeSerializer<DyeItemRecipe>> DYE_ITEM = REGISTER.register("dye_item", () -> new SimpleCraftingRecipeSerializer<>(DyeItemRecipe::new));
     public static final DeferredHolder<RecipeSerializer<?>, WorkbenchRecipeSerializer> WORKBENCH = REGISTER.register("workbench", WorkbenchRecipeSerializer::new);
 }

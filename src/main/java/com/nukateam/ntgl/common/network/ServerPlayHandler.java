@@ -16,15 +16,12 @@ import com.nukateam.ntgl.common.util.trackers.*;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.event.GunReloadEvent;
-import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import com.nukateam.ntgl.common.network.message.C2SMessagePreFireSound;
 import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
 import com.nukateam.ntgl.common.network.message.*;
@@ -45,7 +42,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -254,29 +250,16 @@ public class ServerPlayHandler {
 
         if (player.containerMenu instanceof WorkbenchContainer workbench) {
             if (workbench.getPos().equals(pos)) {
-                WorkbenchRecipe recipe = WorkbenchRecipes.getRecipeById(world, id);
+                var recipe = WorkbenchRecipes.getRecipeById(world, id);
                 if (recipe == null || !recipe.hasMaterials(player))
                     return;
 
                 recipe.consumeMaterials(player);
-
-                WorkbenchBlockEntity workbenchBlockEntity = workbench.getWorkbench();
-
-                /* Gets the color based on the dye */
-                ItemStack stack = recipe.getItem();
-                ItemStack dyeStack = workbenchBlockEntity.getInventory().get(0);
-                if (dyeStack.getItem() instanceof DyeItem) {
-                    DyeItem dyeItem = (DyeItem) dyeStack.getItem();
-                    int color = dyeItem.getDyeColor().getTextColor();
-
-                    if (IColored.isDyeable(stack)) {
-                        IColored colored = (IColored) stack.getItem();
-                        colored.setColor(stack, color);
-                        workbenchBlockEntity.getInventory().set(0, ItemStack.EMPTY);
-                    }
-                }
-
-                Containers.dropItemStack(world, pos.getX() + 0.5, pos.getY() + 1.125, pos.getZ() + 0.5, stack);
+                Containers.dropItemStack(world,
+                        pos.getX() + 0.5,
+                        pos.getY() + 1.125,
+                        pos.getZ() + 0.5,
+                        recipe.getItem());
             }
         }
     }
