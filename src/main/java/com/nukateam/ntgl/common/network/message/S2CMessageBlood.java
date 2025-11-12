@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
@@ -10,7 +9,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Author: MrCrayfish
  */
-public class S2CMessageBlood extends PlayMessage<S2CMessageBlood> {
+public class S2CMessageBlood  {
     private Vec3 pos;
 
     public S2CMessageBlood() {}
@@ -19,19 +18,16 @@ public class S2CMessageBlood extends PlayMessage<S2CMessageBlood> {
         this.pos = pos;
     }
 
-    @Override
-    public void encode(S2CMessageBlood message, FriendlyByteBuf buffer) {
+    public static void encode(S2CMessageBlood message, FriendlyByteBuf buffer) {
         buffer.writeNbt(NbtUtils.writeVec3(message.pos));
     }
 
-    @Override
-    public S2CMessageBlood decode(FriendlyByteBuf buffer) {
+    public static S2CMessageBlood decode(FriendlyByteBuf buffer) {
         var pos = NbtUtils.readVec3(buffer.readNbt());
         return new S2CMessageBlood(pos);
     }
 
-    @Override
-    public void handle(S2CMessageBlood message, MessageContext supplier) {
+    public static void handle(S2CMessageBlood message, MessageContext supplier) {
         supplier.execute((() -> ClientPlayHandler.handleMessageBlood(message)));
         supplier.setHandled(true);
     }

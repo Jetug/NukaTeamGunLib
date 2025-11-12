@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
 import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
@@ -10,26 +9,23 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.Validate;
 
-public class S2CMessageUpdateAttachments extends PlayMessage<S2CMessageUpdateAttachments> {
+public class S2CMessageUpdateAttachments  {
     private ImmutableMap<ResourceLocation, AttachmentConfig> registered;
 
     public S2CMessageUpdateAttachments() {}
 
-    @Override
-    public void encode(S2CMessageUpdateAttachments message, FriendlyByteBuf buffer) {
+    public static void encode(S2CMessageUpdateAttachments message, FriendlyByteBuf buffer) {
         Validate.notNull(NetworkAttachmentManager.get());
         NetworkAttachmentManager.get().writeRegistered(buffer);
     }
 
-    @Override
-    public S2CMessageUpdateAttachments decode(FriendlyByteBuf buffer) {
+    public static S2CMessageUpdateAttachments decode(FriendlyByteBuf buffer) {
         var message = new S2CMessageUpdateAttachments();
         message.registered = NetworkAttachmentManager.readRegistered(buffer);
         return message;
     }
 
-    @Override
-    public void handle(S2CMessageUpdateAttachments message, MessageContext supplier) {
+    public static void handle(S2CMessageUpdateAttachments message, MessageContext supplier) {
         supplier.execute((() -> ClientPlayHandler.handleUpdateAttachments(message)));
         supplier.setHandled(true);
     }

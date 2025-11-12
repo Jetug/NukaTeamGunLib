@@ -1,14 +1,13 @@
 package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 
 import static com.nukateam.ntgl.client.handlers.ClientPlayHandler.*;
 
-public class S2CMessagePlayerAnimation extends PlayMessage<S2CMessagePlayerAnimation> {
+public class S2CMessagePlayerAnimation  {
     int entityId;
     AnimationType animation;
     InteractionHand hand;
@@ -21,15 +20,13 @@ public class S2CMessagePlayerAnimation extends PlayMessage<S2CMessagePlayerAnima
         this.hand = hand;
     }
 
-    @Override
-    public void encode(S2CMessagePlayerAnimation message, FriendlyByteBuf buf) {
+    public static void encode(S2CMessagePlayerAnimation message, FriendlyByteBuf buf) {
         buf.writeInt(message.entityId);
         buf.writeUtf(message.animation.toString());
         buf.writeEnum(message.hand);
     }
 
-    @Override
-    public S2CMessagePlayerAnimation decode(FriendlyByteBuf buf) {
+    public static S2CMessagePlayerAnimation decode(FriendlyByteBuf buf) {
         return new S2CMessagePlayerAnimation(
                 buf.readInt(),
                 AnimationType.getType(buf.readUtf()),
@@ -37,8 +34,7 @@ public class S2CMessagePlayerAnimation extends PlayMessage<S2CMessagePlayerAnima
         );
     }
 
-    @Override
-    public void handle(S2CMessagePlayerAnimation message, MessageContext supplier) {
+    public static void handle(S2CMessagePlayerAnimation message, MessageContext supplier) {
         supplier.execute((() -> {
             handleMessageAnimation(message);
         }));

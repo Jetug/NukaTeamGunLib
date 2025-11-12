@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -10,7 +9,7 @@ import net.minecraft.world.InteractionHand;
 /**
  * Author: MrCrayfish
  */
-public class C2SMessageReload extends PlayMessage<C2SMessageReload> {
+public class C2SMessageReload  {
     private boolean reload;
     private InteractionHand hand = InteractionHand.MAIN_HAND;
 
@@ -21,22 +20,19 @@ public class C2SMessageReload extends PlayMessage<C2SMessageReload> {
         this.hand = hand;
     }
 
-    @Override
-    public void encode(C2SMessageReload message, FriendlyByteBuf buffer) {
+    public static void encode(C2SMessageReload message, FriendlyByteBuf buffer) {
         buffer.writeBoolean(message.reload);
         buffer.writeEnum(message.hand);
     }
 
-    @Override
-    public C2SMessageReload decode(FriendlyByteBuf buffer) {
+    public static C2SMessageReload decode(FriendlyByteBuf buffer) {
         return new C2SMessageReload(buffer.readBoolean(), buffer.readEnum(InteractionHand.class));
     }
 
-    @Override
-    public void handle(C2SMessageReload message, MessageContext supplier) {
+    public static void handle(C2SMessageReload message, MessageContext supplier) {
         supplier.execute((() ->
         {
-            ServerPlayer player = supplier.getPlayer();
+            ServerPlayer player = supplier.getPlayer().get();
             if (player != null && !player.isSpectator()) {
                 ServerPlayHandler.handleReload(message, player);
             }

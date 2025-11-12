@@ -48,32 +48,7 @@ public final class PropertyHelper {
     }
 
     private static DataObject getCustomData(ItemStack stack) {
-        // First try to get data from attachment data
-        if (stack.getItem() instanceof IMeta) {
-            return MetaLoader.getInstance().getData(stack.getItem());
-        }
-        // Otherwise try to get the data from the model
         return FrameworkClientAPI.getOpenModelData(stack, null, null, 0);
-    }
-
-    public static Vec3 getScopeCamera(ItemStack stack) {
-        // Retrieve position from the model's data
-        DataObject customObject = PropertyHelper.getCustomData(stack);
-        if (customObject.has(SCOPE_KEY, DataType.OBJECT)) {
-            DataObject scopeObject = customObject.getDataObject(SCOPE_KEY);
-            if (scopeObject.has(CAMERA, DataType.ARRAY)) {
-                DataArray cameraArray = scopeObject.getDataArray(CAMERA);
-                return arrayToVec3(cameraArray, Vec3.ZERO);
-            }
-        }
-
-//        // Old method of getting the camera position
-//        if (stack.getItem() instanceof IScope scope) {
-//            Scope properties = scope.getProperties();
-//            return new Vec3(0, properties.getReticleOffset(), (properties.getViewFinderDistance()) * 16.0).add(ATTACHMENT_DEFAULT_ORIGIN); // 0.72 is magic number I decided to add long ago. Here for backwards compat.
-//        }
-
-        return ATTACHMENT_DEFAULT_ORIGIN;
     }
 
     public static Vec3 getIronSightCamera(ItemStack stack, WeaponConfig modifiedWeaponConfig) {

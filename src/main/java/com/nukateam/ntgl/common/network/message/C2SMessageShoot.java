@@ -3,12 +3,11 @@ package com.nukateam.ntgl.common.network.message;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 
-public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
+public class C2SMessageShoot  {
     private int shooterId;
     private float rotationYaw;
     private float rotationPitch;
@@ -29,8 +28,7 @@ public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
         this.action = action;
     }
 
-    @Override
-    public void encode(C2SMessageShoot messageShoot, FriendlyByteBuf buffer) {
+    public static void encode(C2SMessageShoot messageShoot, FriendlyByteBuf buffer) {
         buffer.writeInt(messageShoot.shooterId);
         buffer.writeFloat(messageShoot.rotationYaw);
         buffer.writeFloat(messageShoot.rotationPitch);
@@ -40,8 +38,7 @@ public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
         buffer.writeUtf(messageShoot.action.toString());
     }
 
-    @Override
-    public C2SMessageShoot decode(FriendlyByteBuf buffer) {
+    public static C2SMessageShoot decode(FriendlyByteBuf buffer) {
         return new C2SMessageShoot(
                 buffer.readInt(),
                 buffer.readFloat(),
@@ -52,10 +49,9 @@ public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
                 WeaponMode.getType(buffer.readUtf()));
     }
 
-    @Override
-    public void handle(C2SMessageShoot messageShoot, MessageContext supplier) {
+    public static void handle(C2SMessageShoot messageShoot, MessageContext supplier) {
         supplier.execute((() -> {
-            var player = supplier.getPlayer();
+            var player = supplier.getPlayer().get();
             if (player != null) {
                 var shooter = player.level().getEntity(messageShoot.shooterId);
 

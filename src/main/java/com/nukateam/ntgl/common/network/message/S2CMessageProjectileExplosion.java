@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.network.BufferUtil;
@@ -13,7 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Objects;
 
-public class S2CMessageProjectileExplosion extends PlayMessage<S2CMessageProjectileExplosion> {
+public class S2CMessageProjectileExplosion  {
     private Vec3 position;
     private Vec3 knockback;
     private ExplosionConfig config;
@@ -31,8 +30,7 @@ public class S2CMessageProjectileExplosion extends PlayMessage<S2CMessageProject
         this.toBlow = toBlow;
     }
 
-    @Override
-    public void encode(S2CMessageProjectileExplosion message, FriendlyByteBuf buffer) {
+    public static void encode(S2CMessageProjectileExplosion message, FriendlyByteBuf buffer) {
         BufferUtil.writeVec3(buffer, message.position);
         BufferUtil.writeVec3(buffer, message.knockback);
         buffer.writeNbt(message.config.serializeNBT());
@@ -46,8 +44,7 @@ public class S2CMessageProjectileExplosion extends PlayMessage<S2CMessageProject
         });
     }
 
-    @Override
-    public S2CMessageProjectileExplosion decode(FriendlyByteBuf buffer) {
+    public static S2CMessageProjectileExplosion decode(FriendlyByteBuf buffer) {
         position = BufferUtil.readVec3(buffer);
         knockback = BufferUtil.readVec3(buffer);
         config = ExplosionConfig.create(buffer.readNbt());
@@ -64,8 +61,7 @@ public class S2CMessageProjectileExplosion extends PlayMessage<S2CMessageProject
         return new S2CMessageProjectileExplosion(position, knockback, config, toBlow);
     }
 
-    @Override
-    public void handle(S2CMessageProjectileExplosion message, MessageContext supplier) {
+    public static void handle(S2CMessageProjectileExplosion message, MessageContext supplier) {
         supplier.execute((() -> ClientPlayHandler.handleMessageExplosion(message)));
         supplier.setHandled(true);
     }

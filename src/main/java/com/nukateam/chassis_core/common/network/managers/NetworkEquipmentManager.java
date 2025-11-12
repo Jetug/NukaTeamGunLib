@@ -5,24 +5,23 @@ import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.common.config.EquipmentConfig;
 import com.nukateam.chassis_core.common.foundation.item.IChassisEquipment;
 import com.nukateam.chassis_core.modules.config.utils.ConfigUtils;
-import com.mrcrayfish.framework.api.data.login.ILoginData;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.event.AddReloadListenerEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.minecraft.core.registries.Registries;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-
-import static net.minecraftforge.registries.Registries.ITEM;
 
 @EventBusSubscriber(modid = ChassisCore.MOD_ID)
 public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<IChassisEquipment, EquipmentConfig>> {
@@ -33,6 +32,7 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
 
     private NetworkEquipmentManager(){}
 
+    @SubscribeEvent
     public static void register(AddReloadListenerEvent event) {
         var networkGunManager = new NetworkEquipmentManager();
         event.addListener(networkGunManager);
@@ -41,7 +41,7 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
 
     @Override
     protected Map<IChassisEquipment, EquipmentConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, Registries.ITEM, (v) -> true, EquipmentConfig.class, PATH);
+        return ConfigUtils.getConfigMap(manager, BuiltInRegistries.ITEM, (v) -> v instanceof IChassisEquipment, EquipmentConfig.class, PATH);
     }
 
     @Override
@@ -49,15 +49,15 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
         var builder = ImmutableMap.<ResourceLocation, EquipmentConfig>builder();
 
         objects.forEach((item, config) -> {
-            Validate.notNull(ITEMS.getKey((Item)item));
-            builder.put(ITEMS.getKey((Item)item), config);
+            ResourceLocation key = BuiltInRegistries.ITEM.getKey((Item) item);
+            Validate.notNull(key);
+            builder.put(key, config);
             item.setConfig(new ConfigSupplier<>(config));
             Configs.EQUIPMENT_CONFIGS.put(item, new ConfigSupplier<>(config));
         });
 
         this.registeredConfig = builder.build();
     }
-
 
     public void writeRegisteredConfig(FriendlyByteBuf buffer) {
         buffer.writeVarInt(this.registeredConfig.size());
@@ -86,8 +86,10 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
     public static boolean updateRegisteredConfig(Map<ResourceLocation, EquipmentConfig> registeredConfig) {
         if (registeredConfig != null) {
             for (Map.Entry<ResourceLocation, EquipmentConfig> entry : registeredConfig.entrySet()) {
-                var item = ITEMS.getValue(entry.getKey());
-                Configs.EQUIPMENT_CONFIGS.put((IChassisEquipment) item, new ConfigSupplier<>(entry.getValue()));
+                var item = BuiltInRegistries.ITEM.getValue(entry.getKey());
+                if (item instanceof IChassisEquipment chassisEquipment) {
+                    Configs.EQUIPMENT_CONFIGS.put(chassisEquipment, new ConfigSupplier<>(entry.getValue()));
+                }
             }
             return true;
         }
@@ -103,18 +105,21 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
         instance = null;
     }
 
-    public static class LoginData implements ILoginData {
-        @Override
-        public void writeData(FriendlyByteBuf buffer) {
-            Validate.notNull(NetworkEquipmentManager.get());
-            NetworkEquipmentManager.get().writeRegisteredConfig(buffer);
-        }
+    public static class LoginDataHandler {
+        public static void handle(final FriendlyByteBuf buffer, final IPayloadContext context) {
+            // Ваша существующая логика из readData
+            var registeredConfig = readRegisteredConfigs(buffer);
+            updateRegisteredConfig(registeredConfig);
 
-        @Override
-        public Optional<String> readData(FriendlyByteBuf buffer) {
+            // Для handshake нужно подтвердить получение
+            context.replyHandler().ifPresent(handler -> handler.accept(null));
+        }
+    }
+
+    public static class LoginDataHandler {
+        public static void handle(final FriendlyByteBuf buffer, final IPayloadContext context) {
             var registeredConfig = NetworkEquipmentManager.readRegisteredConfigs(buffer);
             NetworkEquipmentManager.updateRegisteredConfig(registeredConfig);
-            return Optional.empty();
         }
     }
 }

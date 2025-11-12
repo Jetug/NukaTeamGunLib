@@ -1,13 +1,12 @@
 package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
 
-public class S2CMessageProjectileHitFluid extends PlayMessage<S2CMessageProjectileHitFluid> {
+public class S2CMessageProjectileHitFluid  {
     private Vec3 pos;
     float size;
     float speed;
@@ -24,8 +23,7 @@ public class S2CMessageProjectileHitFluid extends PlayMessage<S2CMessageProjecti
         this.projectileId = projectileId;
     }
 
-    @Override
-    public void encode(S2CMessageProjectileHitFluid message, FriendlyByteBuf buffer) {
+    public static void encode(S2CMessageProjectileHitFluid message, FriendlyByteBuf buffer) {
         buffer.writeNbt(NbtUtils.writeVec3(message.pos));
         buffer.writeFloat(message.size);
         buffer.writeFloat(message.speed);
@@ -33,8 +31,7 @@ public class S2CMessageProjectileHitFluid extends PlayMessage<S2CMessageProjecti
         buffer.writeInt(message.projectileId);
     }
 
-    @Override
-    public S2CMessageProjectileHitFluid decode(FriendlyByteBuf buffer) {
+    public static S2CMessageProjectileHitFluid decode(FriendlyByteBuf buffer) {
         var pos = NbtUtils.readVec3(buffer.readNbt());
         return new S2CMessageProjectileHitFluid(
                 pos,
@@ -45,8 +42,7 @@ public class S2CMessageProjectileHitFluid extends PlayMessage<S2CMessageProjecti
         );
     }
 
-    @Override
-    public void handle(S2CMessageProjectileHitFluid message, MessageContext supplier) {
+    public static void handle(S2CMessageProjectileHitFluid message, MessageContext supplier) {
         supplier.execute((() -> ClientPlayHandler.handleProjectileHitFluid(message)));
         supplier.setHandled(true);
     }

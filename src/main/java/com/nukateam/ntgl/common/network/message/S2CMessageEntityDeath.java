@@ -1,14 +1,13 @@
 package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.common.data.enums.DeathType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Objects;
 
-public class S2CMessageEntityDeath extends PlayMessage<S2CMessageEntityDeath> {
+public class S2CMessageEntityDeath  {
     int entityId;
     int deathTypeId;
     float motionX;
@@ -33,8 +32,7 @@ public class S2CMessageEntityDeath extends PlayMessage<S2CMessageEntityDeath> {
         this.motionZ = (float) entity.zo;
     }
 
-    @Override
-    public void encode(S2CMessageEntityDeath message, FriendlyByteBuf buf) {
+    public static void encode(S2CMessageEntityDeath message, FriendlyByteBuf buf) {
         buf.writeInt(message.entityId);
         buf.writeInt(message.deathTypeId);
         buf.writeFloat(message.motionX);
@@ -42,13 +40,11 @@ public class S2CMessageEntityDeath extends PlayMessage<S2CMessageEntityDeath> {
         buf.writeFloat(message.motionZ);
     }
 
-    @Override
-    public S2CMessageEntityDeath decode(FriendlyByteBuf buf) {
+    public static S2CMessageEntityDeath decode(FriendlyByteBuf buf) {
         return new S2CMessageEntityDeath(buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat(), buf.readFloat());
     }
 
-    @Override
-    public void handle(S2CMessageEntityDeath message, MessageContext supplier) {
+    public static void handle(S2CMessageEntityDeath message, MessageContext supplier) {
         supplier.execute((() -> {
 //			if (Config.CLIENT.particle.enableDeathFX.get()) {
 //				Player player = Minecraft.getInstance().player; //TGPackets.getPlayerFromContext(ctx);

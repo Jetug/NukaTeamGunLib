@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.common.network.message;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.network.KeyAction;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
@@ -9,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 
-public class C2SMessageGrenade extends PlayMessage<C2SMessageGrenade> {
+public class C2SMessageGrenade  {
     private KeyAction action;
     private InteractionHand hand = InteractionHand.MAIN_HAND;
     WeaponMode weaponMode;
@@ -22,27 +21,24 @@ public class C2SMessageGrenade extends PlayMessage<C2SMessageGrenade> {
         this.weaponMode = weaponMode;
     }
 
-    @Override
-    public void encode(C2SMessageGrenade message, FriendlyByteBuf buffer) {
+    public static void encode(C2SMessageGrenade message, FriendlyByteBuf buffer) {
         buffer.writeEnum(message.action);
         buffer.writeEnum(message.hand);
         buffer.writeUtf(message.weaponMode.toString());
 
     }
 
-    @Override
-    public C2SMessageGrenade decode(FriendlyByteBuf buffer) {
+    public static C2SMessageGrenade decode(FriendlyByteBuf buffer) {
         return new C2SMessageGrenade(
                 buffer.readEnum(KeyAction.class),
                 buffer.readEnum(InteractionHand.class),
                 WeaponMode.getType(buffer.readUtf()));
     }
 
-    @Override
-    public void handle(C2SMessageGrenade message, MessageContext supplier) {
+    public static void handle(C2SMessageGrenade message, MessageContext supplier) {
         supplier.execute((() ->
         {
-            ServerPlayer player = supplier.getPlayer();
+            ServerPlayer player = supplier.getPlayer().get();
             if (player != null && !player.isSpectator()) {
                 ServerPlayHandler.handleGrenade(message, player);
             }
