@@ -6,7 +6,6 @@ import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.attachment.impl.Attachment;
 import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IColored;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -21,16 +20,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class AttachmentItem<T extends Attachment> extends Item implements IAttachment<T>, IColored{
+public class AttachmentItem<T extends Attachment> extends Item implements IAttachment<T>{
     private final T attachmentData;
-    private final boolean colored;
     private AttachmentConfig config;
 
     public AttachmentItem(AttachmentType type, T attachmentData, Properties properties) {
         super(properties);
         this.config = AttachmentConfig.Builder.create().setType(type).build();
         this.attachmentData = attachmentData;
-        this.colored = true;
     }
 
     @Override
@@ -54,11 +51,6 @@ public class AttachmentItem<T extends Attachment> extends Item implements IAttac
     }
 
     @Override
-    public boolean canColor(ItemStack stack) {
-        return this.colored;
-    }
-
-    @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return enchantment == Enchantments.BINDING_CURSE || super.canApplyAtEnchantingTable(stack, enchantment);
     }
@@ -74,11 +66,6 @@ public class AttachmentItem<T extends Attachment> extends Item implements IAttac
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-//        var weapons = Arrays.asList(
-//                new ItemStack(Items.DIAMOND),
-//                new ItemStack(Items.EMERALD)
-//        );
-
         var weapons = getProperties().getWeapons(this);
         return Optional.of(new ItemsTooltipData(weapons));
     }

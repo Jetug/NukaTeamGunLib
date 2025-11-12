@@ -1,13 +1,18 @@
 package com.nukateam.ntgl.common.datagen;
 
 import com.google.gson.JsonObject;
+import com.nukateam.example.common.registery.ExampleWeapons;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
+import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipeBuilder;
 import com.nukateam.ntgl.common.foundation.init.ModRecipeSerializers;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
