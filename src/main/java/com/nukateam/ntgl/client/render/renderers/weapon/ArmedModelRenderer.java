@@ -11,7 +11,7 @@ import com.nukateam.ntgl.common.util.helpers.compatibility.ChassisHelper;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.util.ClientUtils;
-import software.bernie.geckolib.util.RenderUtils;
+import software.bernie.geckolib.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -70,7 +70,7 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
     public void renderRecursively(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
                                   MultiBufferSource bufferSource, VertexConsumer buffer,
                                   boolean isReRender, float partialTick, int packedLight, int packedOverlay,
-                                  float red, float green, float blue, float alpha) {
+                                  int colour) {
         poseStack.pushPose();
 
         switch (bone.getName()) {
@@ -89,7 +89,7 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
 
         super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource,
                 this.bufferSource.getBuffer(renderType), isReRender, partialTick, packedLight,
-                packedOverlay, red, green, blue, alpha);
+                packedOverlay, colour);
         poseStack.popPose();
     }
 
@@ -115,7 +115,7 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
         if (isRightHand || isLeftHand) {
             poseStack.pushPose();
             {
-                RenderUtils.prepMatrixForBone(poseStack, bone);
+                RenderUtil.prepMatrixForBone(poseStack, bone);
                 poseStack.translate(0.01, -0.27, 0.05);
                 poseStack.scale(bone.getScaleX(), bone.getScaleY(), bone.getScaleZ());
 

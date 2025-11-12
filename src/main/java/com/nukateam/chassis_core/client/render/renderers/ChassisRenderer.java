@@ -8,8 +8,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.DynamicGeoEntityRenderer;
-import software.bernie.geckolib.util.RenderUtils;
+import software.bernie.geckolib.renderer.specialty.DynamicGeoEntityRenderer;
+import software.bernie.geckolib.util.RenderUtil;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -49,8 +49,8 @@ public class ChassisRenderer<T extends WearableChassis> extends DynamicGeoEntity
     public void preRender(PoseStack poseStack, T animatable, BakedGeoModel model,
                           MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender,
                           float partialTick, int packedLight, int packedOverlay,
-                          float red, float green, float blue, float alpha) {
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+                          int colour) {
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
         mainHandItem = animatable.getPassengerItem(MAINHAND);
         offHandItem = animatable.getPassengerItem(OFFHAND);
         bonesToHide = animatable.getBonesToHide();
@@ -76,23 +76,25 @@ public class ChassisRenderer<T extends WearableChassis> extends DynamicGeoEntity
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
-    public void defaultRenderRecursively(PoseStack poseStack, T animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void defaultRenderRecursively(PoseStack poseStack, T animatable, GeoBone bone, RenderType renderType,
+                                         MultiBufferSource bufferSource, VertexConsumer buffer,
+                                         boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
         poseStack.pushPose();
-        RenderUtils.translateMatrixToBone(poseStack, bone);
-        RenderUtils.translateToPivotPoint(poseStack, bone);
-        RenderUtils.rotateMatrixAroundBone(poseStack, bone);
-        RenderUtils.scaleMatrixForBone(poseStack, bone);
+        RenderUtil.translateMatrixToBone(poseStack, bone);
+        RenderUtil.translateToPivotPoint(poseStack, bone);
+        RenderUtil.rotateMatrixAroundBone(poseStack, bone);
+        RenderUtil.scaleMatrixForBone(poseStack, bone);
 
         if (bone.isTrackingMatrices()) {
             var poseState = new Matrix4f(poseStack.last().pose());
-            var localMatrix = RenderUtils.invertAndMultiplyMatrices(poseState, this.entityRenderTranslations);
+            var localMatrix = RenderUtil.invertAndMultiplyMatrices(poseState, this.entityRenderTranslations);
 
-            bone.setModelSpaceMatrix(RenderUtils.invertAndMultiplyMatrices(poseState, this.modelRenderTranslations));
-            bone.setLocalSpaceMatrix(RenderUtils.translateMatrix(localMatrix, getRenderOffset(this.animatable, 1).toVector3f()));
-            bone.setWorldSpaceMatrix(RenderUtils.translateMatrix(new Matrix4f(localMatrix), this.animatable.position().toVector3f()));
+            bone.setModelSpaceMatrix(RenderUtil.invertAndMultiplyMatrices(poseState, this.modelRenderTranslations));
+            bone.setLocalSpaceMatrix(RenderUtil.translateMatrix(localMatrix, getRenderOffset(this.animatable, 1).toVector3f()));
+            bone.setWorldSpaceMatrix(RenderUtil.translateMatrix(new Matrix4f(localMatrix), this.animatable.position().toVector3f()));
         }
 
-        RenderUtils.translateAwayFromPivotPoint(poseStack, bone);
+        RenderUtil.translateAwayFromPivotPoint(poseStack, bone);
 
         this.textureOverride = getTextureOverrideForBone(bone, this.animatable, partialTick);
         var texture = this.textureOverride == null ? getTextureLocation(this.animatable) : this.textureOverride;
@@ -104,8 +106,8 @@ public class ChassisRenderer<T extends WearableChassis> extends DynamicGeoEntity
         if (renderTypeOverride != null)
             buffer = bufferSource.getBuffer(renderTypeOverride);
 
-        if (!boneRenderOverride(poseStack, bone, bufferSource, buffer, partialTick, packedLight, packedOverlay, red, green, blue, alpha))
-            super.renderCubesOfBone(poseStack, bone, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        if (!boneRenderOverride(poseStack, bone, bufferSource, buffer, partialTick, packedLight, packedOverlay, colour))
+            super.renderCubesOfBone(poseStack, bone, buffer, packedLight, packedOverlay, colour);
 
         if (renderTypeOverride != null)
             buffer = bufferSource.getBuffer(getRenderType(this.animatable, getTextureLocation(this.animatable), bufferSource, partialTick));
@@ -113,7 +115,7 @@ public class ChassisRenderer<T extends WearableChassis> extends DynamicGeoEntity
         if (!isReRender)
             applyRenderLayersForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
 
-        renderChildBones(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        renderChildBones(poseStack, animatable, bone, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
 
         poseStack.popPose();
     }
@@ -121,7 +123,7 @@ public class ChassisRenderer<T extends WearableChassis> extends DynamicGeoEntity
     @Override
     public void renderRecursively(PoseStack poseStack, T animatable, GeoBone bone, RenderType renderType,
                                   MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick,
-                                  int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+                                  int packedLight, int packedOverlay, int colour) {
         bone.setHidden(bonesToHide.contains(bone.getName()));
 
         if(Objects.equals(bone.getName(), "head_frame")) {
@@ -133,14 +135,14 @@ public class ChassisRenderer<T extends WearableChassis> extends DynamicGeoEntity
         defaultRenderRecursively(poseStack, animatable, bone, renderType, bufferSource,
                 this.bufferSource.getBuffer(renderType), isReRender,
                 partialTick, packedLight, packedOverlay,
-                red, green, blue, alpha);
+                colour);
     }
 
     @Override
     public void renderChildBones(PoseStack poseStack, T animatable, GeoBone bone, RenderType renderType,
                                  MultiBufferSource bufferSource, VertexConsumer buffer,
                                  boolean isReRender, float partialTick, int packedLight, int packedOverlay,
-                                 float red, float green, float blue, float alpha) {
+                                 int colour) {
         if (!bone.isHidingChildren()) {
             var bonesToRender = new ArrayList<>(bone.getChildBones());
             var equipmentBones = animatable.getAttachmentForBone(bone.getName());
@@ -148,7 +150,7 @@ public class ChassisRenderer<T extends WearableChassis> extends DynamicGeoEntity
 
             for (var childBone : bonesToRender) {
                 this.renderRecursively(poseStack, animatable, childBone, renderType, bufferSource, buffer,
-                        isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+                        isReRender, partialTick, packedLight, packedOverlay, colour);
             }
         }
     }
@@ -175,7 +177,7 @@ public class ChassisRenderer<T extends WearableChassis> extends DynamicGeoEntity
 
                 poseStack.pushPose();
                 {
-                    RenderUtils.prepMatrixForBone(poseStack, bone);
+                    RenderUtil.prepMatrixForBone(poseStack, bone);
 
                     var skin = humanoidRenderer.getTextureLocation(passenger);
                     var head = this.bufferSource.getBuffer(RenderType.entitySolid(skin));

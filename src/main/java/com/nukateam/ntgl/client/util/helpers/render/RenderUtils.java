@@ -11,7 +11,7 @@ import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class RenderUtils {
+public class RenderUtil {
     public static final float BEAM_ALPHA = 0.7F;
 
     public static void renderBeam(PoseStack poseStack, MultiBufferSource pBufferSource, ResourceLocation pBeamLocation,
@@ -35,7 +35,7 @@ public class RenderUtils {
                 var vertexConsumer = pBufferSource
                         .getBuffer(RenderType.beaconBeam(pBeamLocation, false));
 
-                RenderUtils.renderPart(poseStack, vertexConsumer, pColors.setAlpha(1.0F),
+                RenderUtil.renderPart(poseStack, vertexConsumer, pColors.setAlpha(1.0F),
                         pYOffset, maxY,
                         0.0F, pBeamRadius,
                         pBeamRadius, 0.0F,
@@ -49,7 +49,7 @@ public class RenderUtils {
             v = -1.0F + f2;
             u = pHeight * pTextureScale + v;
 
-            RenderUtils.renderPart(poseStack, pBufferSource.getBuffer(RenderType.beaconBeam(pBeamLocation, true)),
+            RenderUtil.renderPart(poseStack, pBufferSource.getBuffer(RenderType.beaconBeam(pBeamLocation, true)),
                     pColors.setAlpha(BEAM_ALPHA), pYOffset, maxY, minX, maxX, pGlowRadius, minZ, maxZ,
                     pGlowRadius, pGlowRadius, pGlowRadius, u, v);
         }

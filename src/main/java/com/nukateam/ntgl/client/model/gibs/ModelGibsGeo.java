@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,14 +15,12 @@ import net.minecraft.world.entity.Entity;
 import java.util.ArrayList;
 
 public class ModelGibsGeo extends ModelGibs {
-    private ArrayList<CoreGeoBone> gibs = new ArrayList<>();
-    private final BakedGeoModel model;
+    private ArrayList<GeoBone> gibs = new ArrayList<>();
     private final GeoEntityRenderer geoRenderer;
 
     public ModelGibsGeo(BakedGeoModel model, GeoEntityRenderer geoRenderer) {
-        this.model = model;
         this.geoRenderer = geoRenderer;
-        var topBones = model.getBones();
+        var topBones = model.topLevelBones();
 
         for (var bone: topBones) {
             var children = bone.getChildBones();
@@ -32,16 +30,15 @@ public class ModelGibsGeo extends ModelGibs {
 
     @Override
     public void render(Entity entity, int part, PoseStack poseStack, RenderType rendertype, MultiBufferSource buffer,
-                       VertexConsumer pVertexConsumer, int packedLight, int packedOverlay, Rgba rgba) {
+                       VertexConsumer pVertexConsumer, int packedLight, int packedOverlay, int colour) {
         var bone = (GeoBone) gibs.get(part);
         var vertexConsumer = buffer.getBuffer(rendertype);
-        var partialTick = Minecraft.getInstance().getFrameTime();
+        float partialTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
 
         geoRenderer.renderRecursively(
                 poseStack, entity, bone,
                 rendertype, buffer, vertexConsumer,
-                false, partialTick, packedLight, packedOverlay,
-                rgba.r(), rgba.g(), rgba.g(), rgba.a()
+                false, partialTick, packedLight, packedOverlay, colour
         );
     }
 

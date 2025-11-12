@@ -86,7 +86,7 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
     public void renderRecursively(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
                                   MultiBufferSource bufferSource, VertexConsumer buffer,
                                   boolean isReRender, float partialTick, int packedLight, int packedOverlay,
-                                  float red, float green, float blue, float alpha) {
+                                  int colour) {
         poseStack.pushPose();
         renderAttachments(bone);
 
@@ -97,17 +97,17 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
         }
 
         renderRecursivelyPost(poseStack, animatable, bone, renderType, bufferSource,
-                buffer, isReRender, partialTick, packedLight, packedOverlay, new Rgba(red, green, blue, alpha));
+                buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
 
         super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource,
                 this.bufferSource.getBuffer(renderType), isReRender, partialTick, packedLight,
-                packedOverlay, red, green, blue, alpha);
+                packedOverlay, colour);
         poseStack.popPose();
     }
     
     protected void renderRecursivelyPost(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
                                          MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender,
-                                         float partialTick, int packedLight, int packedOverlay, Rgba rgba) {}
+                                         float partialTick, int packedLight, int packedOverlay, int colour) {}
 
 
     protected void renderAttachments(GeoBone bone) {

@@ -5,7 +5,7 @@ import software.bernie.geckolib.cache.GeckoLibCache;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.animation.AnimationProcessor;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.data.EntityModelData;
@@ -35,7 +35,7 @@ public class GeoUtils {
     }
 
 
-    public static void setHeadAnimation(CoreGeoBone head, AnimationState animationState) {
+    public static void setHeadAnimation(GeoBone head, AnimationState animationState) {
         if (head == null) return;
         var data = (EntityModelData) animationState.getExtraData().get(DataTickets.ENTITY_MODEL_DATA);
         head.setRotX(data.headPitch() * ((float) Math.PI / 180F));
@@ -58,20 +58,20 @@ public class GeoUtils {
         return model == null ? null : model.getBone(name).orElse(null);
     }
 
-    public static Vec3 getRot(CoreGeoBone bone){
+    public static Vec3 getRot(GeoBone bone){
         return new Vec3(bone.getRotX(), bone.getRotY(), bone.getRotZ());
     }
-    public static Vec3 getPos(CoreGeoBone bone){
+    public static Vec3 getPos(GeoBone bone){
         return new Vec3(bone.getPosX(), bone.getPosY(), bone.getPosZ());
     }
 
-    public static void setRot(CoreGeoBone bone, Vec3 pos){
+    public static void setRot(GeoBone bone, Vec3 pos){
         bone.setRotX((float) pos.x);
         bone.setRotX((float) pos.y);
         bone.setRotX((float) pos.z);
     }
 
-    public static void setPos(CoreGeoBone bone, Vec3 pos){
+    public static void setPos(GeoBone bone, Vec3 pos){
         bone.setPosX((float) pos.x);
         bone.setPosY((float) pos.y);
         bone.setPosZ((float) pos.z);

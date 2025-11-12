@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,7 +30,7 @@ public interface IHeldAnimation {
                                             InteractionHand hand, float aimProgress) {
     }
 
-    default void applyGeoModelRotation(LivingEntity entity, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head, InteractionHand interactionHand){}
+    default void applyGeoModelRotation(LivingEntity entity, GeoBone rightArm, GeoBone leftArm, GeoBone head, InteractionHand interactionHand){}
 
     /**
      * Allows for transformations of the entity model. This is where the entire entity model can

@@ -55,7 +55,7 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
     public void actuallyRender(PoseStack poseStack, Animator animatable, BakedGeoModel model,
                                RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer,
                                boolean isReRender, float partialTick, int packedLight, int packedOverlay,
-                               float red, float green, float blue, float alpha) {
+                               int colour) {
         poseStack.pushPose();
         {
             boolean shouldSit = false;
@@ -72,7 +72,7 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
             poseStack.translate(0.0, 0.009999999776482582, 0.0);
             this.modelRenderTranslations = new Matrix4f(poseStack.last().pose());
 
-            super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+            super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
         }
         poseStack.popPose();
     }

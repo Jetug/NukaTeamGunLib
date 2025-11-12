@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.renderers.projectiles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.helpers.render.RenderUtils;
+import com.nukateam.ntgl.client.util.helpers.render.RenderUtil;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.TeslaProjectile;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -92,7 +92,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
                 var yOffset = 0; //(int) ammo.position().y;
                 var color = new Rgba(1, 1, 1, 1);
 
-                RenderUtils.renderBeam(poseStack, bufferSource, texture, partialTicks, 1.0F,
+                RenderUtil.renderBeam(poseStack, bufferSource, texture, partialTicks, 1.0F,
                         gameTime, (float)yOffset - 0.1f, (float)(length + 0.1), color, radius, glowRadius);
 
             poseStack.popPose();

@@ -3,7 +3,7 @@ package com.nukateam.ntgl.mixin.ntgl.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.ClientProxy;
 import com.nukateam.ntgl.common.data.enums.DeathType;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.Entity;

@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render.renderers.projectiles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.helpers.render.RenderUtils;
+import com.nukateam.ntgl.client.util.helpers.render.RenderUtil;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.LaserProjectile;
 import net.minecraft.client.Minecraft;
@@ -81,7 +81,7 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
             int yOffset = 0;
             var color = new Rgba(1, 1, 1, 1);
 
-            RenderUtils.renderBeam(poseStack, bufferSource, getTextureLocation(projectile), partialTicks, 1.0F,
+            RenderUtil.renderBeam(poseStack, bufferSource, getTextureLocation(projectile), partialTicks, 1.0F,
                     gameTime, (float) yOffset, distance, color, radius, glowRadius);
         }
         poseStack.popPose();

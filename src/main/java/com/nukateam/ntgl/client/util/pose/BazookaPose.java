@@ -4,7 +4,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.holders.GripType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -83,7 +83,7 @@ public class BazookaPose extends WeaponPose {
     }
 
     @Override
-    public void applyGeoModelRotation(LivingEntity entity, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head, InteractionHand interactionHand) {
+    public void applyGeoModelRotation(LivingEntity entity, GeoBone rightArm, GeoBone leftArm, GeoBone head, InteractionHand interactionHand) {
         rightArm.setRotX((float)Math.toRadians(80F));
         rightArm.setRotY((float)Math.toRadians(35F));
         rightArm.setRotZ((float)Math.toRadians(0F));

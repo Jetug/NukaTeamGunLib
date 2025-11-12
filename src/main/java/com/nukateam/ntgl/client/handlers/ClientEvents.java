@@ -5,12 +5,13 @@ import com.nukateam.ntgl.client.model.GunIconModels;
 import com.nukateam.ntgl.client.tooltip.*;
 import com.nukateam.ntgl.client.render.hud.*;
 import com.nukateam.ntgl.client.tooltip.ItemsTooltipData;
-import net.minecraftforge.api.distmarker.*;
-import net.minecraftforge.client.event.*;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.*;
-import net.minecraftforge.fml.common.*;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 
-@EventBusSubscriber(modid = Ntgl.MOD_ID@EventBusSubscriber, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ClientEvents {
     @SubscribeEvent
     public static void onRegisterTooltip(RegisterClientTooltipComponentFactoriesEvent event) {

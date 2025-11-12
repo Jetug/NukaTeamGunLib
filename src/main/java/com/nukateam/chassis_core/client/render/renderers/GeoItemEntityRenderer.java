@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
@@ -42,7 +42,7 @@ public class GeoItemEntityRenderer<T extends GeoAnimatable> extends GeoObjectRen
     public void actuallyRender(PoseStack poseStack, T animatable, BakedGeoModel model,
                                RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer,
                                boolean isReRender, float partialTick, int packedLight, int packedOverlay,
-                               float red, float green, float blue, float alpha) {
+                               int colour) {
 
         poseStack.pushPose();
 
@@ -77,7 +77,7 @@ public class GeoItemEntityRenderer<T extends GeoAnimatable> extends GeoObjectRen
         poseStack.translate(0.0, 0.009999999776482582, 0.0);
         this.modelRenderTranslations = new Matrix4f(poseStack.last().pose());
 
-        super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
+        super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
 
         poseStack.popPose();
     }

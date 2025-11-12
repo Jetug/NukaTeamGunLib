@@ -8,7 +8,7 @@ import com.nukateam.ntgl.client.model.gibs.ModelGibsGeo;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.entity.projectile.GoreData;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import net.minecraft.client.Minecraft;

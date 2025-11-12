@@ -9,7 +9,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -51,7 +51,7 @@ public class KnifePose implements IHeldAnimation {
 
 //    @Override
     @OnlyIn(Dist.CLIENT)
-    public void applyGeoModelRotation(LivingEntity entity, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head, InteractionHand interactionHand) {
+    public void applyGeoModelRotation(LivingEntity entity, GeoBone rightArm, GeoBone leftArm, GeoBone head, InteractionHand interactionHand) {
         try {
             var right = interactionHand == InteractionHand.MAIN_HAND;
             var arm = right ? rightArm : leftArm;

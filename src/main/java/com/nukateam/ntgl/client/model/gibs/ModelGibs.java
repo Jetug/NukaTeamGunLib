@@ -9,7 +9,7 @@ import net.minecraft.world.entity.Entity;
 
 public abstract class ModelGibs {
     public abstract void render(Entity entity, int part, PoseStack poseStack, RenderType rendertype, MultiBufferSource buffer,
-                                VertexConsumer pVertexConsumer, int packedLight, int packedOverlay, Rgba rgba);
+                                VertexConsumer pVertexConsumer, int packedLight, int packedOverlay, int colour);
 
     public abstract int getNumGibs();
 }

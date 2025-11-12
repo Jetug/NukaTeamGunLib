@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.util.pose;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.client.util.IHeldAnimation;
 import com.mojang.blaze3d.vertex.PoseStack;
-import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.cache.object.GeoBone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -72,7 +72,7 @@ public abstract class WeaponPose implements IHeldAnimation {
     }
 
     @Override
-    public void applyGeoModelRotation(LivingEntity entity, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head, InteractionHand interactionHand) {
+    public void applyGeoModelRotation(LivingEntity entity, GeoBone rightArm, GeoBone leftArm, GeoBone head, InteractionHand interactionHand) {
 //        var mc = Minecraft.getInstance();
 //
 //        var rightArm = animationProcessor.getBone("right_arm");
@@ -152,7 +152,7 @@ public abstract class WeaponPose implements IHeldAnimation {
         return Mth.lerp(Minecraft.getInstance().getFrameTime(), entity.xRotO, entity.getXRot()) / 90F;
     }
 
-    private void applyAimPose(AimPose targetPose, CoreGeoBone rightArm, CoreGeoBone leftArm,
+    private void applyAimPose(AimPose targetPose, GeoBone rightArm, GeoBone leftArm,
                               float partial, float zoom, float offhand, boolean sneaking) {
         this.applyLimbPoseToModelRenderer(
                 targetPose.getIdle().getRightArm(),
@@ -169,7 +169,7 @@ public abstract class WeaponPose implements IHeldAnimation {
     }
 
     private void applyLimbPoseToModelRenderer(LimbPose targetIdlePose, LimbPose targetAimingPose,
-                                              LimbPose idlePose, LimbPose aimingPose, CoreGeoBone modelPart,
+                                              LimbPose idlePose, LimbPose aimingPose, GeoBone modelPart,
                                               float partial, float zoom, float leftHanded, boolean sneaking) {
         modelPart.setRotX(getValue(targetIdlePose.getRotationAngleX(), targetAimingPose.getRotationAngleX(), idlePose.getRotationAngleX(), aimingPose.getRotationAngleX(), modelPart.getRotX(), partial, zoom, 1F));
         modelPart.setRotY(getValue(targetIdlePose.getRotationAngleY(), targetAimingPose.getRotationAngleY(), idlePose.getRotationAngleY(), aimingPose.getRotationAngleY(), modelPart.getRotY(), partial, zoom, leftHanded));

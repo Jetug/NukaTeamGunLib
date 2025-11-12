@@ -10,7 +10,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 
 import static com.nukateam.chassis_core.modules.example.common.registery.EntityTypes.EXAMPLE_CHASSIS;
 
-@EventBusSubscriber(modid = ChassisCore.MOD_ID@EventBusSubscriber, value = Dist.CLIENT)
+@EventBusSubscriber(modid = ChassisCore.MOD_ID, value = Dist.CLIENT)
 public class SetupEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()

@@ -10,7 +10,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 
 import static com.nukateam.example.common.registery.EntityTypes.*;
 
-@EventBusSubscriber(modid = Ntgl.MOD_ID@EventBusSubscriber, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class SetupEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
