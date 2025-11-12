@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.util.helpers;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.resources.ResourceLocation;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import javax.annotation.Nullable;
 
 import java.util.HashMap;
 

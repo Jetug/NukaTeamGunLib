@@ -22,38 +22,6 @@ public class RecipeGen extends RecipeProvider
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> consumer)
     {
-        // Dye Item
-        consumer.accept(new FinishedRecipe()
-        {
-            @Override
-            public void serializeRecipeData(JsonObject json) {}
-
-            @Override
-            public RecipeSerializer<?> getType()
-            {
-                return ModRecipeSerializers.DYE_ITEM.get();
-            }
-
-            @Override
-            public ResourceLocation getId()
-            {
-                return ResourceLocation.tryBuild(Ntgl.MOD_ID, "dye_item");
-            }
-
-            @Override
-            @Nullable
-            public JsonObject serializeAdvancement()
-            {
-                return null;
-            }
-
-            @Override
-            public ResourceLocation getAdvancementId()
-            {
-                return null;
-            }
-        });
-
 //        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.WORKBENCH.get())
 //                .pattern("CCC")
 //                .pattern("III")

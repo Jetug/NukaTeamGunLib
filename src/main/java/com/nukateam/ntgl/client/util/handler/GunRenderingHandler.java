@@ -211,8 +211,7 @@ public class GunRenderingHandler {
         time = sightAnimation.getViewportCurve().apply(time);
 
         // Apply the new FOV
-        var viewportFov = PropertyHelper.getViewportFov(heldItem);
-        var newFov = viewportFov > 0 ? viewportFov : event.getFOV(); // Backwards compatibility
+        var newFov = event.getFOV(); // Backwards compatibility
         event.setFOV(Mth.lerp(time, event.getFOV(), newFov));
     }
 
@@ -336,7 +335,7 @@ public class GunRenderingHandler {
                 zOffset -= 0.5 * scaleZ;
 
                 /* Translate to the origin of the weapon */
-                var gunOrigin = getModelOrigin(heldItem, GUN_DEFAULT_ORIGIN);
+                var gunOrigin = GUN_DEFAULT_ORIGIN;
                 xOffset += gunOrigin.x * 0.0625 * scaleX;
                 yOffset += gunOrigin.y * 0.0625 * scaleY;
                 zOffset += gunOrigin.z * 0.0625 * scaleZ;
@@ -346,11 +345,7 @@ public class GunRenderingHandler {
                 xOffset += ironSightCamera.x * 0.0625 * scaleX;
                 yOffset += ironSightCamera.y * 0.0625 * scaleY;
                 zOffset += ironSightCamera.z * 0.0625 * scaleZ;
-
-                /* Need to add this to ensure old method still works */
-                if (isLegacyIronSight(heldItem)) {
-                    zOffset += 0.72;
-                }
+                zOffset += 0.72;
 
                 /* Controls the direction of the following translations, changes depending on the main hand. */
                 var side = isRight ? 1.0F : -1.0F;

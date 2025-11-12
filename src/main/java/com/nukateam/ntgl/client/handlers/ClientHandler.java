@@ -62,44 +62,14 @@ public class ClientHandler {
             GunButtonBindings.register();
         }
 
-        setupRenderLayers();
-        registerColors();
+//        setupRenderLayers();
         registerScreenFactories();
         AnimationRegistry.register();
     }
 
-    private static void setupRenderLayers() {
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.WORKBENCH.get(), RenderType.cutout());
-    }
-
-    private static void registerColors() {
-        ItemColor color = (stack, index) ->
-        {
-            if (!IColored.isDyeable(stack)) {
-                return -1;
-            }
-            if (index == 0 && stack.hasTag() && stack.getTag().contains("Color", Tag.TAG_INT)) {
-                return stack.getTag().getInt("Color");
-            }
-            if (index == 0 && stack.getItem() instanceof IAttachment) {
-                var renderingWeapon = GunRenderingHandler.get().getRenderingWeapon();
-                if (renderingWeapon != null) {
-                    return Minecraft.getInstance().getItemColors().getColor(renderingWeapon, index);
-                }
-            }
-            if (index == 2) // Reticle colour
-            {
-                return PropertyHelper.getReticleColor(stack);
-            }
-            return -1;
-        };
-        ForgeRegistries.ITEMS.forEach(item ->
-        {
-            if (item instanceof IColored) {
-                Minecraft.getInstance().getItemColors().register(color, item);
-            }
-        });
-    }
+//    private static void setupRenderLayers() {
+//        ItemBlockRenderTypes.setRenderLayer(ModBlocks.WORKBENCH.get(), RenderType.cutout());
+//    }
 
     private static void registerScreenFactories() {
         MenuScreens.register(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
@@ -153,12 +123,6 @@ public class ClientHandler {
                 e.printStackTrace();
             }
         }
-    }
-
-    public static void onRegisterReloadListener(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener((ResourceManagerReloadListener) manager -> {
-            PropertyHelper.resetCache();
-        });
     }
 
     public static Screen createEditorScreen(IEditorMenu menu) {

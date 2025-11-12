@@ -43,7 +43,7 @@ import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
 import static com.nukateam.ntgl.common.util.util.WeaponStateHelper.AMMO_TAG;
 import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
-public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable, IColored, IMeta{
+public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable, IColored{
     public static final String VARIANT = "variant";
     private final Lazy<ResourceLocation> id = Lazy.of(this::getRegistryName);
     private final WeakHashMap<CompoundTag, WeaponConfig> modifiedGunCache = new WeakHashMap<>();

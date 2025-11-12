@@ -335,20 +335,6 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
     private void updateColor() {
         if (this.currentTab != null) {
             ItemStack item = this.displayStack;
-            if (IColored.isDyeable(item)) {
-                IColored colored = (IColored) item.getItem();
-                if (!this.workbench.getItem(0).isEmpty()) {
-                    ItemStack dyeStack = this.workbench.getItem(0);
-                    if (dyeStack.getItem() instanceof DyeItem) {
-                        DyeColor color = ((DyeItem) dyeStack.getItem()).getDyeColor();
-                        float[] components = color.getTextureDiffuseColors();
-                        int red = (int) (components[0] * 255F);
-                        int green = (int) (components[1] * 255F);
-                        int blue = (int) (components[2] * 255F);
-                        colored.setColor(item, ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | ((blue & 0xFF)));
-                    } else colored.removeColor(item);
-                } else colored.removeColor(item);
-            }
         }
     }
 
