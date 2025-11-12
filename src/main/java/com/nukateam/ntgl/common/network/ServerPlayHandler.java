@@ -51,9 +51,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.NeoForge;
 import net.minecraftforge.network.NetworkHooks;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 
 import java.util.function.Predicate;
 
@@ -97,7 +97,7 @@ public class ServerPlayHandler {
             var data = new WeaponData(heldItem, shooter).setWeaponMode(message.getMode());
 
             if (modifiedGun != null) {
-                if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand))) {
+                if (NeoForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand))) {
                     return;
                 }
 
@@ -196,7 +196,7 @@ public class ServerPlayHandler {
                 if (shooter instanceof Player player)
                     player.awardStat(Stats.ITEM_USED.get(heldItem.getItem()));
 
-                MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
+                NeoForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
             }
         } else {
             world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(),
@@ -380,7 +380,7 @@ public class ServerPlayHandler {
 
         var gun = player.getItemInHand(message.getHand());
 
-        if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, gun, message.getHand()))) {
+        if (NeoForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, gun, message.getHand()))) {
             dataKey.setValue(player, false);
             return;
         }

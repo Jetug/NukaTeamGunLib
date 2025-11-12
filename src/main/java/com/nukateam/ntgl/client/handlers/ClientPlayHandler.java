@@ -24,7 +24,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 
 import javax.annotation.Nullable;
 

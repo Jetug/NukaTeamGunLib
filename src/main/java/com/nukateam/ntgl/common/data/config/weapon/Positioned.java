@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.util.util.SuperBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public class Positioned implements INBTSerializable<CompoundTag> {
     public static final String OFFSET = "Offset";
@@ -15,14 +15,14 @@ public class Positioned implements INBTSerializable<CompoundTag> {
     @Optional protected Vec3 offset = Vec3.ZERO;
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.put(OFFSET, NbtUtils.writeVec3(offset));
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(OFFSET, Tag.TAG_COMPOUND)) {
             this.offset = NbtUtils.readVec3(tag.getCompound(OFFSET));
         }

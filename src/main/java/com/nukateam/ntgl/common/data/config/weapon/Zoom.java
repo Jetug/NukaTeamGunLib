@@ -6,7 +6,7 @@ import com.nukateam.ntgl.common.util.util.NbtUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public class Zoom implements INBTSerializable<CompoundTag> {
     public static final String FOV_MODIFIER = "FovModifier";
@@ -16,7 +16,7 @@ public class Zoom implements INBTSerializable<CompoundTag> {
     @Optional Vec3 offset = Vec3.ZERO;
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.putFloat(FOV_MODIFIER, this.fovModifier);
         tag.put(OFFSET, NbtUtils.writeVec3(offset));
@@ -24,7 +24,7 @@ public class Zoom implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(FOV_MODIFIER, Tag.TAG_ANY_NUMERIC)) {
             this.fovModifier = tag.getFloat(FOV_MODIFIER);
         }

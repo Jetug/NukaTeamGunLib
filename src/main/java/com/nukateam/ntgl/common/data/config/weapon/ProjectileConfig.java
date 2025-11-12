@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import net.neoforged.api.distmarker.Dist;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -50,7 +50,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
     ResourceLocation hitSound;
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.putString("Projectile", this.projectile.toString());
         tag.putString("DamageType", this.damageType.location().toString());
@@ -76,7 +76,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("Visible", Tag.TAG_ANY_NUMERIC)) {
             this.visible = tag.getBoolean("Visible");
         }

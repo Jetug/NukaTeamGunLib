@@ -24,7 +24,7 @@ public class ClientEquipHandler {
     private ClientEquipHandler(){}
 
     @SubscribeEvent
-    public void onPostClientTick(TickEvent.ClientTickEvent event) {
+    public void onPostClientTick(ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END)
             return;
         tickHand(InteractionHand.MAIN_HAND);

@@ -8,7 +8,7 @@ import com.nukateam.chassis_core.modules.config.utils.NbtUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -26,7 +26,7 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
 
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.putString("part", this.part.toString());
         tag.put("chassis", NbtUtils.serializeSet(this.chassis));
@@ -35,7 +35,7 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("part", Tag.TAG_STRING)) {
             this.part = ChassisPart.getType(tag.getString("part"));
         }

@@ -16,7 +16,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,7 +62,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IWeaponModifier
     @Optional Set<AmmoHolder> fuel = new HashSet<>();
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         // Existing serialization
         tag.putString("fireSoundVolume", this.fireSoundVolume);
@@ -108,7 +108,7 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IWeaponModifier
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         // Existing deserialization
         if (tag.contains("fireSoundVolume", Tag.TAG_STRING)) this.fireSoundVolume = tag.getString("fireSoundVolume");
         if (tag.contains("fireSound", Tag.TAG_STRING)) this.fireSound = tag.getString("fireSound");

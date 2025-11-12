@@ -1,8 +1,9 @@
 package com.nukateam.ntgl.common.data.holders;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -76,7 +77,7 @@ public class AmmoHolder extends ResourceHolder {
     }
 
     private static @Nullable ResourceLocation getKey(ItemStack stack) {
-        return Registries.ITEM.getKey(stack.getItem());
+        return BuiltInRegistries.ITEM.getKey(stack.getItem());
     }
 
     public static class Builder {

@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.PowderSnowBlock;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy;
 
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.*;
 import static net.minecraft.network.syncher.SynchedEntityData.defineId;

@@ -1,13 +1,14 @@
 
 package com.nukateam.example.client;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 import org.apache.commons.io.FilenameUtils;
 
 
@@ -18,8 +19,8 @@ public class EntityModel<T extends LivingEntity & GeoAnimatable> extends GeoMode
     }
 
     public static ResourceLocation getResource(Entity animatable, String path, String extension) {
-        var name = getResourceName(Registries.ENTITY_TYPE.getKey(animatable.getType()));
-        var modId = Registries.ENTITY_TYPE.getKey(animatable.getType()).getNamespace();
+        var name = getResourceName(BuiltInRegistries.ENTITY_TYPE.getKey(animatable.getType()));
+        var modId = BuiltInRegistries .ENTITY_TYPE.getKey(animatable.getType()).getNamespace();
 
         return ResourceLocation.tryBuild(modId, path + name + extension);
     }

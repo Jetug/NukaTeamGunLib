@@ -10,7 +10,7 @@ import com.nukateam.ntgl.common.util.annotation.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -84,7 +84,7 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional protected LinkedHashSet<AmmoHolder> fuel = new LinkedHashSet<>();
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putInt      (RATE, this.rate);
         tag.putBoolean  (FULL_CHARGE, this.fullCharge);
@@ -122,7 +122,7 @@ public class General implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(FIRE_MODE, Tag.TAG_COMPOUND)) {
             this.fireMode = NbtUtils.deserializeFireMode(tag.getCompound(FIRE_MODE));
         }

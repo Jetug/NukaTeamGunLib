@@ -14,6 +14,7 @@ import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.item.attachment.BarrelItem;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,7 +22,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -153,7 +154,7 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
 
     protected boolean shouldRenderAttachment(Modules.Attachment attachment, ItemStack item) {
         if (transformType != ItemDisplayContext.GUI) {
-            var itemId = Registries.ITEM.getKey(item.getItem());
+            var itemId = BuiltInRegistries.ITEM.getKey(item.getItem());
             return !item.isEmpty() && attachment.getItemId().equals(itemId);
         }
         return false;

@@ -38,7 +38,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;

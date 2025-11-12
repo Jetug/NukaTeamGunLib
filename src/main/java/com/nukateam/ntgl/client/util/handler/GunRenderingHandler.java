@@ -112,7 +112,7 @@ public class GunRenderingHandler {
     }
 
     @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
+    public void onTick(ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END)
             return;
 

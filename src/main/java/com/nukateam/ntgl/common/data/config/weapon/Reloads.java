@@ -3,7 +3,7 @@
 //import com.nukateam.ntgl.common.util.annotation.Optional;
 //import net.minecraft.nbt.CompoundTag;
 //import net.minecraft.nbt.Tag;
-//import net.minecraftforge.common.util.INBTSerializable;
+//import net.neoforged.neoforge.common.util.INBTSerializable;
 //import net.minecraftforge.fml.util.thread.SidedThreadGroups;
 //
 //public class Reloads implements INBTSerializable<CompoundTag> {
@@ -26,7 +26,7 @@
 //    private boolean openBolt = false;
 //
 //    @Override
-//    public CompoundTag serializeNBT() {
+//    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
 //        CompoundTag tag = new CompoundTag();
 //        tag.putInt("MaxAmmo", this.maxAmmo);
 //        tag.putBoolean("MagFed", this.magFed);
@@ -41,7 +41,7 @@
 //    }
 //
 //    @Override
-//    public void deserializeNBT(CompoundTag tag) {
+//    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
 //        if (tag.contains("MaxAmmo", Tag.TAG_ANY_NUMERIC)) {
 //            this.maxAmmo = tag.getInt("MaxAmmo");
 //        }

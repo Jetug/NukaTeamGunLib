@@ -4,7 +4,7 @@ import com.nukateam.chassis_core.common.events.CommonInputEvent;
 import com.nukateam.chassis_core.common.input.InputKey;
 import com.nukateam.chassis_core.common.input.KeyAction;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.NeoForge;
 
 import static com.nukateam.chassis_core.common.input.InputKey.JUMP;
 import static com.nukateam.chassis_core.common.input.KeyAction.PRESS;
@@ -15,7 +15,7 @@ import static com.nukateam.chassis_core.common.util.helpers.PlayerUtils.isWearin
 @SuppressWarnings("ConstantConditions")
 public class CommonInputHandler {
     public static void onKeyInput(com.nukateam.chassis_core.common.input.InputKey key, KeyAction action, Player player) {
-        MinecraftForge.EVENT_BUS.post(new CommonInputEvent(key, action, player));
+        NeoForge.EVENT_BUS.post(new CommonInputEvent(key, action, player));
 
         if (!isWearingChassis(player) || key == null) return;
 

@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.NeoForge;
 import net.minecraftforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 
@@ -38,7 +38,7 @@ public class ClientReloadHandler {
     }
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
+    public void onClientTick(ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END)
             return;
 
@@ -102,7 +102,7 @@ public class ClientReloadHandler {
 
                     if (WeaponStateHelper.getAmmoCount(data) >= WeaponModifierHelper.getMaxAmmo(data))
                         return;
-                    if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack, hand)))
+                    if (NeoForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack, hand)))
                         return;
 
                     dataKey.setValue(player, true);
@@ -110,7 +110,7 @@ public class ClientReloadHandler {
                     this.reloadingSlot = player.getInventory().selected;
                     reloadTimer = WeaponModifierHelper.getReloadTime(data);
 
-                    MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack, hand));
+                    NeoForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack, hand));
                 }
             }
         } else {

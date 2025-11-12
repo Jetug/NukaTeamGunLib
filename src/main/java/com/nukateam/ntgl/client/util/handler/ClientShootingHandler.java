@@ -21,7 +21,7 @@ import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.NeoForge;
 import net.minecraftforge.event.TickEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -160,7 +160,7 @@ public class ClientShootingHandler {
     }
 
     @SubscribeEvent
-    public void onHandleShooting(TickEvent.ClientTickEvent evt) {
+    public void onHandleShooting(ClientTickEvent evt) {
         if (evt.phase == TickEvent.Phase.START) {
             reduceGaps();
 
@@ -245,7 +245,7 @@ public class ClientShootingHandler {
             var shootGap = getCooldown(shooter, hand);
 
             if (shootGap <= 0) {
-                if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand)))
+                if (NeoForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand)))
                     return;
 
                 // CHECK HERE: Change this to test different rpm settings.
@@ -265,7 +265,7 @@ public class ClientShootingHandler {
                     Ntgl.LOGGER.error(e.getMessage(), e);
                 }
 
-                MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
+                NeoForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
             }
         } else {
             return;

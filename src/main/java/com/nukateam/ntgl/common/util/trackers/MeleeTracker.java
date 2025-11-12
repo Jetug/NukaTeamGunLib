@@ -25,7 +25,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.NeoForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -186,7 +186,7 @@ public class MeleeTracker {
                 }
             }
 
-            if (!MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(wielder, weaponData, hand, targetsToAttack))) {
+            if (!NeoForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(wielder, weaponData, hand, targetsToAttack))) {
                 if (!targetsToAttack.isEmpty()) {
                     for (var target : targetsToAttack) {
                         if(wielder.getVehicle() != target) {
@@ -196,7 +196,7 @@ public class MeleeTracker {
 
                     playAttackSound(wielder);
                     spawnAttackEffects(wielder, targetsToAttack);
-                    MinecraftForge.EVENT_BUS.post(new MeleeAttackEvent.Post(wielder, weaponData, hand, targetsToAttack));
+                    NeoForge.EVENT_BUS.post(new MeleeAttackEvent.Post(wielder, weaponData, hand, targetsToAttack));
                 }
             }
         }

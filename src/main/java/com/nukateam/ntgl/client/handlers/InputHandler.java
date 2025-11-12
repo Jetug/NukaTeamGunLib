@@ -30,7 +30,7 @@ import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.canUseOffh
 @EventBusSubscriber(value = Dist.CLIENT)
 public class InputHandler {
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END && isInGame()) {
             handleKeys();
             handleDebugKeys();

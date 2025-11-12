@@ -4,7 +4,7 @@ import com.nukateam.chassis_core.ChassisCore;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 
 import java.util.function.Supplier;
 

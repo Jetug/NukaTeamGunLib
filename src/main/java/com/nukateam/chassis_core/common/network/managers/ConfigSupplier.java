@@ -1,7 +1,7 @@
 package com.nukateam.chassis_core.common.network.managers;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 /**
  * A simple wrapper for a config object to pass to item. This is to indicate to developers that

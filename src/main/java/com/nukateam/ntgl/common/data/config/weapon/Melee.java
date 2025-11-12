@@ -10,7 +10,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -37,7 +37,7 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
     private float angle = 10;
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.putFloat(DAMAGE, this.damage);
         tag.putString(MODE, this.mode.toString());
@@ -51,7 +51,7 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(MODE, Tag.TAG_STRING)) {
             this.mode = MeleeMode.getType(tag.getString(MODE));
         }

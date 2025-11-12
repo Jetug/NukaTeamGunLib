@@ -18,6 +18,7 @@ import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -91,7 +92,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.put(GENERAL, this.general.serializeNBT());
         tag.put(MELEE, this.melee.serializeNBT());
@@ -110,7 +111,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(GENERAL, Tag.TAG_COMPOUND)) {
             this.general.deserializeNBT(tag.getCompound(GENERAL));
         }
@@ -252,7 +253,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
     }
 
     public Modules.Attachment findAttachment(Item item) {
-        var itemId = Registries.ITEM.getKey(item);
+        var itemId = BuiltInRegistries.ITEM.getKey(item);
 
         if(item instanceof IAttachment attachmentItem){
             var attachmentType = attachmentItem.getType();

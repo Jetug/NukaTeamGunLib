@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 import java.util.*;
@@ -39,7 +39,7 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
     public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {}
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.put(GENERAL, this.general.serializeNBT());
         tag.put(MELEE, this.melee.serializeNBT());
@@ -53,7 +53,7 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(GENERAL, Tag.TAG_COMPOUND)) {
             this.general.deserializeNBT(tag.getCompound(GENERAL));
         }

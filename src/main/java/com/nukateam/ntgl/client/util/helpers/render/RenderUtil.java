@@ -3,6 +3,7 @@ package com.nukateam.ntgl.client.util.helpers.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.common.util.data.Rgba;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -16,7 +17,7 @@ public class RenderUtil {
 
     public static void renderBeam(PoseStack poseStack, MultiBufferSource pBufferSource, ResourceLocation pBeamLocation,
                                   float pPartialTick, float pTextureScale, long gameTime, float pYOffset, float pHeight,
-                                  Rgba pColors, float pBeamRadius, float pGlowRadius) {
+                                  Rgba colors, float pBeamRadius, float pGlowRadius) {
         var maxY = pYOffset + pHeight;
         float f = (float) Math.floorMod(gameTime, 40) + pPartialTick;
         float f1 = pHeight < 0 ? f : -f;
@@ -35,7 +36,7 @@ public class RenderUtil {
                 var vertexConsumer = pBufferSource
                         .getBuffer(RenderType.beaconBeam(pBeamLocation, false));
 
-                RenderUtil.renderPart(poseStack, vertexConsumer, pColors.setAlpha(1.0F),
+                RenderUtil.renderPart(poseStack, vertexConsumer, colors.setAlpha(1.0F),
                         pYOffset, maxY,
                         0.0F, pBeamRadius,
                         pBeamRadius, 0.0F,
@@ -50,14 +51,14 @@ public class RenderUtil {
             u = pHeight * pTextureScale + v;
 
             RenderUtil.renderPart(poseStack, pBufferSource.getBuffer(RenderType.beaconBeam(pBeamLocation, true)),
-                    pColors.setAlpha(BEAM_ALPHA), pYOffset, maxY, minX, maxX, pGlowRadius, minZ, maxZ,
+                    colors.setAlpha(BEAM_ALPHA), pYOffset, maxY, minX, maxX, pGlowRadius, minZ, maxZ,
                     pGlowRadius, pGlowRadius, pGlowRadius, u, v);
         }
         poseStack.popPose();
     }
 
-    public static void renderPart(PoseStack poseStack, VertexConsumer pConsumer,
-                                   Rgba pColors,
+    public static void renderPart(PoseStack poseStack, VertexConsumer consumer,
+                                   Rgba colors,
                                    float pMinY, float pMaxY,
                                    float minX, float maxX,
                                    float minZ, float maxZ,
@@ -65,42 +66,37 @@ public class RenderUtil {
                                    float pX3, float pZ3,
                                    float u, float v) {
         var pose = poseStack.last();
-        var matrix4f = pose.pose();
-        var matrix3f = pose.normal();
 
-        float red = pColors.r();
-        float green = pColors.g();
-        float blue = pColors.b();
-        float alpha = pColors.a();
-
-        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, minX, maxX, minZ, maxZ, u, v);
-        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, pX3, pZ3, pX2, pZ2, u, v);
-        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, minZ, maxZ, pX3, pZ3, u, v);
-        renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, pX2, pZ2, minX, maxX, u, v);
+        renderQuad(pose, consumer, colors, pMinY, pMaxY, minX, maxX, minZ, maxZ, u, v);
+        renderQuad(pose, consumer, colors, pMinY, pMaxY, pX3, pZ3, pX2, pZ2, u, v);
+        renderQuad(pose, consumer, colors, pMinY, pMaxY, minZ, maxZ, pX3, pZ3, u, v);
+        renderQuad(pose, consumer, colors, pMinY, pMaxY, pX2, pZ2, minX, maxX, u, v);
     }
 
-    public static void renderQuad(Matrix4f pPose, Matrix3f pNormal, VertexConsumer pConsumer,
-                                   float pRed, float pGreen, float pBlue, float pAlpha,
+    public static void renderQuad(PoseStack.Pose pose, VertexConsumer consumer, Rgba colors,
                                    float pMinY, float pMaxY,
                                    float pMinX, float pMinZ,
                                    float pMaxX, float pMaxZ,
 
                                    float pMinV, float pMaxV) {
-        addVertex(pPose, pNormal, pConsumer, pRed, pGreen, pBlue, pAlpha, pMaxY, pMinX, pMinZ, 1, pMinV);
-        addVertex(pPose, pNormal, pConsumer, pRed, pGreen, pBlue, pAlpha, pMinY, pMinX, pMinZ, 1, pMaxV);
-        addVertex(pPose, pNormal, pConsumer, pRed, pGreen, pBlue, pAlpha, pMinY, pMaxX, pMaxZ, 0, pMaxV);
-        addVertex(pPose, pNormal, pConsumer, pRed, pGreen, pBlue, pAlpha, pMaxY, pMaxX, pMaxZ, 0, pMinV);
+        addVertex(pose, consumer, colors, pMaxY, pMinX, pMinZ, 1, pMinV);
+        addVertex(pose, consumer, colors, pMinY, pMinX, pMinZ, 1, pMaxV);
+        addVertex(pose, consumer, colors, pMinY, pMaxX, pMaxZ, 0, pMaxV);
+        addVertex(pose, consumer, colors, pMaxY, pMaxX, pMaxZ, 0, pMinV);
     }
 
-    public static void addVertex(Matrix4f pPose, Matrix3f pNormal, VertexConsumer pConsumer,
-                                  float pRed, float pGreen, float pBlue, float pAlpha, float pY,
-                                  float pX, float pZ, float pU, float pV) {
-        pConsumer.vertex(pPose, pX, pY, pZ)
-                .color(pRed, pGreen, pBlue, pAlpha)
-                .uv(pU, pV)
-                .overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(15728880)
-                .normal(pNormal, 0.0F, 1.0F, 0.0F)
-                .endVertex();
+    public static void addVertex(PoseStack.Pose pose, VertexConsumer consumer, 
+                                 Rgba colors, float pY, float pX, float pZ, float pU, float pV) {
+        float red = colors.r();
+        float green = colors.g();
+        float blue = colors.b();
+        float alpha = colors.a();
+
+        consumer.addVertex(pose, pX, pY, pZ)
+                .setColor(red, green, blue, alpha)
+                .setUv(pU, pV)
+                .setOverlay(OverlayTexture.NO_OVERLAY)
+                .setLight(LightTexture.FULL_BRIGHT)
+                .setNormal(0.0F, 1.0F, 0.0F);
     }
 }

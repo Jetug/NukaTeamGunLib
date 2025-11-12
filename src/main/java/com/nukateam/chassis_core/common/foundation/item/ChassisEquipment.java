@@ -5,14 +5,15 @@ import com.nukateam.chassis_core.common.config.EquipmentConfig;
 import com.nukateam.chassis_core.common.data.holders.ChassisPart;
 import com.nukateam.chassis_core.common.foundation.item.IChassisEquipment;
 import com.nukateam.chassis_core.common.network.managers.ConfigSupplier;
+import net.minecraft.core.registries.BuiltInRegistries;
 import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.Registries;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.minecraft.core.registries.Registries;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
@@ -25,7 +26,7 @@ import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 public class ChassisEquipment extends Item implements IChassisEquipment, GeoItem {
     public final ChassisPart part;
     private final AnimatableInstanceCache cache = createInstanceCache(this);
-    private final Lazy<String> name = Lazy.of(() -> ResourceHelper.getResourceName(Registries.ITEM.getKey(this)));
+    private final Lazy<String> name = Lazy.of(() -> ResourceHelper.getResourceName(BuiltInRegistries.ITEM.getKey(this)));
     private  EquipmentConfig config = new EquipmentConfig();
 
     public ChassisEquipment(Properties pProperties, ChassisPart part) {

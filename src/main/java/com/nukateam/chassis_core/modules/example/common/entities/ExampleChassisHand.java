@@ -1,8 +1,8 @@
 package com.nukateam.chassis_core.modules.example.common.entities;
 
 import com.nukateam.chassis_core.client.animators.HandAnimator;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.PlayState;
 import org.jetbrains.annotations.NotNull;
 
 public class ExampleChassisHand extends HandAnimator {

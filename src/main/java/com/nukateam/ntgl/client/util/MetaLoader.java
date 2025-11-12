@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;

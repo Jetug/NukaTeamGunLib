@@ -9,6 +9,7 @@ import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,7 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.getConfig;
 
@@ -65,7 +66,7 @@ public class AttachmentSlot extends Slot {
             if(attachments == null)
                 return false;
 
-            var id = Registries.ITEM.getKey(stack.getItem());
+            var id = BuiltInRegistries.ITEM.getKey(stack.getItem());
             var canAttachType = modifiedGun.canAttachType(this.type);
             var isRightType = attachment.getType().equals(this.type);
             var canAttach = attachment.canAttachTo(this.weapon);

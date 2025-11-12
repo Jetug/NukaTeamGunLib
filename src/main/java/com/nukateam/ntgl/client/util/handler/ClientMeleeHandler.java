@@ -26,7 +26,7 @@ public class ClientMeleeHandler {
     private static final Map<Pair<LivingEntity, InteractionHand>, ClientMeleeTracker> TRACKER_MAP = new HashMap<>();
 
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(ClientTickEvent event) {
         try {
             if (event.phase == TickEvent.Phase.START) {
                 for (var pair: TRACKER_MAP.keySet()) {

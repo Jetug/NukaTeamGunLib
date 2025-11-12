@@ -29,7 +29,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.neoforged.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.NeoForge;
 import net.minecraftforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -45,7 +45,7 @@ public class ControllerHandler {
     private static int reloadCounter = -1;
 
     public static void init() {
-        MinecraftForge.EVENT_BUS.register(new ControllerHandler());
+        NeoForge.EVENT_BUS.register(new ControllerHandler());
         ControllerEvents.INPUT.register(ControllerHandler::handleInput);
         ControllerEvents.UPDATE_CAMERA.register(ControllerHandler::handleCamera);
         ControllerEvents.GATHER_ACTIONS.register(ControllerHandler::handleActions);

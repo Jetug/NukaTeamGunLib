@@ -1,7 +1,7 @@
 package com.nukateam.chassis_core.client.input;
 
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.NeoForge;
 import net.minecraftforge.event.TickEvent;
 
 import java.util.HashMap;
@@ -21,9 +21,9 @@ public class LongClickController {
     };
 
     public LongClickController() {
-        MinecraftForge.EVENT_BUS.addListener(this::onTick);
-        MinecraftForge.EVENT_BUS.addListener(this::onMouseInput);
-        MinecraftForge.EVENT_BUS.addListener(this::onKeyInput);
+        NeoForge.EVENT_BUS.addListener(this::onTick);
+        NeoForge.EVENT_BUS.addListener(this::onMouseInput);
+        NeoForge.EVENT_BUS.addListener(this::onKeyInput);
     }
 
     public void setRepeatListener(BiConsumer<Integer, Integer> listener) {
@@ -34,7 +34,7 @@ public class LongClickController {
         this.releaseListener = listener;
     }
 
-    private void onTick(final TickEvent.ClientTickEvent event) {
+    private void onTick(final ClientTickEvent event) {
 //        if(lastKey == null) return;
 //        ticks++;
 

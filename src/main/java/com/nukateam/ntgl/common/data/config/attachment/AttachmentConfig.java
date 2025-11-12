@@ -11,7 +11,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -26,7 +26,7 @@ public class AttachmentConfig implements INBTSerializable<CompoundTag>, IEditorM
     @Optional private Modifiers modifiers = new Modifiers();
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.putString(ATTACHMENT_TYPE, this.type.toString());
         tag.put(MODIFIERS, this.modifiers.serializeNBT());
@@ -34,7 +34,7 @@ public class AttachmentConfig implements INBTSerializable<CompoundTag>, IEditorM
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(ATTACHMENT_TYPE, Tag.TAG_STRING)) {
             this.type = AttachmentType.getType(ResourceLocation.tryParse(tag.getString(ATTACHMENT_TYPE)));
         }

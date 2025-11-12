@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.data;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 
 import java.util.ArrayList;
 

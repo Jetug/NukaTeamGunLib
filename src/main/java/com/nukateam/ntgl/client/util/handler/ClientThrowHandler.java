@@ -32,7 +32,7 @@ public class ClientThrowHandler {
     private static final Map<InteractionHand, Tracker> TRACKER_MAP = new HashMap<>();
 
     @SubscribeEvent
-    public static void onPostClientTick(TickEvent.ClientTickEvent event){
+    public static void onPostClientTick(ClientTickEvent event){
         var minecraft = Minecraft.getInstance();
         if(event.phase == TickEvent.Phase.END && minecraft.player != null){
             if(!minecraft.options.keyAttack.isDown()) {

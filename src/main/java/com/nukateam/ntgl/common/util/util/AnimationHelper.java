@@ -2,8 +2,8 @@ package com.nukateam.ntgl.common.util.util;
 
 import software.bernie.geckolib.cache.GeckoLibCache;
 import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.animation.Animation;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 
 import javax.annotation.Nullable;

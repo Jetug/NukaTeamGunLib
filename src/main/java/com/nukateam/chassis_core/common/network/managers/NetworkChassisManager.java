@@ -6,6 +6,7 @@ import com.nukateam.chassis_core.common.config.ChassisConfig;
 import com.nukateam.chassis_core.common.foundation.entity.Chassis;
 import com.nukateam.chassis_core.modules.config.utils.ConfigUtils;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -14,7 +15,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
@@ -54,8 +55,8 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
         var builder = ImmutableMap.<ResourceLocation, ChassisConfig>builder();
 
         objects.forEach((chassis, config) -> {
-            Validate.notNull(Registries.ENTITY_TYPE.getKey((chassis)));
-            builder.put(Registries.ENTITY_TYPE.getKey(chassis), config);
+            Validate.notNull(BuiltInRegistries.ENTITY_TYPE.getKey((chassis)));
+            builder.put(BuiltInRegistries.ENTITY_TYPE.getKey(chassis), config);
             Configs.CHASSIS_CONFIGS.put(chassis, new ConfigSupplier<>(config));
         });
 
@@ -89,7 +90,7 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
     public static boolean updateRegisteredConfig(Map<ResourceLocation, ChassisConfig> registeredConfig) {
         if (registeredConfig != null) {
             for (Map.Entry<ResourceLocation, ChassisConfig> entry : registeredConfig.entrySet()) {
-                var item = Registries.ENTITY_TYPE.getValue(entry.getKey());
+                var item = BuiltInRegistries.ENTITY_TYPE.getValue(entry.getKey());
                 Configs.CHASSIS_CONFIGS.put((EntityType<Chassis>) item, new ConfigSupplier<>(entry.getValue()));
             }
             return true;

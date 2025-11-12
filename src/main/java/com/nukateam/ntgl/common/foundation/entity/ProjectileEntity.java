@@ -46,10 +46,10 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.*;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.NeoForge;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -405,7 +405,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     protected void onHit(HitResult result, Vec3 startVec, Vec3 endVec) {
-        if (MinecraftForge.EVENT_BUS.post(new GunProjectileHitEvent(result, this))) {
+        if (NeoForge.EVENT_BUS.post(new GunProjectileHitEvent(result, this))) {
             return;
         }
 

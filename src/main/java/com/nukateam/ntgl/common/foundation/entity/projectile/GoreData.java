@@ -6,7 +6,7 @@ import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
 public class GoreData implements INBTSerializable<CompoundTag> {
@@ -40,7 +40,7 @@ public class GoreData implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         if (texture != null)
             tag.putString("texture", texture.toString());
@@ -56,7 +56,7 @@ public class GoreData implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("texture"))
             texture = new ResourceLocation(tag.getString("texture"));
         if (tag.contains("gravity"))

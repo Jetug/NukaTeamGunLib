@@ -11,7 +11,7 @@ import net.neoforged.common.extensions.IForgeMenuType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.network.IContainerFactory;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class ContainerRegistry {

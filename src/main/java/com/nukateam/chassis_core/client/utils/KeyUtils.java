@@ -4,7 +4,7 @@ import com.nukateam.chassis_core.common.input.InputKey;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy;
 
 import java.util.HashMap;
 import java.util.Map;

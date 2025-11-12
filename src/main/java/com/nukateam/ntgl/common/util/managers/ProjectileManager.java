@@ -8,9 +8,10 @@ import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.util.interfaces.IThrowableProjectileFactory;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class ProjectileManager {
     }
 
     public void registerFactory(Item ammo, IProjectileFactory factory) {
-        this.projectileForAmmoFactories.put(Registries.ITEM.getKey(ammo), factory);
+        this.projectileForAmmoFactories.put(BuiltInRegistries.ITEM.getKey(ammo), factory);
     }
 
     public IProjectileFactory getFactory(WeaponData data) {

@@ -19,26 +19,26 @@ import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.interfaces.IConfigProvider;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
-import software.bernie.geckolib.core.animation.*;
-import software.bernie.geckolib.core.animation.AnimationController.*;
-import software.bernie.geckolib.core.animation.AnimationState;
-import software.bernie.geckolib.core.keyframe.event.SoundKeyframeEvent;
-import software.bernie.geckolib.core.object.PlayState;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.AnimationController.*;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.PlayState;
 import net.minecraft.client.*;
 import net.minecraft.sounds.*;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.*;
-import net.minecraftforge.api.distmarker.*;
-import net.minecraftforge.event.TickEvent;
 import org.jetbrains.annotations.NotNull;
+import software.bernie.geckolib.animation.keyframe.event.SoundKeyframeEvent;
 
 import static com.nukateam.ntgl.client.util.helpers.TransformUtils.*;
 import static com.nukateam.ntgl.common.data.constants.Animations.*;
-import static software.bernie.geckolib.core.animation.AnimatableManager.*;
-import static software.bernie.geckolib.core.animation.Animation.*;
-import static software.bernie.geckolib.core.animation.Animation.LoopType.*;
-import static software.bernie.geckolib.core.animation.RawAnimation.begin;
+import static software.bernie.geckolib.animation.RawAnimation.begin;
+import static software.bernie.geckolib.animation.Animation.*;
+import static software.bernie.geckolib.animation.Animation.LoopType.*;
 
 @OnlyIn(Dist.CLIENT)
 public class WeaponAnimator extends ItemAnimator implements IConfigProvider<WeaponConfig> {
@@ -98,7 +98,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     }
 
     @Override
-    public void registerControllers(ControllerRegistrar controllerRegistrar) {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
         controllerRegistrar.add(MAIN_CONTROLLER);
         controllerRegistrar.add(TRIGGER_CONTROLLER);
         controllerRegistrar.add(REVOLVER_CONTROLLER);
@@ -115,22 +115,12 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         return new WeaponConfig();
     }
 
-    public void tick(TickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            tickStart();
-        } else {
-            tickEnd();
-        }
-    }
-
-    protected void tickStart() {
-        if (!(getStack().getItem() instanceof IWeapon weapon))
+    public void tick() {
+        if (!(getStack().getItem() instanceof IWeapon))
             return;
-        var data = getGunData();
 
-        if(getEntity().getItemInHand(getArm()).getItem() instanceof IWeapon) {
-            this.rate = WeaponModifierHelper.getRate(shootingHandler.getWeaponData(getEntity(), getArm()));
-        }
+        var data = getGunData();
+        this.rate = WeaponModifierHelper.getRate(shootingHandler.getWeaponData(getEntity(), getArm()));
         this.equipTime = WeaponModifierHelper.getEquipTime(data);
         this.isEquiping = EquipTracker.isEquiping(getEntity(), getArm());
         this.meleeDelay = WeaponModifierHelper.getMeleeDelay(data);
@@ -139,21 +129,15 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         this.reloadTime = WeaponModifierHelper.getReloadTime(data);
         this.reloadStartTime = WeaponModifierHelper.getReloadStart(data);
         this.reloadEndTime = WeaponModifierHelper.getReloadEnd(data);
-
-        var conging = weapon.getModifiedConfig(getStack());
         this.prepareTime  = WeaponModifierHelper.getPrepareTime(data);
         this.throwingTime = WeaponModifierHelper.getThrowTime(data);
         this.throwMode = ThrowableStateHelper.getThrowMode(data);
-
-//        Ntgl.LOGGER.info("! Is equiping: " + isEquiping);
-
-//        if(isEquiping) {
-//            Ntgl.LOGGER.info("! Equip time: " + equipTime);
-//        }
+        
         setupCycledAnimations();
     }
 
-    protected void tickEnd() {}
+    @Deprecated
+    protected void tickStart() {}
 
     protected int getBarrelAmount() {
         return 1;
@@ -309,7 +293,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
 
             RawAnimation animation = null;
             if (isShooting && this.animationHelper.hasAnimation(finalAnim)) {
-                animation = RawAnimation.begin().then(finalAnim, LoopType.HOLD_ON_LAST_FRAME);
+                animation = begin().then(finalAnim, LoopType.HOLD_ON_LAST_FRAME);
                 this.animationHelper.syncAnimation(event, finalAnim, rate);
             }
 

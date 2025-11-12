@@ -17,7 +17,7 @@ import net.minecraftforge.client.ForgeRenderTypes;
 import net.minecraftforge.client.RenderTypeGroup;
 import net.minecraftforge.client.model.CompositeModel;
 import net.minecraftforge.client.model.geometry.*;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,7 +69,7 @@ public class GunIconModels implements IUnbakedGeometry<GunIconModels> {
     }
 
     private static String getItemName(ItemStack stack) {
-        return Registries.ITEM.getKey(stack.getItem()).getPath();
+        return BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
     }
 
     private static ResourceLocation getTexture(String namespace, String nameItem, String skin) {

@@ -8,13 +8,14 @@ import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -59,7 +60,7 @@ public class Attachment {
         weapons = new ArrayList<>();
 
         var weaponItems = WeaponHelper.getWeaponItems();
-        var id = Registries.ITEM.getKey(attachment);
+        var id = BuiltInRegistries.ITEM.getKey(attachment);
 
         for (var item : weaponItems) {
             var weapon = (IWeapon)item;

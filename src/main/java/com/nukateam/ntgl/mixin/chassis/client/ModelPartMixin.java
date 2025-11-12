@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class ModelPartMixin {
 //    @Inject(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;IIFFFF)V", at = @At("HEAD"), cancellable = true)
 //    public void render(PoseStack poseStack, VertexConsumer pVertexConsumer, int packedLight, int pPackedOverlay,
-//                       float pRed, float pGreen, float pBlue, float pAlpha, CallbackInfo ci) {
+//                       float red, float green, float blue, float alpha, CallbackInfo ci) {
 //        var playerModel = getPlayerModel();
 //        if(isLocalWearingChassis()) {
 //            poseStack.pushPose();

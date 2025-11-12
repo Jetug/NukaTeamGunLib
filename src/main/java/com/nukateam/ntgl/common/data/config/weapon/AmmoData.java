@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -20,7 +20,7 @@ public class AmmoData implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Optional private ProjectileConfig projectile = new ProjectileConfig();
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.put("ammo", this.ammo.serializeNBT());
         tag.put("projectile", this.projectile.serializeNBT());
@@ -28,7 +28,7 @@ public class AmmoData implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("ammo", Tag.TAG_COMPOUND)) {
             this.ammo = AmmoConfig.create(tag.getCompound("ammo"));
         }

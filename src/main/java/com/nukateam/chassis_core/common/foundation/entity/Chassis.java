@@ -17,6 +17,11 @@ import com.nukateam.chassis_core.common.network.managers.ConfigSupplier;
 import com.nukateam.chassis_core.common.network.managers.Configs;
 import com.nukateam.chassis_core.common.network.packet.S2CInventoryPacket;
 import com.nukateam.chassis_core.common.util.helpers.timer.TickTimer;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.common.NeoForge;
+
 import software.bernie.geckolib.cache.object.GeoBone;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -38,10 +43,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -63,7 +65,7 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
     protected final TickTimer timer = new TickTimer();
     protected final boolean isClientSide = level().isClientSide;
     protected final boolean isServerSide = !level().isClientSide;
-    private final Lazy<String> chassisId = Lazy.of(() -> ResourceHelper.getResourceName(Registries.ENTITY_TYPE.getKey(this.getType())));
+    private final Lazy<String> chassisId = Lazy.of(() -> ResourceHelper.getResourceName(BuiltInRegistries.ENTITY_TYPE.getKey(this.getType())));
 
     public final HashMap<String, ArrayList<GeoBone>> attachmentForBone = new HashMap<>();
     public final HashMap<String, ResourceLocation> textureForBone = new HashMap<>();
@@ -249,7 +251,7 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
         updateParams();
         serializedInventory = serializeInventory(inventory);
         syncDataWithClient();
-        MinecraftForge.EVENT_BUS.post(new ContainerChangedEvent(this));
+        NeoForge.EVENT_BUS.post(new ContainerChangedEvent(this));
     }
 
     public boolean isEquipmentVisible(ChassisPart chassisPart) {

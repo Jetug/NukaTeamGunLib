@@ -11,7 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -23,7 +23,7 @@ public class AmmoConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
     @Optional private CounterType counter = CounterType.NUMBER;
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.putString("type", this.type.toString());
         tag.putString("counter", this.counter.toString());
@@ -31,7 +31,7 @@ public class AmmoConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("type", Tag.TAG_STRING)) {
             this.type = AmmoType.getType(tag.getString("type"));
         }

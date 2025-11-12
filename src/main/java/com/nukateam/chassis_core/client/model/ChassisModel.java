@@ -1,7 +1,7 @@
 package com.nukateam.chassis_core.client.model;
 
 import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
-import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.model.GeoModel;
 import net.minecraft.resources.ResourceLocation;
 

@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.util.LogicalSidedProvider;
+import net.neoforged.neoforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;

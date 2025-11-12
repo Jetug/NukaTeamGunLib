@@ -10,7 +10,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -25,7 +25,7 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
     private AmmoConfig ammo = new AmmoConfig();
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.putInt("Max", this.max);
         tag.putInt("amountPerUse", this.amountPerUse);
@@ -35,7 +35,7 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("Max", Tag.TAG_ANY_NUMERIC)) {
             this.max = tag.getInt("Max");
         }

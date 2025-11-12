@@ -10,7 +10,7 @@ import com.nukateam.ntgl.client.util.helpers.TransformUtils;
 import com.nukateam.ntgl.common.util.helpers.compatibility.ChassisHelper;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.util.ClientUtils;
+import software.bernie.geckolib.util.ClientUtil;
 import software.bernie.geckolib.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -20,7 +20,6 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.TickEvent;
 import org.jetbrains.annotations.Nullable;
 
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
@@ -42,11 +41,7 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
         ClientTickHandler.addTicker(this, this::tick);
     }
 
-    protected void tick(TickEvent event){
-        if (event.phase == TickEvent.Phase.START){
-
-        }
-    }
+    protected void tick(){}
 
     @Override
     public void render(LivingEntity entity, ItemStack stack, ItemDisplayContext transformType, PoseStack poseStack,
@@ -135,7 +130,8 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
                     }
                 }
                 else {
-                    var playerSkin = ((LocalPlayer) ClientUtils.getClientPlayer()).getSkinTextureLocation();
+                    //???
+                    var playerSkin = ((LocalPlayer) ClientUtil.getClientPlayer()).getSkin().texture();
                     var arm = this.bufferSource.getBuffer(RenderType.entitySolid(playerSkin));
                     var sleeve = this.bufferSource.getBuffer(RenderType.entityTranslucent(playerSkin));
 

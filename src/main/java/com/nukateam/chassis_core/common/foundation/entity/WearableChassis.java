@@ -9,7 +9,7 @@ import com.nukateam.chassis_core.common.data.holders.ChassisPart;
 import com.nukateam.chassis_core.common.foundation.item.ChassisEquipment;
 import com.nukateam.chassis_core.common.util.helpers.Speedometer;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -28,7 +28,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,8 +77,8 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
     }
 
     @Override
-    public @NotNull EntityDimensions getDimensions(@NotNull Pose pPose) {
-        return POSES.getOrDefault(pPose, STANDING_DIMENSIONS);
+    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
+        return POSES.getOrDefault(pose, STANDING_DIMENSIONS);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.nukateam.chassis_core.client.input;
 
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.NeoForge;
 import net.minecraftforge.event.TickEvent;
 import org.lwjgl.glfw.GLFW;
 
@@ -16,15 +16,15 @@ public class DoubleClickController {
     };
 
     public DoubleClickController() {
-        MinecraftForge.EVENT_BUS.addListener(this::onTick);
-        MinecraftForge.EVENT_BUS.addListener(this::onClick);
+        NeoForge.EVENT_BUS.addListener(this::onTick);
+        NeoForge.EVENT_BUS.addListener(this::onClick);
     }
 
     public void addListener(Consumer<InputEvent.Key> listener) {
         this.listener = listener;
     }
 
-    private void onTick(final TickEvent.ClientTickEvent event) {
+    private void onTick(final ClientTickEvent event) {
         if (lastKey == null) return;
         ticks -= 1;
         if (ticks <= 0) lastKey = null;

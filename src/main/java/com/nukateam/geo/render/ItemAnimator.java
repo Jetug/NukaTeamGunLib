@@ -2,15 +2,16 @@ package com.nukateam.geo.render;
 
 import com.nukateam.geo.interfaces.IResourceProvider;
 import com.nukateam.geo.interfaces.IItemAnimator;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.Registries;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 
 import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
@@ -61,6 +62,6 @@ public abstract class ItemAnimator implements GeoEntity, IItemAnimator, IResourc
 
     @Nullable
     private static ResourceLocation getRegistryKey(Item item) {
-        return Registries.ITEM.getKey(item);
+        return BuiltInRegistries.ITEM.getKey(item);
     }
 }

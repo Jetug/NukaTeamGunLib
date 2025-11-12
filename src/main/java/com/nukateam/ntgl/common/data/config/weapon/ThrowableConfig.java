@@ -14,7 +14,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -42,7 +42,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.put("mode", NbtUtils.serializeSet(this.mode));
         tag.putInt(PREPARE_TIME, prepareTime);
@@ -52,7 +52,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("mode", Tag.TAG_COMPOUND)) {
             this.mode = NbtUtils.deserializeSet(tag.getCompound("mode"), ThrowMode::getType);
         }

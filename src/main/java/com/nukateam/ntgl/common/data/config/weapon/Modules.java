@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -49,7 +49,7 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
     public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {}
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.putBoolean("AttachmentScreen", attachmentScreen);
 
@@ -60,7 +60,7 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("AttachmentScreen", Tag.TAG_BYTE)) {
             this.attachmentScreen = tag.getBoolean("AttachmentScreen");
         }
@@ -90,7 +90,7 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
         @Optional Vec3 offset = Vec3.ZERO;
 
         @Override
-        public CompoundTag serializeNBT() {
+        public CompoundTag serializeNBT(HolderLookup.Provider provider) {
             var tag = new CompoundTag();
 
             if (this.name != null) {
@@ -110,7 +110,7 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
         }
 
         @Override
-        public void deserializeNBT(CompoundTag tag) {
+        public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
             if (tag.contains("Name", Tag.TAG_STRING)) {
                 this.name = tag.getString("Name");
             }

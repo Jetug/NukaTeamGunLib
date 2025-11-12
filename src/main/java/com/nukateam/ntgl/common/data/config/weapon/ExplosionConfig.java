@@ -9,7 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -34,7 +34,7 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
     @Optional private float knockback;
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.putFloat(DAMAGE, this.damage);
         tag.putFloat(EXPLOSION_RADIUS, this.radius);
@@ -47,7 +47,7 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(DAMAGE, Tag.TAG_ANY_NUMERIC)) {
             this.damage = tag.getFloat(DAMAGE);
         }

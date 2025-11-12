@@ -125,7 +125,7 @@ public class AimingHandler {
     }
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
+    public void onClientTick(ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START)
             return;
 

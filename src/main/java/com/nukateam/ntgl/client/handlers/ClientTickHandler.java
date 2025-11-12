@@ -3,9 +3,9 @@ package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.Ntgl;
-import net.minecraftforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 @EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class ClientTickHandler {
     private static final Map<ItemAnimator, Runnable> tickingAnimators = new HashMap();
-    private static final Map<Object, Consumer<TickEvent>> tickers = new HashMap();
+    private static final Map<Object, Runnable> tickers = new HashMap();
 
     public ClientTickHandler() {}
 
@@ -22,16 +22,13 @@ public class ClientTickHandler {
         tickingAnimators.put(animator, onTick);
     }
 
-    public static void addTicker(Object object, Consumer<TickEvent> onTick) {
+    public static void addTicker(Object object, Runnable onTick) {
         tickers.put(object, onTick);
     }
 
     @SubscribeEvent
-    public static void clientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            tickingAnimators.forEach((k, v) -> v.run());
-        }
-
-        tickers.forEach((k, v) -> v.accept(event));
+    public static void clientTick(ClientTickEvent.Pre event) {
+        tickingAnimators.forEach((k, v) -> v.run());
+        tickers.forEach((k, v) -> v.run());
     }
 }

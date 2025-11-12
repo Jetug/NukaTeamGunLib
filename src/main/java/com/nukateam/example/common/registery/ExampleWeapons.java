@@ -12,7 +12,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-Registries
 public class ExampleWeapons {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, Ntgl.MOD_ID);
     ///WEAPONS
@@ -32,12 +31,12 @@ public class ExampleWeapons {
     public static final DeferredHolder<Item, WeaponItem> HAMMER = registerGun("hammer");
 
     public static final DeferredHolder<Item, Item> GRENADE = ITEMS.register("grenade",
-            () -> new ThrowableItem(new Item.Properties()));
+            () -> new WeaponItem(new Item.Properties()));
 
 //    public static final DeferredHolder<Item, Item> MISSILE = ITEMS.register("missile",
 //            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 
-    public static final DeferredHolder<Item> GRENADE_OG = ITEMS.register("grenade_old",
+    public static final DeferredHolder<Item, Item> GRENADE_OG = ITEMS.register("grenade_old",
             () -> new WeaponItem(new Item.Properties()));
 
     public static final DeferredHolder<Item, Item> STUN_GRENADE = ITEMS.register("stun_grenade",
@@ -69,34 +68,34 @@ public class ExampleWeapons {
             () -> new ScopeItem(Attachments.SHORT_SCOPE, new Item.Properties().stacksTo(1)));
 
     /* Barrel Attachments */
-    public static final DeferredHolder<Item> SILENCER = ITEMS.register("silencer",
+    public static final DeferredHolder<Item, Item> SILENCER = ITEMS.register("silencer",
             () -> new BarrelItem(Barrel.create(8.0F, WeaponModifiers.SILENCED, WeaponModifiers.REDUCED_DAMAGE), new Item.Properties().stacksTo(1)));
 
     /* Stock Attachments */
-    public static final DeferredHolder<Item> LIGHT_STOCK = ITEMS.register("light_stock",
+    public static final DeferredHolder<Item, Item> LIGHT_STOCK = ITEMS.register("light_stock",
             () -> new StockItem(Stock.create(WeaponModifiers.BETTER_CONTROL), new Item.Properties().stacksTo(1)));
-    public static final DeferredHolder<Item> TACTICAL_STOCK = ITEMS.register("tactical_stock",
+    public static final DeferredHolder<Item, Item> TACTICAL_STOCK = ITEMS.register("tactical_stock",
             () -> new StockItem(Stock.create(WeaponModifiers.STABILISED), new Item.Properties().stacksTo(1)));
-    public static final DeferredHolder<Item> WEIGHTED_STOCK = ITEMS.register("weighted_stock",
+    public static final DeferredHolder<Item, Item> WEIGHTED_STOCK = ITEMS.register("weighted_stock",
             () -> new StockItem(Stock.create(WeaponModifiers.SUPER_STABILISED), new Item.Properties().stacksTo(1)));
 
     /* Under Barrel Attachments */
-    public static final DeferredHolder<Item> LIGHT_GRIP = ITEMS.register("light_grip",
+    public static final DeferredHolder<Item, Item> LIGHT_GRIP = ITEMS.register("light_grip",
             () -> new GripItem(Grip.create(WeaponModifiers.LIGHT_RECOIL), new Item.Properties().stacksTo(1)));
-    public static final DeferredHolder<Item> SPECIALISED_GRIP = ITEMS.register("specialised_grip",
+    public static final DeferredHolder<Item, Item> SPECIALISED_GRIP = ITEMS.register("specialised_grip",
             () -> new GripItem(Grip.create(WeaponModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
 
     /* Magazine Attachments*/
-    public static final DeferredHolder<Item> EXTENDED_MAGAZINE = ITEMS.register("extended_magazine",
+    public static final DeferredHolder<Item, Item> EXTENDED_MAGAZINE = ITEMS.register("extended_magazine",
             () -> new MagazineItem(Magazine.create(30, WeaponModifiers.SLOW_ADS), new Item.Properties().stacksTo(1)));
 
-    public static final DeferredHolder<Item> DRUM_MAGAZINE = ITEMS.register("drum_magazine",
+    public static final DeferredHolder<Item, Item> DRUM_MAGAZINE = ITEMS.register("drum_magazine",
             () -> new MagazineItem(Magazine.create(60, WeaponModifiers.SLOWER_ADS, WeaponModifiers.EXTENDED_MAG), new Item.Properties().stacksTo(1)));
 
-    public static final DeferredHolder<Item> HEAD_STONE = ITEMS.register("hammer_stone",
+    public static final DeferredHolder<Item, Item> HEAD_STONE = ITEMS.register("hammer_stone",
             () -> new GripItem(Grip.create(WeaponModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
 
-    public static final DeferredHolder<Item> HAMMER_DIAMOND = ITEMS.register("hammer_diamond",
+    public static final DeferredHolder<Item, Item> HAMMER_DIAMOND = ITEMS.register("hammer_diamond",
             () -> new GripItem(Grip.create(WeaponModifiers.REDUCED_RECOIL), new Item.Properties().stacksTo(1)));
 
     public static final DeferredHolder<Item, Item> AMMO_BOX = ITEMS.register("ammo_box", () ->

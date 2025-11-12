@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.components.OptionsList;
 import net.minecraft.client.gui.screens.*;
+import net.minecraft.client.gui.screens.options.MouseSettingsScreen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.Tag;
@@ -26,12 +27,14 @@ import net.minecraft.world.InteractionHand;
 import net.neoforged.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.NeoForge;
 import net.minecraftforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.neoforged.neoforge.registries.Registries;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 import java.lang.reflect.Field;
 
@@ -45,20 +48,20 @@ public class ClientHandler {
     private static Field mouseOptionsField;
 
     public static void setup() {
-        MinecraftForge.EVENT_BUS.register(AimingHandler.get());
-        MinecraftForge.EVENT_BUS.register(CrosshairHandler.get());
-        MinecraftForge.EVENT_BUS.register(GunRenderingHandler.get());
-        MinecraftForge.EVENT_BUS.register(RecoilHandler.get());
-        MinecraftForge.EVENT_BUS.register(ClientReloadHandler.get());
-        MinecraftForge.EVENT_BUS.register(ClientShootingHandler.get());
-        MinecraftForge.EVENT_BUS.register(ClientEquipHandler.get());
-        MinecraftForge.EVENT_BUS.register(SoundHandler.get());
-        MinecraftForge.EVENT_BUS.register(new EntityModelHandler());
+        NeoForge.EVENT_BUS.register(AimingHandler.get());
+        NeoForge.EVENT_BUS.register(CrosshairHandler.get());
+        NeoForge.EVENT_BUS.register(GunRenderingHandler.get());
+        NeoForge.EVENT_BUS.register(RecoilHandler.get());
+        NeoForge.EVENT_BUS.register(ClientReloadHandler.get());
+        NeoForge.EVENT_BUS.register(ClientShootingHandler.get());
+        NeoForge.EVENT_BUS.register(ClientEquipHandler.get());
+        NeoForge.EVENT_BUS.register(SoundHandler.get());
+        NeoForge.EVENT_BUS.register(new EntityModelHandler());
 
         /* Only register controller events if Controllable is loaded otherwise it will crash */
         if (Ntgl.controllableLoaded) {
             ControllerHandler.init();
-//            MinecraftForge.EVENT_BUS.register(new ControllerHandler());
+//            NeoForge.EVENT_BUS.register(new ControllerHandler());
             GunButtonBindings.register();
         }
 
@@ -126,7 +129,7 @@ public class ClientHandler {
     }
 
     @SubscribeEvent
-    public static void clientTick(TickEvent.ClientTickEvent event) {
+    public static void clientTick(ClientTickEvent event) {
         if(event.phase == TickEvent.Phase.END) {
             if(inspectionTimerRight == INSPECTION_DURATION - 2) {
                 inspectionTimerLeft = INSPECTION_DURATION;

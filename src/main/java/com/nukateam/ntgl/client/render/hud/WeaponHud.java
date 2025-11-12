@@ -30,7 +30,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.NeoForge;
 
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -80,9 +80,9 @@ public class WeaponHud implements IGuiOverlay {
 
             if (heldItem.getItem() instanceof IWeapon && shouldRender(hand, player)) {
                 updateCache(cache, player, heldItem);
-                if (!MinecraftForge.EVENT_BUS.post(new GunHudEvent(this, hand, graphics, cache, GunHudEvent.Phase.START))) {
+                if (!NeoForge.EVENT_BUS.post(new GunHudEvent(this, hand, graphics, cache, GunHudEvent.Phase.START))) {
                     renderAmmoCounter(graphics, cache, heldItem, x, height);
-                    MinecraftForge.EVENT_BUS.post(new GunHudEvent(this, hand, graphics, cache, GunHudEvent.Phase.END));
+                    NeoForge.EVENT_BUS.post(new GunHudEvent(this, hand, graphics, cache, GunHudEvent.Phase.END));
                 }
             }
         });

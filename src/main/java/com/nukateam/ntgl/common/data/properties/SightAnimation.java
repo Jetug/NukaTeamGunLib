@@ -13,7 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -86,7 +86,7 @@ public class SightAnimation implements INBTSerializable<CompoundTag>, IEditorMen
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putString("ViewportCurve", this.viewportCurve.name().toLowerCase(Locale.ROOT));
         tag.putString("SightCurve", this.sightCurve.name().toLowerCase(Locale.ROOT));
@@ -96,7 +96,7 @@ public class SightAnimation implements INBTSerializable<CompoundTag>, IEditorMen
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("ViewportCurve", Tag.TAG_STRING)) {
             this.viewportCurve = Easings.byName(tag.getString("ViewportCurve"));
         }
