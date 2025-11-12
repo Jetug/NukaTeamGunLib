@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.nukateam.ntgl.client.event.*;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
+import com.nukateam.ntgl.client.input.WeaponModeBindings;
 import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
 import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.ClientDebug;
@@ -189,12 +190,11 @@ public class WeaponHud implements IGuiOverlay {
 
     protected void renderWeaponModes(GuiGraphics graphics, PoseStack poseStack, GunHudCache handCache, int x, int y) {
         var iconPosY = y;
-
         for (var entry : handCache.weaponModes.entrySet()) {
             var mode = entry.getKey();
             var action = entry.getValue();
             renderIcon(graphics, poseStack, action.getIcon(), x, iconPosY, WEAPON_MODE_SCALE);
-            renderKey(graphics, poseStack, mode.getKeyMapping().getKey(), x + 16, iconPosY + 3, false);
+            renderKey(graphics, poseStack, WeaponModeBindings.getKey(mode).getKey(), x + 16, iconPosY + 3, false);
             iconPosY -= 12;
         }
     }

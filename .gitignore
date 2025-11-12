@@ -25,3 +25,6 @@ run
 forge*changelog.txt
 /logs/
 /src/generated/resources/.cache/9fb1092f32d4fcbf9e061ffd718d4ec689c6c95e
+/runs/junit/junit_jvm_args.txt
+/runs/junit/junit_test_args.txt
+/runs/
