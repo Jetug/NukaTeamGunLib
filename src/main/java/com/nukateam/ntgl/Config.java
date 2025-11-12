@@ -20,7 +20,6 @@ public class Config
         public final Display display;
         public final Particle particle;
         public final Controls controls;
-//        public final Experimental experimental;
         public final ForgeConfigSpec.BooleanValue hideConfigButton;
         public final ForgeConfigSpec.EnumValue<ButtonAlignment> buttonAlignment;
 
@@ -32,7 +31,6 @@ public class Config
                 this.display = new Display(builder);
                 this.particle = new Particle(builder);
                 this.controls = new Controls(builder);
-//                this.experimental = new Experimental(builder);
             }
             builder.pop();
             this.hideConfigButton = builder.comment("If enabled, hides the config button from the backpack screen").define("hideConfigButton", false);
@@ -50,7 +48,6 @@ public class Config
         public final ForgeConfigSpec.BooleanValue playSoundWhenCritical;
         public final ForgeConfigSpec.ConfigValue<String> criticalSound;
         public final ForgeConfigSpec.DoubleValue impactSoundDistance;
-//        public final ForgeConfigSpec.DoubleValue gunVolume;
 
         public Sounds(ForgeConfigSpec.Builder builder)
         {
@@ -61,7 +58,6 @@ public class Config
                 this.playSoundWhenCritical = builder.comment("If true, a sound will play when you successfully hit a critical on a entity with a gun").define("playSoundWhenCritical", true);
                 this.criticalSound = builder.comment("The sound to play when a critical occurs").define("criticalSound", "minecraft:entity.player.attack.crit");
                 this.impactSoundDistance = builder.comment("The maximum distance impact sounds from bullet can be heard").defineInRange("impactSoundDistance", 32.0, 0.0, 32.0);
-//                this.gunVolume = builder.comment("The gun sounds volume").defineInRange("gunVolume", 1.0, 0.0, 1.0);
             }
             builder.pop();
         }
@@ -147,17 +143,6 @@ public class Config
         }
     }
 
-//    public static class Experimental
-//    {
-//        public Experimental(ForgeConfigSpec.Builder builder)
-//        {
-//            builder.comment("Experimental options").push("experimental");
-//            {
-//            }
-//            builder.pop();
-//        }
-//    }
-
     /**
      * Common config options
      */
@@ -166,8 +151,6 @@ public class Config
         public final Gameplay gameplay;
         public final Network network;
         public final AggroMobs aggroMobs;
-//        public final Missiles missiles;
-//        public final Grenades grenades;
         public final StunGrenades stunGrenades;
         public final ProjectileSpread projectileSpread;
 
@@ -178,8 +161,6 @@ public class Config
                 this.gameplay = new Gameplay(builder);
                 this.network = new Network(builder);
                 this.aggroMobs = new AggroMobs(builder);
-//                this.missiles = new Missiles(builder);
-//                this.grenades = new Grenades(builder);
                 this.stunGrenades = new StunGrenades(builder);
                 this.projectileSpread = new ProjectileSpread(builder);
             }
@@ -280,44 +261,6 @@ public class Config
                 this.angerHostileMobs = builder.comment("If true, in addition to causing peaceful mobs to panic, firing a gun will also cause nearby hostile mobs to target the shooter.").define("angerHostileMobs", true);
                 this.unsilencedRange = builder.comment("Any mobs within a sphere of this radius will aggro on the shooter of an unsilenced gun.").defineInRange("unsilencedRange", 20.0, 0.0, Double.MAX_VALUE);
                 this.exemptEntities = builder.comment("Any mobs of defined will not aggro on shooters").defineList("exemptMobs", Collections.emptyList(), o -> true);
-            }
-            builder.pop();
-        }
-    }
-
-    /**
-     * Missile related config options
-     */
-    public static class Missiles
-    {
-        public final ForgeConfigSpec.BooleanValue enableBlockRemoval;
-        public final ForgeConfigSpec.DoubleValue explosionRadius;
-
-        public Missiles(ForgeConfigSpec.Builder builder)
-        {
-            builder.comment("Properties relating to missiles").push("missiles");
-            {
-                this.enableBlockRemoval = builder.comment("If enabled, allows block removal on explosions").define("enableBlockRemoval", false);
-                this.explosionRadius = builder.comment("The max distance which the explosion is effective to").defineInRange("explosionRadius", 5.0, 0.0, Double.MAX_VALUE);
-            }
-            builder.pop();
-        }
-    }
-
-    /**
-     * Grenade related config options
-     */
-    public static class Grenades
-    {
-        public final ForgeConfigSpec.BooleanValue enableBlockRemoval;
-        public final ForgeConfigSpec.DoubleValue explosionRadius;
-
-        public Grenades(ForgeConfigSpec.Builder builder)
-        {
-            builder.comment("Properties relating to grenades").push("grenades");
-            {
-                this.enableBlockRemoval = builder.comment("If enabled, allows block removal on explosions").define("enableBlockRemoval", false);
-                this.explosionRadius = builder.comment("The max distance which the explosion is effective to").defineInRange("explosionRadius", 5.0, 0.0, Double.MAX_VALUE);
             }
             builder.pop();
         }
@@ -429,8 +372,7 @@ public class Config
     /**
      * Server related config options
      */
-    public static class Server
-    {
+    public static class Server {
         public final ForgeConfigSpec.IntValue alphaOverlay;
         public final ForgeConfigSpec.IntValue alphaFadeThreshold;
         public final ForgeConfigSpec.DoubleValue soundPercentage;
@@ -440,10 +382,8 @@ public class Config
         public final ForgeConfigSpec.DoubleValue reloadMaxDistance;
         public final ForgeConfigSpec.BooleanValue enableCameraRecoil;
         public final ForgeConfigSpec.IntValue cooldownThreshold;
-//        public final Experimental experimental;
 
-        public Server(ForgeConfigSpec.Builder builder)
-        {
+        public Server(ForgeConfigSpec.Builder builder) {
             builder.push("server");
             {
                 builder.comment("Stun Grenade related properties").push("grenade");
@@ -465,23 +405,9 @@ public class Config
 
                 this.enableCameraRecoil = builder.comment("If true, enables camera recoil when firing a weapon").define("enableCameraRecoil", true);
                 this.cooldownThreshold = builder.comment("The maximum amount of cooldown time remaining before the server will accept another shoot packet from a client. This allows for a litle slack since the server may be lagging").defineInRange("cooldownThreshold", 0, 75, 1000);
-
-//                this.experimental = new Experimental(builder);
             }
             builder.pop();
         }
-
-//        public static class Experimental
-//        {
-//            public final ForgeConfigSpec.BooleanValue forceDyeableAttachments;
-//
-//            public Experimental(ForgeConfigSpec.Builder builder)
-//            {
-//                builder.push("experimental");
-//                this.forceDyeableAttachments = builder.comment("Forces all attachments to be dyeable regardless if they have an affect on the model. This is useful if your server uses custom models for attachments and the models have dyeable elements").define("forceDyeableAttachments", false);
-//                builder.pop();
-//            }
-//        }
     }
 
     static final ForgeConfigSpec clientSpec;
@@ -513,3 +439,4 @@ public class Config
         clientSpec.save();
     }
 }
+

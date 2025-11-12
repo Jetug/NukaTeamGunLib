@@ -53,7 +53,6 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
     private final IDrawableStatic dyeSlot;
     private final IDrawable icon;
     private final Component title;
-    private final Item[] dyes;
 
     public WorkbenchCategory(IGuiHelper helper) {
         this.background = helper.createBlankDrawable(162, 124);
@@ -62,7 +61,6 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
         this.dyeSlot = helper.createDrawable(BACKGROUND, 7, 101, 18, 18);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.WORKBENCH.get()));
         this.title = Component.translatable(TITLE_KEY);
-        this.dyes = ForgeRegistries.ITEMS.getValues().stream().filter(item -> item instanceof DyeItem).toArray(Item[]::new);
     }
 
     @Override

@@ -23,20 +23,6 @@ public class WorkbenchContainer extends AbstractContainerMenu {
         this.workbench = workbench;
         this.pos = workbench.getBlockPos();
 
-        int offset = WorkbenchRecipes.isEmpty(workbench.getLevel()) ? 0 : 28;
-
-        this.addSlot(new Slot(workbench, 0, 174, 18) {
-            @Override
-            public boolean mayPlace(ItemStack stack) {
-                return stack.getItem() instanceof DyeItem;
-            }
-
-            @Override
-            public int getMaxStackSize() {
-                return 1;
-            }
-        });
-
         for (int y = 0; y < 3; y++)
             for (int x = 0; x < 9; x++)
                 this.addSlot(new Slot(playerInventory, x + y * 9 + 9, 8 + x * 18, 102 + y * 18));
