@@ -82,6 +82,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         if (!this.tabs.isEmpty()) {
             this.topPos += 28;
         }
+
         this.addRenderableWidget(Button.builder(Component.literal("<"), button ->
         {
             int index = this.currentTab.getCurrentIndex();
@@ -130,7 +131,6 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         }
 
         this.btnCraft.active = canCraft;
-        this.updateColor();
     }
 
     @Override
@@ -329,12 +329,6 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         }
     }
 
-    private void updateColor() {
-        if (this.currentTab != null) {
-            ItemStack item = this.displayStack;
-        }
-    }
-
     private List<MaterialItem> getMaterials() {
         List<MaterialItem> materials = NonNullList.withSize(6, MaterialItem.EMPTY);
         List<MaterialItem> filteredMaterials = this.materials.stream().filter(materialItem -> this.checkBoxMaterials.isToggled() ? !materialItem.isEnabled() : materialItem != MaterialItem.EMPTY).collect(Collectors.toList());
@@ -347,7 +341,6 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
     private void loadItem(int index) {
         var recipe = this.currentTab.getRecipes().get(index);
         this.displayStack = recipe.getItem().copy();
-        this.updateColor();
 
         this.materials.clear();
 
