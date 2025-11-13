@@ -5,18 +5,16 @@ import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.common.config.ChassisConfig;
 import com.nukateam.chassis_core.common.foundation.entity.Chassis;
 import com.nukateam.chassis_core.modules.config.utils.ConfigUtils;
-import net.minecraft.core.registries.BuiltInRegistries;
+import com.mrcrayfish.framework.api.data.login.ILoginData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.minecraft.core.registries.Registries;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
@@ -24,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@EventBusSubscriber(modid = ChassisCore.MOD_ID)
+@Mod.EventBusSubscriber(modid = ChassisCore.MOD_ID)
 public class NetworkChassisManager extends SimplePreparableReloadListener<Map<EntityType<Chassis>, ChassisConfig>> {
     public static final String PATH = "cc/chassis";
     private static NetworkChassisManager instance;
@@ -36,7 +34,6 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
         return instance;
     }
 
-    @SubscribeEvent
     public static void register(AddReloadListenerEvent event) {
         NetworkChassisManager networkGunManager = new NetworkChassisManager();
         event.addListener(networkGunManager);
@@ -49,11 +46,7 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
 
     @Override
     protected Map<EntityType<Chassis>, ChassisConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager,
-                BuiltInRegistries.ENTITY_TYPE,
-                (v) -> true,
-                ChassisConfig.class,
-                PATH);
+        return ConfigUtils.getConfigMap(manager, ForgeRegistries.ENTITY_TYPES, (v) -> true, ChassisConfig.class, PATH);
     }
 
     @Override
@@ -61,8 +54,8 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
         var builder = ImmutableMap.<ResourceLocation, ChassisConfig>builder();
 
         objects.forEach((chassis, config) -> {
-            Validate.notNull(BuiltInRegistries.ENTITY_TYPE.getKey(chassis));
-            builder.put(BuiltInRegistries.ENTITY_TYPE.getKey(chassis), config);
+            Validate.notNull(ForgeRegistries.ENTITY_TYPES.getKey((chassis)));
+            builder.put(ForgeRegistries.ENTITY_TYPES.getKey(chassis), config);
             Configs.CHASSIS_CONFIGS.put(chassis, new ConfigSupplier<>(config));
         });
 
@@ -95,21 +88,12 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
 
     public static boolean updateRegisteredConfig(Map<ResourceLocation, ChassisConfig> registeredConfig) {
         if (registeredConfig != null) {
-            for (var entry : registeredConfig.entrySet()) {
-                var item = BuiltInRegistries.ENTITY_TYPE.get(entry.getKey());
-                if (item != null) {
-                    Configs.CHASSIS_CONFIGS.put((EntityType<Chassis>) item, new ConfigSupplier<>(entry.getValue()));
-                }
+            for (Map.Entry<ResourceLocation, ChassisConfig> entry : registeredConfig.entrySet()) {
+                var item = ForgeRegistries.ENTITY_TYPES.getValue(entry.getKey());
+                Configs.CHASSIS_CONFIGS.put((EntityType<Chassis>) item, new ConfigSupplier<>(entry.getValue()));
             }
             return true;
         }
         return false;
-    }
-
-    public static class LoginData {
-        public static void handle(final FriendlyByteBuf buffer, final IPayloadContext context) {
-            var registeredConfig = readRegisteredConfigs(buffer);
-            updateRegisteredConfig(registeredConfig);
-        }
     }
 }

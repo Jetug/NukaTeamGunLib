@@ -1,8 +1,10 @@
 package com.nukateam.ntgl.modules.datapack.managers;
 
+import com.mrcrayfish.framework.network.Network;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.modules.constants.Paths;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
@@ -12,21 +14,26 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.Validate;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static net.minecraftforge.registries.ForgeRegistries.*;
 
-@EventBusSubscriber(modid = Ntgl.MOD_ID)
+@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWeapon, WeaponConfig>> {
     private static final List<IWeapon> clientRegisteredWeapons = new ArrayList<>();
+    private static final ResourceLocation SYNC_CHANNEL = ResourceLocation.tryBuild(Ntgl.MOD_ID, "weapon_sync");
     private static NetworkWeaponManager instance;
 
     private Map<ResourceLocation, WeaponConfig> registeredWeapons = new HashMap<>();
@@ -151,18 +158,4 @@ public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWe
         return instance;
     }
 
-    public static class LoginData implements ILoginData {
-        @Override
-        public void writeData(FriendlyByteBuf buffer) {
-            Validate.notNull(NetworkWeaponManager.get());
-            NetworkWeaponManager.get().writeRegisteredGuns(buffer);
-        }
-
-        @Override
-        public Optional<String> readData(FriendlyByteBuf buffer) {
-            var registeredGuns = NetworkWeaponManager.readRegisteredWeapons(buffer);
-            NetworkWeaponManager.updateRegisteredWeapons(registeredGuns);
-            return Optional.empty();
-        }
-    }
 }

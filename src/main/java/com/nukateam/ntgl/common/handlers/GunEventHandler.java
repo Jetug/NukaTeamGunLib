@@ -124,46 +124,4 @@ public class GunEventHandler {
             }
         }
     }
-
-//    public static void ejectCasing(Level level, LivingEntity livingEntity) {
-//        var heldItem = livingEntity.getMainHandItem();
-//        var gun = ((WeaponItem) heldItem.getItem()).getModifiedConfig(heldItem);
-//
-//        var lookVec = livingEntity.getLookAngle(); //Get the player's look vector
-//        var rightVec = new Vec3(-lookVec.z, 0, lookVec.x).normalize();
-//        var forwardVec = new Vec3(lookVec.x, 0, lookVec.z).normalize();
-//
-//        double offsetX = rightVec.x * 0.5 + forwardVec.x * 0.5; //Move the particle 0.5 blocks to the right and 0.5 blocks forward
-//        double offsetY = livingEntity.getEyeHeight() - 0.4; //Move the particle slightly below the player's head
-//        double offsetZ = rightVec.z * 0.5 + forwardVec.z * 0.5; //Move the particle 0.5 blocks to the right and 0.5 blocks forward
-//
-//        Vec3 particlePos = livingEntity.getPosition(1).add(offsetX, offsetY, offsetZ); //Add the offsets to the player's position
-//
-//        var pistolAmmoLocation = ModItems.PISTOL_AMMO.getId();
-//        var rifleAmmoLocation = ModItems.RIFLE_AMMO.getId();
-//        var shotgunShellLocation = ModItems.SHOTGUN_SHELL.getId();
-//        var spectreAmmoLocation = ModItems.SPECTRE_AMMO.getId();
-//        var projectileLocation = gun.getAmmoCount().getItem();
-//
-//        SimpleParticleType casingType = ModParticleTypes.CASING_PARTICLE.get();
-//
-//        if (projectileLocation != null) {
-//            if (projectileLocation.equals(pistolAmmoLocation) || projectileLocation.equals(rifleAmmoLocation)) {
-//                casingType = ModParticleTypes.CASING_PARTICLE.get();
-//            } else if (projectileLocation.equals(shotgunShellLocation)) {
-//                casingType = ModParticleTypes.SHELL_PARTICLE.get();
-//            } else if (projectileLocation.equals(spectreAmmoLocation)) {
-//                casingType = ModParticleTypes.SPECTRE_CASING_PARTICLE.get();
-//            }
-//        }
-//
-//        if (level instanceof ServerLevel serverLevel) {
-//            serverLevel.sendParticles(casingType,
-//                    particlePos.x, particlePos.y, particlePos.z, 1, 0, 0, 0, 0);
-//            if (livingEntity.getMainHandItem().getItem().toString().matches(ModItems.BLOSSOM_RIFLE.get().toString())) {
-//                serverLevel.sendParticles(ParticleTypes.CHERRY_LEAVES,
-//                        particlePos.x, particlePos.y, particlePos.z, 1, 0.3, 0.2, 0.3, 0);
-//            }
-//        }
-//    }
 }

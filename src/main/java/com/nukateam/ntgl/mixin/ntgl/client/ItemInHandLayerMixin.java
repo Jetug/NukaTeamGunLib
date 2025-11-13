@@ -3,7 +3,7 @@ package com.nukateam.ntgl.mixin.ntgl.client;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -47,7 +47,7 @@ public class ItemInHandLayerMixin {
             }
         }
 
-        if (stack.getItem() instanceof INtglItem) {
+        if (stack.getItem() instanceof IWeapon) {
             ci.cancel();
             var layer = (ItemInHandLayer<?, ?>) (Object) this;
             renderArmWithGun(layer, entity, stack, transformType, hand, arm,

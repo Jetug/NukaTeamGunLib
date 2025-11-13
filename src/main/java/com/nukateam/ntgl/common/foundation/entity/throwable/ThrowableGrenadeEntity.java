@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.foundation.entity.throwable;
 
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.world.ExplosionUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.EntityType;
@@ -10,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-public class ThrowableGrenadeEntity<T extends Item & IThrowable> extends ThrowableItemEntity<T> {
+public class ThrowableGrenadeEntity<T extends Item & IThrowable & IWeapon> extends ThrowableItemEntity<T> {
     public ThrowableGrenadeEntity(EntityType<? extends ThrowableItemEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
     }

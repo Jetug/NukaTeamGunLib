@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.network;
+package com.nukateam.ntgl.common.network.enums;
 
 public enum HandAction {
     SWITCH_FIRE_MODE,

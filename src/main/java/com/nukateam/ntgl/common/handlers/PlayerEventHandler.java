@@ -64,12 +64,13 @@ public class PlayerEventHandler {
     public static void onChangeEquipment(LivingEquipmentChangeEvent event) {
         var oldItem = event.getFrom();
         var newItem = event.getTo();
-
         if(event.getSlot() == EquipmentSlot.MAINHAND || event.getSlot() == EquipmentSlot.OFFHAND) {
             var hand = getHand(event.getSlot());
             if (newItem.getItem() instanceof IThrowable throwable) {
                 if (newItem.getCount() < oldItem.getCount()) {
-                    var equipTime = throwable.getConfig().getGeneral().getEquipTime();
+
+                    var data = new WeaponData(newItem, event.getEntity());
+                    var equipTime = WeaponModifierHelper.getEquipTime(data);
                     EquipTracker.stopEquip(event.getEntity(), hand);
                     EquipTracker.startEquip(event.getEntity(), hand, equipTime);
                 }
@@ -86,9 +87,10 @@ public class PlayerEventHandler {
         if (newItem.getItem() != lastSlot.stack.getItem() || newItem.getCount() < lastSlot.stackSize()
                 || player.getInventory().selected != lastSlot.slotId) {
 
-            if (newItem.getItem() instanceof IThrowable throwable) {
+            if (newItem.getItem() instanceof IThrowable) {
                 if (newItem.getCount() < lastSlot.stackSize()) {
-                    var equipTime = throwable.getConfig().getGeneral().getEquipTime();
+                    var data = new WeaponData(newItem, player);
+                    var equipTime = WeaponModifierHelper.getEquipTime(data);
                     ClientEquipHandler.get().setEquiping(hand, equipTime);
                 }
             }

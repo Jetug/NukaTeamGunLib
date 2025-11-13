@@ -140,19 +140,4 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
             return this.projectile;
         }
     }
-
-    public static class LoginData implements ILoginData {
-        @Override
-        public void writeData(FriendlyByteBuf buffer) {
-            Validate.notNull(NetworkAmmoManager.get());
-            NetworkAmmoManager.get().writeRegisteredAmmo(buffer);
-        }
-
-        @Override
-        public Optional<String> readData(FriendlyByteBuf buffer) {
-            var registeredAmmo = NetworkAmmoManager.readRegisteredAmmo(buffer);
-            NetworkAmmoManager.updateRegisteredAmmo(registeredAmmo);
-            return Optional.empty();
-        }
-    }
 }

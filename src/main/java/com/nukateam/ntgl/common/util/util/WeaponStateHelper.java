@@ -363,9 +363,6 @@ public class WeaponStateHelper {
             var data = new WeaponData(slot, shooter);
             equipTime = WeaponModifierHelper.getEquipTime(data);
         }
-        else if (slot.getItem() instanceof IThrowable throwable) {
-            equipTime = throwable.getConfig().getGeneral().getEquipTime();
-        }
         return equipTime;
     }
 }
