@@ -11,7 +11,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
-import com.nukateam.ntgl.common.foundation.item.interfaces.INtglItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
@@ -159,7 +159,7 @@ public class GunRenderingHandler {
         var down = false;
         var heldItem = mc.player.getMainHandItem();
 
-        if (heldItem.getItem() instanceof INtglItem) {
+        if (heldItem.getItem() instanceof IWeapon) {
             down = WeaponModifierHelper.getGripType(new WeaponData(heldItem, mc.player))
                     .getHeldAnimation()
                     .canRenderOffhandItem();
