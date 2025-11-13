@@ -5,6 +5,7 @@ import com.nukateam.chassis_core.common.data.json.EquipmentAttachment;
 import com.nukateam.chassis_core.modules.config.annotation.Ignored;
 import com.nukateam.chassis_core.modules.config.annotation.Optional;
 import com.nukateam.chassis_core.modules.config.utils.NbtUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;

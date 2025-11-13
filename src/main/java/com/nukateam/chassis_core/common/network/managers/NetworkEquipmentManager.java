@@ -22,6 +22,7 @@ import org.apache.commons.lang3.Validate;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @EventBusSubscriber(modid = ChassisCore.MOD_ID)
 public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<IChassisEquipment, EquipmentConfig>> {
@@ -86,7 +87,7 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
     public static boolean updateRegisteredConfig(Map<ResourceLocation, EquipmentConfig> registeredConfig) {
         if (registeredConfig != null) {
             for (Map.Entry<ResourceLocation, EquipmentConfig> entry : registeredConfig.entrySet()) {
-                var item = BuiltInRegistries.ITEM.getValue(entry.getKey());
+                var item = BuiltInRegistries.ITEM.get(entry.getKey());
                 if (item instanceof IChassisEquipment chassisEquipment) {
                     Configs.EQUIPMENT_CONFIGS.put(chassisEquipment, new ConfigSupplier<>(entry.getValue()));
                 }
@@ -105,21 +106,18 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
         instance = null;
     }
 
-    public static class LoginDataHandler {
-        public static void handle(final FriendlyByteBuf buffer, final IPayloadContext context) {
-            // Ваша существующая логика из readData
-            var registeredConfig = readRegisteredConfigs(buffer);
-            updateRegisteredConfig(registeredConfig);
-
-            // Для handshake нужно подтвердить получение
-            context.replyHandler().ifPresent(handler -> handler.accept(null));
+    public static class LoginData{
+//        @Override
+        public void writeData(FriendlyByteBuf buffer) {
+            Validate.notNull(NetworkEquipmentManager.get());
+            NetworkEquipmentManager.get().writeRegisteredConfig(buffer);
         }
-    }
 
-    public static class LoginDataHandler {
-        public static void handle(final FriendlyByteBuf buffer, final IPayloadContext context) {
+//        @Override
+        public Optional<String> readData(FriendlyByteBuf buffer) {
             var registeredConfig = NetworkEquipmentManager.readRegisteredConfigs(buffer);
             NetworkEquipmentManager.updateRegisteredConfig(registeredConfig);
+            return Optional.empty();
         }
     }
 }
