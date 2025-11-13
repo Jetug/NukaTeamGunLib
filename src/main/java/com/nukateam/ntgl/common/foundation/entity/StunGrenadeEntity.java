@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.foundation.init.ModEffects;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.S2CMessageStunGrenade;
 import net.minecraft.core.BlockPos;
@@ -37,7 +38,7 @@ import net.minecraftforge.fml.common.Mod;
 import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber
-public class StunGrenadeEntity<T extends Item & IThrowable> extends ThrowableGrenadeEntity<T> {
+public class StunGrenadeEntity<T extends Item & IThrowable & IWeapon> extends ThrowableGrenadeEntity<T> {
     public StunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world) {
         super(entityType, world);
     }

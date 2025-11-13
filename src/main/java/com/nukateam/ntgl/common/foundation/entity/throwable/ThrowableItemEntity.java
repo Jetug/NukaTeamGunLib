@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.foundation.entity.throwable;
 
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,7 +22,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 
-public abstract class ThrowableItemEntity<T extends Item & IThrowable> extends ThrowableProjectile implements IEntityAdditionalSpawnData {
+public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable> extends ThrowableProjectile implements IEntityAdditionalSpawnData {
     protected ProjectileConfig projectile;
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
