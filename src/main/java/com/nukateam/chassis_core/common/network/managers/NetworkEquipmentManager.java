@@ -102,19 +102,4 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
     public static void stop() {
         instance = null;
     }
-
-    public static class LoginData implements ILoginData {
-        @Override
-        public void writeData(FriendlyByteBuf buffer) {
-            Validate.notNull(NetworkEquipmentManager.get());
-            NetworkEquipmentManager.get().writeRegisteredConfig(buffer);
-        }
-
-        @Override
-        public Optional<String> readData(FriendlyByteBuf buffer) {
-            var registeredConfig = NetworkEquipmentManager.readRegisteredConfigs(buffer);
-            NetworkEquipmentManager.updateRegisteredConfig(registeredConfig);
-            return Optional.empty();
-        }
-    }
 }

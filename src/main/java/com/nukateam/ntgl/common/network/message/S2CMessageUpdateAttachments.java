@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import net.minecraftforge.network.NetworkEvent;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
 import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
@@ -10,7 +10,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.Validate;
 
-public class S2CMessageUpdateAttachments extends PlayMessage<S2CMessageUpdateAttachments> {
+public class S2CMessageUpdateAttachments implements IMessage<S2CMessageUpdateAttachments> {
     private ImmutableMap<ResourceLocation, AttachmentConfig> registered;
 
     public S2CMessageUpdateAttachments() {}
@@ -29,9 +29,9 @@ public class S2CMessageUpdateAttachments extends PlayMessage<S2CMessageUpdateAtt
     }
 
     @Override
-    public void handle(S2CMessageUpdateAttachments message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleUpdateAttachments(message)));
-        supplier.setHandled(true);
+    public void handle(S2CMessageUpdateAttachments message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleUpdateAttachments(message)));
+        supplier.setPacketHandled(true);
     }
 
     public ImmutableMap<ResourceLocation, AttachmentConfig> getRegistered() {

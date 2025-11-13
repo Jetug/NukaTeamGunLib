@@ -6,7 +6,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
-import com.nukateam.ntgl.common.network.KeyAction;
+import com.nukateam.ntgl.common.network.enums.KeyAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageGrenade;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;

@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -34,6 +35,16 @@ public class NbtUtils {
             );
         }
         return Vec3.ZERO;
+    }
+
+    public static void writeVec3(FriendlyByteBuf buffer, Vec3 vec) {
+        buffer.writeDouble(vec.x);
+        buffer.writeDouble(vec.y);
+        buffer.writeDouble(vec.z);
+    }
+
+    public static Vec3 readVec3(FriendlyByteBuf buffer) {
+        return new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     }
 
     public static CompoundTag serializeStringArray(ArrayList<String> array){

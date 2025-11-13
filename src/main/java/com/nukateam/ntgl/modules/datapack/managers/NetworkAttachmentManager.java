@@ -127,19 +127,4 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
             return this.config;
         }
     }
-
-    public static class LoginData implements ILoginData {
-        @Override
-        public void writeData(FriendlyByteBuf buffer) {
-            Validate.notNull(NetworkAttachmentManager.get());
-            NetworkAttachmentManager.get().writeRegistered(buffer);
-        }
-
-        @Override
-        public Optional<String> readData(FriendlyByteBuf buffer) {
-            var registered = NetworkAttachmentManager.readRegistered(buffer);
-            NetworkAttachmentManager.updateRegisteredAttachments(registered);
-            return Optional.empty();
-        }
-    }
 }

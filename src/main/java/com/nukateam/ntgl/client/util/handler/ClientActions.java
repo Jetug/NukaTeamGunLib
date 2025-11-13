@@ -5,7 +5,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.network.HandAction;
+import com.nukateam.ntgl.common.network.enums.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageHandAction;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;

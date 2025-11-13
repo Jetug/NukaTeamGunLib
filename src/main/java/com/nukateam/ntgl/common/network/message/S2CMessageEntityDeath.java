@@ -1,14 +1,14 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import net.minecraftforge.network.NetworkEvent;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.common.data.enums.DeathType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Objects;
 
-public class S2CMessageEntityDeath extends PlayMessage<S2CMessageEntityDeath> {
+public class S2CMessageEntityDeath implements IMessage<S2CMessageEntityDeath> {
     int entityId;
     int deathTypeId;
     float motionX;
@@ -48,10 +48,10 @@ public class S2CMessageEntityDeath extends PlayMessage<S2CMessageEntityDeath> {
     }
 
     @Override
-    public void handle(S2CMessageEntityDeath message, MessageContext supplier) {
-        supplier.execute((() -> {
+    public void handle(S2CMessageEntityDeath message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> {
 //			if (Config.CLIENT.particle.enableDeathFX.get()) {
-//				Player player = Minecraft.getInstance().player; //TGPackets.getPlayerFromContext(ctx);
+//				Player player = Minecraft.getInstance().player; //TGPackets.getSenderFromContext(ctx);
 //				var entity = (LivingEntity) player.level().getEntity(message.entityId);
 //				DeathType deathtype = DeathType.values()[message.deathTypeId];
 //
@@ -69,25 +69,25 @@ public class S2CMessageEntityDeath extends PlayMessage<S2CMessageEntityDeath> {
 //				}
 //			}
         }));
-        supplier.setHandled(true);
+        supplier.setPacketHandled(true);
     }
 //
 //    public static class Handler implements IMessageHandler<S2CMessageEntityDeath, IMessage> {
 //
 //        @Override
-//        public IMessage onMessage(S2CMessageEntityDeath message, MessageContext ctx) {
+//        public IMessage onMessage(S2CMessageEntityDeath message, NetworkEvent.Context ctx) {
 //            FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(message, ctx));
 //            return null;
 //        }
 //
-//        private void handle(S2CMessageEntityDeath message, MessageContext ctx) {
+//        private void handle(S2CMessageEntityDeath message, NetworkEvent.Context ctx) {
 //
 ////			System.out.println("Get Packet!");
 //
 //            //If deathFX are disabled, ignore packet
 //            if (TGConfig.cl_enableDeathFX) {
 //
-//                EntityPlayer ply = TGPackets.getPlayerFromContext(ctx);
+//                EntityPlayer ply = TGPackets.getSenderFromContext(ctx);
 //                EntityLivingBase entity = (LivingEntity) ply.world.getEntityByID(message.entityId);
 //                DeathType deathtype = DeathType.values()[message.deathTypeId];
 //

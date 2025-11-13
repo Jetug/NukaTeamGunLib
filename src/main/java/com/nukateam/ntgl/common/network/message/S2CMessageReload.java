@@ -1,13 +1,13 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import net.minecraftforge.network.NetworkEvent;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 
-public class S2CMessageReload extends PlayMessage<S2CMessageReload> {
+public class S2CMessageReload implements IMessage<S2CMessageReload> {
     private boolean reload;
     private boolean isRightHand;
 
@@ -37,9 +37,9 @@ public class S2CMessageReload extends PlayMessage<S2CMessageReload> {
     }
 
     @Override
-    public void handle(S2CMessageReload message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleReload(message)));
-        supplier.setHandled(true);
+    public void handle(S2CMessageReload message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleReload(message)));
+        supplier.setPacketHandled(true);
     }
 
     public boolean isReload() {

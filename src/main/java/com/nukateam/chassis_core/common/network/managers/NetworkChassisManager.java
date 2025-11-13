@@ -96,19 +96,4 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
         }
         return false;
     }
-
-    public static class LoginData implements ILoginData {
-        @Override
-        public void writeData(FriendlyByteBuf buffer) {
-            Validate.notNull(NetworkChassisManager.get());
-            NetworkChassisManager.get().writeRegisteredConfig(buffer);
-        }
-
-        @Override
-        public Optional<String> readData(FriendlyByteBuf buffer) {
-            var registeredConfig = NetworkChassisManager.readRegisteredConfigs(buffer);
-            NetworkChassisManager.updateRegisteredConfig(registeredConfig);
-            return Optional.empty();
-        }
-    }
 }

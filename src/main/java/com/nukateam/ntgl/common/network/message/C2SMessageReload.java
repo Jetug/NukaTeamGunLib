@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.minecraftforge.network.NetworkEvent;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -10,7 +10,7 @@ import net.minecraft.world.InteractionHand;
 /**
  * Author: MrCrayfish
  */
-public class C2SMessageReload extends PlayMessage<C2SMessageReload> {
+public class C2SMessageReload implements IMessage<C2SMessageReload> {
     private boolean reload;
     private InteractionHand hand = InteractionHand.MAIN_HAND;
 
@@ -33,15 +33,15 @@ public class C2SMessageReload extends PlayMessage<C2SMessageReload> {
     }
 
     @Override
-    public void handle(C2SMessageReload message, MessageContext supplier) {
-        supplier.execute((() ->
+    public void handle(C2SMessageReload message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() ->
         {
-            ServerPlayer player = supplier.getPlayer();
+            ServerPlayer player = supplier.getSender();
             if (player != null && !player.isSpectator()) {
                 ServerPlayHandler.handleReload(message, player);
             }
         }));
-        supplier.setHandled(true);
+        supplier.setPacketHandled(true);
     }
 
     public boolean isReload() {

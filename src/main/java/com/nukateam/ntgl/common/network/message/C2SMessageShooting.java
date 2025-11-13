@@ -1,14 +1,14 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.minecraftforge.network.NetworkEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 
 /**
  * Author: MrCrayfish
  */
-public class C2SMessageShooting extends PlayMessage<C2SMessageShooting> {
+public class C2SMessageShooting implements IMessage<C2SMessageShooting> {
     private boolean shooting;
 
     public C2SMessageShooting() {}
@@ -28,13 +28,13 @@ public class C2SMessageShooting extends PlayMessage<C2SMessageShooting> {
     }
 
     @Override
-    public void handle(C2SMessageShooting message, MessageContext supplier) {
-        supplier.execute((() -> {
-            var player = supplier.getPlayer();
+    public void handle(C2SMessageShooting message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> {
+            var player = supplier.getSender();
             if (player != null) {
                 ModSyncedDataKeys.SHOOTING_RIGHT.setValue(player, message.shooting);
             }
         }));
-        supplier.setHandled(true);
+        supplier.setPacketHandled(true);
     }
 }

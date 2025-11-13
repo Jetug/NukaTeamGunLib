@@ -1,13 +1,13 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import net.minecraftforge.network.NetworkEvent;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
 
-public class S2CMessageProjectileHitFluid extends PlayMessage<S2CMessageProjectileHitFluid> {
+public class S2CMessageProjectileHitFluid implements IMessage<S2CMessageProjectileHitFluid> {
     private Vec3 pos;
     float size;
     float speed;
@@ -46,9 +46,9 @@ public class S2CMessageProjectileHitFluid extends PlayMessage<S2CMessageProjecti
     }
 
     @Override
-    public void handle(S2CMessageProjectileHitFluid message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleProjectileHitFluid(message)));
-        supplier.setHandled(true);
+    public void handle(S2CMessageProjectileHitFluid message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleProjectileHitFluid(message)));
+        supplier.setPacketHandled(true);
     }
 
     public Vec3 getPos() {

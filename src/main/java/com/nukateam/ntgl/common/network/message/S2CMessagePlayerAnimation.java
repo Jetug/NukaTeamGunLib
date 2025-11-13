@@ -1,14 +1,14 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import net.minecraftforge.network.NetworkEvent;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 
 import static com.nukateam.ntgl.client.handlers.ClientPlayHandler.*;
 
-public class S2CMessagePlayerAnimation extends PlayMessage<S2CMessagePlayerAnimation> {
+public class S2CMessagePlayerAnimation implements IMessage<S2CMessagePlayerAnimation> {
     int entityId;
     AnimationType animation;
     InteractionHand hand;
@@ -38,11 +38,11 @@ public class S2CMessagePlayerAnimation extends PlayMessage<S2CMessagePlayerAnima
     }
 
     @Override
-    public void handle(S2CMessagePlayerAnimation message, MessageContext supplier) {
-        supplier.execute((() -> {
+    public void handle(S2CMessagePlayerAnimation message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> {
             handleMessageAnimation(message);
         }));
-        supplier.setHandled(true);
+        supplier.setPacketHandled(true);
     }
 
     public int getEntityId() {

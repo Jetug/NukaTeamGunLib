@@ -1,13 +1,13 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import net.minecraftforge.network.NetworkEvent;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
-import com.nukateam.ntgl.common.network.HandAction;
+import com.nukateam.ntgl.common.network.enums.HandAction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 
-public class C2SMessageHandAction extends PlayMessage<C2SMessageHandAction> {
+public class C2SMessageHandAction implements IMessage<C2SMessageHandAction> {
     private InteractionHand hand = InteractionHand.MAIN_HAND;
     private HandAction handAction;
 
@@ -30,14 +30,14 @@ public class C2SMessageHandAction extends PlayMessage<C2SMessageHandAction> {
     }
 
     @Override
-    public void handle(C2SMessageHandAction message, MessageContext context) {
-        context.execute(() -> {
-            var player = context.getPlayer();
+    public void handle(C2SMessageHandAction message, NetworkEvent.Context context) {
+        context.enqueueWork(() -> {
+            var player = context.getSender();
             if (player != null) {
                 ServerPlayHandler.handleHandAction(message, player);
             }
         });
-        context.setHandled(true);
+        context.setPacketHandled(true);
     }
 
     public InteractionHand getHand() {

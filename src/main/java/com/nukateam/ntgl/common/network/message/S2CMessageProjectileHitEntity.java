@@ -1,14 +1,14 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.minecraftforge.network.NetworkEvent;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 
 /**
  * Author: MrCrayfish
  */
-public class S2CMessageProjectileHitEntity extends PlayMessage<S2CMessageProjectileHitEntity> {
+public class S2CMessageProjectileHitEntity implements IMessage<S2CMessageProjectileHitEntity> {
     private double x;
     private double y;
     private double z;
@@ -45,9 +45,9 @@ public class S2CMessageProjectileHitEntity extends PlayMessage<S2CMessageProject
     }
 
     @Override
-    public void handle(S2CMessageProjectileHitEntity message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleProjectileHitEntity(message)));
-        supplier.setHandled(true);
+    public void handle(S2CMessageProjectileHitEntity message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleProjectileHitEntity(message)));
+        supplier.setPacketHandled(true);
     }
 
     public double getX() {

@@ -1,14 +1,14 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.minecraftforge.network.NetworkEvent;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 
-public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
+public class C2SMessageShoot implements IMessage<C2SMessageShoot> {
     private int shooterId;
     private float rotationYaw;
     private float rotationPitch;
@@ -53,9 +53,9 @@ public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
     }
 
     @Override
-    public void handle(C2SMessageShoot messageShoot, MessageContext supplier) {
-        supplier.execute((() -> {
-            var player = supplier.getPlayer();
+    public void handle(C2SMessageShoot messageShoot, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> {
+            var player = supplier.getSender();
             if (player != null) {
                 var shooter = player.level().getEntity(messageShoot.shooterId);
 
@@ -63,7 +63,7 @@ public class C2SMessageShoot extends PlayMessage<C2SMessageShoot> {
                     ServerPlayHandler.handleShoot(messageShoot, livingEntity);
             }
         }));
-        supplier.setHandled(true);
+        supplier.setPacketHandled(true);
     }
 
     public InteractionHand getHand() {

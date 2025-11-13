@@ -1,15 +1,15 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.minecraftforge.network.NetworkEvent;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
 
-public class S2CMessageProjectileHitBlock extends PlayMessage<S2CMessageProjectileHitBlock> {
+public class S2CMessageProjectileHitBlock implements IMessage<S2CMessageProjectileHitBlock> {
     private Vec3 hitPos;
     private BlockPos blockPos;
     private Direction face;
@@ -38,9 +38,9 @@ public class S2CMessageProjectileHitBlock extends PlayMessage<S2CMessageProjecti
     }
 
     @Override
-    public void handle(S2CMessageProjectileHitBlock message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleProjectileHitBlock(message)));
-        supplier.setHandled(true);
+    public void handle(S2CMessageProjectileHitBlock message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleProjectileHitBlock(message)));
+        supplier.setPacketHandled(true);
     }
 
     public Vec3 getHitPos() {

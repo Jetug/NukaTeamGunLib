@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import net.minecraftforge.network.NetworkEvent;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 /**
  * Author: MrCrayfish
  */
-public class C2SMessageAttachments extends PlayMessage<C2SMessageAttachments> {
+public class C2SMessageAttachments implements IMessage<C2SMessageAttachments> {
     public C2SMessageAttachments() {
     }
 
@@ -23,13 +23,13 @@ public class C2SMessageAttachments extends PlayMessage<C2SMessageAttachments> {
     }
 
     @Override
-    public void handle(C2SMessageAttachments message, MessageContext supplier) {
-        supplier.execute((() -> {
-            ServerPlayer player = supplier.getPlayer();
+    public void handle(C2SMessageAttachments message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> {
+            ServerPlayer player = supplier.getSender();
             if (player != null) {
                 ServerPlayHandler.handleAttachments(player);
             }
         }));
-        supplier.setHandled(true);
+        supplier.setPacketHandled(true);
     }
 }

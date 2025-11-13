@@ -4,8 +4,10 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
 import com.nukateam.ntgl.modules.datapack.managers.*;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -24,6 +26,15 @@ public class NetworkManagerHandler {
         NetworkWeaponManager.register(event);
         NetworkAmmoManager.register(event);
         NetworkAttachmentManager.register(event);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateWeapons());
+            PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateAmmo());
+            PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateAttachments());
+        }
     }
 
     @SubscribeEvent

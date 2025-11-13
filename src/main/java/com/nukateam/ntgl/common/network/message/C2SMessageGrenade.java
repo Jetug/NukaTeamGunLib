@@ -1,15 +1,15 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import net.minecraftforge.network.NetworkEvent;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
-import com.nukateam.ntgl.common.network.KeyAction;
+import com.nukateam.ntgl.common.network.enums.KeyAction;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 
-public class C2SMessageGrenade extends PlayMessage<C2SMessageGrenade> {
+public class C2SMessageGrenade implements IMessage<C2SMessageGrenade> {
     private KeyAction action;
     private InteractionHand hand = InteractionHand.MAIN_HAND;
     WeaponMode weaponMode;
@@ -39,15 +39,15 @@ public class C2SMessageGrenade extends PlayMessage<C2SMessageGrenade> {
     }
 
     @Override
-    public void handle(C2SMessageGrenade message, MessageContext supplier) {
-        supplier.execute((() ->
+    public void handle(C2SMessageGrenade message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() ->
         {
-            ServerPlayer player = supplier.getPlayer();
+            ServerPlayer player = supplier.getSender();
             if (player != null && !player.isSpectator()) {
                 ServerPlayHandler.handleGrenade(message, player);
             }
         }));
-        supplier.setHandled(true);
+        supplier.setPacketHandled(true);
     }
 
     public KeyAction getAction() {

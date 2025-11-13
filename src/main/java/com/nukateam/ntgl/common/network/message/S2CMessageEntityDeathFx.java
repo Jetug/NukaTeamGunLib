@@ -1,12 +1,12 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import net.minecraftforge.network.NetworkEvent;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.common.foundation.entity.projectile.GoreData;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class S2CMessageEntityDeathFx extends PlayMessage<S2CMessageEntityDeathFx> {
+public class S2CMessageEntityDeathFx implements IMessage<S2CMessageEntityDeathFx> {
     private int entityId = -1;
     private GoreData data;
 
@@ -33,9 +33,9 @@ public class S2CMessageEntityDeathFx extends PlayMessage<S2CMessageEntityDeathFx
     }
 
     @Override
-    public void handle(S2CMessageEntityDeathFx message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleEntityDeathFx(message)));
-        supplier.setHandled(true);
+    public void handle(S2CMessageEntityDeathFx message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleEntityDeathFx(message)));
+        supplier.setPacketHandled(true);
     }
 
     public int getEntityId() {

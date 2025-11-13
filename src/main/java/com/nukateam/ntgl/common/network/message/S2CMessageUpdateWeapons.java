@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import net.minecraftforge.network.NetworkEvent;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkWeaponManager;
@@ -10,7 +10,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.Validate;
 
-public class S2CMessageUpdateWeapons extends PlayMessage<S2CMessageUpdateWeapons> {
+public class S2CMessageUpdateWeapons implements IMessage<S2CMessageUpdateWeapons> {
     private ImmutableMap<ResourceLocation, WeaponConfig> registeredGuns;
 
     public S2CMessageUpdateWeapons() {}
@@ -29,9 +29,9 @@ public class S2CMessageUpdateWeapons extends PlayMessage<S2CMessageUpdateWeapons
     }
 
     @Override
-    public void handle(S2CMessageUpdateWeapons message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleUpdateWeapons(message)));
-        supplier.setHandled(true);
+    public void handle(S2CMessageUpdateWeapons message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleUpdateWeapons(message)));
+        supplier.setPacketHandled(true);
     }
 
     public ImmutableMap<ResourceLocation, WeaponConfig> getRegisteredGuns() {

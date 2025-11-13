@@ -9,6 +9,7 @@ import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.network.enums.KeyAction;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.common.data.constants.Tags;
 

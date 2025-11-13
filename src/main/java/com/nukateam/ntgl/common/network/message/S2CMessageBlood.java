@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.minecraftforge.network.NetworkEvent;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
@@ -10,7 +10,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Author: MrCrayfish
  */
-public class S2CMessageBlood extends PlayMessage<S2CMessageBlood> {
+public class S2CMessageBlood implements IMessage<S2CMessageBlood> {
     private Vec3 pos;
 
     public S2CMessageBlood() {}
@@ -31,9 +31,9 @@ public class S2CMessageBlood extends PlayMessage<S2CMessageBlood> {
     }
 
     @Override
-    public void handle(S2CMessageBlood message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleMessageBlood(message)));
-        supplier.setHandled(true);
+    public void handle(S2CMessageBlood message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleMessageBlood(message)));
+        supplier.setPacketHandled(true);
     }
 
     public Vec3 getPos() {

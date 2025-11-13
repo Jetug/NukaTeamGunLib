@@ -1,19 +1,15 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.minecraftforge.network.NetworkEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
-
-public class C2SMessageAim extends PlayMessage<C2SMessageAim> {
+public class C2SMessageAim implements IMessage<C2SMessageAim> {
     private boolean aiming;
 
-    public C2SMessageAim() {
-    }
+    public C2SMessageAim() {}
 
     public C2SMessageAim(boolean aiming) {
         this.aiming = aiming;
@@ -30,14 +26,14 @@ public class C2SMessageAim extends PlayMessage<C2SMessageAim> {
     }
 
     @Override
-    public void handle(C2SMessageAim message, MessageContext supplier) {
-        supplier.execute((() ->
+    public void handle(C2SMessageAim message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() ->
         {
-            ServerPlayer player = supplier.getPlayer();
+            ServerPlayer player = supplier.getSender();
             if (player != null && !player.isSpectator()) {
                 ModSyncedDataKeys.AIMING.setValue(player, message.aiming);
             }
         }));
-        supplier.setHandled(true);
+        supplier.setPacketHandled(true);
     }
 }

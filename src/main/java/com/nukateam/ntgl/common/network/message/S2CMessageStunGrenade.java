@@ -1,11 +1,11 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.minecraftforge.network.NetworkEvent;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class S2CMessageStunGrenade extends PlayMessage<S2CMessageStunGrenade> {
+public class S2CMessageStunGrenade implements IMessage<S2CMessageStunGrenade> {
     private double x, y, z;
 
     public S2CMessageStunGrenade() {
@@ -33,9 +33,9 @@ public class S2CMessageStunGrenade extends PlayMessage<S2CMessageStunGrenade> {
     }
 
     @Override
-    public void handle(S2CMessageStunGrenade message, MessageContext supplier) {
-        supplier.execute(() -> ClientPlayHandler.handleExplosionStunGrenade(message));
-        supplier.setHandled(true);
+    public void handle(S2CMessageStunGrenade message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork(() -> ClientPlayHandler.handleExplosionStunGrenade(message));
+        supplier.setPacketHandled(true);
     }
 
     public double getX() {

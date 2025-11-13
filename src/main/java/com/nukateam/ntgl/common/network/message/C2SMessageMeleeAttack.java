@@ -1,13 +1,13 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import net.minecraftforge.network.NetworkEvent;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 
-public class C2SMessageMeleeAttack extends PlayMessage<C2SMessageMeleeAttack> {
+public class C2SMessageMeleeAttack implements IMessage<C2SMessageMeleeAttack> {
     InteractionHand hand;
     WeaponMode action;
 
@@ -33,14 +33,14 @@ public class C2SMessageMeleeAttack extends PlayMessage<C2SMessageMeleeAttack> {
     }
 
     @Override
-    public void handle(C2SMessageMeleeAttack message, MessageContext context) {
-        context.execute(() -> {
-            var player = context.getPlayer();
+    public void handle(C2SMessageMeleeAttack message, NetworkEvent.Context context) {
+        context.enqueueWork(() -> {
+            var player = context.getSender();
             if (player != null) {
                 ServerPlayHandler.handleMeleeAttack(message, player);
             }
         });
-        context.setHandled(true);
+        context.setPacketHandled(true);
     }
 
     public InteractionHand getHand() {

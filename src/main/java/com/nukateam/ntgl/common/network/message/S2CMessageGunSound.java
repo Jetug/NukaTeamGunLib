@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.minecraftforge.network.NetworkEvent;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
@@ -12,7 +12,7 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Author: MrCrayfish
  */
-public class S2CMessageGunSound extends PlayMessage<S2CMessageGunSound> {
+public class S2CMessageGunSound implements IMessage<S2CMessageGunSound> {
     private ResourceLocation id;
     private SoundSource category;
     private float x;
@@ -92,9 +92,9 @@ public class S2CMessageGunSound extends PlayMessage<S2CMessageGunSound> {
     }
 
     @Override
-    public void handle(S2CMessageGunSound message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleMessageGunSound(message)));
-        supplier.setHandled(true);
+    public void handle(S2CMessageGunSound message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleMessageGunSound(message)));
+        supplier.setPacketHandled(true);
     }
 
     public ResourceLocation getId() {

@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import net.minecraftforge.network.NetworkEvent;
+import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
-import com.nukateam.ntgl.common.network.BufferUtil;
+import com.nukateam.ntgl.common.util.util.NbtUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
@@ -13,7 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Objects;
 
-public class S2CMessageProjectileExplosion extends PlayMessage<S2CMessageProjectileExplosion> {
+public class S2CMessageProjectileExplosion implements IMessage<S2CMessageProjectileExplosion> {
     private Vec3 position;
     private Vec3 knockback;
     private ExplosionConfig config;
@@ -33,8 +33,8 @@ public class S2CMessageProjectileExplosion extends PlayMessage<S2CMessageProject
 
     @Override
     public void encode(S2CMessageProjectileExplosion message, FriendlyByteBuf buffer) {
-        BufferUtil.writeVec3(buffer, message.position);
-        BufferUtil.writeVec3(buffer, message.knockback);
+        NbtUtils.writeVec3(buffer, message.position);
+        NbtUtils.writeVec3(buffer, message.knockback);
         buffer.writeNbt(message.config.serializeNBT());
         buffer.writeCollection(message.toBlow, (buf, blockPos) -> {
             int x = blockPos.getX() - Mth.floor(message.position.x);
@@ -48,8 +48,8 @@ public class S2CMessageProjectileExplosion extends PlayMessage<S2CMessageProject
 
     @Override
     public S2CMessageProjectileExplosion decode(FriendlyByteBuf buffer) {
-        position = BufferUtil.readVec3(buffer);
-        knockback = BufferUtil.readVec3(buffer);
+        position = NbtUtils.readVec3(buffer);
+        knockback = NbtUtils.readVec3(buffer);
         config = ExplosionConfig.create(buffer.readNbt());
         int x = Mth.floor(this.position.x);
         int y = Mth.floor(this.position.y);
@@ -65,9 +65,9 @@ public class S2CMessageProjectileExplosion extends PlayMessage<S2CMessageProject
     }
 
     @Override
-    public void handle(S2CMessageProjectileExplosion message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleMessageExplosion(message)));
-        supplier.setHandled(true);
+    public void handle(S2CMessageProjectileExplosion message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleMessageExplosion(message)));
+        supplier.setPacketHandled(true);
     }
 
     public Vec3 getPosition() {
