@@ -4,7 +4,7 @@
 //import net.minecraft.nbt.CompoundTag;
 //import net.minecraft.nbt.Tag;
 //import net.neoforged.neoforge.common.util.INBTSerializable;
-//import net.minecraftforge.fml.util.thread.SidedThreadGroups;
+//import net.neoforged.neoforge.fml.util.thread.SidedThreadGroups;
 //
 //public class Reloads implements INBTSerializable<CompoundTag> {
 //    private int maxAmmo = 20;

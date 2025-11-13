@@ -12,9 +12,9 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.fml.common.Mod;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;

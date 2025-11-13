@@ -1,8 +1,8 @@
 package com.nukateam.chassis_core.client.input;
 
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.common.NeoForge;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
 
 import java.util.HashMap;
 import java.util.Map;

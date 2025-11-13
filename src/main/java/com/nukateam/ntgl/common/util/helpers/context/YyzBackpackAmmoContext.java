@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.util.helpers.context;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public record YyzBackpackAmmoContext(ItemStack stack, IItemHandler inventory, int slot) implements IAmmoContext {
     @Override

@@ -20,9 +20,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.common.NeoForge;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.*;
-import static net.minecraftforge.event.TickEvent.Type.RENDER;
+import static net.neoforged.neoforge.event.TickEvent.Type.RENDER;
 
 public class ClientShootingHandler {
     private static ClientShootingHandler instance;

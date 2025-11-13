@@ -27,8 +27,8 @@ import net.minecraft.resources.*;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.*;
-import net.minecraftforge.client.*;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.neoforge.client.*;
+import net.neoforged.neoforge.fml.ModList;
 import org.lwjgl.glfw.GLFW;
 import java.util.*;
 

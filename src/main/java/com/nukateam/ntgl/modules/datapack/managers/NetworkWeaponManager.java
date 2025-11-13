@@ -12,6 +12,7 @@ import com.nukateam.ntgl.common.network.message.S2CMessageUpdateWeapons;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,21 +20,20 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.fml.common.Mod;
 import org.apache.commons.lang3.Validate;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static net.minecraftforge.registries.ForgeRegistries.*;
+import static net.neoforged.neoforge.registries.ForgeRegistries.*;
 
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWeapon, WeaponConfig>> {
     private static final List<IWeapon> clientRegisteredWeapons = new ArrayList<>();
-    private static final ResourceLocation SYNC_CHANNEL = ResourceLocation.tryBuild(Ntgl.MOD_ID, "weapon_sync");
     private static NetworkWeaponManager instance;
 
     private Map<ResourceLocation, WeaponConfig> registeredWeapons = new HashMap<>();
@@ -59,8 +59,8 @@ public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWe
 
         objects.forEach((abstractItem, gun) -> {
             if(abstractItem instanceof Item item) {
-                Validate.notNull(ITEMS.getKey(item));
-                builder.put(ITEMS.getKey(item), gun);
+                Validate.notNull(BuiltInRegistries.ITEM.getKey(item));
+                builder.put(BuiltInRegistries.ITEM.getKey(item), gun);
                 abstractItem.setConfig(new ConfigSupplier<>(gun));
             }
         });
@@ -116,7 +116,7 @@ public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWe
         clientRegisteredWeapons.clear();
         if (registeredConfigs != null) {
             for (Map.Entry<ResourceLocation, WeaponConfig> entry : registeredConfigs.entrySet()) {
-                Item item = ITEMS.getValue(entry.getKey());
+                var item = BuiltInRegistries.ITEM.get(entry.getKey());
                 if (!(item instanceof IWeapon)) {
                     return false;
                 }

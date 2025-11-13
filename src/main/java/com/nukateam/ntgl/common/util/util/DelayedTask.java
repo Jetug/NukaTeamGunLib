@@ -3,11 +3,11 @@ package com.nukateam.ntgl.common.util.util;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.server.MinecraftServer;
 import net.neoforged.neoforge.common.util.LogicalSidedProvider;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
+import net.neoforged.neoforge.fml.LogicalSide;
 import net.neoforged.fml.common.EventBusSubscriber;
 
 import java.util.ArrayList;

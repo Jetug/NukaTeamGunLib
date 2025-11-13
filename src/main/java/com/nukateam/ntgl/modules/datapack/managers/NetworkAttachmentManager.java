@@ -15,13 +15,13 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static net.minecraftforge.registries.Registries.ITEM;
+import static net.neoforged.neoforge.registries.Registries.ITEM;
 
 public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map<IAttachment<?>, AttachmentConfig>> {
     private static List<IAttachment<?>> clientRegisteredAttachments = new ArrayList<>();

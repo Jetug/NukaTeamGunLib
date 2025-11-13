@@ -4,7 +4,7 @@ import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 

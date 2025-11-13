@@ -2,10 +2,10 @@ package com.nukateam.ntgl.common.handlers;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.PackType;
-import net.minecraftforge.event.AddPackFindersEvent;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.neoforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 import java.nio.file.Path;
 

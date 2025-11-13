@@ -4,7 +4,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
+import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
 
 public class DebugHud {
     private static final int BAR_OFFSET_X = 140;

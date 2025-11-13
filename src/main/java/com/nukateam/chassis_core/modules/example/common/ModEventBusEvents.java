@@ -2,7 +2,7 @@ package com.nukateam.chassis_core.modules.example.common;
 
 import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.modules.example.common.entities.ExampleChassis;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 

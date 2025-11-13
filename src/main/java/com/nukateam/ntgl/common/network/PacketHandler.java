@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.network;
 
+import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
@@ -7,9 +8,7 @@ import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
@@ -29,6 +28,7 @@ public class PacketHandler {
     }
 
     public static void init() {
+        FrameworkAPI.createNetworkBuilder()
         registerPlayMessage(C2SMessageAim.class         , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageReload.class      , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageShoot.class       , NetworkDirection.PLAY_TO_SERVER);

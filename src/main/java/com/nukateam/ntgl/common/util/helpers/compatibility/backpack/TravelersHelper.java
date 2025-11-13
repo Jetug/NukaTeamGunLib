@@ -9,7 +9,7 @@ import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.tiviacz.travelersbackpack.capability.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import javax.annotation.Nullable;
 

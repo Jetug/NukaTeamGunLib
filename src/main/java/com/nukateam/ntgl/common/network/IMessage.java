@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.network;
 
 import com.mrcrayfish.framework.api.network.MessageContext;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public interface IMessage<T>
 {

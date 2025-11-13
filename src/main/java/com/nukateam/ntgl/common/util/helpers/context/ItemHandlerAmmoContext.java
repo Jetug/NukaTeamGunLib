@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.util.helpers.context;
 
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.minecraft.world.item.ItemStack;
 
 public record ItemHandlerAmmoContext(ItemStack stack, IItemHandler inventory) implements IAmmoContext {

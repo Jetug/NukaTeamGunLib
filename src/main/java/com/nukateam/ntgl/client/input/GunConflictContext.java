@@ -4,7 +4,7 @@ import com.mrcrayfish.controllable.client.binding.IBindingContext;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.client.settings.KeyConflictContext;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
 
 /**
  * Author: MrCrayfish

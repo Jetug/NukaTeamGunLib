@@ -9,7 +9,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.minecraftforge.fml.DistExecutor;
+import net.neoforged.neoforge.fml.DistExecutor;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;

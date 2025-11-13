@@ -4,7 +4,7 @@ import com.nukateam.chassis_core.common.events.CommonInputEvent;
 import com.nukateam.chassis_core.common.input.InputKey;
 import com.nukateam.chassis_core.common.input.KeyAction;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.NeoForge;
+import net.neoforged.neoforge.common.NeoForge;
 
 import static com.nukateam.chassis_core.common.input.InputKey.JUMP;
 import static com.nukateam.chassis_core.common.input.KeyAction.PRESS;

@@ -5,7 +5,7 @@ import com.nukateam.example.common.entities.Brahmin;
 import com.nukateam.example.common.entities.Raider;
 import com.nukateam.example.common.registery.EntityTypes;
 import com.nukateam.ntgl.Ntgl;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
