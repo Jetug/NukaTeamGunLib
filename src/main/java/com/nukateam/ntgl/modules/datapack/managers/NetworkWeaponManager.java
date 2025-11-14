@@ -33,7 +33,6 @@ import static net.minecraftforge.registries.ForgeRegistries.*;
 @Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWeapon, WeaponConfig>> {
     private static final List<IWeapon> clientRegisteredWeapons = new ArrayList<>();
-    private static final ResourceLocation SYNC_CHANNEL = ResourceLocation.tryBuild(Ntgl.MOD_ID, "weapon_sync");
     private static NetworkWeaponManager instance;
 
     private Map<ResourceLocation, WeaponConfig> registeredWeapons = new HashMap<>();
