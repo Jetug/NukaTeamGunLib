@@ -6,6 +6,8 @@ import com.nukateam.chassis_core.common.config.ChassisConfig;
 import com.nukateam.chassis_core.common.foundation.entity.Chassis;
 import com.nukateam.chassis_core.modules.config.utils.ConfigUtils;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -46,7 +48,7 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
 
     @Override
     protected Map<EntityType<Chassis>, ChassisConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, ForgeRegistries.ENTITY_TYPES, (v) -> true, ChassisConfig.class, PATH);
+        return ConfigUtils.getConfigMap(manager, Registries.ENTITY_TYPE, (v) -> true, ChassisConfig.class, PATH);
     }
 
     @Override
@@ -54,8 +56,8 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
         var builder = ImmutableMap.<ResourceLocation, ChassisConfig>builder();
 
         objects.forEach((chassis, config) -> {
-            Validate.notNull(ForgeRegistries.ENTITY_TYPES.getKey((chassis)));
-            builder.put(ForgeRegistries.ENTITY_TYPES.getKey(chassis), config);
+            Validate.notNull(BuiltInRegistries.ENTITY_TYPE.getKey((chassis)));
+            builder.put(BuiltInRegistries.ENTITY_TYPE.getKey(chassis), config);
             Configs.CHASSIS_CONFIGS.put(chassis, new ConfigSupplier<>(config));
         });
 
@@ -89,7 +91,7 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
     public static boolean updateRegisteredConfig(Map<ResourceLocation, ChassisConfig> registeredConfig) {
         if (registeredConfig != null) {
             for (Map.Entry<ResourceLocation, ChassisConfig> entry : registeredConfig.entrySet()) {
-                var item = ForgeRegistries.ENTITY_TYPES.getValue(entry.getKey());
+                var item = BuiltInRegistries.ENTITY_TYPE.get(entry.getKey());
                 Configs.CHASSIS_CONFIGS.put((EntityType<Chassis>) item, new ConfigSupplier<>(entry.getValue()));
             }
             return true;

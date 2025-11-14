@@ -5,12 +5,17 @@ import com.nukateam.chassis_core.common.network.managers.*;
 import com.nukateam.chassis_core.common.network.packet.*;
 import com.mrcrayfish.framework.api.FrameworkAPI;
 import com.mrcrayfish.framework.api.network.FrameworkNetwork;
+import com.nukateam.ntgl.common.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+
+import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 
 public class PacketHandler {
     private static FrameworkNetwork PLAY_CHANNEL;
@@ -48,5 +53,26 @@ public class PacketHandler {
                 FriendlyByteBuf::readResourceLocation, // или ваш формат данных
                 (payload, context) -> NetworkEquipmentManager.LoginDataHandler.handle(payload, context)
         );
+    }
+
+    public static  <T extends IMessage<T>> void registerPlayMessage(Class<T> messageClass, @Nullable NetworkDirection direction) {
+        try {
+            var constructor = messageClass.getDeclaredConstructor();
+            var message = constructor.newInstance();
+
+            PLAY_CHANNEL.registerMessage(packetId++,
+                    messageClass, message::encode, message::decode,
+                    (msg, messageContext) -> {
+                        message.handle(msg, messageContext.get());
+                    },
+                    Optional.ofNullable(direction));
+
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(String.format("The message %s is missing an empty parameter constructor", messageClass.getName()), e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(String.format("Unable to access the constructor of %s. Make sure the constructor is public.", messageClass.getName()), e);
+        } catch (InvocationTargetException | InstantiationException e) {
+            e.printStackTrace();
+        }
     }
 }
