@@ -26,7 +26,7 @@ import static software.bernie.geckolib.animation.RawAnimation.begin;
 
 public class ExampleChassis extends WearableChassis {
     public static final ResourceLocation ICON
-            = new ResourceLocation(ChassisCore.MOD_ID, "textures/items/power_armor_frame.png");
+            = ResourceLocation.tryBuild(ChassisCore.MOD_ID, "textures/items/power_armor_frame.png");
     public static final ExampleChassisHand HAND = new ExampleChassisHand();
 
     public RawAnimation currentAnimation = null;

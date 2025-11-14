@@ -13,12 +13,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.client.event.RenderGuiOverlayEvent;
-import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.fml.config.ModConfig;
-import net.neoforged.neoforge.fml.event.config.ModConfigEvent;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -99,8 +99,8 @@ public class CrosshairHandler {
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGuiOverlayEvent.Pre event) {
-        if (event.getOverlay() != VanillaGuiOverlay.CROSSHAIR.type())
+    public void onRenderOverlay(RenderGuiLayerEvent.Pre event) {
+        if (!event.getName().equals(VanillaGuiLayers.CROSSHAIR))
             return;
 
         var crosshair = this.getCurrentCrosshair();
@@ -132,18 +132,16 @@ public class CrosshairHandler {
 
         var stack = event.getGuiGraphics().pose();
         stack.pushPose();
-        int scaledWidth = event.getWindow().getGuiScaledWidth();
-        int scaledHeight = event.getWindow().getGuiScaledHeight();
-        crosshair.render(mc, stack, scaledWidth, scaledHeight, event.getPartialTick());
+
+        int scaledWidth = mc.getWindow().getGuiScaledWidth();
+        int scaledHeight = mc.getWindow().getGuiScaledHeight();
+        crosshair.render(mc, stack, scaledWidth, scaledHeight, event.getPartialTick().getGameTimeDeltaPartialTick(true));
         stack.popPose();
     }
 
     @SubscribeEvent
-    public void onClientTick(ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END)
-            return;
-
-        Crosshair crosshair = this.getCurrentCrosshair();
+    public void onClientTick(ClientTickEvent.Post event) {
+        var crosshair = this.getCurrentCrosshair();
         if (crosshair == null || crosshair.isDefault())
             return;
 

@@ -8,6 +8,6 @@ public class Resources {
     public static final ResourceLocation PLAYER_INVENTORY_BOTTOM_TABS = resourceLocation("textures/gui/player_inventory_tabs_bottom.png");
 
     public static ResourceLocation resourceLocation(String location) {
-        return new ResourceLocation(ChassisCore.MOD_ID, location);
+        return ResourceLocation.tryBuild(ChassisCore.MOD_ID, location);
     }
 }

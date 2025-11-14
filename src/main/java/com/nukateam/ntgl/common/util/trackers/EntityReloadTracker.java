@@ -12,9 +12,9 @@ import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,16 +47,14 @@ public class EntityReloadTracker {
     }
 
     @SubscribeEvent
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
+    public static void onServerTick(ServerTickEvent.Pre event) {
         try {
-            if (event.phase == TickEvent.Phase.START) {
-                for (var entry: RELOAD_TRACKER_MAP.entrySet()) {
-                    var tracker = entry.getValue();
-                    var entity = entry.getKey();
-                    onTick(entity, tracker);
-                }
-                removeTrackers();
+            for (var entry : RELOAD_TRACKER_MAP.entrySet()) {
+                var tracker = entry.getValue();
+                var entity = entry.getKey();
+                onTick(entity, tracker);
             }
+            removeTrackers();
         }
         catch (Exception e){
             Ntgl.LOGGER.error(e.getMessage(), e);

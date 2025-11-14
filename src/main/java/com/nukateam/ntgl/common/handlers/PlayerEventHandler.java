@@ -10,53 +10,56 @@ import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.fml.LogicalSide;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-@EventBusSubscriber(modid = Ntgl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class PlayerEventHandler {
-    public static final UUID SPEED_MODIFIER_ID = UUID.fromString("a1b2c3d4-5e6f-7890-1234-567890abcdef");
-    public static final String MOVEMENT_SPEED = "custom_movement_speed";
+//    public static final UUID SPEED_MODIFIER_ID = UUID.fromString("a1b2c3d4-5e6f-7890-1234-567890abcdef");
+//    public static final String MOVEMENT_SPEED = "custom_movement_speed";
+
+    protected static final ResourceLocation MOVEMENT_SPEED = ResourceLocation.withDefaultNamespace("movement_speed");
 
     private static final Map<Pair<InteractionHand, Player>, Slot> lastSelectedSlots = new HashMap<>();
     public static final String ID = "WeaponId";
 
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            var player = event.player;
-            var heldItem = player.getMainHandItem();
-            var movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+    public static void onPlayerTick(PlayerTickEvent.Pre event) {
+        var player = event.getEntity();
+        var heldItem = player.getMainHandItem();
+        var movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
 
-            if (movementSpeed != null) {
-                movementSpeed.removeModifier(SPEED_MODIFIER_ID);
+        if (movementSpeed != null) {
+            movementSpeed.removeModifier(MOVEMENT_SPEED);
 
-                if (heldItem.getItem() instanceof IWeapon) {
-                    movementSpeed.removeModifier(SPEED_MODIFIER_ID);
-                    movementSpeed.addTransientModifier(new AttributeModifier(
-                            SPEED_MODIFIER_ID,
-                            MOVEMENT_SPEED,
-                            WeaponModifierHelper.getMovementSpeed(new WeaponData(heldItem, player)),
-                            AttributeModifier.Operation.MULTIPLY_BASE
-                    ));
-                }
+            if (heldItem.getItem() instanceof IWeapon) {
+                movementSpeed.removeModifier(MOVEMENT_SPEED);
+                movementSpeed.addTransientModifier(new AttributeModifier(
+                        MOVEMENT_SPEED,
+                        WeaponModifierHelper.getMovementSpeed(new WeaponData(heldItem, player)),
+                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                ));
             }
         }
-        if (event.phase == TickEvent.Phase.END && event.side == LogicalSide.CLIENT) {
-            tryEquip(event.player, InteractionHand.MAIN_HAND);
-            tryEquip(event.player, InteractionHand.OFF_HAND);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        if (event.getEntity().level().isClientSide) {
+            tryEquip(event.getEntity(), InteractionHand.MAIN_HAND);
+            tryEquip(event.getEntity(), InteractionHand.OFF_HAND);
         }
     }
 
@@ -101,13 +104,6 @@ public class PlayerEventHandler {
 
     private static @NotNull InteractionHand getHand(EquipmentSlot slot) {
         return slot == EquipmentSlot.MAINHAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-    }
-
-    private static String getId(ItemStack stack) {
-        var lastItemTag = stack.getOrCreateTag();
-        return lastItemTag.contains(ID, Tag.TAG_STRING) ?
-                lastItemTag.getString(ID):
-                UUID.randomUUID().toString();
     }
 
     record Slot(ItemStack stack, int stackSize, int slotId){}

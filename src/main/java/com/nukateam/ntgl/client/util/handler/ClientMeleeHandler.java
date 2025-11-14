@@ -8,13 +8,13 @@ import com.nukateam.ntgl.common.data.holders.MeleeMode;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SMessageMeleeAttack;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageMeleeAttack;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -26,12 +26,10 @@ public class ClientMeleeHandler {
     private static final Map<Pair<LivingEntity, InteractionHand>, ClientMeleeTracker> TRACKER_MAP = new HashMap<>();
 
     @SubscribeEvent
-    public static void onClientTick(ClientTickEvent event) {
+    public static void onClientTick(ClientTickEvent.Pre event) {
         try {
-            if (event.phase == TickEvent.Phase.START) {
-                for (var pair: TRACKER_MAP.keySet()) {
-                    onEntityTick(pair.getFirst(), pair.getSecond());
-                }
+            for (var pair: TRACKER_MAP.keySet()) {
+                onEntityTick(pair.getFirst(), pair.getSecond());
             }
         }
         catch (Exception e){

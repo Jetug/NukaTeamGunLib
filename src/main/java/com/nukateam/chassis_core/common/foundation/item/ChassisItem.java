@@ -1,6 +1,7 @@
 package com.nukateam.chassis_core.common.foundation.item;
 
 import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
@@ -20,9 +21,9 @@ import static com.nukateam.chassis_core.common.util.helpers.EntityHelper.entityF
 public class ChassisItem<T extends WearableChassis> extends Item {
 
     private final EntityType.EntityFactory<T> factory;
-    private final DeferredHolder<EntityType<T>> type;
+    private final DeferredHolder<EntityType<?>, EntityType<T>> type;
 
-    public ChassisItem(Properties properties, DeferredHolder<EntityType<T>> type, EntityType.EntityFactory<T> factory) {
+    public ChassisItem(Properties properties, DeferredHolder<EntityType<?>, EntityType<T>> type, EntityType.EntityFactory<T> factory) {
         super((properties.stacksTo(1)));
         this.factory = factory;
         this.type = type;
@@ -51,7 +52,7 @@ public class ChassisItem<T extends WearableChassis> extends Item {
 
     @Override
     public void onCraftedBy(ItemStack itemStack, @NotNull Level world, @NotNull Player player) {
-        itemStack.setTag(new CompoundTag());
+        NtglComponents.setWeaponTag(itemStack,new CompoundTag());
     }
 
     @Override

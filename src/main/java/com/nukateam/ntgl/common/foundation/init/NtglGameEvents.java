@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 
 public class NtglGameEvents {
     public static final ResourceKey<GameEvent> GUNSHOT_EVENT =
-            ResourceKey.create(Registries.GAME_EVENT, new ResourceLocation(Ntgl.MOD_ID, "gunshot_event"));
+            ResourceKey.create(Registries.GAME_EVENT, ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "gunshot_event"));
 
     public static void register(IEventBus modEventBus) {
         modEventBus.addListener(NtglGameEvents::onRegisterGameEvents);

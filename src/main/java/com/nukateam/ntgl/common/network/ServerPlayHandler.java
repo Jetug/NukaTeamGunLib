@@ -8,8 +8,10 @@ import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.enums.KeyAction;
+import com.nukateam.ntgl.common.network.message.weapon.*;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.common.data.constants.Tags;
 
@@ -23,10 +25,8 @@ import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.network.message.C2SMessagePreFireSound;
-import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
-import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -43,14 +43,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.NetworkHooks;
-import net.minecraft.core.registries.Registries;
 
 import java.util.function.Predicate;
 
@@ -246,7 +243,7 @@ public class ServerPlayHandler {
      * @param id     the id of an item which is registered as a valid workstation recipe
      * @param pos    the block position of the workstation the player is using
      */
-    public static void handleCraft(ServerPlayer player, ResourceLocation id, BlockPos pos) {
+    public static void handleCraft(Player player, ResourceLocation id, BlockPos pos) {
         Level world = player.level();
 
         if (player.containerMenu instanceof WorkbenchContainer workbench) {
@@ -265,23 +262,24 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void handleUnload(ServerPlayer player, InteractionHand hand) {
+    public static void handleUnload(Player player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
         if (stack.getItem() instanceof IWeapon) {
             unloadGun(player, stack);
         }
     }
 
-    public static void unloadGun(ServerPlayer player, ItemStack stack) {
+    public static void unloadGun(Player player, ItemStack stack) {
         var data = new WeaponData(stack, player);
         if (WeaponStateHelper.getProjectileConfig(data).isMagazineMode())
             unloadMagazine(player, stack);
         else unloadAmmo(player, stack);
     }
 
-    private static void unloadAmmo(ServerPlayer player, ItemStack stack) {
+    private static void unloadAmmo(Player player, ItemStack stack) {
         if (stack.getItem() instanceof IWeapon) {
-            var tag = stack.getTag();
+            var tag = NtglComponents.getWeaponTag(stack);
+
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
                 int count = tag.getInt(Tags.AMMO_COUNT);
                 tag.putInt(Tags.AMMO_COUNT, 0);
@@ -290,19 +288,20 @@ public class ServerPlayHandler {
 
                 if(itemHolder.canReturnAmmo()) {
                     var id = itemHolder.getId();
-                    var item = Registries.ITEM.getValue(id);
+                    var item = BuiltInRegistries.ITEM.get(id);
 
                     if (item != null && !player.isCreative()) {
-                        givePlayerAmmo(player, item, count);
+                        givePlayerAmmo(player, stack, count);
                     }
                 }
             }
         }
     }
 
-    private static void unloadMagazine(ServerPlayer player, ItemStack stack) {
+    private static void unloadMagazine(Player player, ItemStack stack) {
         if (stack.getItem() instanceof IWeapon) {
-            var tag = stack.getTag();
+            var tag = NtglComponents.getWeaponTag(stack);
+
             if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
                 int count = tag.getInt(Tags.AMMO_COUNT);
                 if (count == 0) return;
@@ -312,7 +311,7 @@ public class ServerPlayHandler {
                 var ammoHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
                 if(ammoHolder.canReturnAmmo()) {
-                    var item = Registries.ITEM.getValue(ammoHolder.getId());
+                    var item = BuiltInRegistries.ITEM.get(ammoHolder.getId());
 
                     if (item != null && !player.isCreative()) {
                         var usedMagazine = new ItemStack(item);
@@ -324,36 +323,37 @@ public class ServerPlayHandler {
         }
     }
 
-    private static void givePlayerAmmo(ServerPlayer player, Item item, int count) {
+    private static void givePlayerAmmo(Player player, ItemStack item, int count) {
         int maxStackSize = item.getMaxStackSize();
         int stacks = count / maxStackSize;
 
         for (int i = 0; i < stacks; i++) {
-            spawnAmmo(player, new ItemStack(item, maxStackSize));
+            spawnAmmo(player, new ItemStack(item.getItem(), maxStackSize));
         }
 
         int remaining = count % maxStackSize;
         if (remaining > 0) {
-            spawnAmmo(player, new ItemStack(item, remaining));
+            spawnAmmo(player, new ItemStack(item.getItem(), remaining));
         }
     }
 
-    private static void spawnAmmo(ServerPlayer player, ItemStack stack) {
+    private static void spawnAmmo(Player player, ItemStack stack) {
         player.getInventory().add(stack);
         if (stack.getCount() > 0) {
             player.level().addFreshEntity(new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack.copy()));
         }
     }
 
-    public static void handleAttachments(ServerPlayer player) {
+    public static void handleAttachments(Player player) {
         var heldItem = player.getMainHandItem();
         if (heldItem.getItem() instanceof IWeapon && ((IWeapon)heldItem.getItem()).getModifiedConfig(heldItem).getModules().attachmentScreen()) {
-            NetworkHooks.openScreen(player, new SimpleMenuProvider((windowId, playerInventory, player1) ->
+
+            player.openMenu(new SimpleMenuProvider((windowId, playerInventory, player1) ->
                     new AttachmentContainer(windowId, playerInventory, heldItem), Component.translatable("container.ntgl.attachments")));
         }
     }
 
-    public static void handleReload(C2SMessageReload message, ServerPlayer player) {
+    public static void handleReload(C2SMessageReload message, Player player) {
         var dataKey = message.getHand() == InteractionHand.MAIN_HAND ?
                 ModSyncedDataKeys.RELOADING_RIGHT:
                 ModSyncedDataKeys.RELOADING_LEFT;
@@ -370,7 +370,7 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void handleGrenade(C2SMessageGrenade message, ServerPlayer player) {
+    public static void handleGrenade(C2SMessageGrenade message, Player player) {
         var action = message.getAction();
 
         var weapon = player.getItemInHand(message.getHand());
@@ -384,7 +384,7 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void handleHandAction(C2SMessageHandAction message, ServerPlayer player) {
+    public static void handleHandAction(C2SMessageHandAction message, Player player) {
         var stack = player.getItemInHand(message.getHand());
 
         if(stack.getItem() instanceof IWeapon) {
@@ -395,7 +395,7 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void handleMeleeAttack(C2SMessageMeleeAttack message, ServerPlayer player) {
+    public static void handleMeleeAttack(C2SMessageMeleeAttack message, Player player) {
         var stack = player.getItemInHand(message.getHand());
         var gunData = new WeaponData(stack, player).setWeaponMode(message.getAction());
         if(stack.getItem() instanceof IWeapon
@@ -407,7 +407,7 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void handleFireModeSwitch(ServerPlayer player, ItemStack stack, InteractionHand hand) {
+    public static void handleFireModeSwitch(Player player, ItemStack stack, InteractionHand hand) {
         if(WeaponModifierHelper.getWeaponAction(new WeaponData(stack, player)) == WeaponAction.THROW){
             var data = new WeaponData(stack, player).setWeaponMode(WeaponMode.PRIMARY);
             handleThrowModeSwitch(data, hand);
@@ -428,7 +428,7 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void handleAmmoSwitch(InteractionHand hand, ServerPlayer player, ItemStack weapon) {
+    public static void handleAmmoSwitch(InteractionHand hand, Player player, ItemStack weapon) {
         var isReloading = getReloadKey(hand);
         var data = new WeaponData(weapon, player);
 
@@ -440,7 +440,7 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void reloadGun(InteractionHand hand, ServerPlayer player) {
+    public static void reloadGun(InteractionHand hand, Player player) {
         handleReload(new C2SMessageReload(true, hand), player);
     }
 }

@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.fml.DistExecutor;
+import net.minecraft.core.HolderLookup;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -142,7 +142,7 @@ public class Melee implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public static Melee create(CompoundTag tag) {
         var general = new Melee();
-        general.deserializeNBT(tag);
+        general.deserializeNBT(null,tag);
         return general;
     }
 

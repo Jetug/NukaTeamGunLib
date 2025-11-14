@@ -4,31 +4,33 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.neoforged.neoforge.client.gui.overlay.ForgeGui;
-import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
 
-public class ScopeHud implements IGuiOverlay {
-    public static final IGuiOverlay SCOPE_HUD = new ScopeHud();
-    private float scopeScale;
 
-    @Override
-    public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
+public class ScopeHud{
+    private static float scopeScale;
+
+    public static void render(GuiGraphics graphics, DeltaTracker partialTick) {
         var minecraft = Minecraft.getInstance();
         var player = minecraft.player;
+        var mainWindow = minecraft.getWindow();
+        int width  = mainWindow.getGuiScaledWidth ();
+        int height = mainWindow.getGuiScaledHeight();
+
         if (player == null) return;
         var gun = player.getMainHandItem();
-        var frameTime = minecraft.getDeltaFrameTime();
+        var frameTime = minecraft.getTimer().getGameTimeDeltaPartialTick(true);
 
         scopeScale = Mth.lerp(0.5F * frameTime, scopeScale, 1.125F);
 
         if (AimingHandler.isScoping(gun)) {
-            var attachment = WeaponStateHelper.getAttachmentItem(AttachmentType.SCOPE, gun);
+            var attachment = WeaponStateHelper.getAttachmentItem(player.level().registryAccess(), AttachmentType.SCOPE, gun);
             if (!attachment.isEmpty()) {
                 var scope = WeaponStateHelper.getScopeItem(gun);
                 var overlay = scope.getProperties().getOverlay();
@@ -40,7 +42,7 @@ public class ScopeHud implements IGuiOverlay {
         }
     }
 
-    private void renderScope(GuiGraphics graphics, int width, int height, ResourceLocation overlay) {
+    private static void renderScope(GuiGraphics graphics, int width, int height, ResourceLocation overlay) {
         var f = (float) Math.min(width, height);
         var f1 = Math.min((float) width / f, (float) height / f) * scopeScale;
         int i = Mth.floor(f * f1);
@@ -56,7 +58,7 @@ public class ScopeHud implements IGuiOverlay {
         graphics.fill(RenderType.guiOverlay(), i1, l, width, j1, -90, -16777216);
     }
 
-    public void setupOverlayRenderState(boolean blend) {
+    public static void setupOverlayRenderState(boolean blend) {
         if (blend) {
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();

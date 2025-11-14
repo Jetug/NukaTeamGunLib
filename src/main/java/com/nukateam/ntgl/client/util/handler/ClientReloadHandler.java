@@ -2,19 +2,20 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageReload;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageUnload;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 
 /**
@@ -38,10 +39,7 @@ public class ClientReloadHandler {
     }
 
     @SubscribeEvent
-    public void onClientTick(ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END)
-            return;
-
+    public void onClientTick(ClientTickEvent.Post event) {
         if(reloadTicks > 0) reloadTicks--;
 
         this.prevReloadTimer = this.reloadTimer;

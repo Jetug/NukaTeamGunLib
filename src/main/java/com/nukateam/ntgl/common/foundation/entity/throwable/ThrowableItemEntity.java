@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.foundation.entity.throwable;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.util.util.StackUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -14,15 +15,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.entity.IEntityAdditionalSpawnData;
-import net.neoforged.neoforge.network.NetworkHooks;
 
-public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable> extends ThrowableProjectile implements IEntityAdditionalSpawnData {
+public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable> extends ThrowableProjectile{
     protected ProjectileConfig projectile;
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
@@ -45,32 +45,22 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("Projectile", this.projectile.serializeNBT());
+        var provider = this.level().registryAccess();
+        var stackTag = new CompoundTag();
+        this.item.save(provider, stackTag);
+        compound.put("Projectile", this.projectile.serializeNBT(provider));
         compound.putBoolean("shouldBounce", shouldBounce);
         compound.putFloat("gravityVelocity", gravityVelocity);
+        compound.put("item", stackTag);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
+        var provider = this.level().registryAccess();
         this.projectile = ProjectileConfig.create(compound.getCompound("Projectile"));
         this.shouldBounce = compound.getBoolean("shouldBounce");
         this.gravityVelocity = compound.getFloat("gravityVelocity");
-    }
-
-    @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-        buffer.writeNbt(this.projectile.serializeNBT());
-        buffer.writeBoolean(this.shouldBounce);
-        buffer.writeFloat(this.gravityVelocity);
-        buffer.writeItem(this.item);
-    }
-
-    @Override
-    public void readSpawnData(FriendlyByteBuf buffer) {
-        this.projectile = ProjectileConfig.create(buffer.readNbt());
-        this.shouldBounce = buffer.readBoolean();
-        this.gravityVelocity = buffer.readFloat();
-        this.item = buffer.readItem();
+        this.item = ItemStack.parseOptional(provider, compound.getCompound("item"));
     }
 
     @Override
@@ -142,7 +132,7 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
     }
 
     @Override
-    protected float getGravity() {
+    protected double getDefaultGravity() {
         return this.gravityVelocity;
     }
 

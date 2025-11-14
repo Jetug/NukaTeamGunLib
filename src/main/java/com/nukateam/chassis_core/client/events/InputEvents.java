@@ -3,7 +3,7 @@ package com.nukateam.chassis_core.client.events;
 import com.nukateam.chassis_core.client.utils.KeyUtils;
 import com.nukateam.chassis_core.common.input.CommonInputHandler;
 import com.nukateam.chassis_core.common.input.KeyAction;
-import com.nukateam.chassis_core.common.network.actions.InputAction;
+import com.nukateam.ntgl.common.network.message.chassis.actions.InputAction;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;

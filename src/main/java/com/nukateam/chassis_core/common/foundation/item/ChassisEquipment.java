@@ -3,8 +3,7 @@ package com.nukateam.chassis_core.common.foundation.item;
 import com.nukateam.chassis_core.client.render.utils.ResourceHelper;
 import com.nukateam.chassis_core.common.config.EquipmentConfig;
 import com.nukateam.chassis_core.common.data.holders.ChassisPart;
-import com.nukateam.chassis_core.common.foundation.item.IChassisEquipment;
-import com.nukateam.chassis_core.common.network.managers.ConfigSupplier;
+import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -13,11 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.minecraft.core.registries.Registries;
 
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static com.nukateam.chassis_core.common.foundation.item.StackUtils.DEFAULT;
 import static com.nukateam.chassis_core.common.foundation.item.StackUtils.getVariant;
@@ -48,7 +44,7 @@ public class ChassisEquipment extends Item implements IChassisEquipment, GeoItem
 
     @Override
     public void setConfig(ConfigSupplier<EquipmentConfig> config) {
-        this.config = config.getConfig();
+        this.config = config.config();
     }
 
     public String getName() {

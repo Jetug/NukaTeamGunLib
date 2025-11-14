@@ -60,7 +60,7 @@ public class ModResourceManager {
             if (config == null) continue;
 
             if (isNotEmpty(config.parent)) {
-                var parent = getConfig(new ResourceLocation(config.parent), EquipmentConfig.class);
+                var parent = getConfig(ResourceLocation.tryParse(config.parent), EquipmentConfig.class);
 
                 try {
                     var fields = config.getClass().getFields();

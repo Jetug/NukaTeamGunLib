@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import net.minecraft.world.InteractionHand;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 
 import java.util.HashMap;
@@ -24,9 +24,7 @@ public class ClientEquipHandler {
     private ClientEquipHandler(){}
 
     @SubscribeEvent
-    public void onPostClientTick(ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END)
-            return;
+    public void onPostClientTick(ClientTickEvent.Post event) {
         tickHand(InteractionHand.MAIN_HAND);
         tickHand(InteractionHand.OFF_HAND);
     }

@@ -1,7 +1,7 @@
 package com.nukateam.chassis_core.common.network;
 
-import com.nukateam.chassis_core.common.network.actions.Action;
-import com.nukateam.chassis_core.common.network.actions.InputAction;
+import com.nukateam.ntgl.common.network.message.chassis.actions.Action;
+import com.nukateam.ntgl.common.network.message.chassis.actions.InputAction;
 
 import java.util.HashMap;
 import java.util.Map;

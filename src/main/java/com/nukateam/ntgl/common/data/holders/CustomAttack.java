@@ -2,15 +2,9 @@ package com.nukateam.ntgl.common.data.holders;
 
 import com.nukateam.ntgl.common.data.WeaponData;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class CustomAttack extends ResourceHolder {

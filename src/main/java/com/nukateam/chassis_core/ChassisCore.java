@@ -2,7 +2,6 @@ package com.nukateam.chassis_core;
 
 import com.nukateam.chassis_core.common.foundation.registery.ContainerRegistry;
 import com.nukateam.chassis_core.common.foundation.registery.ItemRegistry;
-import com.nukateam.chassis_core.common.network.PacketHandler;
 import com.nukateam.chassis_core.modules.example.Example;
 import com.nukateam.ntgl.Ntgl;
 import net.neoforged.bus.api.IEventBus;

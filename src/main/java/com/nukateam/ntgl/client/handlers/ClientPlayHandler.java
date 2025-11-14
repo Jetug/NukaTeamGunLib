@@ -4,6 +4,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.client.util.handler.*;
+import com.nukateam.ntgl.common.network.message.weapon.*;
 import com.nukateam.ntgl.common.util.helpers.compatibility.EffectHelper;
 import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
@@ -11,7 +12,6 @@ import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkWeaponManager;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.particles.*;
-import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -24,7 +24,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.core.registries.Registries;
 
 import javax.annotation.Nullable;
 

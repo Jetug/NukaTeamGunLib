@@ -4,7 +4,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.S2CMessageProjectileExplosion;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageProjectileExplosion;
 import com.nukateam.ntgl.common.util.interfaces.IExplosionDamageable;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;

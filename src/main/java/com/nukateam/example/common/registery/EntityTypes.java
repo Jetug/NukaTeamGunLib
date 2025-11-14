@@ -27,7 +27,7 @@ public class EntityTypes {
                     .of(Brahmin::new, MobCategory.CREATURE)
                     .sized(1.5f, 1.5f));
 
-    private static <T extends Entity> DeferredHolder<EntityType<T>> registerEntity(String entityName, Builder<T> builder) {
+    private static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> registerEntity(String entityName, Builder<T> builder) {
         return ENTITY_TYPES.register(entityName, () -> builder.build(ResourceLocation.tryBuild(Ntgl.MOD_ID, entityName).toString()));
     }
 

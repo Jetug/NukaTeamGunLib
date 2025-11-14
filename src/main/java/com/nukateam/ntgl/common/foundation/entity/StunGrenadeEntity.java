@@ -8,7 +8,7 @@ import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.S2CMessageStunGrenade;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageStunGrenade;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

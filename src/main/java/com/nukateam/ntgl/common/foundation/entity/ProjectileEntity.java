@@ -6,7 +6,12 @@ import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.weapon.General;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageBlood;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageProjectileHitBlock;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageProjectileHitEntity;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageProjectileHitFluid;
 import com.nukateam.ntgl.common.util.helpers.EntityResult;
 import com.nukateam.ntgl.common.util.helpers.RayTraceHelper;
 import com.nukateam.ntgl.common.util.interfaces.IDamageable;
@@ -20,7 +25,6 @@ import com.nukateam.ntgl.common.foundation.ModTags;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.world.ExplosionUtils;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,6 +35,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
@@ -47,9 +52,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.*;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.entity.IEntityAdditionalSpawnData;
-import net.neoforged.neoforge.network.NetworkHooks;
-import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -114,7 +116,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     @Override
-    protected void defineSynchedData() {}
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
@@ -594,23 +596,26 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         var ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
         if(ammoHolder.canReturnAmmo()) {
-            var ammo = Registries.ITEM.getValue(ammoHolder.getId());
-            if (ammo != null) {
-                int customModelData = -1;
-                if (weapon.getTag() != null) {
-                    if (weapon.getTag().contains("Model", Tag.TAG_COMPOUND)) {
-                        ItemStack model = ItemStack.of(weapon.getTag().getCompound("Model"));
-                        if (model.getTag() != null && model.getTag().contains("CustomModelData")) {
-                            customModelData = model.getTag().getInt("CustomModelData");
-                        }
+            var ammo = BuiltInRegistries.ITEM.get(ammoHolder.getId());
+            int customModelData = -1;
+            var tag = NtglComponents.getWeaponTag(weapon);
+
+            if (tag != null) {
+                if (tag.contains("Model", Tag.TAG_COMPOUND)) {
+                    ItemStack model = ItemStack.parseOptional(tag.getCompound("Model"));
+                    var modelTag = NtglComponents.getWeaponTag(model);
+
+                    if (modelTag != null && modelTag.contains("CustomModelData")) {
+                        customModelData = modelTag.getInt("CustomModelData");
                     }
                 }
-                var ammoStack = new ItemStack(ammo);
-                if (customModelData != -1) {
-                    ammoStack.getOrCreateTag().putInt("CustomModelData", customModelData);
-                }
-                return ammoStack;
             }
+            var ammoStack = new ItemStack(ammo);
+            if (customModelData != -1) {
+                var ammoTag = NtglComponents.getWeaponTag(ammoStack);
+                ammoTag.putInt("CustomModelData", customModelData);
+            }
+            return ammoStack;
         }
         return ItemStack.EMPTY;
     }

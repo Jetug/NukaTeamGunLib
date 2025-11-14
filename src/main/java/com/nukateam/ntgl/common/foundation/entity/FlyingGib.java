@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -75,18 +76,18 @@ public class FlyingGib extends Entity {
         getEntityData().set(ENTITY, entity.getId());
         getEntityData().set(PART, bodyPart);
         getEntityData().set(SIZE, size);
-        getEntityData().set(DATA, data.serializeNBT());
+        getEntityData().set(DATA, data.serializeNBT(level().registryAccess()));
 //        this.gravity = data.gravity * (1 + entity.getRandom().nextFloat());
 //        this.gravity = data.gravity;
     }
 
     @Override
-    protected void defineSynchedData() {
-        entityData.define(ENTITY, -1);
-        entityData.define(PART, 0);
-        entityData.define(SIZE, 1f);
-        entityData.define(GRAVITY, 0f);
-        entityData.define(DATA, new CompoundTag());
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(ENTITY, -1);
+        builder.define(PART, 0);
+        builder.define(SIZE, 1f);
+        builder.define(GRAVITY, 0f);
+        builder.define(DATA, new CompoundTag());
     }
 
     @Override

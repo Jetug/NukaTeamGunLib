@@ -50,7 +50,7 @@ public class TechCrosshair extends Crosshair {
 
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        var tesselator = Tesselator.getInstance();
 
         stack.pushPose();
         {
@@ -59,18 +59,18 @@ public class TechCrosshair extends Crosshair {
             RenderSystem.setShaderTexture(0, DOT_CROSSHAIR);
             var matrix = stack.last().pose();
             stack.translate((windowWidth - size) / 2F, (windowHeight - size) / 2F, 0);
-            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            buffer.vertex(matrix, 0, size, 0).uv(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.vertex(matrix, size, size, 0).uv(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.vertex(matrix, size, 0, 0).uv(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.vertex(matrix, 0, 0, 0).uv(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            BufferUploader.drawWithShader(buffer.end());
+            var builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            builder.addVertex(matrix, 0, size, 0).setUv(0, 1).setColor(1.0F, 1.0F, 1.0F, alpha);
+            builder.addVertex(matrix, size, size, 0).setUv(1, 1).setColor(1.0F, 1.0F, 1.0F, alpha);
+            builder.addVertex(matrix, size, 0, 0).setUv(1, 0).setColor(1.0F, 1.0F, 1.0F, alpha);
+            builder.addVertex(matrix, 0, 0, 0).setUv(0, 0).setColor(1.0F, 1.0F, 1.0F, alpha);
+            BufferUploader.drawWithShader(builder.build());
         }
         stack.popPose();
 
         stack.pushPose();
         {
-            Matrix4f matrix = stack.last().pose();
+            var matrix = stack.last().pose();
             stack.translate(windowWidth / 2F, windowHeight / 2F, 0);
             float scale = 1F + Mth.lerp(partialTicks, this.prevScale, this.scale);
             stack.scale(scale, scale, scale);
@@ -79,12 +79,12 @@ public class TechCrosshair extends Crosshair {
             RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, TECH_CROSSHAIR);
-            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-            buffer.vertex(matrix, 0, size, 0).uv(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.vertex(matrix, size, size, 0).uv(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.vertex(matrix, size, 0, 0).uv(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            buffer.vertex(matrix, 0, 0, 0).uv(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-            BufferUploader.drawWithShader(buffer.end());
+            var builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            builder.addVertex(matrix, 0, size, 0).setUv(0, 1).setColor(1.0F, 1.0F, 1.0F, alpha);
+            builder.addVertex(matrix, size, size, 0).setUv(1, 1).setColor(1.0F, 1.0F, 1.0F, alpha);
+            builder.addVertex(matrix, size, 0, 0).setUv(1, 0).setColor(1.0F, 1.0F, 1.0F, alpha);
+            builder.addVertex(matrix, 0, 0, 0).setUv(0, 0).setColor(1.0F, 1.0F, 1.0F, alpha);
+            BufferUploader.drawWithShader(builder.build());
         }
         stack.popPose();
 

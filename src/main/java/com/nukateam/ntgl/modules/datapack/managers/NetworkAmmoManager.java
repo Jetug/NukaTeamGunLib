@@ -4,10 +4,11 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.nukateam.ntgl.modules.constants.Paths;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
-import com.nukateam.ntgl.modules.datapack.DataUtils;
+import com.nukateam.ntgl.modules.datapack.ConfigUtils;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAmmo;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateAmmo;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -40,7 +41,7 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
 
     @Override
     protected Map<IAmmo, ProjectileConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return DataUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, ProjectileConfig.class, Paths.AMMO);
+        return ConfigUtils.getConfigMap(manager, BuiltInRegistries.ITEM, (v) -> v instanceof IAmmo, ProjectileConfig.class, Paths.AMMO);
     }
 
     @Override

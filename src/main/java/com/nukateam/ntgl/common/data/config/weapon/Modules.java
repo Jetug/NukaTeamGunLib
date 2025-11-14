@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.fml.DistExecutor;
+import net.minecraft.core.HolderLookup;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;

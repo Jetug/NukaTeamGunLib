@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
-    public static ResourceLocation texture = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/tesla.png");
+    public static ResourceLocation texture = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/fx/tesla.png");
     private final float laserRadius = 0.05F / 5;
     private final float laserGlowRadius = 0.055F / 5;
     private static final int MIN_ANGLE = -45;

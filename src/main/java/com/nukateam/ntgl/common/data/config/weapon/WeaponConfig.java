@@ -9,7 +9,7 @@ import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageGunSound;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -18,6 +18,7 @@ import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -94,18 +95,18 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
-        tag.put(GENERAL, this.general.serializeNBT());
-        tag.put(MELEE, this.melee.serializeNBT());
-        tag.put(THROWABLE, this.throwable.serializeNBT());
+        tag.put(GENERAL, this.general.serializeNBT(provider));
+        tag.put(MELEE, this.melee.serializeNBT(provider));
+        tag.put(THROWABLE, this.throwable.serializeNBT(provider));
         tag.put(SOUNDS, NbtUtils.serializeStringMap(this.sounds));
-        tag.put(MODULES, this.modules.serializeNBT());
+        tag.put(MODULES, this.modules.serializeNBT(provider));
         tag.put(TEXTURES, NbtUtils.serializeStringMap(this.textures));
         tag.put(ANIMATIONS, NbtUtils.serializeStringMap(this.animations));
         tag.put(AMMO_DATA, NbtUtils.serializeMap(this.ammoData));
         tag.put(SECONDARY_AMMO, NbtUtils.serializeMap(this.fuel));
         tag.put(MODES, NbtUtils.serializeMap(this.modes));
         if (this.zoom != null) {
-            tag.put("Zoom", this.zoom.serializeNBT());
+            tag.put("Zoom", this.zoom.serializeNBT(provider));
         }
         return tag;
     }
@@ -113,19 +114,19 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(GENERAL, Tag.TAG_COMPOUND)) {
-            this.general.deserializeNBT(tag.getCompound(GENERAL));
+            this.general.deserializeNBT(null,tag.getCompound(GENERAL));
         }
         if (tag.contains(MELEE, Tag.TAG_COMPOUND)) {
-            this.melee.deserializeNBT(tag.getCompound(MELEE));
+            this.melee.deserializeNBT(null,tag.getCompound(MELEE));
         }
         if (tag.contains(THROWABLE, Tag.TAG_COMPOUND)) {
-            this.throwable.deserializeNBT(tag.getCompound(THROWABLE));
+            this.throwable.deserializeNBT(null,tag.getCompound(THROWABLE));
         }
         if (tag.contains(SOUNDS, Tag.TAG_COMPOUND)) {
             this.sounds = deserializeSounds(tag.getCompound(SOUNDS));
         }
         if (tag.contains(MODULES, Tag.TAG_COMPOUND)) {
-            this.modules.deserializeNBT(tag.getCompound(MODULES));
+            this.modules.deserializeNBT(null,tag.getCompound(MODULES));
         }
         if (tag.contains(TEXTURES, Tag.TAG_COMPOUND)) {
             this.textures = NbtUtils.deserializeRLMap(tag.getCompound(TEXTURES));
@@ -184,7 +185,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
 
     public static WeaponConfig create(ResourceLocation id, CompoundTag tag) {
         var gun = new WeaponConfig();
-        gun.deserializeNBT(tag);
+        gun.deserializeNBT(null,tag);
         return gun;
     }
 

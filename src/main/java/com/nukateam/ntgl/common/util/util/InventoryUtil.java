@@ -2,10 +2,12 @@ package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.util.helpers.compatibility.backpack.BackpackHelper;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,14 +31,19 @@ public class InventoryUtil {
     }
 
     private static boolean areItemStacksEqualIgnoreCount(ItemStack source, ItemStack target) {
+
+        var sourceTag = NtglComponents.getWeaponTag(source);
+        var targetTag = NtglComponents.getWeaponTag(target);
+
+
         if (source.getItem() != target.getItem()) {
             return false;
         } else if (source.getDamageValue() != target.getDamageValue()) {
             return false;
-        } else if (source.getTag() == null && target.getTag() != null) {
+        } else if (sourceTag == null && targetTag != null) {
             return false;
-        } else {
-            return (source.getTag() == null || source.getTag().equals(target.getTag())) && source.areCapsCompatible(target);
+        } else {                                                       //TODO port this
+            return (sourceTag == null || sourceTag.equals(targetTag)) /*&& source.areItemsAndComponentsEqual(target)*/;
         }
     }
 
@@ -129,7 +136,7 @@ public class InventoryUtil {
 
     @NotNull
     public static AmmoContext getCreativeAmmoContext(ResourceLocation id) {
-        var item = Registries.ITEM.getValue(id);
+        var item = BuiltInRegistries.ITEM.get(id);
         var ammo = item != null ? new ItemStack(item, Integer.MAX_VALUE) : ItemStack.EMPTY;
         return new AmmoContext(ammo, null);
     }

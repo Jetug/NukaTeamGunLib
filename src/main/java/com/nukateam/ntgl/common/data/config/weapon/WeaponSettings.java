@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.debug.*;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.util.util.*;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -41,13 +42,13 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
-        tag.put(GENERAL, this.general.serializeNBT());
-        tag.put(MELEE, this.melee.serializeNBT());
-        tag.put(THROWABLE, this.throwable.serializeNBT());
+        tag.put(GENERAL, this.general.serializeNBT(provider));
+        tag.put(MELEE, this.melee.serializeNBT(provider));
+        tag.put(THROWABLE, this.throwable.serializeNBT(provider));
         tag.put(AMMO_DATA, NbtUtils.serializeMap(this.ammoData));
         tag.put(SECONDARY_AMMO, NbtUtils.serializeMap(this.fuel));
         if (this.zoom != null) {
-            tag.put(ZOOM, this.zoom.serializeNBT());
+            tag.put(ZOOM, this.zoom.serializeNBT(provider));
         }
         return tag;
     }
@@ -55,13 +56,13 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(GENERAL, Tag.TAG_COMPOUND)) {
-            this.general.deserializeNBT(tag.getCompound(GENERAL));
+            this.general.deserializeNBT(null,tag.getCompound(GENERAL));
         }
         if (tag.contains(MELEE, Tag.TAG_COMPOUND)) {
-            this.melee.deserializeNBT(tag.getCompound(MELEE));
+            this.melee.deserializeNBT(null,tag.getCompound(MELEE));
         }
         if (tag.contains(THROWABLE, Tag.TAG_COMPOUND)) {
-            this.throwable.deserializeNBT(tag.getCompound(THROWABLE));
+            this.throwable.deserializeNBT(null,tag.getCompound(THROWABLE));
         }
         if (tag.contains(AMMO_DATA, Tag.TAG_COMPOUND)) {
             this.ammoData = NbtUtils.deserializeLinkedMap(tag.getCompound(AMMO_DATA), (nbt) -> AmmoData.create(nbt));
@@ -98,7 +99,7 @@ public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMen
 
     public static WeaponSettings create(CompoundTag tag) {
         var gun = new WeaponSettings();
-        gun.deserializeNBT(tag);
+        gun.deserializeNBT(null,tag);
         return gun;
     }
 

@@ -1,9 +1,8 @@
 package com.nukateam.chassis_core.client.input;
 
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -34,7 +33,7 @@ public class LongClickController {
         this.releaseListener = listener;
     }
 
-    private void onTick(final ClientTickEvent event) {
+    private void onTick(final ClientTickEvent.Pre event) {
 //        if(lastKey == null) return;
 //        ticks++;
 

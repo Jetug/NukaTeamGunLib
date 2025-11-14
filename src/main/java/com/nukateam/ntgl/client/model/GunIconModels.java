@@ -9,11 +9,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.ForgeRenderTypes;
 import net.neoforged.neoforge.client.RenderTypeGroup;
 import net.neoforged.neoforge.client.model.CompositeModel;
 import net.neoforged.neoforge.client.model.geometry.*;
@@ -35,49 +35,60 @@ public class GunIconModels implements IUnbakedGeometry<GunIconModels> {
         return new GunIconModels(stack);
     }
 
+
     @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker modelBaker,
-                           Function<Material, TextureAtlasSprite> function,
-                           ModelState modelState,
-                           ItemOverrides itemOverrides, ResourceLocation resourceLocation)
-    {
-        var particleLocation = getMaterial(context, "particle");
-        var particleSprite = particleLocation != null ? function.apply(particleLocation) : null;
-
-        var itemContext = StandaloneGeometryBakingContext.builder(context)
-                .withGui3d(false).withUseBlockLight(false).build(resourceLocation);
-
-        var builder = CompositeModel.Baked.builder(itemContext, particleSprite,
-                new GunIconModels.ItemOverrideHandler(itemOverrides, modelBaker, itemContext, this),
-                context.getTransforms());
-
-        var skin = StackUtils.getVariant(stack);
-        var texture = getTexture(resourceLocation.getNamespace(), getItemName(stack), skin);
-        var baseMaterial = new Material(InventoryMenu.BLOCK_ATLAS, texture);
-        var baseLocation = getMaterial(context, "base");
-        var sprite = !stack.isEmpty() ?
-                function.apply(baseMaterial) :
-                function.apply(baseLocation);
-
-        var unbaked = UnbakedGeometryHelper.createUnbakedItemElements(0, sprite.contents());
-        var quads = UnbakedGeometryHelper.bakeElements(unbaked, $ -> sprite, modelState, resourceLocation);
-
-        builder.addQuads(getLayerRenderTypes(), quads);
-
-        builder.setParticle(particleSprite);
-        return builder.build();
+    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker,
+                           Function<Material, TextureAtlasSprite> spriteGetter,
+                           ModelState modelState, ItemOverrides overrides) {
+//        TextureAtlasSprite texture = spriteGetter.apply(
+//                new Material(InventoryMenu.BLOCK_ATLAS, getTexture())
+//        );
+        return null;
     }
+
+    //TODO port this
+//    @Override
+//    public BakedModel bake(IGeometryBakingContext context, ModelBaker modelBaker,
+//                           Function<Material, TextureAtlasSprite> function,
+//                           ModelState modelState, ItemOverrides itemOverrides, ResourceLocation resourceLocation)
+//    {
+//        var particleLocation = getMaterial(context, "particle");
+//        var particleSprite = particleLocation != null ? function.apply(particleLocation) : null;
+//
+//        var itemContext = StandaloneGeometryBakingContext.builder(context)
+//                .withGui3d(false).withUseBlockLight(false).build(resourceLocation);
+//
+//        var builder = CompositeModel.Baked.builder(itemContext, particleSprite,
+//                new GunIconModels.ItemOverrideHandler(itemOverrides, modelBaker, itemContext, this),
+//                context.getTransforms());
+//
+//        var skin = StackUtils.getVariant(stack);
+//        var texture = getTexture(resourceLocation.getNamespace(), getItemName(stack), skin);
+//        var baseMaterial = new Material(InventoryMenu.BLOCK_ATLAS, texture);
+//        var baseLocation = getMaterial(context, "base");
+//        var sprite = !stack.isEmpty() ?
+//                function.apply(baseMaterial) :
+//                function.apply(baseLocation);
+//
+//        var unbaked = UnbakedGeometryHelper.createUnbakedItemElements(0, sprite.contents());
+//        var quads = UnbakedGeometryHelper.bakeElements(unbaked, $ -> sprite, modelState, resourceLocation);
+//
+//        builder.addQuads(getLayerRenderTypes(), quads);
+//
+//        builder.setParticle(particleSprite);
+//        return builder.build();
+//    }
 
     private static String getItemName(ItemStack stack) {
         return BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath();
     }
 
     private static ResourceLocation getTexture(String namespace, String nameItem, String skin) {
-        return new ResourceLocation(namespace, "item/dynamic/" + nameItem + "/" + nameItem + "_" + skin);
+        return ResourceLocation.tryBuild(namespace, "item/dynamic/" + nameItem + "/" + nameItem + "_" + skin);
     }
 
     public static RenderTypeGroup getLayerRenderTypes() {
-        return new RenderTypeGroup(RenderType.translucent(), ForgeRenderTypes.ITEM_UNSORTED_TRANSLUCENT.get());
+        return new RenderTypeGroup(RenderType.translucent(), RenderType.translucent());
     }
 
     public enum Loader implements IGeometryLoader<GunIconModels> {
@@ -114,8 +125,9 @@ public class GunIconModels implements IUnbakedGeometry<GunIconModels> {
             if (overriden != originalModel) return overriden;
             if (!StackUtils.getVariant(stack).equals("default")) {
                 var unbaked = this.parent.withStack(stack);
-                var bakedModel = unbaked.bake(owner, baker, Material::sprite, BlockModelRotation.X0_Y0, this,
-                        new ResourceLocation(Ntgl.MOD_ID, "gun_icon_override"));
+                var bakedModel = unbaked.bake(owner, baker, Material::sprite, BlockModelRotation.X0_Y0, this
+//                        ,ResourceLocation.tryBuild(Ntgl.MOD_ID, "gun_icon_override")
+                );
                 return bakedModel;
             }
             return originalModel;

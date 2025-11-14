@@ -2,13 +2,13 @@ package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.nukateam.ntgl.modules.constants.Paths;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
-import com.nukateam.ntgl.modules.datapack.DataUtils;
+import com.nukateam.ntgl.modules.datapack.ConfigUtils;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAttachments;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateAttachments;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -20,8 +20,6 @@ import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
 import java.util.*;
-
-import static net.neoforged.neoforge.registries.Registries.ITEM;
 
 public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map<IAttachment<?>, AttachmentConfig>> {
     private static List<IAttachment<?>> clientRegisteredAttachments = new ArrayList<>();
@@ -41,7 +39,7 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
 
     @Override
     protected Map<IAttachment<?>, AttachmentConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return DataUtils.getConfigMap(manager, (v) -> v instanceof IAttachment<?>, AttachmentConfig.class, Paths.ATTACHMENTS);
+        return ConfigUtils.getConfigMap(manager, BuiltInRegistries.ITEM, (v) -> v instanceof IAttachment<?>, AttachmentConfig.class, Paths.ATTACHMENTS);
     }
 
     @Override
@@ -50,8 +48,8 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
 
         objects.forEach((abstractItem, config) -> {
             if(abstractItem instanceof Item item) {
-                Validate.notNull(ITEMS.getKey(item));
-                builder.put(ITEMS.getKey(item), config);
+                Validate.notNull(BuiltInRegistries.ITEM.getKey(item));
+                builder.put(BuiltInRegistries.ITEM.getKey(item), config);
                 abstractItem.setConfig(new ConfigSupplier<>(config));
             }
         });
@@ -63,7 +61,7 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
         buffer.writeVarInt(this.registeredAttachments.size());
         this.registeredAttachments.forEach((id, config) -> {
             buffer.writeResourceLocation(id);
-            buffer.writeNbt(config.serializeNBT());
+            buffer.writeNbt(config.serializeNBT(null));
         });
     }
 

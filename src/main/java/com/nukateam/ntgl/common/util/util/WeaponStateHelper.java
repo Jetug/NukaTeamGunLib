@@ -12,9 +12,10 @@ import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.debug.Debug;
 
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
@@ -28,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class WeaponStateHelper {
     public static final String AMMO_TAG = "Ammo";
@@ -186,26 +186,28 @@ public class WeaponStateHelper {
         }
     }
 
-    public static ArrayList<ItemStack> getAttachmentItems(ItemStack gun) {
-        var compound = gun.getTag();
+    public static ArrayList<ItemStack> getAttachmentItems(HolderLookup.Provider lookupProvider, ItemStack weapon) {
+        var compound = NtglComponents.getWeaponTag(weapon);
         var result = new ArrayList<ItemStack>();
 
         if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
             var attachment = compound.getCompound(ATTACHMENTS);
             for (var slot: attachment.getAllKeys()){
-                if (attachment.contains(slot, Tag.TAG_COMPOUND))
-                    result.add(ItemStack.of(attachment.getCompound(slot)));
+                if (attachment.contains(slot, Tag.TAG_COMPOUND)) {
+                    result.add(ItemStack.parseOptional(lookupProvider, attachment.getCompound(slot)));
+                }
             }
         }
         return result;
     }
 
-    public static ItemStack getAttachmentItem(AttachmentType type, ItemStack gun) {
-        var compound = gun.getTag();
+    public static ItemStack getAttachmentItem(HolderLookup.Provider lookupProvider, AttachmentType type, ItemStack weapon) {
+        var compound = NtglComponents.getWeaponTag(weapon);
+
         if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
             var attachment = compound.getCompound(ATTACHMENTS);
             if (attachment.contains(type.toString(), Tag.TAG_COMPOUND)) {
-                return ItemStack.of(attachment.getCompound(type.toString()));
+                return ItemStack.parseOptional(lookupProvider, attachment.getCompound(type.toString()));
             }
         }
         return ItemStack.EMPTY;

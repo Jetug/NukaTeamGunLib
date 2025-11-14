@@ -2,7 +2,11 @@ package com.nukateam.ntgl.modules.datapack.handlers;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.*;
+import com.nukateam.ntgl.common.network.message.chassis.S2CMessageUpdateChassisConfig;
+import com.nukateam.ntgl.common.network.message.chassis.S2CMessageUpdateEquipmentConfig;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateAmmo;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateAttachments;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateWeapons;
 import com.nukateam.ntgl.modules.datapack.managers.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
@@ -12,7 +16,6 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
-
 @EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkManagerHandler {
     @SubscribeEvent
@@ -20,6 +23,8 @@ public class NetworkManagerHandler {
         NetworkWeaponManager.onServerStopped();
         NetworkAmmoManager.onServerStopped();
         NetworkAttachmentManager.onServerStopped();
+        NetworkChassisManager.stop();
+        NetworkEquipmentManager.stop();
     }
 
     @SubscribeEvent
@@ -27,6 +32,8 @@ public class NetworkManagerHandler {
         NetworkWeaponManager.register(event);
         NetworkAmmoManager.register(event);
         NetworkAttachmentManager.register(event);
+        NetworkChassisManager.register(event);
+        NetworkEquipmentManager.register(event);
     }
 
     @SubscribeEvent
@@ -35,6 +42,8 @@ public class NetworkManagerHandler {
             PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateWeapons());
             PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateAmmo());
             PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateAttachments());
+            PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateChassisConfig());
+            PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateEquipmentConfig());
         }
     }
 
@@ -44,6 +53,8 @@ public class NetworkManagerHandler {
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateWeapons());
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateAmmo());
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateAttachments());
+            getPlayChannel().sendToAll(new S2CMessageUpdateChassisConfig());
+            getPlayChannel().sendToAll(new S2CMessageUpdateEquipmentConfig());
         }
     }
 }

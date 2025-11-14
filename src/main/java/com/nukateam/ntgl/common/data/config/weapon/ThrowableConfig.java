@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.fml.DistExecutor;
+import net.minecraft.core.HolderLookup;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -47,7 +47,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
         tag.put("mode", NbtUtils.serializeSet(this.mode));
         tag.putInt(PREPARE_TIME, prepareTime);
         tag.putInt(THROW_TIME, throwTime);
-        tag.put(AMMO_DATA, ammoData.serializeNBT());
+        tag.put(AMMO_DATA, ammoData.serializeNBT(provider));
         return tag;
     }
 
@@ -123,7 +123,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
 
     public static ThrowableConfig create(ResourceLocation id, CompoundTag tag) {
         var gun = new ThrowableConfig();
-        gun.deserializeNBT(tag);
+        gun.deserializeNBT(null,tag);
         return gun;
     }
 

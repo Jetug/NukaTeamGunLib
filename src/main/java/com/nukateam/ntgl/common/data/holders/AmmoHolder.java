@@ -63,7 +63,7 @@ public class AmmoHolder extends ResourceHolder {
                 .isAcceptable((stack) -> Objects.equals(getKey(stack), id))
                 .value((s) -> 1)
                 .descriptionId((ammo) -> {
-                    var item = Registries.ITEM.getValue(ammo.getId());
+                    var item = BuiltInRegistries.ITEM.get(ammo.getId());
                     if (item != null){
                         return item.getDescriptionId();
                     }

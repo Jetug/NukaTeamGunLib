@@ -1,5 +1,6 @@
 package com.nukateam.example.common.entities;
 
+import net.minecraft.world.level.gameevent.GameEvent;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -27,8 +28,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.neoforged.neoforge.common.IForgeShearable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +37,7 @@ import java.util.List;
 import static com.nukateam.example.common.registery.EntityTypes.BRAHMIN;
 import static software.bernie.geckolib.animation.RawAnimation.begin;
 
-public class Brahmin extends Cow implements GeoEntity, Shearable, IForgeShearable {
+public class Brahmin extends Cow implements GeoEntity, Shearable {
     private static final EntityDataAccessor<Boolean> HAS_BALLS = SynchedEntityData.defineId(Brahmin.class, EntityDataSerializers.BOOLEAN);
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -66,9 +65,9 @@ public class Brahmin extends Cow implements GeoEntity, Shearable, IForgeShearabl
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        entityData.define(HAS_BALLS, true);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(HAS_BALLS, true);
     }
     
     @Override

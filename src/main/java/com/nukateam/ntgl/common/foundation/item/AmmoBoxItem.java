@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -261,7 +262,7 @@ public class AmmoBoxItem extends Item {
     }
 
     public static Stream<ItemStack> getContents(ItemStack stack) {
-        var compoundtag = stack.getTag();
+        var compoundtag = NtglComponents.getWeaponTag(stack);
         if (compoundtag == null) {
             return Stream.empty();
         } else {

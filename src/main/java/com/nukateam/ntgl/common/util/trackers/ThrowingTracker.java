@@ -11,12 +11,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.fml.LogicalSide;
+import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.common.EventBusSubscriber;
 import com.mojang.datafixers.util.Pair;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.util.*;
 
@@ -27,10 +28,10 @@ public class ThrowingTracker {
     private static final Map<Pair<InteractionHand, LivingEntity>, Tracker> TRACKER_MAP = new HashMap<>();
 
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+    public static void onPlayerTick(PlayerTickEvent.Pre event) {
         try {
-            if (event.phase == TickEvent.Phase.START && !event.player.level().isClientSide) {
-                var player = event.player;
+            if (!event.getEntity().level().isClientSide) {
+                var player = event.getEntity();
                 onEntityTick(player);
             }
         }
@@ -40,14 +41,12 @@ public class ThrowingTracker {
     }
 
     @SubscribeEvent
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
+    public static void onServerTick(ServerTickEvent.Pre event) {
         try {
-            if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
-                for (var key: TRACKER_MAP.keySet()) {
-                    var entity = key.getSecond();
-                    if(entity instanceof Player) continue;
-                    onEntityTick(entity);
-                }
+            for (var key: TRACKER_MAP.keySet()) {
+                var entity = key.getSecond();
+                if(entity instanceof Player) continue;
+                onEntityTick(entity);
             }
         }
         catch (Exception e){

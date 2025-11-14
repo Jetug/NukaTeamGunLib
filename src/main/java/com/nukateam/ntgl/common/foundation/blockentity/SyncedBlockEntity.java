@@ -33,17 +33,18 @@ public class SyncedBlockEntity extends BlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
-    }
-
-    @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    @Override
-    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt) {
-        this.deserializeNBT(pkt.getTag());
-    }
+    //TODO: port this
+//    @Override
+//    public CompoundTag getUpdateTag() {
+//        return this.saveWithFullMetadata();
+//    }
+//
+//    @Override
+//    public void onDataPacket(final Connection net, final ClientboundBlockEntityDataPacket pkt) {
+//        this.deserializeNBT(pkt.getTag());
+//    }
 }

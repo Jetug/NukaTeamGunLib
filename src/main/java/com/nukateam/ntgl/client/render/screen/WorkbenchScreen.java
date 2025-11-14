@@ -14,7 +14,7 @@ import com.nukateam.ntgl.common.foundation.crafting.*;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SMessageCraft;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageCraft;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -50,7 +50,7 @@ import java.util.stream.Stream;
  * Author: MrCrayfish
  */
 public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer> {
-    private static final ResourceLocation GUI_BASE = new ResourceLocation(Ntgl.MOD_ID, "textures/gui/workbench.png");
+    private static final ResourceLocation GUI_BASE = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/gui/workbench.png");
     private static boolean showRemaining = false;
 
     private Tab currentTab;

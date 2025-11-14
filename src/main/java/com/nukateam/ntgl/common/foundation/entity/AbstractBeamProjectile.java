@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -48,15 +49,15 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		entityData.define(START_X	, 0f);
-		entityData.define(START_Y	, 0f);
-		entityData.define(START_Z	, 0f);
-		entityData.define(END_X  	, 0f);
-		entityData.define(END_Y  	, 0f);
-		entityData.define(END_Z  	, 0f);
-		entityData.define(DISTANCE  , 0f);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(START_X	, 0f);
+		builder.define(START_Y	, 0f);
+		builder.define(START_Z	, 0f);
+		builder.define(END_X  	, 0f);
+		builder.define(END_Y  	, 0f);
+		builder.define(END_Z  	, 0f);
+		builder.define(DISTANCE  , 0f);
 	}
 
 	@Override

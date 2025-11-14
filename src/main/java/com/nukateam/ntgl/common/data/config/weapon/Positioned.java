@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import com.nukateam.ntgl.common.util.util.SuperBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.phys.Vec3;

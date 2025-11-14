@@ -4,21 +4,14 @@ package com.nukateam.ntgl.common.data.config.weapon;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.data.holders.AmmoType;
 import com.nukateam.ntgl.common.data.holders.CounterType;
-import com.nukateam.ntgl.common.debug.IDebugWidget;
-import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.util.annotation.Optional;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.fml.DistExecutor;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.core.HolderLookup;
 
-import java.util.List;
-import java.util.function.Supplier;
-
-public class AmmoConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class AmmoConfig implements INBTSerializable<CompoundTag>{
     @Optional private AmmoType type = AmmoType.STANDARD;
     @Optional private CounterType counter = CounterType.NUMBER;
 
@@ -65,18 +58,8 @@ public class AmmoConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
 
     public static AmmoConfig create(CompoundTag tag) {
         var ammo = new AmmoConfig();
-        ammo.deserializeNBT(tag);
+        ammo.deserializeNBT(null, tag);
         return ammo;
-    }
-
-    @Override
-    public Component getEditorLabel() {
-        return Component.literal("Ammo");
-    }
-
-    @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {});
     }
 
     public static class Builder {

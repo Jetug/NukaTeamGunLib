@@ -2,12 +2,12 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
-import com.mrcrayfish.controllable.client.ActionVisibility;
 import com.mrcrayfish.controllable.client.binding.ButtonBinding;
 import com.mrcrayfish.controllable.client.binding.ButtonBindings;
 import com.mrcrayfish.controllable.client.gui.navigation.BasicNavigationPoint;
 import com.mrcrayfish.controllable.client.gui.navigation.NavigationPoint;
 import com.mrcrayfish.controllable.client.input.Controller;
+import com.mrcrayfish.controllable.client.settings.ActionVisibility;
 import com.mrcrayfish.controllable.event.ControllerEvents;
 import com.mrcrayfish.controllable.event.Value;
 import com.nukateam.ntgl.Config;
@@ -17,20 +17,21 @@ import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
-import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageAttachments;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageUnload;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
@@ -84,7 +85,7 @@ public class ControllerHandler {
                 actions.put(GunButtonBindings.AIM, new Action(Component.translatable("ntgl.action.aim"), Action.Side.RIGHT));
                 actions.put(GunButtonBindings.SHOOT, new Action(Component.translatable("ntgl.action.shoot"), Action.Side.RIGHT));
 
-                var tag = heldItem.getTag();
+                var tag = NtglComponents.getWeaponTag(heldItem);
                 var data = new WeaponData(heldItem, player);
 
                 if (tag != null && WeaponStateHelper.getAmmoCount(data) < WeaponModifierHelper.getMaxAmmo(data)) {
@@ -165,13 +166,12 @@ public class ControllerHandler {
     }
 
     @SubscribeEvent
-    public void onRenderTick(TickEvent.RenderTickEvent event) {
+    public void onRenderTick(ClientTickEvent.Pre event) {
         var controller = Controllable.getController();
         var mc = Minecraft.getInstance();
         var player = mc.player;
 
         if (controller == null) return;
-        if (event.phase == TickEvent.Phase.END) return;
         if (player == null) return;
 
         if (controller.isButtonPressed(GunButtonBindings.SHOOT.getButton()) && Minecraft.getInstance().screen == null) {

@@ -3,8 +3,8 @@ package com.nukateam.ntgl.common.event;
 import com.nukateam.ntgl.common.data.WeaponData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
-import net.neoforged.bus.api.Cancelable;
 
 import java.util.ArrayList;
 
@@ -39,8 +39,7 @@ public class MeleeAttackEvent extends LivingEvent {
         return this.getEntity().getCommandSenderWorld().isClientSide();
     }
 
-    @Cancelable
-    public static class Pre extends MeleeAttackEvent {
+    public static class Pre extends MeleeAttackEvent implements ICancellableEvent {
         public Pre(LivingEntity entity, WeaponData stack, InteractionHand hand, ArrayList<LivingEntity> targets) {
             super(entity, stack, hand, targets);
         }

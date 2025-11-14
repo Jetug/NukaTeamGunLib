@@ -7,11 +7,12 @@ import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessagePreFireSound;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageShoot;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.*;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -20,9 +21,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -32,7 +34,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.*;
-import static net.neoforged.neoforge.event.TickEvent.Type.RENDER;
 
 public class ClientShootingHandler {
     private static ClientShootingHandler instance;
@@ -143,12 +144,9 @@ public class ClientShootingHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public void renderTickLow(TickEvent.RenderTickEvent evt) {
-        if (!evt.type.equals(RENDER) || evt.phase.equals(TickEvent.Phase.START))
-            return;
-
+    public void renderTickLow(RenderLevelStageEvent evt) {
         if (shootMsGap > 0F) {
-            shootMsGap -= evt.renderTickTime * visualCooldownMultiplier();
+            shootMsGap -= evt.getRenderTick() * visualCooldownMultiplier();
         } else if (shootMsGap < -0.05F)
             shootMsGap = 0F;
     }
@@ -160,32 +158,8 @@ public class ClientShootingHandler {
     }
 
     @SubscribeEvent
-    public void onHandleShooting(ClientTickEvent evt) {
-        if (evt.phase == TickEvent.Phase.START) {
-            reduceGaps();
-
-            if (!isInGame()) return;
-
-            var player = Minecraft.getInstance().player;
-
-//            if (player != null) {
-//                var mainHandItem = player.getMainHandItem();
-//                if (mainHandItem.getItem() instanceof IWeapon && (GunStateHelper.hasAmmo(mainHandItem) || player.isCreative())) {
-//                    var shooting = isKeyAttackDown();
-//                    if (Ntgl.controllableLoaded) {
-//                        shooting |= ControllerHandler.isShooting();
-//                    }
-//                    if (shooting ^ this.shooting) {
-//                        this.shooting = shooting;
-//                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(shooting));
-//                    }
-//                } else if (this.shooting) {
-//                    this.shooting = false;
-//                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(false));
-//                }
-//            }
-//            else this.shooting = false;
-        }
+    public void onHandleShooting(ClientTickEvent.Pre evt) {
+        reduceGaps();
     }
 
     public ShootingData getShootingData(InteractionHand arm){
@@ -245,7 +219,7 @@ public class ClientShootingHandler {
             var shootGap = getCooldown(shooter, hand);
 
             if (shootGap <= 0) {
-                if (NeoForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand)))
+                if (NeoForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand)).isCanceled())
                     return;
 
                 // CHECK HERE: Change this to test different rpm settings.

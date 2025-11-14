@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
  * Author: MrCrayfish
  */
 public abstract class Crosshair implements IResourceLocation {
-    public static final Crosshair DEFAULT = new Crosshair(new ResourceLocation("default")) {
+    public static final Crosshair DEFAULT = new Crosshair(ResourceLocation.tryParse("default")) {
     };
 
     static {

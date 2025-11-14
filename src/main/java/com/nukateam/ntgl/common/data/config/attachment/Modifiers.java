@@ -3,7 +3,6 @@ package com.nukateam.ntgl.common.data.config.attachment;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.Ntgl;
-
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
@@ -17,7 +16,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-
+import net.minecraft.core.HolderLookup;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;

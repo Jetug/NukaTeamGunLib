@@ -3,16 +3,14 @@ package com.nukateam.ntgl.common.event;
 import com.nukateam.ntgl.common.data.WeaponData;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.Cancelable;
 import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 
-@Cancelable
-public class AttachmentEvent extends Event {
+public class AttachmentEvent extends Event  implements ICancellableEvent{
     private final WeaponData weaponData;
     private final AbstractContainerMenu containerMenu;
 
-    @Cancelable
-    public static class SlotUpdateEvent extends AttachmentEvent{
+    public static class SlotUpdateEvent extends AttachmentEvent implements ICancellableEvent {
         private final ItemStack oldStack;
         private final ItemStack newStack;
 

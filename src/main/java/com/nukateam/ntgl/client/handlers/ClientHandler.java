@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.client.registry.*;
-import com.nukateam.ntgl.client.settings.OptionInstances;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.render.screen.AttachmentScreen;
@@ -11,25 +10,13 @@ import com.nukateam.ntgl.common.debug.screen.*;
 import com.nukateam.ntgl.common.foundation.init.ModContainers;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.OptionsList;
 import net.minecraft.client.gui.screens.*;
-import net.minecraft.client.gui.screens.options.MouseSettingsScreen;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.nbt.Tag;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.InteractionHand;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
-import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.common.NeoForge;
 
 import java.lang.reflect.Field;
 
@@ -94,34 +81,33 @@ public class ClientHandler {
     }
 
     @SubscribeEvent
-    public static void clientTick(ClientTickEvent event) {
-        if(event.phase == TickEvent.Phase.END) {
-            if(inspectionTimerRight == INSPECTION_DURATION - 2) {
-                inspectionTimerLeft = INSPECTION_DURATION;
-            }
-
-            if (inspectionTimerRight > 0)
-                inspectionTimerRight--;
-            if (inspectionTimerLeft > 0)
-                inspectionTimerLeft--;
+    public static void clientTick(ClientTickEvent.Post event) {
+        if(inspectionTimerRight == INSPECTION_DURATION - 2) {
+            inspectionTimerLeft = INSPECTION_DURATION;
         }
+
+        if (inspectionTimerRight > 0)
+            inspectionTimerRight--;
+        if (inspectionTimerLeft > 0)
+            inspectionTimerLeft--;
     }
 
-    @SubscribeEvent
-    public static void onScreenInit(ScreenEvent.Init.Post event) {
-        if (event.getScreen() instanceof MouseSettingsScreen screen) {
-            if (mouseOptionsField == null) {
-                mouseOptionsField = ObfuscationReflectionHelper.findField(MouseSettingsScreen.class, "f_96218_");
-                mouseOptionsField.setAccessible(true);
-            }
-            try {
-                var list = (OptionsList) mouseOptionsField.get(screen);
-                list.addSmall(OptionInstances.createSensitivitySlider(), null);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+    //TODO: port this
+//    @SubscribeEvent
+//    public static void onScreenInit(ScreenEvent.Init.Post event) {
+//        if (event.getScreen() instanceof MouseSettingsScreen screen) {
+//            if (mouseOptionsField == null) {
+//                mouseOptionsField = ObfuscationReflectionHelper.findField(MouseSettingsScreen.class, "f_96218_");
+//                mouseOptionsField.setAccessible(true);
+//            }
+//            try {
+//                var list = (OptionsList) mouseOptionsField.get(screen);
+//                list.addSmall(OptionInstances.createSensitivitySlider(), null);
+//            } catch (IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     public static Screen createEditorScreen(IEditorMenu menu) {
         return new EditorScreen(Minecraft.getInstance().screen, menu);

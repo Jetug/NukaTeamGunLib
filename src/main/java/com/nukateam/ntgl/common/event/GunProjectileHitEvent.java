@@ -2,16 +2,15 @@ package com.nukateam.ntgl.common.event;
 
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.bus.api.Cancelable;
 import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 
 /**
  * <p>Fired when a projectile hits a block or entity.</p>
  *
  * @author Ocelot
  */
-@Cancelable
-public class GunProjectileHitEvent extends Event {
+public class GunProjectileHitEvent extends Event  implements ICancellableEvent {
     private final HitResult result;
     private final ProjectileEntity projectile;
 

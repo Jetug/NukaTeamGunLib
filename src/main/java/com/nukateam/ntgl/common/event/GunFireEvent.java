@@ -4,6 +4,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.bus.api.Cancelable;
 
@@ -50,8 +51,7 @@ public class GunFireEvent extends LivingEvent {
      *
      * @author Ocelot
      */
-    @Cancelable
-    public static class Pre extends GunFireEvent {
+    public static class Pre extends GunFireEvent implements ICancellableEvent {
         public Pre(LivingEntity entity, ItemStack stack, InteractionHand hand) {
             super(entity, stack, hand);
         }

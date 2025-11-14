@@ -9,17 +9,13 @@ import com.nukateam.ntgl.client.util.helpers.PropertyHelper;
 import com.nukateam.ntgl.client.util.helpers.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
-import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
-import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
@@ -28,7 +24,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -41,11 +36,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.fml.util.ObfuscationReflectionHelper;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
@@ -54,12 +49,11 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import static com.nukateam.ntgl.client.util.helpers.PropertyHelper.*;
+import static com.nukateam.ntgl.common.foundation.components.NtglComponents.getWeaponTag;
 
 @SuppressWarnings("removal")
 public class GunRenderingHandler {
     private static GunRenderingHandler instance;
-    public static final ResourceLocation GUI_ICONS_LOCATION = new ResourceLocation( "textures/gui/icons.png"); // Kinda hacky
-
     public static GunRenderingHandler get() {
         if (instance == null) {
             instance = new GunRenderingHandler();
@@ -112,10 +106,7 @@ public class GunRenderingHandler {
     }
 
     @SubscribeEvent
-    public void onTick(ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.END)
-            return;
-
+    public void onTick(ClientTickEvent.Post event) {
         this.updateSprinting();
         this.updateMuzzleFlash();
         this.updateOffhandTranslate();
@@ -238,9 +229,12 @@ public class GunRenderingHandler {
             event.setCanceled(true);
 
             var overrideModel = ItemStack.EMPTY;
-            if (heldItem.getTag() != null) {
-                if (heldItem.getTag().contains("Model", Tag.TAG_COMPOUND)) {
-                    overrideModel = ItemStack.of(heldItem.getTag().getCompound("Model"));
+
+            var tag = getWeaponTag(heldItem);
+
+            if (tag != null) {
+                if (tag.contains("Model", Tag.TAG_COMPOUND)) {
+                    overrideModel = ItemStack.parseOptional(player.level().registryAccess(), tag.getCompound("Model"));
                 }
             }
 
@@ -494,62 +488,11 @@ public class GunRenderingHandler {
         }
     }
 
-    @SubscribeEvent
-    public void onTick(TickEvent.RenderTickEvent event) {
-        if (event.phase.equals(TickEvent.Phase.START))
-            return;
-
-        Minecraft mc = Minecraft.getInstance();
-        if (!mc.isWindowActive())
-            return;
-
-        Player player = mc.player;
-        if (player == null)
-            return;
-
-        if (Minecraft.getInstance().options.getCameraType() != CameraType.FIRST_PERSON)
-            return;
-
-        ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
-        if (heldItem.isEmpty())
-            return;
-
-//        if (player.isUsingItem()
-//                && player.getUsedItemHand() == InteractionHand.MAIN_HAND
-//                && heldItem.getItem() instanceof ThrowableItem) {
-//            int duration = player.getTicksUsingItem();
-//            if (duration >= 10) {
-//                float cookTime = 1.0F - ((float) (duration - 10) / (float) (player.getUseItem().getUseDuration() - 10));
-//                if (cookTime > 0.0F) {
-//                    float scale = 3;
-//                    Window window = mc.getWindow();
-//                    int i = (int) ((window.getGuiScaledHeight() / 2 - 7 - 60) / scale);
-//                    int j = (int) Math.ceil((window.getGuiScaledWidth() / 2 - 8 * scale) / scale);
-//
-//                    RenderSystem.enableBlend();
-//                    RenderSystem.defaultBlendFunc();
-//                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-//                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-//                    RenderSystem.setShaderTexture(0, GUI_ICONS_LOCATION);
-//
-//                    GuiGraphics graphics = new GuiGraphics(mc, mc.renderBuffers().bufferSource());
-//                    graphics.pose().scale(scale, scale, scale);
-//                    int progress = (int) Math.ceil((cookTime) * 17.0F) - 1;
-//
-//                    graphics.blit(GUI_ICONS_LOCATION, j, i, 36, 94, 16, 4, 256, 256);
-//                    graphics.blit(GUI_ICONS_LOCATION, j, i, 52, 94, progress, 4, 256, 256);
-//
-//                    RenderSystem.disableBlend();
-//                }
-//            }
-//        }
-    }
-
     public void applyWeaponScale(ItemStack heldItem, PoseStack stack) {
-        if (heldItem.getTag() != null) {
-            CompoundTag compound = heldItem.getTag();
-            if (compound.contains("Scale", Tag.TAG_FLOAT)) {
-                float scale = compound.getFloat("Scale");
+        var tag = getWeaponTag(heldItem);
+        if (tag != null) {
+            if (tag.contains("Scale", Tag.TAG_FLOAT)) {
+                float scale = tag.getFloat("Scale");
                 stack.scale(scale, scale, scale);
             }
         }
@@ -562,9 +505,11 @@ public class GunRenderingHandler {
             poseStack.pushPose();
             {
                 var model = ItemStack.EMPTY;
-                if (renderStack.getTag() != null) {
-                    if (renderStack.getTag().contains("Model", Tag.TAG_COMPOUND)) {
-                        model = ItemStack.of(renderStack.getTag().getCompound("Model"));
+                var tag = getWeaponTag(renderStack);
+
+                if (tag != null) {
+                    if (tag.contains("Model", Tag.TAG_COMPOUND)) {
+                        model = ItemStack.parseOptional(entity.level().registryAccess(), tag.getCompound("Model"));
                     }
                 }
 

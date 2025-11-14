@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.foundation.entity.misc;
 
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
+import net.minecraft.network.syncher.SynchedEntityData;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -43,7 +44,7 @@ public class AshPile extends Entity implements GeoEntity {
     }
 
     @Override
-    protected void defineSynchedData() {}
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
     @Override
     protected void readAdditionalSaveData(CompoundTag pCompound) {}

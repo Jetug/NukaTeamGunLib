@@ -15,7 +15,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class DynamicChassisScreen extends ChassisScreen<DynamicChassisMenu> {
     public static final ResourceLocation POWER_ARMOR_GUI =
-            new ResourceLocation(ChassisCore.MOD_ID, "textures/screens/example_chassis/example_chassis_inventory.png");
+            ResourceLocation.tryBuild(ChassisCore.MOD_ID, "textures/screens/example_chassis/example_chassis_inventory.png");
 
     public DynamicChassisScreen(DynamicChassisMenu container, Inventory inventory, Component name) {
         super(container, inventory, name, POWER_ARMOR_GUI);

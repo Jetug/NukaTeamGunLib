@@ -1,32 +1,31 @@
 package com.nukateam.ntgl.common.util.util;
 
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 public class StackUtils {
     public static final String DAMAGE = "Damage";
 
-    public static int getItemDamage(ItemStack itemStack) {
-        if (itemStack.hasTag()) {
-            CompoundTag nbt = itemStack.getOrCreateTag();
-            return nbt.getInt(DAMAGE);
-        } else {
-            return 0;
-        }
+    public static int getItemDamage(ItemStack stack) {
+        var tag = NtglComponents.getWeaponTag(stack);
+        if (tag != null) {
+            return tag.getInt(DAMAGE);
+        } else return 0;
     }
 
     public static void setItemDamage(ItemStack stack, int totalDamage) {
-        CompoundTag nbt = stack.getOrCreateTag();
-        nbt.putInt(DAMAGE, totalDamage);
+        var tag = NtglComponents.getWeaponTag(stack);
+        tag.putInt(DAMAGE, totalDamage);
     }
 
     public static void setDurability(ItemStack stack, int durability) {
-        CompoundTag nbt = stack.getOrCreateTag();
-        nbt.putInt(DAMAGE, stack.getMaxDamage() - durability);
+        var tag = NtglComponents.getWeaponTag(stack);
+        tag.putInt(DAMAGE, stack.getMaxDamage() - durability);
     }
 
     public static void damageItem(ItemStack itemStack, int dmg) {
-        int resultDamage = getItemDamage(itemStack) + dmg;
+        var resultDamage = getItemDamage(itemStack) + dmg;
         setItemDamage(itemStack, Math.min(resultDamage, itemStack.getMaxDamage()));
     }
 

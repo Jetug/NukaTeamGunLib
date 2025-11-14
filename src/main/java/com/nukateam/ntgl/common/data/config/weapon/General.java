@@ -7,6 +7,7 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import com.nukateam.ntgl.common.util.annotation.*;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -309,7 +310,7 @@ public class General implements INBTSerializable<CompoundTag> {
 
     public static General create(CompoundTag tag) {
         var general = new General();
-        general.deserializeNBT(tag);
+        general.deserializeNBT(null,tag);
         return general;
     }
 

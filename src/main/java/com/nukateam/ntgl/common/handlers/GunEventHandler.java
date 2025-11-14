@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.handlers;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import com.nukateam.ntgl.common.foundation.init.NtglGameEvents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
@@ -23,7 +24,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
-@EventBusSubscriber(modid = Ntgl.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class GunEventHandler {
     @SubscribeEvent
     public static void attachmentsChanged(AttachmentEvent.ContainerUpdateEvent event) {}
@@ -60,7 +61,7 @@ public class GunEventHandler {
         var entity = event.getEntity();
         var level = event.getEntity().level();
         var heldItem = entity.getItemInHand(event.getHand());
-        var tag = heldItem.getTag();
+        var tag = NtglComponents.getWeaponTag(heldItem);
 
         if (heldItem.getItem() instanceof IWeapon) {
             if (heldItem.isDamageableItem() && tag != null) {

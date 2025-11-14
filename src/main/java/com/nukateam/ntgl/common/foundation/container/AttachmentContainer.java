@@ -126,7 +126,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
     public void setItem(int slotId, int stateId, ItemStack stack) {
         var gunData = new WeaponData(this.weapon, this.player);
         var oldStack = this.getSlot(slotId).getItem();
-        if(!EVENT_BUS.post(new AttachmentEvent.SlotUpdateEvent(this, gunData, oldStack, stack))) {
+        if(!EVENT_BUS.post(new AttachmentEvent.SlotUpdateEvent(this, gunData, oldStack, stack)).isCanceled()) {
             super.setItem(slotId, stateId, stack);
         }
     }

@@ -9,6 +9,6 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class ExampleChassisStationScreen extends ArmorStationScreen<ExampleChassisStationMenu> {
     public ExampleChassisStationScreen(ExampleChassisStationMenu menu, Inventory pPlayerInventory, Component pTitle) {
-        super(menu, pPlayerInventory, pTitle, new ResourceLocation(ChassisCore.MOD_ID, "textures/screens/example_chassis/example_chassis_station_gui.png"));
+        super(menu, pPlayerInventory, pTitle, ResourceLocation.tryBuild(ChassisCore.MOD_ID, "textures/screens/example_chassis/example_chassis_station_gui.png"));
     }
 }

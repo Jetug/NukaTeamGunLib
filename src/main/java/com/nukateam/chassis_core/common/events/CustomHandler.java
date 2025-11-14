@@ -10,7 +10,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 
 import static java.lang.System.out;
 
-@EventBusSubscriber(modid = ChassisCore.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = ChassisCore.MOD_ID)
 public class CustomHandler {
 
     @SubscribeEvent(priority = EventPriority.NORMAL)

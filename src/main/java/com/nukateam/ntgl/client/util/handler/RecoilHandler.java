@@ -9,8 +9,8 @@ import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 
@@ -69,8 +69,8 @@ public class RecoilHandler {
     }
 
     @SubscribeEvent
-    public void onRenderTick(TickEvent.RenderTickEvent event) {
-        if (event.phase != TickEvent.Phase.END || this.cameraRecoil <= 0)
+    public void onRenderTick(ClientTickEvent.Post event) {
+        if (this.cameraRecoil <= 0)
             return;
 
         Minecraft mc = Minecraft.getInstance();
@@ -80,7 +80,7 @@ public class RecoilHandler {
         if (!Config.SERVER.enableCameraRecoil.get())
             return;
 
-        float recoilAmount = this.cameraRecoil * mc.getDeltaFrameTime() * 0.15F;
+        float recoilAmount = this.cameraRecoil * mc.getTimer().getGameTimeDeltaPartialTick(true) * 0.15F;
         float startProgress = this.progressCameraRecoil / this.cameraRecoil;
         float endProgress = (this.progressCameraRecoil + recoilAmount) / this.cameraRecoil;
 

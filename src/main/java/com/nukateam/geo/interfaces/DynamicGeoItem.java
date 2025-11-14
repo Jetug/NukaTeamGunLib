@@ -9,6 +9,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import software.bernie.geckolib.animatable.GeoItem;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
 
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -32,4 +34,8 @@ public interface DynamicGeoItem extends GeoItem {
 //            }
 //        });
 //    }
+
+
+
+
 }

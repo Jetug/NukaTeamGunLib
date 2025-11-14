@@ -7,11 +7,13 @@ import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.data.constants.Tags;
 
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.S2CMessageReload;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageReload;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -20,11 +22,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.minecraft.core.registries.Registries;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -74,10 +77,10 @@ public class ReloadTracker {
     }
 
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+    public static void onPlayerTick(PlayerTickEvent.Pre event) {
         try {
-            if (event.phase == TickEvent.Phase.START && !event.player.level().isClientSide) {
-                var player = event.player;
+            if (!event.getEntity().level().isClientSide) {
+                var player = event.getEntity();
                 handTick(player);
             }
         }
@@ -88,14 +91,13 @@ public class ReloadTracker {
 
 
     @SubscribeEvent
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
+    public static void onServerTick(ServerTickEvent.Pre event) {
         try {
-            if (event.phase == TickEvent.Phase.START) {
-                for (var entity: RELOAD_TRACKER_MAP.keySet()) {
-                    if(entity instanceof Player) continue;
-                    handTick(entity);
-                }
+            for (var entity: RELOAD_TRACKER_MAP.keySet()) {
+                if(entity instanceof Player) continue;
+                handTick(entity);
             }
+
         }
         catch (Exception e){
             Ntgl.LOGGER.error(e.getMessage(), e);
@@ -260,7 +262,7 @@ public class ReloadTracker {
         var ammoHandler = WeaponStateHelper.getCurrentAmmo(data);
 
         if (!ammo.isEmpty()) {
-            var tag = this.weapon.getTag();
+            var tag = NtglComponents.getWeaponTag(weapon);
             var value = ammoHandler.getValue(ammo);
             var currentAmount = WeaponStateHelper.getAmmoCount(data);
 
@@ -279,7 +281,7 @@ public class ReloadTracker {
 
     private boolean isNotReloaded(LivingEntity entity) {
         var data = new WeaponData(weapon, entity);
-        var tag = this.weapon.getTag();
+        var tag = NtglComponents.getWeaponTag(weapon);
         var hasAmmo = InventoryUtil.hasAmmo(entity, weapon);
         var ammoCount = WeaponStateHelper.getAmmoCount(data);
         var ammoCapacity = WeaponModifierHelper.getMaxAmmo(data);
@@ -303,7 +305,7 @@ public class ReloadTracker {
 
         if (!ammo.isEmpty()) {
             var amount = StackUtils.getDurability(ammo);
-            var tag = this.weapon.getTag();
+            var tag = NtglComponents.getWeaponTag(weapon);
             amount = Math.min(WeaponModifierHelper.getMaxAmmo(data), amount);
 
             if (tag != null) {
@@ -311,7 +313,7 @@ public class ReloadTracker {
                 var currentAmmo = tag.getInt(Tags.AMMO_COUNT);
 
                 if(currentAmmo > 0 && ammoHolder.canReturnAmmo()) {
-                    var usedMagazine = new ItemStack(Registries.ITEM.getValue(ammoHolder.getId()));
+                    var usedMagazine = new ItemStack(BuiltInRegistries.ITEM.get(ammoHolder.getId()));
                     StackUtils.setDurability(usedMagazine, currentAmmo);
 
                     if(entity instanceof Player player)

@@ -14,7 +14,7 @@ import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SMessageAim;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageAim;
 import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.CameraType;
@@ -34,11 +34,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.RenderGuiOverlayEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -68,7 +68,8 @@ public class AimingHandler {
 
     public static boolean isAiming(ItemStack gun) {
         var minecraft = Minecraft.getInstance();
-        var progress = get().getAimProgress(minecraft.player, minecraft.getFrameTime());
+        var delta = minecraft.getTimer().getGameTimeDeltaPartialTick(true);
+        var progress = get().getAimProgress(minecraft.player, delta);
         return gun.getItem() instanceof IWeapon
                 && get().isAiming()
                 && progress == 1;
@@ -79,11 +80,8 @@ public class AimingHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase != TickEvent.Phase.START)
-            return;
-
-        var player = event.player;
+    public void onPlayerTick(PlayerTickEvent.Pre event) {
+        var player = event.getEntity();
         var tracker = getAimTracker(player);
 
         if (tracker != null) {
@@ -125,10 +123,7 @@ public class AimingHandler {
     }
 
     @SubscribeEvent
-    public void onClientTick(ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.START)
-            return;
-
+    public void onClientTick(ClientTickEvent.Pre event) {
         if (Minecraft.getInstance().player == null) {
             return;
         }

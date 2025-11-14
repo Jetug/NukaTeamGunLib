@@ -2,11 +2,10 @@ package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.geo.render.ProxyItemRenderer;
 import com.nukateam.ntgl.client.animators.WeaponAnimator;
-import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
-import com.nukateam.ntgl.common.foundation.components.NTGLComponents;
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
@@ -34,17 +33,16 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
 
-import javax.annotation.*;
 import java.util.*;
 import java.util.function.*;
 import net.neoforged.neoforge.common.util.Lazy;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
 import static com.nukateam.ntgl.common.util.util.WeaponStateHelper.AMMO_TAG;
-import static net.minecraft.world.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
-import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
+import static net.minecraft.world.item.component.ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT;
 
 public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable{
     public static final String VARIANT = "variant";
@@ -52,8 +50,8 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     private final WeakHashMap<CompoundTag, WeaponConfig> modifiedGunCache = new WeakHashMap<>();
     private final Lazy<DefaultWeaponRendererGeo> WEAPON_RENDERER = Lazy.of(() -> new DefaultWeaponRendererGeo());
     private WeaponConfig weaponConfig = new WeaponConfig();
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    protected final AnimatableInstanceCache cache = createInstanceCache(this);
     protected IWeaponModifier[] modifiers;
 
     public WeaponItem(Item.Properties properties, IWeaponModifier... modifiers) {
@@ -108,10 +106,10 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     public static String getVariant(ItemStack stack) {
-        CompoundTag gunTag = stack.get(NTGLComponents.GUNCOMPONENT);
+        CompoundTag gunTag = stack.get(NtglComponents.WEAPON_COMPONENT);
         if (!gunTag.contains(VARIANT, Tag.TAG_STRING)) {
             gunTag.putString(VARIANT, "default");
-            stack.set(NTGLComponents.GUNCOMPONENT, gunTag);
+            stack.set(NtglComponents.WEAPON_COMPONENT, gunTag);
         }
 
         return gunTag.getString(VARIANT);
@@ -124,7 +122,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if(entity instanceof LivingEntity livingEntity) {
-            var tag = stack.get(NTGLComponents.GUNCOMPONENT);
+            var tag = NtglComponents.getWeaponTag(stack);
             var data = new WeaponData(stack, livingEntity);
             var ammoItems = WeaponModifierHelper.getAmmoItems(data);
 
@@ -157,7 +155,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         var data = new WeaponData(stack, null);
-        var tagCompound = stack.get(NTGLComponents.GUNCOMPONENT);
+        var tagCompound = NtglComponents.getWeaponTag(stack);
         addAmmoType(tooltip, data);
         addFireRate(tooltip, data);
         addDamage(tooltip, tagCompound, data);
@@ -246,7 +244,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     public WeaponConfig getModifiedConfig(ItemStack stack) {
-        var tagCompound = stack.get(NTGLComponents.GUNCOMPONENT);
+        var tagCompound = NtglComponents.getWeaponTag(stack);
         if (tagCompound != null && tagCompound.contains("Gun", Tag.TAG_COMPOUND)) {
             return this.modifiedGunCache.computeIfAbsent(tagCompound, item ->
             {
@@ -332,5 +330,13 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         return ProjectileManager.getInstance()
                 .getFactory(projectile)
                 .create(world, entity, this, timeLeft);
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 }

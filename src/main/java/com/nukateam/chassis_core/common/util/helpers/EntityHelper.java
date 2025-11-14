@@ -1,5 +1,6 @@
 package com.nukateam.chassis_core.common.util.helpers;
 
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -37,18 +38,19 @@ public class EntityHelper {
 
     @Nullable
     public static Entity entityFromItem(ItemStack stack, Level world) {
-        if (stack.getTag() != null && !stack.getTag().getString(CHASSIS_ENTITY_ID).isEmpty()) {
-            var id = stack.getTag().getString(CHASSIS_ENTITY_ID);
+        var tag = NtglComponents.getWeaponTag(stack);
+        if (tag != null && !tag.getString(CHASSIS_ENTITY_ID).isEmpty()) {
+            var id = tag.getString(CHASSIS_ENTITY_ID);
             var type = EntityType.byString(id).orElse(null);
             if (type != null) {
                 Entity entity = type.create(world);
 
                 if (entity == null) return null;
 
-                entity.load(stack.getTag().getCompound(ENTITY_TAG));
+                entity.load(tag.getCompound(ENTITY_TAG));
 
-                if (stack.getTag().contains(ENTITY_UUID))
-                    entity.setUUID(stack.getTag().getUUID(ENTITY_UUID));
+                if (tag.contains(ENTITY_UUID))
+                    entity.setUUID(tag.getUUID(ENTITY_UUID));
                 return entity;
 
             }
@@ -58,10 +60,11 @@ public class EntityHelper {
 
     @SuppressWarnings("DataFlowIssue")
     public static void clearItemTags(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
+        var tag = NtglComponents.getWeaponTag(stack);
         tag.remove(CHASSIS_ENTITY_ID);
         tag.remove(ENTITY_TAG);
         tag.remove(ENTITY_UUID);
-        stack.setTag(tag);
+        NtglComponents.setWeaponTag(stack, tag);
+
     }
 }

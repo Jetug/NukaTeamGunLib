@@ -7,16 +7,14 @@ import com.nukateam.chassis_core.common.config.EquipmentConfig;
 import com.nukateam.chassis_core.common.data.holders.*;
 import com.nukateam.chassis_core.common.events.ContainerChangedEvent;
 import com.nukateam.chassis_core.common.foundation.container.menu.DynamicChassisMenu;
-import com.nukateam.chassis_core.common.foundation.entity.EmptyLivingEntity;
 import com.nukateam.chassis_core.common.foundation.item.ChassisArmor;
 import com.nukateam.chassis_core.common.foundation.item.ChassisEquipment;
-import com.nukateam.chassis_core.common.foundation.item.ItemStackUtils;
 import com.nukateam.chassis_core.common.foundation.item.StackUtils;
-import com.nukateam.chassis_core.common.network.PacketHandler;
-import com.nukateam.chassis_core.common.network.managers.ConfigSupplier;
-import com.nukateam.chassis_core.common.network.managers.Configs;
-import com.nukateam.chassis_core.common.network.packet.S2CInventoryPacket;
+import com.nukateam.ntgl.modules.datapack.Configs;
+import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.chassis.S2CInventoryPacket;
 import com.nukateam.chassis_core.common.util.helpers.timer.TickTimer;
+import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -43,7 +41,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -119,7 +116,7 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
 
     //GETTERS
     public ChassisConfig getConfig(){
-        return Configs.CHASSIS_CONFIGS.get(this.getType()).getConfig();
+        return Configs.CHASSIS_CONFIGS.get(this.getType()).config();
     }
 
     public float getTotalDefense() {
@@ -155,7 +152,7 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
         var itemStack = getEquipment(chassisPart);
 
         if (itemStack.getItem() instanceof ChassisArmor) {
-            ItemStackUtils.damageItem(itemStack, (int)damage);
+            StackUtils.damageItem(itemStack, (int)damage);
             setEquipment(chassisPart, itemStack);
         }
     }

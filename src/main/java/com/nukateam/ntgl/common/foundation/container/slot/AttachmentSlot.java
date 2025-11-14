@@ -101,7 +101,7 @@ public class AttachmentSlot extends Slot {
             WeaponStateHelper.setAmmo(stack, maxAmmo);
             var ammoHolder = WeaponStateHelper.getCurrentAmmo(gunData);
             if(ammoHolder.canReturnAmmo()) {
-                var ammoItem = Registries.ITEM.getValue(ammoHolder.getId());
+                var ammoItem = BuiltInRegistries.ITEM.get(ammoHolder.getId());
                 var dropStack = new ItemStack(ammoItem, diff);
 
                 if (entity instanceof Player player && !player.addItem(dropStack)) {

@@ -1,21 +1,18 @@
 package com.nukateam.ntgl.modules.datapack.managers;
 
-import com.mrcrayfish.framework.network.Network;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.modules.constants.Paths;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
-import com.nukateam.ntgl.modules.datapack.DataUtils;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateWeapons;
+import com.nukateam.ntgl.modules.datapack.ConfigUtils;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateWeapons;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.framework.api.data.login.ILoginData;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -24,7 +21,6 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.eventbus.api.SubscribeEvent;
 import net.neoforged.neoforge.fml.common.Mod;
 import org.apache.commons.lang3.Validate;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -50,7 +46,7 @@ public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWe
 
     @Override
     protected Map<IWeapon, WeaponConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return DataUtils.getConfigMap(manager, (v) -> v instanceof IWeapon, WeaponConfig.class, Paths.WEAPONS);
+        return ConfigUtils.getConfigMap(manager, BuiltInRegistries.ITEM, (v) -> v instanceof IWeapon, WeaponConfig.class, Paths.WEAPONS);
     }
 
     @Override

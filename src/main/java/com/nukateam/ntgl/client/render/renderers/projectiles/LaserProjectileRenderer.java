@@ -17,7 +17,7 @@ import org.joml.Vector3f;
 
 public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
-    public static ResourceLocation LASER_TEXTURE = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/laser.png");
+    public static ResourceLocation LASER_TEXTURE = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/fx/laser.png");
     private static final float LASER_RADIUS = 0.05F / 4;
     private static final float LASER_GLOW_RADIUS = 0.055F / 4;
 

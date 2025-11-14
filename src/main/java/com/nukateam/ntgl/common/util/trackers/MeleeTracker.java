@@ -25,13 +25,16 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.fml.LogicalSide;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.jetbrains.annotations.NotNull;
+import org.openjdk.nashorn.internal.runtime.regexp.joni.constants.TargetInfo;
 
 import java.util.*;
 
@@ -40,10 +43,10 @@ public class MeleeTracker {
     private static final Map<Pair<InteractionHand, LivingEntity>, Tracker> TRACKER_MAP = new HashMap<>();
 
     @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+    public static void onPlayerTick(PlayerTickEvent.Pre event) {
         try {
-            if (event.phase == TickEvent.Phase.START && !event.player.level().isClientSide) {
-                var player = event.player;
+            if (!event.getEntity().level().isClientSide) {
+                var player = event.getEntity();
                 handTick(player, InteractionHand.MAIN_HAND);
                 handTick(player, InteractionHand.OFF_HAND);
             }
@@ -55,16 +58,14 @@ public class MeleeTracker {
 
 
     @SubscribeEvent
-    public static void onServerTick(TickEvent.ServerTickEvent event) {
+    public static void onServerTick(ServerTickEvent.Pre event) {
         try {
-            if (event.phase == TickEvent.Phase.START && event.side == LogicalSide.SERVER) {
-                for (var key: TRACKER_MAP.keySet()) {
-                    var entity = key.getSecond();
-                    if(entity instanceof Player) continue;
+            for (var key : TRACKER_MAP.keySet()) {
+                var entity = key.getSecond();
+                if (entity instanceof Player) continue;
 
-                    handTick(entity, InteractionHand.MAIN_HAND);
-                    handTick(entity, InteractionHand.OFF_HAND);
-                }
+                handTick(entity, InteractionHand.MAIN_HAND);
+                handTick(entity, InteractionHand.OFF_HAND);
             }
         }
         catch (Exception e){
@@ -108,18 +109,6 @@ public class MeleeTracker {
         TRACKER_MAP.remove(new Pair<>(hand, entity));
         dataKey.setValue(entity, false);
     }
-
-//    private static void handTick(Player entity, InteractionHand arm) {
-//        var key = new Pair<>(arm, entity);
-//        var tracker = TRACKER_MAP.get(key);
-//        if(tracker != null){
-//            if(tracker.equipTick > 0 && tracker.isSameItem()){
-//                tracker.equipTick--;
-//            }
-//            else stopEquip(entity, arm);
-//        }
-//        else stopEquip(entity, arm);
-//    }
 
     private static void handTick(LivingEntity entity, InteractionHand hand) {
         var key = new Pair<>(hand, entity);

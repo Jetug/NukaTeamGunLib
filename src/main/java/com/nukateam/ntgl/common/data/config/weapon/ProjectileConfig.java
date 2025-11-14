@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.fml.DistExecutor;
+import net.minecraft.core.HolderLookup;
 import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 
@@ -69,7 +69,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         tag.putFloat(SPREAD, this.spread);
         tag.putInt("pierceLevel", this.pierceLevel);
         tag.putInt("burnSeconds", this.burnSeconds);
-        tag.put("explosion", this.explosion.serializeNBT());
+        tag.put("explosion", this.explosion.serializeNBT(provider));
         if(hitSound != null)
             tag.putString("hitSound", this.hitSound.toString());
         return tag;
@@ -307,7 +307,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
 
     public static ProjectileConfig create(CompoundTag tag) {
         var ammo = new ProjectileConfig();
-        ammo.deserializeNBT(tag);
+        ammo.deserializeNBT(null,tag);
         return ammo;
     }
 

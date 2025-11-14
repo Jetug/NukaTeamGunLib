@@ -8,7 +8,7 @@ import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.network.enums.KeyAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SMessageGrenade;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageGrenade;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -16,8 +16,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -32,9 +32,9 @@ public class ClientThrowHandler {
     private static final Map<InteractionHand, Tracker> TRACKER_MAP = new HashMap<>();
 
     @SubscribeEvent
-    public static void onPostClientTick(ClientTickEvent event){
+    public static void onPostClientTick(ClientTickEvent.Post event){
         var minecraft = Minecraft.getInstance();
-        if(event.phase == TickEvent.Phase.END && minecraft.player != null){
+        if(minecraft.player != null){
             if(!minecraft.options.keyAttack.isDown()) {
                 removeTracker(InteractionHand.MAIN_HAND, WeaponMode.PRIMARY);
                 removeTracker(InteractionHand.OFF_HAND, WeaponMode.PRIMARY);
