@@ -27,7 +27,7 @@ import static com.nukateam.ntgl.common.data.json.JsonDeserializers.getDamageType
 import static com.nukateam.ntgl.common.data.config.weapon.General.PROJECTILE_AMOUNT;
 import static com.nukateam.ntgl.common.data.config.weapon.General.SPREAD;
 
-public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class ProjectileConfig implements INBTSerializable<CompoundTag> {
     private float damage = 1;
     private float size;
     @Optional private float speed = 20;
@@ -309,28 +309,6 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         var ammo = new ProjectileConfig();
         ammo.deserializeNBT(null,tag);
         return ammo;
-    }
-
-    @Override
-    public Component getEditorLabel() {
-        return Component.literal("Projectile");
-    }
-
-    @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-//            ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
-//            ItemStack scope = Projectile.getScopeStack(heldItem);
-//            if (scope.getItem() instanceof ScopeItem scopeItem) {
-//                widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(Component.literal("Edit"), btn -> {
-//                    Minecraft.getInstance().setScreen(createEditorScreen(Debug.getScope(scopeItem)));
-//                })));
-//            }
-
-//            widgets.add(Pair.of(this.modules.getEditorLabel(), () -> new DebugButton(Component.literal(">"), btn -> {
-//                Minecraft.getInstance().setScreen(createEditorScreen(this.modules));
-//            })));
-        });
     }
 
     public static class Builder {

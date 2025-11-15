@@ -17,7 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class Fuel implements INBTSerializable<CompoundTag> {
     @Optional
     private int max = 100;
     private boolean mandatory = true;
@@ -90,16 +90,6 @@ public class Fuel implements INBTSerializable<CompoundTag>, IEditorMenu {
         var ammo = new Fuel();
         ammo.deserializeNBT(null,tag);
         return ammo;
-    }
-
-    @Override
-    public Component getEditorLabel() {
-        return Component.literal("Fuel");
-    }
-
-    @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {});
     }
 
     public static class Builder {

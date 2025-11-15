@@ -39,8 +39,8 @@ public abstract class GameRendererMixin implements AutoCloseable {
                     Mth.sin(f1 * (float) Math.PI) * bob * 0.5F,
                     -Math.abs(Mth.cos(f1 * (float) Math.PI) * bob),
                     0.0F);
-            pPoseStack.mulPose(Axis.ZP.rotationDegrees(Mth.sin(f1 * (float) Math.PI) * bob * 3.0F));
-            pPoseStack.mulPose(Axis.XP.rotationDegrees(Math.abs(Mth.cos(f1 * (float) Math.PI - 0.2F) * bob) * 5.0F));
+            pposeStack.mulPose(Axis.ZP.rotationDegrees(Mth.sin(f1 * (float) Math.PI) * bob * 3.0F));
+            pposeStack.mulPose(Axis.XP.rotationDegrees(Math.abs(Mth.cos(f1 * (float) Math.PI - 0.2F) * bob) * 5.0F));
             ci.cancel();
         }
     }

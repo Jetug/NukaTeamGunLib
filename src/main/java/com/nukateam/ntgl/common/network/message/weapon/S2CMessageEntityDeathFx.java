@@ -23,14 +23,14 @@ public class S2CMessageEntityDeathFx  {
 
     public static void encode(S2CMessageEntityDeathFx message, FriendlyByteBuf buffer) {
         buffer.writeInt(message.entityId);
-        buffer.writeNbt(message.data.serializeNBT());
+        buffer.writeNbt(message.data.serializeNBT(null));
     }
 
     public static S2CMessageEntityDeathFx decode(FriendlyByteBuf buffer) {
         var entityId = buffer.readInt();
         var buff = buffer.readNbt();
         var data = new GoreData();
-        data.deserializeNBT(buff);
+        data.deserializeNBT(null, buff);
         return new S2CMessageEntityDeathFx(entityId, data);
     }
 

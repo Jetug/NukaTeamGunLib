@@ -15,7 +15,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class AmmoData implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class AmmoData implements INBTSerializable<CompoundTag> {
     @Optional private AmmoConfig ammo = new AmmoConfig();
     @Optional private ProjectileConfig projectile = new ProjectileConfig();
 
@@ -64,16 +64,6 @@ public class AmmoData implements INBTSerializable<CompoundTag>, IEditorMenu {
         var ammo = new AmmoData();
         ammo.deserializeNBT(null,tag);
         return ammo;
-    }
-
-    @Override
-    public Component getEditorLabel() {
-        return Component.literal("Fuel");
-    }
-
-    @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {});
     }
 
     public static class Builder {

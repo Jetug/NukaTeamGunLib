@@ -3,6 +3,7 @@ package com.nukateam.ntgl.common.foundation.entity.projectile;
 import com.nukateam.ntgl.client.model.gibs.ModelGibs;
 import com.nukateam.ntgl.common.data.enums.DeathType;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -58,7 +59,7 @@ public class GoreData implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains("texture"))
-            texture = new ResourceLocation(tag.getString("texture"));
+            texture = ResourceLocation.tryParse(tag.getString("texture"));
         if (tag.contains("gravity"))
             gravity = tag.getFloat("gravity");
         if (tag.contains("bloodColorR"))

@@ -100,7 +100,7 @@ public class ClientReloadHandler {
 
                     if (WeaponStateHelper.getAmmoCount(data) >= WeaponModifierHelper.getMaxAmmo(data))
                         return;
-                    if (NeoForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack, hand)))
+                    if (NeoForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack, hand)).isCanceled())
                         return;
 
                     dataKey.setValue(player, true);

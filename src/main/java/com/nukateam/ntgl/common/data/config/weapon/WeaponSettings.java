@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class WeaponSettings implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class WeaponSettings implements INBTSerializable<CompoundTag> {
     public static final String GENERAL = "General";
     public static final String MELEE = "Melee";
     public static final String THROWABLE = "Throwable";

@@ -40,7 +40,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
         var attachmentItems = new ArrayList<ItemStack>();
 
         for (var attachmentType : sortedAttachments) {
-            attachmentItems.add(WeaponStateHelper.getAttachmentItem(attachmentType, stack));
+            attachmentItems.add(WeaponStateHelper.getAttachmentItem(attachmentType, gunData));
         }
         for (int i = 0; i < attachmentItems.size(); i++) {
             this.weaponInventory.setItem(i, attachmentItems.get(i));

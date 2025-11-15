@@ -89,7 +89,7 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
         clientRegisteredAttachments.clear();
         if (registered != null) {
             for (Map.Entry<ResourceLocation, AttachmentConfig> entry : registered.entrySet()) {
-                Item item = ITEMS.getValue(entry.getKey());
+                Item item = BuiltInRegistries.ITEM.get(entry.getKey());
                 if (!(item instanceof IAttachment<?>)) {
                     return false;
                 }

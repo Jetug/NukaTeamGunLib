@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.render.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.DeltaTracker;
@@ -28,11 +29,12 @@ public class ScopeHud{
         var frameTime = minecraft.getTimer().getGameTimeDeltaPartialTick(true);
 
         scopeScale = Mth.lerp(0.5F * frameTime, scopeScale, 1.125F);
+        var data = new WeaponData(gun, player);
 
-        if (AimingHandler.isScoping(gun)) {
-            var attachment = WeaponStateHelper.getAttachmentItem(player.level().registryAccess(), AttachmentType.SCOPE, gun);
+        if (AimingHandler.isScoping(data)) {
+            var attachment = WeaponStateHelper.getAttachmentItem(AttachmentType.SCOPE, data);
             if (!attachment.isEmpty()) {
-                var scope = WeaponStateHelper.getScopeItem(gun);
+                var scope = WeaponStateHelper.getScopeItem(data);
                 var overlay = scope.getProperties().getOverlay();
                 setupOverlayRenderState(true);
                 renderScope(graphics, width, height, overlay);

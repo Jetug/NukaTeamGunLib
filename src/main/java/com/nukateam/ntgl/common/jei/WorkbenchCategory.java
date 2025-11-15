@@ -114,9 +114,9 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
             stack.mulPoseMatrix(graphics.pose().last().pose());
             stack.translate(81, 40, 0);
             stack.scale(40F, 40F, 40F);
-            stack.mulPose(Axis.XP.rotationDegrees(-5F));
+            stack.rotate(Axis.XP.rotationDegrees(-5F));
             float partialTicks = Minecraft.getInstance().getFrameTime();
-            stack.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
+            stack.rotate(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
             stack.scale(-1, -1, -1);
             RenderSystem.applyModelViewMatrix();
 

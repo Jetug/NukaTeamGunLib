@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.data;
 
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -31,4 +32,9 @@ public class WeaponData{
     public WeaponData clone(){
         return new WeaponData(weapon, wielder).setWeaponMode(weaponMode).setAttachment(attachment);
     }
+
+    public RegistryAccess registryAccess() {
+        return wielder.level().registryAccess();
+    }
+
 }

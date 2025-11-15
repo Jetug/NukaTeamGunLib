@@ -33,9 +33,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
-import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -75,8 +73,8 @@ public class AimingHandler {
                 && progress == 1;
     }
 
-    public static boolean isScoping(ItemStack gun) {
-        return AimingHandler.isAiming(gun) && WeaponStateHelper.hasScopeOverlay(gun);
+    public static boolean isScoping(WeaponData data) {
+        return AimingHandler.isAiming(data.weapon) && WeaponStateHelper.hasScopeOverlay(data);
     }
 
     @SubscribeEvent
@@ -189,8 +187,8 @@ public class AimingHandler {
      * Prevents the crosshair from rendering when aiming down sight
      */
     @SubscribeEvent(receiveCanceled = true)
-    public void onRenderOverlay(RenderGuiOverlayEvent event) {
-        this.normalisedAdsProgress = this.localTracker.getNormalProgress(event.getPartialTick());
+    public void onRenderOverlay(RenderGuiLayerEvent  event) {
+        this.normalisedAdsProgress = this.localTracker.getNormalProgress(event.getPartialTick().getGameTimeDeltaPartialTick(true));
     }
 
     public boolean isZooming() {

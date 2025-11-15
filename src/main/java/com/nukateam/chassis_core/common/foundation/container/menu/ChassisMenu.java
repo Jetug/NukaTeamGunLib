@@ -5,6 +5,7 @@ import com.nukateam.chassis_core.common.data.holders.ChassisPart;
 import com.nukateam.chassis_core.common.foundation.container.slot.EquipmentSlot;
 import com.nukateam.chassis_core.common.foundation.entity.Chassis;
 import com.nukateam.chassis_core.common.util.Pos2I;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
@@ -119,7 +120,7 @@ public abstract class ChassisMenu extends AbstractContainerMenu {
             if(id != null)
                 this.addSlot(new EquipmentSlot(chassisPart, container, getId(chassisPart), pos.x, pos.y));
         } catch (Exception e) {
-            ChassisCore.LOGGER.error(e.getMessage(), e);
+            Ntgl.LOGGER.error(e.getMessage(), e);
         }
     }
 

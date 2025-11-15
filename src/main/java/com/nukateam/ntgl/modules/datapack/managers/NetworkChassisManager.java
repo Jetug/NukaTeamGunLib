@@ -63,7 +63,7 @@ public class NetworkChassisManager extends SimplePreparableReloadListener<Map<En
         buffer.writeVarInt(this.registeredConfig.size());
         this.registeredConfig.forEach((id, config) -> {
             buffer.writeResourceLocation(id);
-            buffer.writeNbt(config.serializeNBT());
+            buffer.writeNbt(config.serializeNBT(null));
         });
     }
 

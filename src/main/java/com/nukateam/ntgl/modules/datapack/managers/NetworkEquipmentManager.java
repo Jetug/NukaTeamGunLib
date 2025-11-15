@@ -58,7 +58,7 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
         buffer.writeVarInt(this.registeredConfig.size());
         this.registeredConfig.forEach((id, config) -> {
             buffer.writeResourceLocation(id);
-            buffer.writeNbt(config.serializeNBT());
+            buffer.writeNbt(config.serializeNBT(null));
         });
     }
 

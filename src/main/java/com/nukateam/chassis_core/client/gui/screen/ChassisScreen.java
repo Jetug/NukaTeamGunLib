@@ -96,7 +96,7 @@ public class ChassisScreen<T extends AbstractContainerMenu> extends GuiBase<T> {
         this.mousePosX = mouseX;
         this.mousePosY = mouseY;
 
-        this.renderBackground(graphics);
+        this.renderBackground(graphics, mouseX, mouseY, partialTicks);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY);
     }
@@ -130,11 +130,13 @@ public class ChassisScreen<T extends AbstractContainerMenu> extends GuiBase<T> {
     protected void renderEntity(GuiGraphics graphics, WearableChassis powerArmor) {
         var scale = 1F / Math.max(MIN_SCALE, powerArmor.getScale());
 
-        InventoryScreen.renderEntityInInventoryFollowsMouse(
-                graphics,
+        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics,
                 leftPos + ENTITY_POS_X,
                 topPos + ENTITY_POS_Y,
-                (int) (scale * 23F),
+                leftPos + ENTITY_POS_X + 50,
+                topPos + ENTITY_POS_Y + 50,
+                (int) (scale * 23),
+                0.0625F,
                 leftPos + 51 - mousePosX,
                 topPos + 75 - 50 - mousePosY,
                 powerArmor);

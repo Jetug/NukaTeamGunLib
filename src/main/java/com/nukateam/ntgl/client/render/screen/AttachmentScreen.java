@@ -27,8 +27,8 @@ import net.minecraft.resources.*;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.*;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.*;
-import net.neoforged.neoforge.fml.ModList;
 import org.lwjgl.glfw.GLFW;
 import java.util.*;
 
@@ -333,17 +333,8 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         return this.minecraft.player.getMainHandItem();
     }
 
-    private void renderHelp(GuiGraphics graphics) {
-        if (this.showHelp) {
-            graphics.pose().pushPose();
-            graphics.pose().scale(0.5F, 0.5F, 0.5F);
-            graphics.drawString(minecraft.font, I18n.get(WINDOW_HELP), 56, 38, 0xFFFFFF, false);
-            graphics.pose().popPose();
-        }
-    }
-
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scroll, double scrollY) {
         int startX = (this.width - this.imageWidth) / 2;
         int startY = (this.height - this.imageHeight) / 2;
         if (isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70)) {

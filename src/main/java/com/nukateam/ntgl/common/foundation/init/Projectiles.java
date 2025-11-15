@@ -30,27 +30,6 @@ public class Projectiles {
 
 //    public static final DeferredHolder<EntityType<FlyingGib>> FLYING_GIBS = register("flying_gibs", FlyingGib::new);
 
-    private static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> registerEntity(String entityName, EntityType.Builder<T> builder) {
-        return REGISTER.register(entityName, () -> builder.build(ResourceLocation.tryBuild(Ntgl.MOD_ID, entityName).toString()));
-    }
-
-    private static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function) {
-        return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
-                .sized(0.25F, 0.25F)
-                .setTrackingRange(100)
-                .setUpdateInterval(1)
-                .noSummon()
-                .fireImmune()
-                .setShouldReceiveVelocityUpdates(true).build(id));
-    }
-
-
-    private static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> register(String id, BiFunction<EntityType<T>, Level, T> function) {
-        return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
-                .sized(1.25F, 1.25F)
-                .build(id));
-    }
-
     /**
      * Entity registration that prevents the entity from being sent and tracked by clients. Projectiles
      * are rendered separately from Minecraft's entity rendering system and their logic is handled
@@ -70,11 +49,11 @@ public class Projectiles {
                 .noSummon()
                 .fireImmune()
                 .setShouldReceiveVelocityUpdates(false)
-                .setCustomClientFactory((spawnEntity, world) -> null)
+//                .setCustomClientFactory((spawnEntity, world) -> null)
                 .build(id));
     }
 
-    private static <T extends Entity> DeferredHolder<EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function) {
+    private static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> registerBasic(String id, BiFunction<EntityType<T>, Level, T> function) {
         return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
                 .sized(0.25F, 0.25F)
                 .setTrackingRange(100)

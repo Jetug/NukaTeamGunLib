@@ -8,6 +8,7 @@ import com.nukateam.chassis_core.client.render.renderers.CustomHandRenderer;
 import com.nukateam.chassis_core.common.data.holders.ChassisPart;
 import com.nukateam.chassis_core.common.foundation.item.ChassisEquipment;
 import com.nukateam.chassis_core.common.util.helpers.Speedometer;
+import net.neoforged.neoforge.fluids.FluidType;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import net.minecraft.resources.ResourceLocation;
@@ -31,6 +32,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.Map;
 
 import static com.nukateam.chassis_core.common.data.constants.Resources.resourceLocation;
@@ -75,7 +77,7 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
     }
 
     @Override
-    public @NotNull EntityDimensions getDimensions(@NotNull Pose pose) {
+    protected EntityDimensions getDefaultDimensions(Pose pose) {
         return POSES.getOrDefault(pose, STANDING_DIMENSIONS);
     }
 
@@ -92,12 +94,12 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         return true;
     }
 
-    @Override
-    public float getStepHeight() {
-        if(hasPlayerPassenger())
-            return STEP_HEIGHT;
-        return super.getStepHeight();
-    }
+//    @Override
+//    public float getStepHeight() {
+//        if(hasPlayerPassenger())
+//            return STEP_HEIGHT;
+//        return super.getStepHeight();
+//    }
 
     @Override
     public boolean hurt(DamageSource damageSource, float damage) {
@@ -110,7 +112,8 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
     }
 
     public float getDamageAfterAbsorb(DamageSource damageSource, float damage) {
-        float finalDamage = getDamageAfterAbsorb(damage);
+        updateTotalArmor();
+        float finalDamage = CombatRules.getDamageAfterAbsorb(this, damage, damageSource, totalDefense, totalToughness);
         damageArmor(damageSource, damage);
 
         var passenger = getControllingPassenger();
@@ -167,7 +170,7 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         if (passenger == null) return;
 
         var yOffset = 1.0f;
-        var posY = getY() + getPassengersRidingOffset() + entity.getMyRidingOffset() - yOffset;
+        var posY = getY() + getPassengerRidingPosition(entity).y - yOffset;
         entity.setPos(getX(), posY, getZ());
 
         if (entity instanceof LivingEntity livingEntity)
@@ -311,8 +314,8 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
     public void checkDespawn() {}
 
     @Override
-    public boolean canBreatheUnderwater() {
-        return true;
+    public boolean canDrownInFluidType(FluidType type) {
+        return false;
     }
 
     @Override
@@ -482,11 +485,6 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         return getControllingPassenger() instanceof Player player && player.isCreative() && player.getAbilities().flying;
     }
 
-    private float getDamageAfterAbsorb(float damage) {
-        updateTotalArmor();
-        return CombatRules.getDamageAfterAbsorb(damage, totalDefense, totalToughness);
-    }
-
     private boolean isJumping() {
         return this.isJumping;
     }
@@ -513,6 +511,16 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         }
     }
 
+    private boolean isJumping(LivingEntity player) {
+        try {
+            var jumpingField = LivingEntity.class.getDeclaredField("jumping");
+            jumpingField.setAccessible(true);
+            return jumpingField.getBoolean(player);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private void creativeFlyTravel() {
         var player = getPlayerPassenger();
         this.setNoGravity(true);
@@ -523,7 +531,7 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         var strafe = player.xxa;
         var vertical = 0.0f;
 
-        if (player.jumping) vertical += 1.0f;
+        if (isJumping(player)) vertical += 1.0f;
         if (player.isShiftKeyDown()) vertical -= 1.0f;
 
         var look = player.getLookAngle();

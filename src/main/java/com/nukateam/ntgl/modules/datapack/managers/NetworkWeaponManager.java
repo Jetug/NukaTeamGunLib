@@ -9,7 +9,6 @@ import com.nukateam.ntgl.modules.datapack.ConfigUtils;
 import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateWeapons;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.framework.api.data.login.ILoginData;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -18,16 +17,11 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import net.neoforged.neoforge.eventbus.api.SubscribeEvent;
-import net.neoforged.neoforge.fml.common.Mod;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static net.neoforged.neoforge.registries.ForgeRegistries.*;
-
-@Mod.EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWeapon, WeaponConfig>> {
     private static final List<IWeapon> clientRegisteredWeapons = new ArrayList<>();
     private static NetworkWeaponManager instance;
@@ -73,7 +67,7 @@ public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWe
         buffer.writeVarInt(this.registeredWeapons.size());
         this.registeredWeapons.forEach((id, gun) -> {
             buffer.writeResourceLocation(id);
-            buffer.writeNbt(gun.serializeNBT());
+            buffer.writeNbt(gun.serializeNBT(null));
         });
     }
 

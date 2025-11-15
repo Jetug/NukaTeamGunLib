@@ -36,7 +36,7 @@ public class ChassisConfig implements INBTSerializable<CompoundTag>{
 
     public static ChassisConfig create(CompoundTag tag) {
         var config = new ChassisConfig();
-        config.deserializeNBT(tag);
+        config.deserializeNBT(null, tag);
         return config;
     }
 

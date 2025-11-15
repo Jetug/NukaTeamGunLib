@@ -11,6 +11,7 @@ import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -113,7 +114,7 @@ public class WeaponModifierHelper {
         if (data != null && config != null && data.weapon.getItem() instanceof IWeapon) {
             if (WeaponStateHelper.getProjectileConfig(data).isMagazineMode()) {
                 var id = WeaponStateHelper.getCurrentAmmo(data);
-                var item = ITEMS.getValue(id.getId());
+                var item = BuiltInRegistries.ITEM.get(id.getId());
                 finalMaxAmmo.set(item.getMaxDamage(new ItemStack(item)));
             }
         }
@@ -515,7 +516,7 @@ public class WeaponModifierHelper {
         if(gun.hasAmmo(ammoId)) {
             config = gun.getProjectileConfig(ammoId);
         }
-        else if(item.canReturnAmmo() && ITEMS.getValue(item.getId()) instanceof IAmmo ammoItem) {
+        else if(item.canReturnAmmo() && BuiltInRegistries.ITEM.get(item.getId()) instanceof IAmmo ammoItem) {
             config = ammoItem.getAmmo();
         }
         if(config == null) {
@@ -566,7 +567,7 @@ public class WeaponModifierHelper {
         var attachments = config.getModules().getAttachments();
 
         for (var attachmentType : attachments.keySet()) {
-            var attachmentItem = WeaponStateHelper.getAttachmentItem(attachmentType, weapon);
+            var attachmentItem = WeaponStateHelper.getAttachmentItem(attachmentType, data);
             data.attachment = attachmentItem;
             var modifiers = getAttachmentModifiers(attachmentItem);
 

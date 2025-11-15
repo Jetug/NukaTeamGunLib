@@ -24,7 +24,7 @@ public class ArmorStationScreen<T extends AbstractContainerMenu> extends GuiBase
 
     @Override
     public void render(GuiGraphics pGuiGraphics, int mouseX, int mouseY, float delta) {
-        renderBackground(pGuiGraphics);
+        renderBackground(pGuiGraphics, mouseX,  mouseY, delta);
         super.render(pGuiGraphics, mouseX, mouseY, delta);
         renderTooltip(pGuiGraphics, mouseX, mouseY);
     }

@@ -20,10 +20,6 @@ import javax.annotation.Nullable;
 import static com.nukateam.chassis_core.common.network.PacketSender.doServerAction;
 
 public class PlayerUtils {
-    public static void addEffect(Player player, MobEffect effect, int amplifier) {
-        player.addEffect(new MobEffectInstance(effect, WearableChassis.EFFECT_DURATION, amplifier, false, false));
-    }
-
     @OnlyIn(Dist.CLIENT)
     public static LocalPlayer getLocalPlayer() {
         return Minecraft.getInstance().player;

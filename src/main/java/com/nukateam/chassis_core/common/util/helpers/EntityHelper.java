@@ -1,6 +1,7 @@
 package com.nukateam.chassis_core.common.util.helpers;
 
 import com.nukateam.ntgl.common.foundation.components.NtglComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -30,8 +31,8 @@ public class EntityHelper {
 
         target.save(entityTag);
         newTag.put(ENTITY_TAG, entityTag);
-        newTag.putString(CHASSIS_ENTITY_ID, Registries.ENTITY_TYPE.getKey(target.getType()).toString());
-        stack.setTag(newTag);
+        newTag.putString(CHASSIS_ENTITY_ID, BuiltInRegistries.ENTITY_TYPE.getKey(target.getType()).toString());
+        NtglComponents.setWeaponTag(stack, newTag);
         target.remove(Entity.RemovalReason.DISCARDED);
         return stack;
     }

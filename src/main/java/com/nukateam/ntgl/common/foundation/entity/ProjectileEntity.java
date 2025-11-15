@@ -28,6 +28,7 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -36,6 +37,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
@@ -60,7 +63,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData {
+public class ProjectileEntity extends Entity{
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
 
@@ -96,7 +99,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.weapon = weaponStack;
         this.general = WeaponModifierHelper.getGeneral(data);
         this.projectile = WeaponStateHelper.getProjectileConfig(data);
-        this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
+        this.entitySize = EntityDimensions.fixed(this.projectile.getSize(), this.projectile.getSize());
         setBoundingBox(new AABB(
                 projectile.getSize(), projectile.getSize(), projectile.getSize(),
                 -projectile.getSize(), -projectile.getSize(), -projectile.getSize()));
@@ -120,56 +123,41 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        compound.put("Weapon", weapon.save(new CompoundTag()));
+        var provider = getProvider();
+        compound.put("Weapon", weapon.save(provider, new CompoundTag()));
         compound.putString("WeaponAction", weaponAction.toString());
-        compound.put("Ammo", ammo.save(new CompoundTag()));
-        compound.put("Projectile", this.projectile.serializeNBT());
-        compound.put("General", this.general.serializeNBT());
+        compound.put("Ammo", ammo.save(provider, new CompoundTag()));
+        compound.put("Projectile", this.projectile.serializeNBT(provider));
+        compound.put("General", this.general.serializeNBT(provider));
         compound.putDouble("ModifiedGravity", this.modifiedGravity);
         compound.putInt("MaxLife", this.life);
         compound.putBoolean("IsRightHand", this.isRightHand);
+        compound.putInt("ShooterId", this.shooterId);
+    }
+
+    private @NotNull RegistryAccess getProvider() {
+        return level().registryAccess();
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        this.weapon = ItemStack.of(compound.getCompound("Weapon"));
+        var provider = getProvider();
+        this.weapon = ItemStack.parseOptional(provider, compound.getCompound("Weapon"));
         this.weaponAction = WeaponMode.getType(compound.getString("WeaponAction"));
-        this.ammo = ItemStack.of(compound.getCompound("Ammo"));
+        this.ammo = ItemStack.parseOptional(provider, compound.getCompound("Ammo"));
         this.projectile = ProjectileConfig.create(compound.getCompound("Projectile"));
         this.general = General.create(compound.getCompound("General"));
         this.modifiedGravity = compound.getDouble("ModifiedGravity");
         this.life = compound.getInt("MaxLife");
         this.isRightHand = compound.getBoolean("IsRightHand");
-    }
+        this.shooterId = compound.getInt("ShooterId");
 
-    @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-        buffer.writeNbt(this.projectile.serializeNBT());
-        buffer.writeNbt(this.general.serializeNBT());
-        buffer.writeInt(this.shooterId);
-        BufferUtil.writeItemStackToBufIgnoreTag(buffer, this.ammo);
-        buffer.writeDouble(this.modifiedGravity);
-        buffer.writeVarInt(this.life);
-        buffer.writeBoolean(this.isRightHand);
-        buffer.writeUtf(this.weaponAction.toString());
-    }
-
-    @Override
-    public void readSpawnData(FriendlyByteBuf buffer) {
-        this.projectile = ProjectileConfig.create(buffer.readNbt());
-        this.general = General.create(buffer.readNbt());
-        this.shooterId = buffer.readInt();
-        this.ammo = BufferUtil.readItemStackFromBufIgnoreTag(buffer);
-        this.modifiedGravity = buffer.readDouble();
-        this.life = buffer.readVarInt();
-        this.isRightHand = buffer.readBoolean();
-        this.weaponAction = WeaponMode.getType(buffer.readUtf());
-
-        this.entitySize = new EntityDimensions(this.projectile.getSize(), this.projectile.getSize(), false);
+        this.entitySize = EntityDimensions.fixed(this.projectile.getSize(), this.projectile.getSize());
         setBoundingBox(new AABB(
                 projectile.getSize(), projectile.getSize(), projectile.getSize(),
                 -projectile.getSize(), -projectile.getSize(), -projectile.getSize()));
     }
+
 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
@@ -181,10 +169,15 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return true;
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+//    @Override
+//    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entity) {
+//        return super.getAddEntityPacket(entity);
+//    }
+//
+//    @Override
+//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+//        return NetworkHooks.getEntitySpawningPacket(this);
+//    }
 
     @Override
     public void tick() {
@@ -205,7 +198,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    protected double getGravity(){
+    @Override
+    protected double getDefaultGravity() {
         return projectile.isGravity() || isAffectedByFluid() ? modifiedGravity : 0.0;
     }
 
@@ -263,7 +257,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         var data = new WeaponData(this.weapon, this.shooter);
 
-        float initialDamage = WeaponModifierHelper.getProjectileDamage(Registries.ITEM.getKey(ammo.getItem()), data);
+        float initialDamage = WeaponModifierHelper.getProjectileDamage(BuiltInRegistries.ITEM.getKey(ammo.getItem()), data);
 
         if (this.projectile.isDamageReduceOverLife()) {
             float modifier = ((float) this.projectile.getLife() - (float) (this.tickCount - 1)) / (float) this.projectile.getLife();
@@ -284,7 +278,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.setPos(nextPosX, nextPosY, nextPosZ);
 
         if (this.projectile.isGravity() || isAffectedByFluid()) {
-            this.setDeltaMovement(this.getDeltaMovement().add(0, this.getGravity(), 0));
+            this.setDeltaMovement(this.getDeltaMovement().add(0, this.getDefaultGravity(), 0));
         }
 
         if (isAffectedByFluid()) {
@@ -407,7 +401,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     protected void onHit(HitResult result, Vec3 startVec, Vec3 endVec) {
-        if (NeoForge.EVENT_BUS.post(new GunProjectileHitEvent(result, this))) {
+        if (NeoForge.EVENT_BUS.post(new GunProjectileHitEvent(result, this)).isCanceled()) {
             return;
         }
 
@@ -489,7 +483,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if (!this.wasTouchingWater) {
             wasTouchingWater = true;
             PacketHandler.getPlayChannel().sendToNearbyPlayers(
-                    () -> LevelLocation.create(level(), pos, 32),
+                    () -> LevelLocation.create((ServerLevel) level(), pos, 32),
                     new S2CMessageProjectileHitFluid(
                             pos,
                             getBbWidth(),
@@ -515,7 +509,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void burnEntity(Entity entity) {
         var burnTime = projectile.getBurnSeconds();
         if (burnTime > 0) {
-            entity.setSecondsOnFire(burnTime);
+            entity.igniteForSeconds(burnTime);
         }
     }
 
@@ -587,10 +581,6 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.setPos(posX, posY, posZ);
     }
 
-    private LevelLocation getDeathTargetPoint() {
-        return LevelLocation.create(this.level(), this.getX(), this.getY(), this.getZ(), 256);
-    }
-
     private ItemStack setupAmmo(WeaponData data) {
         var weapon = data.weapon;
 
@@ -602,7 +592,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
             if (tag != null) {
                 if (tag.contains("Model", Tag.TAG_COMPOUND)) {
-                    ItemStack model = ItemStack.parseOptional(tag.getCompound("Model"));
+                    ItemStack model = ItemStack.parseOptional(getProvider(), tag.getCompound("Model"));
                     var modelTag = NtglComponents.getWeaponTag(model);
 
                     if (modelTag != null && modelTag.contains("CustomModelData")) {
@@ -656,7 +646,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     }
 
     private @NotNull DamageSource getDamageSource() {
-        return new DamageSource(level().registryAccess()
+        return new DamageSource(getProvider()
                 .registryOrThrow(Registries.DAMAGE_TYPE)
                 .getHolderOrThrow( projectile.getDamageType()));
     }
@@ -686,7 +676,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if (Config.COMMON.gameplay.improvedHitboxes.get()
                 && target instanceof ServerPlayer targetPlayer
                 && shooter instanceof ServerPlayer shooterPlayer) {
-            int ping = (int) Math.floor((shooterPlayer.latency / 1000.0) * 20.0 + 0.5);
+            int latency = shooterPlayer.connection.latency();
+            int ping = (int) Math.floor((latency / 1000.0) * 20.0 + 0.5);
             boundingBox = BoundingBoxManager.getBoundingBox(targetPlayer, ping);
         }
 

@@ -14,7 +14,7 @@ import java.lang.reflect.Modifier;
  * Author: MrCrayfish
  */
 public class JsonDeserializers {
-    public static final JsonDeserializer<ResourceLocation> RESOURCE_LOCATION = (json, typeOfT, context) -> new ResourceLocation(json.getAsString());
+    public static final JsonDeserializer<ResourceLocation> RESOURCE_LOCATION = (json, typeOfT, context) -> ResourceLocation.parse(json.getAsString());
     public static final JsonDeserializer<ChassisPart> BODY_PART = (json, typeOfT, context) -> ChassisPart.getType(json.getAsString());
 
     public static final Gson GSON_INSTANCE = Util.make(() ->

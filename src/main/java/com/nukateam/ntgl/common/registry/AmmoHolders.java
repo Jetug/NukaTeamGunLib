@@ -3,7 +3,6 @@ package com.nukateam.ntgl.common.registry;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.common.ForgeHooks;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ public class AmmoHolders {
     public static final AmmoHolder BURNABLE = AmmoHolder.Builder
             .create(ntglResource("burnable"))
             .isAcceptable(AmmoHolders::isBurnable)
-            .value((stack -> ForgeHooks.getBurnTime(stack, null)))
+            .value((stack -> stack.getBurnTime(null)))
             .onConsume(AmmoHolders::consumeBurnable)
             .build();
 
@@ -30,7 +29,7 @@ public class AmmoHolders {
     }
 
     public static boolean isBurnable(ItemStack ammoStack) {
-        var burnTime = ForgeHooks.getBurnTime(ammoStack, null);
+        var burnTime = ammoStack.getBurnTime(null);
         return burnTime > 0;
     }
 

@@ -10,7 +10,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
 
 public class ExplosionUtils {
@@ -36,9 +35,6 @@ public class ExplosionUtils {
         var explosion = new ProjectileExplosion(world,
                 entity, source, null,
                 config, hitPos, mode);
-
-        if (ForgeEventFactory.onExplosionStart(world, explosion))
-            return;
 
         explosion.explode();
         explosion.finalizeExplosion(true);

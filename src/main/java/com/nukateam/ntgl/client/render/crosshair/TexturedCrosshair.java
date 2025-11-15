@@ -45,13 +45,13 @@ public class TexturedCrosshair extends Crosshair {
         }
 
         var matrix = stack.last().pose();
-        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        buffer.vertex(matrix, 0, size, 0).uv(0, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-        buffer.vertex(matrix, size, size, 0).uv(1, 1).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-        buffer.vertex(matrix, size, 0, 0).uv(1, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-        buffer.vertex(matrix, 0, 0, 0).uv(0, 0).color(1.0F, 1.0F, 1.0F, alpha).endVertex();
-        BufferUploader.drawWithShader(buffer.end());
+        var tesselator = Tesselator.getInstance();
+        var builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        builder.addVertex(matrix, 0, size, 0).setUv(0, 1).setColor(1.0F, 1.0F, 1.0F, alpha);
+        builder.addVertex(matrix, size, size, 0).setUv(1, 1).setColor(1.0F, 1.0F, 1.0F, alpha);
+        builder.addVertex(matrix, size, 0, 0).setUv(1, 0).setColor(1.0F, 1.0F, 1.0F, alpha);
+        builder.addVertex(matrix, 0, 0, 0).setUv(0, 0).setColor(1.0F, 1.0F, 1.0F, alpha);
+        BufferUploader.drawWithShader(builder.build());
 
         if (this.blend) {
             RenderSystem.defaultBlendFunc();

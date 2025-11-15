@@ -21,7 +21,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class ThrowableConfig implements INBTSerializable<CompoundTag> {
     public static final String PREPARE_TIME = "prepareTime";
     public static final String THROW_TIME = "throwTime";
     public static final String AMMO_DATA = "AmmoData";
@@ -30,16 +30,6 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag>, IEditorMe
     private int prepareTime = 0;
     private int throwTime = 1;
     protected AmmoData ammoData = new AmmoData();
-
-    @Override
-    public Component getEditorLabel() {
-        return Component.literal("Gun");
-    }
-
-    @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {});
-    }
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {

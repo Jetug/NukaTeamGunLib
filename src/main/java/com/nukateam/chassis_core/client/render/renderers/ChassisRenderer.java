@@ -161,9 +161,9 @@ public class ChassisRenderer<T extends WearableChassis> extends DynamicGeoEntity
     }
 
     @Override
-    protected void renderNameTag(T entity, Component displayName, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    protected void renderNameTag(T entity, Component displayName, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float partialTick) {
         if(entity.getControllingPassenger() instanceof Player player) {
-            super.renderNameTag(entity, player.getName(), poseStack, buffer, packedLight);
+            super.renderNameTag(entity, player.getName(), poseStack, bufferSource, packedLight, partialTick);
         }
     }
 
@@ -217,6 +217,6 @@ public class ChassisRenderer<T extends WearableChassis> extends DynamicGeoEntity
                                            HumanoidModel humanoidModel, VertexConsumer head) {
         humanoidModel.head.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         humanoidModel.head.setRotation(0, 0, 0);
-        humanoidModel.head.render(poseStack, head, packedLight, packedOverlay, 1, 1, 1, 1);
+        humanoidModel.head.render(poseStack, head, packedLight, packedOverlay, 0xFFFFFFFF);
     }
 }

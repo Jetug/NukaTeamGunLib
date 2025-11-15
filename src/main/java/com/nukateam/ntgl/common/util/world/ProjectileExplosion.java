@@ -11,8 +11,11 @@ import com.nukateam.ntgl.common.util.helpers.compatibility.SubtleEffectsHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -24,7 +27,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
@@ -35,7 +37,6 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.event.ForgeEventFactory;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -54,12 +55,16 @@ public class ProjectileExplosion extends Explosion {
     private final RandomSource random = RandomSource.create();
     private final BlockInteraction blockInteraction;
     private final Vec3 pos;
+    private final DamageSource damageSource;
 
     public ProjectileExplosion(Level level, Entity exploder,
                                @Nullable DamageSource source,
                                @Nullable ExplosionDamageCalculator context, ExplosionConfig projectile,
                                Vec3 pos, BlockInteraction mode) {
-        super(level, exploder, source, context, pos.x, pos.y, pos.z, projectile.getRadius(), projectile.isCauseFire(), mode);
+        super(level, exploder, source, context, pos.x, pos.y, pos.z, projectile.getRadius(), projectile.isCauseFire(), mode,
+                ParticleTypes.EXPLOSION,
+                ParticleTypes.EXPLOSION_EMITTER,
+                SoundEvents.GENERIC_EXPLODE);
         this.level = level;
         this.causesFire = projectile.isCauseFire();
         this.blockInteraction = mode;
@@ -68,6 +73,7 @@ public class ProjectileExplosion extends Explosion {
         this.exploder = exploder;
         this.context = context == null ? DEFAULT_CONTEXT : context;
         this.damage = projectile.getDamage();
+        this.damageSource = source;
         this.knockback = projectile.getKnockback();
         this.damageDecreaseWithDistance = projectile.isDamageReduceOverDistance();
     }
@@ -93,10 +99,8 @@ public class ProjectileExplosion extends Explosion {
 
         var entities = this.level.getEntities(null, new AABB(minX, minY, minZ, maxX, maxY, maxZ));
 
-        ForgeEventFactory.onExplosionDetonate(this.level, this, entities, diameter);
-
         for (var entity : entities) {
-            if (entity.ignoreExplosion())
+            if (entity.ignoreExplosion(this))
                 continue;
 
             var strength = Math.sqrt(entity.distanceToSqr(pos)) / diameter;
@@ -127,10 +131,10 @@ public class ProjectileExplosion extends Explosion {
                 finalDamage *= 1.0D - strength;
             }
 
-            entity.hurt(this.getDamageSource(), finalDamage);
+            entity.hurt(this.damageSource, finalDamage);
 
-            if (entity instanceof LivingEntity)
-                knockback = ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity) entity, knockback);
+//            if (entity instanceof LivingEntity)
+//                knockback = ProtectionEnchantment.getExplosionKnockbackAfterDampener((LivingEntity) entity, knockback);
 
             entity.setDeltaMovement(entity.getDeltaMovement().add(deltaX * knockback, deltaY * knockback, deltaZ * knockback));
 
@@ -147,7 +151,7 @@ public class ProjectileExplosion extends Explosion {
 
         if (this.level.isClientSide) {
             this.level.playLocalSound(pos.x, pos.y, pos.z,
-                    SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F,
+                    SoundEvents.GENERIC_EXPLODE.value(), SoundSource.BLOCKS, 4.0F,
                     (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 0.7F,
                     false);
         }
@@ -156,7 +160,7 @@ public class ProjectileExplosion extends Explosion {
         var toBlow = (ObjectArrayList<BlockPos>)getToBlow();
 
         if (spawnParticles) {
-            EffectHelper.doExplosionSplash(level, radius, getPosition());
+            EffectHelper.doExplosionSplash(level, radius, pos);
 
             if (!(this.radius < 2.0F) && interactsWithBlocks) {
                 this.level.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);

@@ -15,6 +15,7 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.chassis.S2CInventoryPacket;
 import com.nukateam.chassis_core.common.util.helpers.timer.TickTimer;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -246,9 +247,13 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
 
     public void containerReallyChanged(Container container) {
         updateParams();
-        serializedInventory = serializeInventory(inventory);
+        serializedInventory = serializeInventory(getProvider(), inventory);
         syncDataWithClient();
         NeoForge.EVENT_BUS.post(new ContainerChangedEvent(this));
+    }
+
+    private @NotNull RegistryAccess getProvider() {
+        return level().registryAccess();
     }
 
     public boolean isEquipmentVisible(ChassisPart chassisPart) {
@@ -308,11 +313,11 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
 
     public void setArmorData(ListTag nbtTags) {
         if (isClientSide)
-            deserializeInventory(inventory, nbtTags);
+            deserializeInventory(getProvider(), inventory, nbtTags);
     }
 
     public void setInventory(ListTag tags) {
-        deserializeInventory(inventory, tags);
+        deserializeInventory(getProvider(), inventory, tags);
     }
 
     protected void initInventory() {
@@ -329,7 +334,7 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
             }
         }
         this.inventory.addListener(this);
-        serializedInventory = serializeInventory(inventory);
+        serializedInventory = serializeInventory(getProvider(), inventory);
         syncDataWithClient();
     }
 
@@ -341,13 +346,13 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
 
     protected void saveInventory(CompoundTag compound) {
         if (inventory == null) return;
-        compound.put(ITEMS_TAG, serializeInventory(inventory));
+        compound.put(ITEMS_TAG, serializeInventory(getProvider(), inventory));
     }
 
     protected void loadInventory(@NotNull CompoundTag compound) {
         ListTag nbtTags = compound.getList(ITEMS_TAG, 10);
         initInventory();
-        deserializeInventory(inventory, nbtTags);
+        deserializeInventory(getProvider(), inventory, nbtTags);
     }
 
     @Nullable

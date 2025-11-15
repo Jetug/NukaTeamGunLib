@@ -24,10 +24,14 @@ public class DynamicChassisScreen extends ChassisScreen<DynamicChassisMenu> {
     @Override
     protected void renderEntity(GuiGraphics graphics, WearableChassis powerArmor) {
         float scale = 1.0F / Math.max(1.0E-4F, powerArmor.getScale());
+
         InventoryScreen.renderEntityInInventoryFollowsMouse(graphics,
                 this.leftPos + 32,
                 this.topPos + 73,
+                this.leftPos + 105,
+                this.topPos + 149,
                 (int) (scale * 23.0F),
+                0.0625F,
                 (float) (this.leftPos + 51) - this.mousePosX,
                 (float) (this.topPos + 75 - 50) - this.mousePosY,
                 powerArmor);

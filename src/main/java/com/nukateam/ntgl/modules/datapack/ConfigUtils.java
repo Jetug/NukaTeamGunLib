@@ -3,6 +3,7 @@ package com.nukateam.ntgl.modules.datapack;
 import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.modules.config.annotation.Validator;
 import com.nukateam.chassis_core.modules.config.utils.JsonDeserializers;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -64,16 +65,16 @@ public class ConfigUtils {
                                 map.put((T) item, gun);
                             }
                             else {
-                                ChassisCore.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using default gun data", resourceLocation);
+                                Ntgl.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using default gun data", resourceLocation);
                                 map.putIfAbsent((T) item, yClass.getDeclaredConstructor().newInstance());
                             }
                         }
                         catch (InvalidObjectException e) {
-                            ChassisCore.LOGGER.error("Missing required properties for {}", resourceLocation);
+                            Ntgl.LOGGER.error("Missing required properties for {}", resourceLocation);
                             e.printStackTrace();
                         }
                         catch (IOException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
-                            ChassisCore.LOGGER.error("Couldn't parse data file {}", resourceLocation);
+                            Ntgl.LOGGER.error("Couldn't parse data file {}", resourceLocation);
                         }
                         catch (IllegalAccessException e) {
                             e.printStackTrace();

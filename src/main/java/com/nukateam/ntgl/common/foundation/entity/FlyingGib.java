@@ -134,28 +134,6 @@ public class FlyingGib extends Entity {
         particleTick();
     }
 
-    public Vec3 handleRelativeFrictionAndCalculateMovement(Vec3 pDeltaMovement, float pFriction) {
-        this.moveRelative(this.getFrictionInfluencedSpeed(pFriction), pDeltaMovement);
-//        this.setDeltaMovement(this.handleOnClimbable(this.getDeltaMovement()));
-        this.move(MoverType.SELF, this.getDeltaMovement());
-        Vec3 vec3 = this.getDeltaMovement();
-        if ((this.horizontalCollision) && (this.getFeetBlockState().is(Blocks.POWDER_SNOW) && PowderSnowBlock.canEntityWalkOnPowderSnow(this))) {
-            vec3 = new Vec3(vec3.x, 0.2D, vec3.z);
-        }
-
-        return vec3;
-    }
-
-    private float getFrictionInfluencedSpeed(float pFriction) {
-        return this.onGround() ? 1.5F * (0.21600002F / (pFriction * pFriction * pFriction)) : 0.02F;
-    }
-
-    @Override
-    public void onRemovedFromWorld() {
-        goreStats.remove(getEntityId());
-        super.onRemovedFromWorld();
-    }
-
     private void particleTick() {
         if (this.level().isClientSide && getData().showBlood) {
             for (int i = 5; i > 0; i--) {
@@ -208,14 +186,15 @@ public class FlyingGib extends Entity {
         return getEntityData().get(SIZE);
     }
 
-    public float getGravity() {
+    @Override
+    protected double getDefaultGravity() {
         return getEntityData().get(GRAVITY);
-    }
 
+    }
     public GoreData getData() {
         if(data == null) {
             data = new GoreData();
-            data.deserializeNBT(getEntityData().get(DATA));
+            data.deserializeNBT(null, getEntityData().get(DATA));
         }
         return data;
     }

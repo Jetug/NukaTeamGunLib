@@ -28,7 +28,7 @@ public final class PropertyHelper {
             var cameraY = zoom.y();
             var cameraZ = zoom.z();
 
-            var attachment = WeaponStateHelper.getAttachmentItem(AttachmentType.SCOPE, stack);
+            var attachment = WeaponStateHelper.getAttachmentItem(AttachmentType.SCOPE, data);
             if (!attachment.isEmpty()) {
                 var scope = (ScopeItem) attachment.getItem();
                 var attachmentConfig = modifiedWeaponConfig.findAttachment(scope);

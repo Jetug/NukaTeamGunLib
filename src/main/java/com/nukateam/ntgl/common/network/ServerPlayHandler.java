@@ -30,6 +30,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -178,7 +179,7 @@ public class ServerPlayHandler {
                     PacketHandler
                             .getPlayChannel()
                             .sendToNearbyPlayers(() ->
-                                    LevelLocation.create(shooter.level(), posX, posY, posZ, radius), messageSound);
+                                    LevelLocation.create((ServerLevel) shooter.level(), posX, posY, posZ, radius), messageSound);
                 }
 
                 if (!(shooter instanceof Player player && player.isCreative())) {
@@ -213,7 +214,7 @@ public class ServerPlayHandler {
                 var pitch = 0.9F + world.random.nextFloat() * 0.2F;
                 var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.SERVER.gunShotMaxDistance.get());
                 S2CMessageGunSound messageSound = new S2CMessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getId(), false);
-                PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(player.level(), posX, posY, posZ, radius), messageSound);
+                PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create((ServerLevel)(player.level(), posX, posY, posZ, radius), messageSound);
             }
         }
     }

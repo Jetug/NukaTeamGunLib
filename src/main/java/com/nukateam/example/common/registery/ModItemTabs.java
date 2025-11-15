@@ -19,9 +19,9 @@ public class ModItemTabs {
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Ntgl.MOD_ID);
 
     @Nullable
-    public static final DeferredHolder<CreativeModeTab> ITEMS = createNtglTab();
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ITEMS = createNtglTab();
 
-    private static DeferredHolder<CreativeModeTab> createNtglTab() {
+    private static DeferredHolder<CreativeModeTab, CreativeModeTab> createNtglTab() {
         if(Ntgl.isDebugging()) {
             return CREATIVE_MODE_TABS.register("ntgl_items",
                     () -> builder().icon(() -> new ItemStack(ExampleWeapons.ROUND10MM.get()))

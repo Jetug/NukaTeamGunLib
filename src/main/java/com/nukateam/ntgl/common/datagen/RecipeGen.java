@@ -6,26 +6,44 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipeBuilder;
 import com.nukateam.ntgl.common.foundation.init.ModRecipeSerializers;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.Tags;
 
 import javax.annotation.Nullable;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class RecipeGen extends RecipeProvider
 {
-    public RecipeGen(PackOutput output)
+    public RecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> registries)
     {
-        super(output);
+        super(output, registries);
     }
 
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> consumer)
+    protected void buildRecipes(RecipeOutput output, HolderLookup.Provider holderLookup) {
+        super.buildRecipes(output, holderLookup);
+
+                WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ExampleWeapons.PISTOL10MM.get())
+                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 14))
+                .unlockedBy("has_coal", has(Items.COAL))
+                .save(output);
+    }
+
+    @Override
+    protected void buildRecipes(RecipeOutput recipeOutput) {
+        super.buildRecipes(recipeOutput);
+    }
+
+//    @Override
+    protected void buildRecipes()
     {
 //        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.WORKBENCH.get())
 //                .pattern("CCC")
@@ -40,7 +58,7 @@ public class RecipeGen extends RecipeProvider
 //        // Guns
 //        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ExampleWeapons.PISTOL10MM.get())
 //                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 14))
-//                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON))
+//                .addCriterion("has_iron_ingot", has(Tags.Items.INGOTS_IRON).triggerInstance())
 //                .build(consumer);
 //        WorkbenchRecipeBuilder.crafting(RecipeCategory.COMBAT, ExampleWeapons.SHOTGUN.get())
 //                .addIngredient(WorkbenchIngredient.of(Tags.Items.INGOTS_IRON, 24))

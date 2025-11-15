@@ -4,6 +4,7 @@ import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.foundation.blockentity.inventory.IStorageBlock;
 import com.nukateam.ntgl.common.foundation.init.ModTileEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -33,14 +34,14 @@ public class WorkbenchBlockEntity extends SyncedBlockEntity implements IStorageB
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        ContainerHelper.saveAllItems(tag, this.inventory);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        ContainerHelper.saveAllItems(tag, this.inventory, registries);
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        ContainerHelper.loadAllItems(tag, this.inventory);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ContainerHelper.loadAllItems(tag, this.inventory, registries);
     }
 
     @Override

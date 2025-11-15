@@ -109,6 +109,13 @@ dependencies {
     implementation "curse.maven:framework-549225:6531439"
     implementation "curse.maven:sophisticated-core-618298:7076819"
     implementation "curse.maven:sophisticated-backpacks-422301:7057664"
+    implementation "curse.maven:travelers-backpack-321117:7095271"
+    implementation "com.yyz:YyzsBackpack-neoforge:21.1.2"
+
+    implementation "curse.maven:kotlin-for-forge-351264:6994056"
+    implementation "curse.maven:fzzy-config-1005914:7085021"
+    implementation 'einstein:subtleeffects-neoforge:1.21.1-1.13.1'
+
     implementation 'curse.maven:controllable-317269:6850105'
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:2.0.1+1.21.1"
 
@@ -122,19 +129,6 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
-    // Example mod dependency using a mod jar from ./libs with a flat dir repository
-    // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
-    // The group id is ignored when searching -- in this case, it is "blank"
-    // implementation "blank:coolmod-${mc_version}:${coolmod_version}"
-
-    // Example mod dependency using a file as dependency
-    // implementation files("libs/coolmod-${mc_version}-${coolmod_version}.jar")
-
-    // Example project dependency using a sister or child project:
-    // implementation project(":myproject")
-
-    // For more info:
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 }
 

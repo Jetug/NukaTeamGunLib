@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.nukateam.ntgl.modules.constants.Paths;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.ConfigUtils;
@@ -17,11 +16,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import org.apache.commons.lang3.Validate;
-
 import javax.annotation.Nullable;
 import java.util.*;
-
-import static net.neoforged.neoforge.registries.Registries.ITEM;
 
 public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo, ProjectileConfig>> {
     private static NetworkAmmoManager instance;
@@ -49,8 +45,8 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
         var builder = ImmutableMap.<ResourceLocation, ProjectileConfig>builder();
 
         objects.forEach((item, ammo) -> {
-            Validate.notNull(ITEMS.getKey((Item)item));
-            builder.put(ITEMS.getKey((Item)item), ammo);
+            Validate.notNull(BuiltInRegistries.ITEM.getKey((Item)item));
+            builder.put(BuiltInRegistries.ITEM.getKey((Item)item), ammo);
             item.setConfig(new ConfigSupplier<>(ammo));
         });
 
@@ -66,7 +62,7 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
         buffer.writeVarInt(this.registeredAmmo.size());
         this.registeredAmmo.forEach((id, ammo) -> {
             buffer.writeResourceLocation(id);
-            buffer.writeNbt(ammo.serializeNBT());
+            buffer.writeNbt(ammo.serializeNBT(null));
         });
     }
 
@@ -104,7 +100,7 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
     private static boolean updateRegisteredAmmo(Map<ResourceLocation, ProjectileConfig> registeredAmmo) {
         if (registeredAmmo != null) {
             for (var entry : registeredAmmo.entrySet()) {
-                Item item = ITEMS.getValue(entry.getKey());
+                Item item = BuiltInRegistries.ITEM.get(entry.getKey());
                 if (!(item instanceof IAmmo)) {
                     return false;
                 }

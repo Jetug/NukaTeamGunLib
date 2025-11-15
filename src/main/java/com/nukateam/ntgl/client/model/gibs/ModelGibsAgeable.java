@@ -25,7 +25,7 @@ public class ModelGibsAgeable extends ModelGibs {
 
     @Override
     public void render(Entity entity, int part, PoseStack poseStack, RenderType rendertype, MultiBufferSource buffer,
-                       VertexConsumer pVertexConsumer, int packedLight, int packedOverlay, Rgba rgba) {
+                       VertexConsumer pVertexConsumer, int packedLight, int packedOverlay, int colour) {
         var ageableAccessor = (IAgeableAccessor)model;
         var isHead = new ArrayList<Boolean>();
         ageableAccessor.getHeadParts().forEach((val) -> isHead.add(true));
@@ -50,11 +50,10 @@ public class ModelGibsAgeable extends ModelGibs {
                 }
             }
             accessor.getModelParts().get(part).render(poseStack, pVertexConsumer, packedLight, packedOverlay,
-                    rgba.r(), rgba.g(), rgba.g(), rgba.a());
+                    colour);
         }
         poseStack.popPose();
     }
-
 
     @Override
     public int getNumGibs() {

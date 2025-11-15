@@ -9,6 +9,7 @@ import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
 import com.nukateam.chassis_core.common.util.helpers.PlayerUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.cache.object.GeoCube;
 import software.bernie.geckolib.renderer.GeoObjectRenderer;
@@ -46,7 +47,8 @@ public class CustomHandRenderer extends GeoObjectRenderer<HandAnimator> {
 
     public void render(HumanoidArm arm, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, int packedLight) {
         this.arm = arm;
-        super.render(poseStack, getLocalPlayerChassis().getHandEntity(), bufferSource, null, null, packedLight);
+        var partialTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
+        super.render(poseStack, getLocalPlayerChassis().getHandEntity(), bufferSource, null, null, packedLight, partialTick);
     }
 
     @Override

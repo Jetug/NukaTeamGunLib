@@ -144,56 +144,26 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 	}
 
 	@Override
-	public void readAdditionalSaveData(CompoundTag compound) {
-		super.readAdditionalSaveData(compound);
-		var start = compound.getCompound("StartVec");
-		startVec = readVec(start);
-
-		var end = compound.getCompound("EndVec");
-		endVec = readVec(end);
-	}
-
-	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
 
-		var start = saveVec(startVec);
-		compound.put("StartVec", start);
-
-		var end = saveVec(endVec);
-		compound.put("EndVec", end);
+		compound.put	 ("StartVec"	, saveVec(this.startVec));
+		compound.put	 ("EndVec"		, saveVec(this.endVec)	);
+		compound.putFloat("distance"	, this.distance			);
+		compound.putFloat("laserPitch"	, this.laserPitch		);
+		compound.putFloat("laserYaw"	, this.laserYaw			);
+		compound.putShort("maxTicks"	, this.maxTicks			);
 	}
 
 	@Override
-	public void writeSpawnData(FriendlyByteBuf buffer) {
-		super.writeSpawnData(buffer);
-
-		var start = saveVec(startVec);
-		buffer.writeNbt(start);
-
-		var end = saveVec(endVec);
-		buffer.writeNbt(end);
-
-		buffer.writeFloat(this.distance);
-		buffer.writeFloat(this.laserPitch);
-		buffer.writeFloat(this.laserYaw);
-		buffer.writeShort(this.maxTicks);
-	}
-
-	@Override
-	public void readSpawnData(FriendlyByteBuf buffer) {
-		super.readSpawnData(buffer);
-
-		var startPos = buffer.readNbt();
-		if(startPos != null) this.startVec = readVec(startPos);
-
-		var endPos = buffer.readNbt();
-		if(endPos != null) this.endVec = readVec(endPos);
-
-		this.distance = buffer.readFloat();
-		this.laserPitch = buffer.readFloat();
-		this.laserYaw = buffer.readFloat();
-		this.maxTicks = buffer.readShort();
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+        this.startVec 	= readVec(compound.getCompound("StartVec"));
+        this.endVec 	= readVec(compound.getCompound("EndVec"));
+		this.distance 	= compound.getFloat("distance"	);
+		this.laserPitch = compound.getFloat("laserPitch");
+		this.laserYaw 	= compound.getFloat("laserYaw"	);
+		this.maxTicks 	= compound.getShort("maxTicks"	);
 	}
 
 	private CompoundTag saveVec(Vec3 vec) {

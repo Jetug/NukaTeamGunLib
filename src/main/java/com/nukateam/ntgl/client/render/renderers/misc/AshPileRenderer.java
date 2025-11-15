@@ -38,7 +38,7 @@ public class AshPileRenderer extends GeoEntityRenderer<AshPile> {
             super.actuallyRender(poseStack, animatable, model,
                     renderType, bufferSource, buffer,
                     isReRender, partialTick, packedLight,
-                    packedOverlay, red, green, blue, newAlpha);
+                    packedOverlay, colour);
 
             RenderSystem.setShaderColor(1, 1, 1, 1);
         }

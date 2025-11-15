@@ -55,26 +55,26 @@ public class WeaponStateHelper {
     }
 
     public static int getAmmoCount(WeaponData data) {
-        var tag = data.weapon.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(data.weapon);
         return tag.getInt(Tags.AMMO_COUNT);
     }
 
     public static void addAmmo(WeaponData data, int amount) {
-        var tag = data.weapon.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(data.weapon);
         var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
         var result = Math.min(tag.getInt(Tags.AMMO_COUNT) + amount, maxAmmo);
         tag.putInt(Tags.AMMO_COUNT, result);
-        data.weapon.setTag(tag);
+        NtglComponents.setWeaponTag(data.weapon, tag);
     }
 
     public static void setCurrentAmmo(WeaponData data, ResourceLocation ammo) {
-        var tag = data.weapon.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(data.weapon);
         tag.putString(AMMO_TAG, ammo.toString());
-        data.weapon.setTag(tag);
+        NtglComponents.setWeaponTag(data.weapon, tag);
     }
 
     public static AmmoHolder getCurrentAmmo(WeaponData data) {
-        var tag = data.weapon.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(data.weapon);
 
         if(tag.contains(AMMO_TAG, Tag.TAG_STRING)){
             var ammoId = tag.getString(AMMO_TAG);
@@ -87,7 +87,7 @@ public class WeaponStateHelper {
     }
 
     public static AmmoHolder getCurrentAmmoWithoutCheck(WeaponData data) {
-        var tag = data.weapon.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(data.weapon);
         var ammoItems = WeaponModifierHelper.getAmmoItems(data);
 
         if(tag.contains(AMMO_TAG, Tag.TAG_STRING)) {
@@ -127,9 +127,9 @@ public class WeaponStateHelper {
     }
 
     public static void setFireMode(WeaponData data, FireMode fireMode) {
-        var tag = data.weapon.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(data.weapon);
         tag.putString(FIRE_MODE, fireMode.toString());
-        data.weapon.setTag(tag);
+        NtglComponents.setWeaponTag(data.weapon, tag);
     }
 
     public static FireMode getFireMode(WeaponData data) {
@@ -145,7 +145,7 @@ public class WeaponStateHelper {
 
     @Nullable
     private static FireMode getFireMode(ItemStack gun) {
-        var tag = gun.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(gun);
         if(tag.contains(FIRE_MODE, Tag.TAG_STRING))
             return FireMode.getType(tag.getString(FIRE_MODE));
         else return null;
@@ -158,7 +158,7 @@ public class WeaponStateHelper {
     }
 
     public static void setAmmo(ItemStack gunStack, int amount) {
-        var tag = gunStack.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(gunStack);
         tag.putInt(Tags.AMMO_COUNT, amount);
     }
 
@@ -167,19 +167,19 @@ public class WeaponStateHelper {
     }
 
     public static boolean hasAmmo(ItemStack gunStack) {
-        var tag = gunStack.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(gunStack);
         return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) > 0;
     }
 
     public static boolean hasEnoughAmmo(WeaponData data) {
-        var tag = data.weapon.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(data.weapon);
         var ammoPerShot = WeaponModifierHelper.getAmmoPerShot(data);
         return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) >= ammoPerShot;
     }
 
     public static void fillAmmo(WeaponData data) {
         if (data.weapon.getItem() instanceof IWeapon) {
-            var tag = data.weapon.getOrCreateTag();
+            var tag = NtglComponents.getWeaponTag(data.weapon);
             var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
 
             tag.putInt(Tags.AMMO_COUNT, maxAmmo);
@@ -201,26 +201,26 @@ public class WeaponStateHelper {
         return result;
     }
 
-    public static ItemStack getAttachmentItem(HolderLookup.Provider lookupProvider, AttachmentType type, ItemStack weapon) {
-        var compound = NtglComponents.getWeaponTag(weapon);
+    public static ItemStack getAttachmentItem(AttachmentType type, WeaponData data) {
+        var compound = NtglComponents.getWeaponTag(data.weapon);
 
         if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
             var attachment = compound.getCompound(ATTACHMENTS);
             if (attachment.contains(type.toString(), Tag.TAG_COMPOUND)) {
-                return ItemStack.parseOptional(lookupProvider, attachment.getCompound(type.toString()));
+                return ItemStack.parseOptional(data.registryAccess(), attachment.getCompound(type.toString()));
             }
         }
         return ItemStack.EMPTY;
     }
 
-    public static boolean hasScopeOverlay(ItemStack gun) {
-        var scope = getScopeItem(gun);
+    public static boolean hasScopeOverlay(WeaponData data) {
+        var scope = getScopeItem(data);
         return scope != null && scope.getProperties().hasOverlay();
     }
 
     @Nullable
-    public static ScopeItem getScopeItem(ItemStack gun) {
-        var attachment = getAttachmentItem(AttachmentType.SCOPE, gun);
+    public static ScopeItem getScopeItem(WeaponData data) {
+        var attachment = getAttachmentItem(AttachmentType.SCOPE, data);
         if(!attachment.isEmpty() ){
             return (ScopeItem)attachment.getItem();
         }
@@ -233,7 +233,7 @@ public class WeaponStateHelper {
         if (!gun.canAttachType(type))
             return false;
 
-        var compound = stack.getTag();
+        var compound = NtglComponents.getWeaponTag(stack);
         if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
             CompoundTag attachment = compound.getCompound(ATTACHMENTS);
             return attachment.contains(type.toString(), Tag.TAG_COMPOUND);
@@ -241,12 +241,12 @@ public class WeaponStateHelper {
         return false;
     }
 
-    public static ItemStack getScopeStack(ItemStack gun) {
-        return getAttachmentItem(AttachmentType.SCOPE, gun);
+    public static ItemStack getScopeStack(WeaponData data) {
+        return getAttachmentItem(AttachmentType.SCOPE, data);
     }
 
     @Nullable
-    public static Scope getScope(ItemStack gun) {
+    public static Scope getScope(WeaponData gun) {
         var scopeStack = getScopeStack(gun);
 
         if (scopeStack.getItem() instanceof ScopeItem scopeItem) {
@@ -262,7 +262,7 @@ public class WeaponStateHelper {
         float modifier = 0.0F;
         var weapon = data.weapon;
         if (hasAttachmentEquipped(weapon, AttachmentType.SCOPE)) {
-            var scope = getScope(weapon);
+            var scope = getScope(data);
             if (scope != null) {
                 if (scope.getFovModifier() < 1.0F) {
                     return Mth.clamp(scope.getFovModifier(), 0.01F, 1.0F);
@@ -276,30 +276,21 @@ public class WeaponStateHelper {
     }
 
     public static boolean isAmmoIgnored(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(stack);
         return tag.contains("IgnoreAmmo", Tag.TAG_BYTE);
     }
 
     public static void saveAttachments(WeaponData data, Collection<ItemStack> attachments){
-        var weapon = data.weapon;
-//        var currentAttachments = getAttachmentItems(weapon);
-//        var isServerSide = data.shooter != null && !data.shooter.level().isClientSide;
-//        var attachmentsChanged = !containsItem(attachments, currentAttachments);
-//
-//        if (isServerSide && attachmentsChanged){
-//            ServerPlayHandler.unloadGun((ServerPlayer)data.shooter, data.gun);
-//        }
-
         var attachmentsTag = new CompoundTag();
 
         for (var itemStack : attachments) {
             if (itemStack.getItem() instanceof IAttachment attachment) {
                 var tagKey = attachment.getType();
-                attachmentsTag.put(tagKey.toString(), itemStack.save(new CompoundTag()));
+                attachmentsTag.put(tagKey.toString(), itemStack.save(data.registryAccess(), new CompoundTag()));
             }
         }
 
-        var tag = weapon.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(data.weapon);
         tag.put(Tags.ATTACHMENTS, attachmentsTag);
     }
 
@@ -324,8 +315,7 @@ public class WeaponStateHelper {
     }
 
     public static void saveAttachment(ItemStack weapon, ItemStack attachmentStack){
-        var tag = weapon.getOrCreateTag();
-
+        var tag = NtglComponents.getWeaponTag(weapon);
         var attachmentsTag = new CompoundTag();
 
         if(tag.contains(Tags.ATTACHMENTS, Tag.TAG_COMPOUND)){

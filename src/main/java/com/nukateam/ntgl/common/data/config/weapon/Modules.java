@@ -21,12 +21,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
-import static com.nukateam.ntgl.client.handlers.ClientHandler.createEditorScreen;
-
-public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class Modules implements INBTSerializable<CompoundTag> {
     @Optional
     boolean attachmentScreen = true;
     @Optional
@@ -39,14 +35,6 @@ public class Modules implements INBTSerializable<CompoundTag>, IEditorMenu {
     public LinkedHashMap<AttachmentType, ArrayList<Attachment>> getAttachments() {
         return this.attachments;
     }
-
-    @Override
-    public Component getEditorLabel() {
-        return Component.literal("Modules");
-    }
-
-    @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {}
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {

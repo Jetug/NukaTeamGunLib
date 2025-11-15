@@ -2,6 +2,10 @@ package com.nukateam.ntgl.client.input;
 
 import com.mrcrayfish.controllable.client.binding.BindingRegistry;
 import com.mrcrayfish.controllable.client.binding.ButtonBinding;
+import com.mrcrayfish.controllable.client.binding.context.BindingContext;
+import com.mrcrayfish.controllable.client.binding.context.InGameContext;
+import com.mrcrayfish.controllable.client.binding.handlers.TickingHandler;
+import com.mrcrayfish.controllable.client.binding.handlers.impl.DropHandler;
 import com.mrcrayfish.controllable.client.input.Buttons;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,6 +37,6 @@ public class GunButtonBindings {
 
     private static @NotNull ButtonBinding createGunBinding(int button, String name) {
         return new ButtonBinding(button, "ntgl.button." + name,
-                CATEGORIES_NTGL, GunConflictContext.IN_GAME_HOLDING_WEAPON);
+                CATEGORIES_NTGL, InGameContext.INSTANCE, new DropHandler());
     }
 }

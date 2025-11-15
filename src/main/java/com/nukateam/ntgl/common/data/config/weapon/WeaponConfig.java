@@ -24,6 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -39,7 +40,7 @@ import java.util.function.Supplier;
 
 import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
 
-public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class WeaponConfig implements INBTSerializable<CompoundTag>{
     public static final String GENERAL = "General";
     public static final String MELEE = "Melee";
     public static final String THROWABLE = "Throwable";
@@ -68,28 +69,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         var gun = new General();
         gun.action = WeaponAction.SHOT;
         return gun;
-    }
-
-    @Override
-    public Component getEditorLabel() {
-        return Component.literal("Gun");
-    }
-
-    @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            var heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
-            var scope = WeaponStateHelper.getScopeStack(heldItem);
-            if (scope.getItem() instanceof ScopeItem scopeItem) {
-                widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(Component.literal("Edit"), btn -> {
-                    Minecraft.getInstance().setScreen(createEditorScreen(Debug.getScope(scopeItem)));
-                })));
-            }
-
-            widgets.add(Pair.of(this.modules.getEditorLabel(), () -> new DebugButton(Component.literal(">"), btn -> {
-                Minecraft.getInstance().setScreen(createEditorScreen(this.modules));
-            })));
-        });
     }
 
     @Override
@@ -287,7 +266,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
                     true);
 
             PacketHandler.getPlayChannel().sendToNearbyPlayers(
-                    () -> LevelLocation.create(player.level(), player.getX(), player.getY() + 1.0, player.getZ(), radius),
+                    () -> LevelLocation.create((ServerLevel) player.level(), player.getX(), player.getY() + 1.0, player.getZ(), radius),
                     messageSound);
         }
     }

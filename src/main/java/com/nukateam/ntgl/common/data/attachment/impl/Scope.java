@@ -3,7 +3,6 @@ package com.nukateam.ntgl.common.data.attachment.impl;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
-import com.nukateam.ntgl.common.debug.screen.widget.DebugSlider;
 import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +18,7 @@ import java.util.function.Supplier;
  * <p>
  * Author: MrCrayfish
  */
-public class Scope extends Attachment implements IEditorMenu {
+public class Scope extends Attachment{
     public static final ResourceLocation SCOPE_LOCATION = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/hud/overlay/scope_long_overlay.png");
 
     protected float aimFovModifier;
@@ -146,21 +145,6 @@ public class Scope extends Attachment implements IEditorMenu {
     @Deprecated(since = "1.3.0", forRemoval = true)
     public double getViewFinderDistance() {
         return this.viewFinderDist;
-    }
-
-    @Override
-    public Component getEditorLabel() {
-        return Component.literal("Scope");
-    }
-
-    @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
-        if (FMLEnvironment.dist.isClient()) {
-            widgets.add(Pair.of(Component.literal("Aim FOV Modifier"), () -> new DebugSlider(0.0, 1.0, this.aimFovModifier, 0.05, 3, value -> this.aimFovModifier = value.floatValue())));
-            widgets.add(Pair.of(Component.literal("Zoom (Legacy)"), () -> new DebugSlider(0.0, 0.5, this.additionalZoom, 0.05, 3, value -> this.additionalZoom = value.floatValue())));
-            widgets.add(Pair.of(Component.literal("Reticle Offset"), () -> new DebugSlider(0.0, 4.0, this.reticleOffset, 0.025, 4, value -> this.reticleOffset = value)));
-            widgets.add(Pair.of(Component.literal("View Finder Distance"), () -> new DebugSlider(0.0, 5.0, this.viewFinderDist, 0.05, 3, value -> this.viewFinderDist = value)));
-        }
     }
 
     public Scope copy() {

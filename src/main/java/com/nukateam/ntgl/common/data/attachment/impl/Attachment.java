@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 
+import static net.minecraft.world.item.component.ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT;
+
 /**
  * The base attachment object
  */
@@ -238,13 +240,13 @@ public class Attachment {
 
     private static String getPercent(double value){
         var percent = Math.abs((1 - value) * 100f);
-        var formated = ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(percent);
+        var formated = ATTRIBUTE_MODIFIER_FORMAT.format(percent);
         var sign = value >= 1 ? "+" : "-";
         return sign + formated + "%";
     }
 
     private static String getValue(double value, boolean signed){
-        var formated = ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(value);
+        var formated = ATTRIBUTE_MODIFIER_FORMAT.format(value);
         var sign = value > 0 && signed ? "+" : "";
         return sign + formated;
     }

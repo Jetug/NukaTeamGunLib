@@ -16,7 +16,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class ExplosionConfig implements INBTSerializable<CompoundTag> {
     public static final String DAMAGE = "Damage";
     public static final String DISTANCE = "DamageReduceOverDistance";
     public static final String CAUSE_FIRE = "CauseFire";
@@ -134,16 +134,6 @@ public class ExplosionConfig implements INBTSerializable<CompoundTag>, IEditorMe
         var ammo = new ExplosionConfig();
         ammo.deserializeNBT(null,tag);
         return ammo;
-    }
-
-    @Override
-    public Component getEditorLabel() {
-        return Component.literal("Projectile");
-    }
-
-    @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {});
     }
 
     public static class Builder {

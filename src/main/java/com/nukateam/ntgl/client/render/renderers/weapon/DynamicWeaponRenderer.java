@@ -50,16 +50,17 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
                        @Nullable RenderType renderType, @Nullable VertexConsumer buffer, int packedLight) {
         this.bufferSource = bufferSource;
         this.transformType = transformType;
-        this.weaponConfig = WeaponModifierHelper.getConfig(new WeaponData(stack, entity));
+        var data = new WeaponData(stack, entity);
+        this.weaponConfig = WeaponModifierHelper.getConfig(data);
         this.gunStack = stack;
         this.gunAttachments = WeaponStateHelper.getAttachmentItems(entity.level().registryAccess(), stack);
         this.configAttachments = weaponConfig.getAttachmentConfigs(gunAttachments);
         this.currentEntity = entity;
 
-        if (TransformUtils.isFirstPerson(transformType) && AimingHandler.isScoping(stack))
+        if (TransformUtils.isFirstPerson(transformType) && AimingHandler.isScoping(data))
             return;
 
-        var barrelStack = WeaponStateHelper.getAttachmentItem(AttachmentType.BARREL, stack);
+        var barrelStack = WeaponStateHelper.getAttachmentItem(AttachmentType.BARREL, data);
 
         if(barrelStack.getItem() instanceof BarrelItem barrel) {
             this.barrelItem = barrel;
@@ -131,9 +132,10 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
         var gunAttachments = this.weaponConfig.getModules().getAttachments();
 
         var visibleBones = new ArrayList<String>();
+        var data = new WeaponData(gunStack, currentEntity);
 
         gunAttachments.forEach((type, typeAttachments) -> {
-            var item = WeaponStateHelper.getAttachmentItem(type, gunStack);
+            var item = WeaponStateHelper.getAttachmentItem(type, data);
 
             for (var attachment : typeAttachments) {
                 if (shouldRenderAttachment(attachment, item)) {

@@ -91,8 +91,7 @@ public class ControllerHandler {
                 if (tag != null && WeaponStateHelper.getAmmoCount(data) < WeaponModifierHelper.getMaxAmmo(data)) {
                     actions.put(GunButtonBindings.RELOAD, new Action(Component.translatable("ntgl.action.reload"), Action.Side.LEFT));
                 }
-
-                Scope scope = WeaponStateHelper.getScope(heldItem);
+                var scope = WeaponStateHelper.getScope(data);
                 if (scope != null && scope.isStable() && AimingHandler.get().isAiming()) {
                     actions.put(GunButtonBindings.STEADY_AIM, new Action(Component.translatable("ntgl.action.steady_aim"), Action.Side.RIGHT));
                 }
@@ -108,8 +107,9 @@ public class ControllerHandler {
                 double adsSensitivity = Config.CLIENT.controls.aimDownSightSensitivity.get();
                 yawSpeed.set(10.0F * (float) adsSensitivity);
                 pitchSpeed.set(7.5F * (float) adsSensitivity);
+                var data = new WeaponData(heldItem, player);
 
-                var scope = WeaponStateHelper.getScope(heldItem);
+                var scope = WeaponStateHelper.getScope(data);
                 var controller = Controllable.getController();
                 if (scope != null && scope.isStable() && controller != null && controller.isButtonPressed(GunButtonBindings.STEADY_AIM.getButton())) {
                     yawSpeed.set(yawSpeed.get() / 2.0F);

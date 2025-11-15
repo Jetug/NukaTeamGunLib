@@ -1,12 +1,10 @@
 package com.nukateam.ntgl.common.foundation.init;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.data.holders.ProjectileType;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;

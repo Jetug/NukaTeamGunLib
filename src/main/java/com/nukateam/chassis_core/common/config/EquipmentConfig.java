@@ -58,7 +58,7 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
 
     public static EquipmentConfig create(CompoundTag tag) {
         var config = new EquipmentConfig();
-        config.deserializeNBT(tag);
+        config.deserializeNBT(null, tag);
         return config;
     }
 

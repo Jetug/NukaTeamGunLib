@@ -89,23 +89,8 @@ public class Brahmin extends Cow implements GeoEntity, Shearable {
     }
 
     @Override
-    public boolean isShearable(@NotNull ItemStack item, Level level, BlockPos pos) {
-        return readyForShearing();
-    }
-
-    @Override
     public boolean readyForShearing() {
         return hasBalls();
-    }
-
-    @Override
-    public @NotNull List<ItemStack> onSheared(@Nullable Player player, @NotNull ItemStack item, Level level, BlockPos pos, int fortune) {
-        var soundSource = player == null ? SoundSource.BLOCKS : SoundSource.PLAYERS;
-        this.level().playSound(null, this, SoundEvents.SHEEP_SHEAR, soundSource, 1.0F, 1.0F);
-        this.gameEvent(GameEvent.SHEAR, player);
-
-
-        return Collections.emptyList();
     }
 
     @Override

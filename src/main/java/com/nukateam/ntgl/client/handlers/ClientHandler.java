@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.handlers;
 
+import com.nukateam.chassis_core.modules.example.common.registery.ContainerRegistry;
 import com.nukateam.ntgl.client.registry.*;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
@@ -13,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.*;
 import net.minecraft.world.InteractionHand;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -48,7 +50,6 @@ public class ClientHandler {
         }
 
 //        setupRenderLayers();
-        registerScreenFactories();
         AnimationRegistry.register();
     }
 
@@ -56,11 +57,11 @@ public class ClientHandler {
 //        ItemBlockRenderTypes.setRenderLayer(ModBlocks.WORKBENCH.get(), RenderType.cutout());
 //    }
 
-    private static void registerScreenFactories() {
-        MenuScreens.register(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
-        MenuScreens.register(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
+    @SubscribeEvent
+    public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
+        event.register(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
+        event.register(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
     }
-
     private static int inspectionTimerRight;
     private static int inspectionTimerLeft;
 
@@ -92,26 +93,6 @@ public class ClientHandler {
             inspectionTimerLeft--;
     }
 
-    //TODO: port this
-//    @SubscribeEvent
-//    public static void onScreenInit(ScreenEvent.Init.Post event) {
-//        if (event.getScreen() instanceof MouseSettingsScreen screen) {
-//            if (mouseOptionsField == null) {
-//                mouseOptionsField = ObfuscationReflectionHelper.findField(MouseSettingsScreen.class, "f_96218_");
-//                mouseOptionsField.setAccessible(true);
-//            }
-//            try {
-//                var list = (OptionsList) mouseOptionsField.get(screen);
-//                list.addSmall(OptionInstances.createSensitivitySlider(), null);
-//            } catch (IllegalAccessException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-
-    public static Screen createEditorScreen(IEditorMenu menu) {
-        return new EditorScreen(Minecraft.getInstance().screen, menu);
-    }
 
     public static int getInspectionTimerRight() {
         return inspectionTimerRight;
