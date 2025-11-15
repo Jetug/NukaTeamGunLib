@@ -14,8 +14,6 @@ import net.minecraft.network.codec.StreamCodec;
 /**
  * Author: MrCrayfish
  */
-
-
 public record BulletHoleData(Direction direction, BlockPos pos) implements ParticleOptions {
     public static final MapCodec<BulletHoleData> CODEC =
             RecordCodecBuilder.mapCodec(b -> b.group(

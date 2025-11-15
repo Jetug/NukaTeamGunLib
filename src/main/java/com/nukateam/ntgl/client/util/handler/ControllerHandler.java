@@ -13,7 +13,6 @@ import com.mrcrayfish.controllable.event.Value;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
-import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
@@ -50,28 +49,6 @@ public class ControllerHandler {
         ControllerEvents.INPUT.register(ControllerHandler::handleInput);
         ControllerEvents.UPDATE_CAMERA.register(ControllerHandler::handleCamera);
         ControllerEvents.GATHER_ACTIONS.register(ControllerHandler::handleActions);
-        ControllerEvents.GATHER_NAVIGATION_POINTS.register(ControllerHandler::handleNavigationPoints);
-    }
-
-    private static void handleNavigationPoints(List<NavigationPoint> points) {
-        var mc = Minecraft.getInstance();
-
-        if (mc.screen instanceof WorkbenchScreen workbench) {
-            int startX = workbench.getGuiLeft();
-            int startY = workbench.getGuiTop();
-
-            for (int i = 0; i < workbench.getTabs().size(); i++) {
-                int tabX = startX + 28 * i + (28 / 2);
-                int tabY = startY - (28 / 2);
-                points.add(new BasicNavigationPoint(tabX, tabY));
-            }
-
-            for (int i = 0; i < 6; i++) {
-                int itemX = startX + 172 + (80 / 2);
-                int itemY = startY + i * 19 + 63 + (19 / 2);
-                points.add(new BasicNavigationPoint(itemX, itemY));
-            }
-        }
     }
 
     private static void handleActions(Map<ButtonBinding, Action> actions, ActionVisibility visibility) {

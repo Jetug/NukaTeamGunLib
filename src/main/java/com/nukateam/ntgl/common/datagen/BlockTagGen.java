@@ -21,7 +21,7 @@ public class BlockTagGen extends BlockTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         this.tag(ModTags.Blocks.FRAGILE)
                 .addTag(Tags.Blocks.GLASS_PANES)
-                .addTag(Tags.Blocks.GLASS)
+                .addTag(Tags.Blocks.GLASS_BLOCKS)
                 .addTag(BlockTags.CANDLES)
                 .add(Blocks.LILY_PAD)
                 .add(Blocks.COCOA)

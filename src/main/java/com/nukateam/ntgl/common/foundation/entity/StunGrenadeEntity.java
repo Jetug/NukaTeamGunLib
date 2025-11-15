@@ -12,6 +12,7 @@ import com.nukateam.ntgl.common.network.message.weapon.S2CMessageStunGrenade;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
@@ -61,7 +62,7 @@ public class StunGrenadeEntity<T extends Item & IThrowable> extends ThrowableGre
         if (this.level().isClientSide) {
             return;
         }
-        PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create((ServerLevel)(this.level(), this.getX(), y, this.getZ(), 64), new S2CMessageStunGrenade(this.getX(), y, this.getZ()));
+        PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create((ServerLevel)this.level(), this.getX(), y, this.getZ(), 64), new S2CMessageStunGrenade(this.getX(), y, this.getZ()));
 
         // Calculate bounds of area where potentially effected players my be
         double diameter = Math.max(Config.COMMON.stunGrenades.deafen.criteria.radius.get(), Config.COMMON.stunGrenades.blind.criteria.radius.get()) * 2 + 1;

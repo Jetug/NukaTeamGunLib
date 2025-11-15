@@ -20,8 +20,6 @@ import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
-import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -92,7 +90,7 @@ public class ServerPlayHandler {
             var data = new WeaponData(heldItem, shooter).setWeaponMode(message.getMode());
 
             if (modifiedGun != null) {
-                if (NeoForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand))) {
+                if (NeoForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand)).isCanceled()) {
                     return;
                 }
 
@@ -214,7 +212,7 @@ public class ServerPlayHandler {
                 var pitch = 0.9F + world.random.nextFloat() * 0.2F;
                 var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.SERVER.gunShotMaxDistance.get());
                 S2CMessageGunSound messageSound = new S2CMessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getId(), false);
-                PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create((ServerLevel)(player.level(), posX, posY, posZ, radius), messageSound);
+                PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create((ServerLevel)player.level(), posX, posY, posZ, radius), messageSound);
             }
         }
     }
@@ -236,32 +234,6 @@ public class ServerPlayHandler {
         return modifiedWeaponConfig.getSounds().getPreFire();
     }
 
-    /**
-     * Crafts the specified item at the workstation the player is currently using.
-     * This is only intended for use on the logical server.
-     *
-     * @param player the player who is crafting
-     * @param id     the id of an item which is registered as a valid workstation recipe
-     * @param pos    the block position of the workstation the player is using
-     */
-    public static void handleCraft(Player player, ResourceLocation id, BlockPos pos) {
-        Level world = player.level();
-
-        if (player.containerMenu instanceof WorkbenchContainer workbench) {
-            if (workbench.getPos().equals(pos)) {
-                var recipe = WorkbenchRecipes.getRecipeById(world, id);
-                if (recipe == null || !recipe.hasMaterials(player))
-                    return;
-
-                recipe.consumeMaterials(player);
-                Containers.dropItemStack(world,
-                        pos.getX() + 0.5,
-                        pos.getY() + 1.125,
-                        pos.getZ() + 0.5,
-                        recipe.getItem());
-            }
-        }
-    }
 
     public static void handleUnload(Player player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
@@ -365,7 +337,7 @@ public class ServerPlayHandler {
 
         var gun = player.getItemInHand(message.getHand());
 
-        if (NeoForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, gun, message.getHand()))) {
+        if (NeoForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, gun, message.getHand())).isCanceled()) {
             dataKey.setValue(player, false);
             return;
         }

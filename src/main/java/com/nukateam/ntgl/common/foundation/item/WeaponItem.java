@@ -253,7 +253,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
                     return WeaponConfig.create(key, tagCompound.getCompound("Gun"));
                 } else {
                     var gunCopy = this.weaponConfig.copy();
-                    gunCopy.deserializeNBT(tagCompound.getCompound("Gun"));
+                    gunCopy.deserializeNBT(null, tagCompound.getCompound("Gun"));
                     return gunCopy;
                 }
             });

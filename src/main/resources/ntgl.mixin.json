@@ -3,7 +3,6 @@
   "package": "com.nukateam.ntgl.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "ntgl.common.EndPortalBlockMixin",
     "ntgl.common.LivingEntityMixin",
     "ntgl.common.ServerGamePacketListenerImplMixin",
     "ntgl.common.SittingPhaseMixin",
@@ -31,7 +30,6 @@
 
     "chassis.client.ClientPacketListenerMixin",
     "chassis.client.CreativeInventoryScreenMixin",
-    "chassis.client.ForgeIngameGuiMixin",
     "chassis.client.GameRendererMixin",
     "chassis.client.InventoryScreenMixin",
     "chassis.client.ModelPartMixin"

@@ -38,7 +38,8 @@ public class GlowingLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {
         }
     }
 
-    protected void renderLayer(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, MultiBufferSource bufferSource, float partialTick, int packedLight, ResourceLocation texture) {
+    protected void renderLayer(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, MultiBufferSource bufferSource,
+                               float partialTick, int packedLight, ResourceLocation texture) {
         var renderTypeNew = RenderType.entityTranslucentEmissive(texture);
 
         poseStack.pushPose();
@@ -48,8 +49,7 @@ public class GlowingLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {
             poseStack.translate( X / 100d / 16d, Y / 100d / 16d, Z / 10d / 16d);
             this.getRenderer().reRender(bakedModel, poseStack, bufferSource, animatable,
                     renderTypeNew, bufferSource.getBuffer(renderTypeNew),
-                    partialTick, packedLight, OverlayTexture.NO_OVERLAY,
-                    1.0F, 1.0F, 1.0F, 1.0F);
+                    partialTick, packedLight, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
         }
         poseStack.popPose();
     }

@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.ThrowMode;
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +30,8 @@ public class ThrowableStateHelper {
         var stack = data.weapon;
 
         var modes = WeaponModifierHelper.getThrowModes(data);
-        var tag = stack.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(stack);
+
         ThrowMode currentMode = null;
 
         if(tag.contains(THROW_MODE, Tag.TAG_STRING))
@@ -43,8 +45,10 @@ public class ThrowableStateHelper {
     }
 
     public static void setThrowMode(ItemStack stack, ThrowMode fireMode) {
-        var tag = stack.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(stack);
+
         tag.putString(THROW_MODE, fireMode.toString());
-        stack.setTag(tag);
+        var tag = NtglComponents.setWeaponTag(stack, tag);
+
     }
 }

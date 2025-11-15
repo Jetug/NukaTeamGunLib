@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.handlers;
 
+import com.nukateam.chassis_core.common.util.helpers.PlayerUtils;
 import com.nukateam.ntgl.*;
 import com.nukateam.ntgl.client.model.GunIconModels;
 import com.nukateam.ntgl.client.tooltip.*;
@@ -9,9 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.*;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 
 @EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
@@ -42,4 +41,11 @@ public class ClientEvents {
                 ScopeHud::render);
     }
 
+    @SubscribeEvent
+    public static void onRenderGui(RenderGuiLayerEvent.Pre event) {
+        if (PlayerUtils.isLocalWearingChassis()) {
+            if (event.getName().equals(VanillaGuiLayers.VEHICLE_HEALTH))
+                event.setCanceled(true);
+        }
+    }
 }

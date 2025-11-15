@@ -13,11 +13,10 @@ import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.datagen.*;
 import com.nukateam.ntgl.common.registry.ProjectileRegistry;
-import com.nukateam.ntgl.common.foundation.crafting.ModRecipeType;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.modules.gunpack.GunPackModule;
+import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -66,11 +65,8 @@ public class Ntgl {
         }
 
         ExampleWeapons.register(MOD_EVENT_BUS);
-        ModRecipeType.REGISTER.register(MOD_EVENT_BUS);
         ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
-        ModRecipeSerializers.REGISTER.register(MOD_EVENT_BUS);
         ModSounds.REGISTER.register(MOD_EVENT_BUS);
-        ModTileEntities.REGISTER.register(MOD_EVENT_BUS);
         ModEntityTypes.register(MOD_EVENT_BUS);
         EntityTypes.register(MOD_EVENT_BUS);
         MOD_EVENT_BUS.addListener(this::onCommonSetup);
@@ -118,9 +114,6 @@ public class Ntgl {
         event.enqueueWork(() -> {
             PacketHandler.init();
             ModSyncedDataKeys.register();
-            CraftingHelper.register(ResourceLocation.fromNamespaceAndPath(MOD_ID, "workbench_ingredient"),
-                    WorkbenchIngredient.Serializer.INSTANCE);
-
             ProjectileRegistry.registerProjectiles();
 
             if (Config.COMMON.gameplay.improvedHitboxes.get()) {
@@ -133,8 +126,6 @@ public class Ntgl {
         event.enqueueWork(ClientHandler::setup);
     }
 
-    private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder().add(Registries.DAMAGE_TYPE, NtglDamageTypes::bootstrap);
-
     private void onGatherData(GatherDataEvent event) {
         var generator = event.getGenerator();
         var output = generator.getPackOutput();
@@ -142,14 +133,14 @@ public class Ntgl {
         var existingFileHelper = event.getExistingFileHelper();
 
         BlockTagGen blockTagGen = new BlockTagGen(output, lookupProvider, existingFileHelper);
-        generator.addProvider(event.includeServer(), new RecipeGen(output, lookupProvider));
-        generator.addProvider(event.includeServer(), new LootTableGen(output));
+        generator.addProvider(event.includeServer(), LootTableGen.create(output, lookupProvider));
         generator.addProvider(event.includeServer(), blockTagGen);
         generator.addProvider(event.includeServer(), new ItemTagGen(output, lookupProvider, blockTagGen.contentsGetter(), existingFileHelper));
 //        generator.addProvider(event.includeServer(), new LanguageGen(generator));
 //        generator.addProvider(event.includeServer(), new GunGen(generator));
 //        generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
 
-        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(), BUILDER, Set.of(Ntgl.MOD_ID)));
+        var damageTypeGenerator = new RegistrySetBuilder().add(Registries.DAMAGE_TYPE, NtglDamageTypes::bootstrap);
+        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(), damageTypeGenerator, Set.of(Ntgl.MOD_ID)));
     }
 }

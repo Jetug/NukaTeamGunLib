@@ -5,6 +5,7 @@ import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -31,8 +32,8 @@ public class NtglDamageTypes {
         return ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.tryBuild(Ntgl.MOD_ID, name));
     }
 
-    public static void bootstrap(BootstapContext<DamageType> bootstapContext) {
-        bootstapContext.register(BULLET, new DamageType("bullet", 0.1f));
+    public static void bootstrap(BootstrapContext<DamageType> bootstrapContext) {
+        bootstrapContext.register(BULLET, new DamageType("bullet", 0.1f));
     }
 
     /**

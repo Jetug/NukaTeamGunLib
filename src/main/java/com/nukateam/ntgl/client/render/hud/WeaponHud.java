@@ -155,7 +155,7 @@ public class WeaponHud{
         }
     }
 
-    private void renderCounter(GuiGraphics graphics, GunHudCache handCache, int x, int y, PoseStack poseStack, String currentAmmoCountText) {
+    private static void renderCounter(GuiGraphics graphics, GunHudCache handCache, int x, int y, PoseStack poseStack, String currentAmmoCountText) {
         var ammoCountColor = handCache.ammoCount < (handCache.maxAmmoCount * 0.25) ? colors.lowAmmo : colors.currentAmmo;
         poseStack.pushPose();
         {

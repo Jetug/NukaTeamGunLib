@@ -38,7 +38,7 @@ public class S2CMessageProjectileExplosion  {
     public static void encode(S2CMessageProjectileExplosion message, FriendlyByteBuf buffer) {
         NbtUtils.writeVec3(buffer, message.position);
         NbtUtils.writeVec3(buffer, message.knockback);
-        buffer.writeNbt(message.config.serializeNBT());
+        buffer.writeNbt(message.config.serializeNBT(null));
         buffer.writeCollection(message.toBlow, (buf, blockPos) -> {
             int x = blockPos.getX() - Mth.floor(message.position.x);
             int y = blockPos.getY() - Mth.floor(message.position.y);

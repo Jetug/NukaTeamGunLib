@@ -3,7 +3,6 @@ package com.nukateam.ntgl.common.util.util;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.foundation.components.NtglComponents;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.util.helpers.compatibility.backpack.BackpackHelper;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
@@ -13,68 +12,12 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Author: MrCrayfish
  */
 public class InventoryUtil {
-    public static int getItemStackAmount(Player player, ItemStack find) {
-        int count = 0;
-        for (ItemStack stack : player.getInventory().items) {
-            if (!stack.isEmpty() && areItemStacksEqualIgnoreCount(stack, find)) {
-                count += stack.getCount();
-            }
-        }
-        return count;
-    }
-
-    private static boolean areItemStacksEqualIgnoreCount(ItemStack source, ItemStack target) {
-
-        var sourceTag = NtglComponents.getWeaponTag(source);
-        var targetTag = NtglComponents.getWeaponTag(target);
-
-
-        if (source.getItem() != target.getItem()) {
-            return false;
-        } else if (source.getDamageValue() != target.getDamageValue()) {
-            return false;
-        } else if (sourceTag == null && targetTag != null) {
-            return false;
-        } else {                                                       //TODO port this
-            return (sourceTag == null || sourceTag.equals(targetTag)) /*&& source.areItemsAndComponentsEqual(target)*/;
-        }
-    }
-
-    public static boolean hasWorkstationIngredient(Player player, WorkbenchIngredient find) {
-        int count = 0;
-        for (ItemStack stack : player.getInventory().items) {
-            if (!stack.isEmpty() && find.test(stack)) {
-                count += stack.getCount();
-            }
-        }
-        return find.getCount() <= count;
-    }
-
-    public static boolean removeWorkstationIngredient(Player player, WorkbenchIngredient find) {
-        int amount = find.getCount();
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            ItemStack stack = player.getInventory().getItem(i);
-            if (!stack.isEmpty() && find.test(stack)) {
-                if (amount - stack.getCount() < 0) {
-                    stack.shrink(amount);
-                    return true;
-                } else {
-                    amount -= stack.getCount();
-                    player.getInventory().items.set(i, ItemStack.EMPTY);
-                    if (amount == 0) return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public static IAmmoContext findPlayerAmmo(Player player, AmmoHolder id) {
         var context = findAmmo(player.getInventory(), id);
         if (!context.equals(AmmoContext.NONE))

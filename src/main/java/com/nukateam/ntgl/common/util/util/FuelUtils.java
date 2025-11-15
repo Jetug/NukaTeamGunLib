@@ -1,7 +1,9 @@
 package com.nukateam.ntgl.common.util.util;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +14,7 @@ public class FuelUtils {
     public static final String FUEL = "Fuel";
 
     public static CompoundTag getOrCreateFuelTag(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(stack);
         if(tag.contains(FUEL, Tag.TAG_COMPOUND)){
             return tag.getCompound(FUEL);
         }
@@ -57,13 +59,13 @@ public class FuelUtils {
     }
 
     public static void setFuel(ItemStack stack, AmmoHolder ammoHolder, int value) {
-        var tag = stack.getOrCreateTag();
+        var tag = NtglComponents.getWeaponTag(stack);
 
         var fuelTag = getOrCreateFuelTag(stack);
         fuelTag.putInt(ammoHolder.toString(), value);
 
         tag.put(FUEL, fuelTag);
-        stack.setTag(tag);
+        NtglComponents.setWeaponTag(stack, tag);
     }
 
     public static void addFuel(WeaponData data, AmmoHolder ammoHolder, int value) {

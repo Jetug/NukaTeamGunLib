@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.util.helpers;
 
+import com.nukateam.ntgl.common.foundation.components.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -18,7 +19,8 @@ public class RegistrationHelper {
     public static boolean registerGun(CreativeModeTab.Output output, Item item) {
         if (item instanceof WeaponItem weaponItem) {
             var stack = new ItemStack(weaponItem);
-            weaponItem.setDefaultTag(stack.getOrCreateTag());
+            var tag = NtglComponents.getWeaponTag(stack);
+            weaponItem.setDefaultTag(tag);
             output.accept(stack);
             return true;
         }

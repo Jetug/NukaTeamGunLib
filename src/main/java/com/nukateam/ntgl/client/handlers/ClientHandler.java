@@ -5,7 +5,6 @@ import com.nukateam.ntgl.client.registry.*;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.render.screen.AttachmentScreen;
-import com.nukateam.ntgl.client.render.screen.WorkbenchScreen;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.debug.screen.*;
 import com.nukateam.ntgl.common.foundation.init.ModContainers;
