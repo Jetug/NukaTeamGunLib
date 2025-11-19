@@ -20,8 +20,6 @@ import static net.minecraft.client.Options.genericValueLabel;
 
 @Mixin(SoundOptionsScreen.class)
 public abstract class SoundOptionsScreenMixin extends Screen {
-    @Shadow private OptionsList list;
-
     protected SoundOptionsScreenMixin(Component pTitle) {
         super(pTitle);
     }

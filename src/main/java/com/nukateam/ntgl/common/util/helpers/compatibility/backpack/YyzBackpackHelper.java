@@ -7,13 +7,13 @@ import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.YyzBackpackAmmoContext;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
+import com.yyz.yyzsbackpack.item.BackpackItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
-import net.p3pp3rf1y.sophisticatedbackpacks.backpack.BackpackItem;
 
 import javax.annotation.Nullable;
 

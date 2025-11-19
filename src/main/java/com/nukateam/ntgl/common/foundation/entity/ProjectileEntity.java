@@ -531,6 +531,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected void onContact(Vec3 hitVec) {
         if(projectile.getExplosion().isExplodeOnContact() && ExplosionUtils.isExplosive(projectile.getExplosion())){
             ExplosionUtils.createExplosion(this, projectile.getExplosion(), hitVec);
+            this.remove(RemovalReason.KILLED);
         }
     }
 
@@ -653,7 +654,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     private @NotNull DamageSource getDamageSource() {
         return new DamageSource(level().registryAccess()
                 .registryOrThrow(Registries.DAMAGE_TYPE)
-                .getHolderOrThrow( projectile.getDamageType()));
+                .getHolderOrThrow(projectile.getDamageType()), shooter);
     }
 
     private void sendEntityHitMessage(Entity entity, Vec3 hitVec, boolean headshot, boolean isCritical) {
