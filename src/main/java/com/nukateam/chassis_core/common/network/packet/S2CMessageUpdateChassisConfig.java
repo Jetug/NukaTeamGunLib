@@ -5,12 +5,13 @@ import com.nukateam.chassis_core.client.network.*;
 import com.nukateam.chassis_core.common.config.ChassisConfig;
 import com.nukateam.chassis_core.common.network.managers.NetworkChassisManager;
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkEvent;
 import org.apache.commons.lang3.Validate;
 
-public class S2CMessageUpdateChassisConfig extends PlayMessage<S2CMessageUpdateChassisConfig> {
+public class S2CMessageUpdateChassisConfig implements IMessage<S2CMessageUpdateChassisConfig> {
     private ImmutableMap<ResourceLocation, ChassisConfig> registeredConfigs;
 
     public S2CMessageUpdateChassisConfig() {}
@@ -29,9 +30,9 @@ public class S2CMessageUpdateChassisConfig extends PlayMessage<S2CMessageUpdateC
     }
 
     @Override
-    public void handle(S2CMessageUpdateChassisConfig message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleUpdateChassis(message)));
-        supplier.setHandled(true);
+    public void handle(S2CMessageUpdateChassisConfig message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleUpdateChassis(message)));
+        supplier.setPacketHandled(true);
     }
 
     public ImmutableMap<ResourceLocation, ChassisConfig> getRegisteredConfig() {

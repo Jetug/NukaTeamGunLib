@@ -5,6 +5,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.weapon.General;
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.helpers.EntityResult;
@@ -61,7 +62,7 @@ import java.util.function.Predicate;
 public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData {
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
-
+    protected AmmoHolder ammoHolder;
     protected WeaponMode weaponAction;
     protected WeaponData weaponData;
     protected boolean isServerSide = !level().isClientSide();
@@ -103,6 +104,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         var hand = shooter.getMainHandItem() == weaponStack ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         this.isRightHand = hand == InteractionHand.MAIN_HAND;
         this.ammo = setupAmmo(data);
+        this.ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
         this.pierceCount = projectile.getPierceLevel();
         var dir = this.getDirection(shooter, weaponStack, item);
         var speed =  this.projectile.getSpeed();
@@ -121,6 +123,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         compound.put("Weapon", weapon.save(new CompoundTag()));
         compound.putString("WeaponAction", weaponAction.toString());
         compound.put("Ammo", ammo.save(new CompoundTag()));
+        compound.putString("AmmoHolder", ammoHolder.toString());
         compound.put("Projectile", this.projectile.serializeNBT());
         compound.put("General", this.general.serializeNBT());
         compound.putDouble("ModifiedGravity", this.modifiedGravity);
@@ -133,6 +136,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.weapon = ItemStack.of(compound.getCompound("Weapon"));
         this.weaponAction = WeaponMode.getType(compound.getString("WeaponAction"));
         this.ammo = ItemStack.of(compound.getCompound("Ammo"));
+        this.ammoHolder = AmmoHolder.getType(compound.getString("AmmoHolder"));
         this.projectile = ProjectileConfig.create(compound.getCompound("Projectile"));
         this.general = General.create(compound.getCompound("General"));
         this.modifiedGravity = compound.getDouble("ModifiedGravity");
@@ -146,6 +150,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         buffer.writeNbt(this.general.serializeNBT());
         buffer.writeInt(this.shooterId);
         BufferUtil.writeItemStackToBufIgnoreTag(buffer, this.ammo);
+        buffer.writeUtf(this.ammoHolder.toString());
         buffer.writeDouble(this.modifiedGravity);
         buffer.writeVarInt(this.life);
         buffer.writeBoolean(this.isRightHand);
@@ -158,6 +163,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.general = General.create(buffer.readNbt());
         this.shooterId = buffer.readInt();
         this.ammo = BufferUtil.readItemStackFromBufIgnoreTag(buffer);
+        this.ammoHolder = AmmoHolder.getType(buffer.readUtf());
         this.modifiedGravity = buffer.readDouble();
         this.life = buffer.readVarInt();
         this.isRightHand = buffer.readBoolean();
@@ -192,8 +198,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         if (isServerSide) {
             rayTraceTargets();
+            travel();
         }
-        travel();
 
         if (this.tickCount >= this.life) {
             if (this.isAlive()) {
@@ -260,8 +266,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             return 0;
 
         var data = new WeaponData(this.weapon, this.shooter);
-
-        float initialDamage = WeaponModifierHelper.getProjectileDamage(ForgeRegistries.ITEMS.getKey(ammo.getItem()), data);
+        var initialDamage = WeaponModifierHelper.getProjectileDamage(ammoHolder.getId(), data);
 
         if (this.projectile.isDamageReduceOverLife()) {
             float modifier = ((float) this.projectile.getLife() - (float) (this.tickCount - 1)) / (float) this.projectile.getLife();
@@ -437,7 +442,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         if (this.shooter instanceof Player player && entity.hasIndirectPassenger(player)) return;
 
         burnEntity(entity);
-        damageEntity(entity, entityHitResult);
+        damageEntity(entityHitResult);
         PacketHandler.getPlayChannel().sendToTrackingEntity(() -> entity, new S2CMessageBlood(hitVec));
         onContact(hitVec);
         handlePierce(HitTarget.ENTITY);
@@ -517,7 +522,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         }
     }
 
-    private void damageEntity(Entity entity, ExtendedEntityRayTraceResult hitResult) {
+    protected void damageEntity(ExtendedEntityRayTraceResult hitResult) {
+        var entity = hitResult.getEntity();
         var damage = this.getDamage();
         var criticalDamage = this.getCriticalDamage(this.weapon, this.random, damage);
         var isCritical = damage != criticalDamage;

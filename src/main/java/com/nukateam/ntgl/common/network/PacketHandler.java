@@ -1,6 +1,8 @@
 package com.nukateam.ntgl.common.network;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.mrcrayfish.framework.api.network.MessageDirection;
+import com.nukateam.chassis_core.common.network.packet.*;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.network.message.*;
@@ -29,6 +31,14 @@ public class PacketHandler {
     }
 
     public static void init() {
+        //CHASSIS CORE
+        registerPlayMessage(C2SActionPacket.class   , NetworkDirection.PLAY_TO_SERVER);
+        registerPlayMessage(C2SGenericPacket.class  , NetworkDirection.PLAY_TO_SERVER);
+        registerPlayMessage(S2CInventoryPacket.class                , NetworkDirection.PLAY_TO_CLIENT);
+        registerPlayMessage(S2CMessageUpdateChassisConfig.class     , NetworkDirection.PLAY_TO_CLIENT);
+        registerPlayMessage(S2CMessageUpdateEquipmentConfig.class   , NetworkDirection.PLAY_TO_CLIENT);
+
+        //NTGL
         registerPlayMessage(C2SMessageAim.class         , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageReload.class      , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageShoot.class       , NetworkDirection.PLAY_TO_SERVER);

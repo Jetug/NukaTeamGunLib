@@ -5,15 +5,16 @@ import com.nukateam.chassis_core.client.network.ClientPlayHandler;
 import com.nukateam.chassis_core.common.config.EquipmentConfig;
 import com.nukateam.chassis_core.common.network.managers.NetworkEquipmentManager;
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkEvent;
 import org.apache.commons.lang3.Validate;
 
 /**
  * Author: MrCrayfish
  */
-public class S2CMessageUpdateEquipmentConfig extends PlayMessage<S2CMessageUpdateEquipmentConfig> {
+public class S2CMessageUpdateEquipmentConfig implements IMessage<S2CMessageUpdateEquipmentConfig> {
     private ImmutableMap<ResourceLocation, EquipmentConfig> registeredConfigs;
 
     public S2CMessageUpdateEquipmentConfig() {}
@@ -32,9 +33,9 @@ public class S2CMessageUpdateEquipmentConfig extends PlayMessage<S2CMessageUpdat
     }
 
     @Override
-    public void handle(S2CMessageUpdateEquipmentConfig message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleUpdateEquipment(message)));
-        supplier.setHandled(true);
+    public void handle(S2CMessageUpdateEquipmentConfig message, NetworkEvent.Context supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleUpdateEquipment(message)));
+        supplier.setPacketHandled(true);
     }
 
     public ImmutableMap<ResourceLocation, EquipmentConfig> getRegisteredConfig() {

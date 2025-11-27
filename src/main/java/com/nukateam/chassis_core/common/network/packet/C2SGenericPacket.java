@@ -3,11 +3,12 @@ package com.nukateam.chassis_core.common.network.packet;
 import com.nukateam.chassis_core.common.network.ActionRegistry;
 import com.nukateam.chassis_core.common.network.actions.Action;
 import com.mrcrayfish.framework.api.network.MessageContext;
-import com.mrcrayfish.framework.api.network.message.PlayMessage;
+import com.nukateam.ntgl.common.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 @SuppressWarnings("ALL")
-public class C2SGenericPacket extends PlayMessage<C2SGenericPacket> {
+public class C2SGenericPacket implements IMessage<C2SGenericPacket> {
     int entityId = -1;
     Action action = null;
 
@@ -31,7 +32,7 @@ public class C2SGenericPacket extends PlayMessage<C2SGenericPacket> {
         return new C2SGenericPacket(entityId, action.read(buffer));
     }
 
-    public void handle(C2SGenericPacket message, MessageContext context) {
+    public void handle(C2SGenericPacket message, NetworkEvent.Context context) {
         message.action.doServerAction(message.action, context, message.entityId);
     }
 }

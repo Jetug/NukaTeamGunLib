@@ -103,6 +103,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         controllerRegistrar.add(TRIGGER_CONTROLLER);
         controllerRegistrar.add(REVOLVER_CONTROLLER);
         controllerRegistrar.add(BARREL_CONTROLLER);
+        controllerRegistrar.add(TICKING_CONTROLLER);
     }
 
     @Override
