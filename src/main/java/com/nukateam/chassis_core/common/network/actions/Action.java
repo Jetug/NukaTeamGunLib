@@ -1,8 +1,8 @@
 package com.nukateam.chassis_core.common.network.actions;
 
 import com.nukateam.chassis_core.common.network.ActionRegistry;
-import com.mrcrayfish.framework.api.network.MessageContext;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public abstract class Action<T extends Action<T>> {
     public int getId() {
@@ -13,10 +13,10 @@ public abstract class Action<T extends Action<T>> {
         return this.getClass().getCanonicalName();
     }
 
-    public void doServerAction(T message, MessageContext context, int entityId) {
+    public void doServerAction(T message, NetworkEvent.Context context, int entityId) {
     }
 
-    public void doClientAction(T message, MessageContext context, int entityId) {
+    public void doClientAction(T message, NetworkEvent.Context context, int entityId) {
     }
 
     public abstract void write(FriendlyByteBuf buffer);

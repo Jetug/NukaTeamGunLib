@@ -5,6 +5,7 @@ import com.nukateam.chassis_core.common.input.KeyAction;
 import com.nukateam.chassis_core.common.network.actions.Action;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 import static com.nukateam.chassis_core.common.input.CommonInputHandler.onKeyInput;
 
@@ -36,8 +37,8 @@ public class InputAction extends Action<InputAction> {
     }
 
     @Override
-    public void doServerAction(InputAction message, MessageContext context, int entityId) {
-        var player = context.getPlayer();
+    public void doServerAction(InputAction message, NetworkEvent.Context context, int entityId) {
+        var player = context.getSender();
         onKeyInput(message.key, message.action, player);
     }
 }

@@ -14,9 +14,7 @@ public class AmmoHolder extends ResourceHolder {
     private boolean canReturnAmmo = false;
     private Function<ItemStack, Boolean> isAcceptable = (stack) -> false;
     private Function<ItemStack, Integer> getValue = (stack) -> 1;
-    private BiFunction<ItemStack, Integer, List<ItemStack>> onConsume = (stack, i) -> {
-        return List.of();
-    };
+    private BiFunction<ItemStack, Integer, List<ItemStack>> onConsume = (stack, i) -> List.of();
 
     private Function<AmmoHolder, String> getDescriptionId = (ammo) ->
             "info." + ammo.id.getNamespace() + "." + ammo.id.getPath();

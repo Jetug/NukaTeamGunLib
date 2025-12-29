@@ -1,9 +1,11 @@
 package com.nukateam.ntgl.common.data.holders;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class AmmoType extends ResourceHolder {
     public static AmmoType STANDARD             = new AmmoType("standard"             );
@@ -59,11 +61,17 @@ public class AmmoType extends ResourceHolder {
     }
 
     public static AmmoType getType(ResourceLocation id) {
-        return typeMap.getOrDefault(id, STANDARD);
+        return typeMap.getOrDefault(id, createDefault(id));
     }
 
     public static AmmoType getType(String path) {
         var id = ResourceLocation.tryParse(path);
         return getType(id);
+    }
+
+    private static AmmoType createDefault(ResourceLocation id){
+        var type = new AmmoType(id);
+        registerType(type);
+        return type;
     }
 }

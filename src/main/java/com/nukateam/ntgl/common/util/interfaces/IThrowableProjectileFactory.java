@@ -8,5 +8,5 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
 public interface IThrowableProjectileFactory {
-    <T extends Item & IThrowable & IWeapon> ThrowableItemEntity create(Level world, LivingEntity entity, T projectile, int timeLeft);
+    <T extends Item & IThrowable & IWeapon> ThrowableItemEntity<?> create(Level world, LivingEntity entity, T projectile, int timeLeft);
 }

@@ -311,7 +311,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
             RawAnimation animation = null;
             if (isShooting && this.animationHelper.hasAnimation(finalAnim)) {
                 animation = RawAnimation.begin().then(finalAnim, LoopType.HOLD_ON_LAST_FRAME);
-                this.animationHelper.syncAnimation(event, finalAnim, rate);
+                this.animationHelper.syncAnimation(event, rate, finalAnim);
             }
 
             return event.setAndContinue(animation);
@@ -334,7 +334,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     protected RawAnimation getInspectionAnimation(AnimationState<WeaponAnimator> event) {
             RawAnimation animation;
             animation = playGunAnim(Animations.INSPECT, PLAY_ONCE);
-            animationHelper.syncAnimation(event, Animations.INSPECT, ClientHandler.getMaxInspectionTicks());
+            animationHelper.syncAnimation(event, ClientHandler.getMaxInspectionTicks(), Animations.INSPECT);
             return animation;
     }
 
@@ -344,19 +344,18 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
                 BARREL_CONTROLLER.stop();
                 BARREL_CONTROLLER.setAnimation(playVoid());
                 animation = playGunAnim(Animations.CHARGE, LOOP);
-                animationHelper.syncAnimation(event, Animations.CHARGE, fireDelay);
+                animationHelper.syncAnimation(event, fireDelay, Animations.CHARGE);
             }
             return animation;
     }
 
     protected RawAnimation getTickingAnimation(AnimationState<WeaponAnimator> event) {
-        var animation = playGunAnim(TICKING, LOOP);
-        return animation;
+        return playGunAnim(TICKING, LOOP);
     }
 
     protected RawAnimation getMeleeDelayAnimation(AnimationState<WeaponAnimator> event) {
             var animation = playGunAnim(MELEE, LOOP);
-            animationHelper.syncAnimation(event, MELEE, meleeDelay);
+            animationHelper.syncAnimation(event, meleeDelay, MELEE);
             return animation;
     }
 
@@ -365,19 +364,19 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
                 return getHoldAnimation(event);
 
             var animation = playGunAnim(MELEE_END, LOOP);
-            animationHelper.syncAnimation(event, MELEE_END, meleeCooldown);
+            animationHelper.syncAnimation(event, meleeCooldown, MELEE_END);
             return animation;
     }
 
     protected RawAnimation getEquipAnimation(AnimationState<WeaponAnimator> event) {
             var animation = playGunAnim(EQUIP, LOOP);
-            animationHelper.syncAnimation(event, EQUIP, equipTime);
+            animationHelper.syncAnimation(event, equipTime, EQUIP);
             return animation;
     }
 
     protected RawAnimation getShootingAnimation(AnimationState<WeaponAnimator> event) {
             var animation = playGunAnim(SHOT, LOOP);
-            animationHelper.syncAnimation(event, SHOT, rate);
+            animationHelper.syncAnimation(event, rate, SHOT);
             return animation;
     }
 
@@ -397,19 +396,19 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
 
     protected RawAnimation getDefaultReloadAnimation(AnimationState<WeaponAnimator> event) {
         var animation = playGunAnim(RELOAD, LOOP);
-        animationHelper.syncAnimation(event, RELOAD, reloadTime);
+        animationHelper.syncAnimation(event, reloadTime, RELOAD);
         return animation;
     }
 
     protected RawAnimation getEndReloadAnimation(AnimationState<WeaponAnimator> event) {
         var animation = playGunAnim(Animations.RELOAD_END, PLAY_ONCE);
-        animationHelper.syncAnimation(event, Animations.RELOAD_END, reloadEndTime);
+        animationHelper.syncAnimation(event, reloadEndTime, Animations.RELOAD_END);
         return animation;
     }
 
     protected RawAnimation getStartReloadAnimation(AnimationState<WeaponAnimator> event) {
         var animation = playGunAnim(Animations.RELOAD_START, PLAY_ONCE);
-        animationHelper.syncAnimation(event, Animations.RELOAD_START, reloadStartTime);
+        animationHelper.syncAnimation(event, reloadStartTime, Animations.RELOAD_START);
         return animation;
     }
 
