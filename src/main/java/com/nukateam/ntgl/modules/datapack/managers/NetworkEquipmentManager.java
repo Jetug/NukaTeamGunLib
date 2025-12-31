@@ -54,7 +54,7 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
             Validate.notNull(ITEMS.getKey((Item)item));
             builder.put(ITEMS.getKey((Item)item), config);
             item.setConfig(new ConfigSupplier<>(config));
-//            Configs.EQUIPMENT_CONFIGS.put(item, new ConfigSupplier<>(config));
+            Configs.EQUIPMENT_CONFIGS.put(item, new ConfigSupplier<>(config));
         });
 
         this.registeredConfig = builder.build();
@@ -97,7 +97,7 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
                 if(item instanceof IConfigConsumer configConsumer){
                     configConsumer.setConfig(new ConfigSupplier<>(entry.getValue()));
                 }
-//                Configs.EQUIPMENT_CONFIGS.put((IChassisEquipment) item, new ConfigSupplier<>(entry.getValue()));
+                Configs.EQUIPMENT_CONFIGS.put((IChassisEquipment) item, new ConfigSupplier<>(entry.getValue()));
             }
         }
     }
