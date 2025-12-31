@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
-import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.data.config.weapon.Fuel;
 import com.nukateam.ntgl.common.data.config.weapon.Modules;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
@@ -54,16 +53,6 @@ public class NbtUtils {
         return tag;
     }
 
-    public static ArrayList<String> deserializeStringArray(CompoundTag tag){
-        var array = new ArrayList<String>();
-        for (var key: tag.getAllKeys()) {
-            if(tag.contains(key, Tag.TAG_STRING))
-                array.add(tag.getString(key));
-        }
-
-        return array;
-    }
-
     public static <T> CompoundTag serializeSet(Set<T> array){
         var tag = new CompoundTag();
         var iterator = array.iterator();
@@ -103,6 +92,81 @@ public class NbtUtils {
             tag.put(String.valueOf(i), array.get(i).serializeNBT());
         }
         return tag;
+    }
+
+    public static <T extends INBTSerializable> CompoundTag serializeArray(T[] array){
+        var tag = new CompoundTag();
+        for (var i = 0; i < array.length; i++){
+            tag.put(String.valueOf(i), array[i].serializeNBT());
+        }
+        return tag;
+    }
+
+    public static <T> CompoundTag serializeStringArray(T[] array){
+        var tag = new CompoundTag();
+        for (var i = 0; i < array.length; i++){
+            tag.putString(String.valueOf(i), array[i].toString());
+        }
+        return tag;
+    }
+
+//    public static <T> T[] deserializeArray(CompoundTag tag, Function<CompoundTag, T> deserializer){
+//        var array = new ArrayList<T>();
+//        for (var key: tag.getAllKeys()) {
+//            if(tag.contains(key, Tag.TAG_COMPOUND)) {
+//                var value = deserializer.apply(tag.getCompound(key));
+//                array.add(value);
+//            }
+//        }
+//
+//        return (T[])array.toArray();
+//    }
+
+
+    public static <T> ArrayList<T> deserializeArray(CompoundTag tag, Function<CompoundTag, T> deserializer){
+        var array = new ArrayList<T>();
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_COMPOUND)) {
+                var value = deserializer.apply(tag.getCompound(key));
+                array.add(value);
+            }
+        }
+
+        return array;
+    }
+
+    public static ArrayList<String> deserializeStringArrayList(CompoundTag tag){
+        var array = new ArrayList<String>();
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_STRING))
+                array.add(tag.getString(key));
+        }
+
+        return array;
+    }
+
+//    public static String[] deserializeStringArray(CompoundTag tag){
+//        var array = new ArrayList<String>();
+//        for (var key: tag.getAllKeys()) {
+//            if(tag.contains(key, Tag.TAG_STRING)) {
+//                var value = tag.getString(key);
+//                array.add(value);
+//            }
+//        }
+//
+//        return (String[])array.toArray();
+//    }
+//
+    public static ArrayList<String> deserializeStringArray(CompoundTag tag){
+        var array = new ArrayList<String>();
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_STRING)) {
+                var value = tag.getString(key);
+                array.add(value);
+            }
+        }
+
+        return array;
     }
 
     public static HashMap<AmmoHolder, Fuel> deserializeFuelMap(CompoundTag tag){
@@ -154,20 +218,6 @@ public class NbtUtils {
                 var resource = ResourceLocation.tryParse(nbtKey);
                 var value = deserializer.apply(tag.getCompound(nbtKey));
                 map.put(resource, value);
-            }
-        }
-
-        return map;
-    }
-
-    public static HashMap<ResourceLocation, ProjectileConfig> deserializeProjectileMap(CompoundTag tag){
-        var map = new HashMap<ResourceLocation, ProjectileConfig>();
-
-        for (var key: tag.getAllKeys()) {
-            if(tag.contains(key, Tag.TAG_COMPOUND)) {
-                var resource = ResourceLocation.tryParse(key);
-                var projectile = ProjectileConfig.create(tag.getCompound(key));
-                map.put(resource, projectile);
             }
         }
 
