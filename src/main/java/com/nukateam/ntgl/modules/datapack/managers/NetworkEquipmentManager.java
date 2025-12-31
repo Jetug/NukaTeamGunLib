@@ -1,11 +1,14 @@
-package com.nukateam.chassis_core.common.network.managers;
+package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.google.common.collect.ImmutableMap;
 import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.common.config.EquipmentConfig;
 import com.nukateam.chassis_core.common.foundation.item.IChassisEquipment;
+import com.nukateam.chassis_core.common.network.packet.S2CMessageUpdateEquipmentConfig;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IConfigConsumer;
+import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
+import com.nukateam.chassis_core.common.network.managers.Configs;
 import com.nukateam.chassis_core.modules.config.utils.ConfigUtils;
-import com.mrcrayfish.framework.api.data.login.ILoginData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -20,7 +23,6 @@ import org.apache.commons.lang3.Validate;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static net.minecraftforge.registries.ForgeRegistries.ITEMS;
 
@@ -52,7 +54,7 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
             Validate.notNull(ITEMS.getKey((Item)item));
             builder.put(ITEMS.getKey((Item)item), config);
             item.setConfig(new ConfigSupplier<>(config));
-            Configs.EQUIPMENT_CONFIGS.put(item, new ConfigSupplier<>(config));
+//            Configs.EQUIPMENT_CONFIGS.put(item, new ConfigSupplier<>(config));
         });
 
         this.registeredConfig = builder.build();
@@ -83,16 +85,38 @@ public class NetworkEquipmentManager extends SimplePreparableReloadListener<Map<
         return ImmutableMap.of();
     }
 
-    public static boolean updateRegisteredConfig(Map<ResourceLocation, EquipmentConfig> registeredConfig) {
+    public static void updateRegisteredConfig(S2CMessageUpdateEquipmentConfig message) {
+        updateRegisteredConfig(message.getRegisteredConfig());
+    }
+
+    public static void updateRegisteredConfig(Map<ResourceLocation, EquipmentConfig> registeredConfig) {
         if (registeredConfig != null) {
             for (Map.Entry<ResourceLocation, EquipmentConfig> entry : registeredConfig.entrySet()) {
                 var item = ITEMS.getValue(entry.getKey());
-                Configs.EQUIPMENT_CONFIGS.put((IChassisEquipment) item, new ConfigSupplier<>(entry.getValue()));
+                assert item != null;
+                if(item instanceof IConfigConsumer configConsumer){
+                    configConsumer.setConfig(new ConfigSupplier<>(entry.getValue()));
+                }
+//                Configs.EQUIPMENT_CONFIGS.put((IChassisEquipment) item, new ConfigSupplier<>(entry.getValue()));
             }
-            return true;
         }
-        return false;
     }
+
+//    private static boolean updateRegisteredWeapons(Map<ResourceLocation, WeaponConfig> registeredConfigs) {
+//        clientRegisteredWeapons.clear();
+//        if (registeredConfigs != null) {
+//            for (Map.Entry<ResourceLocation, WeaponConfig> entry : registeredConfigs.entrySet()) {
+//                Item item = ITEMS.getValue(entry.getKey());
+//                if (!(item instanceof IWeapon)) {
+//                    return false;
+//                }
+//                ((IWeapon) item).setConfig(new ConfigSupplier<>(entry.getValue()));
+//                clientRegisteredWeapons.add((IWeapon) item);
+//            }
+//            return true;
+//        }
+//        return false;
+//    }
 
     @Nullable
     public static NetworkEquipmentManager get() {

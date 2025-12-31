@@ -1,11 +1,12 @@
-package com.nukateam.chassis_core.common.network.managers;
+package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.google.common.collect.ImmutableMap;
 import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.common.config.ChassisConfig;
 import com.nukateam.chassis_core.common.foundation.entity.Chassis;
+import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
+import com.nukateam.chassis_core.common.network.managers.Configs;
 import com.nukateam.chassis_core.modules.config.utils.ConfigUtils;
-import com.mrcrayfish.framework.api.data.login.ILoginData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -20,7 +21,6 @@ import org.apache.commons.lang3.Validate;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Mod.EventBusSubscriber(modid = ChassisCore.MOD_ID)
 public class NetworkChassisManager extends SimplePreparableReloadListener<Map<EntityType<Chassis>, ChassisConfig>> {

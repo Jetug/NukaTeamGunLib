@@ -4,7 +4,8 @@ import com.nukateam.chassis_core.client.render.utils.ResourceHelper;
 import com.nukateam.chassis_core.common.config.EquipmentConfig;
 import com.nukateam.chassis_core.common.data.holders.ChassisPart;
 import com.nukateam.chassis_core.common.foundation.item.IChassisEquipment;
-import com.nukateam.chassis_core.common.network.managers.ConfigSupplier;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IConfigConsumer;
+import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
@@ -46,8 +47,8 @@ public class ChassisEquipment extends Item implements IChassisEquipment, GeoItem
     }
 
     @Override
-    public void setConfig(ConfigSupplier<EquipmentConfig> config) {
-        this.config = config.getConfig();
+    public void setConfig(ConfigSupplier<EquipmentConfig> supplier) {
+        this.config = supplier.config();
     }
 
     public String getName() {

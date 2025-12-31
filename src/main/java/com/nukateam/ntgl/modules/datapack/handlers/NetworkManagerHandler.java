@@ -1,5 +1,7 @@
 package com.nukateam.ntgl.modules.datapack.handlers;
 
+import com.nukateam.chassis_core.common.network.packet.S2CMessageUpdateChassisConfig;
+import com.nukateam.chassis_core.common.network.packet.S2CMessageUpdateEquipmentConfig;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.*;
@@ -19,6 +21,8 @@ public class NetworkManagerHandler {
         NetworkWeaponManager.onServerStopped();
         NetworkAmmoManager.onServerStopped();
         NetworkAttachmentManager.onServerStopped();
+        NetworkChassisManager.stop();
+        NetworkEquipmentManager.stop();
     }
 
     @SubscribeEvent
@@ -26,6 +30,8 @@ public class NetworkManagerHandler {
         NetworkWeaponManager.register(event);
         NetworkAmmoManager.register(event);
         NetworkAttachmentManager.register(event);
+        NetworkChassisManager.register(event);
+        NetworkEquipmentManager.register(event);
     }
 
     @SubscribeEvent
@@ -34,6 +40,8 @@ public class NetworkManagerHandler {
             PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateWeapons());
             PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateAmmo());
             PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateAttachments());
+            PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateChassisConfig());
+            PacketHandler.getPlayChannel().sendToPlayer(() -> player, new S2CMessageUpdateEquipmentConfig());
         }
     }
 
@@ -43,6 +51,8 @@ public class NetworkManagerHandler {
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateWeapons());
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateAmmo());
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateAttachments());
+            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateChassisConfig());
+            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateEquipmentConfig());
         }
     }
 }

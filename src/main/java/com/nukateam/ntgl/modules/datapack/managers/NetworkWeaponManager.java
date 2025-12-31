@@ -1,29 +1,23 @@
 package com.nukateam.ntgl.modules.datapack.managers;
 
-import com.mrcrayfish.framework.network.Network;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.modules.constants.Paths;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
 import com.nukateam.ntgl.common.network.message.S2CMessageUpdateWeapons;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.framework.api.data.login.ILoginData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.Validate;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -102,29 +96,25 @@ public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWe
         return ImmutableMap.of();
     }
 
-    public static boolean updateRegisteredWeapons(S2CMessageUpdateWeapons message) {
-        return updateRegisteredWeapons(message.getRegisteredGuns());
+    public static void updateRegisteredWeapons(S2CMessageUpdateWeapons message) {
+        updateRegisteredWeapons(message.getRegisteredGuns());
     }
 
     /**
      * Updates registered weapons from data provided by the server
-     *
-     * @return true if all registered weapons were able to update their corresponding weapon item
      */
-    private static boolean updateRegisteredWeapons(Map<ResourceLocation, WeaponConfig> registeredConfigs) {
+    private static void updateRegisteredWeapons(Map<ResourceLocation, WeaponConfig> registeredConfigs) {
         clientRegisteredWeapons.clear();
         if (registeredConfigs != null) {
             for (Map.Entry<ResourceLocation, WeaponConfig> entry : registeredConfigs.entrySet()) {
                 Item item = ITEMS.getValue(entry.getKey());
                 if (!(item instanceof IWeapon)) {
-                    return false;
+                    return;
                 }
                 ((IWeapon) item).setConfig(new ConfigSupplier<>(entry.getValue()));
                 clientRegisteredWeapons.add((IWeapon) item);
             }
-            return true;
         }
-        return false;
     }
 
     /**

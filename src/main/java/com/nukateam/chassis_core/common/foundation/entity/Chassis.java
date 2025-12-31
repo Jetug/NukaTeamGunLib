@@ -11,7 +11,7 @@ import com.nukateam.chassis_core.common.foundation.item.ChassisArmor;
 import com.nukateam.chassis_core.common.foundation.item.ChassisEquipment;
 import com.nukateam.chassis_core.common.foundation.item.ItemStackUtils;
 import com.nukateam.chassis_core.common.foundation.item.StackUtils;
-import com.nukateam.chassis_core.common.network.managers.ConfigSupplier;
+import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.chassis_core.common.network.managers.Configs;
 import com.nukateam.chassis_core.common.network.packet.S2CInventoryPacket;
 import com.nukateam.chassis_core.common.util.helpers.timer.TickTimer;
@@ -116,7 +116,7 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
 
     //GETTERS
     public ChassisConfig getConfig(){
-        return Configs.CHASSIS_CONFIGS.get(this.getType()).getConfig();
+        return Configs.CHASSIS_CONFIGS.get(this.getType()).config();
     }
 
     public float getTotalDefense() {
