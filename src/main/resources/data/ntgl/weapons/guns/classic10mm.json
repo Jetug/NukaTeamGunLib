@@ -22,6 +22,13 @@
     "ammo": [
       "minecraft:stick",
       "ntgl:round10mm"
+    ],
+    "attributeModifiers": [
+      {
+        "attribute": "minecraft:generic.movement_speed",
+        "value": 1,
+        "operation": "MULTIPLY_BASE"
+      }
     ]
   },
   "ammoData":{
@@ -75,6 +82,22 @@
         "movementModifier": 0.5
       }
     },
+    "ntgl:additional": {
+      "general": {
+        "action": "ntgl:melee"
+      },
+      "melee": {
+        "mode": "ntgl:auto",
+        "damage": 10,
+        "delay": 4,
+        "cooldown": 20,
+        "distance": 6,
+        "angle": 20,
+        "maxTargets": 1,
+        "knockback": 0.4
+      }
+    },
+
     "ntgl:alternative": {
       "general": {
         "action": "ntgl:scope"

@@ -12,6 +12,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,6 +50,7 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String AMMO_PER_SHOT = "AmmoPerShot";
     public static final String RENDER_HUD = "RenderHud";
     public static final String WEAPON_MODE = "WeaponMode";
+    public static final String ATTRIBUTE_MODIFIERS = "attributeModifiers";
 
     int rate;
     int maxAmmo;
@@ -80,6 +82,7 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional float spread;
     @Optional int fireTimer;
     @Optional float movementSpeed = 0.0f;
+    @Optional ArrayList<AttributeModifier> attributeModifiers = new ArrayList<>();
     @Optional protected LinkedHashSet<AmmoHolder> ammo = new LinkedHashSet<>(List.of(AmmoHolder.getType(Ntgl.MOD_ID + ":round10mm")));
     @Optional protected LinkedHashSet<AmmoHolder> fuel = new LinkedHashSet<>();
 
@@ -114,6 +117,7 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putInt      (MULTISHOT_AMOUNT, this.multishotAmount);
         tag.putFloat    (SPREAD, this.spread);
         tag.putFloat    (MOVEMENT_MODIFIER, this.movementSpeed);
+        tag.put         (ATTRIBUTE_MODIFIERS, NbtUtils.serializeArray(this.attributeModifiers));
         tag.putBoolean  (ALWAYS_SPREAD, this.alwaysSpread);
         tag.putBoolean  (ONE_TIME_CHARGE, this.oneTimeCharge);
         tag.put         (AMMO, NbtUtils.serializeSet(this.ammo));
@@ -213,6 +217,9 @@ public class General implements INBTSerializable<CompoundTag> {
         if (tag.contains(MOVEMENT_MODIFIER, Tag.TAG_ANY_NUMERIC)) {
             this.movementSpeed = tag.getFloat(MOVEMENT_MODIFIER);
         }
+        if (tag.contains(ATTRIBUTE_MODIFIERS, Tag.TAG_COMPOUND)) {
+            this.attributeModifiers = NbtUtils.deserializeArray(tag.getCompound(ATTRIBUTE_MODIFIERS), AttributeModifier::create);
+        }
         if (tag.contains(AMMO, Tag.TAG_COMPOUND)) {
             this.ammo = NbtUtils.deserializeSet(tag.getCompound(AMMO), AmmoHolder::getType);
         }
@@ -302,15 +309,20 @@ public class General implements INBTSerializable<CompoundTag> {
         general.spread = this.spread;
         general.oneTimeCharge = this.oneTimeCharge;
         general.movementSpeed = this.movementSpeed;
+        general.attributeModifiers = new ArrayList<>(attributeModifiers);
         general.ammo = new LinkedHashSet<>(this.ammo);
         general.fuel = new LinkedHashSet<>(this.fuel);
         return general;
     }
 
     public static General create(CompoundTag tag) {
-        var general = new General();
-        general.deserializeNBT(tag);
-        return general;
+        var config = new General();
+        config.deserializeNBT(tag);
+        return config;
+    }
+
+    public ArrayList<AttributeModifier> getAttributeModifiers() {
+        return attributeModifiers;
     }
 
     public Set<AmmoHolder> getAmmo() {

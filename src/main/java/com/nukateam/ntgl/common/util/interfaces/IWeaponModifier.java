@@ -3,15 +3,13 @@ package com.nukateam.ntgl.common.util.interfaces;
 import com.nukateam.example.common.registery.WeaponModifiers;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
-import com.nukateam.ntgl.common.data.config.weapon.AmmoConfig;
-import com.nukateam.ntgl.common.data.config.weapon.Fuel;
-import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
-import com.nukateam.ntgl.common.data.config.weapon.WeaponSettings;
+import com.nukateam.ntgl.common.data.config.weapon.*;
 import com.nukateam.ntgl.common.data.holders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -278,6 +276,10 @@ public interface IWeaponModifier {
     }
 
     default float modifyMovementSpeed(float value, WeaponData data) {
+        return value;
+    }
+
+    default ArrayList<AttributeModifier> modifyAttributeModifiers(ArrayList<AttributeModifier> value, WeaponData data) {
         return value;
     }
 

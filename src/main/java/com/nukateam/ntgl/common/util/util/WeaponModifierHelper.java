@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -360,10 +361,18 @@ public class WeaponModifierHelper {
     }
 
     public static float getMovementSpeed(WeaponData data) {
-        var gunSpread = getGeneral(data).getMovementSpeed();
-        var finalValue = new AtomicReference<>(gunSpread);
+        var value = getGeneral(data).getMovementSpeed();
+        var finalValue = new AtomicReference<>(value);
 
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMovementSpeed(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+    public static ArrayList<AttributeModifier> getAttributeModifiers(WeaponData data) {
+        var value = getGeneral(data).getAttributeModifiers();
+        var finalValue = new AtomicReference<>(value);
+
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyAttributeModifiers(finalValue.get(), data))));
         return finalValue.get();
     }
 
