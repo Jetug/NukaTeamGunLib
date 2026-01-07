@@ -275,10 +275,6 @@ public interface IWeaponModifier {
         return value;
     }
 
-    default float modifyMovementSpeed(float value, WeaponData data) {
-        return value;
-    }
-
     default ArrayList<AttributeModifier> modifyAttributeModifiers(ArrayList<AttributeModifier> value, WeaponData data) {
         return value;
     }

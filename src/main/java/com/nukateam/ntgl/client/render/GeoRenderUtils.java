@@ -31,7 +31,6 @@ public class GeoRenderUtils {
         playerEntityModel.leftSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);
     }
 
-
     public static PlayerModel<AbstractClientPlayer> getPlayerModel() {
         var client = Minecraft.getInstance();
         var playerEntityRenderer = (PlayerRenderer) client.getEntityRenderDispatcher().getRenderer(client.player);

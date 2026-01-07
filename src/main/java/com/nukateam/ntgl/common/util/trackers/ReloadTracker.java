@@ -5,7 +5,6 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
-import com.nukateam.ntgl.common.data.constants.Tags;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.*;
@@ -269,7 +268,8 @@ public class ReloadTracker {
             if (tag != null) {
                 var gunData = new WeaponData(weapon, shooter);
                 var maxAmmo = WeaponModifierHelper.getMaxAmmo(gunData);
-                amount = Math.min(amount, maxAmmo - tag.getInt(Tags.AMMO_COUNT));
+                var ammoCount = WeaponStateHelper.getAmmoCount(data);
+                amount = Math.min(amount, maxAmmo - ammoCount);
                 WeaponStateHelper.addAmmo(gunData, amount);
             }
 
@@ -308,7 +308,7 @@ public class ReloadTracker {
 
             if (tag != null) {
                 var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-                var currentAmmo = tag.getInt(Tags.AMMO_COUNT);
+                var currentAmmo = WeaponStateHelper.getAmmoCount(data);
 
                 if(currentAmmo > 0 && ammoHolder.canReturnAmmo()) {
                     var usedMagazine = new ItemStack(ForgeRegistries.ITEMS.getValue(ammoHolder.getId()));
@@ -317,7 +317,7 @@ public class ReloadTracker {
                     if(entity instanceof Player player)
                         addOrDropStack(player, usedMagazine);
                 }
-                tag.putInt(Tags.AMMO_COUNT, amount);
+                WeaponStateHelper.setAmmo(data, amount);
             }
             context.shrink(1, ammoHolder, entity);
         }
@@ -368,7 +368,7 @@ public class ReloadTracker {
 
         if (hand == InteractionHand.MAIN_HAND
                 && oppositeStack.getItem() instanceof IWeapon
-                && !WeaponModifierHelper.isWeaponFull(new WeaponData(oppositeStack, entity))) {
+                && !WeaponStateHelper.isWeaponFull(new WeaponData(oppositeStack, entity))) {
             PacketHandler.getPlayChannel().sendToPlayer(() -> (ServerPlayer) entity, new S2CMessageReload(true, oppositeHand));
         }
 

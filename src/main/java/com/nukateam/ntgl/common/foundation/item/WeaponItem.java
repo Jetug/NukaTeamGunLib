@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.item;
 
+import com.google.common.collect.HashMultimap;
 import com.nukateam.geo.render.ProxyItemRenderer;
 import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
@@ -24,7 +25,10 @@ import net.minecraft.network.chat.*;
 import net.minecraft.resources.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -36,11 +40,11 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager;
 
 import javax.annotation.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.*;
 
-import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
-import static com.nukateam.ntgl.common.util.util.WeaponStateHelper.AMMO_TAG;
+import static net.minecraftforge.registries.ForgeRegistries.ATTRIBUTES;
 import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
 public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable{
@@ -113,38 +117,71 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         return tag.getString(VARIANT);
     }
 
-    public void setDefaultTag(CompoundTag tag){
-        tag.putInt(AMMO_COUNT, getConfig().getGeneral().getMaxAmmo());
-    }
+    public static Map<UUID, HashMultimap<Attribute, AttributeModifier>> PLAYER_MODIFIERS = new HashMap<>();
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if(entity instanceof LivingEntity livingEntity) {
-            var tag = stack.getOrCreateTag();
-            var data = new WeaponData(stack, livingEntity);
-            var ammoItems = WeaponModifierHelper.getAmmoItems(data);
+            checkAmmo(stack, entity, livingEntity);
 
-            WeaponStateHelper.getCurrentAmmo(data);
-
-            if (tag.contains(AMMO_TAG, Tag.TAG_STRING)) {
-                var ammoId = tag.getString(AMMO_TAG);
-                var matches = ammoItems.stream().anyMatch((i) -> i.getId().toString().equals(ammoId));
-
-                if(!matches) {
-                    if (entity instanceof ServerPlayer player) {
-                        ServerPlayHandler.unloadGun(player, stack);
-                    }
-                    var firstAmmo = SetUtils.getFirst(ammoItems);
-                    WeaponStateHelper.setCurrentAmmo(data, firstAmmo.getId());
+            if(isItemInHands(stack, livingEntity)) {
+                var mods = PLAYER_MODIFIERS.get(livingEntity.getUUID());
+                if (mods != null) {
+                    livingEntity.getAttributes().removeAttributeModifiers(mods);
                 }
+                applyAttributeModifiers(livingEntity, InteractionHand.MAIN_HAND);
+                applyAttributeModifiers(livingEntity, InteractionHand.OFF_HAND);
             }
+        }
+    }
 
-            var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-            var currentAmount = WeaponStateHelper.getAmmoCount(data);
-            if(currentAmount > maxAmmo){
-                if (entity instanceof ServerPlayer player) {
-                    ServerPlayHandler.unloadGun(player, stack);
+    private static boolean isItemInHands(ItemStack stack, LivingEntity livingEntity) {
+        return stack == livingEntity.getItemInHand(InteractionHand.MAIN_HAND) ||
+                stack == livingEntity.getItemInHand(InteractionHand.OFF_HAND);
+    }
+
+    private static void applyAttributeModifiers(LivingEntity player, InteractionHand hand) {
+        var heldItem = player.getItemInHand(hand);
+
+        if (heldItem.getItem() instanceof IWeapon) {
+            var modifiers = WeaponModifierHelper.getAttributeModifiers(new WeaponData(heldItem, player));
+            var multiMap = HashMultimap.<Attribute, AttributeModifier>create();
+
+            for (var modifier : modifiers) {
+                var attribute = ATTRIBUTES.getValue(modifier.getAttribute()); if (attribute == null) continue;
+                var attributeInstance = player.getAttribute(attribute); if (attributeInstance == null) continue;
+                var name = modifier.getAttribute().toString() + hand;
+                var uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
+                var newModifier = new AttributeModifier(uuid, name, modifier.getValue(), modifier.getOperation());
+
+                if (!attributeInstance.hasModifier(newModifier)) {
+                    attributeInstance.addTransientModifier(newModifier);
                 }
+                multiMap.put(attribute, newModifier);
+            }
+            PLAYER_MODIFIERS.put(player.getUUID(), multiMap);
+        }
+    }
+
+    private static void checkAmmo(ItemStack stack, Entity entity, LivingEntity livingEntity) {
+        var data = new WeaponData(stack, livingEntity);
+        var ammoItems = WeaponModifierHelper.getAmmoItems(data);
+        var ammoId = WeaponStateHelper.getCurrentAmmo(data).getId();
+        var matches = ammoItems.stream().anyMatch((i) -> i.getId().equals(ammoId));
+
+        if(!matches) {
+            if (entity instanceof ServerPlayer player) {
+                ServerPlayHandler.unloadGun(player, stack);
+            }
+            var firstAmmo = SetUtils.getFirst(ammoItems);
+            WeaponStateHelper.setCurrentAmmo(data, firstAmmo.getId());
+        }
+
+        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+        var currentAmount = WeaponStateHelper.getAmmoCount(data);
+        if(currentAmount > maxAmmo){
+            if (entity instanceof ServerPlayer player) {
+                ServerPlayHandler.unloadGun(player, stack);
             }
         }
     }
@@ -222,7 +259,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         if (tagCompound.getBoolean("IgnoreAmmo")) {
             tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
         } else {
-            int ammoCount = tagCompound.getInt(AMMO_COUNT);
+            int ammoCount = WeaponStateHelper.getAmmoCount(weaponData);
             tooltip.add(Component.translatable("info.ntgl.ammo",
                     ChatFormatting.WHITE.toString()
                             + ammoCount + "/"

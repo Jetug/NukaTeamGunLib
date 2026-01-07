@@ -9,11 +9,9 @@ import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
-import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.debug.Debug;
 
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -28,12 +26,12 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class WeaponStateHelper {
-    public static final String AMMO_TAG = "Ammo";
-    public static final String FIRE_MODE = "FireMode";
-    public static final String ATTACHMENTS = "Attachments";
+    private static final String AMMO_TAG = "Ammo";
+    private static final String FIRE_MODE = "FireMode";
+    private static final String ATTACHMENTS = "Attachments";
+    private static final String AMMO_COUNT = "AmmoCount";
 
     //AMMO
     public static void switchAmmo(WeaponData data){
@@ -56,28 +54,35 @@ public class WeaponStateHelper {
 
     public static int getAmmoCount(WeaponData data) {
         var tag = data.weapon.getOrCreateTag();
-        return tag.getInt(Tags.AMMO_COUNT);
+        return tag.getInt(AMMO_COUNT);
     }
 
     public static void addAmmo(WeaponData data, int amount) {
         var tag = data.weapon.getOrCreateTag();
         var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-        var result = Math.min(tag.getInt(Tags.AMMO_COUNT) + amount, maxAmmo);
-        tag.putInt(Tags.AMMO_COUNT, result);
+        var result = Math.min(tag.getInt(AMMO_COUNT) + amount, maxAmmo);
+        tag.putInt(AMMO_COUNT, result);
         data.weapon.setTag(tag);
     }
 
     public static void setCurrentAmmo(WeaponData data, ResourceLocation ammo) {
         var tag = data.weapon.getOrCreateTag();
-        tag.putString(AMMO_TAG, ammo.toString());
+        var ammoTag = new CompoundTag();
+
+        if(tag.contains(AMMO_TAG))
+            ammoTag = tag.getCompound(AMMO_TAG);
+
+        ammoTag.putString(data.weaponMode.toString(), ammo.toString());
+        tag.put(AMMO_TAG, ammoTag);
         data.weapon.setTag(tag);
     }
 
     public static AmmoHolder getCurrentAmmo(WeaponData data) {
         var tag = data.weapon.getOrCreateTag();
 
-        if(tag.contains(AMMO_TAG, Tag.TAG_STRING)){
-            var ammoId = tag.getString(AMMO_TAG);
+        if(tag.contains(AMMO_TAG, Tag.TAG_COMPOUND)){
+            var ammoTag = tag.getCompound(AMMO_TAG);
+            var ammoId = ammoTag.getString(data.weaponMode.toString());
             return AmmoHolder.getType(ammoId);
         }
         else {
@@ -90,8 +95,11 @@ public class WeaponStateHelper {
         var tag = data.weapon.getOrCreateTag();
         var ammoItems = WeaponModifierHelper.getAmmoItems(data);
 
-        if(tag.contains(AMMO_TAG, Tag.TAG_STRING)) {
-            return AmmoHolder.getType(tag.getString(AMMO_TAG));
+        if(tag.contains(AMMO_TAG, Tag.TAG_COMPOUND)) {
+            var ammoTag = tag.getCompound(AMMO_TAG);
+            var ammoId = ammoTag.getString(data.weaponMode.toString());
+
+            return AmmoHolder.getType(ammoId);
         }
         else {
             var firstAmmo = SetUtils.getFirst(ammoItems);
@@ -157,9 +165,20 @@ public class WeaponStateHelper {
         return ammo == maxAmmo;
     }
 
-    public static void setAmmo(ItemStack gunStack, int amount) {
-        var tag = gunStack.getOrCreateTag();
-        tag.putInt(Tags.AMMO_COUNT, amount);
+    public static void setAmmo(WeaponData data, int amount) {
+        var tag = data.weapon.getOrCreateTag();
+        tag.putInt(AMMO_COUNT, amount);
+
+
+//        var tag = data.weapon.getOrCreateTag();
+//        var ammoTag = new CompoundTag();
+//
+//        if(tag.contains(AMMO_TAG))
+//            ammoTag = tag.getCompound(AMMO_TAG);
+//
+//        ammoTag.putString(data.weaponMode.toString(), ammo.toString());
+//        tag.put(AMMO_TAG, ammoTag);
+//        data.weapon.setTag(tag);
     }
 
     public static void setMaxAmmo(WeaponData data) {
@@ -168,13 +187,13 @@ public class WeaponStateHelper {
 
     public static boolean hasAmmo(ItemStack gunStack) {
         var tag = gunStack.getOrCreateTag();
-        return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) > 0;
+        return tag.getBoolean("IgnoreAmmo") || tag.getInt(AMMO_COUNT) > 0;
     }
 
     public static boolean hasEnoughAmmo(WeaponData data) {
         var tag = data.weapon.getOrCreateTag();
         var ammoPerShot = WeaponModifierHelper.getAmmoPerShot(data);
-        return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) >= ammoPerShot;
+        return tag.getBoolean("IgnoreAmmo") || tag.getInt(AMMO_COUNT) >= ammoPerShot;
     }
 
     public static void fillAmmo(WeaponData data) {
@@ -182,7 +201,7 @@ public class WeaponStateHelper {
             var tag = data.weapon.getOrCreateTag();
             var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
 
-            tag.putInt(Tags.AMMO_COUNT, maxAmmo);
+            tag.putInt(AMMO_COUNT, maxAmmo);
         }
     }
 
@@ -298,7 +317,7 @@ public class WeaponStateHelper {
         }
 
         var tag = weapon.getOrCreateTag();
-        tag.put(Tags.ATTACHMENTS, attachmentsTag);
+        tag.put(ATTACHMENTS, attachmentsTag);
     }
 
     private static boolean containsItem(Collection<ItemStack> whereFind, Collection<ItemStack> whatFind) {
@@ -326,8 +345,8 @@ public class WeaponStateHelper {
 
         var attachmentsTag = new CompoundTag();
 
-        if(tag.contains(Tags.ATTACHMENTS, Tag.TAG_COMPOUND)){
-            attachmentsTag = tag.getCompound(Tags.ATTACHMENTS);
+        if(tag.contains(ATTACHMENTS, Tag.TAG_COMPOUND)){
+            attachmentsTag = tag.getCompound(ATTACHMENTS);
         }
 
         if (attachmentStack.getItem() instanceof IAttachment attachment) {
@@ -335,7 +354,7 @@ public class WeaponStateHelper {
             attachmentsTag.put(tagKey, attachmentStack.save(new CompoundTag()));
         }
 
-        tag.put(Tags.ATTACHMENTS, attachmentsTag);
+        tag.put(ATTACHMENTS, attachmentsTag);
     }
 
     public static void consumeAmmo(WeaponData data) {
@@ -364,5 +383,13 @@ public class WeaponStateHelper {
             equipTime = WeaponModifierHelper.getEquipTime(data);
         }
         return equipTime;
+    }
+
+    public static boolean isWeaponFull(WeaponData data) {
+        return getAmmoCount(data) >= WeaponModifierHelper.getMaxAmmo(data);
+    }
+
+    public static boolean isAuto(WeaponData itemStack) {
+        return getFireMode(itemStack) == FireMode.AUTO;
     }
 }

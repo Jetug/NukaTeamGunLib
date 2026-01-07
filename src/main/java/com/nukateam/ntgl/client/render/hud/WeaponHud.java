@@ -27,13 +27,13 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -48,15 +48,12 @@ public class WeaponHud implements IGuiOverlay {
     protected static final DecimalFormat CURRENT_AMMO_FORMAT = new DecimalFormat("000");
     protected static final DecimalFormat CURRENT_AMMO_FORMAT_PERCENT = new DecimalFormat("000%");
     protected static final DecimalFormat INVENTORY_AMMO_FORMAT = new DecimalFormat("0000");
-    private static final int ICON_X = 115;
     private static final int OFFHAND_X_OFFSET = 110;
     private static final int BAR_WIDTH = 35;
     private static final int BAR_HEIGHT = 6;
-
-    public static final int COUNTER_POS_X = 70;
-    public static final int ICON_SIZE = 16;
-    public static final int COUNTER_POS_Y = 36;
-
+    private static final int COUNTER_POS_X = 70;
+    private static final int COUNTER_POS_Y = 36;
+    private static final int ICON_SIZE = 16;
     private static final int BAR_START_X = COUNTER_POS_X;
     private static final int BAR_START_Y = 57;
     protected static final Map<InteractionHand, GunHudCache> cache = Map.of(
@@ -81,7 +78,7 @@ public class WeaponHud implements IGuiOverlay {
             if (heldItem.getItem() instanceof IWeapon && shouldRender(hand, player)) {
                 updateCache(cache, player, heldItem);
                 if (!MinecraftForge.EVENT_BUS.post(new GunHudEvent(this, hand, graphics, cache, GunHudEvent.Phase.START))) {
-                    renderAmmoCounter(graphics, cache, heldItem, x, height);
+                    renderAmmoInfo(graphics, cache, heldItem, x, height);
                     MinecraftForge.EVENT_BUS.post(new GunHudEvent(this, hand, graphics, cache, GunHudEvent.Phase.END));
                 }
             }
@@ -96,7 +93,7 @@ public class WeaponHud implements IGuiOverlay {
         colors = DEFAULT_COLORS;
     }
 
-    protected void renderAmmoCounter(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int x, int y) {
+    protected void renderAmmoInfo(GuiGraphics graphics, GunHudCache handCache, ItemStack stack, int x, int y) {
         if(!WeaponModifierHelper.shouldRenderHud(new WeaponData(stack, minecraft.player))) return;
 
         var poseStack = graphics.pose();
@@ -109,24 +106,31 @@ public class WeaponHud implements IGuiOverlay {
 
             var fontHeight = minecraft.font.lineHeight;
 
-            renderAmmoTypeIcon(graphics, poseStack, handCache, x - COUNTER_POS_X - ICON_SIZE - 2, y - COUNTER_POS_Y - 11);
-            renderCurrentAmmo (graphics, poseStack, handCache, x - COUNTER_POS_X, y - COUNTER_POS_Y - fontHeight);
+            renderAmmoTypeIcon(graphics, poseStack, handCache, WeaponMode.PRIMARY, x - COUNTER_POS_X - ICON_SIZE - 2, y - COUNTER_POS_Y - 11);
+            renderCurrentAmmo (graphics, poseStack, handCache.weaponModes.get(WeaponMode.PRIMARY), x - COUNTER_POS_X, y - COUNTER_POS_Y - fontHeight);
 
             Figures.drawLine(graphics, x - COUNTER_POS_X, y - 31, 27, 2, RgbHelper.toRgba(colors.hud));
 
             if(handCache.isThrowable)
                 renderThrowModeIcon(graphics, poseStack, handCache, x - COUNTER_POS_X - ICON_SIZE - 2 , y - INVENTORY_AMMO_POS_Y - 6);
             else renderFireModeIcon(graphics, poseStack, handCache,  x - COUNTER_POS_X - ICON_SIZE - 2 , y - INVENTORY_AMMO_POS_Y - 6);
-            renderInventoryAmmo(graphics, poseStack, handCache, x - COUNTER_POS_X + 3, y - INVENTORY_AMMO_POS_Y);
+            renderInventoryAmmo(graphics, poseStack, handCache.weaponModes.get(WeaponMode.PRIMARY), x - COUNTER_POS_X + 3, y - INVENTORY_AMMO_POS_Y);
 
             renderFuelCounters(graphics, handCache, stack, x - BAR_START_X + 8, y - BAR_START_Y - 3 );
             renderWeaponModes(graphics, poseStack, handCache, x - COUNTER_POS_X + 38 , y - INVENTORY_AMMO_POS_Y  - 2);
+
+
+            var scale = 0.5f;
+            poseStack.scale(scale, scale, scale);
+            renderCurrentAmmo (graphics, poseStack, handCache.weaponModes.get(WeaponMode.ALTERNATIVE),
+                    (x - COUNTER_POS_X + ClientDebug.X) / scale, (y - COUNTER_POS_Y - fontHeight + 32 + ClientDebug.Y) / scale);
+
         }
         poseStack.popPose();
     }
 
-    protected void renderCurrentAmmo(GuiGraphics graphics, PoseStack poseStack, GunHudCache handCache,
-                                     int x, int y) {
+    protected void renderCurrentAmmo(GuiGraphics graphics, PoseStack poseStack, GunHudCache.ModeInfo handCache,
+                                     float x, float y) {
         var currentAmmoCountText = "";
         if(handCache.ammoConfig.getCounter() == CounterType.NUMBER) {
             currentAmmoCountText = CURRENT_AMMO_FORMAT.format(handCache.ammoCount);
@@ -139,7 +143,7 @@ public class WeaponHud implements IGuiOverlay {
         }
         else if(handCache.ammoConfig.getCounter() == CounterType.BAR){
             var percent = (((float)handCache.ammoCount / (float)handCache.maxAmmoCount));
-            renderBarCounter(graphics, percent, x, y);
+            renderBarCounter(graphics, percent, (int)x, (int)y);
         }
     }
 
@@ -156,7 +160,7 @@ public class WeaponHud implements IGuiOverlay {
         }
     }
 
-    private void renderCounter(GuiGraphics graphics, GunHudCache handCache, int x, int y, PoseStack poseStack, String currentAmmoCountText) {
+    private void renderCounter(GuiGraphics graphics, GunHudCache.ModeInfo handCache, float x, float y, PoseStack poseStack, String currentAmmoCountText) {
         var ammoCountColor = handCache.ammoCount < (handCache.maxAmmoCount * 0.25) ? colors.lowAmmo : colors.currentAmmo;
         poseStack.pushPose();
         {
@@ -175,7 +179,7 @@ public class WeaponHud implements IGuiOverlay {
         Figures.drawBar(graphics, x, y, BAR_WIDTH, BAR_HEIGHT, percent, RgbHelper.toRgba(color));
     }
 
-    protected void renderInventoryAmmo(GuiGraphics graphics, PoseStack poseStack, GunHudCache handCache, int x, int y) {
+    protected void renderInventoryAmmo(GuiGraphics graphics, PoseStack poseStack, GunHudCache.ModeInfo handCache, int x, int y) {
         var inventoryAmmoCountText = INVENTORY_AMMO_FORMAT.format(handCache.inventoryAmmoCount);
         poseStack.pushPose();
         {
@@ -192,18 +196,18 @@ public class WeaponHud implements IGuiOverlay {
         var iconPosY = y;
         for (var entry : handCache.weaponModes.entrySet()) {
             var mode = entry.getKey();
-            var action = entry.getValue();
+            var action = entry.getValue().action;
             renderIcon(graphics, poseStack, action.getIcon(), x, iconPosY, WEAPON_MODE_SCALE);
             renderKey(graphics, poseStack, WeaponModeBindings.getKey(mode).getKey(), x + 16, iconPosY + 3, false);
             iconPosY -= 12;
         }
     }
 
-    protected void renderAmmoTypeIcon(GuiGraphics graphics, PoseStack poseStack, GunHudCache handCache, int x, int y) {
-        var ammoType = handCache.ammoConfig.getAmmoType();
+    protected void renderAmmoTypeIcon(GuiGraphics graphics, PoseStack poseStack, GunHudCache handCache, WeaponMode mode, int x, int y) {
+        var ammoType = handCache.weaponModes.get(mode).ammoConfig.getAmmoType();
         var icon = ammoType.getIcon();
         renderIcon(graphics, icon, x, y);
-        if(handCache.ammoTypeKey) {
+        if(handCache.ammoTypeKey && mode == WeaponMode.PRIMARY) {
             renderKey(graphics, poseStack, NtglKeyBinds.KEY_AMMO_SELECT.getKey(), x - 6, y + 6);
         }
     }
@@ -240,7 +244,7 @@ public class WeaponHud implements IGuiOverlay {
             renderIcon(graphics, poseStack, icon, x - 5, y - 3, WEAPON_MODE_SCALE);
         } else {
             var side = isLeft ? 1 : -1;
-            renderKeyName(graphics, poseStack, key, x + 3 * side - ClientDebug.X, y, BINDING_SCALE, isLeft);
+            renderKeyName(graphics, poseStack, key, x + 3 * side, y, BINDING_SCALE, isLeft);
         }
     }
 
@@ -285,27 +289,23 @@ public class WeaponHud implements IGuiOverlay {
         if ((System.currentTimeMillis() - handCache.checkAmmoTimestamp) > 200) {
             var data = new WeaponData(weapon, player);
             handCache.checkAmmoTimestamp = System.currentTimeMillis();
-            handCache.maxAmmoCount = WeaponModifierHelper.getMaxAmmo(data);
             handCache.fireMode = WeaponStateHelper.getFireMode(data);
             handCache.isThrowable = WeaponModifierHelper.getWeaponAction(data) == WeaponAction.THROW;
             handCache.weaponModes = new LinkedHashMap<>();
             var weaponModes = WeaponModifierHelper.getWeaponModes(data).keySet();
 
-            addAction(handCache, WeaponMode.PRIMARY, data);
+            addAction(handCache, data);
 
             for(var mode : weaponModes){
-                addAction(handCache, mode, data);
+                data.weaponMode = mode;
+                addAction(handCache, data);
             }
 
             if(handCache.isThrowable){
                 handCache.throwMode = ThrowableStateHelper.getThrowMode(data);
-                handCache.ammoCount = weapon.getCount();
-                handCache.ammoConfig = WeaponModifierHelper.getConfig(data).getThrowable().getAmmo();
                 handCache.fireModeKey = WeaponModifierHelper.getThrowModes(data).size() > 1;
             }
             else {
-                handCache.ammoCount = WeaponStateHelper.getAmmoCount(data);
-                handCache.ammoConfig = WeaponModifierHelper.getConfig(data).getAmmoConfig(WeaponStateHelper.getCurrentAmmo(data).getId());
                 handCache.fireModeKey = WeaponModifierHelper.getFireModes(data).size() > 1;
                 handCache.ammoTypeKey = WeaponModifierHelper.getAmmoItems(data).size() > 1;
             }
@@ -316,20 +316,38 @@ public class WeaponHud implements IGuiOverlay {
                 handCache.fuels.put(id, value);
             }
 
-            if (!player.isCreative()) {
-                if(handCache.isThrowable)
-                    handCache.inventoryAmmoCount = getInventoryThrowableCount(weapon, player.getInventory());
-                else handCache.inventoryAmmoCount = getInventoryAmmoCount(weapon, player.getInventory());
-            } else {
-                handCache.inventoryAmmoCount = 9999;
-            }
+
         }
     }
 
-    private static void addAction(GunHudCache handCache, WeaponMode mode, WeaponData data) {
+    private void addAction(GunHudCache handCache, WeaponData data) {
+        var mode = data.weaponMode;
         var action = WeaponModifierHelper.getWeaponAction(data.clone().setWeaponMode(mode));
+        var player = (Player)data.wielder;
+        var weapon = data.weapon;
+        var modeInfo = new GunHudCache.ModeInfo();
+        modeInfo.action = action;
+        modeInfo.maxAmmoCount = WeaponModifierHelper.getMaxAmmo(data);
+
+        if(handCache.isThrowable){
+            modeInfo.ammoCount = data.weapon.getCount();
+            modeInfo.ammoConfig = WeaponModifierHelper.getConfig(data).getThrowable().getAmmo();
+        }
+        else {
+            modeInfo.ammoCount = WeaponStateHelper.getAmmoCount(data);
+            modeInfo.ammoConfig = WeaponModifierHelper.getConfig(data).getAmmoConfig(WeaponStateHelper.getCurrentAmmo(data).getId());
+        }
+
         if(action != WeaponAction.NONE) {
-            handCache.weaponModes.put(mode, action);
+            handCache.weaponModes.put(mode, modeInfo);
+        }
+
+        if (!player.isCreative()) {
+            if(handCache.isThrowable)
+                modeInfo.inventoryAmmoCount = getInventoryThrowableCount(weapon, player.getInventory());
+            else modeInfo.inventoryAmmoCount = getInventoryAmmoCount(weapon, player.getInventory());
+        } else {
+            modeInfo.inventoryAmmoCount = 9999;
         }
     }
 

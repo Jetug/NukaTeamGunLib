@@ -66,20 +66,9 @@
       "general": {
         "action": "ntgl:scope"
       },
-      "melee": {
-        "mode": "ntgl:auto",
-        "damage": 10,
-        "delay": 4,
-        "cooldown": 20,
-        "distance": 6,
-        "angle": 20,
-        "maxTargets": 1,
-        "knockback": 0.4
-      },
       "zoom": {
         "offset": [0.0, 4.8, 0.0],
-        "fovModifier": 0.7,
-        "movementModifier": 0.5
+        "fovModifier": 0.7
       }
     },
     "ntgl:additional": {
@@ -97,40 +86,39 @@
         "knockback": 0.4
       }
     },
-
     "ntgl:alternative": {
       "general": {
-        "action": "ntgl:scope"
-      },
-      "zoom": {
-        "offset": [0.0, 4.8, 0.0],
-        "fovModifier": 0.7,
-        "movementModifier": 0.5
-      },
-      "throwable": {
-        "mode": [
-          "ntgl:safe"
-        ],
-        "prepareTime": 20,
-        "throwTime": 6,
-
-        "ammoData":{
-          "ammo": {
-            "type": "ntgl:explosive"
-          },
-          "projectile": {
-            "damage": 10.0,
-            "size": 1.0,
-            "speed": 50.0,
-            "life": 80,
-            "gravity": true,
-
-            "explosion": {
-              "damage": 40,
-              "radius": 10,
-              "knockback": 0.5
-            }
-          }
+        "action": "ntgl:shot",
+        "rate": 4,
+        "fireMode": ["ntgl:semi"],
+        "damage" : 10,
+        "maxAmmo": 20,
+        "reloadTime": 30,
+        "reloadAmount": 2,
+        "recoilAngle": 5.0,
+        "recoilKick": 0.3,
+        "recoilAdsReduction": 0.25,
+        "alwaysSpread": true,
+        "spread": 1.0,
+        "melee": true,
+        "ammo": [
+          "ntgl:round45"
+        ]
+      }
+    },
+    "ammoData":{
+      "ntgl:round45": {
+        "ammo": {
+          "type": "ntgl:buckshot"
+        },
+        "projectile": {
+          "visible": true,
+          "damage": 2.0,
+          "size": 5.0,
+          "speed": 3.0,
+          "life": 120,
+          "burnSeconds": 5,
+          "projectileAmount": 1
         }
       }
     }

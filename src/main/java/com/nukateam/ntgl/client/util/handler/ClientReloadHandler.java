@@ -71,13 +71,13 @@ public class ClientReloadHandler {
         var offhandItem = player.getOffhandItem();
 
         if (mainHandItem.getItem() instanceof IWeapon
-                && !WeaponModifierHelper.isWeaponFull(new WeaponData(mainHandItem, player))
+                && !WeaponStateHelper.isWeaponFull(new WeaponData(mainHandItem, player))
                 && !isReloading(player, InteractionHand.MAIN_HAND)){
             setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
         }
         else if (offhandItem.getItem() instanceof IWeapon
                 && WeaponModifierHelper.canUseOffhandWeapon(player)
-                && !WeaponModifierHelper.isWeaponFull(new WeaponData(offhandItem, player))
+                && !WeaponStateHelper.isWeaponFull(new WeaponData(offhandItem, player))
                 && !isReloading(player, InteractionHand.OFF_HAND)){
             setReloading(!ModSyncedDataKeys.RELOADING_LEFT.getValue(player), InteractionHand.OFF_HAND);
         }

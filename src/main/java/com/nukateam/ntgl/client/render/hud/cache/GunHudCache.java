@@ -12,17 +12,22 @@ public class GunHudCache{
     public HashMap<AmmoHolder, Fuel> fuels = new HashMap<>();
     public final InteractionHand hand;
     public long checkAmmoTimestamp = -1L;
-    public int inventoryAmmoCount = 0;
-    public int maxAmmoCount = 0;
-    public int ammoCount = 0;
-    public AmmoConfig ammoConfig = new AmmoConfig();
+
     public ThrowMode throwMode = ThrowMode.SAFE;
     public boolean fireModeKey = false;
     public boolean ammoTypeKey = false;
     public boolean isThrowable = false;
-    public LinkedHashMap<WeaponMode, WeaponAction> weaponModes = new LinkedHashMap<>(Map.of());
+    public LinkedHashMap<WeaponMode, ModeInfo> weaponModes = new LinkedHashMap<>(Map.of());
 
     public GunHudCache(InteractionHand hand){
         this.hand = hand;
+    }
+
+    public static class ModeInfo{
+        public WeaponAction action;
+        public int inventoryAmmoCount = 0;
+        public int maxAmmoCount = 0;
+        public int ammoCount = 0;
+        public AmmoConfig ammoConfig = new AmmoConfig();
     }
 }

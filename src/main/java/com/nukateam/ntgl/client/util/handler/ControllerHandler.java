@@ -179,7 +179,7 @@ public class ControllerHandler {
             var gunData = new WeaponData(heldItem, player);
 
             if (heldItem.getItem() instanceof IWeapon) {
-                if (WeaponModifierHelper.isAuto(gunData)) {
+                if (WeaponStateHelper.isAuto(gunData)) {
                     ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponMode(WeaponMode.PRIMARY));
                 }
             }

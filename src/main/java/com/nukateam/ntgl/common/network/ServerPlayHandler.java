@@ -11,7 +11,6 @@ import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.enums.KeyAction;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
-import com.nukateam.ntgl.common.data.constants.Tags;
 
 import com.nukateam.ntgl.common.util.trackers.*;
 import com.nukateam.ntgl.common.util.util.*;
@@ -27,7 +26,6 @@ import com.nukateam.ntgl.common.network.message.C2SMessagePreFireSound;
 import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
 import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -282,43 +280,40 @@ public class ServerPlayHandler {
     private static void unloadAmmo(ServerPlayer player, ItemStack stack) {
         if (stack.getItem() instanceof IWeapon) {
             var tag = stack.getTag();
-            if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
-                int count = tag.getInt(Tags.AMMO_COUNT);
-                tag.putInt(Tags.AMMO_COUNT, 0);
-                var data = new WeaponData(stack, player);
-                var itemHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
+            var data = new WeaponData(stack, player);
+            var count = WeaponStateHelper.getAmmoCount(data);
+            var itemHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
-                if(itemHolder.canReturnAmmo()) {
-                    var id = itemHolder.getId();
-                    var item = ForgeRegistries.ITEMS.getValue(id);
+            WeaponStateHelper.setAmmo(data, 0);
 
-                    if (item != null && !player.isCreative()) {
-                        givePlayerAmmo(player, item, count);
-                    }
+            if(itemHolder.canReturnAmmo()) {
+                var id = itemHolder.getId();
+                var item = ForgeRegistries.ITEMS.getValue(id);
+
+                if (item != null && !player.isCreative()) {
+                    givePlayerAmmo(player, item, count);
                 }
             }
+
         }
     }
 
     private static void unloadMagazine(ServerPlayer player, ItemStack stack) {
         if (stack.getItem() instanceof IWeapon) {
-            var tag = stack.getTag();
-            if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
-                int count = tag.getInt(Tags.AMMO_COUNT);
-                if (count == 0) return;
+            var data = new WeaponData(stack, player);
+            var count = WeaponStateHelper.getAmmoCount(data);
+            if (count == 0) return;
+            WeaponStateHelper.setAmmo(data,0);
 
-                tag.putInt(Tags.AMMO_COUNT, 0);
-                var data = new WeaponData(stack, player);
-                var ammoHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
+            var ammoHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
-                if(ammoHolder.canReturnAmmo()) {
-                    var item = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
+            if(ammoHolder.canReturnAmmo()) {
+                var item = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
 
-                    if (item != null && !player.isCreative()) {
-                        var usedMagazine = new ItemStack(item);
-                        StackUtils.setDurability(usedMagazine, count);
-                        spawnAmmo(player, usedMagazine);
-                    }
+                if (item != null && !player.isCreative()) {
+                    var usedMagazine = new ItemStack(item);
+                    StackUtils.setDurability(usedMagazine, count);
+                    spawnAmmo(player, usedMagazine);
                 }
             }
         }

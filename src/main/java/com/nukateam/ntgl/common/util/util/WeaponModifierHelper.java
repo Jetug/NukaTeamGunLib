@@ -4,7 +4,6 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.weapon.*;
 
-import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.holders.*;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
@@ -37,15 +36,6 @@ public class WeaponModifierHelper {
         return WeaponStateHelper.getProjectileConfig(data);
     }
 
-    public static boolean isAuto(WeaponData itemStack) {
-        return WeaponStateHelper.getFireMode(itemStack) == FireMode.AUTO;
-    }
-
-    public static boolean isWeaponFull(WeaponData data) {
-        var tag = data.weapon.getOrCreateTag();
-        return tag.getInt(Tags.AMMO_COUNT) >= WeaponModifierHelper.getMaxAmmo(data);
-    }
-
     public static boolean canUseOffhandWeapon(LivingEntity player){
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
@@ -75,6 +65,11 @@ public class WeaponModifierHelper {
     public static Melee getMelee(WeaponData weaponData) {
         var config = getConfig(weaponData);
         return config.getMelee(weaponData.weaponMode);
+    }
+
+    public static AmmoData getAmmoData(WeaponData weaponData, ResourceLocation ammoId) {
+        var config = getConfig(weaponData);
+        return config.getAmmoData(weaponData.weaponMode, ammoId);
     }
 
     public static Zoom getZoom(WeaponData weaponData) {
@@ -360,14 +355,6 @@ public class WeaponModifierHelper {
         return finalSpread.get();
     }
 
-    public static float getMovementSpeed(WeaponData data) {
-        var value = getGeneral(data).getMovementSpeed();
-        var finalValue = new AtomicReference<>(value);
-
-        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMovementSpeed(finalValue.get(), data))));
-        return finalValue.get();
-    }
-
     public static ArrayList<AttributeModifier> getAttributeModifiers(WeaponData data) {
         var value = getGeneral(data).getAttributeModifiers();
         var finalValue = new AtomicReference<>(value);
@@ -517,12 +504,11 @@ public class WeaponModifierHelper {
     }
 
     public static ProjectileConfig getProjectileConfig(ResourceLocation ammoId, WeaponData data) {
-        var gun = getConfig(data);
         ProjectileConfig config = null;
         var item = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
-        if(gun.hasAmmo(ammoId)) {
-            config = gun.getProjectileConfig(ammoId);
+        if(getAmmoData(data, ammoId) != null) {
+            config = getAmmoData(data, ammoId).getProjectile();
         }
         else if(item.canReturnAmmo() && ITEMS.getValue(item.getId()) instanceof IAmmo ammoItem) {
             config = ammoItem.getAmmo();
@@ -537,7 +523,7 @@ public class WeaponModifierHelper {
     }
 
     public static AmmoConfig getAmmoConfig(ResourceLocation ammoId, WeaponData data) {
-        var finalValue = new AtomicReference<>(getConfig(data).getAmmoConfig(ammoId));
+        var finalValue = new AtomicReference<>(getAmmoData(data, ammoId).getAmmo());
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyAmmo(finalValue.get(), data))));
         return finalValue.get();
     }
