@@ -52,25 +52,66 @@ public class WeaponStateHelper {
         return WeaponModifierHelper.getProjectileDamage(ammo, data);
     }
 
-    public static int getAmmoCount(WeaponData data) {
-        var tag = data.weapon.getOrCreateTag();
-        return tag.getInt(AMMO_COUNT);
-    }
+    public static void setAmmoCount(WeaponData data, int amount) {
+        if(data.weapon == null) return;
 
-    public static void addAmmo(WeaponData data, int amount) {
         var tag = data.weapon.getOrCreateTag();
-        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-        var result = Math.min(tag.getInt(AMMO_COUNT) + amount, maxAmmo);
-        tag.putInt(AMMO_COUNT, result);
+        var ammoTag = getOrCreateTag(tag, AMMO_COUNT);
+
+        ammoTag.putInt(data.weaponMode.toString(), amount);
+        tag.put(AMMO_COUNT, ammoTag);
         data.weapon.setTag(tag);
     }
 
+    //AMMO COUNT
+    public static int getAmmoCount(WeaponData data) {
+        if(data.weapon == null) return 0;
+
+        var tag = data.weapon.getOrCreateTag();
+        if (tag.contains(AMMO_COUNT, Tag.TAG_COMPOUND)) {
+            var ammoTag = tag.getCompound(AMMO_COUNT);
+            return ammoTag.getInt(data.weaponMode.toString());
+        }
+
+        return 0;
+    }
+
+    public static void addAmmo(WeaponData data, int amount) {
+        var ammoCount = getAmmoCount(data);
+        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+        var result = Math.min(ammoCount + amount, maxAmmo);
+        setAmmoCount(data, result);
+    }
+
+    public static boolean isMaxAmmo(WeaponData data) {
+        var ammo = getAmmoCount(data);
+        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+        return ammo == maxAmmo;
+    }
+
+    public static void setMaxAmmo(WeaponData data) {
+        WeaponStateHelper.setAmmoCount(data, WeaponModifierHelper.getMaxAmmo(data));
+    }
+
+    public static boolean hasAmmo(WeaponData data) {
+        if(data.weapon == null) return false;
+        return isAmmoIgnored(data.weapon) || getAmmoCount(data) > 0;
+    }
+
+    public static void fillAmmo(WeaponData data) {
+        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+        setAmmoCount(data, maxAmmo);
+    }
+
+    public static boolean isAmmoIgnored(ItemStack stack) {
+        var tag = stack.getOrCreateTag();
+        return tag.contains("IgnoreAmmo", Tag.TAG_BYTE);
+    }
+
+    //AMMO TYPE
     public static void setCurrentAmmo(WeaponData data, ResourceLocation ammo) {
         var tag = data.weapon.getOrCreateTag();
-        var ammoTag = new CompoundTag();
-
-        if(tag.contains(AMMO_TAG))
-            ammoTag = tag.getCompound(AMMO_TAG);
+        var ammoTag = getOrCreateTag(tag, AMMO_TAG);
 
         ammoTag.putString(data.weaponMode.toString(), ammo.toString());
         tag.put(AMMO_TAG, ammoTag);
@@ -106,19 +147,6 @@ public class WeaponStateHelper {
             setCurrentAmmo(data, firstAmmo.getId());
             return firstAmmo;
         }
-    }
-
-    public static boolean isAcceptable(WeaponData weaponData, ItemStack item) {
-        return getCurrentAmmo(weaponData).isAcceptable(item);
-    }
-
-//    public static Item getAmmoItem(GunData data) {
-//        return ITEMS.getValue(getAmmoHolder(data));
-//    }
-
-    public static AmmoConfig getAmmoConfig(WeaponData data) {
-        var ammoId = getCurrentAmmo(data).getId();
-        return WeaponModifierHelper.getAmmoConfig(ammoId, data);
     }
 
     public static @NotNull ProjectileConfig getProjectileConfig(WeaponData data) {
@@ -157,52 +185,6 @@ public class WeaponStateHelper {
         if(tag.contains(FIRE_MODE, Tag.TAG_STRING))
             return FireMode.getType(tag.getString(FIRE_MODE));
         else return null;
-    }
-
-    public static boolean isMaxAmmo(WeaponData data) {
-        var ammo = getAmmoCount(data);
-        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-        return ammo == maxAmmo;
-    }
-
-    public static void setAmmo(WeaponData data, int amount) {
-        var tag = data.weapon.getOrCreateTag();
-        tag.putInt(AMMO_COUNT, amount);
-
-
-//        var tag = data.weapon.getOrCreateTag();
-//        var ammoTag = new CompoundTag();
-//
-//        if(tag.contains(AMMO_TAG))
-//            ammoTag = tag.getCompound(AMMO_TAG);
-//
-//        ammoTag.putString(data.weaponMode.toString(), ammo.toString());
-//        tag.put(AMMO_TAG, ammoTag);
-//        data.weapon.setTag(tag);
-    }
-
-    public static void setMaxAmmo(WeaponData data) {
-        WeaponStateHelper.setAmmo(data.weapon, WeaponModifierHelper.getMaxAmmo(data));
-    }
-
-    public static boolean hasAmmo(ItemStack gunStack) {
-        var tag = gunStack.getOrCreateTag();
-        return tag.getBoolean("IgnoreAmmo") || tag.getInt(AMMO_COUNT) > 0;
-    }
-
-    public static boolean hasEnoughAmmo(WeaponData data) {
-        var tag = data.weapon.getOrCreateTag();
-        var ammoPerShot = WeaponModifierHelper.getAmmoPerShot(data);
-        return tag.getBoolean("IgnoreAmmo") || tag.getInt(AMMO_COUNT) >= ammoPerShot;
-    }
-
-    public static void fillAmmo(WeaponData data) {
-        if (data.weapon.getItem() instanceof IWeapon) {
-            var tag = data.weapon.getOrCreateTag();
-            var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-
-            tag.putInt(AMMO_COUNT, maxAmmo);
-        }
     }
 
     public static ArrayList<ItemStack> getAttachmentItems(ItemStack gun) {
@@ -292,11 +274,6 @@ public class WeaponStateHelper {
         return modifier + fovMod;
     }
 
-    public static boolean isAmmoIgnored(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        return tag.contains("IgnoreAmmo", Tag.TAG_BYTE);
-    }
-
     public static void saveAttachments(WeaponData data, Collection<ItemStack> attachments){
         var weapon = data.weapon;
 //        var currentAttachments = getAttachmentItems(weapon);
@@ -358,9 +335,7 @@ public class WeaponStateHelper {
     }
 
     public static void consumeAmmo(WeaponData data) {
-        var shooter = data.wielder;
-        var heldItem = data.weapon;
-        if(shooter != null && heldItem != null){
+        if(data.weapon != null){
             var ammoPerShot = WeaponModifierHelper.getAmmoPerShot(data);
             var fireMode = WeaponStateHelper.getFireMode(data);
             var multishotAmount = WeaponModifierHelper.getMultishotAmount(data);
@@ -372,7 +347,7 @@ public class WeaponStateHelper {
             }
 
             var remainingAmmo = Math.max(0, ammoCount - ammoPerShot);
-            setAmmo(heldItem, remainingAmmo);
+            setAmmoCount(data, remainingAmmo);
         }
     }
 
@@ -391,5 +366,13 @@ public class WeaponStateHelper {
 
     public static boolean isAuto(WeaponData itemStack) {
         return getFireMode(itemStack) == FireMode.AUTO;
+    }
+
+    private static @NotNull CompoundTag getOrCreateTag(CompoundTag tag, String ammoCount) {
+        var ammoTag = new CompoundTag();
+
+        if (tag.contains(ammoCount, Tag.TAG_COMPOUND))
+            ammoTag = tag.getCompound(ammoCount);
+        return ammoTag;
     }
 }

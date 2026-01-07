@@ -156,10 +156,8 @@ public class InventoryUtil {
         return AmmoContext.NONE;
     }
 
-    public static IAmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
-        var data = new WeaponData(weapon, entity);
+    public static IAmmoContext findAmmo(WeaponData data) {
         var ammoHandler = WeaponStateHelper.getCurrentAmmo(data);
-
         return findAmmo(ammoHandler, data);
     }
 
@@ -190,9 +188,9 @@ public class InventoryUtil {
         return AmmoContext.NONE;
     }
 
-    public static boolean hasAmmo(LivingEntity entity, ItemStack weapon) {
-        if(entity instanceof Player player && !player.isCreative()) {
-            return !findAmmo(player, weapon).stack().isEmpty();
+    public static boolean hasAmmo(WeaponData data) {
+        if(data.wielder instanceof Player player && !player.isCreative()) {
+            return !findAmmo(data).stack().isEmpty();
         }
         return true;
     }

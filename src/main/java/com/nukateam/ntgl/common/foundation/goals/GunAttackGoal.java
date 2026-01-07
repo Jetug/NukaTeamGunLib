@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.goals;
 
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -117,10 +118,9 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
 
         this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
 
-        if (WeaponStateHelper.hasAmmo(mob.getGun())) {
+        if (WeaponStateHelper.hasAmmo(new WeaponData(mob.getGun(), mob))) {
             mob.performRangedAttack(target, 1);
-        }
-        else if(!EntityReloadTracker.isReloading(mob)) {
+        } else if (!EntityReloadTracker.isReloading(mob)) {
             EntityReloadTracker.addTracker(mob, HumanoidArm.RIGHT);
         }
 //
@@ -151,7 +151,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
         ServerPlayHandler.handleShoot(msg, mob);
     }
 
-    public static void shoot(LivingEntity shooter, InteractionHand hand){
+    public static void shoot(LivingEntity shooter, InteractionHand hand) {
         var msg = new C2SMessageShoot(shooter.getId(),
                 shooter.getViewYRot(1),
                 shooter.getViewXRot(1),

@@ -126,8 +126,8 @@ public class ReloadTracker {
         return WeaponStateHelper.getAmmoCount(data) >= WeaponModifierHelper.getMaxAmmo(data);
     }
 
-    private boolean hasNoAmmo(LivingEntity player) {
-        return !InventoryUtil.hasAmmo(player, weapon);
+    private boolean hasNoAmmo(LivingEntity wielder) {
+        return !InventoryUtil.hasAmmo(new WeaponData(weapon, wielder));
     }
 
     private static void addOrDropStack(Player player, ItemStack usedMagazine) {
@@ -252,10 +252,10 @@ public class ReloadTracker {
     }
 
     private void addAmmo(LivingEntity entity, int amount) {
-        var context = InventoryUtil.findAmmo(entity, weapon);
+        var data = new WeaponData(weapon, entity);
+        var context = InventoryUtil.findAmmo(data);
         var ammo = context.stack();
 
-        var data = new WeaponData(weapon, entity);
         var ammoHandler = WeaponStateHelper.getCurrentAmmo(data);
 
         if (!ammo.isEmpty()) {
@@ -280,7 +280,7 @@ public class ReloadTracker {
     private boolean isNotReloaded(LivingEntity entity) {
         var data = new WeaponData(weapon, entity);
         var tag = this.weapon.getTag();
-        var hasAmmo = InventoryUtil.hasAmmo(entity, weapon);
+        var hasAmmo = InventoryUtil.hasAmmo(data);
         var ammoCount = WeaponStateHelper.getAmmoCount(data);
         var ammoCapacity = WeaponModifierHelper.getMaxAmmo(data);
         return hasAmmo && ammoCount < ammoCapacity;
@@ -317,7 +317,7 @@ public class ReloadTracker {
                     if(entity instanceof Player player)
                         addOrDropStack(player, usedMagazine);
                 }
-                WeaponStateHelper.setAmmo(data, amount);
+                WeaponStateHelper.setAmmoCount(data, amount);
             }
             context.shrink(1, ammoHolder, entity);
         }

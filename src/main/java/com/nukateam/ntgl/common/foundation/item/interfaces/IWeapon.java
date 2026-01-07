@@ -16,6 +16,6 @@ public interface IWeapon extends IConfigConsumer<WeaponConfig>, IConfigProvider<
     }
 
     default void setDefaultTag(ItemStack stack){
-        WeaponStateHelper.setAmmo(new WeaponData(stack, null), getConfig().getGeneral().getMaxAmmo());
+        WeaponStateHelper.setAmmoCount(new WeaponData(stack, null), getConfig().getGeneral().getMaxAmmo());
     }
 }

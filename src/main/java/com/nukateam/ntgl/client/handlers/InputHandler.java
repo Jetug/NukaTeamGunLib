@@ -22,7 +22,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import static com.nukateam.ntgl.client.input.NtglKeyBinds.*;
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
 import static com.nukateam.ntgl.client.util.handler.ClientShootingHandler.isInGame;
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.canUseOffhandWeapon;
@@ -131,7 +130,10 @@ public class InputHandler {
                 PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
             }
             if (NtglKeyBinds.KEY_RELOAD.consumeClick()) {
-                ClientReloadHandler.get().startReloading();
+                ClientReloadHandler.get().startReloading(WeaponMode.PRIMARY);
+            }
+            if (NtglKeyBinds.KEY_DEBUG_SHOW.consumeClick()) {
+                ClientReloadHandler.get().startReloading(WeaponMode.ALTERNATIVE);
             }
             if (NtglKeyBinds.KEY_UNLOAD.consumeClick()) {
                 ClientReloadHandler.get().unloadAmmo(InteractionHand.MAIN_HAND);

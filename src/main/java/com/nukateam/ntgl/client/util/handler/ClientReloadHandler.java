@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
@@ -63,38 +64,40 @@ public class ClientReloadHandler {
         PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload(hand));
     }
 
-    public void startReloading(){
+    public void startReloading(WeaponMode mode){
         var player = Minecraft.getInstance().player;
         if (player == null) return;
 
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
+        var mainData = new WeaponData(mainHandItem, player).setWeaponMode(mode);
+        var offData = new WeaponData(offhandItem, player).setWeaponMode(mode);
 
         if (mainHandItem.getItem() instanceof IWeapon
-                && !WeaponStateHelper.isWeaponFull(new WeaponData(mainHandItem, player))
+                && !WeaponStateHelper.isWeaponFull(mainData)
                 && !isReloading(player, InteractionHand.MAIN_HAND)){
-            setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
+            setReloading(mainData, !ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
         }
         else if (offhandItem.getItem() instanceof IWeapon
                 && WeaponModifierHelper.canUseOffhandWeapon(player)
-                && !WeaponStateHelper.isWeaponFull(new WeaponData(offhandItem, player))
+                && !WeaponStateHelper.isWeaponFull(offData)
                 && !isReloading(player, InteractionHand.OFF_HAND)){
-            setReloading(!ModSyncedDataKeys.RELOADING_LEFT.getValue(player), InteractionHand.OFF_HAND);
+            setReloading(offData, !ModSyncedDataKeys.RELOADING_LEFT.getValue(player), InteractionHand.OFF_HAND);
         }
     }
 
-    public void setReloading(boolean reloading, InteractionHand hand) {
+    public void setReloading(WeaponData data, boolean reloading, InteractionHand hand) {
         var player = Minecraft.getInstance().player;
         if (player == null) return;
 
         var dataKey = ModSyncedDataKeys.getReloadKey(hand);
-        var stack = player.getItemInHand(hand);
+        var stack = data.weapon;
+        if (stack == null) return;
 
         if (reloading) {
             if (stack.getItem() instanceof IWeapon) {
                 var isAmmoIgnored = WeaponStateHelper.isAmmoIgnored(stack);
-                var hasAmmo = InventoryUtil.hasAmmo(player, stack);
-                var data = new WeaponData(stack, player);
+                var hasAmmo = InventoryUtil.hasAmmo(data);
                 var isMaxAmmo = WeaponStateHelper.isMaxAmmo(data);
 
                 if (!isAmmoIgnored && hasAmmo && !isMaxAmmo) {
