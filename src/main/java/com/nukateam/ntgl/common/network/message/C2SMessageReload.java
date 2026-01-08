@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.network.message;
 
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import net.minecraftforge.network.NetworkEvent;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.network.IMessage;
@@ -11,25 +12,27 @@ import net.minecraft.world.InteractionHand;
  * Author: MrCrayfish
  */
 public class C2SMessageReload implements IMessage<C2SMessageReload> {
-    private boolean reload;
     private InteractionHand hand = InteractionHand.MAIN_HAND;
+    WeaponMode weaponMode;
 
     public C2SMessageReload() {}
 
-    public C2SMessageReload(boolean reload, InteractionHand hand) {
-        this.reload = reload;
+    public C2SMessageReload(InteractionHand hand, WeaponMode weaponMode) {
         this.hand = hand;
+        this.weaponMode = weaponMode;
     }
 
     @Override
     public void encode(C2SMessageReload message, FriendlyByteBuf buffer) {
-        buffer.writeBoolean(message.reload);
         buffer.writeEnum(message.hand);
+        buffer.writeUtf(message.weaponMode.toString());
     }
 
     @Override
     public C2SMessageReload decode(FriendlyByteBuf buffer) {
-        return new C2SMessageReload(buffer.readBoolean(), buffer.readEnum(InteractionHand.class));
+        return new C2SMessageReload(
+                buffer.readEnum(InteractionHand.class),
+                WeaponMode.getType(buffer.readUtf()));
     }
 
     @Override
@@ -44,11 +47,11 @@ public class C2SMessageReload implements IMessage<C2SMessageReload> {
         supplier.setPacketHandled(true);
     }
 
-    public boolean isReload() {
-        return reload;
-    }
-
     public InteractionHand getHand() {
         return hand;
+    }
+
+    public WeaponMode getWeaponMode() {
+        return weaponMode;
     }
 }

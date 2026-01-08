@@ -236,7 +236,7 @@ public class ClientPlayHandler {
             var dataKey = message.isRightHand() ?
                     ModSyncedDataKeys.RELOADING_RIGHT : ModSyncedDataKeys.RELOADING_LEFT;
 
-            ClientReloadHandler.get().setReloading(!dataKey.getValue(player), arm);
+//            ClientReloadHandler.get().setReloading(!dataKey.getValue(player), arm);
         }
     }
 }

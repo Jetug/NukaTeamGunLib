@@ -41,6 +41,7 @@ public class PacketHandler {
         //NTGL
         registerPlayMessage(C2SMessageAim.class         , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageReload.class      , NetworkDirection.PLAY_TO_SERVER);
+        registerPlayMessage(C2SMessageStopReload.class      , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageShoot.class       , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageUnload.class      , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageCraft.class       , NetworkDirection.PLAY_TO_SERVER);

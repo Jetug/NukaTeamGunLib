@@ -158,21 +158,21 @@ public class InputHandler {
 
     private static void handleDebugKeys() {
         if (Ntgl.isDebugging()) {
-            if (KEY_DEBUG_X_ADD.consumeClick()) {
+            if (NtglKeyBinds.KEY_DEBUG_X_ADD.consumeClick()) {
                 ClientDebug.X += 1;
-            } else if (KEY_DEBUG_Y_ADD.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_Y_ADD.consumeClick()) {
                 ClientDebug.Y += 1;
-            } else if (KEY_DEBUG_Z_ADD.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_Z_ADD.consumeClick()) {
                 ClientDebug.Z += 1;
-            } else if (KEY_DEBUG_X_SUB.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_X_SUB.consumeClick()) {
                 ClientDebug.X -= 1;
-            } else if (KEY_DEBUG_Y_SUB.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_Y_SUB.consumeClick()) {
                 ClientDebug.Y -= 1;
-            } else if (KEY_DEBUG_Z_SUB.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_Z_SUB.consumeClick()) {
                 ClientDebug.Z -= 1;
-            } else if (KEY_DEBUG_SHOW.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_SHOW.consumeClick()) {
                 ClientDebug.isHidden = !ClientDebug.isHidden;
-            } else if (KEY_DEBUG_ZERO.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_ZERO.consumeClick()) {
                 var level = Minecraft.getInstance().level;
                 var entity = new FlyingGib(ModEntityTypes.FLYING_GIBS.get(), level);
 

@@ -455,12 +455,12 @@ public class GunRenderingHandler {
 //        }
 //    }
 
-    private void applyReloadTransforms(PoseStack poseStack, float partialTicks) {
-        float reloadProgress = ClientReloadHandler.get().getReloadProgress(partialTicks);
-        poseStack.translate(0, 0.35 * reloadProgress, 0);
-        poseStack.translate(0, 0, -0.1 * reloadProgress);
-        poseStack.mulPose(Axis.XP.rotationDegrees(45F * reloadProgress));
-    }
+//    private void applyReloadTransforms(PoseStack poseStack, float partialTicks) {
+//        float reloadProgress = ClientReloadHandler.get().getReloadProgress(partialTicks);
+//        poseStack.translate(0, 0.35 * reloadProgress, 0);
+//        poseStack.translate(0, 0, -0.1 * reloadProgress);
+//        poseStack.mulPose(Axis.XP.rotationDegrees(45F * reloadProgress));
+//    }
 
 //    private void applyRecoilTransforms(PoseStack poseStack, Player player, ItemStack item, WeaponConfig weaponConfig) {
 //        double recoilNormal = RecoilHandler.get().getGunRecoilNormal();
