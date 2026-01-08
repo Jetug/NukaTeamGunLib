@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.common.network;
 
 import com.mrcrayfish.framework.api.network.LevelLocation;
-import com.mrcrayfish.framework.api.network.MessageDirection;
 import com.nukateam.chassis_core.common.network.packet.*;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
@@ -41,7 +40,7 @@ public class PacketHandler {
         //NTGL
         registerPlayMessage(C2SMessageAim.class         , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageReload.class      , NetworkDirection.PLAY_TO_SERVER);
-        registerPlayMessage(C2SMessageStopReload.class      , NetworkDirection.PLAY_TO_SERVER);
+        registerPlayMessage(C2SMessageReloadStop.class      , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageShoot.class       , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageUnload.class      , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageCraft.class       , NetworkDirection.PLAY_TO_SERVER);
@@ -55,7 +54,6 @@ public class PacketHandler {
         registerPlayMessage(S2CMessagePlayerAnimation.class     , NetworkDirection.PLAY_TO_CLIENT);
         registerPlayMessage(S2CMessageEntityDeath.class         , NetworkDirection.PLAY_TO_CLIENT);
         registerPlayMessage(S2CMessageEntityDeathFx.class       , NetworkDirection.PLAY_TO_CLIENT);
-        registerPlayMessage(S2CMessageReload.class              , NetworkDirection.PLAY_TO_CLIENT);
         registerPlayMessage(S2CMessageStunGrenade.class         , NetworkDirection.PLAY_TO_CLIENT);
 
         registerPlayMessage(S2CMessageUpdateWeapons.class       , NetworkDirection.PLAY_TO_CLIENT);

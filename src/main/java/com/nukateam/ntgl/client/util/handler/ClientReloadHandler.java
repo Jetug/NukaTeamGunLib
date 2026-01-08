@@ -13,7 +13,6 @@ import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -52,9 +51,9 @@ public class ClientReloadHandler {
             }
         }
 
-        if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(player)) {
-
-        }
+//        if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(player)) {
+//
+//        }
 
     }
 
@@ -104,14 +103,14 @@ public class ClientReloadHandler {
 
                     if (WeaponStateHelper.getAmmoCount(data) >= WeaponModifierHelper.getMaxAmmo(data))
                         return;
-                    if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack, hand)))
+                    if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(data, hand)))
                         return;
 
                     dataKey.setValue(player, true);
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(hand, data.weaponMode));
                     this.reloadingSlot = player.getInventory().selected;
 
-                    MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack, hand));
+                    MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Post(data, hand));
                 }
             }
         } else {
@@ -127,7 +126,7 @@ public class ClientReloadHandler {
                 ModSyncedDataKeys.RELOADING_LEFT;
 
         dataKey.setValue(player, false);
-        PacketHandler.getPlayChannel().sendToServer(new C2SMessageStopReload(arm));
+        PacketHandler.getPlayChannel().sendToServer(new C2SMessageReloadStop(arm));
         this.reloadingSlot = -1;
         reloadTicks = -1;
     }

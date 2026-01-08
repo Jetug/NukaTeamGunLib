@@ -120,10 +120,14 @@ public class WeaponHud implements IGuiOverlay {
             renderWeaponModes(graphics, poseStack, handCache, x - COUNTER_POS_X + 38 , y - INVENTORY_AMMO_POS_Y  - 2);
 
 
-            var scale = 0.5f;
-            poseStack.scale(scale, scale, scale);
-            renderCurrentAmmo (graphics, poseStack, handCache.weaponModes.get(WeaponMode.ALTERNATIVE),
-                    (x - COUNTER_POS_X + ClientDebug.X) / scale, (y - COUNTER_POS_Y - fontHeight + 32 + ClientDebug.Y) / scale);
+            poseStack.pushPose();
+            {
+                var scale = 0.5f;
+                poseStack.scale(scale, scale, scale);
+                renderCurrentAmmo (graphics, poseStack, handCache.weaponModes.get(WeaponMode.ALTERNATIVE),
+                        (x - COUNTER_POS_X + ClientDebug.X) / scale, (y - COUNTER_POS_Y - fontHeight + 32 + ClientDebug.Y) / scale);
+            }
+            poseStack.popPose();
 
         }
         poseStack.popPose();

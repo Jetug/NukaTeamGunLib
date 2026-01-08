@@ -350,20 +350,20 @@ public class ServerPlayHandler {
     }
 
     public static void handleReload(C2SMessageReload message, ServerPlayer player) {
-        var dataKey = ModSyncedDataKeys.getReloadKey(message.getHand());
-        var gun = player.getItemInHand(message.getHand());
+        var hand = message.getHand();
+        var weapon = player.getItemInHand(hand);
+        var data = new WeaponData(weapon, player).setWeaponMode(message.getWeaponMode());
 
-        dataKey.setValue(player, true); // This has to be set in order to verify the packet is sent if the event is cancelled
-
-        if (MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, gun, message.getHand()))) {
-            dataKey.setValue(player, false);
+        if (!MinecraftForge.EVENT_BUS.post(new GunReloadEvent.Pre(data, hand))) {
+            ReloadTracker.startReloading(data, hand);
         }
-
     }
 
-    public static void handleStopReload(C2SMessageStopReload message, ServerPlayer player) {
+    public static void handleStopReload(C2SMessageReloadStop message, ServerPlayer player) {
         var dataKey = ModSyncedDataKeys.getReloadKey(message.getHand());
         dataKey.setValue(player, false);
+
+        ReloadTracker.stopReloading(player, message.getHand());
     }
 
     public static void handleGrenade(C2SMessageGrenade message, ServerPlayer player) {
@@ -433,5 +433,9 @@ public class ServerPlayHandler {
             handleReload(new C2SMessageReload(hand, data.weaponMode), player);
             player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
         }
+    }
+
+    public static void reloadGun(InteractionHand hand, WeaponData data) {
+        handleReload(new C2SMessageReload(hand, data.weaponMode), (ServerPlayer) data.wielder);
     }
 }

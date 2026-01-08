@@ -1,9 +1,11 @@
 package com.nukateam.ntgl.common.event;
 
+import com.nukateam.ntgl.common.data.WeaponData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 
@@ -12,21 +14,21 @@ import net.minecraftforge.eventbus.api.Cancelable;
  *
  * @author Ocelot
  */
-public class GunReloadEvent extends PlayerEvent {
-    private final ItemStack stack;
+public class GunReloadEvent extends LivingEvent {
+    private final WeaponData data;
     private final InteractionHand hand;
 
-    public GunReloadEvent(Player player, ItemStack stack, InteractionHand hand) {
-        super(player);
-        this.stack = stack;
+    public GunReloadEvent(WeaponData data, InteractionHand hand) {
+        super(data.wielder);
+        this.data = data;
         this.hand = hand;
     }
 
     /**
      * @return The stack the player was holding when reloading the gun
      */
-    public ItemStack getStack() {
-        return stack;
+    public WeaponData getData() {
+        return data;
     }
 
     public InteractionHand getHand() {
@@ -47,8 +49,8 @@ public class GunReloadEvent extends PlayerEvent {
      */
     @Cancelable
     public static class Pre extends GunReloadEvent {
-        public Pre(Player player, ItemStack stack, InteractionHand hand) {
-            super(player, stack, hand);
+        public Pre(WeaponData data, InteractionHand hand) {
+            super(data, hand);
         }
     }
 
@@ -58,8 +60,8 @@ public class GunReloadEvent extends PlayerEvent {
      * @author Ocelot
      */
     public static class Post extends GunReloadEvent {
-        public Post(Player player, ItemStack stack, InteractionHand hand) {
-            super(player, stack, hand);
+        public Post(WeaponData data, InteractionHand hand) {
+            super(data, hand);
         }
     }
 }

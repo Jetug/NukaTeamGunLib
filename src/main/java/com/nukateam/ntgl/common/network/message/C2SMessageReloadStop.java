@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.network.message;
 
-import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.network.IMessage;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,28 +10,28 @@ import net.minecraftforge.network.NetworkEvent;
 /**
  * Author: MrCrayfish
  */
-public class C2SMessageStopReload implements IMessage<C2SMessageStopReload> {
+public class C2SMessageReloadStop implements IMessage<C2SMessageReloadStop> {
     private InteractionHand hand = InteractionHand.MAIN_HAND;
 
-    public C2SMessageStopReload() {}
+    public C2SMessageReloadStop() {}
 
-    public C2SMessageStopReload(InteractionHand hand) {
+    public C2SMessageReloadStop(InteractionHand hand) {
         this.hand = hand;
     }
 
     @Override
-    public void encode(C2SMessageStopReload message, FriendlyByteBuf buffer) {
+    public void encode(C2SMessageReloadStop message, FriendlyByteBuf buffer) {
         buffer.writeEnum(message.hand);
     }
 
     @Override
-    public C2SMessageStopReload decode(FriendlyByteBuf buffer) {
-        return new C2SMessageStopReload(
+    public C2SMessageReloadStop decode(FriendlyByteBuf buffer) {
+        return new C2SMessageReloadStop(
                 buffer.readEnum(InteractionHand.class));
     }
 
     @Override
-    public void handle(C2SMessageStopReload message, NetworkEvent.Context supplier) {
+    public void handle(C2SMessageReloadStop message, NetworkEvent.Context supplier) {
         supplier.enqueueWork((() ->
         {
             ServerPlayer player = supplier.getSender();
