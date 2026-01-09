@@ -15,7 +15,7 @@ public class ExampleWeapons {
     ///WEAPONS
     public static final RegistryObject<WeaponItem> PISTOL10MM = registerGun("pistol10mm", new TestModifier());
     public static final RegistryObject<WeaponItem> PIPE_PISTOL = registerGun("pipepistol");
-    public static final RegistryObject<WeaponItem> CLASSIC10MM = registerGun("classic10mm", 10);
+    public static final RegistryObject<WeaponItem> CLASSIC10MM = registerGun("classic10mm", 1000);
     public static final RegistryObject<WeaponItem> SCOUT10MM = registerGun("scout10mm");
     public static final RegistryObject<WeaponItem> PIPE_REVOLVER = registerGun("piperevolver");
     public static final RegistryObject<WeaponItem> FATMAN = registerGun("fatman");

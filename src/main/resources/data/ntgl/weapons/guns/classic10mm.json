@@ -91,7 +91,6 @@
         "action": "ntgl:shot",
         "rate": 4,
         "fireMode": ["ntgl:semi"],
-        "damage" : 10,
         "maxAmmo": 20,
         "reloadTime": 30,
         "reloadAmount": 2,
@@ -104,21 +103,21 @@
         "ammo": [
           "ntgl:round45"
         ]
-      }
-    },
-    "ammoData":{
-      "ntgl:round45": {
-        "ammo": {
-          "type": "ntgl:buckshot"
-        },
-        "projectile": {
-          "visible": true,
-          "damage": 2.0,
-          "size": 5.0,
-          "speed": 3.0,
-          "life": 120,
-          "burnSeconds": 5,
-          "projectileAmount": 1
+      },
+      "ammoData":{
+        "ntgl:round45": {
+          "ammo": {
+            "type": "ntgl:buckshot"
+          },
+          "projectile": {
+            "visible": true,
+            "damage": 2.0,
+            "size": 5.0,
+            "speed": 3.0,
+            "life": 120,
+            "burnSeconds": 5,
+            "projectileAmount": 1
+          }
         }
       }
     }

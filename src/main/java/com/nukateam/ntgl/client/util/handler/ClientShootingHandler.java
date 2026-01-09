@@ -1,11 +1,14 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.ibm.icu.impl.Pair;
+import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.data.holders.FireMode;
+import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
@@ -163,28 +166,6 @@ public class ClientShootingHandler {
     public void onHandleShooting(TickEvent.ClientTickEvent evt) {
         if (evt.phase == TickEvent.Phase.START) {
             reduceGaps();
-
-            if (!isInGame()) return;
-
-            var player = Minecraft.getInstance().player;
-
-//            if (player != null) {
-//                var mainHandItem = player.getMainHandItem();
-//                if (mainHandItem.getItem() instanceof IWeapon && (GunStateHelper.hasAmmo(mainHandItem) || player.isCreative())) {
-//                    var shooting = isKeyAttackDown();
-//                    if (Ntgl.controllableLoaded) {
-//                        shooting |= ControllerHandler.isShooting();
-//                    }
-//                    if (shooting ^ this.shooting) {
-//                        this.shooting = shooting;
-//                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(shooting));
-//                    }
-//                } else if (this.shooting) {
-//                    this.shooting = false;
-//                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageShooting(false));
-//                }
-//            }
-//            else this.shooting = false;
         }
     }
 
@@ -312,19 +293,25 @@ public class ClientShootingHandler {
         return WeaponModifierHelper.getWeaponAction(weaponData) == WeaponAction.SHOT;
     }
 
-    public void handleInput(WeaponData weaponData, InteractionHand arm, KeyMapping key) {
+    public void handleInput(WeaponData weaponData, InteractionHand hand, KeyMapping key) {
         var mc = Minecraft.getInstance();
         var player = mc.player;
-        var data = shootingData.get(arm);
+        var data = shootingData.get(hand);
         var fireMode =  WeaponStateHelper.getFireMode(weaponData);
         var maxChargeTime = WeaponModifierHelper.getFireDelay(weaponData);
+        var isReloading = ModSyncedDataKeys.getReloadKey(hand).getValue(player);
+        var loadingType = WeaponModifierHelper.getLoadingType(weaponData) == LoadingType.PER_CARTRIDGE;
+
+        if(isReloading && loadingType){
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageReloadStop(hand));
+        }
 
         if (!isGunMode(weaponData)) {
             return;
         }
 
         if (maxChargeTime != 0) {
-            var isOnCooldown = ClientShootingHandler.get().isOnCooldown(player, arm);
+            var isOnCooldown = ClientShootingHandler.get().isOnCooldown(player, hand);
 
             if (data.fireTimer > 0 && !isOnCooldown) {
                 if (data.fireTimer == maxChargeTime - 2) {
@@ -334,7 +321,7 @@ public class ClientShootingHandler {
             } else {
                 this.fire(weaponData);
                 if (data.fireTimer == 0 && !WeaponModifierHelper.isOneTimeCharge(weaponData))
-                    setupShootingData(weaponData, arm);
+                    setupShootingData(weaponData, hand);
                 if (maxChargeTime > 0) {
                     if (fireMode != FireMode.AUTO)
                         key.setDown(false);

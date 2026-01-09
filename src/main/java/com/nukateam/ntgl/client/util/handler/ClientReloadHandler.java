@@ -17,11 +17,14 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import java.util.HashMap;
+
 /**
  * Author: MrCrayfish
  */
 public class ClientReloadHandler {
     private static ClientReloadHandler instance;
+    private static final HashMap<InteractionHand, WeaponData> RELOAD_DATA = new HashMap<>();
 
     private int reloadingSlot;
     private int reloadTicks;
@@ -50,11 +53,6 @@ public class ClientReloadHandler {
                 }
             }
         }
-
-//        if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(player)) {
-//
-//        }
-
     }
 
     public void unloadAmmo(InteractionHand hand) {
@@ -74,12 +72,14 @@ public class ClientReloadHandler {
         if (mainHandItem.getItem() instanceof IWeapon
                 && !WeaponStateHelper.isWeaponFull(mainData)
                 && !isReloading(player, InteractionHand.MAIN_HAND)){
+            RELOAD_DATA.put(InteractionHand.MAIN_HAND, mainData);
             setReloading(mainData, !ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
         }
         else if (offhandItem.getItem() instanceof IWeapon
                 && WeaponModifierHelper.canUseOffhandWeapon(player)
                 && !WeaponStateHelper.isWeaponFull(offData)
                 && !isReloading(player, InteractionHand.OFF_HAND)){
+            RELOAD_DATA.put(InteractionHand.OFF_HAND, offData);
             setReloading(offData, !ModSyncedDataKeys.RELOADING_LEFT.getValue(player), InteractionHand.OFF_HAND);
         }
     }
