@@ -10,8 +10,9 @@ updateJSONURL=""
 displayURL="https://discord.com/invite/njb6EKaDVJ"
 logoFile="logo.png"
 authors="Dayton, Jetug"
-credits = "MrCrayfish, MigaMi"
+
 description="Core for gun mods"
+
 [[dependencies.ntgl]]
 modId="forge"
 mandatory=true

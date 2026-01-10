@@ -84,6 +84,10 @@ public class ClientReloadHandler {
         }
     }
 
+    public static WeaponData getReloadData(InteractionHand hand){
+        return RELOAD_DATA.get(hand);
+    }
+
     public void setReloading(WeaponData data, boolean reloading, InteractionHand hand) {
         var player = Minecraft.getInstance().player;
         if (player == null) return;

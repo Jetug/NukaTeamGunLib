@@ -10,7 +10,7 @@ public class Figures {
         graphics.fill(x, y, x + value, y + height, color);
     }
 
-    protected static void drawFrame(GuiGraphics graphics, int x, int y, int width, int height, int color) {
+    public static void drawFrame(GuiGraphics graphics, int x, int y, int width, int height, int color) {
         graphics.fill(x, y, x + width, y + 1, color); //TOP
         graphics.fill(x, y + height, x + width, y + height + 1, color); //BOTTOM
         graphics.fill(x, y, x + 1, y + height, color); //LEFT

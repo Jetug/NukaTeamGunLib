@@ -73,7 +73,35 @@
     },
     "ntgl:additional": {
       "general": {
-        "action": "ntgl:melee"
+        "action": "ntgl:shot",
+        "rate": 4,
+        "fireMode": ["ntgl:semi"],
+        "maxAmmo": 10,
+        "reloadTime": 30,
+        "reloadAmount": 2,
+        "recoilAngle": 5.0,
+        "recoilKick": 0.3,
+        "recoilAdsReduction": 0.25,
+        "alwaysSpread": true,
+        "spread": 1.0,
+        "melee": true,
+        "ammo": [
+          "ntgl:round45"
+        ]
+      },
+      "ammoData":{
+        "ntgl:round45": {
+          "ammo": {},
+          "projectile": {
+            "visible": true,
+            "damage": 2.0,
+            "size": 5.0,
+            "speed": 3.0,
+            "life": 120,
+            "burnSeconds": 5,
+            "projectileAmount": 1
+          }
+        }
       },
       "melee": {
         "mode": "ntgl:auto",

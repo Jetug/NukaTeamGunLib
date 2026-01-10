@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.ibm.icu.impl.Pair;
-import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
@@ -41,11 +40,12 @@ public class ClientShootingHandler {
     private static ClientShootingHandler instance;
     public static float shootMsGap = 0F;
 
-    private final HashMap<Pair<InteractionHand, LivingEntity>, Pair<WeaponData, Integer>> entityShootGaps = new HashMap<>();
     private final Map<InteractionHand, ShootingData> shootingData = Map.of(
             InteractionHand.MAIN_HAND, new ShootingData(0, null),
             InteractionHand.OFF_HAND, new ShootingData(0, null)
     );
+
+    private final Map<Pair<InteractionHand, LivingEntity>, Tracker> SHOOTING_TRACKERS = new HashMap<>();
 
     private ClientShootingHandler() {}
 
@@ -54,6 +54,20 @@ public class ClientShootingHandler {
             instance = new ClientShootingHandler();
         }
         return instance;
+    }
+
+    static class Tracker{
+        int fireTimer;
+        WeaponData weaponData;
+        InteractionHand hand;
+        int shootGaps;
+
+        public Tracker(int fireTimer, WeaponData weaponData, InteractionHand hand, int shootGaps) {
+            this.fireTimer = fireTimer;
+            this.weaponData = weaponData;
+            this.hand = hand;
+            this.shootGaps = shootGaps;
+        }
     }
 
     public static boolean isInGame() {
@@ -190,17 +204,17 @@ public class ClientShootingHandler {
     }
 
     public int getCooldown(LivingEntity entity, InteractionHand arm) {
-        var key = entityShootGaps.get(Pair.of(arm, entity));
-        if(key != null)
-            return key.second;
+        var tracker = SHOOTING_TRACKERS.get(Pair.of(arm, entity));
+        if(tracker != null)
+            return tracker.shootGaps;
         return 0;
     }
 
     @Nullable
     public WeaponData getWeaponData(LivingEntity entity, InteractionHand arm) {
-        var key = entityShootGaps.get(Pair.of(arm, entity));
-        if(key != null)
-            return key.first;
+        var tracker = SHOOTING_TRACKERS.get(Pair.of(arm, entity));
+        if(tracker != null)
+            return tracker.weaponData;
         return new WeaponData(entity.getItemInHand(arm), entity);
     }
 
@@ -233,7 +247,8 @@ public class ClientShootingHandler {
                 // TODO: Test serverside, possible issues 0.3.4-alpha
                 final var rpm = WeaponModifierHelper.getRate(weaponData); // Rounds per sec. Should come from gun properties in the end.
                 shootGap += rpm;
-                entityShootGaps.put(Pair.of(hand, shooter), Pair.of(weaponData, shootGap));
+
+                SHOOTING_TRACKERS.put(Pair.of(hand, shooter), new Tracker(0, weaponData, hand, shootGap));
                 shootMsGap = calcShootTickGap(rpm);
                 RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
                 RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
@@ -262,12 +277,10 @@ public class ClientShootingHandler {
     }
 
     private void reduceGaps(){
-        entityShootGaps.forEach((key, pair) -> {
-            var val = pair.second;
-
-            if(val > 0) val--;
-            entityShootGaps.put(key,  Pair.of(pair.first, val));
-        } );
+        SHOOTING_TRACKERS.forEach((key, tracker) -> {
+            if(tracker.shootGaps > 0)
+                tracker.shootGaps--;
+        });
     }
 
     private void setupShootingData(WeaponData weaponData, InteractionHand arm) {
