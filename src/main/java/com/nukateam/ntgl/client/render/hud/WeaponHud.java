@@ -70,7 +70,6 @@ public class WeaponHud implements IGuiOverlay {
     public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
         if (minecraft.player == null) return;
         var player = minecraft.player;
-
         cache.forEach((hand, cache) -> {
             var heldItem = player.getItemInHand(hand);
             var x = hand == InteractionHand.OFF_HAND ? OFFHAND_X_OFFSET : width;

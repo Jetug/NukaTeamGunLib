@@ -23,7 +23,7 @@ public class ActionWheelManager {
     public void onKeyPressed() {
         if (!wheel.isVisible()) {
             showDefaultWheel();
-            Minecraft.getInstance().setScreen(new ActionWheelScreen());
+//            Minecraft.getInstance().setScreen(new ActionWheelScreen());
         }
     }
 
