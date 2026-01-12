@@ -9,15 +9,16 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActionWheel {
-    private static final ResourceLocation WHEEL_TEXTURE = new ResourceLocation(Ntgl.MOD_ID, "textures/gui/action_wheel.png");
+    private static final ResourceLocation WHEEL_TEXTURE = new ResourceLocation(Ntgl.MOD_ID,
+            "textures/gui/action_wheel.png");
     private static final int WHEEL_SIZE = 128;
-    private static final int SEGMENT_SIZE = 64;
 
     private final List<WheelAction> actions = new ArrayList<>();
     private boolean isVisible = false;
@@ -104,12 +105,16 @@ public class ActionWheel {
         poseStack.translate(centerX, centerY, 0);
         poseStack.scale(scale, scale, 1.0f);
 
-//        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-//        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.9F);
-//        RenderSystem.setShaderTexture(0, WHEEL_TEXTURE);
-
         int halfSize = WHEEL_SIZE / 2;
-        guiGraphics.blit(WHEEL_TEXTURE, -halfSize, -halfSize, 0, 0, WHEEL_SIZE, WHEEL_SIZE, WHEEL_SIZE, WHEEL_SIZE);
+
+        // Используем blit с явным указанием размеров текстуры
+        guiGraphics.blit(
+                WHEEL_TEXTURE,
+                -halfSize, -halfSize,          // позиция на экране
+                0, 0,                          // координаты текстуры (u, v)
+                WHEEL_SIZE, WHEEL_SIZE,        // размер отрисовываемой области
+                WHEEL_SIZE, WHEEL_SIZE         // размер текстуры
+        );
 
         poseStack.popPose();
     }
@@ -122,26 +127,27 @@ public class ActionWheel {
         poseStack.translate(centerX, centerY, 10);
         poseStack.scale(scale, scale, 1.0f);
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.5F);
-        RenderSystem.setShaderTexture(0, WHEEL_TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
 
         float anglePerSegment = 360.0f / actions.size();
         float startAngle = segment * anglePerSegment - 90;
+        float endAngle = startAngle + anglePerSegment;
 
-        // Отрисовка выделенного сегмента
+        // Отрисовка выделенного сегмента как сектора круга
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder buffer = tessellator.getBuilder();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
         buffer.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
 
         int radius = 50;
         int innerRadius = 30;
         Matrix4f matrix = poseStack.last().pose();
+        int color = actions.get(segment).getColor();
 
-        // Центр
-        buffer.vertex(matrix, 0, 0, 0).color(actions.get(segment).getColor());
+        // Центр (прозрачный)
+        buffer.vertex(matrix, 0, 0, 0).color((color & 0x00FFFFFF) | 0x80000000);
 
         // Вершины дуги
         int segments = 20;
@@ -149,7 +155,7 @@ public class ActionWheel {
             float angle = (float) Math.toRadians(startAngle + (anglePerSegment * i / segments));
             float x = (float) Math.cos(angle) * radius;
             float y = (float) Math.sin(angle) * radius;
-            buffer.vertex(matrix, x, y, 0).color(actions.get(segment).getColor());
+            buffer.vertex(matrix, x, y, 0).color((color & 0x00FFFFFF) | 0x80000000);
         }
 
         tessellator.end();
@@ -159,22 +165,36 @@ public class ActionWheel {
 
     private void renderIconsAndText(GuiGraphics guiGraphics, int centerX, int centerY, float scale) {
         int count = actions.size();
+        if (count == 0) return;
+
         float anglePerSegment = 360.0f / count;
         int radius = 40;
 
         for (int i = 0; i < count; i++) {
-            float angle = (float) Math.toRadians(i * anglePerSegment - 90);
-            int x = centerX + (int) (Math.cos(angle) * radius * scale);
-            int y = centerY + (int) (Math.sin(angle) * radius * scale);
+            float angle = (float) Math.toRadians(i * anglePerSegment - 90 + (anglePerSegment / 2));
+            int x = centerX + (int) (Math.cos(angle) * radius * scale) - 8;
+            int y = centerY + (int) (Math.sin(angle) * radius * scale) - 8;
 
             // Отрисовка иконки
             WheelAction action = actions.get(i);
-            guiGraphics.renderItem(action.getIcon(), x - 8, y - 8);
+            ItemStack icon = action.getIcon();
+            if (icon.isEmpty()) {
+                icon = new ItemStack(Items.PAPER);
+            }
+
+            guiGraphics.renderItem(icon, x, y);
 
             // Отрисовка текста при выделении
             if (i == selectedSegment) {
-                guiGraphics.drawCenteredString(minecraft.font, action.getTitle(),
-                        centerX, centerY - 70, 0xFFFFFF);
+                Component title = action.getTitle();
+                int textWidth = minecraft.font.width(title);
+                guiGraphics.drawCenteredString(
+                        minecraft.font,
+                        title,
+                        centerX,
+                        centerY - 70,
+                        0xFFFFFF
+                );
             }
         }
     }
@@ -194,17 +214,23 @@ public class ActionWheel {
         double dy = mouseY - centerY;
         double distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < 20 || distance > 60) {
+        // Игнорируем клики слишком близко или далеко от центра
+        if (distance < 20) {
             selectedSegment = -1;
             return;
         }
 
+        // Вычисляем угол
         double angle = Math.toDegrees(Math.atan2(dy, dx)) + 90;
         if (angle < 0) angle += 360;
 
         int count = actions.size();
         float anglePerSegment = 360.0f / count;
-        selectedSegment = (int) (angle / anglePerSegment) % count;
+        selectedSegment = (int) (angle / anglePerSegment);
+
+        if (selectedSegment >= count) {
+            selectedSegment = count - 1;
+        }
     }
 
     public boolean isVisible() {
