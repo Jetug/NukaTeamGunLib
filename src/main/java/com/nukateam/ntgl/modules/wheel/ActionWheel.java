@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.client.event.RenderGuiEvent;
@@ -103,7 +104,7 @@ public class ActionWheel {
 
         // Рисуем кусок пиццы
         drawPizzaSliceWithOutline(
-                guiGraphics.pose(),
+                guiGraphics,
                 centerX,
                 centerY,
                 radius,
@@ -120,10 +121,9 @@ public class ActionWheel {
         guiGraphics.flush();
     }
 
-    public static void drawPizzaSlice(PoseStack poseStack, float centerX, float centerY, float radius,
-                                      float startAngle, float sweepAngle, int color) {
+    public static void drawPizzaSlice(GuiGraphics guiGraphics, float centerX, float centerY,
+                                      float radius, float startAngle, float sweepAngle, int color) {
 
-        // Проверяем валидность параметров
         if (radius <= 0 || sweepAngle <= 0) return;
 
         // Конвертируем углы в радианы
@@ -131,13 +131,17 @@ public class ActionWheel {
         float sweepRad = (float) Math.toRadians(sweepAngle);
 
         // Разбираем цвет на компоненты
-        float alpha = (float)(color >> 24 & 255) / 255.0F;
-        float red = (float)(color >> 16 & 255) / 255.0F;
-        float green = (float)(color >> 8 & 255) / 255.0F;
-        float blue = (float)(color & 255) / 255.0F;
+        float alpha = (color >> 24 & 255) / 255.0F;
+        float red = (color >> 16 & 255) / 255.0F;
+        float green = (color >> 8 & 255) / 255.0F;
+        float blue = (color & 255) / 255.0F;
 
         // Определяем количество сегментов для сглаживания
         int segments = Math.max(16, (int)(sweepAngle / 5));
+
+        // Получаем PoseStack из GuiGraphics
+        PoseStack poseStack = guiGraphics.pose();
+        poseStack.pushPose();
 
         // Настраиваем рендер
         RenderSystem.enableBlend();
@@ -145,7 +149,8 @@ public class ActionWheel {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
         // Начинаем построение вершин
-        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
 
         // Центральная точка (острие куска пиццы)
@@ -156,8 +161,8 @@ public class ActionWheel {
         // Генерируем точки по окружности
         for (int i = 0; i <= segments; i++) {
             float angle = startRad + (sweepRad * i / segments);
-            float x = centerX + (float)Math.cos(angle) * radius;
-            float y = centerY + (float)Math.sin(angle) * radius;
+            float x = centerX + Mth.cos(angle) * radius;
+            float y = centerY + Mth.sin(angle) * radius;
 
             buffer.vertex(poseStack.last().pose(), x, y, 0)
                     .color(red, green, blue, alpha)
@@ -166,85 +171,99 @@ public class ActionWheel {
 
         // Завершаем рисование
         BufferUploader.drawWithShader(buffer.end());
+
+        // Восстанавливаем состояние
         RenderSystem.disableBlend();
+        poseStack.popPose();
     }
 
     /**
-     * Рисует кусок пиццы с контуром
+     * Рисует контур куска пиццы
      */
-    public static void drawPizzaSliceWithOutline(PoseStack poseStack, float centerX, float centerY,
-                                                 float radius, float startAngle, float sweepAngle,
-                                                 int fillColor, int outlineColor, float outlineWidth) {
-
-        // Рисуем заливку
-        drawPizzaSlice(poseStack, centerX, centerY, radius, startAngle, sweepAngle, fillColor);
-
-        // Рисуем контур
-        drawPizzaSliceOutline(poseStack, centerX, centerY, radius, startAngle, sweepAngle,
-                outlineColor, outlineWidth);
-    }
-
-    /**
-     * Рисует только контур куска пиццы
-     */
-    public static void drawPizzaSliceOutline(PoseStack poseStack, float centerX, float centerY,
+    public static void drawPizzaSliceOutline(GuiGraphics guiGraphics, float centerX, float centerY,
                                              float radius, float startAngle, float sweepAngle,
-                                             int color, float width) {
+                                             int color, float lineWidth) {
 
-        if (radius <= 0 || sweepAngle <= 0 || width <= 0) return;
+        if (radius <= 0 || sweepAngle <= 0 || lineWidth <= 0) return;
 
-        float startRad = (float) Math.toRadians(startAngle);
+        float startRad = (float)  Math.toRadians(startAngle);
         float sweepRad = (float) Math.toRadians(sweepAngle);
 
-        float alpha = (float)(color >> 24 & 255) / 255.0F;
-        float red = (float)(color >> 16 & 255) / 255.0F;
-        float green = (float)(color >> 8 & 255) / 255.0F;
-        float blue = (float)(color & 255) / 255.0F;
+        float alpha = (color >> 24 & 255) / 255.0F;
+        float red = (color >> 16 & 255) / 255.0F;
+        float green = (color >> 8 & 255) / 255.0F;
+        float blue = (color & 255) / 255.0F;
 
         int segments = Math.max(16, (int)(sweepAngle / 5));
+
+        PoseStack poseStack = guiGraphics.pose();
+        poseStack.pushPose();
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        RenderSystem.lineWidth(width);
+        RenderSystem.lineWidth(lineWidth);
 
-        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder buffer = tesselator.getBuilder();
+
+        // Рисуем дугу
         buffer.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
 
-        // Контур по дуге
         for (int i = 0; i <= segments; i++) {
             float angle = startRad + (sweepRad * i / segments);
-            float x = centerX + (float)Math.cos(angle) * radius;
-            float y = centerY + (float)Math.sin(angle) * radius;
+            float x = centerX + Mth.cos(angle) * radius;
+            float y = centerY + Mth.sin(angle) * radius;
 
             buffer.vertex(poseStack.last().pose(), x, y, 0)
                     .color(red, green, blue, alpha)
                     .endVertex();
         }
 
-        // Линии от центра к краям
+        BufferUploader.drawWithShader(buffer.end());
+
+        // Рисуем линии от центра к краям
+        buffer = tesselator.getBuilder();
+        buffer.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
+
+        float startX = centerX + Mth.cos(startRad) * radius;
+        float startY = centerY + Mth.sin(startRad) * radius;
+        float endX = centerX + Mth.cos(startRad + sweepRad) * radius;
+        float endY = centerY + Mth.sin(startRad + sweepRad) * radius;
+
+        // Первая линия
         buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
                 .color(red, green, blue, alpha)
                 .endVertex();
+        buffer.vertex(poseStack.last().pose(), startX, startY, 0)
+                .color(red, green, blue, alpha)
+                .endVertex();
 
-        float endX = centerX + (float)Math.cos(startRad) * radius;
-        float endY = centerY + (float)Math.sin(startRad) * radius;
+        // Вторая линия
+        buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
+                .color(red, green, blue, alpha)
+                .endVertex();
         buffer.vertex(poseStack.last().pose(), endX, endY, 0)
                 .color(red, green, blue, alpha)
                 .endVertex();
 
-        buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
-                .color(red, green, blue, alpha)
-                .endVertex();
-
-        float endX2 = centerX + (float)Math.cos(startRad + sweepRad) * radius;
-        float endY2 = centerY + (float)Math.sin(startRad + sweepRad) * radius;
-        buffer.vertex(poseStack.last().pose(), endX2, endY2, 0)
-                .color(red, green, blue, alpha)
-                .endVertex();
-
         BufferUploader.drawWithShader(buffer.end());
+
         RenderSystem.disableBlend();
+        poseStack.popPose();
+    }
+
+    /**
+     * Рисует кусок пиццы с контуром (заливка + контур)
+     */
+    public static void drawPizzaSliceWithOutline(GuiGraphics guiGraphics, float centerX, float centerY,
+                                                 float radius, float startAngle, float sweepAngle,
+                                                 int fillColor, int outlineColor, float outlineWidth) {
+
+        // Сначала заливка, потом контур
+        drawPizzaSlice(guiGraphics, centerX, centerY, radius, startAngle, sweepAngle, fillColor);
+        drawPizzaSliceOutline(guiGraphics, centerX, centerY, radius, startAngle, sweepAngle,
+                outlineColor, outlineWidth);
     }
 
     private void renderWheel(GuiGraphics guiGraphics, int centerX, int centerY, float scale) {
