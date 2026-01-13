@@ -25,8 +25,8 @@ public class ActionWheelHud implements IGuiOverlay {
         if (player == null) return;
         var wheel = ActionWheelManager.getInstance().getWheel();
 
-        var mouseX = minecraft.mouseHandler.xpos;
-        var mouseY = minecraft.mouseHandler.xpos;
+        var mouseX = minecraft.mouseHandler.xpos();
+        var mouseY = minecraft.mouseHandler.ypos();
 
         if (wheel.isVisible()) {
             wheel.updateMousePosition(mouseX, mouseY);

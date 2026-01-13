@@ -57,6 +57,15 @@ public class ActionWheelManager {
                 0xFF0000FF
         ));
 
+        actions.add(new ActionWheel.WheelAction(
+                new ItemStack(Items.SHEARS),
+                Component.literal("Кастрация"),
+                () -> {
+                    Minecraft.getInstance().player.sendSystemMessage(Component.literal("Выбрано: Кастрировать"));
+                },
+                0xFF0000FF
+        ));
+
         wheel.show(actions);
     }
 
