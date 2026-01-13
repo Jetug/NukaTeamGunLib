@@ -91,8 +91,7 @@ public class ActionWheel {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-//        renderWheel(guiGraphics, centerX, centerY, scale);
-
+        renderWheel(guiGraphics, centerX, centerY, scale);
 
         float radius = 64;
         float startAngle = 45f; // Начальный угол (45 градусов)
@@ -126,46 +125,48 @@ public class ActionWheel {
 
         if (radius <= 0 || sweepAngle <= 0) return;
 
-        // Конвертируем углы в радианы
-        float startRad = (float) Math.toRadians(startAngle);
+        // Разбираем цвет
+        float a = (color >> 24 & 255) / 255.0F;
+        float r = (color >> 16 & 255) / 255.0F;
+        float g = (color >> 8 & 255) / 255.0F;
+        float b = (color & 255) / 255.0F;
+
+        // Конвертируем углы
+        float startRad = (float) Math.toRadians(startAngle - 90); // -90 для начала с 12 часов
         float sweepRad = (float) Math.toRadians(sweepAngle);
 
-        // Разбираем цвет на компоненты
-        float alpha = (color >> 24 & 255) / 255.0F;
-        float red = (color >> 16 & 255) / 255.0F;
-        float green = (color >> 8 & 255) / 255.0F;
-        float blue = (color & 255) / 255.0F;
+        // Количество сегментов
+        int segments = Math.max(8, (int) (radius * Mth.PI / 4));
 
-        // Определяем количество сегментов для сглаживания
-        int segments = Math.max(16, (int)(sweepAngle / 5));
-
-        // Получаем PoseStack из GuiGraphics
+        // Получаем PoseStack
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
 
         // Настраиваем рендер
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
+        RenderSystem.disableCull();
+        RenderSystem.disableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-        // Начинаем построение вершин
+        // Начинаем рисовать
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
 
-        // Центральная точка (острие куска пиццы)
+        // Центральная точка
         buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
-                .color(red, green, blue, alpha)
+                .color(r, g, b, a)
                 .endVertex();
 
-        // Генерируем точки по окружности
+        // Добавляем точки по окружности
         for (int i = 0; i <= segments; i++) {
-            float angle = startRad + (sweepRad * i / segments);
+            float angle = startRad + sweepRad * i / segments;
             float x = centerX + Mth.cos(angle) * radius;
             float y = centerY + Mth.sin(angle) * radius;
 
             buffer.vertex(poseStack.last().pose(), x, y, 0)
-                    .color(red, green, blue, alpha)
+                    .color(r, g, b, a)
                     .endVertex();
         }
 
@@ -173,6 +174,8 @@ public class ActionWheel {
         BufferUploader.drawWithShader(buffer.end());
 
         // Восстанавливаем состояние
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableCull();
         RenderSystem.disableBlend();
         poseStack.popPose();
     }
