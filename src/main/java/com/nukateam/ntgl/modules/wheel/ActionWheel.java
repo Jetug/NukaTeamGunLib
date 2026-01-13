@@ -108,13 +108,15 @@ public class ActionWheel {
         int halfSize = WHEEL_SIZE / 2;
 
         // Используем blit с явным указанием размеров текстуры
+        RenderSystem.setShaderColor(1,1,1,0.3f);
         guiGraphics.blit(
                 WHEEL_TEXTURE,
-                -halfSize, -halfSize,          // позиция на экране
-                0, 0,                          // координаты текстуры (u, v)
-                WHEEL_SIZE, WHEEL_SIZE,        // размер отрисовываемой области
-                WHEEL_SIZE, WHEEL_SIZE         // размер текстуры
+                -halfSize, -halfSize,
+                0, 0,
+                WHEEL_SIZE, WHEEL_SIZE,
+                WHEEL_SIZE, WHEEL_SIZE
         );
+        RenderSystem.setShaderColor(1,1,1,1);
 
         poseStack.popPose();
     }
@@ -124,38 +126,96 @@ public class ActionWheel {
 
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
-        poseStack.translate(centerX, centerY, 10);
-        poseStack.scale(scale, scale, 1.0f);
+        poseStack.translate(centerX, centerY, 50); // Z=50 чтобы рисовать поверх колеса
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-        float anglePerSegment = 360.0f / actions.size();
-        float startAngle = segment * anglePerSegment - 90;
-        float endAngle = startAngle + anglePerSegment;
+        // Получаем цвет и делаем полупрозрачным
+        int color = actions.get(segment).getColor();
+        color = (color & 0x00FFFFFF) | 0x80000000;
 
-        // Отрисовка выделенного сегмента как сектора круга
+        // Разбираем цвет на компоненты
+        float a = ((color >> 24) & 0xFF) / 255.0f;
+        float r = ((color >> 16) & 0xFF) / 255.0f;
+        float g = ((color >> 8) & 0xFF) / 255.0f;
+        float b = (color & 0xFF) / 255.0f;
+
+        // Усиливаем цвет для выделения
+        r = Math.min(1.0f, r * 1.5f);
+        g = Math.min(1.0f, g * 1.5f);
+        b = Math.min(1.0f, b * 1.5f);
+
+        // Параметры сегмента
+        int count = actions.size();
+        if (count == 0) {
+            poseStack.popPose();
+            return;
+        }
+
+        // Углы В ГРАДУСАХ, как в остальном коде
+        float anglePerSegment = 360.0f / count;
+
+        // Начальный и конечный углы В ГРАДУСАХ
+        float startAngleDeg = segment * anglePerSegment;
+        float endAngleDeg = startAngleDeg + anglePerSegment;
+
+        // Конвертируем в радианы
+        float startAngle = (float) Math.toRadians(startAngleDeg);
+        float endAngle = (float) Math.toRadians(endAngleDeg);
+
+        // Радиусы
+        float innerRadius = 10f;  // От центра
+        float outerRadius = 55f;  // До края
+
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder buffer = tessellator.getBuilder();
 
+        // Рисуем сегмент как треугольную полоску (TRIANGLE_STRIP)
+        buffer.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+
+        Matrix4f matrix = poseStack.last().pose();
+
+        // Количество шагов для сглаживания дуги
+        int steps = 16;
+
+        for (int i = 0; i <= steps; i++) {
+            // Интерполируем угол от startAngle до endAngle
+            float t = (float) i / steps;
+            float angle = startAngle + (endAngle - startAngle) * t;
+
+            // Вычисляем синус и косинус один раз
+            float cos = (float) Math.cos(angle);
+            float sin = (float) Math.sin(angle);
+
+            // Внутренняя точка
+            buffer.vertex(matrix, cos * innerRadius, sin * innerRadius, 0)
+                    .color(r, g, b, a * 0.3f);
+
+            // Внешняя точка
+            buffer.vertex(matrix, cos * outerRadius, sin * outerRadius, 0)
+                    .color(r, g, b, a * 0.7f);
+        }
+
+        tessellator.end();
+
+        // Также рисуем треугольник к центру, чтобы закрыть внутреннюю дырку
+        buffer = tessellator.getBuilder();
         buffer.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
 
-        int radius = 50;
-        int innerRadius = 30;
-        Matrix4f matrix = poseStack.last().pose();
-        int color = actions.get(segment).getColor();
+        // Центр
+        buffer.vertex(matrix, 0, 0, 0).color(r, g, b, a * 0.2f);
 
-        // Центр (прозрачный)
-        buffer.vertex(matrix, 0, 0, 0).color((color & 0x00FFFFFF) | 0x80000000);
+        // Внутренний круг
+        for (int i = 0; i <= steps; i++) {
+            float t = (float) i / steps;
+            float angle = startAngle + (endAngle - startAngle) * t;
 
-        // Вершины дуги
-        int segments = 20;
-        for (int i = 0; i <= segments; i++) {
-            float angle = (float) Math.toRadians(startAngle + (anglePerSegment * i / segments));
-            float x = (float) Math.cos(angle) * radius;
-            float y = (float) Math.sin(angle) * radius;
-            buffer.vertex(matrix, x, y, 0).color((color & 0x00FFFFFF) | 0x80000000);
+            float x = (float) Math.cos(angle) * innerRadius;
+            float y = (float) Math.sin(angle) * innerRadius;
+
+            buffer.vertex(matrix, x, y, 0).color(r, g, b, a * 0.3f);
         }
 
         tessellator.end();
@@ -182,17 +242,68 @@ public class ActionWheel {
                 icon = new ItemStack(Items.PAPER);
             }
 
-            guiGraphics.renderItem(icon, x, y);
+            // Если это выбранный сегмент, делаем иконку больше
+            if (i == selectedSegment) {
+                guiGraphics.pose().pushPose();
+                // Масштабируем иконку
+                float iconScale = 1.3f;
+                guiGraphics.pose().translate(x + 8, y + 8, 100);
+                guiGraphics.pose().scale(iconScale, iconScale, 1.0f);
+                guiGraphics.pose().translate(-8, -8, 0);
+
+                // Рисуем подсветку вокруг иконки
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                RenderSystem.setShader(GameRenderer::getPositionColorShader);
+
+                Tesselator tessellator = Tesselator.getInstance();
+                BufferBuilder buffer = tessellator.getBuilder();
+                buffer.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+
+                Matrix4f matrix = guiGraphics.pose().last().pose();
+                int color = action.getColor();
+                float cr = ((color >> 16) & 0xFF) / 255.0f;
+                float cg = ((color >> 8) & 0xFF) / 255.0f;
+                float cb = (color & 0xFF) / 255.0f;
+
+                // Центр подсветки
+                buffer.vertex(matrix, 8, 8, 0).color(cr, cg, cb, 0.3f);
+
+                // Круг подсветки
+                int segments = 16;
+                float highlightRadius = 12;
+                for (int j = 0; j <= segments; j++) {
+                    float a = (float) (j * 2 * Math.PI / segments);
+                    float hx = 8 + (float) Math.cos(a) * highlightRadius;
+                    float hy = 8 + (float) Math.sin(a) * highlightRadius;
+                    buffer.vertex(matrix, hx, hy, 0).color(cr, cg, cb, 0.1f);
+                }
+
+                tessellator.end();
+
+                guiGraphics.renderItem(icon, 0, 0);
+                guiGraphics.pose().popPose();
+            } else {
+                guiGraphics.renderItem(icon, x, y);
+            }
 
             // Отрисовка текста при выделении
             if (i == selectedSegment) {
                 Component title = action.getTitle();
-                int textWidth = minecraft.font.width(title);
+                // Тень текста
+                guiGraphics.drawCenteredString(
+                        minecraft.font,
+                        title,
+                        centerX + 1,
+                        centerY - 70,
+                        0x000000
+                );
+                // Основной текст
                 guiGraphics.drawCenteredString(
                         minecraft.font,
                         title,
                         centerX,
-                        centerY - 70,
+                        centerY - 71,
                         0xFFFFFF
                 );
             }
@@ -205,23 +316,7 @@ public class ActionWheel {
             return;
         }
 
-        int screenWidth = minecraft.getWindow().getGuiScaledWidth();
-        int screenHeight = minecraft.getWindow().getGuiScaledHeight();
-        int centerX = screenWidth / 2;
-        int centerY = screenHeight / 2;
-
-        double dx = mouseX - centerX;
-        double dy = mouseY - centerY;
-        double distance = Math.sqrt(dx * dx + dy * dy);
-
-        // Игнорируем клики слишком близко или далеко от центра
-        if (distance < 20) {
-            selectedSegment = -1;
-            return;
-        }
-
-        // Вычисляем угол
-        double angle = Math.toDegrees(Math.atan2(dy, dx)) + 90;
+        double angle = getAngle(mouseX, mouseY);
         if (angle < 0) angle += 360;
 
         int count = actions.size();
@@ -233,11 +328,26 @@ public class ActionWheel {
         }
     }
 
-    public boolean isVisible() {
-        return isVisible;
+    private double getAngle(double mouseX, double mouseY) {
+        int screenWidth = minecraft.getWindow().getGuiScaledWidth();
+        int screenHeight = minecraft.getWindow().getGuiScaledHeight();
+        int centerX = screenWidth / 2;
+        int centerY = screenHeight / 2;
+
+        double dx = mouseX - centerX;
+        double dy = mouseY - centerY;
+
+        // Игнорируем центр колеса (мертвая зона)
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 20) {
+            selectedSegment = -1;
+            return 0;
+        }
+
+        return Math.toDegrees(Math.atan2(dy, dx)) + 90;
     }
 
-    public void setVisible(boolean visible) {
-        this.isVisible = visible;
+    public boolean isVisible() {
+        return isVisible;
     }
 }

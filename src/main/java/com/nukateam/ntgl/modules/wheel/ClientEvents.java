@@ -18,7 +18,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onKeyPress(InputEvent.Key event) {
-        Minecraft mc = Minecraft.getInstance();
+        var mc = Minecraft.getInstance();
         if (mc.screen != null) return;
 
         if (event.getKey() == ACTION_WHEEL_KEY) {
@@ -34,9 +34,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onMouseMove(InputEvent.MouseScrollingEvent event) {
-        // Можно использовать скролл для навигации
         if (ActionWheelManager.getInstance().isWheelActive()) {
-            // Логика скролла
             event.setCanceled(true);
         }
     }

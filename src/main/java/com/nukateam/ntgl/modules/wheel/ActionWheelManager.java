@@ -23,17 +23,17 @@ public class ActionWheelManager {
     public void onKeyPressed() {
         if (!wheel.isVisible()) {
             showDefaultWheel();
-//            Minecraft.getInstance().setScreen(new ActionWheelScreen());
         }
     }
 
     public void onKeyReleased() {
         if (wheel.isVisible()) {
             wheel.hide();
-            if (Minecraft.getInstance().screen instanceof ActionWheelScreen) {
-                Minecraft.getInstance().setScreen(null);
-            }
         }
+    }
+
+    public void showWheel(List<ActionWheel.WheelAction> actions) {
+        wheel.show(actions);
     }
 
     public void showDefaultWheel() {
@@ -58,11 +58,6 @@ public class ActionWheelManager {
         ));
 
         wheel.show(actions);
-    }
-
-    public void showCustomWheel(List<ActionWheel.WheelAction> actions) {
-        wheel.show(actions);
-        Minecraft.getInstance().setScreen(new ActionWheelScreen());
     }
 
     public ActionWheel getWheel() {
