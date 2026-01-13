@@ -180,78 +180,81 @@ public class ActionWheel {
         poseStack.popPose();
     }
 
-    /**
-     * Рисует контур куска пиццы
-     */
     public static void drawPizzaSliceOutline(GuiGraphics guiGraphics, float centerX, float centerY,
                                              float radius, float startAngle, float sweepAngle,
                                              int color, float lineWidth) {
 
-        if (radius <= 0 || sweepAngle <= 0 || lineWidth <= 0) return;
+        if (radius <= 0 || sweepAngle <= 0) return;
 
-        float startRad = (float)  Math.toRadians(startAngle);
+        // Разбираем цвет
+        float a = (color >> 24 & 255) / 255.0F;
+        float r = (color >> 16 & 255) / 255.0F;
+        float g = (color >> 8 & 255) / 255.0F;
+        float b = (color & 255) / 255.0F;
+
+        // Конвертируем углы
+        float startRad = (float) Math.toRadians(startAngle - 90);
         float sweepRad = (float) Math.toRadians(sweepAngle);
 
-        float alpha = (color >> 24 & 255) / 255.0F;
-        float red = (color >> 16 & 255) / 255.0F;
-        float green = (color >> 8 & 255) / 255.0F;
-        float blue = (color & 255) / 255.0F;
-
-        int segments = Math.max(16, (int)(sweepAngle / 5));
+        // Количество сегментов для сглаживания
+        int segments = Math.max(8, (int) (radius * Mth.PI / 4));
 
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
 
+        // Настраиваем рендер для линий
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
+        RenderSystem.disableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.lineWidth(lineWidth);
 
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.getBuilder();
 
-        // Рисуем дугу
+        // Рисуем дугу (контур окружности)
         buffer.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
 
         for (int i = 0; i <= segments; i++) {
-            float angle = startRad + (sweepRad * i / segments);
+            float angle = startRad + sweepRad * i / segments;
             float x = centerX + Mth.cos(angle) * radius;
             float y = centerY + Mth.sin(angle) * radius;
 
             buffer.vertex(poseStack.last().pose(), x, y, 0)
-                    .color(red, green, blue, alpha)
+                    .color(r, g, b, a)
                     .endVertex();
         }
 
         BufferUploader.drawWithShader(buffer.end());
 
-        // Рисуем линии от центра к краям
+        // Рисуем две линии от центра к краям
         buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
 
+        // Линия от центра к начальной точке
         float startX = centerX + Mth.cos(startRad) * radius;
         float startY = centerY + Mth.sin(startRad) * radius;
-        float endX = centerX + Mth.cos(startRad + sweepRad) * radius;
-        float endY = centerY + Mth.sin(startRad + sweepRad) * radius;
-
-        // Первая линия
         buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
-                .color(red, green, blue, alpha)
+                .color(r, g, b, a)
                 .endVertex();
         buffer.vertex(poseStack.last().pose(), startX, startY, 0)
-                .color(red, green, blue, alpha)
+                .color(r, g, b, a)
                 .endVertex();
 
-        // Вторая линия
+        // Линия от центра к конечной точке
+        float endX = centerX + Mth.cos(startRad + sweepRad) * radius;
+        float endY = centerY + Mth.sin(startRad + sweepRad) * radius;
         buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
-                .color(red, green, blue, alpha)
+                .color(r, g, b, a)
                 .endVertex();
         buffer.vertex(poseStack.last().pose(), endX, endY, 0)
-                .color(red, green, blue, alpha)
+                .color(r, g, b, a)
                 .endVertex();
 
         BufferUploader.drawWithShader(buffer.end());
 
+        // Восстанавливаем состояние
+        RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
         poseStack.popPose();
     }
