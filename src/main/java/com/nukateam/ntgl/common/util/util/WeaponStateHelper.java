@@ -33,34 +33,9 @@ public class WeaponStateHelper {
     private static final String ATTACHMENTS = "Attachments";
     private static final String AMMO_COUNT = "AmmoCount";
 
-    //AMMO
-    public static void switchAmmo(WeaponData data){
-        var ammoItems = WeaponModifierHelper.getAmmoItems(data);
-        var current = getCurrentAmmo(data);
-        var newAmmo = SetUtils.cycleSet(ammoItems, current);
-
-        setCurrentAmmo(data, newAmmo.getId());
-    }
-
-    public static ResourceKey<DamageType> getDamageType(WeaponData data){
-        var ammo = getProjectileConfig(data);
-        return ammo.getDamageType();
-    }
-
     public static float getProjectileDamage(WeaponData data) {
         var ammo = getCurrentAmmo(data).getId();
         return WeaponModifierHelper.getProjectileDamage(ammo, data);
-    }
-
-    public static void setAmmoCount(WeaponData data, int amount) {
-        if(data.weapon == null) return;
-
-        var tag = data.weapon.getOrCreateTag();
-        var ammoTag = getOrCreateTag(tag, AMMO_COUNT);
-
-        ammoTag.putInt(data.weaponMode.toString(), amount);
-        tag.put(AMMO_COUNT, ammoTag);
-        data.weapon.setTag(tag);
     }
 
     //AMMO COUNT
@@ -74,6 +49,17 @@ public class WeaponStateHelper {
         }
 
         return 0;
+    }
+
+    public static void setAmmoCount(WeaponData data, int amount) {
+        if(data.weapon == null) return;
+
+        var tag = data.weapon.getOrCreateTag();
+        var ammoTag = getOrCreateTag(tag, AMMO_COUNT);
+
+        ammoTag.putInt(data.weaponMode.toString(), amount);
+        tag.put(AMMO_COUNT, ammoTag);
+        data.weapon.setTag(tag);
     }
 
     public static void addAmmo(WeaponData data, int amount) {
@@ -109,6 +95,14 @@ public class WeaponStateHelper {
     }
 
     //AMMO TYPE
+    public static void switchAmmo(WeaponData data){
+        var ammoItems = WeaponModifierHelper.getAmmoItems(data);
+        var current = getCurrentAmmo(data);
+        var newAmmo = SetUtils.cycleSet(ammoItems, current);
+
+        setCurrentAmmo(data, newAmmo.getId());
+    }
+
     public static void setCurrentAmmo(WeaponData data, ResourceLocation ammo) {
         var tag = data.weapon.getOrCreateTag();
         var ammoTag = getOrCreateTag(tag, AMMO_TAG);

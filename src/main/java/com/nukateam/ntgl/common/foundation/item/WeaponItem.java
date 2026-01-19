@@ -7,6 +7,7 @@ import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
@@ -165,23 +166,29 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
 
     private static void checkAmmo(ItemStack stack, Entity entity, LivingEntity livingEntity) {
         var data = new WeaponData(stack, livingEntity);
-        var ammoItems = WeaponModifierHelper.getAmmoItems(data);
-        var ammoId = WeaponStateHelper.getCurrentAmmo(data).getId();
-        var matches = ammoItems.stream().anyMatch((i) -> i.getId().equals(ammoId));
+        var modes = new ArrayList<>(WeaponModifierHelper.getWeaponModes(data).keySet());
+        modes.add(WeaponMode.PRIMARY);
 
-        if(!matches) {
-            if (entity instanceof ServerPlayer player) {
-                ServerPlayHandler.unloadGun(player, stack);
+        for(var mode : modes) {
+            data = data.clone().setWeaponMode(mode);
+            var ammoItems = WeaponModifierHelper.getAmmoItems(data);
+            var ammoId = WeaponStateHelper.getCurrentAmmo(data).getId();
+            var matches = ammoItems.stream().anyMatch((i) -> i.getId().equals(ammoId));
+
+            if (!matches) {
+                if (entity instanceof ServerPlayer) {
+                    ServerPlayHandler.unloadGun(data);
+                }
+                var firstAmmo = SetUtils.getFirst(ammoItems);
+                WeaponStateHelper.setCurrentAmmo(data, firstAmmo.getId());
             }
-            var firstAmmo = SetUtils.getFirst(ammoItems);
-            WeaponStateHelper.setCurrentAmmo(data, firstAmmo.getId());
-        }
 
-        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-        var currentAmount = WeaponStateHelper.getAmmoCount(data);
-        if(currentAmount > maxAmmo){
-            if (entity instanceof ServerPlayer player) {
-                ServerPlayHandler.unloadGun(player, stack);
+            var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+            var currentAmount = WeaponStateHelper.getAmmoCount(data);
+            if (currentAmount > maxAmmo) {
+                if (entity instanceof ServerPlayer) {
+                    ServerPlayHandler.unloadGun(data);
+                }
             }
         }
     }

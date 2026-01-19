@@ -48,6 +48,7 @@ public class PacketHandler {
         registerPlayMessage(C2SMessageShooting.class    , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessagePreFireSound.class, NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageHandAction.class  , NetworkDirection.PLAY_TO_SERVER);
+        registerPlayMessage(C2SMessageChangeAmmo.class  , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageMeleeAttack.class , NetworkDirection.PLAY_TO_SERVER);
         registerPlayMessage(C2SMessageGrenade.class     , NetworkDirection.PLAY_TO_SERVER);
 

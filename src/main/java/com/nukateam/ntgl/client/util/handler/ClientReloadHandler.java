@@ -57,7 +57,7 @@ public class ClientReloadHandler {
 
     public void unloadAmmo(InteractionHand hand) {
         stopReloading(hand);
-        PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload(hand));
+        PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload(hand, WeaponMode.PRIMARY));
     }
 
     public void startReloading(WeaponMode mode){

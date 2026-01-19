@@ -86,20 +86,33 @@
         "spread": 1.0,
         "melee": true,
         "ammo": [
-          "ntgl:round45"
+          "ntgl:round45",
+          "ntgl:round38"
         ]
       },
       "ammoData":{
         "ntgl:round45": {
-          "ammo": {},
+          "ammo": {
+            "type": "ntgl:incendiary"
+          },
           "projectile": {
             "visible": true,
             "damage": 2.0,
             "size": 5.0,
             "speed": 3.0,
-            "life": 120,
-            "burnSeconds": 5,
-            "projectileAmount": 1
+            "life": 120
+          }
+        },
+        "ntgl:round38": {
+          "ammo": {
+            "type": "ntgl:piercing"
+          },
+          "projectile": {
+            "visible": true,
+            "damage": 2.0,
+            "size": 5.0,
+            "speed": 3.0,
+            "life": 120
           }
         }
       },
@@ -129,11 +142,12 @@
         "spread": 1.0,
         "melee": true,
         "ammo": [
-          "ntgl:round45"
+          "ntgl:shotshell",
+          "ntgl:round5mm"
         ]
       },
       "ammoData":{
-        "ntgl:round45": {
+        "ntgl:shotshell": {
           "ammo": {
             "type": "ntgl:buckshot"
           },

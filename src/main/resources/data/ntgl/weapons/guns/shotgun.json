@@ -59,7 +59,31 @@
         "ammo": [
           "ntgl:round10mm",
           "ntgl:round45"
-        ]
+        ],
+        "ammoData": {
+          "ntgl:round10mm": {
+            "ammo": {
+              "type": "ntgl:buckshot"
+            },
+            "projectile": {
+              "damage": 1.0,
+              "size": 1.0,
+              "speed": 50.0,
+              "life": 5
+            }
+          },
+          "ntgl:round45": {
+            "ammo": {
+              "type": "ntgl:energetic"
+            },
+            "projectile": {
+              "damage": 1.0,
+              "size": 1.0,
+              "speed": 50.0,
+              "life": 5
+            }
+          }
+        }
       },
       "throwable": {
         "mode": [

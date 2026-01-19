@@ -10,6 +10,7 @@ import com.nukateam.ntgl.common.util.annotation.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.ArrayList;
@@ -80,9 +81,8 @@ public class General implements INBTSerializable<CompoundTag> {
     @Optional boolean oneTimeCharge = true;
     @Optional float spread;
     @Optional int fireTimer;
-    @Optional float movementSpeed = 0.0f;
     @Optional ArrayList<AttributeModifier> attributeModifiers = new ArrayList<>();
-    @Optional protected LinkedHashSet<AmmoHolder> ammo = new LinkedHashSet<>(List.of(AmmoHolder.getType(Ntgl.MOD_ID + ":round10mm")));
+    @Optional protected LinkedHashSet<AmmoHolder> ammo = new LinkedHashSet<>(List.of(AmmoHolder.getType("minecraft:air")));
     @Optional protected LinkedHashSet<AmmoHolder> fuel = new LinkedHashSet<>();
 
     @Override

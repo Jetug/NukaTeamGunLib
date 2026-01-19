@@ -2,7 +2,6 @@ package com.nukateam.ntgl.modules.wheel;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -11,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,27 +23,46 @@ public class ActionWheel {
     private long openTime = 0;
     private final Minecraft minecraft;
 
+    private double lastMouseX = -1;
+    private double lastMouseY = -1;
+    private double accumulatedDeltaX = 0;
+    private double accumulatedDeltaY = 0;
+    private static final double MOVEMENT_THRESHOLD = 2.0;
+    private static final double MOVEMENT_DECAY = 0.7;
+
     public static class WheelAction {
-        private final ItemStack icon;
-        private final Component title;
-        private final Runnable action;
-        private final int color;
+        private ResourceLocation icon;
+        private Component title = Component.literal("");
+        private Runnable action = () -> {};
+        private int color = 0xC6C6C6FF;
 
-        public WheelAction(ItemStack icon, Component title, Runnable action, int color) {
-            this.icon = icon;
-            this.title = title;
-            this.action = action;
-            this.color = color;
-        }
+        public WheelAction() {}
 
-        public WheelAction(ItemStack icon, Component title, Runnable action) {
-            this(icon, title, action, 0xFFFFFFFF);
-        }
-
-        public ItemStack getIcon() { return icon; }
+        public ResourceLocation getIcon() { return icon; }
         public Component getTitle() { return title; }
         public Runnable getAction() { return action; }
         public int getColor() { return color; }
+
+
+        public WheelAction setIcon(ResourceLocation icon) {
+            this.icon = icon;
+            return this;
+        }
+
+        public WheelAction setTitle(Component title) {
+            this.title = title;
+            return this;
+        }
+
+        public WheelAction setAction(Runnable action) {
+            this.action = action;
+            return this;
+        }
+
+        public WheelAction setColor(int color) {
+            this.color = color;
+            return this;
+        }
     }
 
     public ActionWheel(Minecraft minecraft) {
@@ -58,6 +75,10 @@ public class ActionWheel {
         this.isVisible = true;
         this.openTime = System.currentTimeMillis();
         this.selectedSegment = -1;
+        this.lastMouseX = -1;
+        this.lastMouseY = -1;
+        this.accumulatedDeltaX = 0;
+        this.accumulatedDeltaY = 0;
     }
 
     public void hide() {
@@ -84,7 +105,6 @@ public class ActionWheel {
         RenderSystem.defaultBlendFunc();
 
         renderWheel(guiGraphics, scale, centerX, centerY);
-
         renderIconsAndText(guiGraphics, centerX, centerY, scale);
 
         RenderSystem.disableBlend();
@@ -97,8 +117,23 @@ public class ActionWheel {
         poseStack.pushPose();
         {
             poseStack.scale(scale, scale, 1.0f);
-            drawSegment(guiGraphics, centerX / scale, centerY / scale,
-                    WHEEL_SIZE / 2f, 0, 360, 0xC6C6C6FF);
+
+            var count = actions.size();
+            var anglePerSegment = 360.0f / count;
+
+            for(var i = 0; i < count; i++){
+
+            }
+            var offset = 0;
+            for(var action : actions){
+                drawSegment(guiGraphics, centerX / scale, centerY / scale,
+                        WHEEL_SIZE / 2f, offset, anglePerSegment, action.color);
+                offset += anglePerSegment;
+            }
+
+
+//            drawSegment(guiGraphics, centerX / scale, centerY / scale,
+//                    WHEEL_SIZE / 2f, 0, 360, 0xC6C6C6FF);
             renderSelectedSegment(guiGraphics, centerX, centerY, scale);
         }
         poseStack.popPose();
@@ -107,6 +142,8 @@ public class ActionWheel {
 
     private void renderSelectedSegment(GuiGraphics guiGraphics, int centerX, int centerY, float scale) {
         var count = actions.size();
+        if (count == 0 || selectedSegment < 0) return;
+
         var anglePerSegment = 360.0f / count;
         var startAngle = selectedSegment * anglePerSegment;
 
@@ -119,41 +156,33 @@ public class ActionWheel {
 
         if (radius <= 0 || sweepAngle <= 0) return;
 
-        // Разбираем цвет
-        float a = (color >> 24 & 255) / 255.0F;
-        float r = (color >> 16 & 255) / 255.0F;
-        float g = (color >> 8 & 255) / 255.0F;
-        float b = (color & 255) / 255.0F;
+        float r = (color >> 24 & 255) / 255.0F;
+        float g = (color >> 16 & 255) / 255.0F;
+        float b = (color >> 8 & 255) / 255.0F;
+        float a = (color & 255) / 255.0F;
 
-        // Конвертируем углы
         float startRad = (float) Math.toRadians(startAngle - 90); // -90 для начала с 12 часов
         float sweepRad = (float) Math.toRadians(sweepAngle);
 
-        // Количество сегментов
         int segments = Math.max(8, (int) (radius * Mth.PI / 4));
 
-        // Получаем PoseStack
         PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
 
-        // Настраиваем рендер
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
         RenderSystem.disableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-        // Начинаем рисовать
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
 
-        // Центральная точка
         buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
                 .color(r, g, b, a)
                 .endVertex();
 
-        // Добавляем точки по окружности
         for (int i = 0; i <= segments; i++) {
             float angle = startRad + sweepRad * i / segments;
             float x = centerX + Mth.cos(angle) * radius;
@@ -164,33 +193,13 @@ public class ActionWheel {
                     .endVertex();
         }
 
-        // Завершаем рисование
         BufferUploader.drawWithShader(buffer.end());
 
-        // Восстанавливаем состояние
         RenderSystem.enableDepthTest();
         RenderSystem.enableCull();
         RenderSystem.disableBlend();
         poseStack.popPose();
     }
-//    private void renderWheel(GuiGraphics guiGraphics, int centerX, int centerY, float scale) {
-//        var poseStack = guiGraphics.pose();
-//        poseStack.pushPose();
-//        poseStack.translate(centerX, centerY, 0);
-//        poseStack.scale(scale, scale, 1.0f);
-//
-//        int halfSize = WHEEL_SIZE / 2;
-//
-//        guiGraphics.blit(
-//                WHEEL_TEXTURE,
-//                -halfSize, -halfSize,
-//                0, 0,
-//                WHEEL_SIZE, WHEEL_SIZE,
-//                WHEEL_SIZE, WHEEL_SIZE
-//        );
-//
-//        poseStack.popPose();
-//    }
 
     private void renderIconsAndText(GuiGraphics guiGraphics, int centerX, int centerY, float scale) {
         int count = actions.size();
@@ -204,27 +213,24 @@ public class ActionWheel {
             int x = centerX + (int) (Math.cos(angle) * radius * scale) - 8;
             int y = centerY + (int) (Math.sin(angle) * radius * scale) - 8;
 
-            // Отрисовка иконки
-            WheelAction action = actions.get(i);
-            ItemStack icon = action.getIcon();
-            if (icon.isEmpty()) {
-                icon = new ItemStack(Items.PAPER);
-            }
+            var action = actions.get(i);
+            var icon = action.getIcon();
 
             if (i == selectedSegment) {
-                // Подсветка выбранной иконки
                 guiGraphics.pose().pushPose();
-                float iconScale = 1.2f; // Немного увеличиваем масштаб
+                float iconScale = 1.2f;
                 guiGraphics.pose().translate(x + 8, y + 8, 100);
                 guiGraphics.pose().scale(iconScale, iconScale, 1.0f);
                 guiGraphics.pose().translate(-8, -8, 0);
 
-                guiGraphics.renderItem(icon, 0, 0);
-                guiGraphics.renderItemDecorations(minecraft.font, icon, 0, 0);
+                guiGraphics.blit(icon,0,0,0,0, 16, 16, 16, 16);
+//                guiGraphics.renderItem(icon, 0, 0);
+//                guiGraphics.renderItemDecorations(minecraft.font, icon, 0, 0);
                 guiGraphics.pose().popPose();
             } else {
-                guiGraphics.renderItem(icon, x, y);
-                guiGraphics.renderItemDecorations(minecraft.font, icon, x, y);
+                guiGraphics.blit(icon,x, y,0,0, 16, 16, 16, 16);
+//                guiGraphics.renderItem(icon, x, y);
+//                guiGraphics.renderItemDecorations(minecraft.font, icon, x, y);
             }
 
             if (i == selectedSegment) {
@@ -235,7 +241,7 @@ public class ActionWheel {
                         minecraft.font,
                         title,
                         centerX,
-                        centerY - 70,
+                        centerY - 75,
                         color
                 );
             }
@@ -248,11 +254,38 @@ public class ActionWheel {
             return;
         }
 
-        double angle = getAngle(mouseX, mouseY);
-        if (angle < 0) angle += 360;
+        if (lastMouseX == -1 || lastMouseY == -1) {
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+            return;
+        }
+
+        double deltaX = mouseX - lastMouseX;
+        double deltaY = mouseY - lastMouseY;
+
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
+
+        double movement = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        if (movement < MOVEMENT_THRESHOLD) {
+            accumulatedDeltaX *= MOVEMENT_DECAY;
+            accumulatedDeltaY *= MOVEMENT_DECAY;
+
+            if (Math.abs(accumulatedDeltaX) < 0.1 && Math.abs(accumulatedDeltaY) < 0.1) {
+                return;
+            }
+        } else {
+            accumulatedDeltaX += deltaX;
+            accumulatedDeltaY += deltaY;
+        }
+
+        double angle = getMovementAngle(accumulatedDeltaX, accumulatedDeltaY);
 
         int count = actions.size();
         float anglePerSegment = 360.0f / count;
+
+        angle = (angle + 360) % 360;
+
         selectedSegment = (int) (angle / anglePerSegment);
 
         if (selectedSegment >= count) {
@@ -260,23 +293,20 @@ public class ActionWheel {
         }
     }
 
-    private double getAngle(double mouseX, double mouseY) {
-        int screenWidth = minecraft.getWindow().getGuiScaledWidth();
-        int screenHeight = minecraft.getWindow().getGuiScaledHeight();
-        int centerX = screenWidth / 2;
-        int centerY = screenHeight / 2;
-
-        double dx = mouseX - centerX;
-        double dy = mouseY - centerY;
-
-        // Игнорируем центр колеса (мертвая зона)
-        double distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < 20) {
-            selectedSegment = -1;
-            return 0;
+    private double getMovementAngle(double deltaX, double deltaY) {
+        double movement = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        if (movement < 0.1) {
+            return -1; // Не выбирать сегмент
         }
 
-        return Math.toDegrees(Math.atan2(dy, dx)) + 90;
+        double angleRad = Math.atan2(deltaY, deltaX);
+        double angleDeg = Math.toDegrees(angleRad);
+
+        angleDeg += 90;
+
+        if (angleDeg < 0) angleDeg += 360;
+
+        return angleDeg;
     }
 
     public boolean isVisible() {

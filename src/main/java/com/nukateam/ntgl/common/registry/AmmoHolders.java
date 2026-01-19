@@ -10,6 +10,8 @@ import java.util.List;
 import static com.nukateam.ntgl.Ntgl.ntglResource;
 
 public class AmmoHolders {
+    public static final AmmoHolder EMPTY = AmmoHolder.getType("minecraft:air");
+
     public static final AmmoHolder BURNABLE = AmmoHolder.Builder
             .create(ntglResource("burnable"))
             .isAcceptable(AmmoHolders::isBurnable)

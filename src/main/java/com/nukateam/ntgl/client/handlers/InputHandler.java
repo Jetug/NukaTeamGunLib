@@ -13,14 +13,21 @@ import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
+import com.nukateam.ntgl.common.registry.AmmoHolders;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import com.nukateam.ntgl.modules.wheel.ActionWheel;
+import com.nukateam.ntgl.modules.wheel.ActionWheelManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.ArrayList;
 
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
 import static com.nukateam.ntgl.client.util.handler.ClientShootingHandler.isInGame;
@@ -114,6 +121,8 @@ public class InputHandler {
         return Minecraft.getInstance().options.keyUse.isDown();
     }
 
+    private static boolean keyPressed = false;
+
     private static void handleKeys() {
         var minecraft = Minecraft.getInstance();
         var player = minecraft.player;
@@ -123,9 +132,9 @@ public class InputHandler {
         if (player == null || !isInGame())
             return;
 
-        var heldItem = player.getItemInHand(hand).getItem();
+        var heldItem = player.getItemInHand(hand);
 
-        if(heldItem instanceof IWeapon) {
+        if(heldItem.getItem() instanceof IWeapon) {
             if (NtglKeyBinds.KEY_ATTACHMENTS.consumeClick()) {
                 PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
             }
@@ -145,13 +154,45 @@ public class InputHandler {
             if (NtglKeyBinds.KEY_FIRE_SELECT.consumeClick()) {
                 ClientActions.switchFireMode(hand);
             }
-            if (NtglKeyBinds.KEY_AMMO_SELECT.consumeClick()) {
-                ClientActions.switchAmmo(hand, player);
-            }
             if(NtglKeyBinds.KEY_TIPS.consumeClick()){
                 var options = NtglOptions.getInstance();
                 options.setShowTips(!options.isShowTips());
                 options.saveOptions();
+            }
+
+            if (NtglKeyBinds.KEY_AMMO_SELECT.isDown()) {
+                if(!keyPressed) {
+                    keyPressed = true;
+                    var modes = new ArrayList<>(WeaponModifierHelper.getWeaponModes(new WeaponData(heldItem, player)).keySet());
+                    modes.add(WeaponMode.PRIMARY);
+
+                    var actions = new ArrayList<ActionWheel.WheelAction>();
+                    for (var mode : modes) {
+                        var data = new WeaponData(heldItem, player).setWeaponMode(mode);
+                        var ammoItems = WeaponModifierHelper.getAmmoItems(data);
+                        for (var ammo : ammoItems) {
+                            var currentAmmo = WeaponStateHelper.getCurrentAmmo(data);
+                            if(ammo == AmmoHolders.EMPTY || ammo == currentAmmo) continue;
+
+                            var icon = WeaponModifierHelper.getAmmoConfig(ammo.getId(),data).getAmmoType().getIcon();
+
+                            actions.add(new ActionWheel.WheelAction()
+                                    .setIcon(icon)
+                                    .setTitle(Component.translatable(ammo.getDescriptionId()))
+                                    .setAction(() -> ClientActions.switchAmmo(hand, data, ammo.getId()))
+                                    .setColor(mode.getColor())
+                            );
+                        }
+                    }
+
+                    ActionWheelManager.getInstance().showWheel(actions);
+                }
+            }
+            else {
+                if (keyPressed){
+                    keyPressed = false;
+                    ActionWheelManager.getInstance().hideWheel();
+                }
             }
         }
     }
