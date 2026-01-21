@@ -35,11 +35,18 @@
   "itemGroup.ntgl.blocks": "NTGL blocks",
   "itemGroup.ntgl": "NTGL Guns",
 
-  "death.attack.ntgl.bullet.killed": "%1$s was taken down by %2$s",
-  "death.attack.ntgl.bullet.eliminated": "%1$s was eliminated by %2$s",
-  "death.attack.ntgl.bullet.executed": "%1$s was executed by %2$s",
-  "death.attack.ntgl.bullet.annihilated": "%1$s was annihilated by %2$s",
-  "death.attack.ntgl.bullet.decimated": "%1$s was decimated by %2$s",
+  "death.attack.bullet": "%1$s was shot",
+  "death.attack.bullet.player": "%1$s was shot by %2$s",
+  "death.attack.bullet.item": "%1$s was shot by %2$s using %3$s",
+  "death.attack.energy": "%1$s was vaporized",
+  "death.attack.energy.player": "%1$s was vaporized by  %2$s",
+  "death.attack.energy.item": "%1$s was vaporized by %2$s using %3$s",
+  "death.attack.explosive": "%1$s exploded",
+  "death.attack.explosive.player": "%1$s was blown up by %2$s",
+  "death.attack.explosive.player.item": "%1$s was blown up by %2$s using %3$s",
+  "death.attack.fire": "%1$s was incinerated",
+  "death.attack.fire.player": "%1$s was incinerated by %2$s",
+  "death.attack.fire.player.item": "%1$s was incinerated by %2$s using %3$s",
 
   "key.categories.ntgl.armor": "NTGL Armor",
   "key.ntgl.leave": "Exit armor",
@@ -147,6 +154,9 @@
   "info.ntgl.attachment_help": "Press %s in-game for Attachments",
   "info.ntgl.burnable": "Fuel",
   "info.ntgl.water": "Water",
+
+  "title.ntgl.ammo_type": "Ammo Type",
+
 
   "entity.ntgl.projectile": "Projectile",
   "entity.ntgl.spear": "Spear",

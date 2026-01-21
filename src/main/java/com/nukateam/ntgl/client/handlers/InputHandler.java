@@ -14,6 +14,9 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.registry.AmmoHolders;
+import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
+import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
+import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import com.nukateam.ntgl.modules.wheel.ActionWheel;
@@ -176,16 +179,19 @@ public class InputHandler {
 
                             var icon = WeaponModifierHelper.getAmmoConfig(ammo.getId(),data).getAmmoType().getIcon();
 
-                            actions.add(new ActionWheel.WheelAction()
-                                    .setIcon(icon)
-                                    .setTitle(Component.translatable(ammo.getDescriptionId()))
-                                    .setAction(() -> ClientActions.switchAmmo(hand, data, ammo.getId()))
-                                    .setColor(mode.getColor())
-                            );
+
+                            if(player.isCreative() || InventoryUtil.findPlayerAmmo(player, ammo) != AmmoContext.NONE) {
+                                actions.add(new ActionWheel.WheelAction()
+                                        .setIcon(icon)
+                                        .setTitle(Component.translatable(ammo.getDescriptionId()))
+                                        .setAction(() -> ClientActions.switchAmmo(hand, data, ammo.getId()))
+                                        .setColor(mode.getColor())
+                                );
+                            }
                         }
                     }
 
-                    ActionWheelManager.getInstance().showWheel(actions);
+                    ActionWheelManager.getInstance().showWheel(actions, Component.translatable("title.ntgl.ammo_type"));
                 }
             }
             else {

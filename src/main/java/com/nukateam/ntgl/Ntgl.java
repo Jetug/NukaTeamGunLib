@@ -150,8 +150,7 @@ public class Ntgl {
         generator.addProvider(event.includeServer(), new ItemTagGen(output, lookupProvider, blockTagGen.contentsGetter(), existingFileHelper));
 //        generator.addProvider(event.includeServer(), new LanguageGen(generator));
 //        generator.addProvider(event.includeServer(), new GunGen(generator));
-        generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
-
         generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(), BUILDER, Set.of(Ntgl.MOD_ID)));
+        generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
     }
 }

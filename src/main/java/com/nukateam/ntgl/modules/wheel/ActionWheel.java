@@ -15,13 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActionWheel {
-
     private final List<WheelAction> actions = new ArrayList<>();
     private boolean isVisible = false;
     private int selectedSegment = -1;
     private long openTime = 0;
-    private final Minecraft minecraft;
-
+    private Component title;
     private double lastMouseX = -1;
     private double lastMouseY = -1;
     private double accumulatedDeltaX = 0;
@@ -29,48 +27,32 @@ public class ActionWheel {
     private static final double MOVEMENT_THRESHOLD = 2.0;
     private static final double MOVEMENT_DECAY = 0.7;
 
-    public static class WheelAction {
-        private ResourceLocation icon;
-        private Component title = Component.literal("");
-        private Runnable action = () -> {};
-        private int color = 0xC6C6C6FF;
+    public ActionWheel() {}
 
-        public WheelAction() {}
-
-        public ResourceLocation getIcon() { return icon; }
-        public Component getTitle() { return title; }
-        public Runnable getAction() { return action; }
-        public int getColor() { return color; }
-
-
-        public WheelAction setIcon(ResourceLocation icon) {
-            this.icon = icon;
-            return this;
-        }
-
-        public WheelAction setTitle(Component title) {
-            this.title = title;
-            return this;
-        }
-
-        public WheelAction setAction(Runnable action) {
-            this.action = action;
-            return this;
-        }
-
-        public WheelAction setColor(int color) {
-            this.color = color;
-            return this;
-        }
+    public boolean isVisible() {
+        return isVisible;
     }
 
-    public ActionWheel(Minecraft minecraft) {
-        this.minecraft = minecraft;
+    public List<WheelAction> getActions() {
+        return actions;
     }
 
-    public void show(List<WheelAction> actions) {
+    public long getOpenTime() {
+        return openTime;
+    }
+
+    public int getSelectedSegment() {
+        return selectedSegment;
+    }
+
+    public Component getTitle() {
+        return title;
+    }
+
+    public void show(List<WheelAction> actions, Component title) {
         this.actions.clear();
         this.actions.addAll(actions);
+        this.title = title;
         this.isVisible = true;
         this.openTime = System.currentTimeMillis();
         this.selectedSegment = -1;
@@ -88,8 +70,6 @@ public class ActionWheel {
             }
         }
     }
-
-
 
     public void updateMousePosition(double mouseX, double mouseY) {
         if (!isVisible || actions.isEmpty()) {
@@ -152,19 +132,40 @@ public class ActionWheel {
         return angleDeg;
     }
 
-    public boolean isVisible() {
-        return isVisible;
-    }
 
-    public List<WheelAction> getActions() {
-        return actions;
-    }
 
-    public long getOpenTime() {
-        return openTime;
-    }
+    public static class WheelAction {
+        private ResourceLocation icon;
+        private Component title = net.minecraft.network.chat.Component.literal("");
+        private Runnable action = () -> {};
+        private int color = 0xC6C6C6FF;
 
-    public int getSelectedSegment() {
-        return selectedSegment;
+        public WheelAction() {}
+
+        public ResourceLocation getIcon() { return icon; }
+        public Component getTitle() { return title; }
+        public Runnable getAction() { return action; }
+        public int getColor() { return color; }
+
+
+        public WheelAction setIcon(ResourceLocation icon) {
+            this.icon = icon;
+            return this;
+        }
+
+        public WheelAction setTitle(Component title) {
+            this.title = title;
+            return this;
+        }
+
+        public WheelAction setAction(Runnable action) {
+            this.action = action;
+            return this;
+        }
+
+        public WheelAction setColor(int color) {
+            this.color = color;
+            return this;
+        }
     }
 }

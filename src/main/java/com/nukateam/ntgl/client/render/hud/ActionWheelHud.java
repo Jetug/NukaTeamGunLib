@@ -77,9 +77,10 @@ public class ActionWheelHud implements IGuiOverlay {
                 drawSegment(guiGraphics, centerX / scale, centerY / scale,
                         WHEEL_SIZE / 2f, offset, anglePerSegment, action.getColor());
 
-                drawOutline(guiGraphics, centerX / scale, centerY / scale,
-                        WHEEL_SIZE / 2f, offset, anglePerSegment, 0xFFFFFFFF, 8);
-
+                if(wheel.getActions().size() > 1) {
+                    drawOutline(guiGraphics, centerX / scale, centerY / scale,
+                            WHEEL_SIZE / 2f, offset, anglePerSegment, 0xFFFFFFFF, 8);
+                }
                 offset += anglePerSegment;
             }
             renderSelectedSegment(wheel, guiGraphics, centerX, centerY, scale);
@@ -241,13 +242,9 @@ public class ActionWheelHud implements IGuiOverlay {
                 guiGraphics.pose().translate(-8, -8, 0);
 
                 guiGraphics.blit(icon,0,0,0,0, 16, 16, 16, 16);
-//                guiGraphics.renderItem(icon, 0, 0);
-//                guiGraphics.renderItemDecorations(minecraft.font, icon, 0, 0);
                 guiGraphics.pose().popPose();
             } else {
                 guiGraphics.blit(icon,x, y,0,0, 16, 16, 16, 16);
-//                guiGraphics.renderItem(icon, x, y);
-//                guiGraphics.renderItemDecorations(minecraft.font, icon, x, y);
             }
 
             if (i == wheel.getSelectedSegment()) {
