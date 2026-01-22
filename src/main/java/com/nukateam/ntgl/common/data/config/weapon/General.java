@@ -50,12 +50,14 @@ public class General implements INBTSerializable<CompoundTag> {
     public static final String AMMO_PER_SHOT = "AmmoPerShot";
     public static final String RENDER_HUD = "RenderHud";
     public static final String WEAPON_MODE = "WeaponMode";
+    public static final String WEAPON_MODE_META = "WeaponModeMeta";
     public static final String ATTRIBUTE_MODIFIERS = "attributeModifiers";
 
     int rate;
     int maxAmmo;
     @Optional LinkedHashSet<FireMode> fireMode = new LinkedHashSet<>(List.of(FireMode.SEMI_AUTO));
     @Optional WeaponAction action = WeaponAction.NONE;
+    @Optional WeaponModeMeta weaponModeMeta = WeaponModeMeta.DEFAULT;
     @Ignored GripType gripType = GripType.ONE_HANDED;
     @Optional LoadingType loadingType = LoadingType.MAGAZINE;
     @Optional boolean fullCharge = false;
@@ -105,6 +107,7 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putInt      (AMMO_PER_SHOT, this.ammoPerShot);
         tag.putString   (LOADING_TYPE, this.loadingType.toString());
         tag.putString   (WEAPON_MODE, this.action.toString());
+        tag.putString   (WEAPON_MODE_META, this.weaponModeMeta.toString());
         tag.putBoolean  (AUTO_RELOAD, this.autoReload);
         tag.putBoolean  (RENDER_HUD, this.renderHud);
         tag.putString   (CATEGORY, this.category);
@@ -176,6 +179,9 @@ public class General implements INBTSerializable<CompoundTag> {
         if (tag.contains(WEAPON_MODE, Tag.TAG_STRING)) {
             this.action = WeaponAction.getType(tag.getString(WEAPON_MODE));
         }
+        if (tag.contains(WEAPON_MODE_META, Tag.TAG_STRING)) {
+            this.weaponModeMeta = WeaponModeMeta.getType(tag.getString(WEAPON_MODE_META));
+        }
         if (tag.contains(AUTO_RELOAD, Tag.TAG_BYTE)) {
             this.autoReload = tag.getBoolean(AUTO_RELOAD);
         }
@@ -243,6 +249,7 @@ public class General implements INBTSerializable<CompoundTag> {
         object.addProperty("gripType", this.gripType.toString());
         object.addProperty("loadingType", this.loadingType.toString());
         object.addProperty("action", this.action.toString());
+        object.addProperty("weaponModeMeta", this.weaponModeMeta.toString());
         object.addProperty("autoReload", this.autoReload);
         object.addProperty("renderHud", this.renderHud);
         object.addProperty("maxAmmo", this.maxAmmo);
@@ -289,6 +296,7 @@ public class General implements INBTSerializable<CompoundTag> {
         general.ammoPerShot = this.ammoPerShot;
         general.loadingType = this.loadingType;
         general.action = this.action;
+        general.weaponModeMeta = this.weaponModeMeta;
         general.autoReload = this.autoReload;
         general.renderHud = this.renderHud;
         general.category = this.category;
@@ -415,6 +423,10 @@ public class General implements INBTSerializable<CompoundTag> {
 
     public WeaponAction getAction() {
         return action;
+    }
+
+    public WeaponModeMeta getWeaponModeMeta() {
+        return weaponModeMeta;
     }
 
     /**

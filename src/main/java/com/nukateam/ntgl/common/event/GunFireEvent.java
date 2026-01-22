@@ -34,7 +34,7 @@ public class GunFireEvent extends LivingEvent {
         return arm;
     }
 
-    public WeaponData getGunData(){
+    public WeaponData getWeaponData(){
         return new WeaponData(getStack(), getEntity());
     }
 

@@ -333,7 +333,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
 
     public AmmoData getAmmoData(WeaponMode mode, ResourceLocation ammoId) {
         if(mode == WeaponMode.PRIMARY)
-            return ammoData.get(ammoId);
+            return ammoData.getOrDefault(ammoId, new AmmoData());
         else return modes.getOrDefault(mode, new WeaponSettings()).getAmmoData(ammoId);
     }
 

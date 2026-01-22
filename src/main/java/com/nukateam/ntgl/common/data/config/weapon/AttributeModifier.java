@@ -77,19 +77,19 @@ public class AttributeModifier implements INBTSerializable<CompoundTag> {
             return new Builder();
         }
 
-        public AttributeModifier attribute(ResourceLocation attribute) {
+        public Builder attribute(ResourceLocation attribute) {
             attributeModifier.attribute = attribute;
-            return attributeModifier;
+            return this;
         }
 
-        public AttributeModifier value(Double value) {
+        public Builder value(Double value) {
             attributeModifier.value = value;
-            return attributeModifier;
+            return this;
         }
 
-        public AttributeModifier operation(Operation operation) {
+        public Builder operation(Operation operation) {
             attributeModifier.operation = operation;
-            return attributeModifier;
+            return this;
         }
 
         public AttributeModifier build() {

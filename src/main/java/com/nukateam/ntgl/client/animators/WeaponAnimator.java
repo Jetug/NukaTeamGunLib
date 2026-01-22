@@ -127,7 +127,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     protected void tickStart() {
         if (!(getStack().getItem() instanceof IWeapon weapon))
             return;
-        var data = getGunData();
+        var data = getWeaponData();
 
         if(getEntity().getItemInHand(getArm()).getItem() instanceof IWeapon) {
             this.rate = WeaponModifierHelper.getRate(shootingHandler.getWeaponData(getEntity(), getArm()));
@@ -168,7 +168,12 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         return (IWeapon) getStack().getItem();
     }
 
+    @Deprecated
     protected @NotNull WeaponData getGunData() {
+        return new WeaponData(getStack(), getEntity());
+    }
+
+    protected @NotNull WeaponData getWeaponData() {
         return new WeaponData(getStack(), getEntity());
     }
 
@@ -489,7 +494,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     private void setupCycledAnimations() {
         var entity = getEntity();
         var cooldown = shootingHandler.getCooldown(entity, arm);
-        var data = getGunData();
+        var data = getWeaponData();
         var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
 
         if (chamberCycler == null || chamberCycler.getMax() != maxAmmo)

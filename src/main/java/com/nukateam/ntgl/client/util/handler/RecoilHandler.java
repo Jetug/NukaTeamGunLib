@@ -55,7 +55,7 @@ public class RecoilHandler {
         var heldItem = event.getStack();
         var gunItem = (IWeapon) heldItem.getItem();
         var modifiedGun = gunItem.getModifiedConfig(heldItem);
-        var data = event.getGunData();
+        var data = event.getWeaponData();
         weaponData.put(event.getHand(), data);
         var recoilModifier = 1.0F - WeaponModifierHelper.getRecoilModifier(data);
 

@@ -148,6 +148,12 @@ public class WeaponModifierHelper {
         return value.get();
     }
 
+    public static WeaponModeMeta getWeaponModeMeta(WeaponData data) {
+        var value = new AtomicReference<>(getGeneral(data).getWeaponModeMeta());
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyWeaponModeMeta(value.get(), data))));
+        return value.get();
+    }
+
     public static HashMap<WeaponMode, WeaponSettings> getWeaponModes(WeaponData data) {
         var value = new AtomicReference<>(getConfig(data).getModes());
         forEachAttachment(data, (modifier -> value.set(modifier.modifyWeaponModes(value.get(), data))));

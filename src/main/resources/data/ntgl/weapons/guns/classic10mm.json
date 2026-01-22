@@ -21,7 +21,8 @@
     "melee": true,
     "ammo": [
       "minecraft:stick",
-      "ntgl:round10mm"
+      "ntgl:round10mm",
+      "ntgl:round45"
     ],
     "attributeModifiers": [
       {
@@ -58,6 +59,15 @@
         "burnSeconds": 5,
         "projectileAmount": 1,
         "hitSound": "minecraft:entity.arrow.hit"
+      }
+    },
+    "ntgl:round45" : {
+      "ammo": {
+        "type": "ntgl:piercing"
+      },
+      "projectile": {
+        "damage": 20.0,
+        "life": 120
       }
     }
   },

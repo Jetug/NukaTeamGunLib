@@ -155,9 +155,9 @@
   "info.ntgl.burnable": "Fuel",
   "info.ntgl.water": "Water",
 
+  "title.ntgl.default": "Main Weapon",
+
   "title.ntgl.ammo_type": "Ammo Type",
-
-
   "entity.ntgl.projectile": "Projectile",
   "entity.ntgl.spear": "Spear",
   "entity.ntgl.grenade": "Grenade",

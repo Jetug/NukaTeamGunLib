@@ -283,6 +283,10 @@ public interface IWeaponModifier {
         return value;
     }
 
+    default WeaponModeMeta modifyWeaponModeMeta(WeaponModeMeta value, WeaponData data) {
+        return value;
+    }
+
     default HashMap<WeaponMode, WeaponSettings> modifyWeaponModes(HashMap<WeaponMode, WeaponSettings> value, WeaponData data) {
         return value;
     }

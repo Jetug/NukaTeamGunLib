@@ -15,7 +15,6 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.registry.AmmoHolders;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
-import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
@@ -124,7 +123,8 @@ public class InputHandler {
         return Minecraft.getInstance().options.keyUse.isDown();
     }
 
-    private static boolean keyPressed = false;
+    private static boolean keyAmmoPressed = false;
+    private static boolean keyReloadPressed = false;
 
     private static void handleKeys() {
         var minecraft = Minecraft.getInstance();
@@ -140,9 +140,6 @@ public class InputHandler {
         if(heldItem.getItem() instanceof IWeapon) {
             if (NtglKeyBinds.KEY_ATTACHMENTS.consumeClick()) {
                 PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
-            }
-            if (NtglKeyBinds.KEY_RELOAD.consumeClick()) {
-                ClientReloadHandler.get().startReloading(WeaponMode.PRIMARY);
             }
             if (NtglKeyBinds.KEY_DEBUG_SHOW.consumeClick()) {
                 ClientReloadHandler.get().startReloading(WeaponMode.ALTERNATIVE);
@@ -163,9 +160,45 @@ public class InputHandler {
                 options.saveOptions();
             }
 
+
+            if (NtglKeyBinds.KEY_RELOAD.isDown()) {
+                if(!keyReloadPressed) {
+                    keyReloadPressed = true;
+                    var modes = new ArrayList<>(WeaponModifierHelper.getWeaponModes(new WeaponData(heldItem, player)).keySet());
+                    modes.add(WeaponMode.PRIMARY);
+
+                    var actions = new ArrayList<ActionWheel.WheelAction>();
+                    for (var mode : modes) {
+                        var data = new WeaponData(heldItem, player).setWeaponMode(mode);
+                        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+
+                        if(maxAmmo < 1) continue;
+
+                        var meta = WeaponModifierHelper.getWeaponModeMeta(data);
+
+                        actions.add(new ActionWheel.WheelAction()
+                                .setIcon(meta.getIcon())
+                                .setTitle(meta.getTitle())
+                                .setAction(() -> ClientReloadHandler.get().startReloading(mode))
+                                .setColor(mode.getColor())
+                        );
+                    }
+                    if(actions.size() > 1) {
+                        ActionWheelManager.getInstance().showWheel(actions, Component.translatable("title.ntgl.ammo_type"));
+                    }
+                    else ClientReloadHandler.get().startReloading(WeaponMode.PRIMARY);
+                }
+            }
+            else {
+                if (keyReloadPressed){
+                    keyReloadPressed = false;
+                    ActionWheelManager.getInstance().hideWheel();
+                }
+            }
+
             if (NtglKeyBinds.KEY_AMMO_SELECT.isDown()) {
-                if(!keyPressed) {
-                    keyPressed = true;
+                if(!keyAmmoPressed) {
+                    keyAmmoPressed = true;
                     var modes = new ArrayList<>(WeaponModifierHelper.getWeaponModes(new WeaponData(heldItem, player)).keySet());
                     modes.add(WeaponMode.PRIMARY);
 
@@ -195,8 +228,8 @@ public class InputHandler {
                 }
             }
             else {
-                if (keyPressed){
-                    keyPressed = false;
+                if (keyAmmoPressed){
+                    keyAmmoPressed = false;
                     ActionWheelManager.getInstance().hideWheel();
                 }
             }
@@ -231,5 +264,13 @@ public class InputHandler {
                 ClientDebug.Z = 0;
             }
         }
+    }
+
+    public static boolean isKeyReloadPressed() {
+        return keyReloadPressed;
+    }
+
+    public static void setKeyReloadPressed(boolean keyReloadPressed) {
+        InputHandler.keyReloadPressed = keyReloadPressed;
     }
 }

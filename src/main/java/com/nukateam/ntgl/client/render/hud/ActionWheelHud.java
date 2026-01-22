@@ -1,19 +1,12 @@
 package com.nukateam.ntgl.client.render.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import com.nukateam.ntgl.client.util.handler.AimingHandler;
-import com.nukateam.ntgl.common.data.holders.AttachmentType;
-import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import com.nukateam.ntgl.client.util.helpers.render.Figures;
 import com.nukateam.ntgl.modules.wheel.ActionWheel;
 import com.nukateam.ntgl.modules.wheel.ActionWheelManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
@@ -60,33 +53,43 @@ public class ActionWheelHud implements IGuiOverlay {
     }
 
     private void renderWheel(ActionWheel wheel, GuiGraphics guiGraphics, float scale, int centerX, int centerY) {
-        RenderSystem.setShaderColor(1,1,1,0.3f);
         var poseStack = guiGraphics.pose();
         poseStack.pushPose();
         {
             poseStack.scale(scale, scale, 1.0f);
 
-            var count = wheel.getActions().size();
-            var anglePerSegment = 360.0f / count;
+            guiGraphics.drawCenteredString(
+                    Minecraft.getInstance().font,
+                    wheel.getTitle(),
+                    (int) (centerX / scale),
+                    (int)((centerY - 75) / scale),
+                    0xFFFFFFFF
+            );
 
-            for(var i = 0; i < count; i++){
+            RenderSystem.setShaderColor(1,1,1,0.3f);
+            {
+                var count = wheel.getActions().size();
+                var anglePerSegment = 360.0f / count;
 
-            }
-            var offset = 0;
-            for(var action : wheel.getActions()){
-                drawSegment(guiGraphics, centerX / scale, centerY / scale,
-                        WHEEL_SIZE / 2f, offset, anglePerSegment, action.getColor());
+                var offset = 0;
+                for (var action : wheel.getActions()) {
+                    Figures.drawSegment(guiGraphics, centerX / scale, centerY / scale,
+                            WHEEL_SIZE / 2f, offset, anglePerSegment, action.getColor());
 
-                if(wheel.getActions().size() > 1) {
-                    drawOutline(guiGraphics, centerX / scale, centerY / scale,
-                            WHEEL_SIZE / 2f, offset, anglePerSegment, 0xFFFFFFFF, 8);
+                    Figures.drawBorder(guiGraphics, centerX / scale, centerY / scale,
+                            WHEEL_SIZE / 2f, offset, anglePerSegment, 0xFFFFFFFF, 1);
+
+                    if (wheel.getActions().size() > 1) {
+                        Figures.drawOutline(guiGraphics, centerX / scale, centerY / scale,
+                                WHEEL_SIZE / 2f, offset, anglePerSegment, 0xFFFFFFFF, 1);
+                    }
+                    offset += anglePerSegment;
                 }
-                offset += anglePerSegment;
+                renderSelectedSegment(wheel, guiGraphics, centerX, centerY, scale);
             }
-            renderSelectedSegment(wheel, guiGraphics, centerX, centerY, scale);
+            RenderSystem.setShaderColor(1,1,1,1);
         }
         poseStack.popPose();
-        RenderSystem.setShaderColor(1,1,1,1);
     }
 
     private void renderSelectedSegment(ActionWheel wheel, GuiGraphics guiGraphics, int centerX, int centerY, float scale) {
@@ -96,127 +99,10 @@ public class ActionWheelHud implements IGuiOverlay {
         var anglePerSegment = 360.0f / count;
         var startAngle = wheel.getSelectedSegment() * anglePerSegment;
 
-        drawSegment(guiGraphics, centerX / scale, centerY / scale,
+        Figures.drawSegment(guiGraphics, centerX / scale, centerY / scale,
                 WHEEL_SIZE / 2f, startAngle, anglePerSegment, 0xFFFFFFFF);
-    }
-
-    public static void drawOutline(GuiGraphics guiGraphics, float centerX, float centerY,
-                                   float radius, float startAngle, float sweepAngle,
-                                   int color, float lineWidth) {
-
-        if (radius <= 0 || sweepAngle <= 0) return;
-
-        float r = (color >> 24 & 255) / 255.0F;
-        float g = (color >> 16 & 255) / 255.0F;
-        float b = (color >> 8 & 255) / 255.0F;
-        float a = (color & 255) / 255.0F;
-
-        float startRad = (float) Math.toRadians(startAngle  - 90);
-        float sweepRad = (float) Math.toRadians(sweepAngle);
-
-        int segments = Math.max(8, (int) (radius * Mth.PI / 4));
-
-        PoseStack poseStack = guiGraphics.pose();
-        poseStack.pushPose();
-
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableDepthTest();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        RenderSystem.lineWidth(lineWidth);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
-
-        buffer.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-
-        for (int i = 0; i <= segments; i++) {
-            float angle = startRad + sweepRad * i / segments;
-            float x = centerX + Mth.cos(angle) * radius;
-            float y = centerY + Mth.sin(angle) * radius;
-
-            buffer.vertex(poseStack.last().pose(), x, y, 0)
-                    .color(r, g, b, a)
-                    .endVertex();
-        }
-
-        BufferUploader.drawWithShader(buffer.end());
-
-        buffer = tesselator.getBuilder();
-        buffer.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
-
-        float startX = centerX + Mth.cos(startRad) * radius;
-        float startY = centerY + Mth.sin(startRad) * radius;
-        buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
-                .color(r, g, b, a)
-                .endVertex();
-        buffer.vertex(poseStack.last().pose(), startX, startY, 0)
-                .color(r, g, b, a)
-                .endVertex();
-
-        float endX = centerX + Mth.cos(startRad + sweepRad) * radius;
-        float endY = centerY + Mth.sin(startRad + sweepRad) * radius;
-        buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
-                .color(r, g, b, a)
-                .endVertex();
-        buffer.vertex(poseStack.last().pose(), endX, endY, 0)
-                .color(r, g, b, a)
-                .endVertex();
-
-        BufferUploader.drawWithShader(buffer.end());
-
-        RenderSystem.enableDepthTest();
-        RenderSystem.disableBlend();
-        poseStack.popPose();
-    }
-
-    public static void drawSegment(GuiGraphics guiGraphics, float centerX, float centerY,
-                                   float radius, float startAngle, float sweepAngle, int color) {
-        if (radius <= 0 || sweepAngle <= 0) return;
-
-        float r = (color >> 24 & 255) / 255.0F;
-        float g = (color >> 16 & 255) / 255.0F;
-        float b = (color >> 8 & 255) / 255.0F;
-        float a = (color & 255) / 255.0F;
-
-        float startRad = (float) Math.toRadians(startAngle - 90);
-        float sweepRad = (float) Math.toRadians(sweepAngle);
-
-        int segments = Math.max(8, (int) (radius * Mth.PI / 4));
-
-        PoseStack poseStack = guiGraphics.pose();
-        poseStack.pushPose();
-
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableCull();
-        RenderSystem.disableDepthTest();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
-        buffer.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
-
-        buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
-                .color(r, g, b, a)
-                .endVertex();
-
-        for (int i = 0; i <= segments; i++) {
-            float angle = startRad + sweepRad * i / segments;
-            float x = centerX + Mth.cos(angle) * radius;
-            float y = centerY + Mth.sin(angle) * radius;
-
-            buffer.vertex(poseStack.last().pose(), x, y, 0)
-                    .color(r, g, b, a)
-                    .endVertex();
-        }
-
-        BufferUploader.drawWithShader(buffer.end());
-
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableCull();
-        RenderSystem.disableBlend();
-        poseStack.popPose();
+        Figures.drawBorder(guiGraphics, centerX / scale, centerY / scale,
+                WHEEL_SIZE / 2f, startAngle, anglePerSegment, 0xF7FF00FF, 2);
     }
 
     private void renderIconsAndText(ActionWheel wheel, GuiGraphics guiGraphics, int centerX, int centerY, float scale) {
@@ -249,13 +135,12 @@ public class ActionWheelHud implements IGuiOverlay {
 
             if (i == wheel.getSelectedSegment()) {
                 Component title = action.getTitle();
-                int color = action.getColor();
 
                 guiGraphics.drawCenteredString(
                         Minecraft.getInstance().font,
                         title,
                         centerX,
-                        centerY - 75,
+                        centerY + 75,
                         0xFFFFFFFF
                 );
             }

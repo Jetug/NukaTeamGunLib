@@ -42,7 +42,7 @@ public class AttachmentEvent extends Event {
         this.containerMenu = containerMenu;
     }
 
-    public WeaponData getGunData() {
+    public WeaponData getWeaponData() {
         return weaponData;
     }
 }
