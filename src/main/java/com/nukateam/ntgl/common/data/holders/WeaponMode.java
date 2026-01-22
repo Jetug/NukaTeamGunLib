@@ -14,8 +14,8 @@ public class WeaponMode extends ResourceHolder {
     private static final Map<ResourceLocation, WeaponMode> loadingTypeMap = new HashMap<>();
 
     public static final WeaponMode PRIMARY     = new WeaponMode("primary"    , 0xC6C6C6FF);
-    public static final WeaponMode SECONDARY   = new WeaponMode("secondary"  , 0x7DEE7CFF);
-    public static final WeaponMode ADDITIONAL  = new WeaponMode("additional" , 0x7CBCE0FF);
+    public static final WeaponMode SECONDARY   = new WeaponMode("secondary"  , 0x7CBCE0FF);
+    public static final WeaponMode ADDITIONAL  = new WeaponMode("additional" , 0x7DEE7CFF);
     public static final WeaponMode ALTERNATIVE = new WeaponMode("alternative", 0xFF8484FF);
 
     private final int color;

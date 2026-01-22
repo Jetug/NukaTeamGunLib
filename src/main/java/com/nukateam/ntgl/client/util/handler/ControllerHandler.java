@@ -147,7 +147,7 @@ public class ControllerHandler {
                 } else if (isEquals(originalButton, GunButtonBindings.OPEN_ATTACHMENTS)) {
                     shouldCancel = true;
                     if (state) {
-                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
+                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments(hand));
                     }
                 } else if (isEquals(originalButton, GunButtonBindings.INSPECT)) {
                     shouldCancel = true;

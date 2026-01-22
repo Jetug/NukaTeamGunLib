@@ -198,5 +198,25 @@
   "ntgl.chat.open_curseforge_page": "Открыть страницу на CurseForge",
   "ntgl.chat.install_configured": "Install %s to access config options",
 
-  "item.ntgl.classic10mm": "Кольт 6520"
+  "item.ntgl.classic10mm": "Кольт 6520",
+
+  "title.ntgl.default": "Основное оружие",
+  "title.ntgl.under_barrel": "Подствольник",
+  "title.ntgl.ammo_type": "Тип амуниции",
+
+  "entity.ntgl.projectile": "Снаряд",
+  "entity.ntgl.spear": "Копьё",
+  "entity.ntgl.grenade": "Граната",
+  "entity.ntgl.throwable_grenade": "Граната",
+  "entity.ntgl.throwable_stun_grenade": "Светошумовая граната",
+  "entity.ntgl.flame_projectile": "Пламя",
+  "info.ntgl.primary": "Основной",
+  "info.ntgl.secondary": "Второстепенный",
+  "info.ntgl.additional": "Дополнительный",
+  "info.ntgl.alternative": "Альтернативный",
+  "info.ntgl.shot": "Shot",
+  "info.ntgl.melee": "Melee",
+  "info.ntgl.throw": "Throw",
+  "info.ntgl.scope": "Scope",
+  "info.ntgl.custom": "Custom"
 }

@@ -84,6 +84,7 @@
     "ntgl:additional": {
       "general": {
         "action": "ntgl:shot",
+        "weaponModeMeta": "ntgl:under_barrel",
         "rate": 4,
         "fireMode": ["ntgl:semi"],
         "maxAmmo": 10,
@@ -140,6 +141,7 @@
     "ntgl:alternative": {
       "general": {
         "action": "ntgl:shot",
+        "weaponModeMeta": "ntgl:under_barrel",
         "rate": 4,
         "fireMode": ["ntgl:semi"],
         "maxAmmo": 20,

@@ -1,40 +1,37 @@
 package com.nukateam.ntgl.modules.wheel;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActionWheel {
+    private static final double MOVEMENT_THRESHOLD = 2.0;
+    private static final double MOVEMENT_DECAY = 0.7;
+
     private final List<WheelAction> actions = new ArrayList<>();
+    private Component title;
     private boolean isVisible = false;
     private int selectedSegment = -1;
     private long openTime = 0;
-    private Component title;
     private double lastMouseX = -1;
     private double lastMouseY = -1;
     private double accumulatedDeltaX = 0;
     private double accumulatedDeltaY = 0;
-    private static final double MOVEMENT_THRESHOLD = 2.0;
-    private static final double MOVEMENT_DECAY = 0.7;
+    private Runnable defaultAction = () -> {};
 
     public ActionWheel() {}
 
-    public boolean isVisible() {
-        return isVisible;
+    public Component getTitle() {
+        return title;
     }
 
     public List<WheelAction> getActions() {
         return actions;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
     }
 
     public long getOpenTime() {
@@ -45,13 +42,10 @@ public class ActionWheel {
         return selectedSegment;
     }
 
-    public Component getTitle() {
-        return title;
-    }
-
-    public void show(List<WheelAction> actions, Component title) {
+    public void show(List<WheelAction> actions, Component title, Runnable defaultAction) {
         this.actions.clear();
         this.actions.addAll(actions);
+        this.defaultAction = defaultAction;
         this.title = title;
         this.isVisible = true;
         this.openTime = System.currentTimeMillis();
@@ -68,6 +62,10 @@ public class ActionWheel {
             if (selectedSegment >= 0 && selectedSegment < actions.size()) {
                 actions.get(selectedSegment).getAction().run();
             }
+            else {
+                defaultAction.run();
+            }
+            defaultAction = () -> {};
         }
     }
 
@@ -83,13 +81,12 @@ public class ActionWheel {
             return;
         }
 
-        double deltaX = mouseX - lastMouseX;
-        double deltaY = mouseY - lastMouseY;
-
+        var deltaX = mouseX - lastMouseX;
+        var deltaY = mouseY - lastMouseY;
+        var movement = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         lastMouseX = mouseX;
         lastMouseY = mouseY;
 
-        double movement = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         if (movement < MOVEMENT_THRESHOLD) {
             accumulatedDeltaX *= MOVEMENT_DECAY;
             accumulatedDeltaY *= MOVEMENT_DECAY;
@@ -102,10 +99,9 @@ public class ActionWheel {
             accumulatedDeltaY += deltaY;
         }
 
-        double angle = getMovementAngle(accumulatedDeltaX, accumulatedDeltaY);
-
-        int count = actions.size();
-        float anglePerSegment = 360.0f / count;
+        var angle = getMovementAngle(accumulatedDeltaX, accumulatedDeltaY);
+        var count = actions.size();
+        var anglePerSegment = 360.0f / count;
 
         angle = (angle + 360) % 360;
 
@@ -117,13 +113,12 @@ public class ActionWheel {
     }
 
     private double getMovementAngle(double deltaX, double deltaY) {
-        double movement = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-        if (movement < 0.1) {
-            return -1; // Не выбирать сегмент
-        }
+        var movement = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        if (movement < 0.1)
+            return -1;
 
-        double angleRad = Math.atan2(deltaY, deltaX);
-        double angleDeg = Math.toDegrees(angleRad);
+        var angleRad = Math.atan2(deltaY, deltaX);
+        var angleDeg = Math.toDegrees(angleRad);
 
         angleDeg += 90;
 
@@ -132,11 +127,9 @@ public class ActionWheel {
         return angleDeg;
     }
 
-
-
     public static class WheelAction {
         private ResourceLocation icon;
-        private Component title = net.minecraft.network.chat.Component.literal("");
+        private Component title = Component.literal("");
         private Runnable action = () -> {};
         private int color = 0xC6C6C6FF;
 

@@ -1,5 +1,6 @@
 package com.nukateam.example.common.entities;
 
+import com.nukateam.example.common.registery.ExampleWeapons;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.util.interfaces.IGunUser;
@@ -30,9 +31,9 @@ public class Raider extends PathfinderMob implements IGunUser {
             SynchedEntityData.defineId(Raider.class, EntityDataSerializers.INT);
 
     private final WeaponItem[] guns = new WeaponItem[]{
-//            ExampleWeapons.PISTOL10MM.get(),
-//            ExampleWeapons.PIPE_REVOLVER.get(),
-//            ExampleWeapons.PIPE_PISTOL.get(),
+            ExampleWeapons.PISTOL10MM.get(),
+            ExampleWeapons.PIPE_REVOLVER.get(),
+            ExampleWeapons.PIPE_PISTOL.get(),
 //            ExampleWeapons.SCOUT10MM.get(),
 //            ExampleWeapons.MINIGUN.get(),
     };
@@ -54,7 +55,7 @@ public class Raider extends PathfinderMob implements IGunUser {
     protected void registerGoals() {
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(3, new GunAttackGoal<>(this, 1.0D, 20.0F));
+        this.goalSelector.addGoal(3, new GunAttackGoal<>(this, 1.0D, 20.0F, 40));
         this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D));

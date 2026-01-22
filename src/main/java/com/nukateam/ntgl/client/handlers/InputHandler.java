@@ -1,6 +1,8 @@
 package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.input.KeyCommand;
+import com.nukateam.ntgl.client.input.KeyPressHandler;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.ClientDebug;
@@ -37,6 +39,12 @@ import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.canUseOffh
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class InputHandler {
+    static {
+        KeyPressHandler.addCommand(new KeyCommand(NtglKeyBinds.KEY_RELOAD, () -> reloadUnload(true), InputHandler::closeWheel));
+        KeyPressHandler.addCommand(new KeyCommand(NtglKeyBinds.KEY_UNLOAD, () -> reloadUnload(false), InputHandler::closeWheel));
+        KeyPressHandler.addCommand(new KeyCommand(NtglKeyBinds.KEY_AMMO_SELECT, InputHandler::selectAmmoKeyPressed, InputHandler::closeWheel));
+    }
+
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END && isInGame()) {
@@ -46,7 +54,7 @@ public class InputHandler {
         }
     }
 
-    public static void handleWeaponKeys() {
+    private static void handleWeaponKeys() {
         var player = Minecraft.getInstance().player;
         var options = Minecraft.getInstance().options;
         assert player != null;
@@ -123,9 +131,6 @@ public class InputHandler {
         return Minecraft.getInstance().options.keyUse.isDown();
     }
 
-    private static boolean keyAmmoPressed = false;
-    private static boolean keyReloadPressed = false;
-
     private static void handleKeys() {
         var minecraft = Minecraft.getInstance();
         var player = minecraft.player;
@@ -139,14 +144,10 @@ public class InputHandler {
 
         if(heldItem.getItem() instanceof IWeapon) {
             if (NtglKeyBinds.KEY_ATTACHMENTS.consumeClick()) {
-                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments(hand));
             }
             if (NtglKeyBinds.KEY_DEBUG_SHOW.consumeClick()) {
                 ClientReloadHandler.get().startReloading(WeaponMode.ALTERNATIVE);
-            }
-            if (NtglKeyBinds.KEY_UNLOAD.consumeClick()) {
-                ClientReloadHandler.get().unloadAmmo(InteractionHand.MAIN_HAND);
-                ClientReloadHandler.get().unloadAmmo(InteractionHand.OFF_HAND);
             }
             if (NtglKeyBinds.KEY_INSPECT.consumeClick()) {
                 ClientActions.inspectWeapon(player);
@@ -158,80 +159,6 @@ public class InputHandler {
                 var options = NtglOptions.getInstance();
                 options.setShowTips(!options.isShowTips());
                 options.saveOptions();
-            }
-
-
-            if (NtglKeyBinds.KEY_RELOAD.isDown()) {
-                if(!keyReloadPressed) {
-                    keyReloadPressed = true;
-                    var modes = new ArrayList<>(WeaponModifierHelper.getWeaponModes(new WeaponData(heldItem, player)).keySet());
-                    modes.add(WeaponMode.PRIMARY);
-
-                    var actions = new ArrayList<ActionWheel.WheelAction>();
-                    for (var mode : modes) {
-                        var data = new WeaponData(heldItem, player).setWeaponMode(mode);
-                        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-
-                        if(maxAmmo < 1) continue;
-
-                        var meta = WeaponModifierHelper.getWeaponModeMeta(data);
-
-                        actions.add(new ActionWheel.WheelAction()
-                                .setIcon(meta.getIcon())
-                                .setTitle(meta.getTitle())
-                                .setAction(() -> ClientReloadHandler.get().startReloading(mode))
-                                .setColor(mode.getColor())
-                        );
-                    }
-                    if(actions.size() > 1) {
-                        ActionWheelManager.getInstance().showWheel(actions, Component.translatable("title.ntgl.ammo_type"));
-                    }
-                    else ClientReloadHandler.get().startReloading(WeaponMode.PRIMARY);
-                }
-            }
-            else {
-                if (keyReloadPressed){
-                    keyReloadPressed = false;
-                    ActionWheelManager.getInstance().hideWheel();
-                }
-            }
-
-            if (NtglKeyBinds.KEY_AMMO_SELECT.isDown()) {
-                if(!keyAmmoPressed) {
-                    keyAmmoPressed = true;
-                    var modes = new ArrayList<>(WeaponModifierHelper.getWeaponModes(new WeaponData(heldItem, player)).keySet());
-                    modes.add(WeaponMode.PRIMARY);
-
-                    var actions = new ArrayList<ActionWheel.WheelAction>();
-                    for (var mode : modes) {
-                        var data = new WeaponData(heldItem, player).setWeaponMode(mode);
-                        var ammoItems = WeaponModifierHelper.getAmmoItems(data);
-                        for (var ammo : ammoItems) {
-                            var currentAmmo = WeaponStateHelper.getCurrentAmmo(data);
-                            if(ammo == AmmoHolders.EMPTY || ammo == currentAmmo) continue;
-
-                            var icon = WeaponModifierHelper.getAmmoConfig(ammo.getId(),data).getAmmoType().getIcon();
-
-
-                            if(player.isCreative() || InventoryUtil.findPlayerAmmo(player, ammo) != AmmoContext.NONE) {
-                                actions.add(new ActionWheel.WheelAction()
-                                        .setIcon(icon)
-                                        .setTitle(Component.translatable(ammo.getDescriptionId()))
-                                        .setAction(() -> ClientActions.switchAmmo(hand, data, ammo.getId()))
-                                        .setColor(mode.getColor())
-                                );
-                            }
-                        }
-                    }
-
-                    ActionWheelManager.getInstance().showWheel(actions, Component.translatable("title.ntgl.ammo_type"));
-                }
-            }
-            else {
-                if (keyAmmoPressed){
-                    keyAmmoPressed = false;
-                    ActionWheelManager.getInstance().hideWheel();
-                }
             }
         }
     }
@@ -266,11 +193,90 @@ public class InputHandler {
         }
     }
 
-    public static boolean isKeyReloadPressed() {
-        return keyReloadPressed;
+    private static void reloadUnload(boolean reload) {
+        var minecraft = Minecraft.getInstance();
+        var player = minecraft.player;
+        var shiftDown = minecraft.options.keyShift.isDown();
+        var hand = shiftDown ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+        assert player != null;
+        var heldItem = player.getItemInHand(hand);
+        var modes = new ArrayList<>(WeaponModifierHelper.getWeaponModes(new WeaponData(heldItem, player)).keySet());
+        modes.add(WeaponMode.PRIMARY);
+
+        var actions = new ArrayList<ActionWheel.WheelAction>();
+        for (var mode : modes) {
+            var data = new WeaponData(heldItem, player).setWeaponMode(mode);
+            var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+
+            if (maxAmmo < 1) continue;
+
+            var meta = WeaponModifierHelper.getWeaponModeMeta(data);
+
+            Runnable action = reload ?
+                    () -> ClientReloadHandler.get().startReloading(mode) :
+                    () -> ClientReloadHandler.get().unloadAmmo(hand, mode);
+
+            actions.add(new ActionWheel.WheelAction()
+                    .setIcon(meta.getIcon())
+                    .setTitle(meta.getTitle())
+                    .setAction(action)
+                    .setColor(mode.getColor())
+            );
+        }
+
+        Runnable defaultAction = reload ?
+                () -> ClientReloadHandler.get().startReloading(WeaponMode.PRIMARY) :
+                () -> ClientReloadHandler.get().unloadAmmo(hand, WeaponMode.PRIMARY);
+
+        if (actions.size() > 1) {
+            ActionWheelManager.getInstance().showWheel(
+                    actions,
+                    Component.translatable("title.ntgl.ammo_type"),
+                    defaultAction);
+
+        } else defaultAction.run();
     }
 
-    public static void setKeyReloadPressed(boolean keyReloadPressed) {
-        InputHandler.keyReloadPressed = keyReloadPressed;
+    private static void selectAmmoKeyPressed() {
+        var minecraft = Minecraft.getInstance();
+        var player = minecraft.player;
+        var shiftDown = minecraft.options.keyShift.isDown();
+        var hand = shiftDown ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+        var heldItem = player.getItemInHand(hand);
+
+        var modes = new ArrayList<>(WeaponModifierHelper.getWeaponModes(new WeaponData(heldItem, player)).keySet());
+        modes.add(WeaponMode.PRIMARY);
+
+        var actions = new ArrayList<ActionWheel.WheelAction>();
+        for (var mode : modes) {
+            var data = new WeaponData(heldItem, player).setWeaponMode(mode);
+            var ammoItems = WeaponModifierHelper.getAmmoItems(data);
+            for (var ammo : ammoItems) {
+                var currentAmmo = WeaponStateHelper.getCurrentAmmo(data);
+                if (ammo == AmmoHolders.EMPTY || ammo == currentAmmo) continue;
+
+                var icon = WeaponModifierHelper.getAmmoConfig(ammo.getId(), data).getAmmoType().getIcon();
+
+
+                if (player.isCreative() || InventoryUtil.findPlayerAmmo(player, ammo) != AmmoContext.NONE) {
+                    actions.add(new ActionWheel.WheelAction()
+                            .setIcon(icon)
+                            .setTitle(Component.translatable(ammo.getDescriptionId()))
+                            .setAction(() -> ClientActions.switchAmmo(hand, data, ammo.getId()))
+                            .setColor(mode.getColor())
+                    );
+                }
+            }
+        }
+
+        ActionWheelManager.getInstance().showWheel(
+                actions,
+                Component.translatable("title.ntgl.ammo_type"),
+                () -> {
+                });
+    }
+
+    private static void closeWheel() {
+        ActionWheelManager.getInstance().hideWheel();
     }
 }

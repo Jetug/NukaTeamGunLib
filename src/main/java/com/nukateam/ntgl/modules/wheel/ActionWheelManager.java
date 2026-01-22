@@ -23,8 +23,8 @@ public class ActionWheelManager {
         }
     }
 
-    public void showWheel(List<ActionWheel.WheelAction> actions, Component title) {
-        wheel.show(actions, title);
+    public void showWheel(List<ActionWheel.WheelAction> actions, Component title, Runnable defaultAction) {
+        wheel.show(actions, title, defaultAction);
     }
 
     public ActionWheel getWheel() {
