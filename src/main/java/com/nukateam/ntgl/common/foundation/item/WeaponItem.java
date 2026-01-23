@@ -124,43 +124,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if(entity instanceof LivingEntity livingEntity) {
             checkAmmo(stack, entity, livingEntity);
-
-            if(isItemInHands(stack, livingEntity)) {
-                var mods = PLAYER_MODIFIERS.get(livingEntity.getUUID());
-                if (mods != null) {
-                    livingEntity.getAttributes().removeAttributeModifiers(mods);
-                }
-                applyAttributeModifiers(livingEntity, InteractionHand.MAIN_HAND);
-                applyAttributeModifiers(livingEntity, InteractionHand.OFF_HAND);
-            }
-        }
-    }
-
-    private static boolean isItemInHands(ItemStack stack, LivingEntity livingEntity) {
-        return stack == livingEntity.getItemInHand(InteractionHand.MAIN_HAND) ||
-                stack == livingEntity.getItemInHand(InteractionHand.OFF_HAND);
-    }
-
-    private static void applyAttributeModifiers(LivingEntity player, InteractionHand hand) {
-        var heldItem = player.getItemInHand(hand);
-
-        if (heldItem.getItem() instanceof IWeapon) {
-            var modifiers = WeaponModifierHelper.getAttributeModifiers(new WeaponData(heldItem, player));
-            var multiMap = HashMultimap.<Attribute, AttributeModifier>create();
-
-            for (var modifier : modifiers) {
-                var attribute = ATTRIBUTES.getValue(modifier.getAttribute()); if (attribute == null) continue;
-                var attributeInstance = player.getAttribute(attribute); if (attributeInstance == null) continue;
-                var name = modifier.getAttribute().toString() + hand;
-                var uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
-                var newModifier = new AttributeModifier(uuid, name, modifier.getValue(), modifier.getOperation());
-
-                if (!attributeInstance.hasModifier(newModifier)) {
-                    attributeInstance.addTransientModifier(newModifier);
-                }
-                multiMap.put(attribute, newModifier);
-            }
-            PLAYER_MODIFIERS.put(player.getUUID(), multiMap);
         }
     }
 
