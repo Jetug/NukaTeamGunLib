@@ -1,15 +1,12 @@
 package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.input.KeyCommand;
-import com.nukateam.ntgl.client.input.KeyPressHandler;
-import com.nukateam.ntgl.client.input.NtglKeyBinds;
+import com.nukateam.ntgl.client.input.*;
 import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.holders.WeaponMode;
-import com.nukateam.ntgl.common.data.holders.WeaponAction;
+import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -17,9 +14,7 @@ import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
 import com.nukateam.ntgl.common.registry.AmmoHolders;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
-import com.nukateam.ntgl.common.util.util.InventoryUtil;
-import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
-import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.modules.wheel.ActionWheel;
 import com.nukateam.ntgl.modules.wheel.ActionWheelManager;
 import net.minecraft.client.KeyMapping;
@@ -51,6 +46,46 @@ public class InputHandler {
             handleKeys();
             handleDebugKeys();
             handleWeaponKeys();
+        }
+    }
+
+    private static boolean isKeyAttackDown() {
+        return Minecraft.getInstance().options.keyAttack.isDown();
+    }
+
+    private static boolean isUseKeyDown() {
+        return Minecraft.getInstance().options.keyUse.isDown();
+    }
+
+    private static void handleKeys() {
+        var minecraft = Minecraft.getInstance();
+        var player = minecraft.player;
+        var shiftDown = minecraft.options.keyShift.isDown();
+        var hand = shiftDown ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+
+        if (player == null || !isInGame())
+            return;
+
+        var heldItem = player.getItemInHand(hand);
+
+        if(heldItem.getItem() instanceof IWeapon) {
+            if (NtglKeyBinds.KEY_ATTACHMENTS.consumeClick()) {
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments(hand));
+            }
+            if (NtglKeyBinds.KEY_DEBUG_SHOW.consumeClick()) {
+                ClientReloadHandler.get().startReloading(WeaponMode.ALTERNATIVE);
+            }
+            if (NtglKeyBinds.KEY_INSPECT.consumeClick()) {
+                ClientActions.inspectWeapon(player);
+            }
+            if (NtglKeyBinds.KEY_FIRE_SELECT.consumeClick()) {
+                ClientActions.switchFireMode(hand);
+            }
+            if(NtglKeyBinds.KEY_TIPS.consumeClick()){
+                var options = NtglOptions.getInstance();
+                options.setShowTips(!options.isShowTips());
+                options.saveOptions();
+            }
         }
     }
 
@@ -103,7 +138,7 @@ public class InputHandler {
         }
     }
 
-    public static void handleInput(WeaponData gunData, InteractionHand hand, KeyMapping key) {
+    private static void handleInput(WeaponData gunData, InteractionHand hand, KeyMapping key) {
         assert Minecraft.getInstance().player != null;
         var player = Minecraft.getInstance().player;
         var weapon = player.getItemInHand(hand);
@@ -119,46 +154,6 @@ public class InputHandler {
             }
             if(weaponMode == WeaponAction.THROW) {
                 ClientThrowHandler.handleInput(gunData, hand, key);
-            }
-        }
-    }
-
-    private static boolean isKeyAttackDown() {
-        return Minecraft.getInstance().options.keyAttack.isDown();
-    }
-
-    private static boolean isUseKeyDown() {
-        return Minecraft.getInstance().options.keyUse.isDown();
-    }
-
-    private static void handleKeys() {
-        var minecraft = Minecraft.getInstance();
-        var player = minecraft.player;
-        var shiftDown = minecraft.options.keyShift.isDown();
-        var hand = shiftDown ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
-
-        if (player == null || !isInGame())
-            return;
-
-        var heldItem = player.getItemInHand(hand);
-
-        if(heldItem.getItem() instanceof IWeapon) {
-            if (NtglKeyBinds.KEY_ATTACHMENTS.consumeClick()) {
-                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments(hand));
-            }
-            if (NtglKeyBinds.KEY_DEBUG_SHOW.consumeClick()) {
-                ClientReloadHandler.get().startReloading(WeaponMode.ALTERNATIVE);
-            }
-            if (NtglKeyBinds.KEY_INSPECT.consumeClick()) {
-                ClientActions.inspectWeapon(player);
-            }
-            if (NtglKeyBinds.KEY_FIRE_SELECT.consumeClick()) {
-                ClientActions.switchFireMode(hand);
-            }
-            if(NtglKeyBinds.KEY_TIPS.consumeClick()){
-                var options = NtglOptions.getInstance();
-                options.setShowTips(!options.isShowTips());
-                options.saveOptions();
             }
         }
     }
