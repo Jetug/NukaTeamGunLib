@@ -1,15 +1,10 @@
 package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.gson.Gson;
-import com.nukateam.ntgl.modules.network.LevelLocation;
-import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.holders.*;
 
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.util.util.*;
-import com.nukateam.ntgl.common.foundation.init.ModSounds;
-import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -22,8 +17,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -202,8 +195,8 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         return this.throwable;
     }
 
-    public Sounds getSounds() {
-        return new Sounds(this);
+    public HashMap<String, ResourceLocation> getSounds() {
+        return sounds;
     }
 
     public HashMap<String, ResourceLocation> getSoundsMap() {
@@ -270,25 +263,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
             }
         }
         return new Modules.Attachment();
-    }
-
-    public void playCockSound(LivingEntity player) {
-        if(!player.level().isClientSide) {
-            var cockSound = this.getSounds().getCock();
-            if (!player.isAlive()) return;
-
-            if (cockSound == null) cockSound = ModSounds.ITEM_PISTOL_COCK.get().getLocation();
-
-            var radius = Config.SERVER.reloadMaxDistance.get();
-            var messageSound = new S2CMessageGunSound(cockSound,
-                    SoundSource.PLAYERS, player,
-                    1.0F, 1.0F,
-                    true);
-
-            PacketHandler.getPlayChannel().sendToNearbyPlayers(
-                    () -> LevelLocation.create(player.level(), player.getX(), player.getY() + 1.0, player.getZ(), radius),
-                    messageSound);
-        }
     }
 
     public AmmoData getAmmoData(ResourceLocation ammo) {

@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.network;
 
+import com.nukateam.ntgl.common.data.constants.SoundTypes;
 import com.nukateam.ntgl.modules.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
@@ -206,7 +207,7 @@ public class ServerPlayHandler {
 
         if (heldItem.getItem() instanceof IWeapon item && (WeaponStateHelper.hasAmmo(data) || player.isCreative())) {
             var modifiedWeaponConfig = item.getModifiedConfig(heldItem);
-            var fireSound = getPreFireSound(heldItem, modifiedWeaponConfig);
+            var fireSound = getPreFireSound(data);
 
             if (fireSound != null) {
                 var posX = player.getX();
@@ -224,18 +225,18 @@ public class ServerPlayHandler {
     private static ResourceLocation getFireSound(WeaponData data, WeaponConfig modifiedWeaponConfig) {
         ResourceLocation fireSound = null;
         if (WeaponModifierHelper.isSilencedFire(data)) {
-            fireSound = modifiedWeaponConfig.getSounds().getSilencedFire();
+            WeaponModifierHelper.getSound(SoundTypes.SILENCED_FIRE, data);
         } else if (data.weapon.isEnchanted()) {
-            fireSound = modifiedWeaponConfig.getSounds().getEnchantedFire();
+            WeaponModifierHelper.getSound(SoundTypes.ENCHANTED_FIRE, data);
         }
         if (fireSound != null) {
             return fireSound;
         }
-        return WeaponModifierHelper.getFireSound(data);
+        return WeaponModifierHelper.getSound(SoundTypes.FIRE, data);
     }
 
-    private static ResourceLocation getPreFireSound(ItemStack stack, WeaponConfig modifiedWeaponConfig) {
-        return modifiedWeaponConfig.getSounds().getPreFire();
+    private static ResourceLocation getPreFireSound(WeaponData data) {
+        return WeaponModifierHelper.getSound(SoundTypes.PRE_FIRE, data);
     }
 
     /**

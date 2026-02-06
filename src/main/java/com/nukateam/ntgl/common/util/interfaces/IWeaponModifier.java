@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.data.holders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +36,11 @@ public interface IWeaponModifier {
     }
 
     default ResourceLocation modifyFireSound(ResourceLocation sound, WeaponData data) {
+        return sound;
+    }
+
+    @Nullable
+    default ResourceLocation modifySound(String name, @Nullable ResourceLocation sound, WeaponData data) {
         return sound;
     }
 

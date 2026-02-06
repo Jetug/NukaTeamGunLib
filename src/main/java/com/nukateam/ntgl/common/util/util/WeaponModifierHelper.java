@@ -4,6 +4,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.weapon.*;
 
+import com.nukateam.ntgl.common.data.constants.SoundTypes;
 import com.nukateam.ntgl.common.data.holders.*;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
@@ -124,9 +125,9 @@ public class WeaponModifierHelper {
         return autoReloading.get();
     }
 
-    public static ResourceLocation getFireSound(WeaponData data) {
-        var fireSound = new AtomicReference<>(getConfig(data).getSounds().getFire());
-        forEachAttachment(data, (modifier -> fireSound.set(modifier.modifyFireSound(fireSound.get(), data))));
+    public static ResourceLocation getSound(String name, WeaponData data) {
+        var fireSound = new AtomicReference<>(getConfig(data).getSounds().get(name));
+        forEachAttachment(data, (modifier -> fireSound.set(modifier.modifySound(name, fireSound.get(), data))));
         return fireSound.get();
     }
 
