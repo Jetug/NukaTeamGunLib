@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.network;
 
-import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.nukateam.ntgl.modules.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;

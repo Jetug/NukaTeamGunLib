@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.network.message;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import net.minecraftforge.network.NetworkEvent;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
-import com.nukateam.ntgl.common.network.IMessage;
+import com.nukateam.ntgl.modules.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 

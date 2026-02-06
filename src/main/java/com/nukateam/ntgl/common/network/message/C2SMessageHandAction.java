@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.network.message;
 
 import net.minecraftforge.network.NetworkEvent;
-import com.nukateam.ntgl.common.network.IMessage;
+import com.nukateam.ntgl.modules.network.IMessage;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.network.enums.HandAction;
 import net.minecraft.network.FriendlyByteBuf;

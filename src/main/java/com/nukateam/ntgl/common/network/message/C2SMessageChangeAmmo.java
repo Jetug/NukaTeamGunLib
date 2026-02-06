@@ -1,9 +1,8 @@
 package com.nukateam.ntgl.common.network.message;
 
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
-import com.nukateam.ntgl.common.network.IMessage;
+import com.nukateam.ntgl.modules.network.IMessage;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
-import com.nukateam.ntgl.common.network.enums.HandAction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;

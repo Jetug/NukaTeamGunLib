@@ -2,7 +2,7 @@ package com.nukateam.chassis_core.common.network.packet;
 
 import com.nukateam.chassis_core.common.network.ActionRegistry;
 import com.nukateam.chassis_core.common.network.actions.Action;
-import com.nukateam.ntgl.common.network.IMessage;
+import com.nukateam.ntgl.modules.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 

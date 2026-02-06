@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.gson.Gson;
-import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.nukateam.ntgl.modules.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.holders.*;
 

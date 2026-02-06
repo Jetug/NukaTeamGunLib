@@ -1,10 +1,12 @@
 package com.nukateam.ntgl.common.network;
 
-import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.nukateam.ntgl.modules.network.LevelLocation;
 import com.nukateam.chassis_core.common.network.packet.*;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.network.message.*;
+import com.nukateam.ntgl.modules.network.ForgeNetwork;
+import com.nukateam.ntgl.modules.network.IMessage;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -67,7 +69,6 @@ public class PacketHandler {
         registerPlayMessage(S2CMessageProjectileHitEntity.class , NetworkDirection.PLAY_TO_CLIENT);
         registerPlayMessage(S2CMessageProjectileHitFluid.class  , NetworkDirection.PLAY_TO_CLIENT);
         registerPlayMessage(S2CMessageProjectileExplosion.class , NetworkDirection.PLAY_TO_CLIENT);
-
     }
 
     public static  <T extends IMessage<T>> void registerPlayMessage(Class<T> messageClass, @Nullable NetworkDirection direction) {

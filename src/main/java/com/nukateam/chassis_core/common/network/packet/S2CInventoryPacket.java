@@ -1,8 +1,7 @@
 package com.nukateam.chassis_core.common.network.packet;
 
 import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.nukateam.ntgl.common.network.IMessage;
+import com.nukateam.ntgl.modules.network.IMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

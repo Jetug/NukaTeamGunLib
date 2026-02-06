@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.nukateam.chassis_core.client.network.*;
 import com.nukateam.chassis_core.common.config.ChassisConfig;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkChassisManager;
-import com.nukateam.ntgl.common.network.IMessage;
+import com.nukateam.ntgl.modules.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkEvent;

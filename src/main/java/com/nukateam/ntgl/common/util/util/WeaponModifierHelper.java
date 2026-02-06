@@ -366,7 +366,7 @@ public class WeaponModifierHelper {
         var finalValue = new AtomicReference<>(value);
 
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyAttributeModifiers(finalValue.get(), data))));
-        return finalValue.get();
+        return (ArrayList<AttributeModifier>)finalValue.get().clone();
     }
 
     public static float getFireSoundVolume(WeaponData data) {
