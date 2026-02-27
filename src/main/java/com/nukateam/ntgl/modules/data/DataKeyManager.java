@@ -35,19 +35,21 @@ public class DataKeyManager {
 
     @SubscribeEvent
     public static void onLivingTick(TickEvent.ServerTickEvent event) {
-        var entries = new HashMap<DataEntry, C2SMessageUpdateEntityData.EntityData>();
+        if(event.phase == TickEvent.Phase.END) {
+            var entries = new HashMap<DataEntry, C2SMessageUpdateEntityData.EntityData>();
 
-        DataKeyManager.getInstance().dataKeys.forEach((dataKeyId, dataKey) ->{
-            dataKey.getData().forEach((entityId, dataEntry) ->{
-                if(dataEntry.isPendingSync()){
-                    dataEntry.setPendingSync(false);
-                    entries.put(dataEntry, new C2SMessageUpdateEntityData.EntityData(entityId, dataKeyId));
-                }
+            DataKeyManager.getInstance().dataKeys.forEach((dataKeyId, dataKey) -> {
+                dataKey.getData().forEach((entityId, dataEntry) -> {
+                    if (dataEntry.isPendingSync()) {
+                        dataEntry.setPendingSync(false);
+                        entries.put(dataEntry, new C2SMessageUpdateEntityData.EntityData(entityId, dataKeyId));
+                    }
+                });
             });
-        });
 
-        if(!entries.isEmpty()) {
-            PacketHandler.getPlayChannel().sendToAll(new C2SMessageUpdateEntityData());
+            if (!entries.isEmpty()) {
+                PacketHandler.getPlayChannel().sendToAll(new C2SMessageUpdateEntityData());
+            }
         }
     }
 }

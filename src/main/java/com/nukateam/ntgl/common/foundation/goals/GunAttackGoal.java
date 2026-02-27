@@ -43,14 +43,13 @@ public class GunAttackGoal extends Goal {
     private float currentAccuracy;
     private int accuracyRecoveryTimer;
 
-    // Константы для настройки поведения
     private static final int BURST_COUNT = 20;
-    private static final int BURST_DELAY = 5; // тиков между выстрелами в очереди
-    private static final int BURST_COOLDOWN = 20; // тиков между очередями
-    private static final int STRAFE_CHANGE_INTERVAL = 40; // тиков между сменой направления движения
-    private static final int ACCURACY_RECOVERY_TIME = 30; // тиков для восстановления точности
-    private static final float MAX_ACCURACY_DEVIATION = 15.0f; // максимальное отклонение в градусах
-    private static final float ACCURACY_PENALTY_PER_SHOT = 2.5f; // штраф точности за выстрел
+    private static final int BURST_DELAY = 5;
+    private static final int BURST_COOLDOWN = 20;
+    private static final int STRAFE_CHANGE_INTERVAL = 40;
+    private static final int ACCURACY_RECOVERY_TIME = 30;
+    private static final float MAX_ACCURACY_DEVIATION = 15.0f;
+    private static final float ACCURACY_PENALTY_PER_SHOT = 2.5f;
 
     public GunAttackGoal(PathfinderMob mob, double speedModifier, float minAttackDistance, float maxAttackDistance) {
         this.mob = mob;
@@ -101,20 +100,25 @@ public class GunAttackGoal extends Goal {
     }
 
     private float getDifficultyMultiplier() {
-        Difficulty difficulty = this.mob.level().getDifficulty();
-        switch (difficulty) {
-            case PEACEFUL: return 0.5f;
-            case EASY: return 0.75f;
-            case NORMAL: return 1.0f;
-            case HARD: return 1.25f;
-            default: return 1.0f;
-        }
+        var difficulty = this.mob.level().getDifficulty();
+        return switch (difficulty) {
+            case PEACEFUL -> 0.5f;
+            case EASY -> 0.75f;
+            case NORMAL -> 1.0f;
+            case HARD -> 1.25f;
+        };
     }
 
     @Override
     public boolean canUse() {
         updateGunItem();
-        return this.isValidTarget() && this.gunItem != null;
+        var target = this.mob.getTarget();
+        if (target == null) return false;
+
+        double distance = this.mob.distanceToSqr(target);
+        var tooClose = distance < this.minAttackDistance;
+        var tooFar = distance > this.maxAttackDistance;
+        return !tooClose && !tooFar && this.isValidTarget() && this.gunItem != null;
     }
 
     @Override
@@ -315,7 +319,6 @@ public class GunAttackGoal extends Goal {
                 this.burstDelay = 0;
             }
         } else {
-            // Сброс очереди при потере цели
             if (this.seeTime < 0) {
                 this.burstCounter = 0;
                 this.burstDelay = 0;

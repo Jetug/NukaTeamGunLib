@@ -2,7 +2,7 @@ package com.nukateam.ntgl.modules.data;
 
 public class DataEntry {
     private boolean value;
-    private boolean pendingSync;
+    private boolean pendingSync = false;
 
     public boolean getValue() {
         return value;

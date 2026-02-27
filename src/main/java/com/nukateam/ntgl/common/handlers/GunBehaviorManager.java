@@ -30,7 +30,16 @@ public class GunBehaviorManager {
                 mob.getOffhandItem().getItem() instanceof IWeapon;
 
         if (hasWeapon) {
-            if (!activeGoals.containsKey(mobId)) {
+            var hasGoalAlready = false;
+            var goals = mob.goalSelector.getAvailableGoals();
+            for(var goal : goals){
+                if(goal.getGoal() instanceof GunAttackGoal){
+                    hasGoalAlready = true;
+                    break;
+                }
+            }
+
+            if (!hasGoalAlready && !activeGoals.containsKey(mobId)) {
                 addGunGoalToMob(mob);
             }
         } else {

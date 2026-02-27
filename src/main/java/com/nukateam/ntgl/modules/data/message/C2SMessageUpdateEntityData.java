@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class C2SMessageUpdateEntityData implements IMessage<C2SMessageUpdateEntityData> {
-    private Map<DataEntry, EntityData> entries;
+    private Map<DataEntry, EntityData> entries = new HashMap<>();
 
     public C2SMessageUpdateEntityData() {}
 
