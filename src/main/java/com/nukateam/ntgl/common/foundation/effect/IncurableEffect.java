@@ -15,8 +15,8 @@ public class IncurableEffect extends MobEffect {
         super(typeIn, liquidColorIn);
     }
 
-    @Override
-    public List<ItemStack> getCurativeItems() {
-        return Collections.emptyList();
-    }
+//    @Override
+//    public List<ItemStack> getCurativeItems() {
+//        return Collections.emptyList();
+//    }
 }

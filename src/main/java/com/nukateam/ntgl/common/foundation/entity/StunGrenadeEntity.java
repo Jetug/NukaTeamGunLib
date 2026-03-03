@@ -7,10 +7,12 @@ import com.nukateam.ntgl.common.foundation.init.ModEffects;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.weapon.S2CMessageStunGrenade;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -38,7 +40,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import javax.annotation.Nullable;
 
 @EventBusSubscriber
-public class StunGrenadeEntity<T extends Item & IThrowable> extends ThrowableGrenadeEntity<T> {
+public class StunGrenadeEntity<T extends Item & IThrowable & IWeapon> extends ThrowableGrenadeEntity<T> {
     public StunGrenadeEntity(EntityType<? extends ThrowableGrenadeEntity> entityType, Level world) {
         super(entityType, world);
     }
@@ -50,14 +52,16 @@ public class StunGrenadeEntity<T extends Item & IThrowable> extends ThrowableGre
 
     @SubscribeEvent
     public static void blindMobs(LivingChangeTargetEvent event) {
-        if (Config.COMMON.stunGrenades.blind.blindMobs.get() && event.getOriginalTarget() != null && event.getEntity() instanceof Mob && event.getEntity().hasEffect(ModEffects.BLINDED.get())) {
+        if (Config.COMMON.stunGrenades.blind.blindMobs.get()
+                && event.getEntity() instanceof Mob
+                && event.getEntity().hasEffect(ModEffects.BLINDED)) {
             ((Mob) event.getEntity()).setTarget(null);
         }
     }
 
     @Override
     public void onDeath() {
-        double y = this.getY() + this.getType().getDimensions().height * 0.5;
+        double y = this.getY() + this.getType().getDimensions().height() * 0.5;
         this.level().playSound(null, this.getX(), y, this.getZ(), ModSounds.ENTITY_STUN_GRENADE_EXPLOSION.get(), SoundSource.BLOCKS, 4, (1 + (level().random.nextFloat() - level().random.nextFloat()) * 0.2F) * 0.7F);
         if (this.level().isClientSide) {
             return;
@@ -78,7 +82,7 @@ public class StunGrenadeEntity<T extends Item & IThrowable> extends ThrowableGre
         Vec3 eyes, directionGrenade;
         double distance;
         for (LivingEntity entity : this.level().getEntitiesOfClass(LivingEntity.class, new AABB(minX, minY, minZ, maxX, maxY, maxZ))) {
-            if (entity.ignoreExplosion())
+            if (entity.ignoreExplosion(null))
                 continue;
 
             eyes = entity.getEyePosition(1.0F);
@@ -89,16 +93,16 @@ public class StunGrenadeEntity<T extends Item & IThrowable> extends ThrowableGre
             double angle = Math.toDegrees(Math.acos(entity.getViewVector(1.0F).dot(directionGrenade.normalize())));
 
             // Apply effects as determined by their criteria
-            if (this.calculateAndApplyEffect(ModEffects.DEAFENED.get(), Config.COMMON.stunGrenades.deafen.criteria, entity, grenade, eyes, distance, angle) && Config.COMMON.stunGrenades.deafen.panicMobs.get()) {
+            if (this.calculateAndApplyEffect(ModEffects.DEAFENED, Config.COMMON.stunGrenades.deafen.criteria, entity, grenade, eyes, distance, angle) && Config.COMMON.stunGrenades.deafen.panicMobs.get()) {
                 entity.setLastHurtByMob(entity);
             }
-            if (this.calculateAndApplyEffect(ModEffects.BLINDED.get(), Config.COMMON.stunGrenades.blind.criteria, entity, grenade, eyes, distance, angle) && Config.COMMON.stunGrenades.blind.blindMobs.get() && entity instanceof Mob) {
+            if (this.calculateAndApplyEffect(ModEffects.BLINDED, Config.COMMON.stunGrenades.blind.criteria, entity, grenade, eyes, distance, angle) && Config.COMMON.stunGrenades.blind.blindMobs.get() && entity instanceof Mob) {
                 ((Mob) entity).setTarget(null);
             }
         }
     }
 
-    private boolean calculateAndApplyEffect(MobEffect effect, Config.EffectCriteria criteria, LivingEntity entity, Vec3 grenade, Vec3 eyes, double distance, double angle) {
+    private boolean calculateAndApplyEffect(Holder<MobEffect> effect, Config.EffectCriteria criteria, LivingEntity entity, Vec3 grenade, Vec3 eyes, double distance, double angle) {
         double angleMax = criteria.angleEffect.get() * 0.5;
         if (distance <= criteria.radius.get() && angleMax > 0 && angle <= angleMax) {
             // Verify that light can pass through all blocks obstructing the entity's line of sight to the grenade
@@ -228,10 +232,5 @@ public class StunGrenadeEntity<T extends Item & IThrowable> extends ThrowableGre
             return null;
         }
         return null;
-    }
-
-    @Override
-    public void deserializeNBT(CompoundTag nbt) {
-        super.deserializeNBT(nbt);
     }
 }

@@ -6,6 +6,7 @@ import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 
 public class C2SMessageMeleeAttack  {
@@ -37,10 +38,12 @@ public class C2SMessageMeleeAttack  {
 
     public static void handle(C2SMessageMeleeAttack message, MessageContext context) {
         context.execute(() -> {
-            var player = context.getPlayer();
-            if (player != null) {
-                ServerPlayHandler.handleMeleeAttack(message, player);
-            }
+            context.execute(() ->
+            {
+                context.getPlayer().ifPresent(player -> {
+                    ServerPlayHandler.handleMeleeAttack(message, (ServerPlayer)player);
+                });
+            });
         });
         context.setHandled(true);
     }

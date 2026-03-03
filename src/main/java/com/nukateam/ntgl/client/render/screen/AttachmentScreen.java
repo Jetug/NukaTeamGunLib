@@ -102,7 +102,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(graphics);
+        this.renderBackground(graphics, mouseX, mouseY, partialTicks);
         super.render(graphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(graphics, mouseX, mouseY); //Render tool tips
 
@@ -260,7 +260,7 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
     }
 
     protected void renderGun(GuiGraphics graphics, int startX, int startY, int mouseX, int mouseY, ItemStack currentItem) {
-        var poseStack = RenderSystem.getModelViewStack();
+        var poseStack = graphics.pose();
         poseStack.pushPose();
         {
             poseStack.translate(startX + 88, startY + 60, 100);
@@ -355,11 +355,11 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
 
     private List<MiniButton> gatherButtons() {
         var buttons = new ArrayList<MiniButton>();
-        if (!Config.CLIENT.hideConfigButton.get()) {
-            var configButton = new MiniButton(0, 0, 192, 0, GUI_TEXTURES, onPress -> this.openConfigScreen());
-            configButton.setTooltip(Tooltip.create(CONFIG_TOOLTIP));
-            buttons.add(configButton);
-        }
+//        if (!Config.CLIENT.hideConfigButton.get()) {
+//            var configButton = new MiniButton(0, 0, 192, 0, GUI_TEXTURES, onPress -> this.openConfigScreen());
+//            configButton.setTooltip(Tooltip.create(CONFIG_TOOLTIP));
+//            buttons.add(configButton);
+//        }
         return buttons;
     }
 //
@@ -380,17 +380,17 @@ public class AttachmentScreen extends AbstractContainerScreen<AttachmentContaine
         return slot.mayPlace(stack);
     }
 
-    private void openConfigScreen() {
-        ModList.get().getModContainerById(Ntgl.MOD_ID).ifPresent(container -> {
-            Screen screen = container.getCustomExtension(ConfigScreenHandler.ConfigScreenFactory.class).map(function -> function.screenFunction().apply(this.minecraft, null)).orElse(null);
-            if (screen != null) {
-                this.minecraft.setScreen(screen);
-            } else if (this.minecraft != null && this.minecraft.player != null) {
-                MutableComponent modName = literal("Configured");
-                modName.setStyle(modName.getStyle().withColor(ChatFormatting.YELLOW).withUnderlined(true).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translatable("ntgl.chat.open_curseforge_page"))).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/configured")));
-                Component message = translatable("ntgl.chat.install_configured", modName);
-                this.minecraft.player.displayClientMessage(message, false);
-            }
-        });
-    }
+//    private void openConfigScreen() {
+//        ModList.get().getModContainerById(Ntgl.MOD_ID).ifPresent(container -> {
+//            Screen screen = container.getCustomExtension(ConfigScreenHandler.ConfigScreenFactory.class).map(function -> function.screenFunction().apply(this.minecraft, null)).orElse(null);
+//            if (screen != null) {
+//                this.minecraft.setScreen(screen);
+//            } else if (this.minecraft != null && this.minecraft.player != null) {
+//                MutableComponent modName = literal("Configured");
+//                modName.setStyle(modName.getStyle().withColor(ChatFormatting.YELLOW).withUnderlined(true).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translatable("ntgl.chat.open_curseforge_page"))).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.curseforge.com/minecraft/mc-mods/configured")));
+//                Component message = translatable("ntgl.chat.install_configured", modName);
+//                this.minecraft.player.displayClientMessage(message, false);
+//            }
+//        });
+//    }
 }

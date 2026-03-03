@@ -175,7 +175,7 @@ public class MeleeTracker {
                 }
             }
 
-            if (!NeoForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(wielder, weaponData, hand, targetsToAttack))) {
+            if (!NeoForge.EVENT_BUS.post(new MeleeAttackEvent.Pre(wielder, weaponData, hand, targetsToAttack)).isCanceled()) {
                 if (!targetsToAttack.isEmpty()) {
                     for (var target : targetsToAttack) {
                         if(wielder.getVehicle() != target) {
@@ -190,11 +190,11 @@ public class MeleeTracker {
             }
         }
 
-        private @NotNull ArrayList<TargetInfo> getTargets(LivingEntity player) {
+        private @NotNull ArrayList<MeleeTracker.TargetInfo> getTargets(LivingEntity player) {
             var playerPos = player.getEyePosition(1.0F);
             var lookVec = player.getLookAngle().normalize();
             var coneAngleCos = Math.cos(Math.toRadians(attackAngle / 2));
-            var visibleTargets = new ArrayList<TargetInfo>();
+            var visibleTargets = new ArrayList<MeleeTracker.TargetInfo>();
             var area = player.getBoundingBox().inflate(attackDistance);
 
             for (var entity : player.level().getEntities(player, area)) {
@@ -208,10 +208,10 @@ public class MeleeTracker {
                 if (distance > attackDistance || !isInAttackCone(playerPos, lookVec, closestPoint, coneAngleCos))
                     continue;
 
-                if (!isVisible(playerPos, closestPoint, player.level()))
+                if (!isVisible(playerPos, closestPoint, player))
                     continue;
 
-                visibleTargets.add(new TargetInfo(living, distance, closestPoint));
+                visibleTargets.add(new MeleeTracker.TargetInfo(living, distance, closestPoint));
             }
 
             visibleTargets.sort(Comparator.comparingDouble(t -> t.distance));
@@ -257,13 +257,14 @@ public class MeleeTracker {
             return lookVec.dot(toPoint) >= coneAngleCos;
         }
 
-        private boolean isVisible(Vec3 start, Vec3 end, Level level) {
+        private boolean isVisible(Vec3 start, Vec3 end, LivingEntity entity) {
+            var level = entity.level();
             if (level.isClientSide()) return true;
 
             var context = new ClipContext(start, end,
                     ClipContext.Block.COLLIDER,
                     ClipContext.Fluid.NONE,
-                    null);
+                    entity);
 
             return level.clip(context).getType() == HitResult.Type.MISS;
         }

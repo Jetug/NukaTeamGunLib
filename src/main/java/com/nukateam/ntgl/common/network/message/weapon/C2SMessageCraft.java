@@ -40,10 +40,12 @@ public class C2SMessageCraft  {
     public static void handle(C2SMessageCraft message, MessageContext supplier) {
         supplier.execute(() ->
         {
-            var player = supplier.getPlayer().get();
-            if (player != null) {
-                ServerPlayHandler.handleCraft(player, message.id, message.pos);
-            }
+            supplier.execute(() ->
+            {
+                supplier.getPlayer().ifPresent(player -> {
+                    ServerPlayHandler.handleCraft((ServerPlayer)player, message.id, message.pos);
+                });
+            });
         });
         supplier.setHandled(true);
     }

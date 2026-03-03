@@ -36,7 +36,11 @@ public class InputAction extends Action<InputAction> {
 
     @Override
     public void doServerAction(InputAction message, MessageContext context, int entityId) {
-        var player = context.getPlayer();
-        onKeyInput(message.key, message.action, player);
+        context.execute(() ->
+        {
+            context.getPlayer().ifPresent(player -> {
+                onKeyInput(message.key, message.action, player);
+            });
+        });
     }
 }

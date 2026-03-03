@@ -20,16 +20,13 @@ public class NtglGameEvents {
 
     private static void onRegisterGameEvents(RegisterEvent event) {
         event.register(Registries.GAME_EVENT, helper -> {
-            helper.register(GUNSHOT_EVENT, new GameEvent("gunshot_event", 32));
+            helper.register(GUNSHOT_EVENT, new GameEvent(32));
         });
     }
 
     public static void gunshotEvent(Level level, LivingEntity entity) {
         level.registryAccess().registry(Registries.GAME_EVENT).ifPresent(registry -> {
-            var gunshotEvent = registry.get(GUNSHOT_EVENT);
-            if (gunshotEvent != null) {
-                level.gameEvent(entity, gunshotEvent, entity.blockPosition());
-            }
+            level.gameEvent(GUNSHOT_EVENT, entity.blockPosition(), GameEvent.Context.of(entity));
         });
     }
 }

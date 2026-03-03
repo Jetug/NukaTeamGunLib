@@ -111,8 +111,8 @@ dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
     implementation "software.bernie.geckolib:geckolib-forge-${minecraft_version}:4.8.2"
     implementation "curse.maven:framework-549225:6531439"
-    implementation "curse.maven:sophisticated-core-618298:7076819"
-    implementation "curse.maven:sophisticated-backpacks-422301:7057664"
+    implementation "curse.maven:sophisticated-core-618298:7698330"
+    implementation "curse.maven:sophisticated-backpacks-422301:7700124"
     implementation "curse.maven:travelers-backpack-321117:7095271"
     implementation "com.yyz:YyzsBackpack-neoforge:21.1.2"
 

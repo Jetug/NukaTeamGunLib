@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
-import com.nukateam.ntgl.common.foundation.components.NtglComponents;
+import com.nukateam.ntgl.common.foundation.crafting.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.util.helpers.compatibility.backpack.BackpackHelper;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
@@ -14,10 +14,61 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import static net.minecraft.world.item.ItemStack.isSameItemSameComponents;
+
 /**
  * Author: MrCrayfish
  */
 public class InventoryUtil {
+    public static int getItemStackAmount(Player player, ItemStack find) {
+        int count = 0;
+        for (ItemStack stack : player.getInventory().items) {
+            if (!stack.isEmpty() && areItemStacksEqualIgnoreCount(stack, find)) {
+                count += stack.getCount();
+            }
+        }
+        return count;
+    }
+
+    private static boolean areItemStacksEqualIgnoreCount(ItemStack source, ItemStack target) {
+        if (source.getItem() != target.getItem()) {
+            return false;
+        } else if (source.getDamageValue() != target.getDamageValue()) {
+            return false;
+        } else if (!isSameItemSameComponents(source, target)) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean hasWorkstationIngredient(Player player, WorkbenchIngredient find) {
+        int count = 0;
+        for (ItemStack stack : player.getInventory().items) {
+            if (!stack.isEmpty() && find.test(stack)) {
+                count += stack.getCount();
+            }
+        }
+        return find.getCount() <= count;
+    }
+
+    public static boolean removeWorkstationIngredient(Player player, WorkbenchIngredient find) {
+        int amount = find.getCount();
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack stack = player.getInventory().getItem(i);
+            if (!stack.isEmpty() && find.test(stack)) {
+                if (amount - stack.getCount() < 0) {
+                    stack.shrink(amount);
+                    return true;
+                } else {
+                    amount -= stack.getCount();
+                    player.getInventory().items.set(i, ItemStack.EMPTY);
+                    if (amount == 0) return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static IAmmoContext findPlayerAmmo(Player player, AmmoHolder id) {
         var context = findAmmo(player.getInventory(), id);
         if (!context.equals(AmmoContext.NONE))
@@ -106,10 +157,8 @@ public class InventoryUtil {
         return AmmoContext.NONE;
     }
 
-    public static IAmmoContext findAmmo(LivingEntity entity, ItemStack weapon) {
-        var data = new WeaponData(weapon, entity);
+    public static IAmmoContext findAmmo(WeaponData data) {
         var ammoHandler = WeaponStateHelper.getCurrentAmmo(data);
-
         return findAmmo(ammoHandler, data);
     }
 
@@ -140,9 +189,9 @@ public class InventoryUtil {
         return AmmoContext.NONE;
     }
 
-    public static boolean hasAmmo(LivingEntity entity, ItemStack weapon) {
-        if(entity instanceof Player player && !player.isCreative()) {
-            return !findAmmo(player, weapon).stack().isEmpty();
+    public static boolean hasAmmo(WeaponData data) {
+        if(data.wielder instanceof Player player && !player.isCreative()) {
+            return !findAmmo(data).stack().isEmpty();
         }
         return true;
     }

@@ -3,6 +3,7 @@ package com.nukateam.geo.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
+import net.minecraft.client.Minecraft;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
@@ -92,7 +93,8 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
             buffEntity = null;
         }
 
-        super.render(poseStack, getAnimator(currentEntity, transformType, stack), bufferSource, renderType, buffer, packedLight);
+        var partialTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+        super.render(poseStack, getAnimator(currentEntity, transformType, stack), bufferSource, renderType, buffer, packedLight, partialTick);
     }
 
     public Animator getAnimator(LivingEntity entity, ItemDisplayContext transformType, ItemStack stack) {
@@ -133,6 +135,6 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
         var var31 = this.model;
         Objects.requireNonNull(animationState);
         var31.addAdditionalStateData(animatable, instanceId, animationState::setData);
-        this.model.handleAnimations(animatable, instanceId, animationState);
+        this.model.handleAnimations(animatable, instanceId, animationState, partialTick);
     }
 }

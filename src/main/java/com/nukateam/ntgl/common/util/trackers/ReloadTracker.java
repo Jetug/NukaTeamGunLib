@@ -130,7 +130,7 @@ public class ReloadTracker {
     }
 
     private boolean hasNoAmmo(LivingEntity player) {
-        return !InventoryUtil.hasAmmo(player, weapon);
+        return !InventoryUtil.hasAmmo(new WeaponData(weapon, player));
     }
 
     private static void addOrDropStack(Player player, ItemStack usedMagazine) {
@@ -255,7 +255,7 @@ public class ReloadTracker {
     }
 
     private void addAmmo(LivingEntity entity, int amount) {
-        var context = InventoryUtil.findAmmo(entity, weapon);
+        var context = InventoryUtil.findAmmo(new WeaponData(weapon, entity));
         var ammo = context.stack();
 
         var data = new WeaponData(weapon, entity);
@@ -282,7 +282,7 @@ public class ReloadTracker {
     private boolean isNotReloaded(LivingEntity entity) {
         var data = new WeaponData(weapon, entity);
         var tag = NtglComponents.getWeaponTag(weapon);
-        var hasAmmo = InventoryUtil.hasAmmo(entity, weapon);
+        var hasAmmo = InventoryUtil.hasAmmo(new WeaponData(weapon, entity));
         var ammoCount = WeaponStateHelper.getAmmoCount(data);
         var ammoCapacity = WeaponModifierHelper.getMaxAmmo(data);
         return hasAmmo && ammoCount < ammoCapacity;

@@ -22,8 +22,7 @@ public class AshPileRenderer extends GeoEntityRenderer<AshPile> {
                                float partialTick, int packedLight, int packedOverlay,
                                int colour) {
         var prog = ((float) entity.getLife() / (float) entity.getMaxLife());
-
-        var newAlpha = alpha;
+        var newAlpha = ((colour >> 24) & 0xFF) / 255.0f;
         if (prog <= 0.2) {
             var maxAlpha = ((entity.getMaxLife() * 0.2f));
             var newProg = ((float) entity.getLife() / maxAlpha);

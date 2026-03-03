@@ -30,7 +30,7 @@ public class LootTableGen extends LootTableProvider {
 
     private static class BlockProvider extends BlockLootSubProvider {
         private final List<Block> knownBlocks = ImmutableList.of(
-                ModBlocks.WORKBENCH.get()
+//                ModBlocks.WORKBENCH.get()
         );
 
         public BlockProvider(HolderLookup.Provider registries) {

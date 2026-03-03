@@ -1,16 +1,20 @@
 package com.nukateam.ntgl.common.foundation.block;
 
+import com.mojang.serialization.MapCodec;
+import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.util.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -32,7 +36,6 @@ public class WorkbenchBlock extends RotatedObjectBlock implements EntityBlock {
     public WorkbenchBlock(Block.Properties properties) {
         super(properties);
     }
-
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
@@ -62,11 +65,11 @@ public class WorkbenchBlock extends RotatedObjectBlock implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player playerEntity, InteractionHand hand, BlockHitResult result) {
-        if (!world.isClientSide()) {
-            BlockEntity tileEntity = world.getBlockEntity(pos);
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (!level.isClientSide()) {
+            BlockEntity tileEntity = level.getBlockEntity(pos);
             if (tileEntity instanceof MenuProvider) {
-                playerEntity.openMenu((MenuProvider) tileEntity, pos);
+                player.openMenu((MenuProvider) tileEntity, pos);
             }
         }
         return InteractionResult.SUCCESS;
@@ -76,5 +79,10 @@ public class WorkbenchBlock extends RotatedObjectBlock implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new WorkbenchBlockEntity(pos, state);
+    }
+
+    @Override
+    protected MapCodec<? extends WorkbenchBlock> codec() {
+        return simpleCodec(WorkbenchBlock::new);
     }
 }

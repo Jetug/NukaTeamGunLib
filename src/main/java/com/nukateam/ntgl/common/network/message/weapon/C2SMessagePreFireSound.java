@@ -33,10 +33,9 @@ public class C2SMessagePreFireSound  {
     public static void handle(C2SMessagePreFireSound message, MessageContext context) {
         context.execute(() ->
         {
-            var player = context.getPlayer();
-            if (player != null) {
-                ServerPlayHandler.handlePreFireSound(message, player);
-            }
+             context.getPlayer().ifPresent(player -> {
+                 ServerPlayHandler.handlePreFireSound(message, (ServerPlayer)player);
+            });
         });
         context.setHandled(true);
     }

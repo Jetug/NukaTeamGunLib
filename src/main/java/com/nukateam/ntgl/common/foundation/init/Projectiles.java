@@ -24,6 +24,7 @@ public class Projectiles {
     public static final DeferredHolder<EntityType<?>, EntityType<FlameProjectile>> FLAME_PROJECTILE = registerBasic("flame_projectile", FlameProjectile::new);
     public static final DeferredHolder<EntityType<?>, EntityType<GrenadeEntity>> GRENADE = registerBasic("grenade", GrenadeEntity::new);
     public static final DeferredHolder<EntityType<?>, EntityType<MissileEntity>> MISSILE = registerBasic("missile", MissileEntity::new);
+    public static final DeferredHolder<EntityType<?>, EntityType<ArrowLikeProjectile>> ARROW_LIKE = registerBasic("arrow_like", ArrowLikeProjectile::new);
 //    public static final DeferredHolder<EntityType<ThrowableEntity>> THROWABLE = registerBasic("throwable", ThrowableEntity::new);
     public static final DeferredHolder<EntityType<?>, EntityType<ThrowableGrenadeEntity>> THROWABLE_GRENADE = registerBasic("throwable_grenade", ThrowableGrenadeEntity::new);
     public static final DeferredHolder<EntityType<?>, EntityType<StunGrenadeEntity>> THROWABLE_STUN_GRENADE = registerBasic("throwable_stun_grenade", StunGrenadeEntity::new);

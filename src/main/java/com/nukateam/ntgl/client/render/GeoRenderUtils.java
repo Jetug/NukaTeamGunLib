@@ -13,22 +13,22 @@ public class GeoRenderUtils {
         var playerEntityModel = getPlayerModel();
         playerEntityModel.rightArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         playerEntityModel.rightArm.setRotation(0, 0, 0);
-        playerEntityModel.rightArm.render(poseStack, arm, packedLight, packedOverlay, 1, 1, 1, 1);
+        playerEntityModel.rightArm.render(poseStack, arm, packedLight, packedOverlay);
 
         playerEntityModel.rightSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         playerEntityModel.rightSleeve.setRotation(0, 0, 0);
-        playerEntityModel.rightSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);
+        playerEntityModel.rightSleeve.render(poseStack, sleeve, packedLight, packedOverlay);
     }
 
     public static void renderLeftArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay, VertexConsumer arm, VertexConsumer sleeve) {
         var playerEntityModel = getPlayerModel();
         playerEntityModel.leftArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         playerEntityModel.leftArm.setRotation(0, 0, 0);
-        playerEntityModel.leftArm.render(poseStack, arm, packedLight, packedOverlay, 1, 1, 1, 1);
+        playerEntityModel.leftArm.render(poseStack, arm, packedLight, packedOverlay);
 
         playerEntityModel.leftSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         playerEntityModel.leftSleeve.setRotation(0, 0, 0);
-        playerEntityModel.leftSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 1, 1, 1, 1);
+        playerEntityModel.leftSleeve.render(poseStack, sleeve, packedLight, packedOverlay);
     }
 
 

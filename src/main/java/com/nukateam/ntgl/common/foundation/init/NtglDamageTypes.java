@@ -83,7 +83,7 @@ public class NtglDamageTypes {
                             livingentity.getMainHandItem() :
                             ItemStack.EMPTY;
 
-                    return !stack.isEmpty() && stack.hasCustomHoverName() ?
+                    return !stack.isEmpty() ?
                             Component.translatable(
                                     s + ".item",
                                     pLivingEntity.getDisplayName(),

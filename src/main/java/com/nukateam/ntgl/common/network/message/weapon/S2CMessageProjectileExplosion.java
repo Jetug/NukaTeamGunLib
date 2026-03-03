@@ -50,12 +50,12 @@ public class S2CMessageProjectileExplosion  {
     }
 
     public static S2CMessageProjectileExplosion decode(FriendlyByteBuf buffer) {
-        var position = BufferUtil.readVec3(buffer);
-        var knockback = BufferUtil.readVec3(buffer);
+        var position = NbtUtils.readVec3(buffer);
+        var knockback = NbtUtils.readVec3(buffer);
         var config = ExplosionConfig.create(buffer.readNbt());
-        int x = Mth.floor(this.position.x);
-        int y = Mth.floor(this.position.y);
-        int z = Mth.floor(this.position.z);
+        int x = Mth.floor(position.x);
+        int y = Mth.floor(position.y);
+        int z = Mth.floor(position.z);
         var toBlow = buffer.readList((p_178850_) -> {
             int l  = p_178850_.readByte() + x;
             int i1 = p_178850_.readByte() + y;

@@ -32,14 +32,6 @@ public class WeaponSettings implements INBTSerializable<CompoundTag> {
     @Optional @Nullable protected Zoom zoom = new Zoom();
 
     @Override
-    public Component getEditorLabel() {
-        return Component.literal("Gun");
-    }
-
-    @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {}
-
-    @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         var tag = new CompoundTag();
         tag.put(GENERAL, this.general.serializeNBT(provider));

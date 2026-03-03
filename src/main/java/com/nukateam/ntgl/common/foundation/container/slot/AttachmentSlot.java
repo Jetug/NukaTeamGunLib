@@ -132,6 +132,6 @@ public class AttachmentSlot extends Slot {
     @Override
     public boolean mayPickup(Player player) {
         ItemStack itemstack = this.getItem();
-        return (itemstack.isEmpty() || player.isCreative() || !EnchantmentHelper.hasBindingCurse(itemstack)) && super.mayPickup(player);
+        return (itemstack.isEmpty() || player.isCreative()) && super.mayPickup(player);
     }
 }

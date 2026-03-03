@@ -50,17 +50,17 @@ public class AttachmentItem<T extends Attachment> extends Item implements IAttac
         return this.attachmentData;
     }
 
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment == Enchantments.BINDING_CURSE || super.canApplyAtEnchantingTable(stack, enchantment);
-    }
+//    @Override
+//    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+//        return enchantment == Enchantments.BINDING_CURSE || super.canApplyAtEnchantingTable(stack, enchantment);
+//    }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level pLevel, List<Component> tooltip, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         var perks = getProperties().getPerks(stack);
         if (perks != null && !perks.isEmpty()) {
-            tooltip.add(Component.translatable("perk.ntgl.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
-            tooltip.addAll(perks);
+            tooltipComponents.add(Component.translatable("perk.ntgl.title").withStyle(ChatFormatting.GRAY, ChatFormatting.BOLD));
+            tooltipComponents.addAll(perks);
         }
     }
 

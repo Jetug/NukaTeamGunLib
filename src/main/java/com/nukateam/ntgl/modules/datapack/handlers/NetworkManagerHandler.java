@@ -53,8 +53,8 @@ public class NetworkManagerHandler {
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateWeapons());
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateAmmo());
             PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateAttachments());
-            getPlayChannel().sendToAll(new S2CMessageUpdateChassisConfig());
-            getPlayChannel().sendToAll(new S2CMessageUpdateEquipmentConfig());
+            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateChassisConfig());
+            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateEquipmentConfig());
         }
     }
 }

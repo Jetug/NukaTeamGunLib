@@ -9,7 +9,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
@@ -141,10 +144,17 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
         return !projectile.isGravity();
     }
 
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+
+//    @Override
+//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+//        return NetworkHooks.getEntitySpawningPacket(this);
+//    }
+
+//    @Override
+//    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity p_entity) {
+//        Entity entity = this.getOwner();
+//        return new ClientboundAddEntityPacket(this, p_entity, entity == null ? 0 : entity.getId());
+//    }
 
     public ProjectileConfig getProjectileConfig() {
         return projectile;

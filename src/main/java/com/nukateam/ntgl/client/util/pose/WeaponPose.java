@@ -149,7 +149,7 @@ public abstract class WeaponPose implements IHeldAnimation {
         if (Minecraft.getInstance().getCameraEntity() == entity && Minecraft.getInstance().screen != null) {
             return 0F;
         }
-        return Mth.lerp(Minecraft.getInstance().getFrameTime(), entity.xRotO, entity.getXRot()) / 90F;
+        return Mth.lerp(Minecraft.getInstance().getTimer().getRealtimeDeltaTicks(), entity.xRotO, entity.getXRot()) / 90F;
     }
 
     private void applyAimPose(AimPose targetPose, GeoBone rightArm, GeoBone leftArm,

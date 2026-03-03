@@ -43,12 +43,12 @@ public class AmmoItem extends Item implements IAmmo, IConfigConsumer<ProjectileC
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level pLevel, List<Component> tooltip, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         var maxDamage = getMaxDamage(stack);
 
         if(maxDamage > 0){
             int ammoCount = maxDamage - getDamage(stack);
-            tooltip.add(Component.translatable("info.ntgl.projectile", ChatFormatting.WHITE.toString() + ammoCount + "/" + maxDamage).withStyle(ChatFormatting.GRAY));
+            tooltipComponents.add(Component.translatable("info.ntgl.projectile", ChatFormatting.WHITE.toString() + ammoCount + "/" + maxDamage).withStyle(ChatFormatting.GRAY));
         }
     }
 }

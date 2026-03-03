@@ -44,26 +44,9 @@ public class ArrowLikeProjectile extends ProjectileEntity {
         super.readAdditionalSaveData(compound);
         this.inGround = compound.getBoolean("inGround");
         if (compound.contains("inBlock")) {
-            var blockPos = compound.getCompound("inBlockPos");
-            this.inBlockPos = NbtUtils.readBlockPos(blockPos);
+            NbtUtils.readBlockPos(compound, "inBlockPos").ifPresent(pos -> this.inBlockPos = pos);
         }
         this.shakeTime = compound.getInt("shakeTime");
-    }
-
-    @Override
-    public void writeSpawnData(FriendlyByteBuf buffer) {
-        super.writeSpawnData(buffer);
-        buffer.writeBoolean(this.inGround);
-        buffer.writeBlockPos(this.inBlockPos != null ? this.inBlockPos : BlockPos.ZERO);
-        buffer.writeVarInt(this.shakeTime);
-    }
-
-    @Override
-    public void readSpawnData(FriendlyByteBuf buffer) {
-        super.readSpawnData(buffer);
-        this.inGround = buffer.readBoolean();
-        this.inBlockPos = buffer.readBlockPos();
-        this.shakeTime = buffer.readVarInt();
     }
 
     @Override
