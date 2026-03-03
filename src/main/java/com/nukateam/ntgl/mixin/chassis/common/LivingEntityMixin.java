@@ -21,18 +21,12 @@ public abstract class LivingEntityMixin extends Entity {
         super(pEntityType, pLevel);
     }
 
-    @Inject(method = "getDamageAfterArmorAbsorb(Lnet/minecraft/world/damagesource/DamageSource;F)F", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getDamageAfterArmorAbsorb(Lnet/minecraft/world/damagesource/DamageSource;F)F", at = @At("HEAD"), cancellable = true, remap=false)
     protected void getDamageAfterArmorAbsorb(DamageSource pDamageSource, float pDamageAmount, CallbackInfoReturnable<Float> cir) {
-//        var r1 = isWearingChassis(this);
-//        var r2 =getEntityChassis(this);
-//
-//        ChassisCore.LOGGER.error(r1);
-//        ChassisCore.LOGGER.error(r2);
-
         if (!pDamageSource.is(DamageTypeTags.BYPASSES_ARMOR) && isWearingChassis(this)) {
             var chassis = getEntityChassis(this);
             chassis.damageArmor(pDamageSource, pDamageAmount);
-            pDamageAmount = CombatRules.getDamageAfterAbsorb(pDamageAmount, chassis.getTotalDefense(), chassis.getTotalToughness());
+            pDamageAmount = CombatRules.getDamageAfterAbsorb(chassis, pDamageAmount, pDamageSource, chassis.getTotalDefense(), chassis.getTotalToughness());
             cir.setReturnValue(pDamageAmount);
         }
     }

@@ -27,9 +27,9 @@ public abstract class ClientPacketListenerMixin implements ClientGamePacketListe
     @Shadow
     @Final
     private static Logger LOGGER;
-    @Shadow
-    @Final
-    private Minecraft minecraft;
+//    @Shadow
+//    @Final
+//    private Minecraft minecraft;
     @Shadow
     private ClientLevel level;
     @Shadow
@@ -37,29 +37,29 @@ public abstract class ClientPacketListenerMixin implements ClientGamePacketListe
     private Map<UUID, PlayerInfo> playerInfoMap;
 
 
-    @Inject(method = "handleSetEntityPassengersPacket(Lnet/minecraft/network/protocol/game/ClientboundSetPassengersPacket;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "handleSetEntityPassengersPacket(Lnet/minecraft/network/protocol/game/ClientboundSetPassengersPacket;)V", at = @At("HEAD"), cancellable = true, remap=false)
     public void handleSetEntityPassengersPacket(ClientboundSetPassengersPacket pPacket, CallbackInfo ci) {
-        PacketUtils.ensureRunningOnSameThread(pPacket, this, this.minecraft);
-        Entity entity = this.level.getEntity(pPacket.getVehicle());
-
+        var minecraft = Minecraft.getInstance();
+        PacketUtils.ensureRunningOnSameThread(pPacket, this, minecraft);
+        var entity = level.getEntity(pPacket.getVehicle());
         if (entity == null) {
             LOGGER.warn("Received passengers for unknown entity");
         } else {
-            boolean flag = entity.hasIndirectPassenger(this.minecraft.player);
+            var flag = entity.hasIndirectPassenger(minecraft.player);
             entity.ejectPassengers();
 
             for (int i : pPacket.getPassengers()) {
-                Entity entity1 = this.level.getEntity(i);
+                var entity1 = level.getEntity(i);
                 if (entity1 != null) {
                     entity1.startRiding(entity, true);
-                    if (entity1 == this.minecraft.player && !flag) {
+                    if (entity1 == minecraft.player && !flag) {
                         if (entity instanceof Boat) {
-                            this.minecraft.player.yRotO = entity.getYRot();
-                            this.minecraft.player.setYRot(entity.getYRot());
-                            this.minecraft.player.setYHeadRot(entity.getYRot());
+                            minecraft.player.yRotO = entity.getYRot();
+                            minecraft.player.setYRot(entity.getYRot());
+                            minecraft.player.setYHeadRot(entity.getYRot());
                         }
                         if (!(entity instanceof WearableChassis))
-                            this.minecraft.gui.setOverlayMessage(Component.translatable("mount.onboard", this.minecraft.options.keyShift.getTranslatedKeyMessage()), false);
+                            minecraft.gui.setOverlayMessage(Component.translatable("mount.onboard", minecraft.options.keyShift.getTranslatedKeyMessage()), false);
                     }
                 }
             }

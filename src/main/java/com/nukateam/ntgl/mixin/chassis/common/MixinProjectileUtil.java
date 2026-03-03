@@ -19,7 +19,7 @@ public class MixinProjectileUtil {
     @Unique
     private static final String getEntityHitResult = "getEntityHitResult(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;D)Lnet/minecraft/world/phys/EntityHitResult;";
 
-    @ModifyVariable(method = getEntityHitResult, at = @At("HEAD"), ordinal = 0, argsOnly = true)
+    @ModifyVariable(method = getEntityHitResult, at = @At("HEAD"), ordinal = 0, argsOnly = true, remap=false)
     private static Predicate<Entity> getEntityHitResult(Predicate<Entity> filterMod, Entity entity, Vec3 eyePosition, Vec3 pickVector, AABB box,
                                                         Predicate<Entity> filter) {
 //        var player = entity instanceof Player ? entity : Minecraft.getInstance().player;

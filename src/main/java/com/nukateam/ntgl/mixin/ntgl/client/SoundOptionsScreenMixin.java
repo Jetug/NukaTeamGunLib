@@ -1,13 +1,11 @@
 package com.nukateam.ntgl.mixin.ntgl.client;
 
-import com.electronwill.nightconfig.core.io.WritingException;
-import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.OptionInstance;
+import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.OptionsList;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.SoundOptionsScreen;
-import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.client.gui.screens.options.OptionsSubScreen;
+import net.minecraft.client.gui.screens.options.SoundOptionsScreen;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
@@ -16,17 +14,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Arrays;
 
 import static com.nukateam.ntgl.client.settings.OptionInstances.*;
-import static net.minecraft.client.Options.genericValueLabel;
 
 @Mixin(SoundOptionsScreen.class)
-public abstract class SoundOptionsScreenMixin extends Screen {
-    @Shadow private OptionsList list;
+public abstract class SoundOptionsScreenMixin extends OptionsSubScreen {
+//    @Shadow private OptionsList list;
 
-    protected SoundOptionsScreenMixin(Component pTitle) {
-        super(pTitle);
+    protected SoundOptionsScreenMixin(Screen lastScreen, Options options, Component title) {
+        super(lastScreen, options, title);
     }
 
-    @Inject(method = "getAllSoundOptionsExceptMaster", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getAllSoundOptionsExceptMaster", at = @At("RETURN"), cancellable = true, remap=false)
     private void getAllSoundOptionsExceptMaster(CallbackInfoReturnable<OptionInstance<?>[]> cir) {
         var result = cir.getReturnValue();
         result = Arrays.copyOf(result, result.length + 1);

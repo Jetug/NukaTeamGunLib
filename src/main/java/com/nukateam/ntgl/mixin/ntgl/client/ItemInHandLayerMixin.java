@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ItemInHandLayer.class)
 public class ItemInHandLayerMixin {
     @SuppressWarnings("ConstantConditions")
-    @Inject(method = "renderArmWithItem", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "renderArmWithItem", at = @At(value = "HEAD"), cancellable = true, remap=false)
     private void renderArmWithItem(LivingEntity entity, ItemStack stack,
                                        ItemDisplayContext transformType, HumanoidArm arm,
                                        PoseStack poseStack, MultiBufferSource source, int light, CallbackInfo ci) {
@@ -51,7 +51,7 @@ public class ItemInHandLayerMixin {
             ci.cancel();
             var layer = (ItemInHandLayer<?, ?>) (Object) this;
             renderArmWithGun(layer, entity, stack, transformType, hand, arm,
-                    poseStack, source, light, minecraft.getFrameTime());
+                    poseStack, source, light, minecraft.getTimer().getGameTimeDeltaTicks());
         }
     }
 

@@ -12,6 +12,10 @@ logoFile="logo.png"
 authors="Jetug, Dayton"
 credits = "MrCrayfish, MigaMi"
 description="Core for weapon mods"
+
+[[mixins]]
+config="ntgl.mixin.json"
+
 [[dependencies.ntgl]]
 modId="forge"
 mandatory=true

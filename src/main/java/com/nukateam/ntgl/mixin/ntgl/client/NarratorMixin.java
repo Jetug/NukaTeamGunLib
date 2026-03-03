@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GameNarrator.class)
 public class NarratorMixin {
-    @Inject(method = "isActive()Z", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "isActive()Z", at = @At(value = "HEAD"), cancellable = true, remap=false)
     void active(CallbackInfoReturnable<Boolean> cir) {
         var player = Minecraft.getInstance().player;
         if(player != null && player.getOffhandItem().getItem() instanceof IWeapon)

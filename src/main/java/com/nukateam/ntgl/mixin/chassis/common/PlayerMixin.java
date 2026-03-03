@@ -27,13 +27,13 @@ public abstract class PlayerMixin extends Entity {
         super(pEntityType, pLevel);
     }
 
-    @Inject(method = "wantsToStopRiding()Z", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "wantsToStopRiding()Z", at = @At(value = "HEAD"), cancellable = true, remap=false)
     private void wantsToStopRiding(CallbackInfoReturnable<Boolean> cir) {
         if (isWearingChassis(this))
             cir.setReturnValue(false);
     }
 
-    @Inject(method = "rideTick()V", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "rideTick()V", at = @At(value = "HEAD"), cancellable = true, remap=false)
     public void rideTick(CallbackInfo ci) {
         if(PlayerUtils.isWearingChassis(this)) {
             super.rideTick();
@@ -45,7 +45,7 @@ public abstract class PlayerMixin extends Entity {
             method = "hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z",
             at = @At("HEAD"),
             ordinal = 0,
-            argsOnly = true)
+            argsOnly = true, remap=false)
     private float modifyDamageAmount(float amount, DamageSource source) {
         var player = this;
 

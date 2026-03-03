@@ -4,10 +4,12 @@ import com.nukateam.chassis_core.common.util.helpers.PlayerUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,8 +26,8 @@ public abstract class GameRendererMixin implements AutoCloseable {
     @Final
     Minecraft minecraft;
 
-    @Inject(method = "bobView(Lcom/mojang/blaze3d/vertex/PoseStack;F)V", at = @At("HEAD"), cancellable = true)
-    private void bobView(PoseStack pPoseStack, float pPartialTicks, CallbackInfo ci) {
+    @Inject(method = "bobView(Lcom/mojang/blaze3d/vertex/PoseStack;F)V", at = @At("HEAD"), cancellable = true, remap=false)
+    private void bobView(PoseStack poseStack, float pPartialTicks, CallbackInfo ci) {
         if (this.minecraft.getCameraEntity() instanceof Player player &&
                 PlayerUtils.isWearingChassis(player) &&
                 CURRENT == BobType.HAND
@@ -35,34 +37,34 @@ public abstract class GameRendererMixin implements AutoCloseable {
             float speed = chassis.walkDist - chassis.walkDistO;
             float f1 = -(chassis.walkDist + speed * pPartialTicks);
             float bob = Mth.lerp(pPartialTicks, chassis.oBob, chassis.bob);
-            pPoseStack.translate(
+            poseStack.translate(
                     Mth.sin(f1 * (float) Math.PI) * bob * 0.5F,
                     -Math.abs(Mth.cos(f1 * (float) Math.PI) * bob),
                     0.0F);
-            pposeStack.mulPose(Axis.ZP.rotationDegrees(Mth.sin(f1 * (float) Math.PI) * bob * 3.0F));
-            pposeStack.mulPose(Axis.XP.rotationDegrees(Math.abs(Mth.cos(f1 * (float) Math.PI - 0.2F) * bob) * 5.0F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.sin(f1 * (float) Math.PI) * bob * 3.0F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(Math.abs(Mth.cos(f1 * (float) Math.PI - 0.2F) * bob) * 5.0F));
             ci.cancel();
         }
     }
 
-    @Inject(method = "renderItemInHand(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/Camera;F)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;resetProjectionMatrix(Lorg/joml/Matrix4f;)V"))
-    private void setHandBobType(PoseStack matrices, Camera camera, float tickDelta, CallbackInfo ci) {
+    @Inject(method = "renderItemInHand",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;resetProjectionMatrix(Lorg/joml/Matrix4f;)V"), remap=false)
+    private void setHandBobType(Camera camera, float partialTick, Matrix4f projectionMatrix, CallbackInfo ci) {
         CURRENT = BobType.HAND;
     }
 
-    @Inject(method = "renderItemInHand(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/Camera;F)V", at = @At("TAIL"))
-    private void setFinishRenderHand(PoseStack pPoseStack, Camera pActiveRenderInfo, float pPartialTicks, CallbackInfo ci) {
+    @Inject(method = "renderItemInHand", at = @At("TAIL"), remap=false)
+    private void setFinishRenderHand(Camera camera, float partialTick, Matrix4f projectionMatrix, CallbackInfo ci) {
         CURRENT = BobType.NONE;
     }
 
-    @Inject(method = "renderLevel", at = @At("HEAD"))
-    private void setCameraBobType(float tickDelta, long limitTime, PoseStack matrices, CallbackInfo ci) {
+    @Inject(method = "renderLevel", at = @At("HEAD"), remap=false)
+    private void setCameraBobType(DeltaTracker deltaTracker, CallbackInfo ci) {
         CURRENT = BobType.CAMERA;
     }
 
-    @Inject(method = "renderLevel", at = @At("TAIL"))
-    private void setFinishRenderWorld(float tickDelta, long limitTime, PoseStack matrices, CallbackInfo ci) {
+    @Inject(method = "renderLevel", at = @At("TAIL"), remap=false)
+    private void setFinishRenderWorld(DeltaTracker deltaTracker, CallbackInfo ci) {
         CURRENT = BobType.NONE;
     }
 }

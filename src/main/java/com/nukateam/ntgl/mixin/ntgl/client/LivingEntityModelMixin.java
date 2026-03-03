@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(HumanoidModel.class)
 public class LivingEntityModelMixin<T extends LivingEntity> {
     @SuppressWarnings({"ConstantConditions"})
-    @Inject(method = "setupAnim*", at = @At(value = "TAIL"))
+    @Inject(method = "setupAnim*", at = @At(value = "TAIL"), remap=false)
     private void setupAnimTail(T entity, float animationPos, float animationSpeed, float animationBob, float deltaHeadYaw, float headPitch, CallbackInfo ci) {
         var model = (HumanoidModel<T>)(Object)this;
         setupForArm(entity, animationPos, model, InteractionHand.MAIN_HAND);
@@ -53,7 +53,7 @@ public class LivingEntityModelMixin<T extends LivingEntity> {
                 return;
             }
 
-            var aimProgress = AimingHandler.get().getAimProgress(entity, Minecraft.getInstance().getFrameTime());
+            var aimProgress = AimingHandler.get().getAimProgress(entity, Minecraft.getInstance().getTimer().getRealtimeDeltaTicks());
             var gripType = WeaponModifierHelper.getGripType(new WeaponData(heldItem, entity));
 
             gripType.getHeldAnimation().applyHumanoidModelRotation(

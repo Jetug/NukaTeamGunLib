@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
  */
 @Mixin(MouseHandler.class)
 public class MouseHandlerMixin {
-    @ModifyVariable(method = "turnPlayer()V", at = @At(value = "STORE", opcode = Opcodes.DSTORE), ordinal = 2)
+    @ModifyVariable(method = "Lnet/minecraft/client/MouseHandler;turnPlayer(D)V", at = @At(value = "STORE", opcode = Opcodes.DSTORE), ordinal = 2, remap=false)
     private double sensitivity(double original) {
         var additionalAdsSensitivity = 1.0F;
         var mc = Minecraft.getInstance();

@@ -61,7 +61,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
     @Shadow
     public abstract boolean mouseClicked(double pMouseX, double pMouseY, int pButton);
 
-    @Inject(method = "mouseClicked(DDI)Z", at = @At("HEAD"))
+    @Inject(method = "mouseClicked(DDI)Z", at = @At("HEAD"), remap=false)
     public void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> ci) {
         if (!PlayerUtils.isLocalWearingChassis()) return;
 
@@ -72,7 +72,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
         }
     }
 
-    @Inject(method = "renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V", at = @At("TAIL"))
+    @Inject(method = "renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V", at = @At("TAIL"), remap=false)
     public void drawBackground(GuiGraphics graphics, float pPartialTick, int pMouseX, int pMouseY, CallbackInfo callbackInfo) {
         if (!PlayerUtils.isLocalWearingChassis()) return;
 
@@ -81,7 +81,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
         graphics.blit(PLAYER_INVENTORY_TABS, this.leftPos, this.topPos - 28, 0, 0, 57, 32);
     }
 
-    @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At("TAIL"))
+    @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At("TAIL"), remap=false)
     public void render(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick, CallbackInfo callbackInfo) {
         if (!PlayerUtils.isLocalWearingChassis()) return;
 

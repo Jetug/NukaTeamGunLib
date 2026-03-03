@@ -61,7 +61,7 @@ public abstract class CreativeInventoryScreenMixin extends EffectRenderingInvent
         super(screenHandler, playerInventory, textComponent);
     }
 
-    @Inject(method = "mouseClicked(DDI)Z", at = @At("HEAD"))
+    @Inject(method = "mouseClicked(DDI)Z", at = @At("HEAD"), remap=false)
     public void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> ci) {
         if (!PlayerUtils.isLocalWearingChassis()) return;
         var rect = new Rectangle(getRight() - 51, getBottom(), 25, TAB_HEIGHT);
@@ -71,7 +71,7 @@ public abstract class CreativeInventoryScreenMixin extends EffectRenderingInvent
         }
     }
 
-    @Inject(method = "renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V", at = @At("TAIL"))
+    @Inject(method = "renderBg(Lnet/minecraft/client/gui/GuiGraphics;FII)V", at = @At("TAIL"), remap=false)
     public void drawBg(GuiGraphics graphics, float pPartialTick, int pMouseX, int pMouseY, CallbackInfo ci) {
 
         var poseStack = graphics.pose();

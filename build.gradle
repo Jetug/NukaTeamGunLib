@@ -101,6 +101,10 @@ repositories {
             includeGroup('software.bernie.geckolib')
         }
     }
+    maven {
+        name = "SpongePowered"
+        url = "https://repo.spongepowered.org/maven"
+    }
 }
 
 dependencies {
@@ -126,6 +130,7 @@ dependencies {
     compileOnly "mezz.jei:jei-1.21.1-neoforge-api:19.25.0.322"
     localRuntime "mezz.jei:jei-1.21.1-neoforge:19.25.0.322"
 
+    implementation 'org.spongepowered:mixin:0.8.5'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
@@ -171,7 +176,7 @@ publishing {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.encoding = 'UTF-8'
 }
 
 idea {

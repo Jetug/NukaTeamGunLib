@@ -25,7 +25,7 @@ public class ServerGamePacketListenerImplMixin {
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerPlayer;resetLastActionTime()V",
                     shift = At.Shift.AFTER
-            )
+            ), remap=false
     )
     private void onHandleSetCarriedItem(ServerboundSetCarriedItemPacket packet, CallbackInfo ci) {
         var slot = player.getSlot(packet.getSlot());
