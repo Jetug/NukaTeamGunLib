@@ -10,14 +10,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 
 import static com.nukateam.example.common.registery.EntityTypes.*;
 
+@OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class SetupEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(RAIDER.get(), RaiderRenderer::new);
-        event.registerEntityRenderer(BRAHMIN.get(), (context) -> new SimpleEntityRenderer<>(context, new BrahminModel()));
+//        event.registerEntityRenderer(BRAHMIN.get(), ExampleGeoRenderer::new);
     }
-
-
 }

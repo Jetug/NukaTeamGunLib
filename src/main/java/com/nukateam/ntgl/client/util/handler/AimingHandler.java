@@ -187,7 +187,7 @@ public class AimingHandler {
      * Prevents the crosshair from rendering when aiming down sight
      */
     @SubscribeEvent(receiveCanceled = true)
-    public void onRenderOverlay(RenderGuiLayerEvent  event) {
+    public void onRenderOverlay(RenderGuiLayerEvent.Pre event) {
         this.normalisedAdsProgress = this.localTracker.getNormalProgress(event.getPartialTick().getGameTimeDeltaPartialTick(true));
     }
 

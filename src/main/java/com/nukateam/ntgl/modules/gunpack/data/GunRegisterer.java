@@ -36,7 +36,6 @@ import static net.minecraft.world.item.CreativeModeTab.builder;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 
-@EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class GunRegisterer {
     private static final Gson GSON = new Gson();
     private static final String REGISTRY_FILE = "registry.json";

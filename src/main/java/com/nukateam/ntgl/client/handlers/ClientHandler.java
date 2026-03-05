@@ -42,7 +42,7 @@ public class ClientHandler {
 
         /* Only register controller events if Controllable is loaded otherwise it will crash */
         if (Ntgl.controllableLoaded) {
-            ControllerHandler.init();
+//            ControllerHandler.init();
 //            NeoForge.EVENT_BUS.register(new ControllerHandler());
             GunButtonBindings.register();
         }

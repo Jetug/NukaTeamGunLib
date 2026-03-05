@@ -143,7 +143,7 @@ public class ControllerHandler {
     }
 
     @SubscribeEvent
-    public void onRenderTick(ClientTickEvent.Pre event) {
+    public static void onRenderTick(ClientTickEvent.Pre event) {
         var controller = Controllable.getController();
         var mc = Minecraft.getInstance();
         var player = mc.player;

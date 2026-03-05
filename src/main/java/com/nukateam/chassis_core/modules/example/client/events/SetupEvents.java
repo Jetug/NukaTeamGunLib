@@ -10,12 +10,12 @@ import net.neoforged.fml.common.EventBusSubscriber;
 
 import static com.nukateam.chassis_core.modules.example.common.registery.EntityTypes.EXAMPLE_CHASSIS;
 
+@OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = ChassisCore.MOD_ID, value = Dist.CLIENT)
 public class SetupEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(EXAMPLE_CHASSIS.get(), ExampleChassisRenderer::new);
+//        event.registerEntityRenderer(EXAMPLE_CHASSIS.get(), ExampleChassisRenderer::new);
     }
-
 }

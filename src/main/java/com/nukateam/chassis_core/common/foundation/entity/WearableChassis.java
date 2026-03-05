@@ -43,7 +43,7 @@ import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 public abstract class WearableChassis extends Chassis implements GeoEntity {
     public static final float ROTATION = (float) Math.PI / 180F;
     public static final int EFFECT_DURATION = 9;
-    public static final HandAnimator HAND_ENTITY = new HandAnimator();
+    public final HandAnimator HAND_ENTITY;
     private static final Lazy<CustomHandRenderer> HAND_RENDERER = Lazy.of(() -> new CustomHandRenderer());
     public static final ResourceLocation DEFAULT_ICON = resourceLocation("textures/item/chassis.png");
     public static final float STEP_HEIGHT = 0.5f;
@@ -64,6 +64,7 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
 
     public WearableChassis(EntityType<? extends Chassis> type, Level worldIn) {
         super(type, worldIn);
+        HAND_ENTITY = new HandAnimator();
     }
 
     public static AttributeSupplier.Builder createAttributes() {

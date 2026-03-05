@@ -28,7 +28,6 @@ import static net.minecraft.world.item.component.ItemAttributeModifiers.ATTRIBUT
 /**
  * The base attachment object
  */
-@EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class Attachment {
     protected IWeaponModifier[] modifiers;
     private List<Component> perks = null;

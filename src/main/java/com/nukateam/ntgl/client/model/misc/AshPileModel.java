@@ -1,7 +1,5 @@
 package com.nukateam.ntgl.client.model.misc;
 
-import com.nukateam.example.client.EntityModel;
-import com.nukateam.example.common.entities.Brahmin;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.entity.misc.AshPile;
 import software.bernie.geckolib.model.GeoModel;

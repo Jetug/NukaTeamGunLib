@@ -1,6 +1,5 @@
 package com.nukateam.example.common.entities;
 
-import net.minecraft.world.level.gameevent.GameEvent;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -28,22 +27,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
-import java.util.List;
 
 import static com.nukateam.example.common.registery.EntityTypes.BRAHMIN;
 import static software.bernie.geckolib.animation.RawAnimation.begin;
 
-public class Brahmin extends Cow implements GeoEntity, Shearable {
-    private static final EntityDataAccessor<Boolean> HAS_BALLS = SynchedEntityData.defineId(Brahmin.class, EntityDataSerializers.BOOLEAN);
+public class ExampleGeoEntity extends Cow implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    private boolean partyBrahmin;
-
-    public Brahmin(EntityType<? extends Cow> entityType, Level pLevel) {
+    public ExampleGeoEntity(EntityType<? extends Cow> entityType, Level pLevel) {
         super(entityType, pLevel);
     }
 
@@ -67,36 +59,12 @@ public class Brahmin extends Cow implements GeoEntity, Shearable {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(HAS_BALLS, true);
-    }
-    
-    @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putBoolean("hasBalls", this.hasBalls());
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.hasBalls(compound.getBoolean("hasBalls"));
     }
 
     @Nullable
     @Override
-    public Brahmin getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
+    public ExampleGeoEntity getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
         return BRAHMIN.get().create(level);
-    }
-
-    @Override
-    public boolean readyForShearing() {
-        return hasBalls();
-    }
-
-    @Override
-    public void shear(SoundSource pSource) {
-        this.level().playSound(null, this, SoundEvents.SHEEP_SHEAR, pSource, 1.0F, 1.0F);
-        this.hasBalls(false);
     }
 
     @Override
@@ -106,10 +74,7 @@ public class Brahmin extends Cow implements GeoEntity, Shearable {
             controller.setAnimationSpeed(1);
             var animation = begin();
 
-            if(isPartyBrahmin() && !hasBalls()){
-                animation.thenLoop("dance");
-            }
-            else if (event.isMoving()) {
+            if (event.isMoving()) {
                 animation.thenLoop("walk");
             }
 
@@ -120,35 +85,8 @@ public class Brahmin extends Cow implements GeoEntity, Shearable {
     }
 
     @Override
-    public void setRecordPlayingNearby(BlockPos pPos, boolean pIsPartying) {
-        this.partyBrahmin = pIsPartying;
-    }
-
-    @Override
-    public boolean canBreed() {
-        return hasBalls();
-    }
-
-    @Override
-    public boolean canFallInLove() {
-        return super.canFallInLove() && hasBalls();
-    }
-
-    public boolean isPartyBrahmin() {
-        return this.partyBrahmin;
-    }
-
-    @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return cache;
-    }
-
-    public boolean hasBalls() {
-        return this.entityData.get(HAS_BALLS);
-    }
-
-    public void hasBalls(boolean value) {
-        this.entityData.set(HAS_BALLS, value);
     }
 
     private void spawnItemEntity(ItemStack stack) {

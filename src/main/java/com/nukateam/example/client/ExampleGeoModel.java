@@ -1,21 +1,21 @@
 package com.nukateam.example.client;
 
-import com.nukateam.example.common.entities.Brahmin;
+import com.nukateam.example.common.entities.ExampleGeoEntity;
 import net.minecraft.resources.ResourceLocation;
 
-public class BrahminModel extends EntityModel<Brahmin> {
+public class ExampleGeoModel extends EntityModel<ExampleGeoEntity> {
     @Override
-    public ResourceLocation getModelResource(Brahmin object) {
+    public ResourceLocation getModelResource(ExampleGeoEntity object) {
         return getResource(object, "geo/entity/", ".geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(Brahmin object) {
+    public ResourceLocation getTextureResource(ExampleGeoEntity object) {
         return getResource(object, "textures/entity/", ".png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(Brahmin object) {
+    public ResourceLocation getAnimationResource(ExampleGeoEntity object) {
         return getResource(object, "animations/entity/", ".animation.json");
     }
 }

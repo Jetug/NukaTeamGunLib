@@ -2,7 +2,6 @@ package com.nukateam.example.common.registery;
 
 import com.nukateam.example.common.entities.*;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.*;
@@ -22,9 +21,9 @@ public class EntityTypes {
                     .of(Raider::new, MobCategory.CREATURE)
                     .sized(1.0f, 1.9f));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<Brahmin>> BRAHMIN =
+    public static final DeferredHolder<EntityType<?>, EntityType<ExampleGeoEntity>> BRAHMIN =
             registerEntity("brahmin", Builder
-                    .of(Brahmin::new, MobCategory.CREATURE)
+                    .of(ExampleGeoEntity::new, MobCategory.CREATURE)
                     .sized(1.5f, 1.5f));
 
     private static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> registerEntity(String entityName, Builder<T> builder) {

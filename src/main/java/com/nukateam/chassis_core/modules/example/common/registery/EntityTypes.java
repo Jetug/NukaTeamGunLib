@@ -2,7 +2,6 @@ package com.nukateam.chassis_core.modules.example.common.registery;
 
 import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.modules.example.common.entities.ExampleChassis;
-import com.nukateam.example.common.entities.Brahmin;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;

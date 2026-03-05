@@ -32,6 +32,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 
 import java.util.*;
@@ -90,13 +91,28 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         return id.get();
     }
 
+//    @Override
+//    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+//        consumer.accept(new IClientItemExtensions() {
+//            private ProxyItemRenderer renderer;
+//
+//            @Override
+//            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+//                if (this.renderer == null)
+//                    this.renderer = new ProxyItemRenderer(getRenderer());
+//
+//                return this.renderer;
+//            }
+//        });
+//    }
+
     @Override
-    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-        consumer.accept(new IClientItemExtensions() {
+    public void createGeoRenderer(Consumer<GeoRenderProvider> consumer) {
+        consumer.accept(new GeoRenderProvider() {
             private ProxyItemRenderer renderer;
 
             @Override
-            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+            public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
                 if (this.renderer == null)
                     this.renderer = new ProxyItemRenderer(getRenderer());
 
