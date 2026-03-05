@@ -42,7 +42,7 @@ public class Modules implements INBTSerializable<CompoundTag> {
         tag.putBoolean("AttachmentScreen", attachmentScreen);
 
         if (attachments != null && !attachments.isEmpty())
-            tag.put("Attachments", NbtUtils.serializeArrayMap(attachments));
+            tag.put("Attachments", NbtUtils.serializeArrayMap(attachments, provider));
 
         return tag;
     }
@@ -54,7 +54,7 @@ public class Modules implements INBTSerializable<CompoundTag> {
         }
         if (tag.contains("Attachments", Tag.TAG_COMPOUND)) {
             var nbt = tag.getCompound("Attachments");
-            this.attachments = NbtUtils.deserializeAttachmentMap(nbt);
+            this.attachments = NbtUtils.deserializeAttachmentMap(nbt, provider);
         }
     }
 

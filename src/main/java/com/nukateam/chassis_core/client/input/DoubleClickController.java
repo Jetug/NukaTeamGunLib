@@ -24,7 +24,7 @@ public class DoubleClickController {
         this.listener = listener;
     }
 
-    private void onTick(final ClientTickEvent event) {
+    private void onTick(final ClientTickEvent.Post event) {
         if (lastKey == null) return;
         ticks -= 1;
         if (ticks <= 0) lastKey = null;

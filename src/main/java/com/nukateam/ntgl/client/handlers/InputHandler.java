@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
+import com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer;
 import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.*;
@@ -18,6 +19,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -154,6 +156,7 @@ public class InputHandler {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     private static void handleDebugKeys() {
         if (Ntgl.isDebugging()) {
             if (KEY_DEBUG_X_ADD.consumeClick()) {
@@ -175,7 +178,7 @@ public class InputHandler {
                 var entity = new FlyingGib(ModEntityTypes.FLYING_GIBS.get(), level);
 
                 entity.setPos(Minecraft.getInstance().player.position());
-                addClientEntity(entity);
+                DeathFxRenderer.addClientEntity(entity);
 
                 ClientDebug.X = 0;
                 ClientDebug.Y = 0;

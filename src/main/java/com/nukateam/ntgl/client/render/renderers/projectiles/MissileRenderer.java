@@ -13,6 +13,10 @@ import net.minecraft.world.item.ItemDisplayContext;
 /**
  * Author: MrCrayfish
  */
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
 public class MissileRenderer extends EntityRenderer<MissileEntity> {
     public MissileRenderer(EntityRendererProvider.Context context) {
         super(context);

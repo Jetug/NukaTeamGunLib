@@ -95,7 +95,7 @@ public class Ntgl {
 
         AmmoHolders.register();
         AnimationType.register();
-        NeoForge.EVENT_BUS.register(this);
+//        NeoForge.EVENT_BUS.register(this);
     }
 
     public static boolean isDebugging() {

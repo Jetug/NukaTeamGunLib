@@ -2,7 +2,6 @@ package com.nukateam.ntgl.common.util.util;
 
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
-import com.nukateam.ntgl.common.foundation.crafting.crafting.WorkbenchIngredient;
 import com.nukateam.ntgl.common.util.helpers.compatibility.backpack.BackpackHelper;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.helpers.context.IAmmoContext;
@@ -41,33 +40,33 @@ public class InventoryUtil {
         return true;
     }
 
-    public static boolean hasWorkstationIngredient(Player player, WorkbenchIngredient find) {
-        int count = 0;
-        for (ItemStack stack : player.getInventory().items) {
-            if (!stack.isEmpty() && find.test(stack)) {
-                count += stack.getCount();
-            }
-        }
-        return find.getCount() <= count;
-    }
+//    public static boolean hasWorkstationIngredient(Player player, WorkbenchIngredient find) {
+//        int count = 0;
+//        for (ItemStack stack : player.getInventory().items) {
+//            if (!stack.isEmpty() && find.test(stack)) {
+//                count += stack.getCount();
+//            }
+//        }
+//        return find.getCount() <= count;
+//    }
 
-    public static boolean removeWorkstationIngredient(Player player, WorkbenchIngredient find) {
-        int amount = find.getCount();
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            ItemStack stack = player.getInventory().getItem(i);
-            if (!stack.isEmpty() && find.test(stack)) {
-                if (amount - stack.getCount() < 0) {
-                    stack.shrink(amount);
-                    return true;
-                } else {
-                    amount -= stack.getCount();
-                    player.getInventory().items.set(i, ItemStack.EMPTY);
-                    if (amount == 0) return true;
-                }
-            }
-        }
-        return false;
-    }
+//    public static boolean removeWorkstationIngredient(Player player, WorkbenchIngredient find) {
+//        int amount = find.getCount();
+//        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+//            ItemStack stack = player.getInventory().getItem(i);
+//            if (!stack.isEmpty() && find.test(stack)) {
+//                if (amount - stack.getCount() < 0) {
+//                    stack.shrink(amount);
+//                    return true;
+//                } else {
+//                    amount -= stack.getCount();
+//                    player.getInventory().items.set(i, ItemStack.EMPTY);
+//                    if (amount == 0) return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     public static IAmmoContext findPlayerAmmo(Player player, AmmoHolder id) {
         var context = findAmmo(player.getInventory(), id);

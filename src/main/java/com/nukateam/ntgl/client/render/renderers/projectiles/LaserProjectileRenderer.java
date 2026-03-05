@@ -14,7 +14,10 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     public static final float BEAM_ALPHA = 0.7F;
     public static ResourceLocation LASER_TEXTURE = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/fx/laser.png");

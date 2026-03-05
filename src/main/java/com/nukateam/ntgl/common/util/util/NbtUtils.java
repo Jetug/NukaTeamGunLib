@@ -1,11 +1,10 @@
 package com.nukateam.ntgl.common.util.util;
 
-import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
-import com.nukateam.ntgl.common.data.config.weapon.Fuel;
 import com.nukateam.ntgl.common.data.config.weapon.Modules;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -98,34 +97,19 @@ public class NbtUtils {
         return deserializeSet(tag, ResourceLocation::tryParse);
     }
 
-    public static <T extends INBTSerializable> CompoundTag serializeArray(ArrayList<T> array){
+    public static <T extends INBTSerializable> CompoundTag serializeArray(ArrayList<T> array, HolderLookup.Provider provider){
         var tag = new CompoundTag();
         for (var i = 0; i < array.size(); i++){
-            tag.put(String.valueOf(i), array.get(i).serializeNBT());
+            tag.put(String.valueOf(i), array.get(i).serializeNBT(provider));
         }
         return tag;
     }
 
-    public static HashMap<AmmoHolder, Fuel> deserializeFuelMap(CompoundTag tag){
-        var map = new HashMap<AmmoHolder, Fuel>();
-
-        for (var key: tag.getAllKeys()) {
-            if(tag.contains(key, Tag.TAG_COMPOUND)) {
-                var fuel = new Fuel();
-                var resource = AmmoHolder.getType(key);
-                fuel.deserializeNBT(tag.getCompound(key));
-                map.put(resource, fuel);
-            }
-        }
-
-        return map;
-    }
-
-    public static <K, R extends INBTSerializable> CompoundTag serializeMap(Map<K, R> map){
+    public static <K, R extends INBTSerializable> CompoundTag serializeMap(Map<K, R> map, HolderLookup.Provider provider){
         var tag = new CompoundTag();
 
         for (var entry : map.entrySet()) {
-            tag.put(entry.getKey().toString(), entry.getValue().serializeNBT());
+            tag.put(entry.getKey().toString(), entry.getValue().serializeNBT(provider));
         }
 
         return tag;
@@ -175,12 +159,12 @@ public class NbtUtils {
         return map;
     }
 
-    public static ArrayList<Modules.Attachment> deserializeArray(CompoundTag tag){
+    public static ArrayList<Modules.Attachment> deserializeArray(CompoundTag tag, HolderLookup.Provider provider){
         var array = new ArrayList<Modules.Attachment>();
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {
                 var val = new Modules.Attachment();
-                val.deserializeNBT(tag.getCompound(key));
+                val.deserializeNBT(provider, tag.getCompound(key));
                 array.add(val);
             }
         }
@@ -210,22 +194,22 @@ public class NbtUtils {
         return map;
     }
 
-    public static <K, R extends INBTSerializable, T extends ArrayList<R>> CompoundTag serializeArrayMap(Map<K, T> map){
+    public static <K, R extends INBTSerializable, T extends ArrayList<R>> CompoundTag serializeArrayMap(Map<K, T> map, HolderLookup.Provider provider){
         var tag = new CompoundTag();
 
         for (var key: map.keySet()) {
-            tag.put(key.toString(), serializeArray(map.get(key)));
+            tag.put(key.toString(), serializeArray(map.get(key), provider));
         }
 
         return tag;
     }
 
-    public static LinkedHashMap<AttachmentType, ArrayList<Modules.Attachment>> deserializeAttachmentMap(CompoundTag tag){
+    public static LinkedHashMap<AttachmentType, ArrayList<Modules.Attachment>> deserializeAttachmentMap(CompoundTag tag, HolderLookup.Provider provider){
         var array = new LinkedHashMap<AttachmentType, ArrayList<Modules.Attachment>>();
 
         for (var key: tag.getAllKeys()) {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {
-                array.put(AttachmentType.getType(key), deserializeArray(tag.getCompound(key)));
+                array.put(AttachmentType.getType(key), deserializeArray(tag.getCompound(key), provider));
             }
         }
 

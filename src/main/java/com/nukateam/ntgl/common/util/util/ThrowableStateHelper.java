@@ -46,9 +46,7 @@ public class ThrowableStateHelper {
 
     public static void setThrowMode(ItemStack stack, ThrowMode fireMode) {
         var tag = NtglComponents.getWeaponTag(stack);
-
         tag.putString(THROW_MODE, fireMode.toString());
-        var tag = NtglComponents.setWeaponTag(stack, tag);
-
+        NtglComponents.setWeaponTag(stack, tag);
     }
 }

@@ -9,8 +9,6 @@ import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.components.NtglComponents;
-import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
-import com.nukateam.ntgl.common.foundation.crafting.crafting.WorkbenchRecipes;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.enums.KeyAction;
 import com.nukateam.ntgl.common.network.message.weapon.*;
@@ -62,24 +60,24 @@ public class ServerPlayHandler {
     private static final Predicate<LivingEntity> HOSTILE_ENTITIES = entity -> entity.getSoundSource() == SoundSource.HOSTILE &&
             !(entity instanceof NeutralMob) && !Config.COMMON.aggroMobs.exemptEntities.get().contains(EntityType.getKey(entity.getType()).toString());
 
-    public static void handleCraft(ServerPlayer player, ResourceLocation id, BlockPos pos) {
-        Level world = player.level();
-
-        if (player.containerMenu instanceof WorkbenchContainer workbench) {
-            if (workbench.getPos().equals(pos)) {
-                var recipe = WorkbenchRecipes.getRecipeById(world, id);
-                if (recipe == null || !recipe.hasMaterials(player))
-                    return;
-
-                recipe.consumeMaterials(player);
-                Containers.dropItemStack(world,
-                        pos.getX() + 0.5,
-                        pos.getY() + 1.125,
-                        pos.getZ() + 0.5,
-                        recipe.getItem());
-            }
-        }
-    }
+//    public static void handleCraft(ServerPlayer player, ResourceLocation id, BlockPos pos) {
+//        Level world = player.level();
+//
+//        if (player.containerMenu instanceof WorkbenchContainer workbench) {
+//            if (workbench.getPos().equals(pos)) {
+//                var recipe = WorkbenchRecipes.getRecipeById(world, id);
+//                if (recipe == null || !recipe.hasMaterials(player))
+//                    return;
+//
+//                recipe.consumeMaterials(player);
+//                Containers.dropItemStack(world,
+//                        pos.getX() + 0.5,
+//                        pos.getY() + 1.125,
+//                        pos.getZ() + 0.5,
+//                        recipe.getItem());
+//            }
+//        }
+//    }
 
     /**
      * Fires the weapon the player is currently holding.

@@ -14,6 +14,10 @@ import net.minecraft.world.item.ItemDisplayContext;
 /**
  * Author: MrCrayfish
  */
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
 public class GrenadeRenderer extends EntityRenderer<GrenadeEntity> {
     public GrenadeRenderer(EntityRendererProvider.Context context) {
         super(context);

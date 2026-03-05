@@ -10,19 +10,12 @@ import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.weapon.S2CMessageGunSound;
-import com.nukateam.ntgl.common.debug.Debug;
-import com.nukateam.ntgl.common.debug.IDebugWidget;
-import com.nukateam.ntgl.common.debug.IEditorMenu;
-import com.nukateam.ntgl.common.debug.screen.widget.DebugButton;
-import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.google.gson.JsonObject;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -30,15 +23,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Supplier;
-
-import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
 
 public class WeaponConfig implements INBTSerializable<CompoundTag>{
     public static final String GENERAL = "General";
@@ -81,9 +69,9 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>{
         tag.put(MODULES, this.modules.serializeNBT(provider));
         tag.put(TEXTURES, NbtUtils.serializeStringMap(this.textures));
         tag.put(ANIMATIONS, NbtUtils.serializeStringMap(this.animations));
-        tag.put(AMMO_DATA, NbtUtils.serializeMap(this.ammoData));
-        tag.put(SECONDARY_AMMO, NbtUtils.serializeMap(this.fuel));
-        tag.put(MODES, NbtUtils.serializeMap(this.modes));
+        tag.put(AMMO_DATA, NbtUtils.serializeMap(this.ammoData, provider));
+        tag.put(SECONDARY_AMMO, NbtUtils.serializeMap(this.fuel, provider));
+        tag.put(MODES, NbtUtils.serializeMap(this.modes, provider));
         if (this.zoom != null) {
             tag.put("Zoom", this.zoom.serializeNBT(provider));
         }

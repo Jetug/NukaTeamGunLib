@@ -16,6 +16,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
 public class ThrowableItemRenderer extends EntityRenderer<ThrowableItemEntity> {
     public static final int MAX_SIZE_TICK = 5;
 

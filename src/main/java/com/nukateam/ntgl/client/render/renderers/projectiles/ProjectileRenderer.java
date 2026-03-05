@@ -12,6 +12,10 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
 public class ProjectileRenderer extends EntityRenderer<ProjectileEntity> {
     public ProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);

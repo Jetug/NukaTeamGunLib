@@ -18,6 +18,10 @@ import net.minecraft.resources.ResourceLocation;
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.setupGoreData;
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.getGoreData;
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
 public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
     public static final int MAX_DEATH_TIME = 20;
 
@@ -25,6 +29,7 @@ public class FlyingGibsRenderer extends EntityRenderer<FlyingGib> {
         super(pContext);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void render(FlyingGib flyingGib, float pEntityYaw, float pPartialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight) {

@@ -17,6 +17,11 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+configurations {
+    library
+    implementation.extendsFrom library
+}
+
 runs {
     // applies to all the run configs below
     configureEach {
@@ -31,6 +36,10 @@ runs {
         // You can set various levels here.
         // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
         systemProperty 'forge.logging.console.level', 'debug'
+
+        dependencies {
+            runtime project.configurations.library
+        }
 
         modSource project.sourceSets.main
     }
@@ -90,15 +99,12 @@ repositories {
         name "KosmX's maven"
         url 'https://maven.kosmx.dev/'
     }
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = 'GeckoLib'
-                url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-            }
-        }
-        filter {
-            includeGroup('software.bernie.geckolib')
+    maven {
+        name = 'GeckoLib'
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroupByRegex("software\\.bernie.*")
+            includeGroup("com.eliotlash.mclib")
         }
     }
     maven {
@@ -109,12 +115,15 @@ repositories {
 
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
-    implementation "software.bernie.geckolib:geckolib-forge-${minecraft_version}:4.8.2"
+
+    library "software.bernie.geckolib:geckolib-forge-${minecraft_version}:4.8.2"
+    implementation("com.eliotlash.mclib:mclib:20")
+
     implementation "curse.maven:framework-549225:6531439"
     implementation "curse.maven:sophisticated-core-618298:7698330"
     implementation "curse.maven:sophisticated-backpacks-422301:7700124"
     implementation "curse.maven:travelers-backpack-321117:7095271"
-    implementation "com.yyz:YyzsBackpack-neoforge:21.1.2"
+//    implementation "com.yyz:YyzsBackpack-neoforge:21.1.2"
 
     implementation "curse.maven:kotlin-for-forge-351264:6994056"
     implementation "curse.maven:fzzy-config-1005914:7085021"
@@ -123,18 +132,23 @@ dependencies {
     implementation 'curse.maven:controllable-317269:6850105'
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:2.0.1+1.21.1"
 
-    compileOnly 'curse.maven:backpacked-352835:6918854'
+    compileOnly 'curse.maven:backpacked-352835:7573687'
     compileOnly "top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1:api"
 
     compileOnly "mezz.jei:jei-1.21.1-common-api:19.25.0.322"
     compileOnly "mezz.jei:jei-1.21.1-neoforge-api:19.25.0.322"
     localRuntime "mezz.jei:jei-1.21.1-neoforge:19.25.0.322"
 
-    implementation 'org.spongepowered:mixin:0.8.5'
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+}
+
+configurations.all {
+    resolutionStrategy {
+        // Принудительно используем только NeoForge версию
+        force 'io.github.llamalad7:mixinextras-neoforge:0.5.0'
+        // Исключаем Forge версию
+        exclude group: 'io.github.llamalad7', module: 'mixinextras-forge'
+    }
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

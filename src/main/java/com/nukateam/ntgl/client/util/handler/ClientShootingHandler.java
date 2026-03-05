@@ -66,7 +66,7 @@ public class ClientShootingHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onMouseClick(InputEvent.MouseButton event) {
+    public void onMouseClick(InputEvent.MouseButton.Post event) {
         var mc = Minecraft.getInstance();
         var player = mc.player;
         if (player == null)

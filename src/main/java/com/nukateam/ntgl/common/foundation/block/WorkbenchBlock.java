@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.common.foundation.block;
 
 import com.mojang.serialization.MapCodec;
-import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.util.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,7 +29,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class WorkbenchBlock extends RotatedObjectBlock implements EntityBlock {
+public class WorkbenchBlock extends RotatedObjectBlock{
     private final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
 
     public WorkbenchBlock(Block.Properties properties) {
@@ -75,11 +74,11 @@ public class WorkbenchBlock extends RotatedObjectBlock implements EntityBlock {
         return InteractionResult.SUCCESS;
     }
 
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new WorkbenchBlockEntity(pos, state);
-    }
+//    @Nullable
+//    @Override
+//    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+//        return new WorkbenchBlockEntity(pos, state);
+//    }
 
     @Override
     protected MapCodec<? extends WorkbenchBlock> codec() {

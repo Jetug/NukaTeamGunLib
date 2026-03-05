@@ -30,7 +30,7 @@ public class DeathFxRenderer {
     private static final ResourceLocation RES_BURN_EFFECT = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/fx/death/burn.png");
     private static final ResourceLocation RES_LASER_EFFECT = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/fx/death/laser.png");
 
-    private static GoreData genericGore;
+    private static final GoreData genericGore;
     static {
         genericGore = (new GoreData(null, 160, 21, 31))
                 .setTexture(ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/entity/gore.png"));
@@ -74,6 +74,7 @@ public class DeathFxRenderer {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static void createDeathEffectClient(LivingEntity entity, GoreData data) {
         double x = entity.getX();
         double y = entity.getY() + (entity.getType().getHeight() / 2.0f);

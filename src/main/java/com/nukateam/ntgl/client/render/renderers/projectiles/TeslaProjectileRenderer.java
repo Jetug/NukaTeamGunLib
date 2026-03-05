@@ -14,6 +14,10 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
 public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
     public static ResourceLocation texture = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/fx/tesla.png");
     private final float laserRadius = 0.05F / 5;

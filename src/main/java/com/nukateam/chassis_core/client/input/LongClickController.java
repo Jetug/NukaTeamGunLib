@@ -51,7 +51,7 @@ public class LongClickController {
         }
     }
 
-    private void onMouseInput(final InputEvent.MouseButton event) {
+    private void onMouseInput(final InputEvent.MouseButton.Post event) {
         onInput(event.getAction(), event.getButton());
     }
 

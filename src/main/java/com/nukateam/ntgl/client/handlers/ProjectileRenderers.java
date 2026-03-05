@@ -7,13 +7,15 @@ import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.init.Projectiles;
 import com.nukateam.ntgl.Ntgl;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
-
+@OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ProjectileRenderers {
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(Projectiles.PROJECTILE.get(), ProjectileRenderer::new);

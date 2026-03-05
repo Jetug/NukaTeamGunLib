@@ -41,7 +41,7 @@ public class InputEvents {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
-    public static void onMouseKeyInput(InputEvent.MouseButton event) {
+    public static void onMouseKeyInput(InputEvent.MouseButton.Post event) {
         switch (event.getAction()) {
             case GLFW.GLFW_PRESS -> {
 

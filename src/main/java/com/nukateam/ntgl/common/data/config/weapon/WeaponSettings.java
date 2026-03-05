@@ -3,19 +3,16 @@ package com.nukateam.ntgl.common.data.config.weapon;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.data.holders.*;
-import com.nukateam.ntgl.common.debug.*;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.util.util.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import org.apache.commons.lang3.tuple.Pair;
+
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Supplier;
 
 public class WeaponSettings implements INBTSerializable<CompoundTag> {
     public static final String GENERAL = "General";
@@ -37,8 +34,8 @@ public class WeaponSettings implements INBTSerializable<CompoundTag> {
         tag.put(GENERAL, this.general.serializeNBT(provider));
         tag.put(MELEE, this.melee.serializeNBT(provider));
         tag.put(THROWABLE, this.throwable.serializeNBT(provider));
-        tag.put(AMMO_DATA, NbtUtils.serializeMap(this.ammoData));
-        tag.put(SECONDARY_AMMO, NbtUtils.serializeMap(this.fuel));
+        tag.put(AMMO_DATA, NbtUtils.serializeMap(this.ammoData, provider));
+        tag.put(SECONDARY_AMMO, NbtUtils.serializeMap(this.fuel, provider));
         if (this.zoom != null) {
             tag.put(ZOOM, this.zoom.serializeNBT(provider));
         }

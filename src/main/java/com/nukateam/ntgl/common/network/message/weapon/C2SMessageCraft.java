@@ -43,7 +43,7 @@ public class C2SMessageCraft  {
             supplier.execute(() ->
             {
                 supplier.getPlayer().ifPresent(player -> {
-                    ServerPlayHandler.handleCraft((ServerPlayer)player, message.id, message.pos);
+//                    ServerPlayHandler.handleCraft((ServerPlayer)player, message.id, message.pos);
                 });
             });
         });

@@ -9,39 +9,47 @@ import net.minecraft.world.item.ItemStack;
 
 public class BackpackedHelper {
     public static AmmoContext findAmmo(Player player, AmmoHolder id) {
-        var inventory = ((BackpackedInventoryAccess) player).backpacked$GetBackpackInventory();
+        var access = (BackpackedInventoryAccess)player;
 
-        if (inventory == null)
-            return AmmoContext.NONE;
+        for(int j = 0; j < access.backpacked$GetBackpackInventoryCount(); j++) {
+            var inventory = access.backpacked$GetBackpackInventory(j);
 
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
-            ItemStack stack = inventory.getItem(i);
-            if (InventoryUtil.isAmmo(stack, id)) {
-                return new AmmoContext(stack, inventory);
+            if (inventory == null)
+                return AmmoContext.NONE;
+
+            for (int i = 0; i < inventory.getContainerSize(); i++) {
+                ItemStack stack = inventory.getItem(i);
+                if (InventoryUtil.isAmmo(stack, id)) {
+                    return new AmmoContext(stack, inventory);
+                }
             }
         }
-
         return AmmoContext.NONE;
     }
 
     public static AmmoContext findMagazine(Player player, AmmoHolder id) {
-        var inventory = ((BackpackedInventoryAccess) player).backpacked$GetBackpackInventory();
+        var access = (BackpackedInventoryAccess)player;
 
-        if (inventory == null)
-            return AmmoContext.NONE;
+        for(int j = 0; j < access.backpacked$GetBackpackInventoryCount(); j++) {
+            var inventory = access.backpacked$GetBackpackInventory(j);
 
-        ItemStack ammo = null;
+            if (inventory == null)
+                return AmmoContext.NONE;
 
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
-            var stack = inventory.getItem(i);
-            if (InventoryUtil.isAmmo(stack, id)) {
-                if(stack.getDamageValue() == 0)
-                    return new AmmoContext(stack, inventory);
-                if (ammo == null || (stack.getDamageValue() < ammo.getDamageValue() && ammo.getDamageValue() < ammo.getMaxDamage()))
-                    ammo = stack;
+            ItemStack ammo = null;
+
+            for (int i = 0; i < inventory.getContainerSize(); i++) {
+                var stack = inventory.getItem(i);
+                if (InventoryUtil.isAmmo(stack, id)) {
+                    if (stack.getDamageValue() == 0)
+                        return new AmmoContext(stack, inventory);
+                    if (ammo == null || (stack.getDamageValue() < ammo.getDamageValue() && ammo.getDamageValue() < ammo.getMaxDamage()))
+                        ammo = stack;
+                }
             }
-        }
 
-        return ammo == null ? AmmoContext.NONE : new AmmoContext(ammo, inventory);
+            return ammo == null ? AmmoContext.NONE : new AmmoContext(ammo, inventory);
+        }
+        return AmmoContext.NONE;
     }
 }
