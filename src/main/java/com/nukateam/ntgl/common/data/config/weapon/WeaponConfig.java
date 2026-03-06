@@ -202,10 +202,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         return this.throwable;
     }
 
-    public Sounds getSounds() {
-        return new Sounds(this);
-    }
-
     public HashMap<String, ResourceLocation> getSoundsMap() {
         return sounds;
     }

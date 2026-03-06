@@ -5,7 +5,7 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.config.weapon.Sounds;
+import com.nukateam.ntgl.common.data.enums.SoundType;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.NtglGameEvents;
@@ -117,7 +117,7 @@ public class GunEventHandler {
     public static void playCockSound(WeaponData data) {
         var wielder = data.wielder;
         if(!wielder.level().isClientSide) {
-            var cockSound = WeaponModifierHelper.getSound(data, Sounds.SoundType.COCK.getName());
+            var cockSound = WeaponModifierHelper.getSound(data, SoundType.COCK.getName());
             if (!wielder.isAlive()) return;
 
             if (cockSound == null) cockSound = ModSounds.ITEM_PISTOL_COCK.get().getLocation();

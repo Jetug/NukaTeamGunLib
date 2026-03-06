@@ -4,8 +4,7 @@ import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.config.weapon.Sounds;
-import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
+import com.nukateam.ntgl.common.data.enums.SoundType;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
@@ -20,7 +19,6 @@ import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
-import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.message.C2SMessagePreFireSound;
@@ -205,7 +203,7 @@ public class ServerPlayHandler {
         var data = new WeaponData(heldItem, player);
 
         if (heldItem.getItem() instanceof IWeapon item && (WeaponStateHelper.hasAmmo(data) || player.isCreative())) {
-            var fireSound = WeaponModifierHelper.getSound(data, Sounds.SoundType.PRE_FIRE.getName());
+            var fireSound = WeaponModifierHelper.getSound(data, SoundType.PRE_FIRE.getName());
 
             if (fireSound != null) {
                 var posX = player.getX();
@@ -223,14 +221,14 @@ public class ServerPlayHandler {
     private static ResourceLocation getFireSound(WeaponData data) {
         ResourceLocation fireSound = null;
         if (WeaponModifierHelper.isSilencedFire(data)) {
-            fireSound = WeaponModifierHelper.getSound(data, Sounds.SoundType.SILENCED_FIRE.getName());
+            fireSound = WeaponModifierHelper.getSound(data, SoundType.SILENCED_FIRE.getName());
         } else if (data.weapon.isEnchanted()) {
-            fireSound = WeaponModifierHelper.getSound(data, Sounds.SoundType.ENCHANTED_FIRE.getName());
+            fireSound = WeaponModifierHelper.getSound(data, SoundType.ENCHANTED_FIRE.getName());
         }
         if (fireSound != null) {
             return fireSound;
         }
-        return WeaponModifierHelper.getSound(data, Sounds.SoundType.FIRE.getName());
+        return WeaponModifierHelper.getSound(data, SoundType.FIRE.getName());
     }
 
     /**
