@@ -50,7 +50,10 @@ public class StunGrenadeEntity<T extends Item & IThrowable & IWeapon> extends Th
 
     @SubscribeEvent
     public static void blindMobs(LivingChangeTargetEvent event) {
-        if (Config.COMMON.stunGrenades.blind.blindMobs.get() && event.getOriginalTarget() != null && event.getEntity() instanceof Mob && event.getEntity().hasEffect(ModEffects.BLINDED.get())) {
+        if (Config.COMMON.stunGrenades.blind.blindMobs.get()
+                && event.getOriginalTarget() != null
+                && event.getEntity() instanceof Mob
+                && event.getEntity().hasEffect(ModEffects.BLINDED.get())) {
             ((Mob) event.getEntity()).setTarget(null);
         }
     }
