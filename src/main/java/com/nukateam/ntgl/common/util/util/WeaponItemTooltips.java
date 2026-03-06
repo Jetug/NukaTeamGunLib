@@ -64,7 +64,7 @@ public class WeaponItemTooltips {
         }
     }
 
-    public static void addDamage(List<Component> tooltip, CompoundTag tagCompound, WeaponData weaponData) {
+    public static void addDamage(List<Component> tooltip, WeaponData weaponData) {
         var damage = WeaponStateHelper.getProjectileDamage(weaponData);
         tooltip.add(Component.translatable("info.ntgl.damage", ChatFormatting.WHITE
                         + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)

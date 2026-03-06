@@ -150,7 +150,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         var tagCompound = stack.getOrCreateTag();
         WeaponItemTooltips.addAmmoType(tooltip, data);
         WeaponItemTooltips.addFireRate(tooltip, data);
-        WeaponItemTooltips.addDamage(tooltip, tagCompound, data);
+        WeaponItemTooltips.addDamage(tooltip, data);
         WeaponItemTooltips.addMelleDamage(tooltip, data);
 
         var explosion = WeaponStateHelper.getProjectileConfig(data).getExplosion();
@@ -160,7 +160,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
 
         WeaponItemTooltips.addAmmo(tooltip, tagCompound, data);
         WeaponItemTooltips.addFuel(tooltip, data);
-
 
         var name = NtglKeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
 
