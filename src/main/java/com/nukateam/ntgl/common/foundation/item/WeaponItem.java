@@ -166,9 +166,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
 
         tooltip.add(Component.translatable("info.ntgl.attachment_help", name)
          .withStyle(ChatFormatting.YELLOW));
-
-
-//        Component.keybind("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH))
     }
 
     @Override

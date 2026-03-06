@@ -69,10 +69,7 @@ public class ServerPlayHandler {
      * @param shooter the living entity for whose weapon to fire
      */
     public static void handleShoot(C2SMessageShoot message, LivingEntity shooter) {
-        if (shooter.isSpectator())
-            return;
-
-        if (shooter.getUseItem().getItem() == Items.SHIELD)
+        if (shooter.isSpectator() || shooter.getUseItem().getItem() == Items.SHIELD)
             return;
 
         var level = shooter.level();
@@ -121,39 +118,9 @@ public class ServerPlayHandler {
                 SpreadTracker.get(shooter).update(shooter, weaponItem);
             }
 
-            var fireMode = WeaponStateHelper.getFireMode(data);
-            var multishotAmount = WeaponModifierHelper.getMultishotAmount(data);
-            var count = WeaponModifierHelper.getProjectileAmount(data);
-
-            if (fireMode == FireMode.MULTI && multishotAmount > 1) {
-                var currentAmmo = WeaponStateHelper.getAmmoCount(data);
-                multishotAmount = Math.min(currentAmmo, multishotAmount);
-                count *= multishotAmount;
-            }
-
-            for (int i = 0; i < count; i++) {
-                spawnProjectile(data, level);
-            }
-
-            if (Config.COMMON.aggroMobs.enabled.get()) {
-                var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.COMMON.aggroMobs.unsilencedRange.get());
-                var x = shooter.getX();
-                var y = shooter.getY() + 0.5;
-                var z = shooter.getZ();
-                var box = new AABB(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
-                radius *= radius;
-                double dx, dy, dz;
-                for (LivingEntity hostile : level.getEntitiesOfClass(LivingEntity.class, box, HOSTILE_ENTITIES)) {
-                    dx = x - hostile.getX();
-                    dy = y - hostile.getY();
-                    dz = z - hostile.getZ();
-                    if (dx * dx + dy * dy + dz * dz <= radius) {
-                        hostile.setLastHurtByMob(Config.COMMON.aggroMobs.angerHostileMobs.get() ? hostile : hostile);
-                    }
-                }
-            }
-
-            playFireSound(shooter, data, level);
+            spawnProjectiles(data, level);
+            aggroMobs(data, level);
+            playFireSound(data, level);
 
             if (!(shooter instanceof Player player && player.isCreative())) {
                 if (!WeaponStateHelper.isAmmoIgnored(heldItem)) {
@@ -171,7 +138,47 @@ public class ServerPlayHandler {
         }
     }
 
-    private static void playFireSound(LivingEntity shooter, WeaponData data, Level level) {
+    private static void spawnProjectiles(WeaponData data, Level level) {
+        var fireMode = WeaponStateHelper.getFireMode(data);
+        var multishotAmount = WeaponModifierHelper.getMultishotAmount(data);
+        var count = WeaponModifierHelper.getProjectileAmount(data);
+
+        if (fireMode == FireMode.MULTI && multishotAmount > 1) {
+            var currentAmmo = WeaponStateHelper.getAmmoCount(data);
+            multishotAmount = Math.min(currentAmmo, multishotAmount);
+            count *= multishotAmount;
+        }
+
+        for (int i = 0; i < count; i++) {
+            spawnProjectile(data, level);
+        }
+    }
+
+    private static void aggroMobs(WeaponData data, Level level) {
+        var shooter = data.wielder;
+        var silenced = WeaponModifierHelper.isSilencedFire(data);
+        if (!silenced && Config.COMMON.aggroMobs.enabled.get() && Config.COMMON.aggroMobs.angerHostileMobs.get()) {
+            var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.COMMON.aggroMobs.unsilencedRange.get());
+            var x = shooter.getX();
+            var y = shooter.getY() + 0.5;
+            var z = shooter.getZ();
+            var box = new AABB(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
+            radius *= radius;
+            double dx, dy, dz;
+
+            for (var hostile : level.getEntitiesOfClass(LivingEntity.class, box, HOSTILE_ENTITIES)) {
+                dx = x - hostile.getX();
+                dy = y - hostile.getY();
+                dz = z - hostile.getZ();
+                if (dx * dx + dy * dy + dz * dz <= radius) {
+                    hostile.setLastHurtByMob(shooter);
+                }
+            }
+        }
+    }
+
+    private static void playFireSound(WeaponData data, Level level) {
+        var shooter = data.wielder;
         var fireSound = getFireSound(data);
 
         if (fireSound != null) {
