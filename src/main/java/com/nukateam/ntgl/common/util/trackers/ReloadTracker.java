@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.data.constants.Tags;
 
-import com.nukateam.ntgl.common.foundation.components.NtglComponents;
+import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -25,7 +25,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.minecraft.core.registries.Registries;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 

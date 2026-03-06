@@ -1,9 +1,8 @@
 package com.nukateam.ntgl.common.util.util;
 
-import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.foundation.components.NtglComponents;
+import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;

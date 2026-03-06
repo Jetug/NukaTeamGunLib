@@ -12,7 +12,7 @@ import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.debug.Debug;
 
-import com.nukateam.ntgl.common.foundation.components.NtglComponents;
+import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.core.HolderLookup;

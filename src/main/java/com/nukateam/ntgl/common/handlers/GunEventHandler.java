@@ -3,7 +3,7 @@ package com.nukateam.ntgl.common.handlers;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
-import com.nukateam.ntgl.common.foundation.components.NtglComponents;
+import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.foundation.init.NtglGameEvents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;

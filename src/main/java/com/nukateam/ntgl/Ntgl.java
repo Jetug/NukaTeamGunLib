@@ -67,6 +67,7 @@ public class Ntgl {
         ExampleWeapons.register(MOD_EVENT_BUS);
         ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
         ModSounds.REGISTER.register(MOD_EVENT_BUS);
+        NtglComponents.REGISTER.register(MOD_EVENT_BUS);
         ModEntityTypes.register(MOD_EVENT_BUS);
         EntityTypes.register(MOD_EVENT_BUS);
         MOD_EVENT_BUS.addListener(this::onCommonSetup);

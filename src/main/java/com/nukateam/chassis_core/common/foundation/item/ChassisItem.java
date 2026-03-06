@@ -1,7 +1,7 @@
 package com.nukateam.chassis_core.common.foundation.item;
 
 import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
-import com.nukateam.ntgl.common.foundation.components.NtglComponents;
+import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;

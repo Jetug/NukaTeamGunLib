@@ -1,7 +1,6 @@
 package com.nukateam.chassis_core.common.foundation.item;
 
-import com.nukateam.ntgl.common.foundation.components.NtglComponents;
-import net.minecraft.nbt.CompoundTag;
+import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;

@@ -1,15 +1,11 @@
 package com.nukateam.ntgl.client.handlers;
 
-import com.nukateam.chassis_core.modules.example.common.registery.ContainerRegistry;
 import com.nukateam.ntgl.client.registry.*;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.client.render.screen.AttachmentScreen;
-import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.foundation.init.ModContainers;
 import com.nukateam.ntgl.Ntgl;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.*;
 import net.minecraft.world.InteractionHand;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -43,22 +39,33 @@ public class ClientHandler {
         /* Only register controller events if Controllable is loaded otherwise it will crash */
         if (Ntgl.controllableLoaded) {
 //            ControllerHandler.init();
-//            NeoForge.EVENT_BUS.register(new ControllerHandler());
+            NeoForge.EVENT_BUS.register(new ControllerHandler());
             GunButtonBindings.register();
         }
 
 //        setupRenderLayers();
         AnimationRegistry.register();
+
     }
 
 //    private static void setupRenderLayers() {
 //        ItemBlockRenderTypes.setRenderLayer(ModBlocks.WORKBENCH.get(), RenderType.cutout());
 //    }
 
+//    @SubscribeEvent
+//    public static void onSetup(FMLClientSetupEvent event) {
+//        try {
+//            WeaponRenderers.getInstance().setDefaultRenderer(new DefaultWeaponRendererGeo());
+//        }
+//        catch (Exception ignored) {
+//        }
+//    }
+
     @SubscribeEvent
     public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
 //        event.register(ModContainers.WORKBENCH.get(), WorkbenchScreen::new);
         event.register(ModContainers.ATTACHMENTS.get(), AttachmentScreen::new);
+
     }
 
     private static int inspectionTimerRight;

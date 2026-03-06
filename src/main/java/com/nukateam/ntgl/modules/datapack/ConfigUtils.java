@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.modules.datapack;
 
+import com.google.gson.JsonSyntaxException;
 import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.modules.config.annotation.Validator;
 import com.nukateam.chassis_core.modules.config.utils.JsonDeserializers;
@@ -61,7 +62,7 @@ public class ConfigUtils {
                         try (var reader = new BufferedReader(new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
                             var gun = GsonHelper.fromJson(JsonDeserializers.GSON_INSTANCE, reader, yClass);
 
-                            if (Validator.isValidObject(gun)) {
+                            if (true /*Validator.isValidObject(gun)*/) {
                                 map.put((T) item, gun);
                             }
                             else {
@@ -76,7 +77,13 @@ public class ConfigUtils {
                         catch (IOException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
                             Ntgl.LOGGER.error("Couldn't parse data file {}", resourceLocation);
                         }
-                        catch (IllegalAccessException e) {
+                        catch (IllegalAccessException | IllegalStateException | JsonSyntaxException e) {
+                            Ntgl.LOGGER.error("Wrong data for {}", resourceLocation);
+                            e.printStackTrace();
+                        }
+                        catch (Exception e) {
+                            Ntgl.LOGGER.error("Something wrong with resource {}", resourceLocation);
+                            Ntgl.LOGGER.error(e.getMessage());
                             e.printStackTrace();
                         }
                     });

@@ -4,8 +4,6 @@ import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
 import com.mrcrayfish.controllable.client.binding.ButtonBinding;
 import com.mrcrayfish.controllable.client.binding.ButtonBindings;
-import com.mrcrayfish.controllable.client.gui.navigation.BasicNavigationPoint;
-import com.mrcrayfish.controllable.client.gui.navigation.NavigationPoint;
 import com.mrcrayfish.controllable.client.input.Controller;
 import com.mrcrayfish.controllable.client.settings.ActionVisibility;
 import com.mrcrayfish.controllable.event.ControllerEvents;
@@ -14,9 +12,8 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.input.GunButtonBindings;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.attachment.impl.Scope;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
-import com.nukateam.ntgl.common.foundation.components.NtglComponents;
+import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -34,13 +31,11 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
-@EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
 public class ControllerHandler {
     private static int reloadCounter = -1;
 
@@ -143,7 +138,7 @@ public class ControllerHandler {
     }
 
     @SubscribeEvent
-    public static void onRenderTick(ClientTickEvent.Pre event) {
+    public void onRenderTick(ClientTickEvent.Pre event) {
         var controller = Controllable.getController();
         var mc = Minecraft.getInstance();
         var player = mc.player;

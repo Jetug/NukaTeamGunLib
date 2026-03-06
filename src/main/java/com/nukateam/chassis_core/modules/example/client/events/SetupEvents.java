@@ -16,6 +16,6 @@ public class SetupEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
-//        event.registerEntityRenderer(EXAMPLE_CHASSIS.get(), ExampleChassisRenderer::new);
+        event.registerEntityRenderer(EXAMPLE_CHASSIS.get(), ExampleChassisRenderer::new);
     }
 }

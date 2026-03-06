@@ -49,7 +49,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import static com.nukateam.ntgl.client.util.helpers.PropertyHelper.*;
-import static com.nukateam.ntgl.common.foundation.components.NtglComponents.getWeaponTag;
+import static com.nukateam.ntgl.common.foundation.init.NtglComponents.getWeaponTag;
 
 @SuppressWarnings("removal")
 public class GunRenderingHandler {
