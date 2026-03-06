@@ -210,6 +210,10 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         return sounds;
     }
 
+    public ResourceLocation getSound(String name){
+        return sounds.get(name);
+    }
+
 
     public Modules getModules() {
         return this.modules;
@@ -270,25 +274,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
             }
         }
         return new Modules.Attachment();
-    }
-
-    public void playCockSound(LivingEntity player) {
-        if(!player.level().isClientSide) {
-            var cockSound = this.getSounds().getCock();
-            if (!player.isAlive()) return;
-
-            if (cockSound == null) cockSound = ModSounds.ITEM_PISTOL_COCK.get().getLocation();
-
-            var radius = Config.SERVER.reloadMaxDistance.get();
-            var messageSound = new S2CMessageGunSound(cockSound,
-                    SoundSource.PLAYERS, player,
-                    1.0F, 1.0F,
-                    true);
-
-            PacketHandler.getPlayChannel().sendToNearbyPlayers(
-                    () -> LevelLocation.create(player.level(), player.getX(), player.getY() + 1.0, player.getZ(), radius),
-                    messageSound);
-        }
     }
 
     public AmmoData getAmmoData(ResourceLocation ammo) {

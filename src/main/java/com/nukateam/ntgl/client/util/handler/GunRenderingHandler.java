@@ -256,7 +256,7 @@ public class GunRenderingHandler {
                     var modifiedGun = weaponItem.getModifiedConfig(heldItem);
                     var pos = model.getTransforms().firstPersonRightHand.translation;
                     this.applyIronSightTransforms(event, poseStack, model, isRight, heldItem, modifiedGun);
-                    this.applyAimingTransforms(poseStack, heldItem, modifiedGun, pos, offset);
+                    this.applyAimingTransforms(poseStack, heldItem, pos, offset);
                     this.applySwayTransforms(poseStack, heldItem, player, rightHandTranslation, event.getPartialTick());
                 }
 
@@ -398,7 +398,7 @@ public class GunRenderingHandler {
     }
 
 
-    private void applyAimingTransforms(PoseStack poseStack, ItemStack heldItem, WeaponConfig modifiedWeaponConfig, Vector3f pos, int offset) {
+    private void applyAimingTransforms(PoseStack poseStack, ItemStack heldItem, Vector3f pos, int offset) {
 //        if (!Config.CLIENT.display.oldAnimations.get()) {
         var x = pos.x();
         var y = pos.y();

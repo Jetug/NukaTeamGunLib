@@ -124,9 +124,9 @@ public class WeaponModifierHelper {
         return autoReloading.get();
     }
 
-    public static ResourceLocation getFireSound(WeaponData data) {
-        var fireSound = new AtomicReference<>(getConfig(data).getSounds().getFire());
-        forEachAttachment(data, (modifier -> fireSound.set(modifier.modifyFireSound(fireSound.get(), data))));
+    public static ResourceLocation getSound(WeaponData data, String name) {
+        var fireSound = new AtomicReference<>(getConfig(data).getSound(name));
+        forEachAttachment(data, (modifier -> fireSound.set(modifier.modifySound(name, fireSound.get(), data))));
         return fireSound.get();
     }
 
@@ -161,6 +161,12 @@ public class WeaponModifierHelper {
         var finalProjectileAmount = new AtomicInteger(gunProjectileAmount * ammoProjectileAmount);
         forEachAttachment(data, (modifier -> finalProjectileAmount.set(modifier.modifyProjectileAmount(finalProjectileAmount.get(), data))));
         return finalProjectileAmount.get();
+    }
+
+    public static float getRecoilAdsReduction(WeaponData data) {
+        var value = new AtomicReference<>(getGeneral(data).getRecoilAdsReduction());
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyRecoilAdsReduction(value.get(), data))));
+        return value.get();
     }
 
     public static int getReloadAmount(WeaponData data) {

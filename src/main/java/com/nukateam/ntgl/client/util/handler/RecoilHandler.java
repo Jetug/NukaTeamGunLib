@@ -39,7 +39,7 @@ public class RecoilHandler {
     private float gunRecoilRandom;
     private float cameraRecoil;
     private float progressCameraRecoil;
-    private Map<InteractionHand, WeaponData> weaponData = new HashMap<>();
+    private final Map<InteractionHand, WeaponData> weaponData = new HashMap<>();
 
     private RecoilHandler() {
     }
@@ -52,14 +52,11 @@ public class RecoilHandler {
         if (!Config.SERVER.enableCameraRecoil.get())
             return;
 
-        var heldItem = event.getStack();
-        var gunItem = (IWeapon) heldItem.getItem();
-        var modifiedGun = gunItem.getModifiedConfig(heldItem);
         var data = event.getGunData();
         weaponData.put(event.getHand(), data);
         var recoilModifier = 1.0F - WeaponModifierHelper.getRecoilModifier(data);
 
-        recoilModifier *= this.getAdsRecoilReduction(modifiedGun);
+        recoilModifier *= (float) this.getAdsRecoilReduction(data);
         var recoilAngle = WeaponModifierHelper.getRecoilAngle(data);
         this.cameraRecoil = recoilAngle * recoilModifier;
         this.progressCameraRecoil = 0F;
@@ -126,8 +123,10 @@ public class RecoilHandler {
         this.gunRecoilAngle = WeaponModifierHelper.getRecoilAngle(data);
     }
 
-    public double getAdsRecoilReduction(WeaponConfig weaponConfig) {
-        return 1.0 - weaponConfig.getGeneral().getRecoilAdsReduction() * AimingHandler.get().getNormalisedAdsProgress();
+    public double getAdsRecoilReduction(WeaponData data) {
+        var recoilAdsReduction = WeaponModifierHelper.getRecoilAdsReduction(data);
+        var normalAdsProgress = AimingHandler.get().getNormalisedAdsProgress();
+        return 1.0 - recoilAdsReduction * normalAdsProgress;
     }
 
     public double getGunRecoilNormal() {

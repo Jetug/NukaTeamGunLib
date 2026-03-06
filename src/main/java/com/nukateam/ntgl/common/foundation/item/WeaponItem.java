@@ -5,13 +5,10 @@ import com.nukateam.geo.render.ProxyItemRenderer;
 import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
-import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
-import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
@@ -23,7 +20,6 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.*;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
@@ -40,11 +36,9 @@ import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache
 import software.bernie.geckolib.core.animation.AnimatableManager;
 
 import javax.annotation.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.*;
 
-import static net.minecraftforge.registries.ForgeRegistries.ATTRIBUTES;
 import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
 public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable{
@@ -63,6 +57,11 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     @Override
+    public boolean isPerspectiveAware() {
+        return true;
+    }
+
+    @Override
     public IWeaponModifier[] getModifiers() {
         return modifiers;
     }
@@ -75,6 +74,11 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     @Override
     public BiFunction<ItemDisplayContext, DynamicWeaponRenderer<WeaponAnimator>, WeaponAnimator> getAnimatorFactory() {
         return WeaponAnimator::new;
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+
     }
 
     @Override
@@ -122,15 +126,15 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if(entity instanceof LivingEntity livingEntity) {
-            checkAmmo(stack, entity, livingEntity);
+            WeaponItemUtils.checkAmmo(stack, entity, livingEntity);
 
             if(isItemInHands(stack, livingEntity)) {
                 var mods = PLAYER_MODIFIERS.get(livingEntity.getUUID());
                 if (mods != null) {
                     livingEntity.getAttributes().removeAttributeModifiers(mods);
                 }
-                applyAttributeModifiers(livingEntity, InteractionHand.MAIN_HAND);
-                applyAttributeModifiers(livingEntity, InteractionHand.OFF_HAND);
+                WeaponItemUtils.applyAttributeModifiers(livingEntity, InteractionHand.MAIN_HAND);
+                WeaponItemUtils.applyAttributeModifiers(livingEntity, InteractionHand.OFF_HAND);
             }
         }
     }
@@ -140,68 +144,22 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
                 stack == livingEntity.getItemInHand(InteractionHand.OFF_HAND);
     }
 
-    private static void applyAttributeModifiers(LivingEntity player, InteractionHand hand) {
-        var heldItem = player.getItemInHand(hand);
-
-        if (heldItem.getItem() instanceof IWeapon) {
-            var modifiers = WeaponModifierHelper.getAttributeModifiers(new WeaponData(heldItem, player));
-            var multiMap = HashMultimap.<Attribute, AttributeModifier>create();
-
-            for (var modifier : modifiers) {
-                var attribute = ATTRIBUTES.getValue(modifier.getAttribute()); if (attribute == null) continue;
-                var attributeInstance = player.getAttribute(attribute); if (attributeInstance == null) continue;
-                var name = modifier.getAttribute().toString() + hand;
-                var uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
-                var newModifier = new AttributeModifier(uuid, name, modifier.getValue(), modifier.getOperation());
-
-                if (!attributeInstance.hasModifier(newModifier)) {
-                    attributeInstance.addTransientModifier(newModifier);
-                }
-                multiMap.put(attribute, newModifier);
-            }
-            PLAYER_MODIFIERS.put(player.getUUID(), multiMap);
-        }
-    }
-
-    private static void checkAmmo(ItemStack stack, Entity entity, LivingEntity livingEntity) {
-        var data = new WeaponData(stack, livingEntity);
-        var ammoItems = WeaponModifierHelper.getAmmoItems(data);
-        var ammoId = WeaponStateHelper.getCurrentAmmo(data).getId();
-        var matches = ammoItems.stream().anyMatch((i) -> i.getId().equals(ammoId));
-
-        if(!matches) {
-            if (entity instanceof ServerPlayer player) {
-                ServerPlayHandler.unloadGun(player, stack);
-            }
-            var firstAmmo = SetUtils.getFirst(ammoItems);
-            WeaponStateHelper.setCurrentAmmo(data, firstAmmo.getId());
-        }
-
-        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-        var currentAmount = WeaponStateHelper.getAmmoCount(data);
-        if(currentAmount > maxAmmo){
-            if (entity instanceof ServerPlayer player) {
-                ServerPlayHandler.unloadGun(player, stack);
-            }
-        }
-    }
-
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
         var data = new WeaponData(stack, null);
         var tagCompound = stack.getOrCreateTag();
-        addAmmoType(tooltip, data);
-        addFireRate(tooltip, data);
-        addDamage(tooltip, tagCompound, data);
-        addMelleDamage(tooltip, data);
+        WeaponItemTooltips.addAmmoType(tooltip, data);
+        WeaponItemTooltips.addFireRate(tooltip, data);
+        WeaponItemTooltips.addDamage(tooltip, tagCompound, data);
+        WeaponItemTooltips.addMelleDamage(tooltip, data);
 
         var explosion = WeaponStateHelper.getProjectileConfig(data).getExplosion();
         if(explosion.getRadius() > 0){
-            addExplosionTip(tooltip, explosion);
+            WeaponItemTooltips.addExplosionTip(tooltip, explosion);
         }
 
-        addAmmo(tooltip, tagCompound, data);
-        addFuel(tooltip, data);
+        WeaponItemTooltips.addAmmo(tooltip, tagCompound, data);
+        WeaponItemTooltips.addFuel(tooltip, data);
 
 
         var name = NtglKeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
@@ -212,89 +170,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
 
 //        Component.keybind("key.ntgl.attachments").getString().toUpperCase(Locale.ENGLISH))
     }
-
-    public static void addExplosionTip(List<Component> tooltip, ExplosionConfig explosion) {
-        var damage = explosion.getDamage();
-        tooltip.add(Component.translatable("info.ntgl.explosionDamage",
-                        ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage))
-                .withStyle(ChatFormatting.GRAY));
-
-        var radius = explosion.getRadius();
-        tooltip.add(Component.translatable("info.ntgl.explosionRadius",
-                        ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(radius))
-                .withStyle(ChatFormatting.GRAY));
-    }
-
-    private static void addAmmoType(List<Component> tooltip, WeaponData data) {
-        var descriptionId = WeaponStateHelper.getCurrentAmmo(data).getDescriptionId();
-
-        tooltip.add(Component.translatable("info.ntgl.ammo_type",
-                        Component.translatable(descriptionId).withStyle(ChatFormatting.WHITE)
-                ).withStyle(ChatFormatting.GRAY));
-    }
-
-    private static void addFireRate(List<Component> tooltip, WeaponData data) {
-        var rate = WeaponModifierHelper.getRate(data);
-        rate = rate == 0 ? 0 : 20 / rate;
-
-        tooltip.add(Component.translatable("info.ntgl.rate",
-                ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(rate))
-                .withStyle(ChatFormatting.GRAY));
-    }
-
-    private static void addFuel(List<Component> tooltip, WeaponData weaponData) {
-        var allFuel = WeaponModifierHelper.getAllFuel(weaponData);
-        for (var fuelType : allFuel) {
-            var fuelAmount = FuelUtils.getFuel(weaponData.weapon, fuelType);
-            var maxFuel = WeaponModifierHelper.getMaxFuel(fuelType.getId(), weaponData);
-
-            tooltip.add(Component.translatable(fuelType.getDescriptionId())
-                    .append(ChatFormatting.WHITE + " : " + fuelAmount + "/" + maxFuel)
-                    .withStyle(ChatFormatting.GRAY)
-            );
-        }
-    }
-
-    private static void addAmmo(List<Component> tooltip, CompoundTag tagCompound, WeaponData weaponData) {
-        if (tagCompound.getBoolean("IgnoreAmmo")) {
-            tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
-        } else {
-            int ammoCount = WeaponStateHelper.getAmmoCount(weaponData);
-            tooltip.add(Component.translatable("info.ntgl.ammo",
-                    ChatFormatting.WHITE.toString()
-                            + ammoCount + "/"
-                            + WeaponModifierHelper.getMaxAmmo(weaponData)).withStyle(ChatFormatting.GRAY));
-        }
-    }
-
-    private static void addDamage(List<Component> tooltip, CompoundTag tagCompound, WeaponData weaponData) {
-        var damage = WeaponStateHelper.getProjectileDamage(weaponData);
-        tooltip.add(Component.translatable("info.ntgl.damage", ChatFormatting.WHITE
-                        + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)
-        ).withStyle(ChatFormatting.GRAY));
-    }
-
-    private static void addMelleDamage(List<Component> tooltip, WeaponData weaponData) {
-        var damage = WeaponModifierHelper.getMeleeDamage(weaponData);
-
-        tooltip.add(Component.translatable("info.ntgl.melee_damage",
-                ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)
-        ).withStyle(ChatFormatting.GRAY));
-    }
-
-//    @Override
-//    public boolean isBarVisible(ItemStack stack) {
-//        CompoundTag tagCompound = stack.getOrCreateTag();
-//        Gun modifiedGun = this.getModifiedConfig(stack);
-//        return !tagCompound.getBoolean("IgnoreAmmo") && tagCompound.getInt(Tags.AMMO_COUNT) != WeaponModifierHelper.getMaxAmmo(stack, modifiedGun);
-//    }
-
-//    @Override
-//    public int getBarWidth(ItemStack stack) {
-//        CompoundTag tagCompound = stack.getOrCreateTag();
-//        Gun modifiedGun = this.getModifiedConfig(stack);
-//        return (int) (13.0 * (tagCompound.getInt(Tags.AMMO_COUNT) / (double) WeaponModifierHelper.getMaxAmmo(stack, modifiedGun)));
-//    }
 
     @Override
     public WeaponConfig getModifiedConfig(ItemStack stack) {
@@ -312,9 +187,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
                 }
             });
         }
-//        if (Ntgl.isDebugging()) {
-//            return Debug.getGun(this);
-//        }
 
         return this.weaponConfig;
     }
@@ -348,9 +220,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     public int getEnchantmentValue() {
         return this.weaponConfig.getGeneral().isEnchantable() ? 5 : 0;
     }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {

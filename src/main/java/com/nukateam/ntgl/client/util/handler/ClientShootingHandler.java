@@ -328,7 +328,7 @@ public class ClientShootingHandler {
 
             if (data.fireTimer > 0 && !isOnCooldown) {
                 if (data.fireTimer == maxChargeTime - 2) {
-                    PacketHandler.getPlayChannel().sendToServer(new C2SMessagePreFireSound(player));
+                    PacketHandler.getPlayChannel().sendToServer(new C2SMessagePreFireSound(hand));
                 }
                 data.fireTimer--;
             } else {

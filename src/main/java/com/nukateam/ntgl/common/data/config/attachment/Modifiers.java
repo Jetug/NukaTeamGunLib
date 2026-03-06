@@ -336,8 +336,8 @@ public class Modifiers implements INBTSerializable<CompoundTag>, IWeaponModifier
     }
 
     @Override
-    public ResourceLocation modifyFireSound(ResourceLocation sound, WeaponData data) {
-        return IWeaponModifier.super.modifyFireSound(sound, data);
+    public ResourceLocation modifySound(String name, ResourceLocation sound, WeaponData data) {
+        return IWeaponModifier.super.modifySound(name, sound, data);
     }
 
     @Override

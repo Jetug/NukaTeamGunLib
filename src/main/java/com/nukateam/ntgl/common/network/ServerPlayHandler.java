@@ -4,6 +4,7 @@ import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.config.weapon.Sounds;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
@@ -76,7 +77,7 @@ public class ServerPlayHandler {
         if (shooter.getUseItem().getItem() == Items.SHIELD)
             return;
 
-        var world = shooter.level();
+        var level = shooter.level();
         var hand = message.getHand();
         var reloadKey = ModSyncedDataKeys.getReloadKey(hand);
 
@@ -89,123 +90,122 @@ public class ServerPlayHandler {
 
         if (heldItem.getItem() instanceof IWeapon weaponItem
                 && (WeaponStateHelper.hasAmmo(data) || (shooter instanceof Player player && player.isCreative()))) {
-            var modifiedGun = weaponItem.getModifiedConfig(heldItem);
-
-            if (modifiedGun != null) {
-                if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand))) {
-                    return;
-                }
-
-                /* Updates the yaw and pitch with the clients current yaw and pitch */
-                shooter.setYRot(Mth.wrapDegrees(message.getRotationYaw()));
-                shooter.setXRot(Mth.clamp(message.getRotationPitch(), -90F, 90F));
-
-                var tracker = ShootTracker.getShootTracker(shooter, hand);
-
-                if (tracker.hasCooldown() && tracker.getRemaining() > Config.SERVER.cooldownThreshold.get()) {
-                    Ntgl.LOGGER.warn(shooter.getName().getContents() +
-                            "(" + shooter.getUUID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: "
-                            + tracker.getRemaining());
-                    return;
-                }
-
-                tracker.putCooldown(data);
-
-                if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(shooter)) {
-                    ModSyncedDataKeys.RELOADING_RIGHT.setValue(shooter, false);
-                }
-
-                if (ModSyncedDataKeys.RELOADING_LEFT.getValue(shooter)) {
-                    ModSyncedDataKeys.RELOADING_LEFT.setValue(shooter, false);
-                }
-
-                var gunSpread = WeaponModifierHelper.getSpread(data);
-
-                if (!WeaponModifierHelper.isAlwaysSpread(data) && gunSpread > 0.0F) {
-                    SpreadTracker.get(shooter).update(shooter, weaponItem);
-                }
-
-                var fireMode = WeaponStateHelper.getFireMode(data);
-                var multishotAmount = WeaponModifierHelper.getMultishotAmount(data);
-                var count = WeaponModifierHelper.getProjectileAmount(data);
-
-                if (fireMode == FireMode.MULTI && multishotAmount > 1) {
-                    var currentAmmo = WeaponStateHelper.getAmmoCount(data);
-                    multishotAmount = Math.min(currentAmmo, multishotAmount);
-                    count *= multishotAmount;
-                }
-
-                var projectileProps = WeaponStateHelper.getProjectileConfig(data);
-                var spawnedProjectiles = new ProjectileEntity[count];
-
-                for (int i = 0; i < count; i++) {
-                    var factory = ProjectileManager.getInstance().getFactory(data);
-                    var projectileEntity = factory.create(world, data);
-                    projectileEntity.setWeapon(heldItem);
-                    world.addFreshEntity(projectileEntity);
-                    spawnedProjectiles[i] = projectileEntity;
-                    projectileEntity.tick();
-                }
-
-                if (Config.COMMON.aggroMobs.enabled.get()) {
-                    var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.COMMON.aggroMobs.unsilencedRange.get());
-                    var x = shooter.getX();
-                    var y = shooter.getY() + 0.5;
-                    var z = shooter.getZ();
-                    var box = new AABB(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
-                    radius *= radius;
-                    double dx, dy, dz;
-                    for (LivingEntity hostile : world.getEntitiesOfClass(LivingEntity.class, box, HOSTILE_ENTITIES)) {
-                        dx = x - hostile.getX();
-                        dy = y - hostile.getY();
-                        dz = z - hostile.getZ();
-                        if (dx * dx + dy * dy + dz * dz <= radius) {
-                            hostile.setLastHurtByMob(Config.COMMON.aggroMobs.angerHostileMobs.get() ? hostile : hostile);
-                        }
-                    }
-                }
-
-                var fireSound = getFireSound(data, modifiedGun);
-
-                if (fireSound != null) {
-                    var posX = shooter.getX();
-                    var posY = shooter.getY() + shooter.getEyeHeight();
-                    var posZ = shooter.getZ();
-                    var volume = WeaponModifierHelper.getFireSoundVolume(data);
-                    var pitch = 0.9F + world.random.nextFloat() * 0.2F;
-                    var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.SERVER.gunShotMaxDistance.get());
-                    var messageSound = new S2CMessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, shooter.getId(), false);
-
-                    PacketHandler.getPlayChannel()
-                            .sendToNearbyPlayers(() ->
-                                    LevelLocation.create(shooter.level(), posX, posY, posZ, radius), messageSound);
-                }
-
-                if (!(shooter instanceof Player player && player.isCreative())) {
-                    if (!WeaponStateHelper.isAmmoIgnored(heldItem)) {
-                        WeaponStateHelper.consumeAmmo(data);
-                    }
-                }
-
-                if (shooter instanceof Player player)
-                    player.awardStat(Stats.ITEM_USED.get(heldItem.getItem()));
-
-                MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
+            if (MinecraftForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand))) {
+                return;
             }
+
+            /* Updates the yaw and pitch with the clients current yaw and pitch */
+            shooter.setYRot(Mth.wrapDegrees(message.getRotationYaw()));
+            shooter.setXRot(Mth.clamp(message.getRotationPitch(), -90F, 90F));
+
+            var tracker = ShootTracker.getShootTracker(shooter, hand);
+
+            if (tracker.hasCooldown() && tracker.getRemaining() > Config.SERVER.cooldownThreshold.get()) {
+                Ntgl.LOGGER.warn(shooter.getName().getContents() +
+                        "(" + shooter.getUUID() + ") tried to fire before cooldown finished or server is lagging? Remaining milliseconds: "
+                        + tracker.getRemaining());
+                return;
+            }
+
+            tracker.putCooldown(data);
+
+            if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(shooter)) {
+                ModSyncedDataKeys.RELOADING_RIGHT.setValue(shooter, false);
+            }
+
+            if (ModSyncedDataKeys.RELOADING_LEFT.getValue(shooter)) {
+                ModSyncedDataKeys.RELOADING_LEFT.setValue(shooter, false);
+            }
+
+            var gunSpread = WeaponModifierHelper.getSpread(data);
+
+            if (!WeaponModifierHelper.isAlwaysSpread(data) && gunSpread > 0.0F) {
+                SpreadTracker.get(shooter).update(shooter, weaponItem);
+            }
+
+            var fireMode = WeaponStateHelper.getFireMode(data);
+            var multishotAmount = WeaponModifierHelper.getMultishotAmount(data);
+            var count = WeaponModifierHelper.getProjectileAmount(data);
+
+            if (fireMode == FireMode.MULTI && multishotAmount > 1) {
+                var currentAmmo = WeaponStateHelper.getAmmoCount(data);
+                multishotAmount = Math.min(currentAmmo, multishotAmount);
+                count *= multishotAmount;
+            }
+
+            for (int i = 0; i < count; i++) {
+                spawnProjectile(data, level);
+            }
+
+            if (Config.COMMON.aggroMobs.enabled.get()) {
+                var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.COMMON.aggroMobs.unsilencedRange.get());
+                var x = shooter.getX();
+                var y = shooter.getY() + 0.5;
+                var z = shooter.getZ();
+                var box = new AABB(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
+                radius *= radius;
+                double dx, dy, dz;
+                for (LivingEntity hostile : level.getEntitiesOfClass(LivingEntity.class, box, HOSTILE_ENTITIES)) {
+                    dx = x - hostile.getX();
+                    dy = y - hostile.getY();
+                    dz = z - hostile.getZ();
+                    if (dx * dx + dy * dy + dz * dz <= radius) {
+                        hostile.setLastHurtByMob(Config.COMMON.aggroMobs.angerHostileMobs.get() ? hostile : hostile);
+                    }
+                }
+            }
+
+            playFireSound(shooter, data, level);
+
+            if (!(shooter instanceof Player player && player.isCreative())) {
+                if (!WeaponStateHelper.isAmmoIgnored(heldItem)) {
+                    WeaponStateHelper.consumeAmmo(data);
+                }
+            }
+
+            if (shooter instanceof Player player)
+                player.awardStat(Stats.ITEM_USED.get(heldItem.getItem()));
+
+            MinecraftForge.EVENT_BUS.post(new GunFireEvent.Post(shooter, heldItem, hand));
         } else {
-            world.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(),
+            level.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(),
                     SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3F, 0.8F);
         }
     }
 
+    private static void playFireSound(LivingEntity shooter, WeaponData data, Level level) {
+        var fireSound = getFireSound(data);
+
+        if (fireSound != null) {
+            var posX = shooter.getX();
+            var posY = shooter.getY() + shooter.getEyeHeight();
+            var posZ = shooter.getZ();
+            var volume = WeaponModifierHelper.getFireSoundVolume(data);
+            var pitch = 0.9F + level.random.nextFloat() * 0.2F;
+            var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.SERVER.gunShotMaxDistance.get());
+            var messageSound = new S2CMessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, shooter.getId(), false);
+
+            PacketHandler.getPlayChannel()
+                    .sendToNearbyPlayers(() ->
+                            LevelLocation.create(shooter.level(), posX, posY, posZ, radius), messageSound);
+        }
+    }
+
+    private static void spawnProjectile(WeaponData data, Level world) {
+        var factory = ProjectileManager.getInstance().getFactory(data);
+        var projectileEntity = factory.create(world, data);
+        projectileEntity.setWeapon(data.weapon);
+        world.addFreshEntity(projectileEntity);
+        projectileEntity.tick();
+    }
+
     public static void handlePreFireSound(C2SMessagePreFireSound message, ServerPlayer player) {
         var world = player.level();
-        var heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
+        var heldItem = player.getItemInHand(message.getHand());
         var data = new WeaponData(heldItem, player);
 
         if (heldItem.getItem() instanceof IWeapon item && (WeaponStateHelper.hasAmmo(data) || player.isCreative())) {
-            var modifiedWeaponConfig = item.getModifiedConfig(heldItem);
-            var fireSound = getPreFireSound(heldItem, modifiedWeaponConfig);
+            var fireSound = WeaponModifierHelper.getSound(data, Sounds.SoundType.PRE_FIRE.getName());
 
             if (fireSound != null) {
                 var posX = player.getX();
@@ -220,21 +220,17 @@ public class ServerPlayHandler {
         }
     }
 
-    private static ResourceLocation getFireSound(WeaponData data, WeaponConfig modifiedWeaponConfig) {
+    private static ResourceLocation getFireSound(WeaponData data) {
         ResourceLocation fireSound = null;
         if (WeaponModifierHelper.isSilencedFire(data)) {
-            fireSound = modifiedWeaponConfig.getSounds().getSilencedFire();
+            fireSound = WeaponModifierHelper.getSound(data, Sounds.SoundType.SILENCED_FIRE.getName());
         } else if (data.weapon.isEnchanted()) {
-            fireSound = modifiedWeaponConfig.getSounds().getEnchantedFire();
+            fireSound = WeaponModifierHelper.getSound(data, Sounds.SoundType.ENCHANTED_FIRE.getName());
         }
         if (fireSound != null) {
             return fireSound;
         }
-        return WeaponModifierHelper.getFireSound(data);
-    }
-
-    private static ResourceLocation getPreFireSound(ItemStack stack, WeaponConfig modifiedWeaponConfig) {
-        return modifiedWeaponConfig.getSounds().getPreFire();
+        return WeaponModifierHelper.getSound(data, Sounds.SoundType.FIRE.getName());
     }
 
     /**

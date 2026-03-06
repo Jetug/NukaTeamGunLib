@@ -304,11 +304,6 @@ public class WeaponHud implements IGuiOverlay {
         RenderSystem.setShaderColor(1, 1, 1, 1);
     }
 
-    protected WeaponConfig getConfig(ItemStack stack){
-        var weapon = (IWeapon)stack.getItem();
-        return weapon.getModifiedConfig(stack);
-    }
-
     protected void updateCache(GunHudCache handCache, LocalPlayer player, ItemStack weapon) {
         if ((System.currentTimeMillis() - handCache.checkAmmoTimestamp) > 200) {
             var data = new WeaponData(weapon, player);

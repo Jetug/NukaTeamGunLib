@@ -80,6 +80,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     protected ThrowMode throwMode;
     protected int prepareTime;
     protected int throwingTime;
+    private WeaponData data;
 
     public WeaponAnimator(ItemDisplayContext transformType, DynamicWeaponRenderer<WeaponAnimator> renderer) {
         super(transformType);
@@ -127,11 +128,11 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     protected void tickStart() {
         if (!(getStack().getItem() instanceof IWeapon weapon))
             return;
-        var data = getGunData();
 
         if(getEntity().getItemInHand(getArm()).getItem() instanceof IWeapon) {
             this.rate = WeaponModifierHelper.getRate(shootingHandler.getWeaponData(getEntity(), getArm()));
         }
+        this.data = getWeaponData();
         this.equipTime = WeaponModifierHelper.getEquipTime(data);
         this.isEquiping = EquipTracker.isEquiping(getEntity(), getArm());
         this.meleeDelay = WeaponModifierHelper.getMeleeDelay(data);
@@ -141,7 +142,6 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         this.reloadStartTime = WeaponModifierHelper.getReloadStart(data);
         this.reloadEndTime = WeaponModifierHelper.getReloadEnd(data);
 
-        var conging = weapon.getModifiedConfig(getStack());
         this.prepareTime  = WeaponModifierHelper.getPrepareTime(data);
         this.throwingTime = WeaponModifierHelper.getThrowTime(data);
         this.throwMode = ThrowableStateHelper.getThrowMode(data);
@@ -168,7 +168,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         return (IWeapon) getStack().getItem();
     }
 
-    protected @NotNull WeaponData getGunData() {
+    protected @NotNull WeaponData getWeaponData() {
         return new WeaponData(getStack(), getEntity());
     }
 
@@ -436,8 +436,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     protected void handleSoundEvent(SoundKeyframeEvent<WeaponAnimator> event) {
         var player = minecraft.player;
         var name = event.getKeyframeData().getSound();
-        var sounds = getWeapon().getConfig().getSoundsMap();
-        var sound = sounds.get(name);
+        var sound = WeaponModifierHelper.getSound(getWeaponData(), name);
 
         if (sound != null && player != null) {
             minecraft.getSoundManager().play(new GunShotSound(sound, SoundSource.PLAYERS,
@@ -489,7 +488,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     private void setupCycledAnimations() {
         var entity = getEntity();
         var cooldown = shootingHandler.getCooldown(entity, arm);
-        var data = getGunData();
+        var data = getWeaponData();
         var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
 
         if (chamberCycler == null || chamberCycler.getMax() != maxAmmo)

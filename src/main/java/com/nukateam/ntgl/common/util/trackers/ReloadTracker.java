@@ -39,7 +39,6 @@ public class ReloadTracker {
     private int slot = 0;
     private final InteractionHand arm;
     private final ItemStack weapon;
-    private final WeaponConfig weaponConfig;
 
     public int reloadTick;
     public boolean isStart = false;
@@ -52,7 +51,6 @@ public class ReloadTracker {
         this.arm = arm;
         this.weapon = data.weapon;
         var weaponItem = (IWeapon)weapon.getItem();
-        this.weaponConfig = weaponItem.getModifiedConfig(weapon);
 
         if(wielder instanceof Player player) {
             this.slot = arm == InteractionHand.MAIN_HAND ? player.getInventory().selected : Inventory.SLOT_OFFHAND;

@@ -6,7 +6,6 @@ import com.nukateam.ntgl.common.data.attachment.impl.Barrel;
 import com.nukateam.ntgl.common.data.config.weapon.*;
 import com.nukateam.ntgl.common.data.holders.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public interface IWeaponModifier {
         return volume;
     }
 
-    default ResourceLocation modifyFireSound(ResourceLocation sound, WeaponData data) {
+    default ResourceLocation modifySound(String name, ResourceLocation sound, WeaponData data) {
         return sound;
     }
 
@@ -213,6 +212,10 @@ public interface IWeaponModifier {
 
     default int modifyReloadAmount(int amount, WeaponData data) {
         return amount;
+    }
+
+    default float modifyRecoilAdsReduction(float value, WeaponData data) {
+        return value;
     }
 
     default Set<FireMode> modifyFireModes(Set<FireMode> fireMode, WeaponData data) {
