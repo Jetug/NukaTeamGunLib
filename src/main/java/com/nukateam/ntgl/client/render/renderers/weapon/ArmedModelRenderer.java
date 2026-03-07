@@ -55,7 +55,7 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
 
         poseStack.pushPose();
         {
-            poseStack.translate(0, 0, -150 / 10d / 16d);
+//            poseStack.translate(0, 0, -150 / 10d / 16d);
             super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
         }
         poseStack.popPose();
@@ -130,27 +130,22 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
                     }
                 }
                 else {
-                    //???
-                    var playerSkin = ((LocalPlayer) ClientUtil.getClientPlayer()).getSkin().texture();
-                    var arm = bufferSource.getBuffer(RenderType.entitySolid(playerSkin));
-                    var sleeve = bufferSource.getBuffer(RenderType.entityTranslucent(playerSkin));
-
                     if (isRightHand) {
                         if (bone.getName().equals(LEFT_ARM)) {
                             poseStack.translate(-8 / 10d / 16d, 0, 0);
 //                            poseStack.translate(X / 10d / 16d, Y / 10d / 16d, Z / 10d / 16d);
-//                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve, bufferSource);
+                            renderRightArm(poseStack, bone, packedLight, bufferSource, false);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
                             poseStack.translate(4 / 10d / 16d, 0, -3 / 10d / 16d);
-                            renderRightArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve, bufferSource);
+                            renderRightArm(poseStack, bone, packedLight, bufferSource, true);
                         }
                     } else {
                         if (bone.getName().equals(LEFT_ARM)) {
                             poseStack.translate(4 / 10d / 16d, 0, -3 / 10d / 16d);
-                            renderRightArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve, bufferSource);
+                            renderRightArm(poseStack, bone, packedLight, bufferSource, true);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
                             poseStack.translate(-8 / 10d / 16d, 0, 0);
-//                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve, bufferSource);
+                            renderRightArm(poseStack, bone, packedLight, bufferSource, false);
                         }
                     }
                 }

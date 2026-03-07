@@ -21,21 +21,4 @@ public interface DynamicGeoItem extends GeoItem {
     DynamicGeoItemRenderer getRenderer();
 
     <Animator extends ItemAnimator> BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> getAnimatorFactory();
-
-//    @Override
-//    default void createRenderer(Consumer<Object> consumer) {
-//        consumer.accept(new RenderProvider() {
-//            private ProxyItemRenderer renderer = null;
-//            @Override
-//            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-//                if (renderer == null)
-//                    return new ProxyItemRenderer(getRenderer());
-//                return this.renderer;
-//            }
-//        });
-//    }
-
-
-
-
 }

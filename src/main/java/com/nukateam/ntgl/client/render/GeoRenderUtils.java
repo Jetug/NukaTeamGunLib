@@ -29,44 +29,46 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import software.bernie.geckolib.util.ClientUtil;
 
 public class GeoRenderUtils {
-
-
-    public static void renderRightArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay,
-                                      VertexConsumer arm, VertexConsumer sleeve, MultiBufferSource bufferSource) {
-//        var playerEntityModel = getPlayerModel();
-//        playerEntityModel.rightArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-//        playerEntityModel.rightArm.setRotation(0, 0, 0);
-//        playerEntityModel.rightArm.render(poseStack, arm, packedLight, packedOverlay);
-//
-//        playerEntityModel.rightSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-//        playerEntityModel.rightSleeve.setRotation(0, 0, 0);
-//        playerEntityModel.rightSleeve.render(poseStack, sleeve, packedLight, packedOverlay);
-
+    public static void renderRightArm(PoseStack poseStack, GeoBone bone, int packedLight,
+                                      MultiBufferSource bufferSource, boolean right) {
         var mc = Minecraft.getInstance();
-        var playerModel = mc.getEntityModels().bakeLayer(
-                net.minecraft.client.model.geom.ModelLayers.PLAYER);
+        var playerModel = mc.getEntityModels().bakeLayer(ModelLayers.PLAYER);
         applyBoneTransform(poseStack, bone);
         var playerSkin = ((LocalPlayer) ClientUtil.getClientPlayer()).getSkin().texture();
 
         HumanoidModel<Player> armorModelOuter;
+        armorModelOuter = new HumanoidModel<>(mc.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR));
 
-        try {
-            armorModelOuter = new HumanoidModel<>(mc.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR));
-        } catch (Exception e) {
-            armorModelOuter = new HumanoidModel<>(mc.getEntityModels().bakeLayer(ModelLayers.PLAYER));
-        }
+        var handModel = right ? "right_arm" : "left_arm";
+        var sleeveModel = right ? "right_sleeve" : "left_sleeve";
 
-        renderHand(playerModel.getChild("right_arm"), playerSkin, poseStack,
-                bufferSource, packedLight);
-        renderHand(playerModel.getChild("right_sleeve"), playerSkin, poseStack,
-                bufferSource, packedLight);
+        renderHand(playerModel.getChild(handModel), playerSkin, poseStack, bufferSource, packedLight);
+        renderHand(playerModel.getChild(sleeveModel), playerSkin, poseStack, bufferSource, packedLight);
 
         poseStack.pushPose();
         poseStack.translate(0, -24 / 16d, 0);
+        poseStack.scale(2f, 2f, 2f);
+        renderArmorOnHand(mc.player, EquipmentSlot.CHEST, armorModelOuter,
+                poseStack, bufferSource, packedLight, right);
+        poseStack.popPose();
+    }
 
-//        poseStack.translate(-3 / 16d, -12 / 16d, 0);
-        var scale = 2f;
-        poseStack.scale(scale, scale, scale);
+
+    public static void renderLeftArm(PoseStack poseStack, GeoBone bone, int packedLight, MultiBufferSource bufferSource) {
+        var mc = Minecraft.getInstance();
+        var playerModel = mc.getEntityModels().bakeLayer(ModelLayers.PLAYER);
+        applyBoneTransform(poseStack, bone);
+        var playerSkin = ((LocalPlayer) ClientUtil.getClientPlayer()).getSkin().texture();
+
+        HumanoidModel<Player> armorModelOuter;
+        armorModelOuter = new HumanoidModel<>(mc.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR));
+
+        renderHand(playerModel.getChild("left_arm"), playerSkin, poseStack, bufferSource, packedLight);
+        renderHand(playerModel.getChild("left_sleeve"), playerSkin, poseStack, bufferSource, packedLight);
+
+        poseStack.pushPose();
+        poseStack.translate(0, -24 / 16d, 0);
+        poseStack.scale(2f, 2f, 2f);
         renderArmorOnHand(mc.player, EquipmentSlot.CHEST, armorModelOuter,
                 poseStack, bufferSource, packedLight, true);
         poseStack.popPose();
@@ -80,7 +82,10 @@ public class GeoRenderUtils {
         ItemStack armorStack = player.getItemBySlot(slot);
 
         if (armorStack.getItem() instanceof ArmorItem armorItem) {
-            setPartVisibility(armorModelOuter, slot, isRight);
+            armorModelOuter.setAllVisible(false);
+            armorModelOuter.rightArm.visible = isRight;
+            armorModelOuter.leftArm.visible = !isRight;
+
             var model = getArmorModelHook(player, armorStack, slot, armorModelOuter);
             var armormaterial = armorItem.getMaterial().value();
             var extensions = IClientItemExtensions.of(armorStack);
@@ -111,38 +116,6 @@ public class GeoRenderUtils {
         model.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.armorEntityGlint()), packedLight, OverlayTexture.NO_OVERLAY);
     }
 
-//    private void renderTrim(
-//            Holder<ArmorMaterial> p_323506_, PoseStack p_289687_, MultiBufferSource p_289643_, int p_289683_, ArmorTrim p_289692_, net.minecraft.client.model.Model p_289663_, boolean p_289651_
-//    ) {
-//        TextureAtlasSprite textureatlassprite = this.armorTrimAtlas
-//                .getSprite(p_289651_ ? p_289692_.innerTexture(p_323506_) : p_289692_.outerTexture(p_323506_));
-//        VertexConsumer vertexconsumer = textureatlassprite.wrap(p_289643_.getBuffer(Sheets.armorTrimsSheet(p_289692_.pattern().value().decal())));
-//        p_289663_.renderToBuffer(p_289687_, vertexconsumer, p_289683_, OverlayTexture.NO_OVERLAY);
-//    }
-
-
-    protected static <T extends LivingEntity, A extends HumanoidModel<T>> void setPartVisibility(A model, EquipmentSlot slot, boolean isRight) {
-        model.setAllVisible(false);
-        switch (slot) {
-            case HEAD:
-                model.head.visible = true;
-                model.hat.visible = true;
-                break;
-            case CHEST:
-                model.rightArm.visible = isRight;
-                model.leftArm.visible = !isRight;
-                break;
-            case LEGS:
-                model.body.visible = true;
-                model.rightLeg.visible = true;
-                model.leftLeg.visible = true;
-                break;
-            case FEET:
-                model.rightLeg.visible = true;
-                model.leftLeg.visible = true;
-        }
-    }
-
     protected static <T extends LivingEntity, A extends HumanoidModel<T>> Model getArmorModelHook(
             LivingEntity entity, ItemStack itemStack, EquipmentSlot slot, A model) {
         return ClientHooks.getArmorModel(entity, itemStack, slot, model);
@@ -151,41 +124,6 @@ public class GeoRenderUtils {
     private static void renderModel(PoseStack p_289664_, MultiBufferSource p_289689_, int p_289681_, net.minecraft.client.model.Model p_289658_, int p_350798_, ResourceLocation p_324344_) {
         VertexConsumer vertexconsumer = p_289689_.getBuffer(RenderType.armorCutoutNoCull(p_324344_));
         p_289658_.renderToBuffer(p_289664_, vertexconsumer, p_289681_, OverlayTexture.NO_OVERLAY, p_350798_);
-    }
-
-//    private static ResourceLocation getArmorTexture(ItemStack armorStack, EquipmentSlot slot, boolean inner) {
-//        ArmorItem armorItem = (ArmorItem) armorStack.getItem();
-//        String material = armorItem.getMaterial().getRegisteredName();
-//        String type = slot == EquipmentSlot.LEGS ? "leggings" : "chestplate";
-//
-//        // Формируем путь к текстуре брони
-//        String texturePath = "textures/models/armor/" + material + "_layer_" + (inner ? "1" : "2") + ".png";
-//
-//        // Для разных слотов могут быть разные текстуры
-//        if (slot == EquipmentSlot.LEGS) {
-//            texturePath = "textures/models/armor/" + material + "_layer_2.png";
-//        }
-//
-//        return ResourceLocation.tryBuild("minecraft", texturePath);
-//    }
-
-    public static void renderLeftArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay,
-                                     VertexConsumer arm, VertexConsumer sleeve, MultiBufferSource bufferSource) {
-        var playerEntityModel = getPlayerModel();
-        playerEntityModel.leftArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-        playerEntityModel.leftArm.setRotation(0, 0, 0);
-        playerEntityModel.leftArm.render(poseStack, arm, packedLight, packedOverlay);
-
-        playerEntityModel.leftSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-        playerEntityModel.leftSleeve.setRotation(0, 0, 0);
-        playerEntityModel.leftSleeve.render(poseStack, sleeve, packedLight, packedOverlay);
-    }
-
-
-    public static PlayerModel<AbstractClientPlayer> getPlayerModel() {
-        var client = Minecraft.getInstance();
-        var playerEntityRenderer = (PlayerRenderer) client.getEntityRenderDispatcher().getRenderer(client.player);
-        return playerEntityRenderer.getModel();
     }
 
     private static void applyBoneTransform(PoseStack poseStack, GeoBone bone) {
@@ -199,7 +137,6 @@ public class GeoRenderUtils {
         poseStack.mulPose(Axis.YP.rotationDegrees(bone.getRotY()));
         poseStack.mulPose(Axis.ZP.rotationDegrees(bone.getRotZ()));
 
-        // Масштабируем обратно, так как кубы обычно меньше рук
         poseStack.scale(1.0f, 1.0f, 1.0f);
     }
 
