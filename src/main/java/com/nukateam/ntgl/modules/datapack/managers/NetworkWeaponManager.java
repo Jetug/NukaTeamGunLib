@@ -40,7 +40,8 @@ public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWe
 
     @Override
     protected Map<IWeapon, WeaponConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, BuiltInRegistries.ITEM, (v) -> v instanceof IWeapon, WeaponConfig.class, Paths.WEAPONS);
+        Map<IWeapon, WeaponConfig> map = ConfigUtils.getConfigMap(manager, BuiltInRegistries.ITEM, (v) -> v instanceof IWeapon, WeaponConfig.class, Paths.WEAPONS);
+        return map;
     }
 
     @Override

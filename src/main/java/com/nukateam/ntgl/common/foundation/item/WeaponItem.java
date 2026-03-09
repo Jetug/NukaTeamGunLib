@@ -25,6 +25,7 @@ import net.minecraft.network.chat.*;
 import net.minecraft.resources.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -122,10 +123,10 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     public static String getVariant(ItemStack stack) {
-        CompoundTag gunTag = stack.get(NtglComponents.WEAPON_COMPONENT);
+        var gunTag = NtglComponents.getWeaponTag(stack);
         if (!gunTag.contains(VARIANT, Tag.TAG_STRING)) {
             gunTag.putString(VARIANT, "default");
-            stack.set(NtglComponents.WEAPON_COMPONENT, gunTag);
+            NtglComponents.setWeaponTag(stack, gunTag);
         }
 
         return gunTag.getString(VARIANT);
@@ -287,7 +288,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     @Override
-    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
         return true;
     }
 

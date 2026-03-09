@@ -3,8 +3,8 @@ package com.nukateam.ntgl.modules.datapack;
 import com.google.gson.JsonSyntaxException;
 import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.modules.config.annotation.Validator;
-import com.nukateam.chassis_core.modules.config.utils.JsonDeserializers;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.data.json.JsonDeserializers;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -43,6 +43,11 @@ public class ConfigUtils {
                     if (r1.getNamespace().equals(r2.getNamespace())) return 0;
                     return r2.getNamespace().equals(ChassisCore.MOD_ID) ? 1 : -1;
                 });
+
+                var size = resources.size();
+                if(size > 0){
+                    size = resources.size();
+                }
 
                 resources.forEach(resourceLocation ->
                 {

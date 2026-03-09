@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.foundation.init;
 
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.item.ItemStack;
@@ -12,13 +13,7 @@ import javax.annotation.Nullable;
 
 public class NtglComponents {
     public static final DeferredRegister.DataComponents REGISTER =
-            DeferredRegister.createDataComponents(Ntgl.MOD_ID);
-//
-//    public static final DataComponentType<CompoundTag> WEAPON_COMPONENT =
-//            DataComponentType.<CompoundTag>builder()
-//                    .persistent(CompoundTag.CODEC)
-//                    .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
-//                    .build();
+            DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Ntgl.MOD_ID);
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> WEAPON_COMPONENT =
             REGISTER.registerComponentType(
@@ -28,7 +23,7 @@ public class NtglComponents {
                             .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
             );
 
-    public static @Nullable CompoundTag getWeaponTag(ItemStack stack) {
+    public static CompoundTag getWeaponTag(ItemStack stack) {
         return stack.getOrDefault(WEAPON_COMPONENT.get(), new CompoundTag());
     }
 

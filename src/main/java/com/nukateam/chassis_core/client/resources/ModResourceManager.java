@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.nukateam.chassis_core.client.render.utils.ResourceHelper.getResourceName;
-import static com.nukateam.chassis_core.modules.config.utils.JsonDeserializers.GSON_INSTANCE;
+import static com.nukateam.ntgl.common.data.json.JsonDeserializers.GSON_INSTANCE;
 
 public class ModResourceManager {
     private static final String CONFIG_DIR = "config/model/";

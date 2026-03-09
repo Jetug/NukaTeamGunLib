@@ -19,7 +19,7 @@ public class ProjectileRenderers {
     @SubscribeEvent
     public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(Projectiles.PROJECTILE.get(), ProjectileRenderer::new);
-//        event.registerEntityRenderer(Projectiles.ARROW_LIKE.get(), ProjectileRenderer::new);
+        event.registerEntityRenderer(Projectiles.ARROW_LIKE.get(), ProjectileRenderer::new);
         event.registerEntityRenderer(Projectiles.LASER_PROJECTILE.get(), LaserProjectileRenderer::new);
         event.registerEntityRenderer(Projectiles.CONTINUOUS_LASER_PROJECTILE.get(), LaserProjectileRenderer::new);
         event.registerEntityRenderer(Projectiles.TESLA_PROJECTILE.get(), TeslaProjectileRenderer::new);
