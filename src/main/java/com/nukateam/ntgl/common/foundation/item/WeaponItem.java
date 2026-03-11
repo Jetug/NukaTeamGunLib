@@ -1,10 +1,12 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.geo.render.ProxyItemRenderer;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
+import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
@@ -30,7 +32,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
@@ -122,16 +123,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         });
     }
 
-    public static String getVariant(ItemStack stack) {
-        var gunTag = NtglComponents.getWeaponTag(stack);
-        if (!gunTag.contains(VARIANT, Tag.TAG_STRING)) {
-            gunTag.putString(VARIANT, "default");
-            NtglComponents.setWeaponTag(stack, gunTag);
-        }
-
-        return gunTag.getString(VARIANT);
-    }
-
     public void setDefaultTag(CompoundTag tag){
         tag.putInt(AMMO_COUNT, getConfig().getGeneral().getMaxAmmo());
     }
@@ -139,30 +130,24 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if(entity instanceof LivingEntity livingEntity) {
-            var tag = NtglComponents.getWeaponTag(stack);
             var data = new WeaponData(stack, livingEntity);
             var ammoItems = WeaponModifierHelper.getAmmoItems(data);
+            var ammo = WeaponStateHelper.getCurrentAmmo(data);
+            var matches = ammoItems.stream().anyMatch((i) -> i.equals(ammo));
 
-            WeaponStateHelper.getCurrentAmmo(data);
-
-            if (tag.contains(AMMO_TAG, Tag.TAG_STRING)) {
-                var ammoId = tag.getString(AMMO_TAG);
-                var matches = ammoItems.stream().anyMatch((i) -> i.getId().toString().equals(ammoId));
-
-                if(!matches) {
-                    if (entity instanceof ServerPlayer player) {
-                        ServerPlayHandler.unloadGun(player, stack);
-                    }
-                    var firstAmmo = SetUtils.getFirst(ammoItems);
-                    WeaponStateHelper.setCurrentAmmo(data, firstAmmo.getId());
+            if(!matches) {
+                if (entity instanceof ServerPlayer player) {
+                    ServerPlayHandler.unloadGun(new WeaponData(stack, player));
                 }
+                var firstAmmo = SetUtils.getFirst(ammoItems);
+                WeaponStateHelper.setCurrentAmmo(data, firstAmmo.getId());
             }
 
             var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
             var currentAmount = WeaponStateHelper.getAmmoCount(data);
             if(currentAmount > maxAmmo){
                 if (entity instanceof ServerPlayer player) {
-                    ServerPlayHandler.unloadGun(player, stack);
+                    ServerPlayHandler.unloadGun(new WeaponData(stack, player));
                 }
             }
         }
@@ -172,10 +157,9 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         var data = new WeaponData(stack, null);
-        var tagCompound = NtglComponents.getWeaponTag(stack);
         addAmmoType(tooltip, data);
         addFireRate(tooltip, data);
-        addDamage(tooltip, tagCompound, data);
+        addDamage(tooltip, data);
         addMelleDamage(tooltip, data);
 
         var explosion = WeaponStateHelper.getProjectileConfig(data).getExplosion();
@@ -183,7 +167,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
             addExplosionTip(tooltip, explosion);
         }
 
-        addAmmo(tooltip, tagCompound, data);
+        addAmmo(tooltip, data);
         addFuel(tooltip, data);
 
         tooltip.add(Component.translatable("info.ntgl.attachment_help", Component.keybind("key.ntgl.attachments")
@@ -233,11 +217,11 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         }
     }
 
-    private static void addAmmo(List<Component> tooltip, CompoundTag tagCompound, WeaponData weaponData) {
-        if (tagCompound.getBoolean("IgnoreAmmo")) {
+    private static void addAmmo(List<Component> tooltip, WeaponData weaponData) {
+        if (WeaponStateHelper.isAmmoIgnored(weaponData.weapon)) {
             tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
         } else {
-            int ammoCount = tagCompound.getInt(AMMO_COUNT);
+            int ammoCount = WeaponStateHelper.getAmmoCount(weaponData);
             tooltip.add(Component.translatable("info.ntgl.ammo",
                     ChatFormatting.WHITE.toString()
                             + ammoCount + "/"
@@ -245,10 +229,10 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         }
     }
 
-    private static void addDamage(List<Component> tooltip, CompoundTag tagCompound, WeaponData weaponData) {
+    private static void addDamage(List<Component> tooltip, WeaponData weaponData) {
         var damage = WeaponStateHelper.getProjectileDamage(weaponData);
         tooltip.add(Component.translatable("info.ntgl.damage", ChatFormatting.WHITE
-                        + ATTRIBUTE_MODIFIER_FORMAT.format(damage)
+                + ATTRIBUTE_MODIFIER_FORMAT.format(damage)
         ).withStyle(ChatFormatting.GRAY));
     }
 
@@ -262,7 +246,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
 
     public WeaponConfig getModifiedConfig(ItemStack stack) {
         var tagCompound = NtglComponents.getWeaponTag(stack);
-        if (tagCompound != null && tagCompound.contains("Gun", Tag.TAG_COMPOUND)) {
+        if (tagCompound.contains("Gun", Tag.TAG_COMPOUND)) {
             return this.modifiedGunCache.computeIfAbsent(tagCompound, item ->
             {
                 if (tagCompound.getBoolean("Custom")) {
@@ -275,9 +259,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
                 }
             });
         }
-//        if (Ntgl.isDebugging()) {
-//            return Debug.getGun(this);
-//        }
 
         return this.weaponConfig;
     }

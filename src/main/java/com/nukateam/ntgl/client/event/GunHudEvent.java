@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.client.event;
 
-import com.nukateam.ntgl.client.render.hud.WeaponHud;
 import com.nukateam.ntgl.client.render.hud.cache.GunHudCache;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.InteractionHand;

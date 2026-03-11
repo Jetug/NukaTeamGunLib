@@ -8,12 +8,10 @@ import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
-import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.enums.KeyAction;
 import com.nukateam.ntgl.common.network.message.weapon.*;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
-import com.nukateam.ntgl.common.data.constants.Tags;
 
 import com.nukateam.ntgl.common.util.trackers.*;
 import com.nukateam.ntgl.common.util.util.*;
@@ -24,7 +22,6 @@ import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -40,6 +37,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -254,75 +252,64 @@ public class ServerPlayHandler {
     public static void handleUnload(Player player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
         if (stack.getItem() instanceof IWeapon) {
-            unloadGun(player, stack);
+            unloadGun(new WeaponData(stack, player));
         }
     }
 
-    public static void unloadGun(Player player, ItemStack stack) {
-        var data = new WeaponData(stack, player);
+    public static void unloadGun(WeaponData data) {
         if (WeaponStateHelper.getProjectileConfig(data).isMagazineMode())
-            unloadMagazine(player, stack);
-        else unloadAmmo(player, stack);
+            unloadMagazine(data);
+        else unloadAmmo(data);
     }
 
-    private static void unloadAmmo(Player player, ItemStack stack) {
-        if (stack.getItem() instanceof IWeapon) {
-            var tag = NtglComponents.getWeaponTag(stack);
+    private static void unloadAmmo(WeaponData data) {
+        var player = (Player)data.wielder;
+        var ammoCount = WeaponStateHelper.getAmmoCount(data);
+        var itemHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
-            if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
-                int count = tag.getInt(Tags.AMMO_COUNT);
-                tag.putInt(Tags.AMMO_COUNT, 0);
-                var data = new WeaponData(stack, player);
-                var itemHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
+        WeaponStateHelper.setAmmoCount(data.weapon, 0);
 
-                if(itemHolder.canReturnAmmo()) {
-                    var id = itemHolder.getId();
-                    var item = BuiltInRegistries.ITEM.get(id);
+        if(itemHolder.canReturnAmmo()) {
+            var id = itemHolder.getId();
+            var item = BuiltInRegistries.ITEM.get(id);
 
-                    if (item != null && !player.isCreative()) {
-                        givePlayerAmmo(player, stack, count);
-                    }
-                }
+            if (item != null && !player.isCreative()) {
+                givePlayerAmmo(player, item, ammoCount);
             }
         }
     }
 
-    private static void unloadMagazine(Player player, ItemStack stack) {
-        if (stack.getItem() instanceof IWeapon) {
-            var tag = NtglComponents.getWeaponTag(stack);
+    private static void unloadMagazine(WeaponData data) {
+        var player = (Player)data.wielder;
+        var ammoCount = WeaponStateHelper.getAmmoCount(data);
 
-            if (tag != null && tag.contains(Tags.AMMO_COUNT, Tag.TAG_INT)) {
-                int count = tag.getInt(Tags.AMMO_COUNT);
-                if (count == 0) return;
+        if (ammoCount == 0) return;
 
-                tag.putInt(Tags.AMMO_COUNT, 0);
-                var data = new WeaponData(stack, player);
-                var ammoHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
+        WeaponStateHelper.setAmmoCount(data.weapon, 0);
+        var ammoHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
-                if(ammoHolder.canReturnAmmo()) {
-                    var item = BuiltInRegistries.ITEM.get(ammoHolder.getId());
+        if(ammoHolder.canReturnAmmo()) {
+            var item = BuiltInRegistries.ITEM.get(ammoHolder.getId());
 
-                    if (item != null && !player.isCreative()) {
-                        var usedMagazine = new ItemStack(item);
-                        StackUtils.setDurability(usedMagazine, count);
-                        spawnAmmo(player, usedMagazine);
-                    }
-                }
+            if (item != null && !player.isCreative()) {
+                var usedMagazine = new ItemStack(item);
+                StackUtils.setDurability(usedMagazine, ammoCount);
+                spawnAmmo(player, usedMagazine);
             }
         }
     }
 
-    private static void givePlayerAmmo(Player player, ItemStack item, int count) {
-        int maxStackSize = item.getMaxStackSize();
+    private static void givePlayerAmmo(Player player, Item item, int count) {
+        int maxStackSize = new ItemStack(item).getMaxStackSize();
         int stacks = count / maxStackSize;
 
         for (int i = 0; i < stacks; i++) {
-            spawnAmmo(player, new ItemStack(item.getItem(), maxStackSize));
+            spawnAmmo(player, new ItemStack(item, maxStackSize));
         }
 
         int remaining = count % maxStackSize;
         if (remaining > 0) {
-            spawnAmmo(player, new ItemStack(item.getItem(), remaining));
+            spawnAmmo(player, new ItemStack(item, remaining));
         }
     }
 
@@ -412,7 +399,7 @@ public class ServerPlayHandler {
         var isNotThrowing = !ModSyncedDataKeys.getThrowingDataKey(hand).getValue(data.wielder);
 
         if(isNotPreparing && isNotThrowing) {
-            ThrowableStateHelper.switchThrowMode(data);
+            WeaponStateHelper.switchThrowMode(data);
             data.wielder.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
         }
     }

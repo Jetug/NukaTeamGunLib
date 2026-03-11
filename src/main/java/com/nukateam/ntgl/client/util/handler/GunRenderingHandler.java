@@ -49,10 +49,11 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import static com.nukateam.ntgl.client.util.helpers.PropertyHelper.*;
-import static com.nukateam.ntgl.common.foundation.init.NtglComponents.getWeaponTag;
+import static com.nukateam.ntgl.common.foundation.init.NtglComponents.*;
 
 @SuppressWarnings("removal")
 public class GunRenderingHandler {
+    public static final String SCALE = "Scale";
     private static GunRenderingHandler instance;
     public static GunRenderingHandler get() {
         if (instance == null) {
@@ -227,18 +228,7 @@ public class GunRenderingHandler {
 
         if (heldItem.getItem() instanceof IWeapon || heldItem.getItem() instanceof IThrowable) {
             event.setCanceled(true);
-
-            var overrideModel = ItemStack.EMPTY;
-
-            var tag = getWeaponTag(heldItem);
-
-            if (tag != null) {
-                if (tag.contains("Model", Tag.TAG_COMPOUND)) {
-                    overrideModel = ItemStack.parseOptional(player.level().registryAccess(), tag.getCompound("Model"));
-                }
-            }
-
-            var model = minecraft.getItemRenderer().getModel(overrideModel.isEmpty() ? heldItem : overrideModel, player.level(), player, 0);
+            var model = minecraft.getItemRenderer().getModel(heldItem, player.level(), player, 0);
             var rightHandTranslation = model.getTransforms().firstPersonRightHand.translation;
             var transformType = isRight ? ItemDisplayContext.FIRST_PERSON_RIGHT_HAND : ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
 
@@ -490,11 +480,9 @@ public class GunRenderingHandler {
 
     public void applyWeaponScale(ItemStack heldItem, PoseStack stack) {
         var tag = getWeaponTag(heldItem);
-        if (tag != null) {
-            if (tag.contains("Scale", Tag.TAG_FLOAT)) {
-                float scale = tag.getFloat("Scale");
-                stack.scale(scale, scale, scale);
-            }
+        if (tag.contains(SCALE, Tag.TAG_FLOAT)) {
+            float scale = tag.getFloat(SCALE);
+            stack.scale(scale, scale, scale);
         }
     }
 
@@ -504,22 +492,13 @@ public class GunRenderingHandler {
         if (renderStack.getItem() instanceof DynamicGeoItem weaponItem) {
             poseStack.pushPose();
             {
-                var model = ItemStack.EMPTY;
-                var tag = getWeaponTag(renderStack);
-
-                if (tag != null) {
-                    if (tag.contains("Model", Tag.TAG_COMPOUND)) {
-                        model = ItemStack.parseOptional(entity.level().registryAccess(), tag.getCompound("Model"));
-                    }
-                }
-
                 ModelRenderUtil.applyTransformType(renderStack, poseStack, transformType, entity);
 
                 this.renderingWeapon = renderStack;
 
                 weaponItem.getRenderer().render(
                         entity,
-                        model.isEmpty() ? renderStack : model,
+                        renderStack,
                         transformType,
                         poseStack,
                         bufferSource,

@@ -41,9 +41,9 @@ public class WeaponModifierHelper {
     }
 
     public static boolean isWeaponFull(WeaponData data) {
-        var tag = NtglComponents.getWeaponTag(data.weapon);
-        assert tag != null;
-        return tag.getInt(Tags.AMMO_COUNT) >= WeaponModifierHelper.getMaxAmmo(data);
+        var ammoCount = WeaponStateHelper.getAmmoCount(data);
+        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+        return ammoCount >= maxAmmo;
     }
 
     public static boolean canUseOffhandWeapon(LivingEntity player){

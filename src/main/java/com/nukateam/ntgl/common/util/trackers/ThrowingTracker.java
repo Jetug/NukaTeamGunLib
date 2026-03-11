@@ -4,8 +4,8 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.ThrowMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
-import com.nukateam.ntgl.common.util.util.ThrowableStateHelper;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
+import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,7 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.LogicalSide;
 import net.neoforged.fml.common.EventBusSubscriber;
 import com.mojang.datafixers.util.Pair;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -164,7 +163,7 @@ public class ThrowingTracker {
             prepareTick = Math.max(prepareTick - 1, 0);
 
             if(prepareTick == 0){
-                if(ThrowableStateHelper.getThrowMode(weaponData) == ThrowMode.UNSAFE) {
+                if(WeaponStateHelper.getThrowMode(weaponData) == ThrowMode.UNSAFE) {
                     lifeTick = Math.max(lifeTick - 1, 0);
                 }
 

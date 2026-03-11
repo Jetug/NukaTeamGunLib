@@ -10,10 +10,13 @@ import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.data.constants.Tags;
+import com.nukateam.ntgl.common.data.holders.ThrowMode;
 import com.nukateam.ntgl.common.debug.Debug;
 
 import com.nukateam.ntgl.common.foundation.init.NtglComponents;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.attachment.ScopeItem;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -34,6 +37,7 @@ public class WeaponStateHelper {
     public static final String AMMO_TAG = "Ammo";
     public static final String FIRE_MODE = "FireMode";
     public static final String ATTACHMENTS = "Attachments";
+    public static final String THROW_MODE = "ThrowMode";
 
     //AMMO
     public static void switchAmmo(WeaponData data){
@@ -157,13 +161,14 @@ public class WeaponStateHelper {
         return ammo == maxAmmo;
     }
 
-    public static void setAmmo(ItemStack gunStack, int amount) {
-        var tag = NtglComponents.getWeaponTag(gunStack);
+    public static void setAmmoCount(ItemStack stack, int amount) {
+        var tag = NtglComponents.getWeaponTag(stack);
         tag.putInt(Tags.AMMO_COUNT, amount);
+        NtglComponents.setWeaponTag(stack, tag);
     }
 
     public static void setMaxAmmo(WeaponData data) {
-        WeaponStateHelper.setAmmo(data.weapon, WeaponModifierHelper.getMaxAmmo(data));
+        WeaponStateHelper.setAmmoCount(data.weapon, WeaponModifierHelper.getMaxAmmo(data));
     }
 
     public static boolean hasAmmo(ItemStack gunStack) {
@@ -345,7 +350,7 @@ public class WeaponStateHelper {
             }
 
             var remainingAmmo = Math.max(0, ammoCount - ammoPerShot);
-            setAmmo(heldItem, remainingAmmo);
+            setAmmoCount(heldItem, remainingAmmo);
         }
     }
 
@@ -356,5 +361,49 @@ public class WeaponStateHelper {
             equipTime = WeaponModifierHelper.getEquipTime(data);
         }
         return equipTime;
+    }
+
+    public static String getVariant(ItemStack stack) {
+        var gunTag = NtglComponents.getWeaponTag(stack);
+        if (!gunTag.contains(WeaponItem.VARIANT, Tag.TAG_STRING)) {
+            gunTag.putString(WeaponItem.VARIANT, "default");
+            NtglComponents.setWeaponTag(stack, gunTag);
+        }
+
+        return gunTag.getString(WeaponItem.VARIANT);
+    }
+
+    public static void switchThrowMode(WeaponData data){
+        if(data.weapon.getItem() instanceof IThrowable) {
+            var stack = data.weapon;
+            var modes = WeaponModifierHelper.getThrowModes(data);
+            var current = getThrowMode(data);
+            var newMode = SetUtils.cycleSet(modes, current);
+            setThrowMode(stack, newMode);
+        }
+    }
+
+    public static ThrowMode getThrowMode(WeaponData data) {
+        var stack = data.weapon;
+
+        var modes = WeaponModifierHelper.getThrowModes(data);
+        var tag = NtglComponents.getWeaponTag(stack);
+
+        ThrowMode currentMode = null;
+
+        if(tag.contains(THROW_MODE, Tag.TAG_STRING))
+            currentMode = ThrowMode.getType(tag.getString(THROW_MODE));
+
+        if (currentMode == null || !modes.contains(currentMode)) {
+            setThrowMode(stack, SetUtils.getFirst(modes));
+            return SetUtils.getFirst(modes);
+        }
+        else return currentMode;
+    }
+
+    public static void setThrowMode(ItemStack stack, ThrowMode fireMode) {
+        var tag = NtglComponents.getWeaponTag(stack);
+        tag.putString(THROW_MODE, fireMode.toString());
+        NtglComponents.setWeaponTag(stack, tag);
     }
 }

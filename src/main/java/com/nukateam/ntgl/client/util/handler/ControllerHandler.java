@@ -57,10 +57,9 @@ public class ControllerHandler {
                 actions.put(GunButtonBindings.AIM, new Action(Component.translatable("ntgl.action.aim"), Action.Side.RIGHT));
                 actions.put(GunButtonBindings.SHOOT, new Action(Component.translatable("ntgl.action.shoot"), Action.Side.RIGHT));
 
-                var tag = NtglComponents.getWeaponTag(heldItem);
                 var data = new WeaponData(heldItem, player);
 
-                if (tag != null && WeaponStateHelper.getAmmoCount(data) < WeaponModifierHelper.getMaxAmmo(data)) {
+                if (WeaponStateHelper.getAmmoCount(data) < WeaponModifierHelper.getMaxAmmo(data)) {
                     actions.put(GunButtonBindings.RELOAD, new Action(Component.translatable("ntgl.action.reload"), Action.Side.LEFT));
                 }
                 var scope = WeaponStateHelper.getScope(data);

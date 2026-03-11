@@ -578,30 +578,10 @@ public class ProjectileEntity extends Entity{
     }
 
     private ItemStack setupAmmo(WeaponData data) {
-        var weapon = data.weapon;
-
         var ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
         if(ammoHolder.canReturnAmmo()) {
             var ammo = BuiltInRegistries.ITEM.get(ammoHolder.getId());
-            int customModelData = -1;
-            var tag = NtglComponents.getWeaponTag(weapon);
-
-            if (tag != null) {
-                if (tag.contains("Model", Tag.TAG_COMPOUND)) {
-                    ItemStack model = ItemStack.parseOptional(getProvider(), tag.getCompound("Model"));
-                    var modelTag = NtglComponents.getWeaponTag(model);
-
-                    if (modelTag != null && modelTag.contains("CustomModelData")) {
-                        customModelData = modelTag.getInt("CustomModelData");
-                    }
-                }
-            }
-            var ammoStack = new ItemStack(ammo);
-            if (customModelData != -1) {
-                var ammoTag = NtglComponents.getWeaponTag(ammoStack);
-                ammoTag.putInt("CustomModelData", customModelData);
-            }
-            return ammoStack;
+            return new ItemStack(ammo);
         }
         return ItemStack.EMPTY;
     }

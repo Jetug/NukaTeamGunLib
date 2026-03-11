@@ -21,6 +21,7 @@ public class RegistrationHelper {
             var stack = new ItemStack(weaponItem);
             var tag = NtglComponents.getWeaponTag(stack);
             weaponItem.setDefaultTag(tag);
+            NtglComponents.setWeaponTag(stack, tag);
             output.accept(stack);
             return true;
         }

@@ -21,7 +21,6 @@ import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.util.helpers.PlayerHelper;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
 import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.animation.AnimationController.*;
 import software.bernie.geckolib.animation.AnimationState;
@@ -131,7 +130,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         this.reloadEndTime = WeaponModifierHelper.getReloadEnd(data);
         this.prepareTime  = WeaponModifierHelper.getPrepareTime(data);
         this.throwingTime = WeaponModifierHelper.getThrowTime(data);
-        this.throwMode = ThrowableStateHelper.getThrowMode(data);
+        this.throwMode = WeaponStateHelper.getThrowMode(data);
         
         setupCycledAnimations();
     }

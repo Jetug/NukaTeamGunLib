@@ -31,15 +31,17 @@ public class EntityHelper {
         target.save(entityTag);
         newTag.put(ENTITY_TAG, entityTag);
         newTag.putString(CHASSIS_ENTITY_ID, BuiltInRegistries.ENTITY_TYPE.getKey(target.getType()).toString());
-        NtglComponents.setWeaponTag(stack, newTag);
+        NtglComponents.setChassisTag(stack, newTag);
+
+
         target.remove(Entity.RemovalReason.DISCARDED);
         return stack;
     }
 
     @Nullable
     public static Entity entityFromItem(ItemStack stack, Level world) {
-        var tag = NtglComponents.getWeaponTag(stack);
-        if (tag != null && !tag.getString(CHASSIS_ENTITY_ID).isEmpty()) {
+        var tag = NtglComponents.getChassisTag(stack);
+        if (!tag.getString(CHASSIS_ENTITY_ID).isEmpty()) {
             var id = tag.getString(CHASSIS_ENTITY_ID);
             var type = EntityType.byString(id).orElse(null);
             if (type != null) {
@@ -60,7 +62,7 @@ public class EntityHelper {
 
     @SuppressWarnings("DataFlowIssue")
     public static void clearItemTags(ItemStack stack) {
-        var tag = NtglComponents.getWeaponTag(stack);
+        var tag = NtglComponents.getChassisTag(stack);
         tag.remove(CHASSIS_ENTITY_ID);
         tag.remove(ENTITY_TAG);
         tag.remove(ENTITY_UUID);

@@ -32,7 +32,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -282,7 +281,7 @@ public class WeaponHud{
             }
 
             if(handCache.isThrowable){
-                handCache.throwMode = ThrowableStateHelper.getThrowMode(data);
+                handCache.throwMode = WeaponStateHelper.getThrowMode(data);
                 handCache.ammoCount = weapon.getCount();
                 handCache.ammoConfig = WeaponModifierHelper.getConfig(data).getThrowable().getAmmo();
                 handCache.fireModeKey = WeaponModifierHelper.getThrowModes(data).size() > 1;

@@ -125,7 +125,9 @@ public class ReloadTracker {
 
     private boolean isWeaponFull() {
         var data = new WeaponData(weapon, shooter);
-        return WeaponStateHelper.getAmmoCount(data) >= WeaponModifierHelper.getMaxAmmo(data);
+        var ammoCount = WeaponStateHelper.getAmmoCount(data);
+        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+        return ammoCount >= maxAmmo;
     }
 
     private boolean hasNoAmmo(LivingEntity player) {
@@ -261,18 +263,17 @@ public class ReloadTracker {
         var ammoHandler = WeaponStateHelper.getCurrentAmmo(data);
 
         if (!ammo.isEmpty()) {
-            var tag = NtglComponents.getWeaponTag(weapon);
             var value = ammoHandler.getValue(ammo);
             var currentAmount = WeaponStateHelper.getAmmoCount(data);
 
             amount = Math.min(ammo.getCount() * value, amount);
 
-            if (tag != null) {
-                var gunData = new WeaponData(weapon, shooter);
-                var maxAmmo = WeaponModifierHelper.getMaxAmmo(gunData);
-                amount = Math.min(amount, maxAmmo - tag.getInt(Tags.AMMO_COUNT));
-                WeaponStateHelper.addAmmo(gunData, amount);
-            }
+            var gunData = new WeaponData(weapon, shooter);
+            var maxAmmo = WeaponModifierHelper.getMaxAmmo(gunData);
+            var ammoCount = WeaponStateHelper.getAmmoCount(data);
+            amount = Math.min(amount, maxAmmo - ammoCount);
+            WeaponStateHelper.addAmmo(gunData, amount);
+
 
             context.shrink(amount, ammoHandler, entity);
         }
@@ -280,7 +281,6 @@ public class ReloadTracker {
 
     private boolean isNotReloaded(LivingEntity entity) {
         var data = new WeaponData(weapon, entity);
-        var tag = NtglComponents.getWeaponTag(weapon);
         var hasAmmo = InventoryUtil.hasAmmo(new WeaponData(weapon, entity));
         var ammoCount = WeaponStateHelper.getAmmoCount(data);
         var ammoCapacity = WeaponModifierHelper.getMaxAmmo(data);
@@ -304,22 +304,20 @@ public class ReloadTracker {
 
         if (!ammo.isEmpty()) {
             var amount = StackUtils.getDurability(ammo);
-            var tag = NtglComponents.getWeaponTag(weapon);
             amount = Math.min(WeaponModifierHelper.getMaxAmmo(data), amount);
 
-            if (tag != null) {
-                var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-                var currentAmmo = tag.getInt(Tags.AMMO_COUNT);
+            var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+            var ammoCount = WeaponStateHelper.getAmmoCount(data);
 
-                if(currentAmmo > 0 && ammoHolder.canReturnAmmo()) {
-                    var usedMagazine = new ItemStack(BuiltInRegistries.ITEM.get(ammoHolder.getId()));
-                    StackUtils.setDurability(usedMagazine, currentAmmo);
+            if(ammoCount > 0 && ammoHolder.canReturnAmmo()) {
+                var usedMagazine = new ItemStack(BuiltInRegistries.ITEM.get(ammoHolder.getId()));
+                StackUtils.setDurability(usedMagazine, ammoCount);
 
-                    if(entity instanceof Player player)
-                        addOrDropStack(player, usedMagazine);
-                }
-                tag.putInt(Tags.AMMO_COUNT, amount);
+                if(entity instanceof Player player)
+                    addOrDropStack(player, usedMagazine);
             }
+            WeaponStateHelper.setAmmoCount(weapon, amount);
+
             context.shrink(1, ammoHolder, entity);
         }
     }
@@ -362,8 +360,6 @@ public class ReloadTracker {
         RELOAD_TRACKER_MAP.remove(entity);
         reloadKey.setValue(entity, false);
         final var finalPlayer = entity;
-//        DelayedTask.runAfter(4, () -> gun.playCockSound(finalPlayer));
-
         var oppositeHand = LivingEntityUtils.getOppositeHand(hand);
         var oppositeStack = entity.getItemInHand(oppositeHand);
 

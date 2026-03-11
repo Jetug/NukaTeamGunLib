@@ -3,7 +3,6 @@ package com.nukateam.ntgl.common.data.holders;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -15,9 +14,7 @@ public class AmmoHolder extends ResourceHolder {
     private boolean canReturnAmmo = false;
     private Function<ItemStack, Boolean> isAcceptable = (stack) -> false;
     private Function<ItemStack, Integer> getValue = (stack) -> 1;
-    private BiFunction<ItemStack, Integer, List<ItemStack>> onConsume = (stack, i) -> {
-        return List.of();
-    };
+    private BiFunction<ItemStack, Integer, List<ItemStack>> onConsume = (stack, i) -> List.of();
 
     private Function<AmmoHolder, String> getDescriptionId = (ammo) ->
             "info." + ammo.id.getNamespace() + "." + ammo.id.getPath();
@@ -74,6 +71,15 @@ public class AmmoHolder extends ResourceHolder {
 
         registerType(holder);
         return holder;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        else return other instanceof AmmoHolder holder
+                    && id.getNamespace().equals(holder.id.getNamespace())
+                    && this.id.getPath().equals(holder.id.getPath());
     }
 
     private static @Nullable ResourceLocation getKey(ItemStack stack) {

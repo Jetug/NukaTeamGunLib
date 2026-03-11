@@ -16,8 +16,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.core.registries.Registries;
 
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.getConfig;
 
@@ -98,7 +96,7 @@ public class AttachmentSlot extends Slot {
         var diff = ammoCount - maxAmmo;
 
         if(diff > 0){
-            WeaponStateHelper.setAmmo(stack, maxAmmo);
+            WeaponStateHelper.setAmmoCount(stack, maxAmmo);
             var ammoHolder = WeaponStateHelper.getCurrentAmmo(gunData);
             if(ammoHolder.canReturnAmmo()) {
                 var ammoItem = BuiltInRegistries.ITEM.get(ammoHolder.getId());

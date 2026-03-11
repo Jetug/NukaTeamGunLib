@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.init;
 
+import com.mojang.serialization.Codec;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -23,6 +24,14 @@ public class NtglComponents {
                             .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
             );
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> CHASSIS_COMPONENT =
+            REGISTER.registerComponentType(
+                    "chassis_component",
+                    builder -> builder
+                            .persistent(CompoundTag.CODEC)
+                            .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
+            );
+
     public static CompoundTag getWeaponTag(ItemStack stack) {
         return stack.getOrDefault(WEAPON_COMPONENT.get(), new CompoundTag());
     }
@@ -30,4 +39,14 @@ public class NtglComponents {
     public static @Nullable CompoundTag setWeaponTag(ItemStack stack, CompoundTag tag) {
         return stack.set(WEAPON_COMPONENT.get(), tag);
     }
+
+    public static CompoundTag getChassisTag(ItemStack stack) {
+        return stack.getOrDefault(CHASSIS_COMPONENT.get(), new CompoundTag());
+    }
+
+    public static @Nullable CompoundTag setChassisTag(ItemStack stack, CompoundTag tag) {
+        return stack.set(CHASSIS_COMPONENT.get(), tag);
+    }
+
+
 }

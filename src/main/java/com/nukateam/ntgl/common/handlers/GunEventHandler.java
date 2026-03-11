@@ -61,10 +61,9 @@ public class GunEventHandler {
         var entity = event.getEntity();
         var level = event.getEntity().level();
         var heldItem = entity.getItemInHand(event.getHand());
-        var tag = NtglComponents.getWeaponTag(heldItem);
 
         if (heldItem.getItem() instanceof IWeapon) {
-            if (heldItem.isDamageableItem() && tag != null) {
+            if (heldItem.isDamageableItem()) {
                 if (WeaponStateHelper.hasAmmo(heldItem)) {
                     damageGun(heldItem, level, entity);
                 }
