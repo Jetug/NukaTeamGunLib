@@ -9,7 +9,6 @@ import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
-import com.nukateam.ntgl.common.data.constants.Tags;
 import com.nukateam.ntgl.common.data.holders.ThrowMode;
 import com.nukateam.ntgl.common.debug.Debug;
 
@@ -26,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,12 +34,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class WeaponStateHelper {
-    public static final String AMMO_TAG = "Ammo";
-    public static final String FIRE_MODE = "FireMode";
-    public static final String ATTACHMENTS = "Attachments";
-    public static final String THROW_MODE = "ThrowMode";
+    private static final String AMMO = "Ammo";
+    private static final String FIRE_MODE = "FireMode";
+    private static final String ATTACHMENTS = "Attachments";
+    private static final String THROW_MODE = "ThrowMode";
+    private static final String AMMO_COUNT = "AmmoCount";
+    public static final String IGNORE_AMMO = "IgnoreAmmo";
 
-    //AMMO
+    //AMMO COUNT
     public static void switchAmmo(WeaponData data){
         var ammoItems = WeaponModifierHelper.getAmmoItems(data);
         var current = getCurrentAmmo(data);
@@ -60,28 +62,63 @@ public class WeaponStateHelper {
 
     public static int getAmmoCount(WeaponData data) {
         var tag = NtglComponents.getWeaponTag(data.weapon);
-        return tag.getInt(Tags.AMMO_COUNT);
+        return tag.getInt(AMMO_COUNT);
     }
 
     public static void addAmmo(WeaponData data, int amount) {
         var tag = NtglComponents.getWeaponTag(data.weapon);
         var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-        var result = Math.min(tag.getInt(Tags.AMMO_COUNT) + amount, maxAmmo);
-        tag.putInt(Tags.AMMO_COUNT, result);
+        var result = Math.min(tag.getInt(AMMO_COUNT) + amount, maxAmmo);
+        tag.putInt(AMMO_COUNT, result);
         NtglComponents.setWeaponTag(data.weapon, tag);
     }
 
+    public static void setAmmoCount(WeaponData data, int amount) {
+        var tag = NtglComponents.getWeaponTag(data.weapon);
+        tag.putInt(AMMO_COUNT, amount);
+        NtglComponents.setWeaponTag(data.weapon, tag);
+
+        if(data.wielder instanceof Player entity){
+            entity.containerMenu.broadcastChanges();
+        }
+    }
+
+    public static void setMaxAmmo(WeaponData data) {
+        WeaponStateHelper.setAmmoCount(data, WeaponModifierHelper.getMaxAmmo(data));
+    }
+
+    public static boolean hasAmmo(ItemStack gunStack) {
+            var tag = NtglComponents.getWeaponTag(gunStack);
+        return tag.getBoolean(IGNORE_AMMO) || tag.getInt(AMMO_COUNT) > 0;
+    }
+
+    public static boolean isMaxAmmo(WeaponData data) {
+        var ammo = getAmmoCount(data);
+        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+        return ammo == maxAmmo;
+    }
+
+    public static void fillAmmo(WeaponData data) {
+        if (data.weapon.getItem() instanceof IWeapon) {
+            var tag = NtglComponents.getWeaponTag(data.weapon);
+            var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+
+            tag.putInt(AMMO_COUNT, maxAmmo);
+        }
+    }
+
+    //AMMO TYPE
     public static void setCurrentAmmo(WeaponData data, ResourceLocation ammo) {
         var tag = NtglComponents.getWeaponTag(data.weapon);
-        tag.putString(AMMO_TAG, ammo.toString());
+        tag.putString(AMMO, ammo.toString());
         NtglComponents.setWeaponTag(data.weapon, tag);
     }
 
     public static AmmoHolder getCurrentAmmo(WeaponData data) {
         var tag = NtglComponents.getWeaponTag(data.weapon);
 
-        if(tag.contains(AMMO_TAG, Tag.TAG_STRING)){
-            var ammoId = tag.getString(AMMO_TAG);
+        if(tag.contains(AMMO, Tag.TAG_STRING)){
+            var ammoId = tag.getString(AMMO);
             return AmmoHolder.getType(ammoId);
         }
         else {
@@ -94,8 +131,8 @@ public class WeaponStateHelper {
         var tag = NtglComponents.getWeaponTag(data.weapon);
         var ammoItems = WeaponModifierHelper.getAmmoItems(data);
 
-        if(tag.contains(AMMO_TAG, Tag.TAG_STRING)) {
-            return AmmoHolder.getType(tag.getString(AMMO_TAG));
+        if(tag.contains(AMMO, Tag.TAG_STRING)) {
+            return AmmoHolder.getType(tag.getString(AMMO));
         }
         else {
             var firstAmmo = SetUtils.getFirst(ammoItems);
@@ -103,14 +140,6 @@ public class WeaponStateHelper {
             return firstAmmo;
         }
     }
-
-    public static boolean isAcceptable(WeaponData weaponData, ItemStack item) {
-        return getCurrentAmmo(weaponData).isAcceptable(item);
-    }
-
-//    public static Item getAmmoItem(GunData data) {
-//        return ITEMS.getValue(getAmmoHolder(data));
-//    }
 
     public static AmmoConfig getAmmoConfig(WeaponData data) {
         var ammoId = getCurrentAmmo(data).getId();
@@ -153,42 +182,6 @@ public class WeaponStateHelper {
         if(tag.contains(FIRE_MODE, Tag.TAG_STRING))
             return FireMode.getType(tag.getString(FIRE_MODE));
         else return null;
-    }
-
-    public static boolean isMaxAmmo(WeaponData data) {
-        var ammo = getAmmoCount(data);
-        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-        return ammo == maxAmmo;
-    }
-
-    public static void setAmmoCount(ItemStack stack, int amount) {
-        var tag = NtglComponents.getWeaponTag(stack);
-        tag.putInt(Tags.AMMO_COUNT, amount);
-        NtglComponents.setWeaponTag(stack, tag);
-    }
-
-    public static void setMaxAmmo(WeaponData data) {
-        WeaponStateHelper.setAmmoCount(data.weapon, WeaponModifierHelper.getMaxAmmo(data));
-    }
-
-    public static boolean hasAmmo(ItemStack gunStack) {
-        var tag = NtglComponents.getWeaponTag(gunStack);
-        return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) > 0;
-    }
-
-    public static boolean hasEnoughAmmo(WeaponData data) {
-        var tag = NtglComponents.getWeaponTag(data.weapon);
-        var ammoPerShot = WeaponModifierHelper.getAmmoPerShot(data);
-        return tag.getBoolean("IgnoreAmmo") || tag.getInt(Tags.AMMO_COUNT) >= ammoPerShot;
-    }
-
-    public static void fillAmmo(WeaponData data) {
-        if (data.weapon.getItem() instanceof IWeapon) {
-            var tag = NtglComponents.getWeaponTag(data.weapon);
-            var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-
-            tag.putInt(Tags.AMMO_COUNT, maxAmmo);
-        }
     }
 
     public static ArrayList<ItemStack> getAttachmentItems(HolderLookup.Provider lookupProvider, ItemStack weapon) {
@@ -282,7 +275,7 @@ public class WeaponStateHelper {
 
     public static boolean isAmmoIgnored(ItemStack stack) {
         var tag = NtglComponents.getWeaponTag(stack);
-        return tag.contains("IgnoreAmmo", Tag.TAG_BYTE);
+        return tag.contains(IGNORE_AMMO, Tag.TAG_BYTE);
     }
 
     public static void saveAttachments(WeaponData data, Collection<ItemStack> attachments){
@@ -296,7 +289,7 @@ public class WeaponStateHelper {
         }
 
         var tag = NtglComponents.getWeaponTag(data.weapon);
-        tag.put(Tags.ATTACHMENTS, attachmentsTag);
+        tag.put(ATTACHMENTS, attachmentsTag);
     }
 
     private static boolean containsItem(Collection<ItemStack> whereFind, Collection<ItemStack> whatFind) {
@@ -350,7 +343,7 @@ public class WeaponStateHelper {
             }
 
             var remainingAmmo = Math.max(0, ammoCount - ammoPerShot);
-            setAmmoCount(heldItem, remainingAmmo);
+            setAmmoCount(data, remainingAmmo);
         }
     }
 

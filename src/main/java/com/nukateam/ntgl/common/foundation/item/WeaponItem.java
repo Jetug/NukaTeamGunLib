@@ -1,12 +1,10 @@
 package com.nukateam.ntgl.common.foundation.item;
 
 import com.nukateam.geo.render.ProxyItemRenderer;
-import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
-import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
@@ -43,8 +41,6 @@ import net.neoforged.neoforge.common.util.Lazy;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import static com.nukateam.ntgl.common.data.constants.Tags.AMMO_COUNT;
-import static com.nukateam.ntgl.common.util.util.WeaponStateHelper.AMMO_TAG;
 import static net.minecraft.world.item.component.ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT;
 
 public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable{
@@ -123,8 +119,8 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         });
     }
 
-    public void setDefaultTag(CompoundTag tag){
-        tag.putInt(AMMO_COUNT, getConfig().getGeneral().getMaxAmmo());
+    public void setDefaultTag(ItemStack stack){
+        WeaponStateHelper.setAmmoCount(new WeaponData(stack, null), getConfig().getGeneral().getMaxAmmo());
     }
 
     @Override

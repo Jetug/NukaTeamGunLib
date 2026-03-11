@@ -47,6 +47,4 @@ public class NtglComponents {
     public static @Nullable CompoundTag setChassisTag(ItemStack stack, CompoundTag tag) {
         return stack.set(CHASSIS_COMPONENT.get(), tag);
     }
-
-
 }

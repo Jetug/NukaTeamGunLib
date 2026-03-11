@@ -5,9 +5,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.data.holders.LoadingType;
-import com.nukateam.ntgl.common.data.constants.Tags;
 
-import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
@@ -316,7 +314,7 @@ public class ReloadTracker {
                 if(entity instanceof Player player)
                     addOrDropStack(player, usedMagazine);
             }
-            WeaponStateHelper.setAmmoCount(weapon, amount);
+            WeaponStateHelper.setAmmoCount(data, amount);
 
             context.shrink(1, ammoHolder, entity);
         }

@@ -90,14 +90,14 @@ public class AttachmentSlot extends Slot {
     }
 
     public static void checkAmmoCount(ItemStack stack, LivingEntity entity) {
-        var gunData = new WeaponData(stack, entity);
-        var maxAmmo = WeaponModifierHelper.getMaxAmmo(gunData  );
-        var ammoCount = WeaponStateHelper.getAmmoCount(gunData);
+        var data = new WeaponData(stack, entity);
+        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+        var ammoCount = WeaponStateHelper.getAmmoCount(data);
         var diff = ammoCount - maxAmmo;
 
         if(diff > 0){
-            WeaponStateHelper.setAmmoCount(stack, maxAmmo);
-            var ammoHolder = WeaponStateHelper.getCurrentAmmo(gunData);
+            WeaponStateHelper.setAmmoCount(data, maxAmmo);
+            var ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
             if(ammoHolder.canReturnAmmo()) {
                 var ammoItem = BuiltInRegistries.ITEM.get(ammoHolder.getId());
                 var dropStack = new ItemStack(ammoItem, diff);

@@ -267,7 +267,7 @@ public class ServerPlayHandler {
         var ammoCount = WeaponStateHelper.getAmmoCount(data);
         var itemHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
-        WeaponStateHelper.setAmmoCount(data.weapon, 0);
+        WeaponStateHelper.setAmmoCount(data, 0);
 
         if(itemHolder.canReturnAmmo()) {
             var id = itemHolder.getId();
@@ -285,7 +285,7 @@ public class ServerPlayHandler {
 
         if (ammoCount == 0) return;
 
-        WeaponStateHelper.setAmmoCount(data.weapon, 0);
+        WeaponStateHelper.setAmmoCount(data, 0);
         var ammoHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
         if(ammoHolder.canReturnAmmo()) {
