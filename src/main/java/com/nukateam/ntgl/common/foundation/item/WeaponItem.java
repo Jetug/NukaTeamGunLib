@@ -241,16 +241,16 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     public WeaponConfig getModifiedConfig(ItemStack stack) {
-        var tagCompound = NtglComponents.getWeaponTag(stack);
-        if (tagCompound.contains("Gun", Tag.TAG_COMPOUND)) {
-            return this.modifiedGunCache.computeIfAbsent(tagCompound, item ->
+        var tag = NtglComponents.getWeaponTag(stack);
+        if (tag.contains("Gun", Tag.TAG_COMPOUND)) {
+            return this.modifiedGunCache.computeIfAbsent(tag, item ->
             {
-                if (tagCompound.getBoolean("Custom")) {
+                if (tag.getBoolean("Custom")) {
                     var key = BuiltInRegistries.ITEM.getKey(stack.getItem());
-                    return WeaponConfig.create(key, tagCompound.getCompound("Gun"));
+                    return WeaponConfig.create(key, tag.getCompound("Gun"));
                 } else {
                     var gunCopy = this.weaponConfig.copy();
-                    gunCopy.deserializeNBT(null, tagCompound.getCompound("Gun"));
+                    gunCopy.deserializeNBT(null, tag.getCompound("Gun"));
                     return gunCopy;
                 }
             });

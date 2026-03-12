@@ -16,9 +16,33 @@ public class NtglComponents {
     public static final DeferredRegister.DataComponents REGISTER =
             DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Ntgl.MOD_ID);
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> CHASSIS_COMPONENT =
+            REGISTER.registerComponentType(
+                    "chassis_component",
+                    builder -> builder
+                            .persistent(CompoundTag.CODEC)
+                            .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
+            );
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> WEAPON_COMPONENT =
             REGISTER.registerComponentType(
                     "weapon_component",
+                    builder -> builder
+                            .persistent(CompoundTag.CODEC)
+                            .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
+            );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> FUEL =
+            REGISTER.registerComponentType(
+                    "fuel",
+                    builder -> builder
+                            .persistent(CompoundTag.CODEC)
+                            .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
+            );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> ATTACHMENTS =
+            REGISTER.registerComponentType(
+                    "attachments",
                     builder -> builder
                             .persistent(CompoundTag.CODEC)
                             .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
@@ -32,12 +56,36 @@ public class NtglComponents {
                             .networkSynchronized(ByteBufCodecs.INT)
             );
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> CHASSIS_COMPONENT =
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> IGNORE_AMMO =
             REGISTER.registerComponentType(
-                    "chassis_component",
+                    "ignore_ammo",
                     builder -> builder
-                            .persistent(CompoundTag.CODEC)
-                            .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
+                            .persistent(Codec.BOOL)
+                            .networkSynchronized(ByteBufCodecs.BOOL)
+            );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> AMMO =
+            REGISTER.registerComponentType(
+                    "ammo",
+                    builder -> builder
+                            .persistent(Codec.STRING)
+                            .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+            );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> FIRE_MODE =
+            REGISTER.registerComponentType(
+                    "fire_mode",
+                    builder -> builder
+                            .persistent(Codec.STRING)
+                            .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+            );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> THROW_MODE =
+            REGISTER.registerComponentType(
+                    "throw_mode",
+                    builder -> builder
+                            .persistent(Codec.STRING)
+                            .networkSynchronized(ByteBufCodecs.STRING_UTF8)
             );
 
     public static CompoundTag getWeaponTag(ItemStack stack) {

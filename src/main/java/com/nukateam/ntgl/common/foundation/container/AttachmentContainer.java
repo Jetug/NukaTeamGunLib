@@ -141,7 +141,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
             var itemStack = this.getSlot(i).getItem();
             attachments.add(itemStack);
         }
-        WeaponStateHelper.saveAttachments(new WeaponData(this.weapon, player), attachments);
+        WeaponStateHelper.writeAttachments(attachments, new WeaponData(this.weapon, player));
         super.broadcastChanges();
     }
 

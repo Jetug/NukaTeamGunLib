@@ -53,7 +53,7 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
         var data = new WeaponData(stack, entity);
         this.weaponConfig = WeaponModifierHelper.getConfig(data);
         this.gunStack = stack;
-        this.gunAttachments = WeaponStateHelper.getAttachmentItems(entity.level().registryAccess(), stack);
+        this.gunAttachments = WeaponStateHelper.getAttachmentItems(stack, entity.level().registryAccess());
         this.configAttachments = weaponConfig.getAttachmentConfigs(gunAttachments);
         this.currentEntity = entity;
 

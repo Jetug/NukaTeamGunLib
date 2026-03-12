@@ -4,7 +4,6 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.attachment.impl.Scope;
-import com.nukateam.ntgl.common.data.config.weapon.AmmoConfig;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.FireMode;
@@ -25,7 +24,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,13 +32,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class WeaponStateHelper {
-    private static final String AMMO = "Ammo";
-    private static final String FIRE_MODE = "FireMode";
-    private static final String ATTACHMENTS = "Attachments";
-    private static final String THROW_MODE = "ThrowMode";
-    private static final String AMMO_COUNT = "AmmoCount";
-    public static final String IGNORE_AMMO = "IgnoreAmmo";
-
     //AMMO COUNT
     public static void switchAmmo(WeaponData data){
         var ammoItems = WeaponModifierHelper.getAmmoItems(data);
@@ -61,23 +52,20 @@ public class WeaponStateHelper {
     }
 
     public static int getAmmoCount(WeaponData data) {
-//        return data.weapon.getOrDefault(NtglComponents.AMMO_COUNT, 0);
-        var tag = NtglComponents.getWeaponTag(data.weapon);
-        return tag.getInt(AMMO_COUNT);
+        return data.weapon.getOrDefault(NtglComponents.AMMO_COUNT, 0);
     }
 
     public static void addAmmo(WeaponData data, int amount) {
         var tag = NtglComponents.getWeaponTag(data.weapon);
         var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-        var result = Math.min(tag.getInt(AMMO_COUNT) + amount, maxAmmo);
-        tag.putInt(AMMO_COUNT, result);
+        var ammoCount = getAmmoCount(data);
+        var result = Math.min(ammoCount + amount, maxAmmo);
+        setAmmoCount(data, result);
         NtglComponents.setWeaponTag(data.weapon, tag);
     }
 
     public static void setAmmoCount(WeaponData data, int amount) {
-        var tag = NtglComponents.getWeaponTag(data.weapon);
-        tag.putInt(AMMO_COUNT, amount);
-        NtglComponents.setWeaponTag(data.weapon, tag);
+        data.weapon.set(NtglComponents.AMMO_COUNT, amount);
     }
 
     public static void setMaxAmmo(WeaponData data) {
@@ -98,25 +86,26 @@ public class WeaponStateHelper {
 
     public static void fillAmmo(WeaponData data) {
         if (data.weapon.getItem() instanceof IWeapon) {
-            var tag = NtglComponents.getWeaponTag(data.weapon);
             var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-
-            tag.putInt(AMMO_COUNT, maxAmmo);
+            setAmmoCount(data, maxAmmo);
         }
+    }
+
+    //AMMO IGNORED
+    public static boolean isAmmoIgnored(WeaponData data) {
+        return data.weapon.getOrDefault(NtglComponents.IGNORE_AMMO, false);
     }
 
     //AMMO TYPE
     public static void setCurrentAmmo(WeaponData data, ResourceLocation ammo) {
-        var tag = NtglComponents.getWeaponTag(data.weapon);
-        tag.putString(AMMO, ammo.toString());
-        NtglComponents.setWeaponTag(data.weapon, tag);
+        assert data.weapon != null;
+        data.weapon.set(NtglComponents.AMMO, ammo.toString());
     }
 
     public static AmmoHolder getCurrentAmmo(WeaponData data) {
-        var tag = NtglComponents.getWeaponTag(data.weapon);
-
-        if(tag.contains(AMMO, Tag.TAG_STRING)){
-            var ammoId = tag.getString(AMMO);
+        assert data.weapon != null;
+        var ammoId = getAmmo(data.weapon);
+        if(!ammoId.isEmpty()){
             return AmmoHolder.getType(ammoId);
         }
         else {
@@ -126,11 +115,11 @@ public class WeaponStateHelper {
     }
 
     public static AmmoHolder getCurrentAmmoWithoutCheck(WeaponData data) {
-        var tag = NtglComponents.getWeaponTag(data.weapon);
         var ammoItems = WeaponModifierHelper.getAmmoItems(data);
 
-        if(tag.contains(AMMO, Tag.TAG_STRING)) {
-            return AmmoHolder.getType(tag.getString(AMMO));
+        var ammoId = getAmmo(data.weapon);
+        if(!ammoId.isEmpty()){
+            return AmmoHolder.getType(ammoId);
         }
         else {
             var firstAmmo = SetUtils.getFirst(ammoItems);
@@ -139,9 +128,8 @@ public class WeaponStateHelper {
         }
     }
 
-    public static AmmoConfig getAmmoConfig(WeaponData data) {
-        var ammoId = getCurrentAmmo(data).getId();
-        return WeaponModifierHelper.getAmmoConfig(ammoId, data);
+    private static String getAmmo(ItemStack stack) {
+        return stack.getOrDefault(NtglComponents.AMMO, "");
     }
 
     public static @NotNull ProjectileConfig getProjectileConfig(WeaponData data) {
@@ -150,6 +138,30 @@ public class WeaponStateHelper {
     }
 
     //FIRE MODE______________________________________
+    public static FireMode getFireMode(WeaponData data) {
+        var fireModes = WeaponModifierHelper.getFireModes(data);
+        assert data.weapon != null;
+        var fireModId = getFireMode(data.weapon);
+
+        if(!fireModId.isEmpty()){
+            var currentFireMode = FireMode.getType(fireModId);
+            if (currentFireMode == null || !fireModes.contains(currentFireMode)) {
+                setFireMode(data, SetUtils.getFirst(fireModes));
+                return SetUtils.getFirst(fireModes);
+            }
+            else return currentFireMode;
+        }
+        else {
+            setFireMode(data, SetUtils.getFirst(fireModes));
+            return SetUtils.getFirst(fireModes);
+        }
+    }
+
+    public static void setFireMode(WeaponData data, FireMode fireMode) {
+        assert data.weapon != null;
+        data.weapon.set(NtglComponents.FIRE_MODE, fireMode.toString());
+    }
+
     public static void switchFireMode(WeaponData data){
         var fireModes = WeaponModifierHelper.getFireModes(data);
         var current = getFireMode(data);
@@ -157,56 +169,66 @@ public class WeaponStateHelper {
         setFireMode(data, newFireMode);
     }
 
-    public static void setFireMode(WeaponData data, FireMode fireMode) {
-        var tag = NtglComponents.getWeaponTag(data.weapon);
-        tag.putString(FIRE_MODE, fireMode.toString());
-        NtglComponents.setWeaponTag(data.weapon, tag);
+    private static String getFireMode(ItemStack stack) {
+        return stack.getOrDefault(NtglComponents.FIRE_MODE, "");
     }
 
-    public static FireMode getFireMode(WeaponData data) {
-        var fireModes = WeaponModifierHelper.getFireModes(data);
-        var currentFireMode = getFireMode(data.weapon);
-
-        if (currentFireMode == null || !fireModes.contains(currentFireMode)) {
-            setFireMode(data, SetUtils.getFirst(fireModes));
-            return SetUtils.getFirst(fireModes);
-        }
-        else return currentFireMode;
+    //ATTACHAEMTS
+    public static CompoundTag getAttachments(ItemStack stack){
+        return stack.getOrDefault(NtglComponents.ATTACHMENTS, new CompoundTag());
     }
 
-    @Nullable
-    private static FireMode getFireMode(ItemStack gun) {
-        var tag = NtglComponents.getWeaponTag(gun);
-        if(tag.contains(FIRE_MODE, Tag.TAG_STRING))
-            return FireMode.getType(tag.getString(FIRE_MODE));
-        else return null;
-    }
-
-    public static ArrayList<ItemStack> getAttachmentItems(HolderLookup.Provider lookupProvider, ItemStack weapon) {
-        var compound = NtglComponents.getWeaponTag(weapon);
+    public static ArrayList<ItemStack> getAttachmentItems(ItemStack weapon, HolderLookup.Provider lookupProvider) {
         var result = new ArrayList<ItemStack>();
 
-        if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
-            var attachment = compound.getCompound(ATTACHMENTS);
-            for (var slot: attachment.getAllKeys()){
-                if (attachment.contains(slot, Tag.TAG_COMPOUND)) {
-                    result.add(ItemStack.parseOptional(lookupProvider, attachment.getCompound(slot)));
-                }
+        var attachment = getAttachments(weapon);
+        for (var slot: attachment.getAllKeys()){
+            if (attachment.contains(slot, Tag.TAG_COMPOUND)) {
+                result.add(ItemStack.parseOptional(lookupProvider, attachment.getCompound(slot)));
             }
         }
         return result;
     }
 
     public static ItemStack getAttachmentItem(AttachmentType type, WeaponData data) {
-        var compound = NtglComponents.getWeaponTag(data.weapon);
+        var attachment = getAttachments(data.weapon);
+        if (attachment.contains(type.toString(), Tag.TAG_COMPOUND)) {
+            return ItemStack.parseOptional(data.registryAccess(), attachment.getCompound(type.toString()));
+        }
 
-        if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
-            var attachment = compound.getCompound(ATTACHMENTS);
-            if (attachment.contains(type.toString(), Tag.TAG_COMPOUND)) {
-                return ItemStack.parseOptional(data.registryAccess(), attachment.getCompound(type.toString()));
+        return ItemStack.EMPTY;
+    }
+
+    public static boolean hasAttachmentEquipped(ItemStack stack, AttachmentType type) {
+        var gun = WeaponModifierHelper.getConfig(new WeaponData(stack, null));
+        if (!gun.canAttachType(type))
+            return false;
+
+        var attachment = getAttachments(stack);
+        return attachment.contains(type.toString(), Tag.TAG_COMPOUND);
+
+    }
+
+    public static void writeAttachments(Collection<ItemStack> attachments, WeaponData data){
+        var tag = new CompoundTag();
+
+        for (var itemStack : attachments) {
+            if (itemStack.getItem() instanceof IAttachment attachment) {
+                var tagKey = attachment.getType();
+                tag.put(tagKey.toString(), itemStack.save(data.registryAccess(), new CompoundTag()));
             }
         }
-        return ItemStack.EMPTY;
+
+        setAttachments(data.weapon, tag);
+    }
+
+    public static void setAttachments(ItemStack stack, CompoundTag attachments){
+        stack.set(NtglComponents.ATTACHMENTS, attachments);
+    }
+
+    //SCOPE
+    public static ItemStack getScopeStack(WeaponData data) {
+        return getAttachmentItem(AttachmentType.SCOPE, data);
     }
 
     public static boolean hasScopeOverlay(WeaponData data) {
@@ -222,23 +244,6 @@ public class WeaponStateHelper {
         }
 
         return null;
-    }
-
-    public static boolean hasAttachmentEquipped(ItemStack stack, AttachmentType type) {
-        var gun = WeaponModifierHelper.getConfig(new WeaponData(stack, null));
-        if (!gun.canAttachType(type))
-            return false;
-
-        var compound = NtglComponents.getWeaponTag(stack);
-        if (compound != null && compound.contains(ATTACHMENTS, Tag.TAG_COMPOUND)) {
-            CompoundTag attachment = compound.getCompound(ATTACHMENTS);
-            return attachment.contains(type.toString(), Tag.TAG_COMPOUND);
-        }
-        return false;
-    }
-
-    public static ItemStack getScopeStack(WeaponData data) {
-        return getAttachmentItem(AttachmentType.SCOPE, data);
     }
 
     @Nullable
@@ -270,61 +275,6 @@ public class WeaponStateHelper {
         var fovMod = WeaponModifierHelper.getFovModifier(data);
         return modifier + fovMod;
     }
-
-    public static boolean isAmmoIgnored(WeaponData data) {
-        var tag = NtglComponents.getWeaponTag(data.weapon);
-        return tag.contains(IGNORE_AMMO, Tag.TAG_BYTE);
-    }
-
-    public static void saveAttachments(WeaponData data, Collection<ItemStack> attachments){
-        var attachmentsTag = new CompoundTag();
-
-        for (var itemStack : attachments) {
-            if (itemStack.getItem() instanceof IAttachment attachment) {
-                var tagKey = attachment.getType();
-                attachmentsTag.put(tagKey.toString(), itemStack.save(data.registryAccess(), new CompoundTag()));
-            }
-        }
-
-        var tag = NtglComponents.getWeaponTag(data.weapon);
-        tag.put(ATTACHMENTS, attachmentsTag);
-    }
-
-    private static boolean containsItem(Collection<ItemStack> whereFind, Collection<ItemStack> whatFind) {
-        for (var att : whatFind) {
-            if (!contains(whereFind, att))
-                return false;
-        }
-        return true;
-
-//        return !whatFind.contains(whereFind);
-    }
-
-    public static boolean contains(Collection<ItemStack> list, ItemStack toFind) {
-        for (var stack : list) {
-//            ItemStack.matches()
-            if(stack.getItem() == toFind.getItem()){
-                return true;
-            }
-        }
-        return false;
-    }
-
-//    public static void saveAttachment(ItemStack weapon, ItemStack attachmentStack){
-//        var tag = NtglComponents.getWeaponTag(weapon);
-//        var attachmentsTag = new CompoundTag();
-//
-//        if(tag.contains(Tags.ATTACHMENTS, Tag.TAG_COMPOUND)){
-//            attachmentsTag = tag.getCompound(Tags.ATTACHMENTS);
-//        }
-//
-//        if (attachmentStack.getItem() instanceof IAttachment attachment) {
-//            var tagKey = attachment.getType().toString();
-//            attachmentsTag.put(tagKey, attachmentStack.save(new CompoundTag()));
-//        }
-//
-//        tag.put(Tags.ATTACHMENTS, attachmentsTag);
-//    }
 
     public static void consumeAmmo(WeaponData data) {
         var shooter = data.wielder;
@@ -376,25 +326,29 @@ public class WeaponStateHelper {
 
     public static ThrowMode getThrowMode(WeaponData data) {
         var stack = data.weapon;
-
+        assert stack != null;
         var modes = WeaponModifierHelper.getThrowModes(data);
-        var tag = NtglComponents.getWeaponTag(stack);
+        var modeId = getThrowMode(stack);
+        if(!modeId.isEmpty()){
+            var currentMode = ThrowMode.getType(modeId);
 
-        ThrowMode currentMode = null;
-
-        if(tag.contains(THROW_MODE, Tag.TAG_STRING))
-            currentMode = ThrowMode.getType(tag.getString(THROW_MODE));
-
-        if (currentMode == null || !modes.contains(currentMode)) {
+            if (currentMode == null || !modes.contains(currentMode)) {
+                setThrowMode(stack, SetUtils.getFirst(modes));
+                return SetUtils.getFirst(modes);
+            }
+            else return currentMode;
+        }
+        else {
             setThrowMode(stack, SetUtils.getFirst(modes));
             return SetUtils.getFirst(modes);
         }
-        else return currentMode;
     }
 
-    public static void setThrowMode(ItemStack stack, ThrowMode fireMode) {
-        var tag = NtglComponents.getWeaponTag(stack);
-        tag.putString(THROW_MODE, fireMode.toString());
-        NtglComponents.setWeaponTag(stack, tag);
+    private static String getThrowMode(ItemStack stack){
+        return stack.getOrDefault(NtglComponents.THROW_MODE, "");
+    }
+
+    public static void setThrowMode(ItemStack stack, ThrowMode throwMode) {
+        stack.set(NtglComponents.THROW_MODE, throwMode.toString());
     }
 }
