@@ -29,13 +29,14 @@ public class ServerEvent {
         var stack = player.getItemInHand(hand);
         var shootTracker = getShootTracker(player, hand);
         var isReloading = ModSyncedDataKeys.getReloadKey(hand).getValue(player);
+        var data = new WeaponData(stack, player);
 
         if (!player.isCreative()
                 && isGun(stack)
                 && !isReloading
-                && isAutoReloading(new WeaponData(stack, player))
+                && isAutoReloading(data)
                 && shootTracker.cooldownEnded()
-                && !WeaponStateHelper.hasAmmo(stack)
+                && !WeaponStateHelper.hasAmmo(data)
         ) {
             reloadGun(hand, player);
         }

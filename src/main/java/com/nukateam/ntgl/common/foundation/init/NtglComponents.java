@@ -24,6 +24,14 @@ public class NtglComponents {
                             .networkSynchronized(ByteBufCodecs.COMPOUND_TAG)
             );
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> AMMO_COUNT =
+            REGISTER.registerComponentType(
+                    "ammo_count",
+                    builder -> builder
+                            .persistent(Codec.INT)
+                            .networkSynchronized(ByteBufCodecs.INT)
+            );
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> CHASSIS_COMPONENT =
             REGISTER.registerComponentType(
                     "chassis_component",
@@ -37,7 +45,7 @@ public class NtglComponents {
     }
 
     public static @Nullable CompoundTag setWeaponTag(ItemStack stack, CompoundTag tag) {
-        return stack.set(WEAPON_COMPONENT.get(), tag);
+        return stack.set(WEAPON_COMPONENT.get(), tag.copy());
     }
 
     public static CompoundTag getChassisTag(ItemStack stack) {

@@ -97,11 +97,12 @@ public class ServerPlayHandler {
         }
 
         var heldItem = shooter.getItemInHand(hand);
+        var data = new WeaponData(heldItem, shooter).setWeaponMode(message.getMode());
 
         if (heldItem.getItem() instanceof IWeapon weaponItem
-                && (WeaponStateHelper.hasAmmo(heldItem) || (shooter instanceof Player player && player.isCreative()))) {
+                && (WeaponStateHelper.hasAmmo(data) || (shooter instanceof Player player && player.isCreative()))) {
             var modifiedGun = weaponItem.getModifiedConfig(heldItem);
-            var data = new WeaponData(heldItem, shooter).setWeaponMode(message.getMode());
+
 
             if (modifiedGun != null) {
                 if (NeoForge.EVENT_BUS.post(new GunFireEvent.Pre(shooter, heldItem, hand)).isCanceled()) {
@@ -195,7 +196,7 @@ public class ServerPlayHandler {
                 }
 
                 if (!(shooter instanceof Player player && player.isCreative())) {
-                    if (!WeaponStateHelper.isAmmoIgnored(heldItem)) {
+                    if (!WeaponStateHelper.isAmmoIgnored(data)) {
                         WeaponStateHelper.consumeAmmo(data);
                     }
                 }
@@ -212,16 +213,17 @@ public class ServerPlayHandler {
     }
 
     public static void handlePreFireSound(C2SMessagePreFireSound message, ServerPlayer player) {
-        Level world = player.level();
-        ItemStack heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
-        if (heldItem.getItem() instanceof IWeapon item && (WeaponStateHelper.hasAmmo(heldItem) || player.isCreative())) {
-            WeaponConfig modifiedWeaponConfig = item.getModifiedConfig(heldItem);
-            ResourceLocation fireSound = getPreFireSound(heldItem, modifiedWeaponConfig);
+        var world = player.level();
+        var heldItem = player.getItemInHand(InteractionHand.MAIN_HAND);
+        var data = new WeaponData(heldItem, player);
+
+        if (heldItem.getItem() instanceof IWeapon item && (WeaponStateHelper.hasAmmo(data) || player.isCreative())) {
+            var modifiedWeaponConfig = item.getModifiedConfig(heldItem);
+            var fireSound = getPreFireSound(heldItem, modifiedWeaponConfig);
             if (fireSound != null) {
                 var posX = player.getX();
                 var posY = player.getY() + player.getEyeHeight();
                 var posZ = player.getZ();
-                var data = new WeaponData(heldItem, player);
                 var volume = WeaponModifierHelper.getFireSoundVolume(data);
                 var pitch = 0.9F + world.random.nextFloat() * 0.2F;
                 var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.SERVER.gunShotMaxDistance.get());

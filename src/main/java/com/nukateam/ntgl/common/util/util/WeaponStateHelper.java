@@ -61,6 +61,7 @@ public class WeaponStateHelper {
     }
 
     public static int getAmmoCount(WeaponData data) {
+//        return data.weapon.getOrDefault(NtglComponents.AMMO_COUNT, 0);
         var tag = NtglComponents.getWeaponTag(data.weapon);
         return tag.getInt(AMMO_COUNT);
     }
@@ -77,19 +78,16 @@ public class WeaponStateHelper {
         var tag = NtglComponents.getWeaponTag(data.weapon);
         tag.putInt(AMMO_COUNT, amount);
         NtglComponents.setWeaponTag(data.weapon, tag);
-
-        if(data.wielder instanceof Player entity){
-            entity.containerMenu.broadcastChanges();
-        }
     }
 
     public static void setMaxAmmo(WeaponData data) {
         WeaponStateHelper.setAmmoCount(data, WeaponModifierHelper.getMaxAmmo(data));
     }
 
-    public static boolean hasAmmo(ItemStack gunStack) {
-            var tag = NtglComponents.getWeaponTag(gunStack);
-        return tag.getBoolean(IGNORE_AMMO) || tag.getInt(AMMO_COUNT) > 0;
+    public static boolean hasAmmo(WeaponData data) {
+        var ammoCount = getAmmoCount(data);
+        var isAmmoIgnored = isAmmoIgnored(data);
+        return isAmmoIgnored || ammoCount > 0;
     }
 
     public static boolean isMaxAmmo(WeaponData data) {
@@ -273,8 +271,8 @@ public class WeaponStateHelper {
         return modifier + fovMod;
     }
 
-    public static boolean isAmmoIgnored(ItemStack stack) {
-        var tag = NtglComponents.getWeaponTag(stack);
+    public static boolean isAmmoIgnored(WeaponData data) {
+        var tag = NtglComponents.getWeaponTag(data.weapon);
         return tag.contains(IGNORE_AMMO, Tag.TAG_BYTE);
     }
 

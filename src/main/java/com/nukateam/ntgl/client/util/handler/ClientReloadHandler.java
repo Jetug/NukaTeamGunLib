@@ -90,9 +90,9 @@ public class ClientReloadHandler {
 
         if (reloading) {
             if (stack.getItem() instanceof IWeapon) {
-                var isAmmoIgnored = WeaponStateHelper.isAmmoIgnored(stack);
-                var hasAmmo = InventoryUtil.hasAmmo(new WeaponData(stack, player));
                 var data = new WeaponData(stack, player);
+                var isAmmoIgnored = WeaponStateHelper.isAmmoIgnored(data);
+                var hasAmmo = InventoryUtil.hasAmmo(new WeaponData(stack, player));
                 var isMaxAmmo = WeaponStateHelper.isMaxAmmo(data);
 
                 if (!isAmmoIgnored && hasAmmo && !isMaxAmmo) {

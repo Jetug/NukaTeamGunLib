@@ -206,13 +206,13 @@ public class ClientShootingHandler {
         return shootTickGap;
     }
 
-    public void fire(WeaponData gunData) {
-        var shooter = gunData.wielder;
-        var heldItem = gunData.weapon;
+    public void fire(WeaponData data) {
+        var shooter = data.wielder;
+        var heldItem = data.weapon;
 
         if (heldItem.getItem() instanceof IWeapon
-                && (WeaponStateHelper.hasAmmo(heldItem) /*|| (shooter instanceof Player player && player.isCreative())*/)
-                && isGunMode(gunData)
+                && (WeaponStateHelper.hasAmmo(data) /*|| (shooter instanceof Player player && player.isCreative())*/)
+                && isGunMode(data)
                 && !shooter.isSpectator()) {
             var isMainHand = shooter.getMainHandItem() == heldItem;
             var hand = isMainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
@@ -224,9 +224,9 @@ public class ClientShootingHandler {
 
                 // CHECK HERE: Change this to test different rpm settings.
                 // TODO: Test serverside, possible issues 0.3.4-alpha
-                final var rpm = WeaponModifierHelper.getRate(gunData); // Rounds per sec. Should come from gun properties in the end.
+                final var rpm = WeaponModifierHelper.getRate(data); // Rounds per sec. Should come from gun properties in the end.
                 shootGap += rpm;
-                entityShootGaps.put(Pair.of(hand, shooter), Pair.of(gunData, shootGap));
+                entityShootGaps.put(Pair.of(hand, shooter), Pair.of(data, shootGap));
                 shootMsGap = calcShootTickGap(rpm);
                 RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
                 RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
@@ -234,7 +234,7 @@ public class ClientShootingHandler {
                 try {
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
                             shooter.getViewXRot(1),
-                            RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, hand, gunData.weaponMode));
+                            RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, hand, data.weaponMode));
                 } catch (NullPointerException e) {
                     Ntgl.LOGGER.error(e.getMessage(), e);
                 }
@@ -265,7 +265,7 @@ public class ClientShootingHandler {
 
     private void setupShootingData(WeaponData weaponData, InteractionHand arm) {
         assert weaponData.weapon != null;
-        if(!WeaponStateHelper.hasAmmo(weaponData.weapon)) return;
+        if(!WeaponStateHelper.hasAmmo(weaponData)) return;
         var data = shootingData.get(arm);
 
         data.fireTimer = WeaponModifierHelper.getFireDelay(weaponData);

@@ -61,10 +61,11 @@ public class GunEventHandler {
         var entity = event.getEntity();
         var level = event.getEntity().level();
         var heldItem = entity.getItemInHand(event.getHand());
+        var data = new WeaponData(heldItem, entity);
 
         if (heldItem.getItem() instanceof IWeapon) {
             if (heldItem.isDamageableItem()) {
-                if (WeaponStateHelper.hasAmmo(heldItem)) {
+                if (WeaponStateHelper.hasAmmo(data)) {
                     damageGun(heldItem, level, entity);
                 }
                 if (heldItem.getDamageValue() >= (heldItem.getMaxDamage() / 1.5)) {
@@ -75,7 +76,7 @@ public class GunEventHandler {
             if(!event.isClient()){
                 PacketHandler.sendAnimation(entity, event.getHand(), AnimationType.FIRE);
 
-                if(!WeaponModifierHelper.isSilencedFire(new WeaponData(heldItem, entity))){
+                if(!WeaponModifierHelper.isSilencedFire(data)){
                     NtglGameEvents.gunshotEvent(level, entity);
                     level.gameEvent(entity, GameEvent.PROJECTILE_SHOOT, entity.blockPosition());
                 }

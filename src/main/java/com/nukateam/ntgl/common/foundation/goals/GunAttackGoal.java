@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.goals;
 
+import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -117,7 +118,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
 
         this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
 
-        if (WeaponStateHelper.hasAmmo(mob.getGun())) {
+        if (WeaponStateHelper.hasAmmo(new WeaponData(mob.getGun(), mob))) {
             mob.performRangedAttack(target, 1);
         }
         else if(!EntityReloadTracker.isReloading(mob)) {

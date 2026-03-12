@@ -214,7 +214,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     private static void addAmmo(List<Component> tooltip, WeaponData weaponData) {
-        if (WeaponStateHelper.isAmmoIgnored(weaponData.weapon)) {
+        if (WeaponStateHelper.isAmmoIgnored(weaponData)) {
             tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
         } else {
             int ammoCount = WeaponStateHelper.getAmmoCount(weaponData);
