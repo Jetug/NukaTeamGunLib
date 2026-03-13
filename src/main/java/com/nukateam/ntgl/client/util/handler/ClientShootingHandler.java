@@ -3,9 +3,11 @@ package com.nukateam.ntgl.client.util.handler;
 import com.ibm.icu.impl.Pair;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.holders.LoadingType;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.data.holders.FireMode;
+import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessagePreFireSound;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessageShoot;
@@ -39,11 +41,12 @@ public class ClientShootingHandler {
     private static ClientShootingHandler instance;
     public static float shootMsGap = 0F;
 
-    private final HashMap<Pair<InteractionHand, LivingEntity>, Pair<WeaponData, Integer>> entityShootGaps = new HashMap<>();
     private final Map<InteractionHand, ShootingData> shootingData = Map.of(
             InteractionHand.MAIN_HAND, new ShootingData(0, null),
             InteractionHand.OFF_HAND, new ShootingData(0, null)
     );
+
+    private final Map<Pair<InteractionHand, LivingEntity>, Tracker> SHOOTING_TRACKERS = new HashMap<>();
 
     private ClientShootingHandler() {}
 
@@ -52,6 +55,20 @@ public class ClientShootingHandler {
             instance = new ClientShootingHandler();
         }
         return instance;
+    }
+
+    static class Tracker{
+        int fireTimer;
+        WeaponData weaponData;
+        InteractionHand hand;
+        int shootGaps;
+
+        public Tracker(int fireTimer, WeaponData weaponData, InteractionHand hand, int shootGaps) {
+            this.fireTimer = fireTimer;
+            this.weaponData = weaponData;
+            this.hand = hand;
+            this.shootGaps = shootGaps;
+        }
     }
 
     public static boolean isInGame() {
@@ -183,17 +200,17 @@ public class ClientShootingHandler {
     }
 
     public int getCooldown(LivingEntity entity, InteractionHand arm) {
-        var key = entityShootGaps.get(Pair.of(arm, entity));
-        if(key != null)
-            return key.second;
+        var tracker = SHOOTING_TRACKERS.get(Pair.of(arm, entity));
+        if(tracker != null)
+            return tracker.shootGaps;
         return 0;
     }
 
     @Nullable
     public WeaponData getWeaponData(LivingEntity entity, InteractionHand arm) {
-        var key = entityShootGaps.get(Pair.of(arm, entity));
-        if(key != null)
-            return key.first;
+        var tracker = SHOOTING_TRACKERS.get(Pair.of(arm, entity));
+        if(tracker != null)
+            return tracker.weaponData;
         return new WeaponData(entity.getItemInHand(arm), entity);
     }
 
@@ -206,13 +223,13 @@ public class ClientShootingHandler {
         return shootTickGap;
     }
 
-    public void fire(WeaponData data) {
-        var shooter = data.wielder;
-        var heldItem = data.weapon;
+    public void fire(WeaponData weaponData) {
+        var shooter = weaponData.wielder;
+        var heldItem = weaponData.weapon;
 
         if (heldItem.getItem() instanceof IWeapon
-                && (WeaponStateHelper.hasAmmo(data) /*|| (shooter instanceof Player player && player.isCreative())*/)
-                && isGunMode(data)
+                && (WeaponStateHelper.hasAmmo(weaponData) /*|| (shooter instanceof Player player && player.isCreative())*/)
+                && isGunMode(weaponData)
                 && !shooter.isSpectator()) {
             var isMainHand = shooter.getMainHandItem() == heldItem;
             var hand = isMainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
@@ -224,9 +241,10 @@ public class ClientShootingHandler {
 
                 // CHECK HERE: Change this to test different rpm settings.
                 // TODO: Test serverside, possible issues 0.3.4-alpha
-                final var rpm = WeaponModifierHelper.getRate(data); // Rounds per sec. Should come from gun properties in the end.
+                final var rpm = WeaponModifierHelper.getRate(weaponData); // Rounds per sec. Should come from gun properties in the end.
                 shootGap += rpm;
-                entityShootGaps.put(Pair.of(hand, shooter), Pair.of(data, shootGap));
+
+                SHOOTING_TRACKERS.put(Pair.of(hand, shooter), new Tracker(0, weaponData, hand, shootGap));
                 shootMsGap = calcShootTickGap(rpm);
                 RecoilHandler.get().lastRandPitch = RecoilHandler.get().lastRandPitch;
                 RecoilHandler.get().lastRandYaw = RecoilHandler.get().lastRandYaw;
@@ -234,7 +252,7 @@ public class ClientShootingHandler {
                 try {
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageShoot(shooter.getId(), shooter.getViewYRot(1),
                             shooter.getViewXRot(1),
-                            RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, hand, data.weaponMode));
+                            RecoilHandler.get().lastRandPitch, RecoilHandler.get().lastRandYaw, hand, weaponData.weaponMode));
                 } catch (NullPointerException e) {
                     Ntgl.LOGGER.error(e.getMessage(), e);
                 }
@@ -255,12 +273,10 @@ public class ClientShootingHandler {
     }
 
     private void reduceGaps(){
-        entityShootGaps.forEach((key, pair) -> {
-            var val = pair.second;
-
-            if(val > 0) val--;
-            entityShootGaps.put(key,  Pair.of(pair.first, val));
-        } );
+        SHOOTING_TRACKERS.forEach((key, tracker) -> {
+            if(tracker.shootGaps > 0)
+                tracker.shootGaps--;
+        });
     }
 
     private void setupShootingData(WeaponData weaponData, InteractionHand arm) {
@@ -286,29 +302,35 @@ public class ClientShootingHandler {
         return WeaponModifierHelper.getWeaponAction(weaponData) == WeaponAction.SHOT;
     }
 
-    public void handleInput(WeaponData weaponData, InteractionHand arm, KeyMapping key) {
+    public void handleInput(WeaponData weaponData, InteractionHand hand, KeyMapping key) {
         var mc = Minecraft.getInstance();
         var player = mc.player;
-        var data = shootingData.get(arm);
+        var data = shootingData.get(hand);
         var fireMode =  WeaponStateHelper.getFireMode(weaponData);
         var maxChargeTime = WeaponModifierHelper.getFireDelay(weaponData);
+        var isReloading = ModSyncedDataKeys.getReloadKey(hand).getValue(player);
+        var loadingType = WeaponModifierHelper.getLoadingType(weaponData) == LoadingType.PER_CARTRIDGE;
+
+        if(isReloading && loadingType){
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageReloadStop(hand));
+        }
 
         if (!isGunMode(weaponData)) {
             return;
         }
 
         if (maxChargeTime != 0) {
-            var isOnCooldown = ClientShootingHandler.get().isOnCooldown(player, arm);
+            var isOnCooldown = ClientShootingHandler.get().isOnCooldown(player, hand);
 
             if (data.fireTimer > 0 && !isOnCooldown) {
                 if (data.fireTimer == maxChargeTime - 2) {
-                    PacketHandler.getPlayChannel().sendToServer(new C2SMessagePreFireSound(player));
+                    PacketHandler.getPlayChannel().sendToServer(new C2SMessagePreFireSound(hand));
                 }
                 data.fireTimer--;
             } else {
                 this.fire(weaponData);
                 if (data.fireTimer == 0 && !WeaponModifierHelper.isOneTimeCharge(weaponData))
-                    setupShootingData(weaponData, arm);
+                    setupShootingData(weaponData, hand);
                 if (maxChargeTime > 0) {
                     if (fireMode != FireMode.AUTO)
                         key.setDown(false);

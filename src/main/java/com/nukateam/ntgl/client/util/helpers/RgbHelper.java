@@ -1,7 +1,5 @@
 package com.nukateam.ntgl.client.util.helpers;
 
-import com.nukateam.ntgl.client.render.hud.WeaponHud;
-
 public class RgbHelper {
     public static int toRgba(int rgb){
         int alpha = 0xFF;
@@ -9,7 +7,7 @@ public class RgbHelper {
     }
 
     public static float[] rgbToFloatRgba(int rgb) {
-        float red   = ((rgb >> WeaponHud.ICON_SIZE) & 0xFF) / 255.0f;
+        float red   = ((rgb >> 16) & 0xFF) / 255.0f;
         float green = ((rgb >> 8)  & 0xFF) / 255.0f;
         float blue  =  (rgb        & 0xFF) / 255.0f;
 

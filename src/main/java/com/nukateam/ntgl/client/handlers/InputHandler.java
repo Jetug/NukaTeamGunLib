@@ -24,7 +24,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
-import static com.nukateam.ntgl.client.input.NtglKeyBinds.*;
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
 import static com.nukateam.ntgl.client.util.handler.ClientShootingHandler.isInGame;
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.canUseOffhandWeapon;
@@ -133,7 +132,10 @@ public class InputHandler {
                 PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
             }
             if (NtglKeyBinds.KEY_RELOAD.consumeClick()) {
-                ClientReloadHandler.get().startReloading();
+                ClientReloadHandler.get().startReloading(WeaponMode.PRIMARY);
+            }
+            if (NtglKeyBinds.KEY_DEBUG_SHOW.consumeClick()) {
+                ClientReloadHandler.get().startReloading(WeaponMode.ALTERNATIVE);
             }
             if (NtglKeyBinds.KEY_UNLOAD.consumeClick()) {
                 ClientReloadHandler.get().unloadAmmo(InteractionHand.MAIN_HAND);
@@ -159,21 +161,21 @@ public class InputHandler {
     @OnlyIn(Dist.CLIENT)
     private static void handleDebugKeys() {
         if (Ntgl.isDebugging()) {
-            if (KEY_DEBUG_X_ADD.consumeClick()) {
+            if (NtglKeyBinds.KEY_DEBUG_X_ADD.consumeClick()) {
                 ClientDebug.X += 1;
-            } else if (KEY_DEBUG_Y_ADD.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_Y_ADD.consumeClick()) {
                 ClientDebug.Y += 1;
-            } else if (KEY_DEBUG_Z_ADD.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_Z_ADD.consumeClick()) {
                 ClientDebug.Z += 1;
-            } else if (KEY_DEBUG_X_SUB.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_X_SUB.consumeClick()) {
                 ClientDebug.X -= 1;
-            } else if (KEY_DEBUG_Y_SUB.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_Y_SUB.consumeClick()) {
                 ClientDebug.Y -= 1;
-            } else if (KEY_DEBUG_Z_SUB.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_Z_SUB.consumeClick()) {
                 ClientDebug.Z -= 1;
-            } else if (KEY_DEBUG_SHOW.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_SHOW.consumeClick()) {
                 ClientDebug.isHidden = !ClientDebug.isHidden;
-            } else if (KEY_DEBUG_ZERO.consumeClick()) {
+            } else if (NtglKeyBinds.KEY_DEBUG_ZERO.consumeClick()) {
                 var level = Minecraft.getInstance().level;
                 var entity = new FlyingGib(ModEntityTypes.FLYING_GIBS.get(), level);
 

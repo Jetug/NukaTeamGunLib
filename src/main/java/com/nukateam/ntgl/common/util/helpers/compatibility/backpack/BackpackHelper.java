@@ -8,39 +8,51 @@ import net.minecraft.world.entity.player.Player;
 
 public class BackpackHelper {
     public static IAmmoContext findAmmo(Player player, AmmoHolder id) {
-        var context = (IAmmoContext)AmmoContext.NONE;
+        try {
+            var context = (IAmmoContext)AmmoContext.NONE;
 
-        if (Ntgl.backpackedLoaded && Ntgl.curiosLoaded) {
-            context = BackpackedHelper.findAmmo(player, id);
+            if (Ntgl.backpackedLoaded && Ntgl.curiosLoaded) {
+                context = BackpackedHelper.findAmmo(player, id);
+            }
+            if(Ntgl.sophisticatedLoaded && context.equals(AmmoContext.NONE)){
+                context = SophisticatedHelper.findAmmo(player, id);
+            }
+            if(Ntgl.travelersLoaded && context.equals(AmmoContext.NONE)){
+                context = TravelersHelper.findAmmo(player, id);
+            }
+            if(Ntgl.yyzBackpackLoaded && context.equals(AmmoContext.NONE)){
+                context = YyzBackpackHelper.findAmmo(player, id);
+            }
+            return context;
         }
-        if(Ntgl.sophisticatedLoaded && context.equals(AmmoContext.NONE)){
-            context = SophisticatedHelper.findAmmo(player, id);
+        catch (Exception e){
+            Ntgl.LOGGER.error(e.getMessage());
+            return AmmoContext.NONE;
         }
-        if(Ntgl.travelersLoaded && context.equals(AmmoContext.NONE)){
-            context = TravelersHelper.findAmmo(player, id);
-        }
-        if(Ntgl.yyzBackpackLoaded && context.equals(AmmoContext.NONE)){
-            context = YyzBackpackHelper.findAmmo(player, id);
-        }
-        return context;
     }
 
     public static IAmmoContext findMagazine(Player player, AmmoHolder id) {
-        var context = (IAmmoContext)AmmoContext.NONE;
+        try {
+            var context = (IAmmoContext) AmmoContext.NONE;
 
-        if (Ntgl.backpackedLoaded && Ntgl.curiosLoaded) {
-            context = BackpackedHelper.findMagazine(player, id);
-        }
-        if(Ntgl.sophisticatedLoaded && context.equals(AmmoContext.NONE)){
-            context = SophisticatedHelper.findMagazine(player, id);
-        }
-        if(Ntgl.travelersLoaded && context.equals(AmmoContext.NONE)){
-            context = TravelersHelper.findMagazine(player, id);
-        }
-        if(Ntgl.yyzBackpackLoaded && context.equals(AmmoContext.NONE)){
-            context = YyzBackpackHelper.findMagazine(player, id);
-        }
+            if (Ntgl.backpackedLoaded && Ntgl.curiosLoaded) {
+                context = BackpackedHelper.findMagazine(player, id);
+            }
+            if (Ntgl.sophisticatedLoaded && context.equals(AmmoContext.NONE)) {
+                context = SophisticatedHelper.findMagazine(player, id);
+            }
+            if (Ntgl.travelersLoaded && context.equals(AmmoContext.NONE)) {
+                context = TravelersHelper.findMagazine(player, id);
+            }
+            if (Ntgl.yyzBackpackLoaded && context.equals(AmmoContext.NONE)) {
+                context = YyzBackpackHelper.findMagazine(player, id);
+            }
 
-        return context;
+            return context;
+        }
+        catch (Exception e){
+            Ntgl.LOGGER.error(e.getMessage());
+            return AmmoContext.NONE;
+        }
     }
 }

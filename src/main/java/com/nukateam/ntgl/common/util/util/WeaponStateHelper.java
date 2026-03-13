@@ -195,7 +195,6 @@ public class WeaponStateHelper {
         if (attachment.contains(type.toString(), Tag.TAG_COMPOUND)) {
             return ItemStack.parseOptional(data.registryAccess(), attachment.getCompound(type.toString()));
         }
-
         return ItemStack.EMPTY;
     }
 
@@ -302,6 +301,22 @@ public class WeaponStateHelper {
             equipTime = WeaponModifierHelper.getEquipTime(data);
         }
         return equipTime;
+    }
+
+    public static boolean isWeaponFull(WeaponData data) {
+        return getAmmoCount(data) >= WeaponModifierHelper.getMaxAmmo(data);
+    }
+
+    public static boolean isAuto(WeaponData itemStack) {
+        return getFireMode(itemStack) == FireMode.AUTO;
+    }
+
+    private static @NotNull CompoundTag getOrCreateTag(CompoundTag tag, String ammoCount) {
+        var ammoTag = new CompoundTag();
+
+        if (tag.contains(ammoCount, Tag.TAG_COMPOUND))
+            ammoTag = tag.getCompound(ammoCount);
+        return ammoTag;
     }
 
     public static String getVariant(ItemStack stack) {

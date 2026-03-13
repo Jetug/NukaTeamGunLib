@@ -28,7 +28,9 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class WeaponConfig implements INBTSerializable<CompoundTag>{
+import static com.nukateam.ntgl.client.handlers.ClientHandler.*;
+
+public class WeaponConfig implements INBTSerializable<CompoundTag> {
     public static final String GENERAL = "General";
     public static final String MELEE = "Melee";
     public static final String THROWABLE = "Throwable";
@@ -170,12 +172,12 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>{
         return this.throwable;
     }
 
-    public Sounds getSounds() {
-        return new Sounds(this);
-    }
-
     public HashMap<String, ResourceLocation> getSoundsMap() {
         return sounds;
+    }
+
+    public ResourceLocation getSound(String name){
+        return sounds.get(name);
     }
 
 
@@ -297,6 +299,12 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>{
         if(mode == WeaponMode.PRIMARY)
             return melee;
         else return modes.getOrDefault(mode, new WeaponSettings()).getMelee();
+    }
+
+    public AmmoData getAmmoData(WeaponMode mode, ResourceLocation ammoId) {
+        if(mode == WeaponMode.PRIMARY)
+            return ammoData.get(ammoId);
+        else return modes.getOrDefault(mode, new WeaponSettings()).getAmmoData(ammoId);
     }
 
     public ThrowableConfig getThrowable(WeaponMode mode) {

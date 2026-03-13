@@ -1,8 +1,10 @@
 package com.nukateam.ntgl.client.util.handler;
 
 import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessageReload;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageReloadStop;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessageUnload;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
@@ -18,14 +20,15 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.SubscribeEvent;
 
+import java.util.HashMap;
+
 /**
  * Author: MrCrayfish
  */
 public class ClientReloadHandler {
     private static ClientReloadHandler instance;
+    private static final HashMap<InteractionHand, WeaponData> RELOAD_DATA = new HashMap<>();
 
-    private int reloadTimer;
-    private int prevReloadTimer;
     private int reloadingSlot;
     private int reloadTicks;
 
@@ -42,57 +45,63 @@ public class ClientReloadHandler {
     public void onClientTick(ClientTickEvent.Post event) {
         if(reloadTicks > 0) reloadTicks--;
 
-        this.prevReloadTimer = this.reloadTimer;
+        if(reloadTicks > 0) reloadTicks--;
 
         var player = Minecraft.getInstance().player;
         if (player != null) {
             if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(player)) {
                 if (this.reloadingSlot != player.getInventory().selected) {
-                    this.setReloading(false, InteractionHand.MAIN_HAND);
+                    stopReloading(InteractionHand.MAIN_HAND);
                 }
             }
-
-            this.updateReloadTimer(player);
         }
     }
 
     public void unloadAmmo(InteractionHand hand) {
-        this.setReloading(false, hand);
+        stopReloading(hand);
         PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload(hand));
     }
 
-    public void startReloading(){
+    public void startReloading(WeaponMode mode){
         var player = Minecraft.getInstance().player;
         if (player == null) return;
 
         var mainHandItem = player.getMainHandItem();
         var offhandItem = player.getOffhandItem();
+        var mainData = new WeaponData(mainHandItem, player).setWeaponMode(mode);
+        var offData = new WeaponData(offhandItem, player).setWeaponMode(mode);
 
         if (mainHandItem.getItem() instanceof IWeapon
-                && !WeaponModifierHelper.isWeaponFull(new WeaponData(mainHandItem, player))
+                && !WeaponStateHelper.isWeaponFull(mainData)
                 && !isReloading(player, InteractionHand.MAIN_HAND)){
-            setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
+            RELOAD_DATA.put(InteractionHand.MAIN_HAND, mainData);
+            setReloading(mainData, !ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
         }
         else if (offhandItem.getItem() instanceof IWeapon
                 && WeaponModifierHelper.canUseOffhandWeapon(player)
-                && !WeaponModifierHelper.isWeaponFull(new WeaponData(offhandItem, player))
+                && !WeaponStateHelper.isWeaponFull(offData)
                 && !isReloading(player, InteractionHand.OFF_HAND)){
-            setReloading(!ModSyncedDataKeys.RELOADING_LEFT.getValue(player), InteractionHand.OFF_HAND);
+            RELOAD_DATA.put(InteractionHand.OFF_HAND, offData);
+            setReloading(offData, !ModSyncedDataKeys.RELOADING_LEFT.getValue(player), InteractionHand.OFF_HAND);
         }
     }
 
-    public void setReloading(boolean reloading, InteractionHand hand) {
+    public static WeaponData getReloadData(InteractionHand hand){
+        return RELOAD_DATA.get(hand);
+    }
+
+    public void setReloading(WeaponData data, boolean reloading, InteractionHand hand) {
         var player = Minecraft.getInstance().player;
         if (player == null) return;
 
         var dataKey = ModSyncedDataKeys.getReloadKey(hand);
-        var stack = player.getItemInHand(hand);
+        var stack = data.weapon;
+        if (stack == null) return;
 
         if (reloading) {
             if (stack.getItem() instanceof IWeapon) {
-                var data = new WeaponData(stack, player);
                 var isAmmoIgnored = WeaponStateHelper.isAmmoIgnored(data);
-                var hasAmmo = InventoryUtil.hasAmmo(new WeaponData(stack, player));
+                var hasAmmo = InventoryUtil.hasAmmo(data);
                 var isMaxAmmo = WeaponStateHelper.isMaxAmmo(data);
 
                 if (!isAmmoIgnored && hasAmmo && !isMaxAmmo) {
@@ -100,13 +109,12 @@ public class ClientReloadHandler {
 
                     if (WeaponStateHelper.getAmmoCount(data) >= WeaponModifierHelper.getMaxAmmo(data))
                         return;
-                    if (NeoForge.EVENT_BUS.post(new GunReloadEvent.Pre(player, stack, hand)).isCanceled())
+                    if (NeoForge.EVENT_BUS.post(new GunReloadEvent.Pre(data, hand)).isCanceled())
                         return;
 
                     dataKey.setValue(player, true);
-                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(true, hand));
+                    PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(hand, data.weaponMode));
                     this.reloadingSlot = player.getInventory().selected;
-                    reloadTimer = WeaponModifierHelper.getReloadTime(data);
 
                     NeoForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack, hand));
                 }
@@ -116,7 +124,7 @@ public class ClientReloadHandler {
         }
     }
 
-    private void stopReloading(InteractionHand arm){
+    public void stopReloading(InteractionHand arm){
         var player = Minecraft.getInstance().player;
 
         var dataKey = arm == InteractionHand.MAIN_HAND ?
@@ -124,36 +132,9 @@ public class ClientReloadHandler {
                 ModSyncedDataKeys.RELOADING_LEFT;
 
         dataKey.setValue(player, false);
-        PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(false, arm));
+        PacketHandler.getPlayChannel().sendToServer(new C2SMessageReloadStop(arm));
         this.reloadingSlot = -1;
         reloadTicks = -1;
-    }
-
-    private void updateReloadTimer(Player player) {
-        if(reloadTimer > 0){
-            reloadTimer--;
-        }
-//        else PlayerAnimationHelper.stopAnim(player, reloadArm == HumanoidArm.LEFT);
-
-//        if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(player)) {
-//            if (this.startReloadTick == -1) {
-//                this.startReloadTick = player.tickCount + 5;
-//            }
-//            if (this.reloadTimer < 5) {
-//                this.reloadTimer++;
-//            }
-//        } else {
-//            if (this.startReloadTick != -1) {
-//                this.startReloadTick = -1;
-//            }
-//            if (this.reloadTimer > 0) {
-//                this.reloadTimer--;
-//            }
-//        }
-    }
-
-    public int getReloadTimer() {
-        return this.reloadTimer;
     }
 
     public boolean isReloading(LivingEntity entity, InteractionHand arm) {
@@ -169,13 +150,5 @@ public class ClientReloadHandler {
 
     public boolean isReloadingLeft(LivingEntity entity) {
         return ModSyncedDataKeys.RELOADING_LEFT.getValue(entity);
-    }
-
-    public int getReloadingTicks() {
-        return reloadTicks;
-    }
-
-    public float getReloadProgress(float partialTicks) {
-        return (this.prevReloadTimer + (this.reloadTimer - this.prevReloadTimer) * partialTicks) / 5F;
     }
 }

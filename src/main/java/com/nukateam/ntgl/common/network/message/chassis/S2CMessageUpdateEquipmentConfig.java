@@ -1,19 +1,16 @@
 package com.nukateam.ntgl.common.network.message.chassis;
 
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.chassis_core.client.network.ClientPlayHandler;
 import com.nukateam.chassis_core.common.config.EquipmentConfig;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkEquipmentManager;
-import com.mrcrayfish.framework.api.network.MessageContext;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.Validate;
 
-/**
- * Author: MrCrayfish
- */
 public class S2CMessageUpdateEquipmentConfig  {
     public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageUpdateEquipmentConfig> STREAM_CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),

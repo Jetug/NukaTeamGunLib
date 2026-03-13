@@ -240,7 +240,7 @@ public class GunRenderingHandler {
                     var modifiedGun = weaponItem.getModifiedConfig(heldItem);
                     var pos = model.getTransforms().firstPersonRightHand.translation;
                     this.applyIronSightTransforms(event, poseStack, model, isRight, heldItem, modifiedGun);
-                    this.applyAimingTransforms(poseStack, heldItem, modifiedGun, pos, offset);
+                    this.applyAimingTransforms(poseStack, heldItem, pos, offset);
                     this.applySwayTransforms(poseStack, heldItem, player, rightHandTranslation, event.getPartialTick());
                 }
 
@@ -382,7 +382,7 @@ public class GunRenderingHandler {
     }
 
 
-    private void applyAimingTransforms(PoseStack poseStack, ItemStack heldItem, WeaponConfig modifiedWeaponConfig, Vector3f pos, int offset) {
+    private void applyAimingTransforms(PoseStack poseStack, ItemStack heldItem, Vector3f pos, int offset) {
 //        if (!Config.CLIENT.display.oldAnimations.get()) {
         var x = pos.x();
         var y = pos.y();
@@ -439,12 +439,12 @@ public class GunRenderingHandler {
 //        }
 //    }
 
-    private void applyReloadTransforms(PoseStack poseStack, float partialTicks) {
-        float reloadProgress = ClientReloadHandler.get().getReloadProgress(partialTicks);
-        poseStack.translate(0, 0.35 * reloadProgress, 0);
-        poseStack.translate(0, 0, -0.1 * reloadProgress);
-        poseStack.mulPose(Axis.XP.rotationDegrees(45F * reloadProgress));
-    }
+//    private void applyReloadTransforms(PoseStack poseStack, float partialTicks) {
+//        float reloadProgress = ClientReloadHandler.get().getReloadProgress(partialTicks);
+//        poseStack.translate(0, 0.35 * reloadProgress, 0);
+//        poseStack.translate(0, 0, -0.1 * reloadProgress);
+//        poseStack.mulPose(Axis.XP.rotationDegrees(45F * reloadProgress));
+//    }
 
 //    private void applyRecoilTransforms(PoseStack poseStack, Player player, ItemStack item, WeaponConfig weaponConfig) {
 //        double recoilNormal = RecoilHandler.get().getGunRecoilNormal();

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 
 public class ChassisCore {
     public static final String MOD_ID = Ntgl.MOD_ID;
+    public static final Logger LOGGER = Ntgl.LOGGER;
 
     public ChassisCore(IEventBus MOD_EVENT_BUS) {
         ItemRegistry.register(MOD_EVENT_BUS);

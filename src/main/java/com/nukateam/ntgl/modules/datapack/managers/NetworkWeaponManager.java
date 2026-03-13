@@ -16,6 +16,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
+
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import org.apache.commons.lang3.Validate;
 
@@ -94,29 +95,25 @@ public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWe
         return ImmutableMap.of();
     }
 
-    public static boolean updateRegisteredWeapons(S2CMessageUpdateWeapons message) {
-        return updateRegisteredWeapons(message.getRegisteredGuns());
+    public static void updateRegisteredWeapons(S2CMessageUpdateWeapons message) {
+        updateRegisteredWeapons(message.getRegisteredGuns());
     }
 
     /**
      * Updates registered weapons from data provided by the server
-     *
-     * @return true if all registered weapons were able to update their corresponding weapon item
      */
-    private static boolean updateRegisteredWeapons(Map<ResourceLocation, WeaponConfig> registeredConfigs) {
+    private static void updateRegisteredWeapons(Map<ResourceLocation, WeaponConfig> registeredConfigs) {
         clientRegisteredWeapons.clear();
         if (registeredConfigs != null) {
             for (Map.Entry<ResourceLocation, WeaponConfig> entry : registeredConfigs.entrySet()) {
                 var item = BuiltInRegistries.ITEM.get(entry.getKey());
                 if (!(item instanceof IWeapon)) {
-                    return false;
+                    return;
                 }
                 ((IWeapon) item).setConfig(new ConfigSupplier<>(entry.getValue()));
                 clientRegisteredWeapons.add((IWeapon) item);
             }
-            return true;
         }
-        return false;
     }
 
     /**

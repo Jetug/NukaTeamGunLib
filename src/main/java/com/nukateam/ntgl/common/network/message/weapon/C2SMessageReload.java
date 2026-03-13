@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.network.message.weapon;
 
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,21 +18,26 @@ public class C2SMessageReload  {
             buffer -> decode(buffer));
     private boolean reload;
     private InteractionHand hand = InteractionHand.MAIN_HAND;
+    WeaponMode weaponMode;
 
     public C2SMessageReload() {}
 
-    public C2SMessageReload(boolean reload, InteractionHand hand) {
-        this.reload = reload;
+    public C2SMessageReload(InteractionHand hand, WeaponMode weaponMode) {
         this.hand = hand;
+        this.weaponMode = weaponMode;
     }
 
+    @Override
     public static void encode(C2SMessageReload message, FriendlyByteBuf buffer) {
-        buffer.writeBoolean(message.reload);
         buffer.writeEnum(message.hand);
+        buffer.writeUtf(message.weaponMode.toString());
     }
 
+    @Override
     public static C2SMessageReload decode(FriendlyByteBuf buffer) {
-        return new C2SMessageReload(buffer.readBoolean(), buffer.readEnum(InteractionHand.class));
+        return new C2SMessageReload(
+                buffer.readEnum(InteractionHand.class),
+                WeaponMode.getType(buffer.readUtf()));
     }
 
     public static void handle(C2SMessageReload message, MessageContext supplier) {
@@ -39,17 +45,17 @@ public class C2SMessageReload  {
         {
             var player = supplier.getPlayer().get();
             if (player != null && !player.isSpectator()) {
-                ServerPlayHandler.handleReload(message, player);
+                ServerPlayHandler.handleReload(message, (ServerPlayer)player);
             }
         }));
         supplier.setHandled(true);
     }
 
-    public boolean isReload() {
-        return reload;
-    }
-
     public InteractionHand getHand() {
         return hand;
+    }
+
+    public WeaponMode getWeaponMode() {
+        return weaponMode;
     }
 }

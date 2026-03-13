@@ -150,7 +150,7 @@ public class ControllerHandler {
             var gunData = new WeaponData(heldItem, player);
 
             if (heldItem.getItem() instanceof IWeapon) {
-                if (WeaponModifierHelper.isAuto(gunData)) {
+                if (WeaponStateHelper.isAuto(gunData)) {
                     ClientShootingHandler.get().fire(new WeaponData(heldItem, player).setWeaponMode(WeaponMode.PRIMARY));
                 }
             }
@@ -163,11 +163,12 @@ public class ControllerHandler {
         }
 
         if (reloadCounter > 40) {
-            ClientReloadHandler.get().setReloading(false, InteractionHand.MAIN_HAND);
+            ClientReloadHandler.get().stopReloading(InteractionHand.MAIN_HAND);
             PacketHandler.getPlayChannel().sendToServer(new C2SMessageUnload());
             reloadCounter = -1;
         } else if (reloadCounter > 0 && !controller.isButtonPressed(GunButtonBindings.RELOAD.getButton())) {
-            ClientReloadHandler.get().setReloading(!ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
+            ClientReloadHandler.get().setReloading(new WeaponData(player.getMainHandItem(), player),
+                    !ModSyncedDataKeys.RELOADING_RIGHT.getValue(player), InteractionHand.MAIN_HAND);
             reloadCounter = -1;
         }
     }

@@ -217,11 +217,6 @@ public class AimingHandler {
         if(!mainHandItem.isEmpty() && !offhandItem.isEmpty() && mainOneHanded && offOneHanded)
             return false;
 
-        var gun = ((IWeapon)mainHandItem.getItem()).getModifiedConfig(mainHandItem);
-
-//        if (!gun.canAimDownSight())
-//            return false;
-
         if (mc.player.getOffhandItem().getItem() == Items.SHIELD) {
             if (WeaponModifierHelper.isOneHanded(new WeaponData(mainHandItem, mc.player))) return false;
         }

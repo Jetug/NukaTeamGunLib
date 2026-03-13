@@ -6,9 +6,6 @@ import com.nukateam.ntgl.common.util.util.NbtUtils;
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
-import com.nukateam.ntgl.common.debug.screen.widget.DebugButton;
-import com.nukateam.ntgl.common.debug.screen.widget.DebugToggle;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -21,6 +18,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Supplier;
 
 public class Modules implements INBTSerializable<CompoundTag> {
     @Optional
@@ -106,10 +104,10 @@ public class Modules implements INBTSerializable<CompoundTag> {
                 this.item = ResourceLocation.tryParse(tag.getString("Item"));
             }
             if (tag.contains("Hide", Tag.TAG_COMPOUND)) {
-                this.hide = NbtUtils.deserializeStringArray(tag.getCompound("Hide"));
+                this.hide = NbtUtils.deserializeStringArrayList(tag.getCompound("Hide"));
             }
             if (tag.contains("Bones", Tag.TAG_COMPOUND)) {
-                this.bones = NbtUtils.deserializeStringArray(tag.getCompound("Bones"));
+                this.bones = NbtUtils.deserializeStringArrayList(tag.getCompound("Bones"));
             }
             if (tag.contains(OFFSET, Tag.TAG_COMPOUND)) {
                 this.offset = NbtUtils.readVec3(tag.getCompound(OFFSET));

@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.world.entity.HumanoidArm;
@@ -74,10 +75,11 @@ public class EntityReloadTracker {
             tracker.reloadTick = Math.max(tracker.reloadTick - 1, 0);
         }
         else{
-            var data = new WeaponData(tracker.stack, entity);
-            WeaponStateHelper.fillAmmo(data);
+            if (tracker.stack.getItem() instanceof IWeapon) {
+                var data = new WeaponData(tracker.stack, entity);
+                WeaponStateHelper.fillAmmo(data);
+            }
             setReloading(entity, tracker.arm, false);
-//            RELOAD_TRACKER_MAP.remove(entity);
             FOR_REMOVE.add(entity);
         }
     }

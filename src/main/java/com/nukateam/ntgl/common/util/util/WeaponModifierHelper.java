@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -75,6 +76,11 @@ public class WeaponModifierHelper {
         return config.getMelee(weaponData.weaponMode);
     }
 
+    public static AmmoData getAmmoData(WeaponData weaponData, ResourceLocation ammoId) {
+        var config = getConfig(weaponData);
+        return config.getAmmoData(weaponData.weaponMode, ammoId);
+    }
+
     public static Zoom getZoom(WeaponData weaponData) {
         var config = getConfig(weaponData);
         return config.getZoom(weaponData.weaponMode);
@@ -127,9 +133,9 @@ public class WeaponModifierHelper {
         return autoReloading.get();
     }
 
-    public static ResourceLocation getFireSound(WeaponData data) {
-        var fireSound = new AtomicReference<>(getConfig(data).getSounds().getFire());
-        forEachAttachment(data, (modifier -> fireSound.set(modifier.modifyFireSound(fireSound.get(), data))));
+    public static ResourceLocation getSound(WeaponData data, String name) {
+        var fireSound = new AtomicReference<>(getConfig(data).getSound(name));
+        forEachAttachment(data, (modifier -> fireSound.set(modifier.modifySound(name, fireSound.get(), data))));
         return fireSound.get();
     }
 
@@ -164,6 +170,12 @@ public class WeaponModifierHelper {
         var finalProjectileAmount = new AtomicInteger(gunProjectileAmount * ammoProjectileAmount);
         forEachAttachment(data, (modifier -> finalProjectileAmount.set(modifier.modifyProjectileAmount(finalProjectileAmount.get(), data))));
         return finalProjectileAmount.get();
+    }
+
+    public static float getRecoilAdsReduction(WeaponData data) {
+        var value = new AtomicReference<>(getGeneral(data).getRecoilAdsReduction());
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyRecoilAdsReduction(value.get(), data))));
+        return value.get();
     }
 
     public static int getReloadAmount(WeaponData data) {
@@ -358,11 +370,11 @@ public class WeaponModifierHelper {
         return finalSpread.get();
     }
 
-    public static float getMovementSpeed(WeaponData data) {
-        var gunSpread = getGeneral(data).getMovementSpeed();
-        var finalValue = new AtomicReference<>(gunSpread);
+    public static ArrayList<AttributeModifier> getAttributeModifiers(WeaponData data) {
+        var value = getGeneral(data).getAttributeModifiers();
+        var finalValue = new AtomicReference<>(value);
 
-        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMovementSpeed(finalValue.get(), data))));
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyAttributeModifiers(finalValue.get(), data))));
         return finalValue.get();
     }
 
@@ -507,12 +519,11 @@ public class WeaponModifierHelper {
     }
 
     public static ProjectileConfig getProjectileConfig(ResourceLocation ammoId, WeaponData data) {
-        var gun = getConfig(data);
         ProjectileConfig config = null;
         var item = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
-        if(gun.hasAmmo(ammoId)) {
-            config = gun.getProjectileConfig(ammoId);
+        if(getAmmoData(data, ammoId) != null) {
+            config = getAmmoData(data, ammoId).getProjectile();
         }
         else if(item.canReturnAmmo() && BuiltInRegistries.ITEM.get(item.getId()) instanceof IAmmo ammoItem) {
             config = ammoItem.getAmmo();
@@ -527,7 +538,7 @@ public class WeaponModifierHelper {
     }
 
     public static AmmoConfig getAmmoConfig(ResourceLocation ammoId, WeaponData data) {
-        var finalValue = new AtomicReference<>(getConfig(data).getAmmoConfig(ammoId));
+        var finalValue = new AtomicReference<>(getAmmoData(data, ammoId).getAmmo());
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyAmmo(finalValue.get(), data))));
         return finalValue.get();
     }

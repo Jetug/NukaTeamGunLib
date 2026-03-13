@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.network.message.chassis.actions;
 
-import com.nukateam.chassis_core.common.network.ActionRegistry;
 import com.mrcrayfish.framework.api.network.MessageContext;
+import com.nukateam.chassis_core.common.network.ActionRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 
 public abstract class Action<T extends Action<T>> {

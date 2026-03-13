@@ -5,6 +5,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.weapon.General;
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -62,7 +63,7 @@ import java.util.function.Predicate;
 public class ProjectileEntity extends Entity{
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
-
+    protected AmmoHolder ammoHolder;
     protected WeaponMode weaponAction;
     protected WeaponData weaponData;
     protected boolean isServerSide = !level().isClientSide();
@@ -104,6 +105,7 @@ public class ProjectileEntity extends Entity{
         var hand = shooter.getMainHandItem() == weaponStack ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         this.isRightHand = hand == InteractionHand.MAIN_HAND;
         this.ammo = setupAmmo(data);
+        this.ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
         this.pierceCount = projectile.getPierceLevel();
         var dir = this.getDirection(shooter, weaponStack, item);
         var speed =  this.projectile.getSpeed();
@@ -123,6 +125,7 @@ public class ProjectileEntity extends Entity{
         compound.put("Weapon", weapon.save(provider, new CompoundTag()));
         compound.putString("WeaponAction", weaponAction.toString());
         compound.put("Ammo", ammo.save(provider, new CompoundTag()));
+        compound.putString("AmmoHolder", ammoHolder.toString());
         compound.put("Projectile", this.projectile.serializeNBT(provider));
         compound.put("General", this.general.serializeNBT(provider));
         compound.putDouble("ModifiedGravity", this.modifiedGravity);
@@ -141,6 +144,7 @@ public class ProjectileEntity extends Entity{
         this.weapon = ItemStack.parseOptional(provider, compound.getCompound("Weapon"));
         this.weaponAction = WeaponMode.getType(compound.getString("WeaponAction"));
         this.ammo = ItemStack.parseOptional(provider, compound.getCompound("Ammo"));
+        this.ammoHolder = AmmoHolder.getType(compound.getString("AmmoHolder"));
         this.projectile = ProjectileConfig.create(compound.getCompound("Projectile"));
         this.general = General.create(compound.getCompound("General"));
         this.modifiedGravity = compound.getDouble("ModifiedGravity");
@@ -153,7 +157,6 @@ public class ProjectileEntity extends Entity{
                 projectile.getSize(), projectile.getSize(), projectile.getSize(),
                 -projectile.getSize(), -projectile.getSize(), -projectile.getSize()));
     }
-
 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
@@ -183,8 +186,8 @@ public class ProjectileEntity extends Entity{
 
         if (isServerSide) {
             rayTraceTargets();
+            travel();
         }
-        travel();
 
         if (this.tickCount >= this.life) {
             if (this.isAlive()) {
@@ -429,7 +432,7 @@ public class ProjectileEntity extends Entity{
         if (this.shooter instanceof Player player && entity.hasIndirectPassenger(player)) return;
 
         burnEntity(entity);
-        damageEntity(entity, entityHitResult);
+        damageEntity(entityHitResult);
         PacketHandler.getPlayChannel().sendToTrackingEntity(() -> entity, new S2CMessageBlood(hitVec));
         onContact(hitVec);
         handlePierce(HitTarget.ENTITY);
@@ -509,7 +512,8 @@ public class ProjectileEntity extends Entity{
         }
     }
 
-    private void damageEntity(Entity entity, ExtendedEntityRayTraceResult hitResult) {
+    protected void damageEntity(ExtendedEntityRayTraceResult hitResult) {
+        var entity = hitResult.getEntity();
         var damage = this.getDamage();
         var criticalDamage = this.getCriticalDamage(this.weapon, this.random, damage);
         var isCritical = damage != criticalDamage;
@@ -523,6 +527,7 @@ public class ProjectileEntity extends Entity{
     protected void onContact(Vec3 hitVec) {
         if(projectile.getExplosion().isExplodeOnContact() && ExplosionUtils.isExplosive(projectile.getExplosion())){
             ExplosionUtils.createExplosion(this, projectile.getExplosion(), hitVec);
+            this.remove(RemovalReason.KILLED);
         }
     }
 
@@ -624,7 +629,7 @@ public class ProjectileEntity extends Entity{
     private @NotNull DamageSource getDamageSource() {
         return new DamageSource(getProvider()
                 .registryOrThrow(Registries.DAMAGE_TYPE)
-                .getHolderOrThrow( projectile.getDamageType()));
+                .getHolderOrThrow(projectile.getDamageType()), shooter);
     }
 
     private void sendEntityHitMessage(Entity entity, Vec3 hitVec, boolean headshot, boolean isCritical) {

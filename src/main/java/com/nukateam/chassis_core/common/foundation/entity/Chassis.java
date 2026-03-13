@@ -161,7 +161,7 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
     public ArrayList<String> getMods() {
         var res = new ArrayList<String>();
         for (var config : getItemConfigs())
-            res.addAll(List.of(config.mods));
+            res.addAll(config.mods);
         return res;
     }
 
@@ -391,10 +391,10 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
             var item = getAsChassisEquipment(stack);
             var config = item.getConfig();
             if(config == null) continue;
-            addAll(bonesToHide, config.hide);
+            bonesToHide.addAll(config.hide);
 
             for (var attachment : config.attachments) {
-                if (stream(config.mods).toList().contains(attachment.armor)
+                if (config.mods.contains(attachment.armor)
                         && !StackUtils.hasAttachment(stack, attachment.armor))
                     continue;
 

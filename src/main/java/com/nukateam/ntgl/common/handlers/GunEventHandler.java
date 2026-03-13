@@ -1,8 +1,11 @@
 package com.nukateam.ntgl.common.handlers;
 
+import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
+import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.foundation.init.NtglGameEvents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -102,11 +105,31 @@ public class GunEventHandler {
             }
 
             if (currentDamage == maxDamage) {
-                WeaponModifierHelper.getConfig(new WeaponData(heldItem, shooter)).playCockSound(shooter);
+                playCockSound(new WeaponData(heldItem, shooter));
                 return true;
             }
         }
         return false;
+    }
+
+    public static void playCockSound(WeaponData data) {
+        var wielder = data.wielder;
+        if(!wielder.level().isClientSide) {
+            var cockSound = WeaponModifierHelper.getSound(data, SoundType.COCK.getName());
+            if (!wielder.isAlive()) return;
+
+            if (cockSound == null) cockSound = ModSounds.ITEM_PISTOL_COCK.get().getLocation();
+
+            var radius = Config.SERVER.reloadMaxDistance.get();
+            var messageSound = new S2CMessageGunSound(cockSound,
+                    SoundSource.PLAYERS, wielder,
+                    GunShotSound.getVolume(1.0F), 1.0F,
+                    true);
+
+            PacketHandler.getPlayChannel().sendToNearbyPlayers(
+                    () -> LevelLocation.create(wielder.level(), wielder.getX(), wielder.getY() + 1.0, wielder.getZ(), radius),
+                    messageSound);
+        }
     }
 
     public static void damageGun(ItemStack stack, Level level, LivingEntity entity) {

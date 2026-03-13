@@ -120,8 +120,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
 
         if (WeaponStateHelper.hasAmmo(new WeaponData(mob.getGun(), mob))) {
             mob.performRangedAttack(target, 1);
-        }
-        else if(!EntityReloadTracker.isReloading(mob)) {
+        } else if (!EntityReloadTracker.isReloading(mob)) {
             EntityReloadTracker.addTracker(mob, HumanoidArm.RIGHT);
         }
 //
@@ -152,7 +151,7 @@ public class GunAttackGoal<T extends PathfinderMob & RangedAttackMob & IGunUser>
         ServerPlayHandler.handleShoot(msg, mob);
     }
 
-    public static void shoot(LivingEntity shooter, InteractionHand hand){
+    public static void shoot(LivingEntity shooter, InteractionHand hand) {
         var msg = new C2SMessageShoot(shooter.getId(),
                 shooter.getViewYRot(1),
                 shooter.getViewXRot(1),

@@ -79,6 +79,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     protected ThrowMode throwMode;
     protected int prepareTime;
     protected int throwingTime;
+    private WeaponData data;
 
     public WeaponAnimator(ItemDisplayContext transformType, DynamicWeaponRenderer<WeaponAnimator> renderer) {
         super(transformType);
@@ -102,6 +103,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         controllerRegistrar.add(TRIGGER_CONTROLLER);
         controllerRegistrar.add(REVOLVER_CONTROLLER);
         controllerRegistrar.add(BARREL_CONTROLLER);
+        controllerRegistrar.add(TICKING_CONTROLLER);
     }
 
     @Override
@@ -118,8 +120,10 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         if (!(getStack().getItem() instanceof IWeapon))
             return;
 
-        var data = getGunData();
-        this.rate = WeaponModifierHelper.getRate(shootingHandler.getWeaponData(getEntity(), getArm()));
+        if(getEntity().getItemInHand(getArm()).getItem() instanceof IWeapon) {
+            this.rate = WeaponModifierHelper.getRate(shootingHandler.getWeaponData(getEntity(), getArm()));
+        }
+        this.data = getWeaponData();
         this.equipTime = WeaponModifierHelper.getEquipTime(data);
         this.isEquiping = EquipTracker.isEquiping(getEntity(), getArm());
         this.meleeDelay = WeaponModifierHelper.getMeleeDelay(data);
@@ -131,7 +135,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         this.prepareTime  = WeaponModifierHelper.getPrepareTime(data);
         this.throwingTime = WeaponModifierHelper.getThrowTime(data);
         this.throwMode = WeaponStateHelper.getThrowMode(data);
-        
+
         setupCycledAnimations();
     }
 
@@ -150,7 +154,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         return (IWeapon) getStack().getItem();
     }
 
-    protected @NotNull WeaponData getGunData() {
+    protected @NotNull WeaponData getWeaponData() {
         return new WeaponData(getStack(), getEntity());
     }
 
@@ -292,8 +296,8 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
 
             RawAnimation animation = null;
             if (isShooting && this.animationHelper.hasAnimation(finalAnim)) {
-                animation = begin().then(finalAnim, LoopType.HOLD_ON_LAST_FRAME);
-                this.animationHelper.syncAnimation(event, finalAnim, rate);
+                animation = RawAnimation.begin().then(finalAnim, LoopType.HOLD_ON_LAST_FRAME);
+                this.animationHelper.syncAnimation(event, rate, finalAnim);
             }
 
             return event.setAndContinue(animation);
@@ -316,7 +320,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     protected RawAnimation getInspectionAnimation(AnimationState<WeaponAnimator> event) {
             RawAnimation animation;
             animation = playGunAnim(Animations.INSPECT, PLAY_ONCE);
-            animationHelper.syncAnimation(event, Animations.INSPECT, ClientHandler.getMaxInspectionTicks());
+            animationHelper.syncAnimation(event, ClientHandler.getMaxInspectionTicks(), Animations.INSPECT);
             return animation;
     }
 
@@ -326,19 +330,18 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
                 BARREL_CONTROLLER.stop();
                 BARREL_CONTROLLER.setAnimation(playVoid());
                 animation = playGunAnim(Animations.CHARGE, LOOP);
-                animationHelper.syncAnimation(event, Animations.CHARGE, fireDelay);
+                animationHelper.syncAnimation(event, fireDelay, Animations.CHARGE);
             }
             return animation;
     }
 
     protected RawAnimation getTickingAnimation(AnimationState<WeaponAnimator> event) {
-        var animation = playGunAnim(TICKING, LOOP);
-        return animation;
+        return playGunAnim(TICKING, LOOP);
     }
 
     protected RawAnimation getMeleeDelayAnimation(AnimationState<WeaponAnimator> event) {
             var animation = playGunAnim(MELEE, LOOP);
-            animationHelper.syncAnimation(event, MELEE, meleeDelay);
+            animationHelper.syncAnimation(event, meleeDelay, MELEE);
             return animation;
     }
 
@@ -347,19 +350,19 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
                 return getHoldAnimation(event);
 
             var animation = playGunAnim(MELEE_END, LOOP);
-            animationHelper.syncAnimation(event, MELEE_END, meleeCooldown);
+            animationHelper.syncAnimation(event, meleeCooldown, MELEE_END);
             return animation;
     }
 
     protected RawAnimation getEquipAnimation(AnimationState<WeaponAnimator> event) {
             var animation = playGunAnim(EQUIP, LOOP);
-            animationHelper.syncAnimation(event, EQUIP, equipTime);
+            animationHelper.syncAnimation(event, equipTime, EQUIP);
             return animation;
     }
 
     protected RawAnimation getShootingAnimation(AnimationState<WeaponAnimator> event) {
             var animation = playGunAnim(SHOT, LOOP);
-            animationHelper.syncAnimation(event, SHOT, rate);
+            animationHelper.syncAnimation(event, rate, SHOT);
             return animation;
     }
 
@@ -379,19 +382,19 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
 
     protected RawAnimation getDefaultReloadAnimation(AnimationState<WeaponAnimator> event) {
         var animation = playGunAnim(RELOAD, LOOP);
-        animationHelper.syncAnimation(event, RELOAD, reloadTime);
+        animationHelper.syncAnimation(event, reloadTime, RELOAD);
         return animation;
     }
 
     protected RawAnimation getEndReloadAnimation(AnimationState<WeaponAnimator> event) {
         var animation = playGunAnim(Animations.RELOAD_END, PLAY_ONCE);
-        animationHelper.syncAnimation(event, Animations.RELOAD_END, reloadEndTime);
+        animationHelper.syncAnimation(event, reloadEndTime, Animations.RELOAD_END);
         return animation;
     }
 
     protected RawAnimation getStartReloadAnimation(AnimationState<WeaponAnimator> event) {
         var animation = playGunAnim(Animations.RELOAD_START, PLAY_ONCE);
-        animationHelper.syncAnimation(event, Animations.RELOAD_START, reloadStartTime);
+        animationHelper.syncAnimation(event, reloadStartTime, Animations.RELOAD_START);
         return animation;
     }
 
@@ -419,8 +422,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     protected void handleSoundEvent(SoundKeyframeEvent<WeaponAnimator> event) {
         var player = minecraft.player;
         var name = event.getKeyframeData().getSound();
-        var sounds = getWeapon().getConfig().getSoundsMap();
-        var sound = sounds.get(name);
+        var sound = WeaponModifierHelper.getSound(getWeaponData(), name);
 
         if (sound != null && player != null) {
             minecraft.getSoundManager().play(new GunShotSound(sound, SoundSource.PLAYERS,
@@ -472,7 +474,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     private void setupCycledAnimations() {
         var entity = getEntity();
         var cooldown = shootingHandler.getCooldown(entity, arm);
-        var data = getGunData();
+        var data = getWeaponData();
         var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
 
         if (chamberCycler == null || chamberCycler.getMax() != maxAmmo)

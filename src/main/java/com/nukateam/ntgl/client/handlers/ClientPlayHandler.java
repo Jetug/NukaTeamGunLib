@@ -228,15 +228,4 @@ public class ClientPlayHandler {
     public static void handleUpdateAttachments(S2CMessageUpdateAttachments message) {
         NetworkAttachmentManager.updateRegisteredAttachments(message);
     }
-
-    public static void handleReload(S2CMessageReload message) {
-        var player = Minecraft.getInstance().player;
-        if (player != null && !player.isSpectator()) {
-            var arm = message.isRightHand() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-            var dataKey = message.isRightHand() ?
-                    ModSyncedDataKeys.RELOADING_RIGHT : ModSyncedDataKeys.RELOADING_LEFT;
-
-            ClientReloadHandler.get().setReloading(!dataKey.getValue(player), arm);
-        }
-    }
 }

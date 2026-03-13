@@ -15,15 +15,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class EquipmentConfig implements INBTSerializable<CompoundTag>{
-    @Ignored private ChassisPart part;
+    @Ignored  private ChassisPart part;
     @Optional LinkedHashSet<ResourceLocation> chassis;
     @Optional public ResourceLocation parent;
-    @Ignored public ResourceLocation model;
-    @Ignored public HashMap<String, ResourceLocation> texture;
-//    @Optional public int[] uv;
-    @Optional public String[] hide = new String[0];
-    @Ignored public EquipmentAttachment[] attachments = new EquipmentAttachment[0];
-    @Optional public String[] mods = new String[0];
+    @Ignored  public ResourceLocation model;
+    @Ignored  public HashMap<String, ResourceLocation> texture;
+    //    @Optional public int[] uv;
+    @Ignored  public ArrayList<EquipmentAttachment> attachments = new ArrayList<>();
+    @Optional public ArrayList<String> hide = new ArrayList<>();
+    @Optional public ArrayList<String> mods = new ArrayList<>();
 
 
     @Override
@@ -32,6 +32,11 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
         tag.putString("part", this.part.toString());
         tag.put("chassis", NbtUtils.serializeSet(this.chassis));
         tag.putString("model", model.toString());
+        tag.put("texture", NbtUtils.serializeStringMap(this.texture));
+        tag.put("attachments", NbtUtils.serializeArray(this.attachments));
+        tag.put("hide", NbtUtils.serializeStringArray(this.hide));
+        tag.put("mods", NbtUtils.serializeStringArray(this.mods));
+
         return tag;
     }
 
@@ -41,10 +46,22 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
             this.part = ChassisPart.getType(tag.getString("part"));
         }
         if (tag.contains("chassis", Tag.TAG_COMPOUND)) {
-            this.chassis = NbtUtils.deserializeRLSet(tag.getCompound("chassis"));
+            this.chassis = NbtUtils.deserializeResourceLocationSet(tag.getCompound("chassis"));
         }
         if (tag.contains("model", Tag.TAG_STRING)) {
             this.model = ResourceLocation.tryParse(tag.getString("model"));
+        }
+        if (tag.contains("texture", Tag.TAG_COMPOUND)) {
+            this.texture = NbtUtils.deserializeRLMap(tag.getCompound("texture"));
+        }
+        if (tag.contains("attachments", Tag.TAG_COMPOUND)) {
+            this.attachments = NbtUtils.deserializeArray(tag.getCompound("attachments"), EquipmentAttachment::create);
+        }
+        if (tag.contains("hide", Tag.TAG_COMPOUND)) {
+            this.hide = NbtUtils.deserializeStringArray(tag.getCompound("hide"));
+        }
+        if (tag.contains("mods", Tag.TAG_COMPOUND)) {
+            this.mods = NbtUtils.deserializeStringArray(tag.getCompound("mods"));
         }
     }
 
@@ -94,15 +111,15 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
 //        return uv;
 //    }
 
-    public String[] getHide() {
-        return hide;
-    }
-
-    public EquipmentAttachment[] getAttachments() {
+    public ArrayList<EquipmentAttachment> getAttachments() {
         return attachments;
     }
 
-    public String[] getMods() {
+    public ArrayList<String> getHide() {
+        return hide;
+    }
+
+    public ArrayList<String> getMods() {
         return mods;
     }
 

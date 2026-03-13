@@ -11,6 +11,6 @@ public class ClientPlayHandler {
     }
 
     public static void handleUpdateEquipment(S2CMessageUpdateEquipmentConfig message) {
-        NetworkEquipmentManager.updateRegisteredConfig(message.getRegisteredConfig());
+        NetworkEquipmentManager.updateRegisteredConfig(message);
     }
 }

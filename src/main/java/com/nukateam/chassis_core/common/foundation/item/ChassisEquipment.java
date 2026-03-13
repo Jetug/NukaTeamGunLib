@@ -3,6 +3,9 @@ package com.nukateam.chassis_core.common.foundation.item;
 import com.nukateam.chassis_core.client.render.utils.ResourceHelper;
 import com.nukateam.chassis_core.common.config.EquipmentConfig;
 import com.nukateam.chassis_core.common.data.holders.ChassisPart;
+import com.nukateam.chassis_core.common.foundation.item.IChassisEquipment;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IConfigConsumer;
+import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import software.bernie.geckolib.animatable.GeoItem;
@@ -43,8 +46,8 @@ public class ChassisEquipment extends Item implements IChassisEquipment, GeoItem
     }
 
     @Override
-    public void setConfig(ConfigSupplier<EquipmentConfig> config) {
-        this.config = config.config();
+    public void setConfig(ConfigSupplier<EquipmentConfig> supplier) {
+        this.config = supplier.config();
     }
 
     public String getName() {
