@@ -18,6 +18,7 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
     @Optional LinkedHashSet<ResourceLocation> chassis;
     @Optional public ResourceLocation parent;
     @Ignored  public ResourceLocation model;
+    @Ignored  public ResourceLocation id;
     @Ignored  public HashMap<String, ResourceLocation> texture;
     //    @Optional public int[] uv;
     @Ignored  public ArrayList<EquipmentAttachment> attachments = new ArrayList<>();
@@ -30,6 +31,7 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
         tag.putString("part", this.part.toString());
         tag.put("chassis", NbtUtils.serializeSet(this.chassis));
         tag.putString("model", model.toString());
+        tag.putString("id", id.toString());
         tag.put("texture", NbtUtils.serializeStringMap(this.texture));
         tag.put("attachments", NbtUtils.serializeArray(this.attachments));
         tag.put("hide", NbtUtils.serializeStringArray(this.hide));
@@ -48,6 +50,9 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
         }
         if (tag.contains("model", Tag.TAG_STRING)) {
             this.model = ResourceLocation.tryParse(tag.getString("model"));
+        }
+        if (tag.contains("id", Tag.TAG_STRING)) {
+            this.id = ResourceLocation.tryParse(tag.getString("id"));
         }
         if (tag.contains("texture", Tag.TAG_COMPOUND)) {
             this.texture = NbtUtils.deserializeRLMap(tag.getCompound("texture"));
@@ -68,6 +73,7 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
         config.part = this.part;
         config.chassis = this.chassis;
         config.model = this.model;
+        config.id = this.id;
         return config;
     }
 
@@ -91,6 +97,10 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
 
     public ResourceLocation getModel() {
         return model;
+    }
+
+    public ResourceLocation getId() {
+        return id;
     }
 
     public ResourceLocation getTexture(String tag) {

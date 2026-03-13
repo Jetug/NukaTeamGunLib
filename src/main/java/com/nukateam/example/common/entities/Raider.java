@@ -1,8 +1,8 @@
 package com.nukateam.example.common.entities;
 
+import com.nukateam.example.common.registery.ExampleWeapons;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.item.WeaponItem;
-import com.nukateam.ntgl.common.util.interfaces.IGunUser;
 import com.nukateam.ntgl.common.foundation.goals.GunAttackGoal;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -25,14 +25,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.Nullable;
 
-public class Raider extends PathfinderMob implements IGunUser {
+public class Raider extends PathfinderMob{
     private static final EntityDataAccessor<Integer> DATA_ID_TYPE_VARIANT =
             SynchedEntityData.defineId(Raider.class, EntityDataSerializers.INT);
 
     private final WeaponItem[] guns = new WeaponItem[]{
-//            ExampleWeapons.PISTOL10MM.get(),
-//            ExampleWeapons.PIPE_REVOLVER.get(),
-//            ExampleWeapons.PIPE_PISTOL.get(),
+            ExampleWeapons.PISTOL10MM.get(),
+            ExampleWeapons.PIPE_REVOLVER.get(),
+            ExampleWeapons.PIPE_PISTOL.get(),
 //            ExampleWeapons.SCOUT10MM.get(),
 //            ExampleWeapons.MINIGUN.get(),
     };
@@ -54,7 +54,7 @@ public class Raider extends PathfinderMob implements IGunUser {
     protected void registerGoals() {
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(3, new GunAttackGoal<>(this, 1.0D, 20.0F));
+        this.goalSelector.addGoal(3, new GunAttackGoal(this, 1.0D, 1.0F, 40));
         this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0D, false));
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D));
@@ -99,17 +99,7 @@ public class Raider extends PathfinderMob implements IGunUser {
         this.entityData.set(DATA_ID_TYPE_VARIANT, pTypeVariant);
     }
 
-    @Override
-    public void performRangedAttack(LivingEntity pTarget, float pVelocity) {
-        GunAttackGoal.shoot(this, InteractionHand.MAIN_HAND);
-    }
-
     public ResourceLocation getTexture() {
         return ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/entity/raider.png");
-    }
-
-    @Override
-    public ItemStack getGun() {
-        return getMainHandItem();
     }
 }

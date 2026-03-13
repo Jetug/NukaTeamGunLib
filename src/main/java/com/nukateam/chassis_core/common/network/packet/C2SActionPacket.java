@@ -2,8 +2,7 @@ package com.nukateam.chassis_core.common.network.packet;
 
 import com.nukateam.chassis_core.common.data.enums.ActionType;
 import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
-import com.mrcrayfish.framework.api.network.MessageContext;
-import com.nukateam.ntgl.common.network.IMessage;
+import com.nukateam.ntgl.modules.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 

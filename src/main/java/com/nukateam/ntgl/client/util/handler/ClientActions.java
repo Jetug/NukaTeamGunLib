@@ -7,10 +7,12 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.enums.HandAction;
 import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.C2SMessageChangeAmmo;
 import com.nukateam.ntgl.common.network.message.C2SMessageHandAction;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 
 import static com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys.getReloadKey;
@@ -31,10 +33,9 @@ public class ClientActions {
         PacketHandler.getPlayChannel().sendToServer(new C2SMessageHandAction(hand, HandAction.SWITCH_FIRE_MODE));
     }
 
-    public static void switchAmmo(InteractionHand hand, LocalPlayer player) {
-        if (!getReloadKey(hand).getValue(player)) {
-
-            PacketHandler.getPlayChannel().sendToServer(new C2SMessageHandAction(hand, HandAction.SWITCH_AMMO));
+    public static void switchAmmo(InteractionHand hand, WeaponData data, ResourceLocation ammo) {
+        if (!getReloadKey(hand).getValue(data.wielder)) {
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageChangeAmmo(hand, ammo, data.weaponMode));
         }
     }
 

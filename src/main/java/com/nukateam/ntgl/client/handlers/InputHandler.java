@@ -1,26 +1,32 @@
 package com.nukateam.ntgl.client.handlers;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.input.NtglKeyBinds;
+import com.nukateam.ntgl.client.input.*;
 import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.holders.WeaponMode;
-import com.nukateam.ntgl.common.data.holders.WeaponAction;
+import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
-import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
+import com.nukateam.ntgl.common.registry.AmmoHolders;
+import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
+import com.nukateam.ntgl.common.util.util.*;
+import com.nukateam.ntgl.modules.wheel.ActionWheel;
+import com.nukateam.ntgl.modules.wheel.ActionWheelManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.ArrayList;
 
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.addClientEntity;
 import static com.nukateam.ntgl.client.util.handler.ClientShootingHandler.isInGame;
@@ -28,6 +34,12 @@ import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.canUseOffh
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class InputHandler {
+    static {
+        KeyPressHandler.addCommand(new KeyCommand(NtglKeyBinds.KEY_RELOAD, () -> reloadUnload(true), InputHandler::closeWheel));
+        KeyPressHandler.addCommand(new KeyCommand(NtglKeyBinds.KEY_UNLOAD, () -> reloadUnload(false), InputHandler::closeWheel));
+        KeyPressHandler.addCommand(new KeyCommand(NtglKeyBinds.KEY_AMMO_SELECT, InputHandler::selectAmmoKeyPressed, InputHandler::closeWheel));
+    }
+
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END && isInGame()) {
@@ -37,7 +49,47 @@ public class InputHandler {
         }
     }
 
-    public static void handleWeaponKeys() {
+    private static boolean isKeyAttackDown() {
+        return Minecraft.getInstance().options.keyAttack.isDown();
+    }
+
+    private static boolean isUseKeyDown() {
+        return Minecraft.getInstance().options.keyUse.isDown();
+    }
+
+    private static void handleKeys() {
+        var minecraft = Minecraft.getInstance();
+        var player = minecraft.player;
+        var shiftDown = minecraft.options.keyShift.isDown();
+        var hand = shiftDown ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+
+        if (player == null || !isInGame())
+            return;
+
+        var heldItem = player.getItemInHand(hand);
+
+        if(heldItem.getItem() instanceof IWeapon) {
+            if (NtglKeyBinds.KEY_ATTACHMENTS.consumeClick()) {
+                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments(hand));
+            }
+            if (NtglKeyBinds.KEY_DEBUG_SHOW.consumeClick()) {
+                ClientReloadHandler.get().startReloading(WeaponMode.ALTERNATIVE);
+            }
+            if (NtglKeyBinds.KEY_INSPECT.consumeClick()) {
+                ClientActions.inspectWeapon(player);
+            }
+            if (NtglKeyBinds.KEY_FIRE_SELECT.consumeClick()) {
+                ClientActions.switchFireMode(hand);
+            }
+            if(NtglKeyBinds.KEY_TIPS.consumeClick()){
+                var options = NtglOptions.getInstance();
+                options.setShowTips(!options.isShowTips());
+                options.saveOptions();
+            }
+        }
+    }
+
+    private static void handleWeaponKeys() {
         var player = Minecraft.getInstance().player;
         var options = Minecraft.getInstance().options;
         assert player != null;
@@ -86,7 +138,7 @@ public class InputHandler {
         }
     }
 
-    public static void handleInput(WeaponData gunData, InteractionHand hand, KeyMapping key) {
+    private static void handleInput(WeaponData gunData, InteractionHand hand, KeyMapping key) {
         assert Minecraft.getInstance().player != null;
         var player = Minecraft.getInstance().player;
         var weapon = player.getItemInHand(hand);
@@ -102,56 +154,6 @@ public class InputHandler {
             }
             if(weaponMode == WeaponAction.THROW) {
                 ClientThrowHandler.handleInput(gunData, hand, key);
-            }
-        }
-    }
-
-    private static boolean isKeyAttackDown() {
-        return Minecraft.getInstance().options.keyAttack.isDown();
-    }
-
-    private static boolean isUseKeyDown() {
-        return Minecraft.getInstance().options.keyUse.isDown();
-    }
-
-    private static void handleKeys() {
-        var minecraft = Minecraft.getInstance();
-        var player = minecraft.player;
-        var shiftDown = minecraft.options.keyShift.isDown();
-        var hand = shiftDown ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
-
-        if (player == null || !isInGame())
-            return;
-
-        var heldItem = player.getItemInHand(hand).getItem();
-
-        if(heldItem instanceof IWeapon) {
-            if (NtglKeyBinds.KEY_ATTACHMENTS.consumeClick()) {
-                PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
-            }
-            if (NtglKeyBinds.KEY_RELOAD.consumeClick()) {
-                ClientReloadHandler.get().startReloading(WeaponMode.PRIMARY);
-            }
-            if (NtglKeyBinds.KEY_DEBUG_SHOW.consumeClick()) {
-                ClientReloadHandler.get().startReloading(WeaponMode.ALTERNATIVE);
-            }
-            if (NtglKeyBinds.KEY_UNLOAD.consumeClick()) {
-                ClientReloadHandler.get().unloadAmmo(InteractionHand.MAIN_HAND);
-                ClientReloadHandler.get().unloadAmmo(InteractionHand.OFF_HAND);
-            }
-            if (NtglKeyBinds.KEY_INSPECT.consumeClick()) {
-                ClientActions.inspectWeapon(player);
-            }
-            if (NtglKeyBinds.KEY_FIRE_SELECT.consumeClick()) {
-                ClientActions.switchFireMode(hand);
-            }
-            if (NtglKeyBinds.KEY_AMMO_SELECT.consumeClick()) {
-                ClientActions.switchAmmo(hand, player);
-            }
-            if(NtglKeyBinds.KEY_TIPS.consumeClick()){
-                var options = NtglOptions.getInstance();
-                options.setShowTips(!options.isShowTips());
-                options.saveOptions();
             }
         }
     }
@@ -184,5 +186,92 @@ public class InputHandler {
                 ClientDebug.Z = 0;
             }
         }
+    }
+
+    private static void reloadUnload(boolean reload) {
+        var minecraft = Minecraft.getInstance();
+        var player = minecraft.player;
+        var shiftDown = minecraft.options.keyShift.isDown();
+        var hand = shiftDown ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+        assert player != null;
+        var heldItem = player.getItemInHand(hand);
+        var modes = new ArrayList<>(WeaponModifierHelper.getWeaponModes(new WeaponData(heldItem, player)).keySet());
+        modes.add(WeaponMode.PRIMARY);
+
+        var actions = new ArrayList<ActionWheel.WheelAction>();
+        for (var mode : modes) {
+            var data = new WeaponData(heldItem, player).setWeaponMode(mode);
+            var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
+
+            if (maxAmmo < 1) continue;
+
+            var meta = WeaponModifierHelper.getWeaponModeMeta(data);
+
+            Runnable action = reload ?
+                    () -> ClientReloadHandler.get().startReloading(mode) :
+                    () -> ClientReloadHandler.get().unloadAmmo(hand, mode);
+
+            actions.add(new ActionWheel.WheelAction()
+                    .setIcon(meta.getIcon())
+                    .setTitle(meta.getTitle())
+                    .setAction(action)
+                    .setColor(mode.getColor())
+            );
+        }
+
+        Runnable defaultAction = reload ?
+                () -> ClientReloadHandler.get().startReloading(WeaponMode.PRIMARY) :
+                () -> ClientReloadHandler.get().unloadAmmo(hand, WeaponMode.PRIMARY);
+
+        if (actions.size() > 1) {
+            ActionWheelManager.getInstance().showWheel(
+                    actions,
+                    Component.translatable("title.ntgl.ammo_type"),
+                    defaultAction);
+
+        } else defaultAction.run();
+    }
+
+    private static void selectAmmoKeyPressed() {
+        var minecraft = Minecraft.getInstance();
+        var player = minecraft.player;
+        var shiftDown = minecraft.options.keyShift.isDown();
+        var hand = shiftDown ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+        var heldItem = player.getItemInHand(hand);
+
+        var modes = new ArrayList<>(WeaponModifierHelper.getWeaponModes(new WeaponData(heldItem, player)).keySet());
+        modes.add(WeaponMode.PRIMARY);
+
+        var actions = new ArrayList<ActionWheel.WheelAction>();
+        for (var mode : modes) {
+            var data = new WeaponData(heldItem, player).setWeaponMode(mode);
+            var ammoItems = WeaponModifierHelper.getAmmoItems(data);
+            for (var ammo : ammoItems) {
+                var currentAmmo = WeaponStateHelper.getCurrentAmmo(data);
+                if (ammo == AmmoHolders.EMPTY || ammo == currentAmmo) continue;
+
+                var icon = WeaponModifierHelper.getAmmoConfig(ammo.getId(), data).getAmmoType().getIcon();
+
+
+                if (player.isCreative() || InventoryUtil.findPlayerAmmo(player, ammo) != AmmoContext.NONE) {
+                    actions.add(new ActionWheel.WheelAction()
+                            .setIcon(icon)
+                            .setTitle(Component.translatable(ammo.getDescriptionId()))
+                            .setAction(() -> ClientActions.switchAmmo(hand, data, ammo.getId()))
+                            .setColor(mode.getColor())
+                    );
+                }
+            }
+        }
+
+        ActionWheelManager.getInstance().showWheel(
+                actions,
+                Component.translatable("title.ntgl.ammo_type"),
+                () -> {
+                });
+    }
+
+    private static void closeWheel() {
+        ActionWheelManager.getInstance().hideWheel();
     }
 }

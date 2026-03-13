@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.data.config.weapon.*;
 import com.nukateam.ntgl.common.data.holders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
-
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -283,6 +283,10 @@ public interface IWeaponModifier {
     }
 
     default WeaponAction modifyWeaponAction(WeaponAction value, WeaponData data) {
+        return value;
+    }
+
+    default WeaponModeMeta modifyWeaponModeMeta(WeaponModeMeta value, WeaponData data) {
         return value;
     }
 

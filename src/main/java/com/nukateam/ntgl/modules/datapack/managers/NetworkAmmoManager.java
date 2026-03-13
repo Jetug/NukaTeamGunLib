@@ -1,7 +1,6 @@
 package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.framework.api.data.login.ILoginData;
 import com.nukateam.ntgl.modules.constants.Paths;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;

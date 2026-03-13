@@ -117,7 +117,7 @@ public class CustomHandRenderer extends GeoObjectRenderer<HandAnimator> {
         }
     }
 
-    private void renderBone(GeoBone armorBone, PoseStack poseStack, VertexConsumer buffer,
+    protected void renderBone(GeoBone armorBone, PoseStack poseStack, VertexConsumer buffer,
                             MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay,
                             float red, float green, float blue, float alpha) {
         var chassis = PlayerUtils.getLocalPlayerChassis();
@@ -129,16 +129,20 @@ public class CustomHandRenderer extends GeoObjectRenderer<HandAnimator> {
             var renderTypeOverride = getRenderType(this.animatable, texture, bufferSource, partialTick);
             buffer = bufferSource.getBuffer(renderTypeOverride);
 
-            for (var cube : armorBone.getCubes()) {
-                poseStack.pushPose();
-                {
-                    var newCube = new GeoCube(cube.quads(), new Vec3(0, 0, 0),
-                            cube.rotation(), cube.size(), cube.inflate(), cube.mirror());
-                    renderCube(poseStack, newCube, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-                }
-                poseStack.popPose();
-            }
+            renderChildCubes(armorBone, poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
             buffer = bufferSource.getBuffer(getRenderType(this.animatable, getTextureLocation(this.animatable), bufferSource, partialTick));
+        }
+    }
+
+    protected void renderChildCubes(GeoBone armorBone, PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        for (var cube : armorBone.getCubes()) {
+            poseStack.pushPose();
+            {
+                var newCube = new GeoCube(cube.quads(), new Vec3(0, 0, 0),
+                        cube.rotation(), cube.size(), cube.inflate(), cube.mirror());
+                renderCube(poseStack, newCube, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+            }
+            poseStack.popPose();
         }
     }
 }

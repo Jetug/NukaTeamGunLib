@@ -1,15 +1,10 @@
 package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.gson.Gson;
-import com.mrcrayfish.framework.api.network.LevelLocation;
-import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.holders.*;
 
 import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.util.util.*;
-import com.nukateam.ntgl.common.foundation.init.ModSounds;
-import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
 import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.debug.IDebugWidget;
 import com.nukateam.ntgl.common.debug.IEditorMenu;
@@ -22,8 +17,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -202,6 +195,10 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
         return this.throwable;
     }
 
+    public HashMap<String, ResourceLocation> getSounds() {
+        return sounds;
+    }
+
     public HashMap<String, ResourceLocation> getSoundsMap() {
         return sounds;
     }
@@ -314,7 +311,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag>, IEditorMenu 
 
     public AmmoData getAmmoData(WeaponMode mode, ResourceLocation ammoId) {
         if(mode == WeaponMode.PRIMARY)
-            return ammoData.get(ammoId);
+            return ammoData.getOrDefault(ammoId, new AmmoData());
         else return modes.getOrDefault(mode, new WeaponSettings()).getAmmoData(ammoId);
     }
 

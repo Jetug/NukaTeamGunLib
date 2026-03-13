@@ -10,7 +10,7 @@ updateJSONURL=""
 displayURL="https://discord.com/invite/njb6EKaDVJ"
 logoFile="logo.png"
 authors="Dayton, Jetug"
-
+credits = "MrCrayfish"
 description="Core for gun mods"
 
 [[dependencies.ntgl]]
@@ -26,14 +26,8 @@ versionRange="[1.20.1, 1.20.2)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.ntgl]]
-modId="framework"
-mandatory=true
-versionRange="[0.6.16,)"
-ordering="NONE"
-side="BOTH"
-[[dependencies.ntgl]]
 modId="geckolib"
-mandatory=true
+mandatory=false
 versionRange="[4.8.2,)"
 ordering="AFTER"
 side="BOTH"

@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.network.message;
 
 import net.minecraftforge.network.NetworkEvent;
-import com.nukateam.ntgl.common.network.IMessage;
+import com.nukateam.ntgl.modules.network.IMessage;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.common.foundation.entity.projectile.GoreData;
 import net.minecraft.network.FriendlyByteBuf;

@@ -1,11 +1,9 @@
 package com.nukateam.ntgl.common.handlers;
 
-import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.audio.GunShotSound;
 import com.nukateam.ntgl.common.data.WeaponData;
-import com.nukateam.ntgl.common.data.enums.SoundType;
+import com.nukateam.ntgl.common.data.constants.SoundTypes;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.NtglGameEvents;
@@ -15,10 +13,10 @@ import com.nukateam.ntgl.common.network.message.S2CMessageGunSound;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
-
 import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import com.nukateam.ntgl.modules.network.LevelLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -55,7 +53,7 @@ public class GunEventHandler {
                 event.setCanceled(true);
             }
 
-            if (!FuelUtils.hasFuel(event.getGunData(), false)) {
+            if (!FuelUtils.hasFuel(event.getWeaponData(), false)) {
                 event.setCanceled(true);
             }
         }
@@ -117,7 +115,7 @@ public class GunEventHandler {
     public static void playCockSound(WeaponData data) {
         var wielder = data.wielder;
         if(!wielder.level().isClientSide) {
-            var cockSound = WeaponModifierHelper.getSound(data, SoundType.COCK.getName());
+            var cockSound = WeaponModifierHelper.getSound(SoundTypes.COCK, data);
             if (!wielder.isAlive()) return;
 
             if (cockSound == null) cockSound = ModSounds.ITEM_PISTOL_COCK.get().getLocation();
@@ -125,7 +123,7 @@ public class GunEventHandler {
             var radius = Config.SERVER.reloadMaxDistance.get();
             var messageSound = new S2CMessageGunSound(cockSound,
                     SoundSource.PLAYERS, wielder,
-                    GunShotSound.getVolume(1.0F), 1.0F,
+                    1.0F, 1.0F,
                     true);
 
             PacketHandler.getPlayChannel().sendToNearbyPlayers(
@@ -133,6 +131,7 @@ public class GunEventHandler {
                     messageSound);
         }
     }
+
 
     public static void damageGun(ItemStack stack, Level level, LivingEntity entity) {
         if (entity instanceof Player player && player.getAbilities().instabuild)

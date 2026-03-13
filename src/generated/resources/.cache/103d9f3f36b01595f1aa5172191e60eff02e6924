@@ -1,2 +1,5 @@
-// 1.20.1	2025-03-11T13:36:01.0033014	Registries
+// 1.20.1	2026-01-21T14:41:37.5694251	Registries
 a08cdb0a1fd296159118d96df14d8106bb5c4a7d data/ntgl/damage_type/bullet.json
+3294f1163493401681a400bf30ad7ba7090dd6bf data/ntgl/damage_type/energy.json
+4a2147982a84eaf4856f51bf548c92603b8f5e77 data/ntgl/damage_type/explosive.json
+fe8c85729655f971ee94229cbb7d68bbb513d08b data/ntgl/damage_type/fire.json

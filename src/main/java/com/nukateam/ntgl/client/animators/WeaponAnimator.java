@@ -128,6 +128,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     protected void tickStart() {
         if (!(getStack().getItem() instanceof IWeapon weapon))
             return;
+        var data = getWeaponData();
 
         if(getEntity().getItemInHand(getArm()).getItem() instanceof IWeapon) {
             this.rate = WeaponModifierHelper.getRate(shootingHandler.getWeaponData(getEntity(), getArm()));
@@ -141,7 +142,6 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         this.reloadTime = WeaponModifierHelper.getReloadTime(data);
         this.reloadStartTime = WeaponModifierHelper.getReloadStart(data);
         this.reloadEndTime = WeaponModifierHelper.getReloadEnd(data);
-
         this.prepareTime  = WeaponModifierHelper.getPrepareTime(data);
         this.throwingTime = WeaponModifierHelper.getThrowTime(data);
         this.throwMode = ThrowableStateHelper.getThrowMode(data);
@@ -436,7 +436,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     protected void handleSoundEvent(SoundKeyframeEvent<WeaponAnimator> event) {
         var player = minecraft.player;
         var name = event.getKeyframeData().getSound();
-        var sound = WeaponModifierHelper.getSound(getWeaponData(), name);
+        var sound = WeaponModifierHelper.getSound(name, getWeaponData());
 
         if (sound != null && player != null) {
             minecraft.getSoundManager().play(new GunShotSound(sound, SoundSource.PLAYERS,

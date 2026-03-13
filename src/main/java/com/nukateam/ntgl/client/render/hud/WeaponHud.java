@@ -70,7 +70,6 @@ public class WeaponHud implements IGuiOverlay {
     public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
         if (minecraft.player == null) return;
         var player = minecraft.player;
-
         cache.forEach((hand, cache) -> {
             var heldItem = player.getItemInHand(hand);
             var x = hand == InteractionHand.OFF_HAND ? OFFHAND_X_OFFSET : width;
@@ -106,18 +105,20 @@ public class WeaponHud implements IGuiOverlay {
 
             var fontHeight = minecraft.font.lineHeight;
 
-            renderAmmoTypeIcon(graphics, poseStack, handCache, WeaponMode.PRIMARY, x - COUNTER_POS_X - ICON_SIZE - 2, y - COUNTER_POS_Y - 11);
+            var primaryMode = handCache.weaponModes.get(WeaponMode.PRIMARY);
+
+            renderAmmoTypeIcon(graphics, poseStack, primaryMode, WeaponMode.PRIMARY, x - COUNTER_POS_X - ICON_SIZE - 2, y - COUNTER_POS_Y - 11);
             if(handCache.ammoTypeKey) {
                 renderKey(graphics, poseStack, NtglKeyBinds.KEY_AMMO_SELECT.getKey(), x - 6, y + 6);
             }
-            renderCurrentAmmo (graphics, poseStack, handCache.weaponModes.get(WeaponMode.PRIMARY), x - COUNTER_POS_X, y - COUNTER_POS_Y - fontHeight);
+            renderCurrentAmmo (graphics, poseStack, primaryMode, x - COUNTER_POS_X, y - COUNTER_POS_Y - fontHeight);
 
             Figures.drawLine(graphics, x - COUNTER_POS_X, y - 31, 27, 2, RgbHelper.toRgba(colors.hud));
 
             if(handCache.isThrowable)
                 renderThrowModeIcon(graphics, poseStack, handCache, x - COUNTER_POS_X - ICON_SIZE - 2 , y - INVENTORY_AMMO_POS_Y - 6);
             else renderFireModeIcon(graphics, poseStack, handCache,  x - COUNTER_POS_X - ICON_SIZE - 2 , y - INVENTORY_AMMO_POS_Y - 6);
-            renderInventoryAmmo(graphics, poseStack, handCache.weaponModes.get(WeaponMode.PRIMARY), x - COUNTER_POS_X + 3, y - INVENTORY_AMMO_POS_Y);
+            renderInventoryAmmo(graphics, poseStack, primaryMode, x - COUNTER_POS_X + 3, y - INVENTORY_AMMO_POS_Y);
 
             renderFuelCounters(graphics, handCache, stack, x - BAR_START_X + 8, y - BAR_START_Y - 3 );
             renderWeaponModes(graphics, poseStack, handCache, x - COUNTER_POS_X + 38 , y - INVENTORY_AMMO_POS_Y  - 2);
@@ -142,7 +143,7 @@ public class WeaponHud implements IGuiOverlay {
                 var mode = handCache.weaponModes.get(key);
 
                 if (key != WeaponMode.PRIMARY && modeInfo.maxAmmoCount > 0) {
-                    renderAmmoTypeIcon(graphics, poseStack, handCache, key, (int) ((xOffset - 11) / scale), (int) ((y - 2) / scale));
+                    renderAmmoTypeIcon(graphics, poseStack, modeInfo, key, (int) ((xOffset - 11) / scale), (int) ((y - 2) / scale));
                     Figures.drawFrame(graphics, (int) ((xOffset - 2) / scale), (int) ((y - 2) / scale), 34, 16, RgbHelper.toRgba(colors.hud));
                     renderCurrentAmmo(graphics, poseStack, mode, xOffset / scale, y / scale);
 
@@ -230,8 +231,8 @@ public class WeaponHud implements IGuiOverlay {
         }
     }
 
-    protected void renderAmmoTypeIcon(GuiGraphics graphics, PoseStack poseStack, GunHudCache handCache, WeaponMode mode, int x, int y) {
-        var ammoType = handCache.weaponModes.get(mode).ammoConfig.getAmmoType();
+    protected void renderAmmoTypeIcon(GuiGraphics graphics, PoseStack poseStack, GunHudCache.ModeInfo handCache, WeaponMode mode, int x, int y) {
+        var ammoType = handCache.ammoConfig.getAmmoType();
         var icon = ammoType.getIcon();
         renderIcon(graphics, icon, x, y);
     }
@@ -339,7 +340,7 @@ public class WeaponHud implements IGuiOverlay {
 
     private void addAction(GunHudCache handCache, WeaponData data) {
         var mode = data.weaponMode;
-        var action = WeaponModifierHelper.getWeaponAction(data.clone().setWeaponMode(mode));
+        var action = WeaponModifierHelper.getWeaponAction(data.clone());
         var player = (Player)data.wielder;
         var weapon = data.weapon;
         var modeInfo = new GunHudCache.ModeInfo();

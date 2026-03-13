@@ -2,7 +2,7 @@ plugins {
     id 'eclipse'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'org.spongepowered.mixin' version '0.7.51'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
@@ -13,11 +13,6 @@ archivesBaseName = 'ntgl'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-mixin {
-    add sourceSets.main, "ntgl.mixin-refmap.json"
-    config 'ntgl.mixin.json'
-}
 
 minecraft {
     mappings channel: mappings_channel, version: mappings_version
@@ -31,7 +26,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', 'ntgl'
             property 'forge.logging.console.level', 'debug'
 
-            arg "--mixin.config=ntgl.mixin.json"
+//            arg "--mixin.config=ntgl.mixin.json"
 
             mods {
                 ntgl {
@@ -48,7 +43,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', 'ntgl'
             property 'forge.logging.console.level', 'debug'
 
-            arg "--mixin.config=ntgl.mixin.json"
+//            arg "--mixin.config=ntgl.mixin.json"
 
             mods {
                 ntgl {
@@ -65,7 +60,7 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', 'ntgl'
             property 'forge.logging.console.level', 'debug'
 
-            arg "--mixin.config=ntgl.mixin.json"
+//            arg "--mixin.config=ntgl.mixin.json"
 
             mods {
                 ntgl {
@@ -82,7 +77,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             args '--mod', 'ntgl', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-            arg "--mixin.config=ntgl.mixin.json"
+//            arg "--mixin.config=ntgl.mixin.json"
 
             mods {
                 ntgl {
@@ -203,6 +198,11 @@ tasks.named('processResources', ProcessResources).configure {
     filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
         expand replaceProperties + [project: project]
     }
+}
+
+mixin {
+    add sourceSets.main, "ntgl.mixin-refmap.json"
+    config 'ntgl.mixin.json'
 }
 
 publishing {

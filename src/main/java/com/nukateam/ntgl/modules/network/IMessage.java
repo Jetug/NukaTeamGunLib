@@ -1,6 +1,5 @@
-package com.nukateam.ntgl.common.network;
+package com.nukateam.ntgl.modules.network;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 

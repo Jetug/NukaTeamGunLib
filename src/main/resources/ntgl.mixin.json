@@ -1,5 +1,5 @@
 {
-  "required": true,
+  "required": false,
   "package": "com.nukateam.ntgl.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [

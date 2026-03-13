@@ -46,10 +46,10 @@ public class ControllerHandler {
 
     public static void init() {
         MinecraftForge.EVENT_BUS.register(new ControllerHandler());
-        ControllerEvents.INPUT.register(ControllerHandler::handleInput);
-        ControllerEvents.UPDATE_CAMERA.register(ControllerHandler::handleCamera);
-        ControllerEvents.GATHER_ACTIONS.register(ControllerHandler::handleActions);
-        ControllerEvents.GATHER_NAVIGATION_POINTS.register(ControllerHandler::handleNavigationPoints);
+//        ControllerEvents.INPUT.register(ControllerHandler::handleInput);
+//        ControllerEvents.UPDATE_CAMERA.register(ControllerHandler::handleCamera);
+//        ControllerEvents.GATHER_ACTIONS.register(ControllerHandler::handleActions);
+//        ControllerEvents.GATHER_NAVIGATION_POINTS.register(ControllerHandler::handleNavigationPoints);
     }
 
     private static void handleNavigationPoints(List<NavigationPoint> points) {
@@ -147,7 +147,7 @@ public class ControllerHandler {
                 } else if (isEquals(originalButton, GunButtonBindings.OPEN_ATTACHMENTS)) {
                     shouldCancel = true;
                     if (state) {
-                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
+                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments(hand));
                     }
                 } else if (isEquals(originalButton, GunButtonBindings.INSPECT)) {
                     shouldCancel = true;

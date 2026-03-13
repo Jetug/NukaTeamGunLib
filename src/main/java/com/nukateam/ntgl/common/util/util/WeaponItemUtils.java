@@ -26,8 +26,8 @@ public class WeaponItemUtils {
         var matches = ammoItems.stream().anyMatch((i) -> i.getId().equals(ammoId));
 
         if(!matches) {
-            if (entity instanceof ServerPlayer player) {
-                ServerPlayHandler.unloadGun(player, stack);
+            if (entity instanceof ServerPlayer) {
+                ServerPlayHandler.unloadGun(data);
             }
             var firstAmmo = SetUtils.getFirst(ammoItems);
             WeaponStateHelper.setCurrentAmmo(data, firstAmmo.getId());
@@ -36,8 +36,8 @@ public class WeaponItemUtils {
         var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
         var currentAmount = WeaponStateHelper.getAmmoCount(data);
         if(currentAmount > maxAmmo){
-            if (entity instanceof ServerPlayer player) {
-                ServerPlayHandler.unloadGun(player, stack);
+            if (entity instanceof ServerPlayer) {
+                ServerPlayHandler.unloadGun(data);
             }
         }
     }

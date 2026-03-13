@@ -1,7 +1,5 @@
-package com.nukateam.ntgl.common.network;
+package com.nukateam.ntgl.modules.network;
 
-import com.mrcrayfish.framework.api.network.FrameworkNetwork;
-import com.mrcrayfish.framework.api.network.LevelLocation;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.Connection;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,37 +12,30 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.util.function.Supplier;
 
-public class ForgeNetwork
-{
+public class ForgeNetwork {
     private final SimpleChannel channel;
 
-    public ForgeNetwork(SimpleChannel channel)
-    {
+    public ForgeNetwork(SimpleChannel channel) {
         this.channel = channel;
     }
 
-    public void sendToPlayer(Supplier<ServerPlayer> supplier, IMessage<?> message)
-    {
+    public void sendToPlayer(Supplier<ServerPlayer> supplier, IMessage<?> message) {
         this.channel.send(PacketDistributor.PLAYER.with(supplier), message);
     }
 
-    public void sendToTrackingEntity(Supplier<Entity> supplier, IMessage<?> message)
-    {
+    public void sendToTrackingEntity(Supplier<Entity> supplier, IMessage<?> message) {
         this.channel.send(PacketDistributor.TRACKING_ENTITY.with(supplier), message);
     }
 
 
-    public void sendToTrackingBlockEntity(Supplier<BlockEntity> supplier, IMessage<?> message)
-    {
+    public void sendToTrackingBlockEntity(Supplier<BlockEntity> supplier, IMessage<?> message) {
         this.sendToTrackingChunk(() -> {
             BlockEntity entity = supplier.get();
             return entity.getLevel().getChunkAt(entity.getBlockPos());
         }, message);
     }
 
-
-    public void sendToTrackingLocation(Supplier<LevelLocation> supplier, IMessage<?> message)
-    {
+    public void sendToTrackingLocation(Supplier<LevelLocation> supplier, IMessage<?> message) {
         this.sendToTrackingChunk(() -> {
             LevelLocation location = supplier.get();
             Vec3 pos = location.pos();
@@ -54,15 +45,12 @@ public class ForgeNetwork
         }, message);
     }
 
-
-    public void sendToTrackingChunk(Supplier<LevelChunk> supplier, IMessage<?> message)
-    {
+    public void sendToTrackingChunk(Supplier<LevelChunk> supplier, IMessage<?> message) {
         this.channel.send(PacketDistributor.TRACKING_CHUNK.with(supplier), message);
     }
 
 
-    public void sendToNearbyPlayers(Supplier<LevelLocation> supplier, IMessage<?> message)
-    {
+    public void sendToNearbyPlayers(Supplier<LevelLocation> supplier, IMessage<?> message) {
         this.channel.send(PacketDistributor.NEAR.with(() -> {
             LevelLocation location = supplier.get();
             Vec3 pos = location.pos();
@@ -70,21 +58,15 @@ public class ForgeNetwork
         }), message);
     }
 
-
-    public void sendToServer(IMessage<?> message)
-    {
+    public void sendToServer(IMessage<?> message) {
         this.channel.sendToServer(message);
     }
 
-
-    public void sendToAll(IMessage<?> message)
-    {
+    public void sendToAll(IMessage<?> message) {
         this.channel.send(PacketDistributor.ALL.noArg(), message);
     }
 
-
-    public boolean isActive(Connection connection)
-    {
+    public boolean isActive(Connection connection) {
         return this.channel.isRemotePresent(connection);
     }
 }

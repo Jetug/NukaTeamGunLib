@@ -1,7 +1,5 @@
-
 package com.nukateam.ntgl.common.util.trackers;
 
-import com.mrcrayfish.framework.api.sync.SyncedDataKey;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
@@ -10,6 +8,7 @@ import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import com.nukateam.ntgl.modules.data.DataKey;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -86,9 +85,9 @@ public class EntityReloadTracker {
         }
     }
 
-    private static SyncedDataKey<LivingEntity, Boolean> getReloadSataKey(HumanoidArm arm){
+    private static DataKey getReloadSataKey(HumanoidArm arm){
         return arm == HumanoidArm.RIGHT ?
-                ModSyncedDataKeys.RELOADING_RIGHT :
+                ModSyncedDataKeys.RELOADING_RIGHT:
                 ModSyncedDataKeys.RELOADING_LEFT;
     }
 

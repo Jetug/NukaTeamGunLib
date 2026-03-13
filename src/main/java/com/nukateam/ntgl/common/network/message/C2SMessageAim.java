@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.network.message;
 
 import net.minecraftforge.network.NetworkEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.network.IMessage;
+import com.nukateam.ntgl.modules.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
