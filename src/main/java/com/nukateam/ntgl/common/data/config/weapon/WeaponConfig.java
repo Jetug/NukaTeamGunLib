@@ -1,8 +1,6 @@
 package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.gson.Gson;
-import com.mrcrayfish.framework.api.network.LevelLocation;
-import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.holders.*;
 
 import com.nukateam.ntgl.common.util.annotation.Optional;
@@ -172,6 +170,10 @@ public class WeaponConfig implements INBTSerializable<CompoundTag> {
         return this.throwable;
     }
 
+    public HashMap<String, ResourceLocation> getSounds() {
+        return sounds;
+    }
+
     public HashMap<String, ResourceLocation> getSoundsMap() {
         return sounds;
     }
@@ -242,25 +244,6 @@ public class WeaponConfig implements INBTSerializable<CompoundTag> {
         return new Modules.Attachment();
     }
 
-    public void playCockSound(LivingEntity player) {
-        if(!player.level().isClientSide) {
-            var cockSound = this.getSounds().getCock();
-            if (!player.isAlive()) return;
-
-            if (cockSound == null) cockSound = ModSounds.ITEM_PISTOL_COCK.get().getLocation();
-
-            var radius = Config.SERVER.reloadMaxDistance.get();
-            var messageSound = new S2CMessageGunSound(cockSound,
-                    SoundSource.PLAYERS, player,
-                    1.0F, 1.0F,
-                    true);
-
-            PacketHandler.getPlayChannel().sendToNearbyPlayers(
-                    () -> LevelLocation.create((ServerLevel) player.level(), player.getX(), player.getY() + 1.0, player.getZ(), radius),
-                    messageSound);
-        }
-    }
-
     public AmmoData getAmmoData(ResourceLocation ammo) {
         return ammoData.getOrDefault(ammo, new AmmoData());
     }
@@ -303,7 +286,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag> {
 
     public AmmoData getAmmoData(WeaponMode mode, ResourceLocation ammoId) {
         if(mode == WeaponMode.PRIMARY)
-            return ammoData.get(ammoId);
+            return ammoData.getOrDefault(ammoId, new AmmoData());
         else return modes.getOrDefault(mode, new WeaponSettings()).getAmmoData(ammoId);
     }
 

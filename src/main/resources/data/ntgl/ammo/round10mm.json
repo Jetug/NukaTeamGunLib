@@ -4,16 +4,10 @@
   "projectile": "ntgl:laser",
   "visible": true,
   "magazineMode": true,
-  "damage": 2.0,
+  "damage": 10.0,
   "size": 0.2,
   "speed": 30,
   "life": 7,
   "spread": 10.0,
-  "projectileAmount": 6,
-
-  "explosion": {
-    "damage": 20,
-    "radius": 10.5,
-    "knockback": 0.2
-  }
+  "projectileAmount": 6
 }

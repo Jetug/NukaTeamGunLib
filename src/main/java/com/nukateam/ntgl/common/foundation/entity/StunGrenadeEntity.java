@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.nukateam.ntgl.modules.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableGrenadeEntity;
 import com.nukateam.ntgl.common.foundation.init.ModEffects;

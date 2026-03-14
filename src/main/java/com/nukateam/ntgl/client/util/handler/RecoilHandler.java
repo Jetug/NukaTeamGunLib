@@ -52,7 +52,7 @@ public class RecoilHandler {
         if (!Config.SERVER.enableCameraRecoil.get())
             return;
 
-        var data = event.getGunData();
+        var data = event.getWeaponData();
         weaponData.put(event.getHand(), data);
         var recoilModifier = 1.0F - WeaponModifierHelper.getRecoilModifier(data);
 

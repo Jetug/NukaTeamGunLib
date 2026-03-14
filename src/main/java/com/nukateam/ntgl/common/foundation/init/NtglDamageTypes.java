@@ -1,25 +1,15 @@
 package com.nukateam.ntgl.common.foundation.init;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
-import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.network.chat.Component;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import javax.annotation.Nullable;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Author: MrCrayfish
+ * Author: Jetug
  */
 public class NtglDamageTypes {
     public static final ResourceKey<DamageType> BULLET = create("bullet");
@@ -32,72 +22,10 @@ public class NtglDamageTypes {
         return ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.tryBuild(Ntgl.MOD_ID, name));
     }
 
-    public static void bootstrap(BootstrapContext<DamageType> bootstrapContext) {
-        bootstrapContext.register(BULLET, new DamageType("bullet", 0.1f));
-    }
-
-    /**
-     * Based on code in Botania by Vazkii
-     * <a href="https://github.com/VazkiiMods/Botania/blob/1.19.x/Xplat/src/main/java/vazkii/botania/common/BotaniaDamageTypes.java">Link</a>
-     */
-    public static class Sources {
-        private static Holder.Reference<DamageType> getHolder(RegistryAccess access, ResourceKey<DamageType> damageTypeKey) {
-            return access.registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(damageTypeKey);
-        }
-
-        public static DamageSource source(RegistryAccess access, ResourceKey<DamageType> damageTypeKey,
-                                          @Nullable Entity directEntity, @Nullable Entity causingEntity) {
-            return new BulletDamageSource(getHolder(access, damageTypeKey), directEntity, causingEntity);
-        }
-
-        public static DamageSource projectile(RegistryAccess access, ProjectileEntity projectile, LivingEntity entity) {
-            return source(access, BULLET, projectile, entity);
-        }
-
-        public static class BulletDamageSource extends DamageSource {
-            private static final String[] msgSuffix = {
-                    "ntgl.bullet.killed",
-                    "ntgl.bullet.eliminated",
-                    "ntgl.bullet.executed",
-                    "ntgl.bullet.annihilated",
-                    "ntgl.bullet.decimated"
-            };
-
-            public BulletDamageSource(Holder<DamageType> pType, Entity pDirectEntity, Entity pCausingEntity) {
-                super(pType, pDirectEntity, pCausingEntity);
-            }
-
-            public Component getLocalizedDeathMessage(LivingEntity pLivingEntity) {
-                final var s = "death.attack." + this.getMsgId();
-                if (this.getEntity() == null && this.getDirectEntity() == null) {
-                    var living = pLivingEntity.getKillCredit();
-                    return living != null ?
-                            Component.translatable(s + ".player", pLivingEntity.getDisplayName(), living.getDisplayName()) :
-                            Component.translatable(s, pLivingEntity.getDisplayName());
-                } else {
-                    final var component = this.getEntity() == null ?
-                            this.getDirectEntity().getDisplayName() :
-                            this.getEntity().getDisplayName();
-
-                    final var stack = this.getEntity() instanceof LivingEntity livingentity ?
-                            livingentity.getMainHandItem() :
-                            ItemStack.EMPTY;
-
-                    return !stack.isEmpty() ?
-                            Component.translatable(
-                                    s + ".item",
-                                    pLivingEntity.getDisplayName(),
-                                    component,
-                                    stack.getDisplayName()
-                            ) :
-                            Component.translatable(s, pLivingEntity.getDisplayName(), component);
-                }
-            }
-
-            @Override
-            public String getMsgId() {
-                return msgSuffix[ThreadLocalRandom.current().nextInt(5)];
-            }
-        }
+    public static void bootstrap(BootstapContext<DamageType> bootstapContext) {
+        bootstapContext.register(BULLET, new DamageType("bullet", 0.1f));
+        bootstapContext.register(ENERGY, new DamageType("energy", 0.1f));
+        bootstapContext.register(EXPLOSIVE, new DamageType("explosive", 0.1f));
+        bootstapContext.register(FIRE, new DamageType("fire", 0.1f));
     }
 }

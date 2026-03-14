@@ -119,7 +119,7 @@ public class CustomHandRenderer extends GeoObjectRenderer<HandAnimator> {
         }
     }
 
-    private void renderBone(GeoBone armorBone, PoseStack poseStack, VertexConsumer buffer,
+    protected void renderBone(GeoBone armorBone, PoseStack poseStack, VertexConsumer buffer,
                             MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay,
                             int colour) {
         var chassis = PlayerUtils.getLocalPlayerChassis();

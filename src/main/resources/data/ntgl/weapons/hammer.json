@@ -23,6 +23,7 @@
         "damage": 10,
         "delay": 4,
         "cooldown": 20,
+        "attackEnd": 20,
         "distance": 16,
         "angle": 20,
         "maxTargets": 1,

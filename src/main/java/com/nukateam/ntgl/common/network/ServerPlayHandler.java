@@ -1,10 +1,14 @@
 package com.nukateam.ntgl.common.network;
 
-import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.nukateam.ntgl.common.data.constants.SoundTypes;
+import com.nukateam.ntgl.common.network.message.C2SMessageChangeAmmo;
+import com.nukateam.ntgl.modules.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.enums.SoundType;
+import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
+import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
@@ -15,7 +19,6 @@ import com.nukateam.ntgl.common.network.enums.KeyAction;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessageReloadStop;
 import com.nukateam.ntgl.common.network.message.weapon.*;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
-
 import com.nukateam.ntgl.common.util.trackers.*;
 import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
@@ -204,7 +207,7 @@ public class ServerPlayHandler {
         var data = new WeaponData(heldItem, player);
 
         if (heldItem.getItem() instanceof IWeapon item && (WeaponStateHelper.hasAmmo(data) || player.isCreative())) {
-            var fireSound = WeaponModifierHelper.getSound(data, SoundType.PRE_FIRE.getName());
+            var fireSound = WeaponModifierHelper.getSound(SoundType.PRE_FIRE.getName(), data);
 
             if (fireSound != null) {
                 var posX = player.getX();
@@ -222,21 +225,21 @@ public class ServerPlayHandler {
     private static ResourceLocation getFireSound(WeaponData data) {
         ResourceLocation fireSound = null;
         if (WeaponModifierHelper.isSilencedFire(data)) {
-            fireSound = WeaponModifierHelper.getSound(data, SoundType.SILENCED_FIRE.getName());
+            fireSound = WeaponModifierHelper.getSound(SoundType.SILENCED_FIRE.getName(), data);
         } else if (data.weapon.isEnchanted()) {
-            fireSound = WeaponModifierHelper.getSound(data, SoundType.ENCHANTED_FIRE.getName());
+            fireSound = WeaponModifierHelper.getSound(SoundType.ENCHANTED_FIRE.getName(), data);
         }
         if (fireSound != null) {
             return fireSound;
         }
-        return WeaponModifierHelper.getSound(data, SoundType.FIRE.getName());
+        return WeaponModifierHelper.getSound(SoundType.FIRE.getName(), data);
     }
 
 
-    public static void handleUnload(Player player, InteractionHand hand) {
-        var stack = player.getItemInHand(hand);
+    public static void handleUnload(ServerPlayer player, C2SMessageUnload message) {
+        var stack = player.getItemInHand(message.getHand());
         if (stack.getItem() instanceof IWeapon) {
-            unloadGun(new WeaponData(stack, player));
+            unloadGun(new WeaponData(stack, player).setWeaponMode(message.getWeaponMode()));
         }
     }
 
@@ -247,38 +250,38 @@ public class ServerPlayHandler {
     }
 
     private static void unloadAmmo(WeaponData data) {
-        var player = (Player)data.wielder;
-        var ammoCount = WeaponStateHelper.getAmmoCount(data);
+        var count = WeaponStateHelper.getAmmoCount(data);
         var itemHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
         WeaponStateHelper.setAmmoCount(data, 0);
 
-        if(itemHolder.canReturnAmmo()) {
+        if (itemHolder.canReturnAmmo()) {
             var id = itemHolder.getId();
-            var item = BuiltInRegistries.ITEM.get(id);
+            var item = BuiltInRegistries.ITEM.getValue(id);
 
-            if (item != null && !player.isCreative()) {
-                givePlayerAmmo(player, item, ammoCount);
+            if (item != null && data.wielder instanceof Player player && !player.isCreative()) {
+                givePlayerAmmo(player, item, count);
             }
         }
+
     }
 
     private static void unloadMagazine(WeaponData data) {
-        var player = (Player)data.wielder;
-        var ammoCount = WeaponStateHelper.getAmmoCount(data);
+        if (data.weapon.getItem() instanceof IWeapon) {
+            var count = WeaponStateHelper.getAmmoCount(data);
+            if (count == 0) return;
+            WeaponStateHelper.setAmmoCount(data, 0);
 
-        if (ammoCount == 0) return;
+            var ammoHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
-        WeaponStateHelper.setAmmoCount(data, 0);
-        var ammoHolder = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
+            if (ammoHolder.canReturnAmmo()) {
+                var item = BuiltInRegistries.ITEM.get(ammoHolder.getId());
 
-        if(ammoHolder.canReturnAmmo()) {
-            var item = BuiltInRegistries.ITEM.get(ammoHolder.getId());
-
-            if (item != null && !player.isCreative()) {
-                var usedMagazine = new ItemStack(item);
-                StackUtils.setDurability(usedMagazine, ammoCount);
-                spawnAmmo(player, usedMagazine);
+                if (item != null && data.wielder instanceof Player player && !player.isCreative()) {
+                    var usedMagazine = new ItemStack(item);
+                    StackUtils.setDurability(usedMagazine, count);
+                    spawnAmmo(player, usedMagazine);
+                }
             }
         }
     }
@@ -304,9 +307,9 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void handleAttachments(Player player) {
-        var heldItem = player.getMainHandItem();
-        if (heldItem.getItem() instanceof IWeapon && ((IWeapon)heldItem.getItem()).getModifiedConfig(heldItem).getModules().attachmentScreen()) {
+    public static void handleAttachments(ServerPlayer player, InteractionHand hand) {
+        var heldItem = player.getItemInHand(hand);
+        if (heldItem.getItem() instanceof IWeapon && ((IWeapon) heldItem.getItem()).getModifiedConfig(heldItem).getModules().attachmentScreen()) {
             player.openMenu(new SimpleMenuProvider((windowId, playerInventory, player1) ->
                     new AttachmentContainer(windowId, playerInventory, heldItem), Component.translatable("container.ntgl.attachments")));
         }
@@ -353,6 +356,29 @@ public class ServerPlayHandler {
         }
     }
 
+    public static void handleAmmoChange(C2SMessageChangeAmmo message, ServerPlayer player) {
+        var hand = message.getHand();
+        var weapon = player.getItemInHand(hand);
+        var isReloading = getReloadKey(hand);
+        var data = new WeaponData(weapon, player).setWeaponMode(message.getWeaponMode());
+        var notReloading = !isReloading.getValue(player);
+        var canSwitch = WeaponModifierHelper.getAmmoItems(data).size() > 1;
+        var ammoItems = WeaponModifierHelper.getAmmoItems(data);
+        var ammoHolder = new AmmoHolder(message.getAmmo());
+        var ammoAllowed = ammoItems.stream().filter((i) -> i.getId().equals(message.getAmmo())).count() > 0;
+
+        if (notReloading && canSwitch && ammoAllowed) {
+            unloadGun(data);
+            WeaponStateHelper.switchAmmo(data);
+
+            WeaponStateHelper.setCurrentAmmo(data, message.getAmmo());
+
+            handleReload(new C2SMessageReload(hand, data.weaponMode), player);
+            player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);
+        }
+    }
+
+
     public static void handleMeleeAttack(C2SMessageMeleeAttack message, Player player) {
         var stack = player.getItemInHand(message.getHand());
         var gunData = new WeaponData(stack, player).setWeaponMode(message.getAction());
@@ -391,7 +417,7 @@ public class ServerPlayHandler {
         var data = new WeaponData(weapon, player);
 
         if (!isReloading.getValue(player) && WeaponModifierHelper.getAmmoItems(data).size() > 1) {
-            handleUnload(player, hand);
+            unloadGun(data);
             WeaponStateHelper.switchAmmo(data);
             handleReload(new C2SMessageReload(hand, data.weaponMode), player);
             player.playSound(ModSounds.ITEM_PISTOL_COCK.get(), 1.0F, 1.0F);

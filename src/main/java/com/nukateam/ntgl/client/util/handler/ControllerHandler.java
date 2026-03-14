@@ -79,7 +79,6 @@ public class ControllerHandler {
                 yawSpeed.set(10.0F * (float) adsSensitivity);
                 pitchSpeed.set(7.5F * (float) adsSensitivity);
                 var data = new WeaponData(heldItem, player);
-
                 var scope = WeaponStateHelper.getScope(data);
                 var controller = Controllable.getController();
                 if (scope != null && scope.isStable() && controller != null && controller.isButtonPressed(GunButtonBindings.STEADY_AIM.getButton())) {
@@ -119,7 +118,7 @@ public class ControllerHandler {
                 } else if (isEquals(originalButton, GunButtonBindings.OPEN_ATTACHMENTS)) {
                     shouldCancel = true;
                     if (state) {
-                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments());
+                        PacketHandler.getPlayChannel().sendToServer(new C2SMessageAttachments(hand));
                     }
                 } else if (isEquals(originalButton, GunButtonBindings.INSPECT)) {
                     shouldCancel = true;

@@ -4,6 +4,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.weapon.*;
 
+import com.nukateam.ntgl.common.data.constants.SoundTypes;
 import com.nukateam.ntgl.common.data.holders.*;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
@@ -133,8 +134,8 @@ public class WeaponModifierHelper {
         return autoReloading.get();
     }
 
-    public static ResourceLocation getSound(WeaponData data, String name) {
-        var fireSound = new AtomicReference<>(getConfig(data).getSound(name));
+    public static ResourceLocation getSound(String name, WeaponData data) {
+        var fireSound = new AtomicReference<>(getConfig(data).getSounds().get(name));
         forEachAttachment(data, (modifier -> fireSound.set(modifier.modifySound(name, fireSound.get(), data))));
         return fireSound.get();
     }
@@ -154,6 +155,12 @@ public class WeaponModifierHelper {
     public static WeaponAction getWeaponAction(WeaponData data) {
         var value = new AtomicReference<>(getGeneral(data).getAction());
         forEachAttachment(data, (modifier -> value.set(modifier.modifyWeaponAction(value.get(), data))));
+        return value.get();
+    }
+
+    public static WeaponModeMeta getWeaponModeMeta(WeaponData data) {
+        var value = new AtomicReference<>(getGeneral(data).getWeaponModeMeta());
+        forEachAttachment(data, (modifier -> value.set(modifier.modifyWeaponModeMeta(value.get(), data))));
         return value.get();
     }
 
@@ -375,7 +382,7 @@ public class WeaponModifierHelper {
         var finalValue = new AtomicReference<>(value);
 
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyAttributeModifiers(finalValue.get(), data))));
-        return finalValue.get();
+        return (ArrayList<AttributeModifier>)finalValue.get().clone();
     }
 
     public static float getFireSoundVolume(WeaponData data) {

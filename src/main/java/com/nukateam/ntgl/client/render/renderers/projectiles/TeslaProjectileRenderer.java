@@ -37,7 +37,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
     }
 
     @Override
-    public boolean shouldRender(TeslaProjectile pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
+    public boolean shouldRender(TeslaProjectile livingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
         return true;
     }
 

@@ -7,40 +7,12 @@ import java.util.Map;
 import java.util.Objects;
 
 public class AmmoType extends ResourceHolder {
-    public static AmmoType STANDARD             = new AmmoType("standard"             );
-    public static AmmoType PIERCING             = new AmmoType("piercing"             );
-    public static AmmoType INCENDIARY           = new AmmoType("incendiary"           );
-    public static AmmoType LASER                = new AmmoType("laser"                );
-    public static AmmoType TESLA                = new AmmoType("tesla"                );
-    public static AmmoType ENERGETIC            = new AmmoType("energetic"            );
-    public static AmmoType ROCKET               = new AmmoType("rocket"               );
-    public static AmmoType EXPLOSIVE            = new AmmoType("explosive"            );
-    public static AmmoType EXPLOSIVE_INCENDIARY = new AmmoType("explosive_incendiary" );
-    public static AmmoType FIRE                 = new AmmoType("fire"                 );
-    public static AmmoType SLUG                 = new AmmoType("slug"                 );
-    public static AmmoType BUCKSHOT             = new AmmoType("buckshot"             );
-    public static AmmoType DRAGON_BREATH        = new AmmoType("dragon_breath"        );
-    public static AmmoType BURNABLE             = new AmmoType("burnable"             );
-    public static AmmoType WATER                = new AmmoType("water"                );
+    public static AmmoType STANDARD = new AmmoType("standard"             );
 
     private static final Map<ResourceLocation, AmmoType> typeMap = new HashMap<>();
     
     static {
-        registerType(STANDARD             );
-        registerType(PIERCING             );
-        registerType(INCENDIARY           );
-        registerType(LASER                );
-        registerType(TESLA                );
-        registerType(ROCKET               );
-        registerType(ENERGETIC            );
-        registerType(EXPLOSIVE            );
-        registerType(EXPLOSIVE_INCENDIARY );
-        registerType(FIRE                 );
-        registerType(SLUG                 );
-        registerType(BUCKSHOT             );
-        registerType(DRAGON_BREATH        );
-        registerType(BURNABLE             );
-        registerType(WATER                );
+        registerType(STANDARD);
     }
 
     public AmmoType(ResourceLocation id) {

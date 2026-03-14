@@ -5,6 +5,7 @@ import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
+import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
@@ -41,6 +42,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 import static net.minecraft.world.item.component.ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT;
 
 public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable{
@@ -72,6 +74,9 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     public BiFunction<ItemDisplayContext, DynamicWeaponRenderer<WeaponAnimator>, WeaponAnimator> getAnimatorFactory() {
         return WeaponAnimator::new;
     }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {}
 
     @Override
     public void setConfig(ConfigSupplier<WeaponConfig> supplier) {
@@ -123,123 +128,53 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         WeaponStateHelper.setAmmoCount(new WeaponData(stack, null), getConfig().getGeneral().getMaxAmmo());
     }
 
+    public static Map<UUID, HashMultimap<Attribute, AttributeModifier>> PLAYER_MODIFIERS = new HashMap<>();
+
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if(entity instanceof LivingEntity livingEntity) {
-            var data = new WeaponData(stack, livingEntity);
-            var ammoItems = WeaponModifierHelper.getAmmoItems(data);
-            var ammo = WeaponStateHelper.getCurrentAmmo(data);
-            var matches = ammoItems.stream().anyMatch((i) -> i.equals(ammo));
+            WeaponItemUtils.checkAmmo(stack, entity, livingEntity);
 
-            if(!matches) {
-                if (entity instanceof ServerPlayer player) {
-                    ServerPlayHandler.unloadGun(new WeaponData(stack, player));
+            if(isItemInHands(stack, livingEntity)) {
+                var mods = PLAYER_MODIFIERS.get(livingEntity.getUUID());
+                if (mods != null) {
+                    livingEntity.getAttributes().removeAttributeModifiers(mods);
                 }
-                var firstAmmo = SetUtils.getFirst(ammoItems);
-                WeaponStateHelper.setCurrentAmmo(data, firstAmmo.getId());
-            }
-
-            var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-            var currentAmount = WeaponStateHelper.getAmmoCount(data);
-            if(currentAmount > maxAmmo){
-                if (entity instanceof ServerPlayer player) {
-                    ServerPlayHandler.unloadGun(new WeaponData(stack, player));
-                }
+                WeaponItemUtils.applyAttributeModifiers(livingEntity, InteractionHand.MAIN_HAND);
+                WeaponItemUtils.applyAttributeModifiers(livingEntity, InteractionHand.OFF_HAND);
             }
         }
     }
 
+    private static boolean isItemInHands(ItemStack stack, LivingEntity livingEntity) {
+        return stack == livingEntity.getItemInHand(InteractionHand.MAIN_HAND) ||
+                stack == livingEntity.getItemInHand(InteractionHand.OFF_HAND);
+    }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
         var data = new WeaponData(stack, null);
-        addAmmoType(tooltip, data);
-        addFireRate(tooltip, data);
-        addDamage(tooltip, data);
-        addMelleDamage(tooltip, data);
+        var tagCompound = stack.getOrCreateTag();
+        WeaponItemTooltips.addAmmoType(tooltip, data);
+        WeaponItemTooltips.addFireRate(tooltip, data);
+        WeaponItemTooltips.addDamage(tooltip, data);
+        WeaponItemTooltips.addMelleDamage(tooltip, data);
 
         var explosion = WeaponStateHelper.getProjectileConfig(data).getExplosion();
         if(explosion.getRadius() > 0){
-            addExplosionTip(tooltip, explosion);
+            WeaponItemTooltips.addExplosionTip(tooltip, explosion);
         }
 
-        addAmmo(tooltip, data);
-        addFuel(tooltip, data);
+        WeaponItemTooltips.addAmmo(tooltip, tagCompound, data);
+        WeaponItemTooltips.addFuel(tooltip, data);
 
-        tooltip.add(Component.translatable("info.ntgl.attachment_help", Component.keybind("key.ntgl.attachments")
-                        .getString().toUpperCase(Locale.ENGLISH))
-                .withStyle(ChatFormatting.YELLOW));
+        var name = NtglKeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
+
+        tooltip.add(Component.translatable("info.ntgl.attachment_help", name)
+         .withStyle(ChatFormatting.YELLOW));
     }
 
-    public static void addExplosionTip(List<Component> tooltip, ExplosionConfig explosion) {
-        var damage = explosion.getDamage();
-        tooltip.add(Component.translatable("info.ntgl.explosionDamage",
-                        ChatFormatting.WHITE + ATTRIBUTE_MODIFIER_FORMAT.format(damage))
-                .withStyle(ChatFormatting.GRAY));
-
-        var radius = explosion.getRadius();
-        tooltip.add(Component.translatable("info.ntgl.explosionRadius",
-                        ChatFormatting.WHITE + ATTRIBUTE_MODIFIER_FORMAT.format(radius))
-                .withStyle(ChatFormatting.GRAY));
-    }
-
-    private static void addAmmoType(List<Component> tooltip, WeaponData data) {
-        var descriptionId = WeaponStateHelper.getCurrentAmmo(data).getDescriptionId();
-
-        tooltip.add(Component.translatable("info.ntgl.ammo_type",
-                Component.translatable(descriptionId).withStyle(ChatFormatting.WHITE)
-        ).withStyle(ChatFormatting.GRAY));
-    }
-
-    private static void addFireRate(List<Component> tooltip, WeaponData data) {
-        var rate = WeaponModifierHelper.getRate(data);
-        rate = rate == 0 ? 0 : 20 / rate;
-
-        tooltip.add(Component.translatable("info.ntgl.rate",
-                        ChatFormatting.WHITE + ATTRIBUTE_MODIFIER_FORMAT.format(rate))
-                .withStyle(ChatFormatting.GRAY));
-    }
-
-    private static void addFuel(List<Component> tooltip, WeaponData weaponData) {
-        var allFuel = WeaponModifierHelper.getAllFuel(weaponData);
-        for (var fuelType : allFuel) {
-            var fuelAmount = FuelUtils.getFuel(weaponData.weapon, fuelType);
-            var maxFuel = WeaponModifierHelper.getMaxFuel(fuelType.getId(), weaponData);
-
-            tooltip.add(Component.translatable(fuelType.getDescriptionId())
-                    .append(ChatFormatting.WHITE + " : " + fuelAmount + "/" + maxFuel)
-                    .withStyle(ChatFormatting.GRAY)
-            );
-        }
-    }
-
-    private static void addAmmo(List<Component> tooltip, WeaponData weaponData) {
-        if (WeaponStateHelper.isAmmoIgnored(weaponData)) {
-            tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
-        } else {
-            int ammoCount = WeaponStateHelper.getAmmoCount(weaponData);
-            tooltip.add(Component.translatable("info.ntgl.ammo",
-                    ChatFormatting.WHITE.toString()
-                            + ammoCount + "/"
-                            + WeaponModifierHelper.getMaxAmmo(weaponData)).withStyle(ChatFormatting.GRAY));
-        }
-    }
-
-    private static void addDamage(List<Component> tooltip, WeaponData weaponData) {
-        var damage = WeaponStateHelper.getProjectileDamage(weaponData);
-        tooltip.add(Component.translatable("info.ntgl.damage", ChatFormatting.WHITE
-                + ATTRIBUTE_MODIFIER_FORMAT.format(damage)
-        ).withStyle(ChatFormatting.GRAY));
-    }
-
-    private static void addMelleDamage(List<Component> tooltip, WeaponData weaponData) {
-        var damage = WeaponModifierHelper.getMeleeDamage(weaponData);
-
-        tooltip.add(Component.translatable("info.ntgl.melee_damage",
-                ChatFormatting.WHITE + ATTRIBUTE_MODIFIER_FORMAT.format(damage)
-        ).withStyle(ChatFormatting.GRAY));
-    }
-
+    @Override
     public WeaponConfig getModifiedConfig(ItemStack stack) {
         var tag = NtglComponents.getWeaponTag(stack);
         if (tag.contains("Gun", Tag.TAG_COMPOUND)) {

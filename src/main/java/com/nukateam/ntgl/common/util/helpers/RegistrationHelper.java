@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.common.util.helpers;
 
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;

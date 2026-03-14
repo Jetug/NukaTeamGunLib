@@ -40,7 +40,7 @@ public class AttachmentEvent extends Event  implements ICancellableEvent{
         this.containerMenu = containerMenu;
     }
 
-    public WeaponData getGunData() {
+    public WeaponData getWeaponData() {
         return weaponData;
     }
 }

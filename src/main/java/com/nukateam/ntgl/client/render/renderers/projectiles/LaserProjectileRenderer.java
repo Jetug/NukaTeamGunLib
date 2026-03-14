@@ -34,7 +34,7 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
     }
 
     @Override
-    public boolean shouldRender(LaserProjectile pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
+    public boolean shouldRender(LaserProjectile livingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
         return true;
     }
 

@@ -119,6 +119,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     public void tick() {
         if (!(getStack().getItem() instanceof IWeapon))
             return;
+        var data = getWeaponData();
 
         if(getEntity().getItemInHand(getArm()).getItem() instanceof IWeapon) {
             this.rate = WeaponModifierHelper.getRate(shootingHandler.getWeaponData(getEntity(), getArm()));
@@ -422,7 +423,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     protected void handleSoundEvent(SoundKeyframeEvent<WeaponAnimator> event) {
         var player = minecraft.player;
         var name = event.getKeyframeData().getSound();
-        var sound = WeaponModifierHelper.getSound(getWeaponData(), name);
+        var sound = WeaponModifierHelper.getSound(name, getWeaponData());
 
         if (sound != null && player != null) {
             minecraft.getSoundManager().play(new GunShotSound(sound, SoundSource.PLAYERS,
