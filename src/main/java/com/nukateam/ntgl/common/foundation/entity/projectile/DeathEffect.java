@@ -5,7 +5,7 @@ import com.nukateam.ntgl.common.foundation.entity.misc.AshPile;
 import com.nukateam.ntgl.common.foundation.init.NtglDamageTypes;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.S2CMessageEntityDeathFx;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageEntityDeathFx;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;

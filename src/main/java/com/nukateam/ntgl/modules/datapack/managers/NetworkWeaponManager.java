@@ -6,7 +6,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.modules.constants.Paths;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateWeapons;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateWeapons;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.network.FriendlyByteBuf;

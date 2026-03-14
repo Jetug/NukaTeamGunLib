@@ -4,7 +4,9 @@ import com.nukateam.chassis_core.common.network.packet.S2CMessageUpdateChassisCo
 import com.nukateam.chassis_core.common.network.packet.S2CMessageUpdateEquipmentConfig;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.*;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateAmmo;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateAttachments;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateWeapons;
 import com.nukateam.ntgl.modules.datapack.managers.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.AddReloadListenerEvent;

@@ -1,5 +1,9 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageBlood;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageProjectileHitBlock;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageProjectileHitEntity;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageProjectileHitFluid;
 import com.nukateam.ntgl.modules.network.LevelLocation;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
@@ -21,7 +25,6 @@ import com.nukateam.ntgl.common.foundation.ModTags;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.world.ExplosionUtils;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

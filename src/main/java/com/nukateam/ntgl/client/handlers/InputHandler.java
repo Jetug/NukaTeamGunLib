@@ -11,7 +11,7 @@ import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.init.ModEntityTypes;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageAttachments;
 import com.nukateam.ntgl.common.registry.AmmoHolders;
 import com.nukateam.ntgl.common.util.helpers.context.AmmoContext;
 import com.nukateam.ntgl.common.util.util.*;

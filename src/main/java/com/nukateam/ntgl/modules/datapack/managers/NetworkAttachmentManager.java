@@ -7,7 +7,7 @@ import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAttachments;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateAttachments;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;

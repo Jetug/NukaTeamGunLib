@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.network.message;
+package com.nukateam.ntgl.common.network.message.weapon;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.network.NetworkEvent;

@@ -14,7 +14,7 @@ import com.nukateam.ntgl.common.debug.Debug;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SMessageAim;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageAim;
 import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.CameraType;

@@ -6,7 +6,7 @@ import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAmmo;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateAmmo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;

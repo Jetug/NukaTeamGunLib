@@ -1,11 +1,11 @@
 package com.nukateam.ntgl.common.network;
 
+import com.nukateam.ntgl.common.network.message.weapon.*;
 import com.nukateam.ntgl.modules.data.message.C2SMessageUpdateEntityData;
 import com.nukateam.ntgl.modules.network.LevelLocation;
 import com.nukateam.chassis_core.common.network.packet.*;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
-import com.nukateam.ntgl.common.network.message.*;
 import com.nukateam.ntgl.modules.network.ForgeNetwork;
 import com.nukateam.ntgl.modules.network.IMessage;
 import net.minecraft.resources.ResourceLocation;

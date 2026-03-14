@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.network.message;
+package com.nukateam.ntgl.common.network.message.weapon;
 
 import com.nukateam.ntgl.modules.network.IMessage;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;

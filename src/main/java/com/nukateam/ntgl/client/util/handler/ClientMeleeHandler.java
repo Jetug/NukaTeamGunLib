@@ -8,7 +8,7 @@ import com.nukateam.ntgl.common.data.holders.MeleeMode;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SMessageMeleeAttack;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageMeleeAttack;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.world.InteractionHand;

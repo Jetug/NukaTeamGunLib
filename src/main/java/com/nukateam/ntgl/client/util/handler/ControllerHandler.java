@@ -8,7 +8,6 @@ import com.mrcrayfish.controllable.client.binding.ButtonBindings;
 import com.mrcrayfish.controllable.client.gui.navigation.BasicNavigationPoint;
 import com.mrcrayfish.controllable.client.gui.navigation.NavigationPoint;
 import com.mrcrayfish.controllable.client.input.Controller;
-import com.mrcrayfish.controllable.event.ControllerEvents;
 import com.mrcrayfish.controllable.event.Value;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
@@ -21,8 +20,8 @@ import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.C2SMessageAttachments;
-import com.nukateam.ntgl.common.network.message.C2SMessageUnload;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageAttachments;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageUnload;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import net.minecraft.client.Minecraft;

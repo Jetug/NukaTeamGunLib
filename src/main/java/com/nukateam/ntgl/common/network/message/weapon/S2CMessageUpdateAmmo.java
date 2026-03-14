@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.network.message;
+package com.nukateam.ntgl.common.network.message.weapon;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraftforge.network.NetworkEvent;

@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.network.message;
+package com.nukateam.ntgl.common.network.message.weapon;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.network.NetworkEvent;
@@ -6,7 +6,6 @@ import com.nukateam.ntgl.modules.network.IMessage;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 
 /**
  * Author: MrCrayfish
