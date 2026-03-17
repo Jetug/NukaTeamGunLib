@@ -34,7 +34,14 @@
     "chassis.client.ForgeIngameGuiMixin",
     "chassis.client.GameRendererMixin",
     "chassis.client.InventoryScreenMixin",
-    "chassis.client.ModelPartMixin"
+    "chassis.client.ModelPartMixin",
+
+    "ntgl.client.DynamicWeaponRendererMixin",
+    "ntgl.client.FlameProjectileMixin",
+    "ntgl.client.LaserProjectileRendererMixin",
+    "ntgl.client.ProjectileRendererMixin",
+    "ntgl.client.TeslaProjectileRendererMixin",
+    "ntgl.client.ProjectileEntityAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
