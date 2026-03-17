@@ -41,6 +41,22 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
         super(entityType, thrower, world);
         this.projectile = item.getConfig().getThrowable().getProjectile();
         this.setItem(new ItemStack(item));
+
+        if (thrower instanceof net.minecraft.world.entity.player.Player player) {
+            float pitch = player.getXRot();
+            float yaw = player.getYRot();
+            float radYaw = yaw * net.minecraft.util.Mth.DEG_TO_RAD;
+            float radPitch = pitch * net.minecraft.util.Mth.DEG_TO_RAD;
+            float dirX = -net.minecraft.util.Mth.sin(radYaw) * net.minecraft.util.Mth.cos(radPitch);
+            float dirY = -net.minecraft.util.Mth.sin(radPitch);
+            float dirZ = net.minecraft.util.Mth.cos(radYaw) * net.minecraft.util.Mth.cos(radPitch);
+            float rightX = -net.minecraft.util.Mth.cos(radYaw);
+            float rightZ = -net.minecraft.util.Mth.sin(radYaw);
+            double offsetX = rightX * 0.35 + dirX * 0.1;
+            double offsetY = -0.3 + dirY * 0.1;
+            double offsetZ = rightZ * 0.35 + dirZ * 0.1;
+            this.setPos(this.getX() + offsetX, this.getY() + (offsetY + 0.1), this.getZ() + offsetZ);
+        }
     }
 
     @Override
