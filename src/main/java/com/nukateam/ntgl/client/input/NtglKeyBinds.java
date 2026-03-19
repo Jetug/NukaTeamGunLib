@@ -28,6 +28,14 @@ public class NtglKeyBinds {
     public static final KeyMapping KEY_DEBUG_Z_SUB = new KeyMapping("key.ntgl.debug_z_sub", GLFW.GLFW_KEY_KP_6, "key.categories.ntgl");
     public static final KeyMapping KEY_DEBUG_ZERO = new KeyMapping("key.ntgl.debug_zero", GLFW.GLFW_KEY_KP_ENTER, "key.categories.ntgl");
     public static final KeyMapping KEY_DEBUG_SHOW = new KeyMapping("key.ntgl.debug_show", GLFW.GLFW_KEY_KP_MULTIPLY, "key.categories.ntgl");
+    public static final KeyMapping KEY_DEBUG_RX_ADD = new KeyMapping("key.ntgl.debug_rx_add", GLFW.GLFW_KEY_KP_7, "key.categories.ntgl");
+    public static final KeyMapping KEY_DEBUG_RY_ADD = new KeyMapping("key.ntgl.debug_ry_add", GLFW.GLFW_KEY_KP_9, "key.categories.ntgl");
+    public static final KeyMapping KEY_DEBUG_RZ_ADD = new KeyMapping("key.ntgl.debug_rz_add", GLFW.GLFW_KEY_PAGE_UP, "key.categories.ntgl");
+    public static final KeyMapping KEY_DEBUG_RX_SUB = new KeyMapping("key.ntgl.debug_rx_sub", GLFW.GLFW_KEY_KP_8, "key.categories.ntgl");
+    public static final KeyMapping KEY_DEBUG_RY_SUB = new KeyMapping("key.ntgl.debug_ry_sub", GLFW.GLFW_KEY_KP_0, "key.categories.ntgl");
+    public static final KeyMapping KEY_DEBUG_RZ_SUB = new KeyMapping("key.ntgl.debug_rz_sub", GLFW.GLFW_KEY_PAGE_DOWN, "key.categories.ntgl");
+    public static final KeyMapping KEY_DEBUG_SAVE = new KeyMapping("key.ntgl.debug_save", GLFW.GLFW_KEY_KP_ADD, "key.categories.ntgl");
+    public static final KeyMapping KEY_DEBUG_TUNING_MODE = new KeyMapping("key.ntgl.debug_tuning_mode", GLFW.GLFW_KEY_KP_DIVIDE, "key.categories.ntgl");
     public static final KeyMapping LEAVE = new KeyMapping("key.ntgl.leave", KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, "key.categories.ntgl.armor");
 
@@ -56,8 +64,16 @@ public class NtglKeyBinds {
         event.register(KEY_DEBUG_Y_SUB);
         event.register(KEY_DEBUG_Z_ADD);
         event.register(KEY_DEBUG_Z_SUB);
+        event.register(KEY_DEBUG_RX_ADD);
+        event.register(KEY_DEBUG_RX_SUB);
+        event.register(KEY_DEBUG_RY_ADD);
+        event.register(KEY_DEBUG_RY_SUB);
+        event.register(KEY_DEBUG_RZ_ADD);
+        event.register(KEY_DEBUG_RZ_SUB);
         event.register(KEY_DEBUG_ZERO);
         event.register(KEY_DEBUG_SHOW);
+        event.register(KEY_DEBUG_SAVE);
+        event.register(KEY_DEBUG_TUNING_MODE);
     }
 
     public static KeyMapping getAimMapping() {

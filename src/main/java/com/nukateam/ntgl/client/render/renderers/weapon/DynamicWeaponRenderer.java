@@ -70,10 +70,9 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
         poseStack.pushPose();
         {
             if(TransformUtils.isNonHand(transformType)){
-                poseStack.translate(0, -7.5D / 16D/* ClientDebug.Y / 10D / 16D*/, 0);
+                poseStack.translate(0, -7.5D / 16D, 0);
             }
             else if(TransformUtils.isFirstPerson(transformType)){
-//                poseStack.translate(X / 10d / 16d, -25 / 10d / 16d, 5 / 10d / 16d);
                 poseStack.translate(0, -8.5 / 16D, 0.5 / 16D);
             }
             else poseStack.translate(0, -6 / 16D, 0);
@@ -120,7 +119,7 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
         var length = barrelItem.getProperties().getLength();
         poseStack.translate(0, 0, -length / 16D);
         if (Ntgl.isDebugging())
-            poseStack.translate(-X / 10D / 16D, Y / 10D / 16D, Z / 10D / 16D);
+            poseStack.translate(-mfX / 10D / 16D, mfY / 10D / 16D, mfZ / 10D / 16D);
     }
 
     protected void prepareHiddenBones(ItemDisplayContext transformType) {

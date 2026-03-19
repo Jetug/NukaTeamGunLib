@@ -121,7 +121,10 @@ public class AimingHandler {
             if (tracker != null)
                 return (float) tracker.getNormalProgress(partialTicks);
         }
-        return 0F;
+        if (entity instanceof com.nukateam.chassis_core.common.foundation.entity.WearableChassis chassis && chassis.getFirstPassenger() instanceof LivingEntity passenger) {
+            return getAimProgress(passenger, partialTicks);
+        }
+        return 1.0F;
     }
 
     @SubscribeEvent
