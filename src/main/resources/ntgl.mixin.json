@@ -37,11 +37,7 @@
     "chassis.client.ModelPartMixin",
 
     "ntgl.client.DynamicWeaponRendererMixin",
-    "ntgl.client.FlameProjectileMixin",
-    "ntgl.client.LaserProjectileRendererMixin",
-    "ntgl.client.ProjectileRendererMixin",
-    "ntgl.client.TeslaProjectileRendererMixin",
-    "ntgl.client.ProjectileEntityAccessor"
+    "ntgl.client.FlameProjectileMixin"
   ],
   "injectors": {
     "defaultRequire": 1

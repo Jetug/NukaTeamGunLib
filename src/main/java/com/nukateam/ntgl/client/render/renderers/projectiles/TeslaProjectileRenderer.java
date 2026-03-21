@@ -3,14 +3,18 @@ package com.nukateam.ntgl.client.render.renderers.projectiles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.helpers.MuzzleMatrixHelper;
 import com.nukateam.ntgl.client.util.helpers.render.RenderUtils;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.TeslaProjectile;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -21,7 +25,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
     private static final int MIN_ANGLE = -45;
     private static final int MAX_ANGLE = 45;
 
-    static final double offset = 0.50; // Distance per bolt vertex
+    static final double offset = 0.50;
 
     public TeslaProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -39,11 +43,30 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
     public void render(TeslaProjectile projectile, float entityYaw, float partialTicks,
                         PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-        renderLightning(projectile, partialTicks, poseStack, bufferSource, true );
-        renderLightning(projectile, partialTicks, poseStack, bufferSource, false);
+        int shooterId = projectile.getShooterId();
+        Vec3 muzzleWorldPos = MuzzleMatrixHelper.getMuzzleWorldPosForEntity(shooterId, partialTicks);
+
+        if (muzzleWorldPos != null) {
+            double projX = Mth.lerp((double) partialTicks, projectile.xOld, projectile.getX());
+            double projY = Mth.lerp((double) partialTicks, projectile.yOld, projectile.getY());
+            double projZ = Mth.lerp((double) partialTicks, projectile.zOld, projectile.getZ());
+
+            double yOffset = 0.0;
+            boolean isLocalFirstPerson = Minecraft.getInstance().player != null
+                    && shooterId == Minecraft.getInstance().player.getId()
+                    && Minecraft.getInstance().options.getCameraType().isFirstPerson();
+            if (isLocalFirstPerson) {
+                yOffset = 0.15;
+            }
+
+            poseStack.translate(muzzleWorldPos.x() - projX, muzzleWorldPos.y() - projY + yOffset, muzzleWorldPos.z() - projZ);
+        }
+
+        renderLightning(projectile, partialTicks, poseStack, bufferSource, true, muzzleWorldPos != null);
+        renderLightning(projectile, partialTicks, poseStack, bufferSource, false, muzzleWorldPos != null);
     }
 
-    private void renderLightning(TeslaProjectile projectile, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, boolean isVertical) {
+    private void renderLightning(TeslaProjectile projectile, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, boolean isVertical, boolean hasMuzzle) {
         var prog = ((float) projectile.tickCount) / ((float) projectile.getLife());
         var fadingValue = Math.sin(Math.sqrt(prog) * Math.PI);
         var radius = (float) (laserRadius * fadingValue * 2);
@@ -63,7 +86,9 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
             poseStack.mulPose(Axis.YP.rotationDegrees((((float) Math.PI / 2F) - xzPos) * (180F / (float) Math.PI)));
             poseStack.mulPose(Axis.XP.rotationDegrees(yPos * (180F / (float) Math.PI)));
-            poseStack.translate(side * 0.25, 0, 0);
+            if (!hasMuzzle) {
+                poseStack.translate(side * 0.25, 0, 0);
+            }
 
             var angleX = projectile.angle;
             var flag = 1;
@@ -89,7 +114,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
                 }
 
                 var gameTime = projectile.level().getGameTime();
-                var yOffset = 0; //(int) ammo.position().y;
+                var yOffset = 0;
                 var color = new Rgba(1, 1, 1, 1);
 
                 RenderUtils.renderBeam(poseStack, bufferSource, texture, partialTicks, 1.0F,
