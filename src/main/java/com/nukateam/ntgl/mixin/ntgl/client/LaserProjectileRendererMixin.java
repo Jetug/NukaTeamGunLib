@@ -32,7 +32,7 @@ public class LaserProjectileRendererMixin {
     }
 
     @Inject(method = "render(Lcom/nukateam/ntgl/common/foundation/entity/LaserProjectile;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
-            at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V"),
+            at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", remap = true),
             remap = false)
     private void ntgl$applyMuzzleOffset(LaserProjectile projectile, float entityYaw, float partialTicks,
             PoseStack poseStack, MultiBufferSource bufferSource, int light, CallbackInfo ci) {
