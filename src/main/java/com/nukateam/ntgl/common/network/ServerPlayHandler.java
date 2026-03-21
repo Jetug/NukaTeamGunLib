@@ -21,6 +21,7 @@ import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
+import com.nukateam.ntgl.common.foundation.event.WorkbenchCraftEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import net.minecraft.core.BlockPos;
@@ -253,6 +254,14 @@ public class ServerPlayHandler {
                 var recipe = WorkbenchRecipes.getRecipeById(world, id);
                 if (recipe == null || !recipe.hasMaterials(player))
                     return;
+
+                WorkbenchCraftEvent event = new WorkbenchCraftEvent(player, recipe.getItem().copy());
+                if (MinecraftForge.EVENT_BUS.post(event)) {
+                    if (event.getRejectionMessage() != null) {
+                        player.displayClientMessage(event.getRejectionMessage(), true);
+                    }
+                    return;
+                }
 
                 recipe.consumeMaterials(player);
                 Containers.dropItemStack(world,

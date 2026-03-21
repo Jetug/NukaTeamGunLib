@@ -25,6 +25,8 @@ import com.nukateam.ntgl.common.foundation.ModTags;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.world.ExplosionUtils;
 import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.*;
+import com.nukateam.ntgl.common.foundation.event.GunProjectileSpawnEvent;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -80,6 +82,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
     protected double modifiedGravity;
     protected int life;
     protected int pierceCount;
+    protected float damageMultiplier = 1.0f;
+    protected float criticalChanceMultiplier = 1.0f;
+    protected float criticalDamageMultiplier = 1.0f;
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -116,6 +121,12 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         this.updateHeading();
         this.setupDirection(shooter, weaponStack, item);
         this.setupStartPosition(shooter);
+
+        GunProjectileSpawnEvent spawnEvent = new GunProjectileSpawnEvent(this, this.shooter, this.weaponData);
+        MinecraftForge.EVENT_BUS.post(spawnEvent);
+        this.damageMultiplier = spawnEvent.getDamageMultiplier();
+        this.criticalChanceMultiplier = spawnEvent.getCriticalChanceMultiplier();
+        this.criticalDamageMultiplier = spawnEvent.getCriticalDamageMultiplier();
     }
 
     @Override
@@ -278,6 +289,8 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
         var projectileAmount = WeaponModifierHelper.getProjectileAmount(data);
         var damage = initialDamage / projectileAmount;
+
+        damage *= this.damageMultiplier;
 
         return Math.max(0F, damage);
     }
@@ -634,9 +647,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
 
     protected float getCriticalDamage(ItemStack weapon, RandomSource rand, float damage) {
         var data = new WeaponData(weapon, shooter);
-        float chance = WeaponModifierHelper.getCriticalChance(data);
+        float chance = WeaponModifierHelper.getCriticalChance(data) * this.criticalChanceMultiplier;
         if (rand.nextFloat() < chance) {
-            return (float) (damage * Config.COMMON.gameplay.criticalDamageMultiplier.get());
+            return (float) (damage * Config.COMMON.gameplay.criticalDamageMultiplier.get() * this.criticalDamageMultiplier);
         }
         return damage;
     }

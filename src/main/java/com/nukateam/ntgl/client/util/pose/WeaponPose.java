@@ -2,6 +2,7 @@ package com.nukateam.ntgl.client.util.pose;
 
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.client.util.IHeldAnimation;
+import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import net.minecraft.client.Minecraft;
@@ -73,16 +74,15 @@ public abstract class WeaponPose implements IHeldAnimation {
 
     @Override
     public void applyGeoModelRotation(LivingEntity entity, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head, InteractionHand interactionHand) {
-//        var mc = Minecraft.getInstance();
-//
-//        var rightArm = animationProcessor.getBone("right_arm");
-//        var leftArm = animationProcessor.getBone("left_arm");
-//
-//        float angle = this.getEntityPitch(entity);
-//        float angleAbs = Math.abs(angle);
-//        float zoom = this.hasAimPose() ? AimingHandler.get().getAimProgress(entity, mc.getFrameTime()) : 0F;
-//        var targetPose = angle > 0.0 ? this.downPose : this.upPose;
-//        this.applyAimPose(targetPose, rightArm, leftArm, angleAbs, zoom, 1, entity.isCrouching());
+        var mc = Minecraft.getInstance();
+
+        float angle = this.getEntityPitch(entity);
+        float angleAbs = Math.abs(angle);
+        float zoom = this.hasAimPose() ? AimingHandler.get().getAimProgress(entity, mc.getFrameTime()) : 0F;
+        var targetPose = angle > 0.0 ? this.downPose : this.upPose;
+        this.applyAimPose(targetPose, rightArm, leftArm, angleAbs, zoom, 1, entity.isCrouching());
+
+
     }
 
     @Override
@@ -115,8 +115,8 @@ public abstract class WeaponPose implements IHeldAnimation {
             var leftHanded = right ? 1 : -1;
             poseStack.translate(0, 0, 0.05);
 
-            var angle = this.getEntityPitch(entity);
-            var angleAbs = Math.abs(angle);
+            float angle = this.getEntityPitch(entity);
+            float angleAbs = Math.abs(angle);
             var zoom = this.hasAimPose() ? aimProgress : 0F;
             var targetPose = angle > 0.0 ? this.downPose : this.upPose;
 //
@@ -171,12 +171,13 @@ public abstract class WeaponPose implements IHeldAnimation {
     private void applyLimbPoseToModelRenderer(LimbPose targetIdlePose, LimbPose targetAimingPose,
                                               LimbPose idlePose, LimbPose aimingPose, CoreGeoBone modelPart,
                                               float partial, float zoom, float leftHanded, boolean sneaking) {
-        modelPart.setRotX(getValue(targetIdlePose.getRotationAngleX(), targetAimingPose.getRotationAngleX(), idlePose.getRotationAngleX(), aimingPose.getRotationAngleX(), modelPart.getRotX(), partial, zoom, 1F));
-        modelPart.setRotY(getValue(targetIdlePose.getRotationAngleY(), targetAimingPose.getRotationAngleY(), idlePose.getRotationAngleY(), aimingPose.getRotationAngleY(), modelPart.getRotY(), partial, zoom, leftHanded));
-        modelPart.setRotZ(getValue(targetIdlePose.getRotationAngleZ(), targetAimingPose.getRotationAngleZ(), idlePose.getRotationAngleZ(), aimingPose.getRotationAngleZ(), modelPart.getRotZ(), partial, zoom, leftHanded));
-//        modelPart.setPosX(getValue(targetIdlePose.getRotationPointX(), targetAimingPose.getRotationPointX(), idlePose.getRotationPointX(), aimingPose.getRotationPointX(), modelPart.getRotX(), partial, zoom, leftHanded));
-//        modelPart.setPosY(getValue(targetIdlePose.getRotationPointY(), targetAimingPose.getRotationPointY(), idlePose.getRotationPointY(), aimingPose.getRotationPointY(), modelPart.getRotY(), partial, zoom, 1F) + (sneaking ? 2F : 0F));
-//        modelPart.setPosZ(getValue(targetIdlePose.getRotationPointZ(), targetAimingPose.getRotationPointZ(), idlePose.getRotationPointZ(), aimingPose.getRotationPointZ(), modelPart.getRotZ(), partial, zoom, 1F));
+        var x = (float) Math.toRadians(getValue(targetIdlePose.getRotationAngleX(), targetAimingPose.getRotationAngleX(), idlePose.getRotationAngleX(), aimingPose.getRotationAngleX(), modelPart.getRotX(), partial, zoom, 1F));
+        var y = (float) Math.toRadians(getValue(targetIdlePose.getRotationAngleY(), targetAimingPose.getRotationAngleY(), idlePose.getRotationAngleY(), aimingPose.getRotationAngleY(), modelPart.getRotY(), partial, zoom, leftHanded));
+        var z = (float) Math.toRadians(getValue(targetIdlePose.getRotationAngleZ(), targetAimingPose.getRotationAngleZ(), idlePose.getRotationAngleZ(), aimingPose.getRotationAngleZ(), modelPart.getRotZ(), partial, zoom, leftHanded));
+
+        modelPart.setRotX(x);
+        modelPart.setRotY(y);
+        modelPart.setRotZ(z);
     }
 
     private void applyAimPose(AimPose targetPose, ModelPart rightArm, ModelPart leftArm,
