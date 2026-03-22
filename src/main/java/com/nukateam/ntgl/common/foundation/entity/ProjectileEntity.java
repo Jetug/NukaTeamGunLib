@@ -25,7 +25,6 @@ import com.nukateam.ntgl.common.foundation.ModTags;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.world.ExplosionUtils;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.common.network.message.*;
 import com.nukateam.ntgl.common.foundation.event.GunProjectileSpawnEvent;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -57,6 +56,9 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -64,9 +66,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnData {
+import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
+
+public class ProjectileEntity extends Entity implements GeoEntity, IEntityAdditionalSpawnData {
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
+    protected final AnimatableInstanceCache cache = createInstanceCache(this);
     protected AmmoHolder ammoHolder;
     protected WeaponMode weaponAction;
     protected WeaponData weaponData;
@@ -659,7 +664,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         float gunSpread = WeaponModifierHelper.getSpread(data);
 
         if (gunSpread == 0F) {
-            return this.getVectorFromRotation(shooter.getXRot(), shooter.getYRot());
+            return this.getViewVector(shooter.getXRot(), shooter.getYRot());
         }
 
         if (!WeaponModifierHelper.isAlwaysSpread(data)) {
@@ -670,7 +675,9 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
             gunSpread *= 0.5F;
         }
 
-        return this.getVectorFromRotation(shooter.getXRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread, shooter.getYHeadRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread);
+        return this.getViewVector(
+                shooter.getXRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread,
+                shooter.getYHeadRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread);
     }
 
     private @NotNull DamageSource getDamageSource() {
@@ -754,7 +761,7 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
         return new EntityResult(target, hitPos, headshot);
     }
 
-    private Vec3 getVectorFromRotation(float pitch, float yaw) {
+    private Vec3 getViewVector(float pitch, float yaw) {
         float f = Mth.cos(-yaw * 0.017453292F - (float) Math.PI);
         float f1 = Mth.sin(-yaw * 0.017453292F - (float) Math.PI);
         float f2 = -Mth.cos(-pitch * 0.017453292F);
@@ -782,5 +789,13 @@ public class ProjectileEntity extends Entity implements IEntityAdditionalSpawnDa
                 CriteriaTriggers.TARGET_BLOCK_HIT.trigger(serverPlayer, this, blockHitResult.getLocation(), power);
             }
         }
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 }

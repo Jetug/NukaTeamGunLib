@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.network;
 
 import com.nukateam.ntgl.common.network.message.weapon.*;
-import com.nukateam.ntgl.modules.data.message.C2SMessageUpdateEntityData;
+import com.nukateam.ntgl.modules.data.message.S2CMessageUpdateEntityData;
 import com.nukateam.ntgl.modules.network.LevelLocation;
 import com.nukateam.chassis_core.common.network.packet.*;
 import com.nukateam.ntgl.Ntgl;
@@ -71,7 +71,7 @@ public class PacketHandler {
         registerPlayMessage(S2CMessageProjectileHitFluid.class  , NetworkDirection.PLAY_TO_CLIENT);
         registerPlayMessage(S2CMessageProjectileExplosion.class , NetworkDirection.PLAY_TO_CLIENT);
 
-        registerPlayMessage(C2SMessageUpdateEntityData.class , NetworkDirection.PLAY_TO_CLIENT);
+        registerPlayMessage(S2CMessageUpdateEntityData.class , NetworkDirection.PLAY_TO_CLIENT);
     }
 
     public static <T extends IMessage<T>> void registerPlayMessage(Class<T> messageClass, @Nullable NetworkDirection direction) {

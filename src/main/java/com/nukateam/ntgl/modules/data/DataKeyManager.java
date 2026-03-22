@@ -2,7 +2,7 @@ package com.nukateam.ntgl.modules.data;
 
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.network.PacketHandler;
-import com.nukateam.ntgl.modules.data.message.C2SMessageUpdateEntityData;
+import com.nukateam.ntgl.modules.data.message.S2CMessageUpdateEntityData;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -36,19 +36,19 @@ public class DataKeyManager {
     @SubscribeEvent
     public static void onLivingTick(TickEvent.ServerTickEvent event) {
         if(event.phase == TickEvent.Phase.END) {
-            var entries = new HashMap<DataEntry, C2SMessageUpdateEntityData.EntityData>();
+            var entries = new HashMap<DataEntry, S2CMessageUpdateEntityData.EntityData>();
 
             DataKeyManager.getInstance().dataKeys.forEach((dataKeyId, dataKey) -> {
                 dataKey.getData().forEach((entityId, dataEntry) -> {
                     if (dataEntry.isPendingSync()) {
                         dataEntry.setPendingSync(false);
-                        entries.put(dataEntry, new C2SMessageUpdateEntityData.EntityData(entityId, dataKeyId));
+                        entries.put(dataEntry, new S2CMessageUpdateEntityData.EntityData(entityId, dataKeyId));
                     }
                 });
             });
 
             if (!entries.isEmpty()) {
-                PacketHandler.getPlayChannel().sendToAll(new C2SMessageUpdateEntityData());
+                PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateEntityData());
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.nukateam.chassis_core.common.config;
 
 import com.nukateam.chassis_core.common.data.holders.ChassisPart;
-import com.nukateam.chassis_core.common.data.json.EquipmentAttachment;
 import com.nukateam.chassis_core.modules.config.annotation.Ignored;
 import com.nukateam.chassis_core.modules.config.annotation.Optional;
 import com.nukateam.ntgl.common.util.util.NbtUtils;

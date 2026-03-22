@@ -1,5 +1,6 @@
-package com.nukateam.chassis_core.common.data.json;
+package com.nukateam.chassis_core.common.config;
 
+import com.nukateam.chassis_core.common.data.enums.AttachmentMode;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 

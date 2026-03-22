@@ -1,29 +1,25 @@
 package com.nukateam.ntgl.modules.data.message;
 
-import com.nukateam.ntgl.common.data.holders.WeaponMode;
-import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.modules.data.DataEntry;
 import com.nukateam.ntgl.modules.data.DataKeyManager;
 import com.nukateam.ntgl.modules.network.IMessage;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class C2SMessageUpdateEntityData implements IMessage<C2SMessageUpdateEntityData> {
+public class S2CMessageUpdateEntityData implements IMessage<S2CMessageUpdateEntityData> {
     private Map<DataEntry, EntityData> entries = new HashMap<>();
 
-    public C2SMessageUpdateEntityData() {}
+    public S2CMessageUpdateEntityData() {}
 
-    public C2SMessageUpdateEntityData(Map<DataEntry, EntityData> entries) {
+    public S2CMessageUpdateEntityData(Map<DataEntry, EntityData> entries) {
         this.entries = entries;
     }
 
     @Override
-    public void encode(C2SMessageUpdateEntityData message, FriendlyByteBuf buffer) {
+    public void encode(S2CMessageUpdateEntityData message, FriendlyByteBuf buffer) {
         buffer.writeVarInt(message.entries.size());
         message.entries.forEach((entry, data) -> {
             buffer.writeBoolean(entry.getValue());
@@ -33,7 +29,7 @@ public class C2SMessageUpdateEntityData implements IMessage<C2SMessageUpdateEnti
     }
 
     @Override
-    public C2SMessageUpdateEntityData decode(FriendlyByteBuf buffer) {
+    public S2CMessageUpdateEntityData decode(FriendlyByteBuf buffer) {
         var size = buffer.readVarInt();
         var entries = new HashMap<DataEntry, EntityData>();
 
@@ -46,11 +42,11 @@ public class C2SMessageUpdateEntityData implements IMessage<C2SMessageUpdateEnti
             dataEntry.setValue(value);
             entries.put(dataEntry, new EntityData(entityId, dataKeyId));
         }
-        return new C2SMessageUpdateEntityData(entries);
+        return new S2CMessageUpdateEntityData(entries);
     }
 
     @Override
-    public void handle(C2SMessageUpdateEntityData message, NetworkEvent.Context supplier) {
+    public void handle(S2CMessageUpdateEntityData message, NetworkEvent.Context supplier) {
         supplier.enqueueWork((() -> {
             message.entries.forEach(((dataEntry, entityData) -> {
                 DataKeyManager.getInstance().setData(dataEntry.getValue(), entityData.dataKeyId, entityData.entityId);

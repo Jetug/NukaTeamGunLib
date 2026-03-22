@@ -29,7 +29,9 @@ public class C2SMessageUnload implements IMessage<C2SMessageUnload> {
 
     @Override
     public C2SMessageUnload decode(FriendlyByteBuf buffer) {
-        return new C2SMessageUnload(buffer.readEnum(InteractionHand.class), WeaponMode.getType(buffer.readUtf()));
+        return new C2SMessageUnload(
+                buffer.readEnum(InteractionHand.class),
+                WeaponMode.getType(buffer.readUtf()));
     }
 
     @Override
