@@ -3,6 +3,7 @@ package com.nukateam.ntgl.client.render.renderers.projectiles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.client.helpers.MuzzleMatrixHelper;
 import com.nukateam.ntgl.client.util.helpers.render.RenderUtils;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.LaserProjectile;
@@ -12,6 +13,8 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
@@ -59,10 +62,13 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
 
         if (shooter == null) return;
 
+        Vec3 muzzleWorldPos = MuzzleMatrixHelper.getMuzzleWorldPosForEntity(shooterId, partialTicks);
+        boolean hasMuzzle = muzzleWorldPos != null;
+
         var playerPos = projectile.getEndVec();
-        var laserPos = shooter.getEyePosition(partialTicks); //ammo.getStartVec();
+        var laserPos = hasMuzzle ? muzzleWorldPos : shooter.getEyePosition(partialTicks);
         var pos = playerPos.subtract(laserPos);
-        var offset = getBeamOffset();
+        var offset = hasMuzzle ? new Vector3f(0, 0, 0) : getBeamOffset();
         var distance = projectile.getDistance() - offset.y;
 
         pos = pos.normalize();
@@ -70,6 +76,13 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
         var yPos = (float) Math.acos(pos.y);
         var xzPos = (float) Math.atan2(pos.z, pos.x);
         var side = projectile.isRightHand() ? -1 : 1;
+
+        if (hasMuzzle) {
+            double projX = Mth.lerp((double) partialTicks, projectile.xOld, projectile.getX());
+            double projY = Mth.lerp((double) partialTicks, projectile.yOld, projectile.getY());
+            double projZ = Mth.lerp((double) partialTicks, projectile.zOld, projectile.getZ());
+            poseStack.translate(muzzleWorldPos.x() - projX, muzzleWorldPos.y() - projY, muzzleWorldPos.z() - projZ);
+        }
 
         poseStack.pushPose();
         {

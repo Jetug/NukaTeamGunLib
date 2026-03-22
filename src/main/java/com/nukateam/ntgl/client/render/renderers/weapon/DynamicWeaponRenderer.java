@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
+import com.nukateam.ntgl.client.helpers.MuzzleMatrixHelper;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.helpers.TransformUtils;
 import com.nukateam.ntgl.common.data.WeaponData;
@@ -23,6 +24,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 
@@ -92,6 +94,32 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
         if (bone.getName().equals(MUZZLE_FLASH)) {
             if (barrelItem != null) {
                 renderMuzzleFlash(poseStack);
+            }
+        }
+
+        if (!bone.isHidden() && bone.getName().startsWith(MUZZLE_FLASH)) {
+            Matrix4f mat = new Matrix4f(poseStack.last().pose());
+            mat.translate(
+                (bone.getPivotX() + bone.getPosX()) / 16.0f,
+                (bone.getPivotY() + bone.getPosY()) / 16.0f,
+                (bone.getPivotZ() + bone.getPosZ()) / 16.0f
+            );
+
+            boolean isFirstPerson = this.transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND
+                    || this.transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
+            boolean isThirdPerson = this.transformType == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND
+                    || this.transformType == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
+
+            LivingEntity entity = this.getRenderEntity();
+
+            if (entity != null) {
+                if (isFirstPerson) {
+                    MuzzleMatrixHelper.saveMuzzleMatrix(entity.getId(), mat, true);
+                    MuzzleMatrixHelper.lastMuzzleMatrix = mat;
+                } else if (isThirdPerson) {
+                    MuzzleMatrixHelper.saveMuzzleMatrix(entity.getId(), mat, false);
+                    MuzzleMatrixHelper.lastThirdPersonMuzzleMatrix = mat;
+                }
             }
         }
 
