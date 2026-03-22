@@ -79,6 +79,11 @@ public abstract class WeaponPose implements IHeldAnimation {
         float angle = this.getEntityPitch(entity);
         float angleAbs = Math.abs(angle);
         float zoom = this.hasAimPose() ? AimingHandler.get().getAimProgress(entity, mc.getFrameTime()) : 0F;
+        
+        if (entity.getVehicle() != null && entity.getVehicle().getClass().getSimpleName().equals("PowerArmorFrame")) {
+            zoom = 0.0f;
+        }
+
         var targetPose = angle > 0.0 ? this.downPose : this.upPose;
         this.applyAimPose(targetPose, rightArm, leftArm, angleAbs, zoom, 1, entity.isCrouching());
 

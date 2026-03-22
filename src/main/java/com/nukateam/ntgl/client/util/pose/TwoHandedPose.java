@@ -125,7 +125,11 @@ public class TwoHandedPose extends WeaponPose {
 
     @Override
     public void applyGeoModelRotation(LivingEntity entity, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head, InteractionHand interactionHand) {
-        var aimProgress = AimingHandler.get().getAimProgress(entity, Minecraft.getInstance().getFrameTime());
+        float aimProgress = AimingHandler.get().getAimProgress(entity, Minecraft.getInstance().getFrameTime());
+        if (entity.getVehicle() != null && entity.getVehicle().getClass().getSimpleName().equals("PowerArmorFrame")) {
+            aimProgress = 0.0f;
+        }
+        
         var right = interactionHand == InteractionHand.MAIN_HAND;
 
         rightArm.setRotX((float)Math.toRadians(head.getRotX()));
