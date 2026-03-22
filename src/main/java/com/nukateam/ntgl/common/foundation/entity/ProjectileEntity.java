@@ -613,31 +613,12 @@ public class ProjectileEntity extends Entity implements GeoEntity, IEntityAdditi
         this.setPos(posX, posY, posZ);
     }
 
-    private LevelLocation getDeathTargetPoint() {
-        return LevelLocation.create(this.level(), this.getX(), this.getY(), this.getZ(), 256);
-    }
-
     private ItemStack setupAmmo(WeaponData data) {
-        var weapon = data.weapon;
-
         var ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
         if(ammoHolder.canReturnAmmo()) {
             var ammo = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
             if (ammo != null) {
-                int customModelData = -1;
-                if (weapon.getTag() != null) {
-                    if (weapon.getTag().contains("Model", Tag.TAG_COMPOUND)) {
-                        ItemStack model = ItemStack.of(weapon.getTag().getCompound("Model"));
-                        if (model.getTag() != null && model.getTag().contains("CustomModelData")) {
-                            customModelData = model.getTag().getInt("CustomModelData");
-                        }
-                    }
-                }
-                var ammoStack = new ItemStack(ammo);
-                if (customModelData != -1) {
-                    ammoStack.getOrCreateTag().putInt("CustomModelData", customModelData);
-                }
-                return ammoStack;
+                return new ItemStack(ammo);
             }
         }
         return ItemStack.EMPTY;

@@ -3,31 +3,24 @@ package com.nukateam.ntgl.common.data.config.weapon;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.nukateam.ntgl.common.data.holders.ProjectileType;
+import com.nukateam.ntgl.common.data.holders.ProjectileVariant;
 import com.nukateam.ntgl.common.foundation.init.NtglDamageTypes;
 import com.nukateam.ntgl.common.util.annotation.Optional;
-import com.nukateam.ntgl.common.debug.IDebugWidget;
-import com.nukateam.ntgl.common.debug.IEditorMenu;
 import com.nukateam.ntgl.common.util.util.GunJsonUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.fml.DistExecutor;
-import org.apache.commons.lang3.tuple.Pair;
-import javax.annotation.Nullable;
 
-import java.util.List;
-import java.util.function.Supplier;
+import javax.annotation.Nullable;
 
 import static com.nukateam.ntgl.common.data.json.JsonDeserializers.getDamageTypeResourceKey;
 import static com.nukateam.ntgl.common.data.config.weapon.General.PROJECTILE_AMOUNT;
 import static com.nukateam.ntgl.common.data.config.weapon.General.SPREAD;
 
-public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorMenu {
+public class ProjectileConfig implements INBTSerializable<CompoundTag> {
     private float damage = 1;
     private float size;
     @Optional private float speed = 20;
@@ -40,6 +33,8 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
     @Optional private boolean damageReduceOverLife;
     @Optional private boolean magazineMode;
     @Optional private int trailColor = 0xFFD289;
+    @Optional private int color = 0xFFFFFF;
+    @Optional private ProjectileVariant variant = ProjectileVariant.STANDARD;
     @Optional private double trailLengthMultiplier = 1.0;
     @Optional int projectileAmount = 1;
     @Optional float spread;
@@ -53,6 +48,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
     public CompoundTag serializeNBT() {
         var tag = new CompoundTag();
         tag.putString("Projectile", this.projectile.toString());
+        tag.putString("Variant", this.variant.toString());
         tag.putString("DamageType", this.damageType.location().toString());
         tag.putFloat("Damage", this.damage);
         tag.putBoolean("Visible", this.visible);
@@ -64,6 +60,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         tag.putBoolean("DamageReduceOverLife", this.damageReduceOverLife);
         tag.putBoolean("MagazineMode", this.magazineMode);
         tag.putInt("TrailColor", this.trailColor);
+        tag.putInt("Color", this.color);
         tag.putDouble("TrailLengthMultiplier", this.trailLengthMultiplier);
         tag.putInt(PROJECTILE_AMOUNT, this.projectileAmount);
         tag.putFloat(SPREAD, this.spread);
@@ -116,11 +113,17 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         if (tag.contains("TrailColor", Tag.TAG_ANY_NUMERIC)) {
             this.trailColor = tag.getInt("TrailColor");
         }
+        if (tag.contains("Color", Tag.TAG_ANY_NUMERIC)) {
+            this.color = tag.getInt("Color");
+        }
         if (tag.contains("TrailLengthMultiplier", Tag.TAG_ANY_NUMERIC)) {
             this.trailLengthMultiplier = tag.getDouble("TrailLengthMultiplier");
         }
         if (tag.contains("Projectile", Tag.TAG_STRING)) {
             this.projectile = ProjectileType.getType(tag.getString("Projectile"));
+        }
+        if (tag.contains("Variant", Tag.TAG_STRING)) {
+            this.variant = ProjectileVariant.getType(tag.getString("Variant"));
         }
         if (tag.contains(PROJECTILE_AMOUNT, Tag.TAG_ANY_NUMERIC)) {
             this.projectileAmount = tag.getInt(PROJECTILE_AMOUNT);
@@ -155,6 +158,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         object.addProperty("pierceLevel", this.pierceLevel);
         object.addProperty("burnSeconds", this.burnSeconds);
         object.addProperty("projectile", this.projectile.toString());
+        object.addProperty("variant", this.variant.toString());
         object.addProperty("damageType", this.damageType.location().toString());
         object.addProperty("hitSound", this.hitSound.toString());
         GunJsonUtil.addObjectIfNotEmpty(object,"explosion", this.explosion.toJsonObject());
@@ -164,6 +168,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         object.addProperty("damageReduceOverLife", this.damageReduceOverLife);
         object.addProperty("magazineMode", this.magazineMode);
         if (this.trailColor != 0xFFD289) object.addProperty("trailColor", this.trailColor);
+        if (this.trailColor != 0xFFFFFF) object.addProperty("color", this.color);
         if (this.trailLengthMultiplier != 1.0) object.addProperty("trailLengthMultiplier", this.trailLengthMultiplier);
         if (this.projectileAmount != 1) object.addProperty("projectileAmount", this.projectileAmount);
         if (this.spread != 0.0F) object.addProperty("spread", this.spread);
@@ -184,8 +189,10 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         projectile.damageReduceOverLife = this.damageReduceOverLife;
         projectile.magazineMode = this.magazineMode;
         projectile.trailColor = this.trailColor;
+        projectile.color = this.color;
         projectile.trailLengthMultiplier = this.trailLengthMultiplier;
         projectile.projectile = this.projectile;
+        projectile.variant = this.variant;
         projectile.damageType = this.damageType;
         projectile.projectileAmount = this.projectileAmount;
         projectile.spread = this.spread;
@@ -275,6 +282,10 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         return this.trailColor;
     }
 
+    public int getColor() {
+        return this.color;
+    }
+
     /**
      * @return The multiplier to change the length of the projectile trail
      */
@@ -301,6 +312,10 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         return this.projectile;
     }
 
+    public ProjectileVariant getProjectileVariant() {
+        return this.variant;
+    }
+
     public ResourceKey<DamageType> getDamageType() {
         return this.damageType;
     }
@@ -309,28 +324,6 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
         var ammo = new ProjectileConfig();
         ammo.deserializeNBT(tag);
         return ammo;
-    }
-
-    @Override
-    public Component getEditorLabel() {
-        return Component.literal("Projectile");
-    }
-
-    @Override
-    public void getEditorWidgets(List<Pair<Component, Supplier<IDebugWidget>>> widgets) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-//            ItemStack heldItem = Objects.requireNonNull(Minecraft.getInstance().player).getMainHandItem();
-//            ItemStack scope = Projectile.getScopeStack(heldItem);
-//            if (scope.getItem() instanceof ScopeItem scopeItem) {
-//                widgets.add(Pair.of(scope.getItem().getName(scope), () -> new DebugButton(Component.literal("Edit"), btn -> {
-//                    Minecraft.getInstance().setScreen(createEditorScreen(Debug.getScope(scopeItem)));
-//                })));
-//            }
-
-//            widgets.add(Pair.of(this.modules.getEditorLabel(), () -> new DebugButton(Component.literal(">"), btn -> {
-//                Minecraft.getInstance().setScreen(createEditorScreen(this.modules));
-//            })));
-        });
     }
 
     public static class Builder {
@@ -431,5 +424,29 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag>, IEditorM
             return this;
         }
 
+        public ProjectileConfig.Builder setDamageType(ResourceKey<DamageType> damageType) {
+            this.projectile.damageType = damageType;
+            return this;
+        }
+
+        public ProjectileConfig.Builder setAffectedByFluid(boolean affectedByFluid) {
+            this.projectile.affectedByFluid = affectedByFluid;
+            return this;
+        }
+
+        public ProjectileConfig.Builder setColor(int color) {
+            this.projectile.color = color;
+            return this;
+        }
+
+        public ProjectileConfig.Builder setBurnSeconds(int burnSeconds) {
+            this.projectile.burnSeconds = burnSeconds;
+            return this;
+        }
+
+        public ProjectileConfig.Builder setHitSound(@Nullable ResourceLocation hitSound) {
+            this.projectile.hitSound = hitSound;
+            return this;
+        }
     }
 }

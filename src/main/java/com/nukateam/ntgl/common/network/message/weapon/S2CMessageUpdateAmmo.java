@@ -10,9 +10,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.Validate;
 
-/**
- * Author: MrCrayfish
- */
 public class S2CMessageUpdateAmmo implements IMessage<S2CMessageUpdateAmmo> {
     private ImmutableMap<ResourceLocation, ProjectileConfig> registeredGuns;
 

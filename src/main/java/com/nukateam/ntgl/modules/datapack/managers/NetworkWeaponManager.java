@@ -96,14 +96,7 @@ public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWe
         return ImmutableMap.of();
     }
 
-    public static void updateRegisteredWeapons(S2CMessageUpdateWeapons message) {
-        updateRegisteredWeapons(message.getRegisteredGuns());
-    }
-
-    /**
-     * Updates registered weapons from data provided by the server
-     */
-    private static void updateRegisteredWeapons(Map<ResourceLocation, WeaponConfig> registeredConfigs) {
+    public static void updateRegisteredWeapons(Map<ResourceLocation, WeaponConfig> registeredConfigs) {
         clientRegisteredWeapons.clear();
         if (registeredConfigs != null) {
             for (Map.Entry<ResourceLocation, WeaponConfig> entry : registeredConfigs.entrySet()) {

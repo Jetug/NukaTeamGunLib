@@ -62,6 +62,7 @@ public class PacketHandler {
 
         registerPlayMessage(S2CMessageUpdateWeapons.class       , NetworkDirection.PLAY_TO_CLIENT);
         registerPlayMessage(S2CMessageUpdateAmmo.class          , NetworkDirection.PLAY_TO_CLIENT);
+        registerPlayMessage(S2CMessageUpdateProjectiles.class   , NetworkDirection.PLAY_TO_CLIENT);
         registerPlayMessage(S2CMessageUpdateAttachments.class   , NetworkDirection.PLAY_TO_CLIENT);
 
         registerPlayMessage(S2CMessageBlood.class               , NetworkDirection.PLAY_TO_CLIENT);
