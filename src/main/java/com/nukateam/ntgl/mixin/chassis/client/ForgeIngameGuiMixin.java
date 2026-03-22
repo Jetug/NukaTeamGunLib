@@ -25,12 +25,14 @@ public class ForgeIngameGuiMixin extends Gui {
 
     @Inject(method = "renderHealthMount(IILnet/minecraft/client/gui/GuiGraphics;)V", at = @At("HEAD"), cancellable = true, remap = false)
     protected void renderHealthMount(int width, int height, GuiGraphics guiGraphics, CallbackInfo ci) {
-        if (PlayerUtils.isLocalWearingChassis()) ci.cancel();
+        if (PlayerUtils.isLocalWearingChassis())
+            ci.cancel();
     }
 
     @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/RandomSource;setSeed(J)V"))
     public void render(GuiGraphics graphics, float partialTick, CallbackInfo ci) {
-        if (NUKACRAFT_LOADED) return;
+        if (NUKACRAFT_LOADED)
+            return;
 
         IGuiOverlay overlay = (gui, poseStack1, partialTick1, screenWidth, screenHeight) -> {
             var minecraft = Minecraft.getInstance();
@@ -42,4 +44,17 @@ public class ForgeIngameGuiMixin extends Gui {
 
         overlay.render((ForgeGui) (Gui) this, graphics, partialTick, screenWidth, screenHeight);
     }
+    //
+    // @Final
+    // @Shadow(remap = false)
+    // public static final IIngameOverlay FOOD_LEVEL_ELEMENT =
+    // OverlayRegistry.registerOverlayTop("Food Level", (gui, poseStack,
+    // partialTick, screenWidth, screenHeight) -> {
+    // var minecraft = Minecraft.getInstance();
+    // if (PlayerUtils.isLocalWearingChassis() && !minecraft.options.hideGui &&
+    // gui.shouldDrawSurvivalElements()) {
+    // gui.setupOverlayRenderState(true, false);
+    // gui.renderFood(screenWidth, screenHeight, poseStack);
+    // }
+    // });
 }
