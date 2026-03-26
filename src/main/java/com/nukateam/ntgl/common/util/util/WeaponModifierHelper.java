@@ -367,7 +367,9 @@ public class WeaponModifierHelper {
         var finalSpread = new AtomicReference<>(spread);
 
         forEachAttachment(data, (modifier -> finalSpread.set(modifier.modifyProjectileSpread(finalSpread.get(), data))));
-        return finalSpread.get();
+        com.nukateam.ntgl.common.foundation.event.ProjectileSpreadEvent event = new com.nukateam.ntgl.common.foundation.event.ProjectileSpreadEvent(data, finalSpread.get());
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event);
+        return event.getSpread();
     }
 
     public static ArrayList<AttributeModifier> getAttributeModifiers(WeaponData data) {
