@@ -6,7 +6,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.eventbus.api.Event;
 
 public class GunProjectileSpawnEvent extends Event {
-
     private final ProjectileEntity projectile;
     private final LivingEntity shooter;
     private final WeaponData weaponData;

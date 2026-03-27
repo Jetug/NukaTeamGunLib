@@ -6,7 +6,6 @@ import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAmmo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -90,27 +89,16 @@ public class NetworkAmmoManager extends SimplePreparableReloadListener<Map<IAmmo
         return ImmutableMap.of();
     }
 
-    public static boolean updateRegisteredAmmo(S2CMessageUpdateAmmo message) {
-        return updateRegisteredAmmo(message.getRegisteredAmmo());
-    }
-
-    /**
-     * Updates registered projectile from data provided by the server
-     *
-     * @return true if all registered projectile were able to update their corresponding projectile item
-     */
-    private static boolean updateRegisteredAmmo(Map<ResourceLocation, ProjectileConfig> registeredAmmo) {
+    public static void updateRegisteredAmmo(Map<ResourceLocation, ProjectileConfig> registeredAmmo) {
         if (registeredAmmo != null) {
             for (var entry : registeredAmmo.entrySet()) {
                 Item item = ITEMS.getValue(entry.getKey());
                 if (!(item instanceof IAmmo)) {
-                    return false;
+                    return;
                 }
                 ((IAmmo) item).setConfig(new ConfigSupplier<>(entry.getValue()));
             }
-            return true;
         }
-        return false;
     }
     /**
      * Gets the network projectile manager. This will be null if the client isn't running an integrated

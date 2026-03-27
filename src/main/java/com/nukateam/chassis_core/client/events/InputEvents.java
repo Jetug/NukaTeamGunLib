@@ -6,6 +6,7 @@ import com.nukateam.chassis_core.common.input.KeyAction;
 import com.nukateam.chassis_core.common.network.actions.InputAction;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -13,7 +14,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
-import static com.nukateam.chassis_core.client.ClientConfig.OPTIONS;
 import static com.nukateam.chassis_core.common.network.PacketSender.doServerAction;
 import static com.nukateam.chassis_core.common.util.helpers.PlayerUtils.getLocalPlayer;
 import static com.nukateam.chassis_core.common.util.helpers.PlayerUtils.stopWearingArmor;
@@ -47,7 +47,8 @@ public class InputEvents {
 
             }
             case GLFW.GLFW_RELEASE -> {
-                if (event.getButton() != OPTIONS.keyUse.getKey().getValue() && isNotInGame()) return;
+                var options = Minecraft.getInstance().options;
+                if (event.getButton() != options.keyUse.getKey().getValue() && isNotInGame()) return;
                 handleInput(event.getButton(), KeyAction.RELEASE);
             }
         }

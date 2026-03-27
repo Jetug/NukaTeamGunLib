@@ -5,6 +5,8 @@ import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.helpers.MuzzleMatrixHelper;
 import com.nukateam.ntgl.client.util.helpers.render.RenderUtils;
+import com.nukateam.ntgl.common.data.holders.ProjectileVariant;
+import com.nukateam.ntgl.common.util.data.RGB;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.TeslaProjectile;
 import net.minecraft.client.Minecraft;
@@ -19,7 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
-    public static ResourceLocation texture = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/tesla.png");
+    public static final ResourceLocation TESLA_TEXTURE = new ResourceLocation(Ntgl.MOD_ID, "textures/fx/tesla.png");
     private final float laserRadius = 0.05F / 5;
     private final float laserGlowRadius = 0.055F / 5;
     private static final int MIN_ANGLE = -45;
@@ -33,7 +35,8 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
     @Override
     public ResourceLocation getTextureLocation(TeslaProjectile entity) {
-        return texture;
+        var variant = entity.getProjectile().getProjectileVariant();
+        return variant == ProjectileVariant.STANDARD ? TESLA_TEXTURE : variant.getIcon();
     }
 
     @Override
@@ -47,9 +50,9 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
         Vec3 muzzleWorldPos = MuzzleMatrixHelper.getMuzzleWorldPosForEntity(shooterId, partialTicks);
 
         if (muzzleWorldPos != null) {
-            double projX = Mth.lerp((double) partialTicks, projectile.xOld, projectile.getX());
-            double projY = Mth.lerp((double) partialTicks, projectile.yOld, projectile.getY());
-            double projZ = Mth.lerp((double) partialTicks, projectile.zOld, projectile.getZ());
+            double projX = Mth.lerp(partialTicks, projectile.xOld, projectile.getX());
+            double projY = Mth.lerp(partialTicks, projectile.yOld, projectile.getY());
+            double projZ = Mth.lerp(partialTicks, projectile.zOld, projectile.getZ());
 
             double yOffset = 0.0;
             boolean isLocalFirstPerson = Minecraft.getInstance().player != null
@@ -115,9 +118,9 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
                 var gameTime = projectile.level().getGameTime();
                 var yOffset = 0;
-                var color = new Rgba(1, 1, 1, 1);
+                var color = new RGB(projectile.getProjectile().getColor()).toRgba();
 
-                RenderUtils.renderBeam(poseStack, bufferSource, texture, partialTicks, 1.0F,
+                RenderUtils.renderBeam(poseStack, bufferSource, getTextureLocation(projectile), partialTicks, 1.0F,
                         gameTime, (float)yOffset - 0.1f, (float)(length + 0.1), color, radius, glowRadius);
 
             poseStack.popPose();

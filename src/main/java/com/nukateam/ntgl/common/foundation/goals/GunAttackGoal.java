@@ -7,7 +7,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.util.trackers.EntityReloadTracker;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageShoot;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;

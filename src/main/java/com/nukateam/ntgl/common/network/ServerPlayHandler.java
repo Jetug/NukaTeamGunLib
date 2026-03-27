@@ -1,12 +1,11 @@
 package com.nukateam.ntgl.common.network;
 
-import com.nukateam.ntgl.common.data.constants.SoundTypes;
+import com.nukateam.ntgl.common.network.message.weapon.*;
 import com.nukateam.ntgl.modules.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.enums.SoundType;
-import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
@@ -25,9 +24,6 @@ import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
 import com.nukateam.ntgl.common.foundation.event.WorkbenchCraftEvent;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
-import com.nukateam.ntgl.common.network.message.C2SMessagePreFireSound;
-import com.nukateam.ntgl.common.network.message.C2SMessageShoot;
-import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

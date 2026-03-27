@@ -21,11 +21,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class ConfigUtils {
-    private static final int FILE_TYPE_LENGTH_VALUE = ".json".length();
+    private static final String FILE_TYPE = ".json";
 
     @NotNull
     private static Map<ResourceLocation, Resource> getJsonResources(ResourceManager manager, String path, ResourceLocation id) {
-        return manager.listResources(path, (fileName) -> fileName.getPath().endsWith(id.getPath() + ".json"));
+        return manager.listResources(path, (fileName) -> fileName.getPath().endsWith(id.getPath() + FILE_TYPE  ));
     }
 
     public static<T, Y, R> Map<T, Y> getConfigMap(ResourceManager manager, IForgeRegistry<R> registry, Function<R, Boolean> tClass, Class<Y> yClass, String resourcePath) {
@@ -45,7 +45,7 @@ public class ConfigUtils {
 
                 resources.forEach(resourceLocation ->
                 {
-                    var path = resourceLocation.getPath().substring(0, resourceLocation.getPath().length() - FILE_TYPE_LENGTH_VALUE);
+                    var path = resourceLocation.getPath().substring(0, resourceLocation.getPath().length() - FILE_TYPE.length());
                     var splitPath = path.split("/");
 
                     // Makes sure the file name matches exactly with the id of the gun

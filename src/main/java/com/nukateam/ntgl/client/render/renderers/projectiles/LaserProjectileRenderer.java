@@ -5,6 +5,8 @@ import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.helpers.MuzzleMatrixHelper;
 import com.nukateam.ntgl.client.util.helpers.render.RenderUtils;
+import com.nukateam.ntgl.common.data.holders.ProjectileVariant;
+import com.nukateam.ntgl.common.util.data.RGB;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.entity.LaserProjectile;
 import net.minecraft.client.Minecraft;
@@ -30,7 +32,8 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
 
     @Override
     public ResourceLocation getTextureLocation(LaserProjectile entity) {
-        return LASER_TEXTURE;
+        var variant = entity.getProjectile().getProjectileVariant();
+        return variant == ProjectileVariant.STANDARD ? LASER_TEXTURE : variant.getIcon();
     }
 
     @Override
@@ -78,9 +81,9 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
         var side = projectile.isRightHand() ? -1 : 1;
 
         if (hasMuzzle) {
-            double projX = Mth.lerp((double) partialTicks, projectile.xOld, projectile.getX());
-            double projY = Mth.lerp((double) partialTicks, projectile.yOld, projectile.getY());
-            double projZ = Mth.lerp((double) partialTicks, projectile.zOld, projectile.getZ());
+            double projX = Mth.lerp(partialTicks, projectile.xOld, projectile.getX());
+            double projY = Mth.lerp(partialTicks, projectile.yOld, projectile.getY());
+            double projZ = Mth.lerp(partialTicks, projectile.zOld, projectile.getZ());
             poseStack.translate(muzzleWorldPos.x() - projX, muzzleWorldPos.y() - projY, muzzleWorldPos.z() - projZ);
         }
 
@@ -92,7 +95,7 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
             poseStack.translate(side * offset.x, offset.y, offset.z);
             long gameTime = projectile.level().getGameTime();
             int yOffset = 0;
-            var color = new Rgba(1, 1, 1, 1);
+            var color = new RGB(projectile.getProjectile().getColor()).toRgba();
 
             RenderUtils.renderBeam(poseStack, bufferSource, getTextureLocation(projectile), partialTicks, 1.0F,
                     gameTime, (float) yOffset, distance, color, radius, glowRadius);

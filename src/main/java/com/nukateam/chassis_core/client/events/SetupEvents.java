@@ -1,8 +1,6 @@
 package com.nukateam.chassis_core.client.events;
 
 import com.nukateam.chassis_core.ChassisCore;
-import com.nukateam.chassis_core.client.ClientConfig;
-import com.nukateam.chassis_core.client.events.InputEvents;
 import com.nukateam.chassis_core.client.input.DoubleClickController;
 import com.nukateam.chassis_core.client.input.LongClickController;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,7 +20,6 @@ public final class SetupEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        ClientConfig.modResourceManager.loadConfigs();
         registerClickListeners();
     }
 

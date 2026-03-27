@@ -7,7 +7,6 @@ import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.config.attachment.AttachmentConfig;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateAttachments;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -82,24 +81,18 @@ public class NetworkAttachmentManager extends SimplePreparableReloadListener<Map
         return ImmutableMap.of();
     }
 
-    public static boolean updateRegisteredAttachments(S2CMessageUpdateAttachments message) {
-        return updateRegisteredAttachments(message.getRegistered());
-    }
-
-    private static boolean updateRegisteredAttachments(Map<ResourceLocation, AttachmentConfig> registered) {
+    public static void updateRegisteredAttachments(Map<ResourceLocation, AttachmentConfig> registered) {
         clientRegisteredAttachments.clear();
         if (registered != null) {
             for (Map.Entry<ResourceLocation, AttachmentConfig> entry : registered.entrySet()) {
                 Item item = ITEMS.getValue(entry.getKey());
                 if (!(item instanceof IAttachment<?>)) {
-                    return false;
+                    return;
                 }
                 ((IAttachment<?>) item).setConfig(new ConfigSupplier<>(entry.getValue()));
                 clientRegisteredAttachments.add((IAttachment<?>) item);
             }
-            return true;
         }
-        return false;
     }
 
     public Map<ResourceLocation, AttachmentConfig> getRegisteredAttachments() {

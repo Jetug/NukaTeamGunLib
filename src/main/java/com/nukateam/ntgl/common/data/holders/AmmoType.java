@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class AmmoType extends ResourceHolder {
-    public static AmmoType STANDARD = new AmmoType("standard"             );
+    public static AmmoType STANDARD = new AmmoType("standard");
 
     private static final Map<ResourceLocation, AmmoType> typeMap = new HashMap<>();
     

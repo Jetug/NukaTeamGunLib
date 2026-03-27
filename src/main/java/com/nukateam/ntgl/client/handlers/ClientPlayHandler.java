@@ -3,15 +3,15 @@ package com.nukateam.ntgl.client.handlers;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.audio.GunShotSound;
-import com.nukateam.ntgl.client.util.handler.*;
+import com.nukateam.ntgl.common.network.message.weapon.*;
 import com.nukateam.ntgl.common.util.helpers.compatibility.EffectHelper;
 import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
+import com.nukateam.ntgl.modules.datapack.managers.NetworkProjectileManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkWeaponManager;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.particles.*;
-import com.nukateam.ntgl.common.network.message.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -20,7 +20,6 @@ import net.minecraft.core.particles.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.*;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
@@ -29,7 +28,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 
 import static com.nukateam.ntgl.client.render.renderers.misc.DeathFxRenderer.createDeathEffectClient;
-import static com.nukateam.ntgl.common.util.helpers.compatibility.SubtleEffectsHelper.doSplashEffect;
 
 /**
  * Author: MrCrayfish
@@ -218,14 +216,18 @@ public class ClientPlayHandler {
     }
 
     public static void handleUpdateWeapons(S2CMessageUpdateWeapons message) {
-        NetworkWeaponManager.updateRegisteredWeapons(message);
+        NetworkWeaponManager.updateRegisteredWeapons(message.getRegisteredGuns());
     }
 
     public static void handleUpdateAmmo(S2CMessageUpdateAmmo message) {
-        NetworkAmmoManager.updateRegisteredAmmo(message);
+        NetworkAmmoManager.updateRegisteredAmmo(message.getRegisteredAmmo());
+    }
+
+    public static void handleUpdateProjectile(S2CMessageUpdateProjectiles message) {
+        NetworkProjectileManager.get().update(message.getRegisteredAmmo());
     }
 
     public static void handleUpdateAttachments(S2CMessageUpdateAttachments message) {
-        NetworkAttachmentManager.updateRegisteredAttachments(message);
+        NetworkAttachmentManager.updateRegisteredAttachments(message.getRegistered());
     }
 }

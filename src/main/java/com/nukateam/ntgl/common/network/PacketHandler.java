@@ -1,11 +1,11 @@
 package com.nukateam.ntgl.common.network;
 
-import com.nukateam.ntgl.modules.data.message.C2SMessageUpdateEntityData;
+import com.nukateam.ntgl.common.network.message.weapon.*;
+import com.nukateam.ntgl.modules.data.message.S2CMessageUpdateEntityData;
 import com.nukateam.ntgl.modules.network.LevelLocation;
 import com.nukateam.chassis_core.common.network.packet.*;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
-import com.nukateam.ntgl.common.network.message.*;
 import com.nukateam.ntgl.modules.network.ForgeNetwork;
 import com.nukateam.ntgl.modules.network.IMessage;
 import net.minecraft.resources.ResourceLocation;
@@ -62,6 +62,7 @@ public class PacketHandler {
 
         registerPlayMessage(S2CMessageUpdateWeapons.class       , NetworkDirection.PLAY_TO_CLIENT);
         registerPlayMessage(S2CMessageUpdateAmmo.class          , NetworkDirection.PLAY_TO_CLIENT);
+        registerPlayMessage(S2CMessageUpdateProjectiles.class   , NetworkDirection.PLAY_TO_CLIENT);
         registerPlayMessage(S2CMessageUpdateAttachments.class   , NetworkDirection.PLAY_TO_CLIENT);
 
         registerPlayMessage(S2CMessageBlood.class               , NetworkDirection.PLAY_TO_CLIENT);
@@ -71,7 +72,7 @@ public class PacketHandler {
         registerPlayMessage(S2CMessageProjectileHitFluid.class  , NetworkDirection.PLAY_TO_CLIENT);
         registerPlayMessage(S2CMessageProjectileExplosion.class , NetworkDirection.PLAY_TO_CLIENT);
 
-        registerPlayMessage(C2SMessageUpdateEntityData.class , NetworkDirection.PLAY_TO_CLIENT);
+        registerPlayMessage(S2CMessageUpdateEntityData.class , NetworkDirection.PLAY_TO_CLIENT);
     }
 
     public static <T extends IMessage<T>> void registerPlayMessage(Class<T> messageClass, @Nullable NetworkDirection direction) {

@@ -6,7 +6,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.modules.constants.Paths;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.modules.datapack.DataUtils;
-import com.nukateam.ntgl.common.network.message.S2CMessageUpdateWeapons;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateWeapons;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.network.FriendlyByteBuf;
@@ -96,14 +96,7 @@ public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWe
         return ImmutableMap.of();
     }
 
-    public static void updateRegisteredWeapons(S2CMessageUpdateWeapons message) {
-        updateRegisteredWeapons(message.getRegisteredGuns());
-    }
-
-    /**
-     * Updates registered weapons from data provided by the server
-     */
-    private static void updateRegisteredWeapons(Map<ResourceLocation, WeaponConfig> registeredConfigs) {
+    public static void updateRegisteredWeapons(Map<ResourceLocation, WeaponConfig> registeredConfigs) {
         clientRegisteredWeapons.clear();
         if (registeredConfigs != null) {
             for (Map.Entry<ResourceLocation, WeaponConfig> entry : registeredConfigs.entrySet()) {

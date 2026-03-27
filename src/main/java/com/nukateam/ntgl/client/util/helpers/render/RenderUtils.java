@@ -16,7 +16,7 @@ public class RenderUtils {
 
     public static void renderBeam(PoseStack poseStack, MultiBufferSource pBufferSource, ResourceLocation pBeamLocation,
                                   float pPartialTick, float pTextureScale, long gameTime, float pYOffset, float pHeight,
-                                  Rgba pColors, float pBeamRadius, float pGlowRadius) {
+                                  Rgba color, float pBeamRadius, float pGlowRadius) {
         var maxY = pYOffset + pHeight;
         float f = (float) Math.floorMod(gameTime, 40) + pPartialTick;
         float f1 = pHeight < 0 ? f : -f;
@@ -35,7 +35,7 @@ public class RenderUtils {
                 var vertexConsumer = pBufferSource
                         .getBuffer(RenderType.beaconBeam(pBeamLocation, false));
 
-                RenderUtils.renderPart(poseStack, vertexConsumer, pColors.setAlpha(1.0F),
+                RenderUtils.renderPart(poseStack, vertexConsumer, color.setAlpha(1.0F),
                         pYOffset, maxY,
                         0.0F, pBeamRadius,
                         pBeamRadius, 0.0F,
@@ -50,14 +50,14 @@ public class RenderUtils {
             u = pHeight * pTextureScale + v;
 
             RenderUtils.renderPart(poseStack, pBufferSource.getBuffer(RenderType.beaconBeam(pBeamLocation, true)),
-                    pColors.setAlpha(BEAM_ALPHA), pYOffset, maxY, minX, maxX, pGlowRadius, minZ, maxZ,
+                    color.setAlpha(BEAM_ALPHA), pYOffset, maxY, minX, maxX, pGlowRadius, minZ, maxZ,
                     pGlowRadius, pGlowRadius, pGlowRadius, u, v);
         }
         poseStack.popPose();
     }
 
     public static void renderPart(PoseStack poseStack, VertexConsumer pConsumer,
-                                   Rgba pColors,
+                                   Rgba color,
                                    float pMinY, float pMaxY,
                                    float minX, float maxX,
                                    float minZ, float maxZ,
@@ -68,10 +68,10 @@ public class RenderUtils {
         var matrix4f = pose.pose();
         var matrix3f = pose.normal();
 
-        float red = pColors.r();
-        float green = pColors.g();
-        float blue = pColors.b();
-        float alpha = pColors.a();
+        float red = color.r();
+        float green = color.g();
+        float blue = color.b();
+        float alpha = color.a();
 
         renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, minX, maxX, minZ, maxZ, u, v);
         renderQuad(matrix4f, matrix3f, pConsumer, red, green, blue, alpha, pMinY, pMaxY, pX3, pZ3, pX2, pZ2, u, v);
