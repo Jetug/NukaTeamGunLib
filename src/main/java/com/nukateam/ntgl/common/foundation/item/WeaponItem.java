@@ -7,6 +7,7 @@ import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.util.managers.ProjectileManager;
 import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
@@ -147,18 +148,43 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
         var data = new WeaponData(stack, null);
         var tagCompound = stack.getOrCreateTag();
-        WeaponItemTooltips.addAmmoType(tooltip, data);
-        WeaponItemTooltips.addFireRate(tooltip, data);
-        WeaponItemTooltips.addDamage(tooltip, data);
-        WeaponItemTooltips.addMelleDamage(tooltip, data);
+        
+        boolean canShoot = WeaponModifierHelper.canShoot(data);
+        boolean canThrow = WeaponModifierHelper.canThrow(data);
 
-        var explosion = WeaponStateHelper.getProjectileConfig(data).getExplosion();
-        if(explosion.getRadius() > 0){
-            WeaponItemTooltips.addExplosionTip(tooltip, explosion);
+        ProjectileConfig projectileConfig = new ProjectileConfig();
+        if (canShoot) {
+            projectileConfig = WeaponStateHelper.getProjectileConfig(data);
+        } else if (canThrow) {
+            projectileConfig = WeaponModifierHelper.getThrowable(data).getProjectile();
+        }
+        
+        var explosion = projectileConfig.getExplosion();
+        boolean hasExplosion = explosion != null && explosion.getRadius() > 0;
+        boolean isPureMelee = !canShoot && !canThrow && !hasExplosion;
+
+        if (canShoot) {
+            WeaponItemTooltips.addRangedStats(tooltip, tagCompound, data);
         }
 
-        WeaponItemTooltips.addAmmo(tooltip, tagCompound, data);
+        if (hasExplosion) {
+            WeaponItemTooltips.addExplosionStats(tooltip, data, projectileConfig);
+        }
+
+        if (isPureMelee) {
+            WeaponItemTooltips.addVanillaMeleeStats(tooltip, data);
+        }
+
         WeaponItemTooltips.addFuel(tooltip, data);
+
+        boolean hasHandlingOptions = canShoot;
+        if (hasHandlingOptions) {
+            if (net.minecraft.client.gui.screens.Screen.hasShiftDown()) {
+                WeaponItemTooltips.addHandlingStats(tooltip, data, true);
+            } else {
+                tooltip.add(Component.translatable("info.ntgl.hold_shift").withStyle(ChatFormatting.DARK_GRAY));
+            }
+        }
 
         var name = NtglKeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
 

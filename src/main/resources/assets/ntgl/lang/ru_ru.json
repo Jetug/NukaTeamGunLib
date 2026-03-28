@@ -64,6 +64,21 @@
   "info.ntgl.burnable": "Топливо",
   "info.ntgl.water": "Вода",
 
+  //google translated lol just an attempt, correct if inaccurate-Almecio
+  "info.ntgl.spread": "Разброс: %s",
+  "info.ntgl.fire_mode": "Режим: %s",
+  "info.ntgl.reload_time": "Перезарядка: %sс",
+  "info.ntgl.knockback": "Отдача: %s",
+  "info.ntgl.fuse_time": "Задержка: %sс",
+  "info.ntgl.explodes_on_contact": "Взрыв при контакте",
+  "info.ntgl.causes_fire": "Вызывает огонь",
+  "info.ntgl.destroys_blocks": "Разрушает блоки",
+  "info.ntgl.header.ranged": "[ ДАЛЬНИЙ БОЙ ]",
+  "info.ntgl.header.explosive": "[ ВЗРЫВЧАТКА ]",
+  "info.ntgl.header.handling": "[ ОБРАЩЕНИЕ ]",
+  "info.ntgl.header.bash": "[ УДАР ПРИКЛАДОМ ]",
+  "info.ntgl.hold_shift": "Удерживайте [SHIFT] для подробностей",
+
   "subtitle.ntgl.stun.explosion": "Взрыв оглушающей гранаты",
   "subtitle.ntgl.stun.ring": "Звон",
   "subtitle.ntgl.fire": "Стрельба",
