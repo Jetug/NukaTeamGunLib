@@ -14,14 +14,16 @@ public class WeaponItemTooltips {
     public static void addExplosionTip(List<Component> tooltip, ExplosionConfig explosion) {
         var damage = explosion.getDamage();
         tooltip.add(Component.literal(" ")
-                .append(Component.translatable("info.ntgl.explosionDamage", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)))
-                .withStyle(ChatFormatting.DARK_GREEN));
+                .append(Component.translatable("info.ntgl.explosionDamage", 
+                        Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)).withStyle(ChatFormatting.DARK_GREEN))
+                .withStyle(ChatFormatting.GRAY)));
 
         var radius = explosion.getRadius();
         if (radius > 0) {
             tooltip.add(Component.literal(" ")
-                    .append(Component.translatable("info.ntgl.explosionRadius", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(radius)))
-                    .withStyle(ChatFormatting.DARK_GREEN));
+                    .append(Component.translatable("info.ntgl.explosionRadius", 
+                            Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(radius)).withStyle(ChatFormatting.DARK_GREEN))
+                    .withStyle(ChatFormatting.GRAY)));
         }
     }
 
@@ -33,14 +35,16 @@ public class WeaponItemTooltips {
         
         var spread = WeaponModifierHelper.getSpread(data);
         tooltip.add(Component.literal(" ")
-                .append(Component.translatable("info.ntgl.spread", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(spread)))
-                .withStyle(ChatFormatting.DARK_GREEN));
+                .append(Component.translatable("info.ntgl.spread", 
+                        Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(spread)).withStyle(ChatFormatting.DARK_GREEN))
+                .withStyle(ChatFormatting.GRAY)));
 
         var fireMode = WeaponStateHelper.getFireMode(data);
         if (fireMode != null) {
             tooltip.add(Component.literal(" ")
-                    .append(Component.translatable("info.ntgl.fire_mode", fireMode.getDisplayName()))
-                    .withStyle(ChatFormatting.DARK_GREEN));
+                    .append(Component.translatable("info.ntgl.fire_mode", 
+                            fireMode.getDisplayName().copy().withStyle(ChatFormatting.DARK_GREEN))
+                    .withStyle(ChatFormatting.GRAY)));
         }
     }
 
@@ -52,8 +56,9 @@ public class WeaponItemTooltips {
         var knockback = explosion.getKnockback();
         if (knockback > 0) {
             tooltip.add(Component.literal(" ")
-                    .append(Component.translatable("info.ntgl.knockback", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(knockback)))
-                    .withStyle(ChatFormatting.DARK_GREEN));
+                    .append(Component.translatable("info.ntgl.knockback", 
+                            Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(knockback)).withStyle(ChatFormatting.DARK_GREEN))
+                    .withStyle(ChatFormatting.GRAY)));
         }
 
         if (explosion.isExplodeOnContact()) {
@@ -65,8 +70,9 @@ public class WeaponItemTooltips {
             if (delayTicks > 0) {
                 float fuseTime = delayTicks / 20.0f;
                 tooltip.add(Component.literal(" ")
-                        .append(Component.translatable("info.ntgl.fuse_time", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(fuseTime)))
-                        .withStyle(ChatFormatting.DARK_GREEN));
+                        .append(Component.translatable("info.ntgl.fuse_time", 
+                                Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(fuseTime)).withStyle(ChatFormatting.DARK_GREEN))
+                        .withStyle(ChatFormatting.GRAY)));
             }
         }
 
@@ -92,13 +98,13 @@ public class WeaponItemTooltips {
             var reloadTimeTicks = WeaponModifierHelper.getReloadTime(data);
             float reloadTime = reloadTimeTicks / 20.0f;
             tooltip.add(Component.literal(" ")
-                    .append(Component.translatable("info.ntgl.reload_time", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(reloadTime)))
-                    .withStyle(ChatFormatting.DARK_GREEN));
+                    .append(Component.translatable("info.ntgl.reload_time", 
+                            Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(reloadTime)).withStyle(ChatFormatting.DARK_GREEN))
+                    .withStyle(ChatFormatting.GRAY)));
         }
 
         
         if (showBash) {
-            tooltip.add(Component.empty());
             tooltip.add(Component.translatable("info.ntgl.header.bash").withStyle(ChatFormatting.DARK_GRAY));
             
             var damage = WeaponModifierHelper.getMeleeDamage(data);
@@ -144,8 +150,9 @@ public class WeaponItemTooltips {
         var descriptionId = WeaponStateHelper.getCurrentAmmo(data).getDescriptionId();
 
         tooltip.add(Component.literal(" ")
-                .append(Component.translatable("info.ntgl.ammo_type", Component.translatable(descriptionId)))
-                .withStyle(ChatFormatting.DARK_GREEN));
+                .append(Component.translatable("info.ntgl.ammo_type", 
+                        Component.translatable(descriptionId).withStyle(ChatFormatting.DARK_GREEN))
+                .withStyle(ChatFormatting.GRAY)));
     }
 
     public static void addFireRate(List<Component> tooltip, WeaponData data) {
@@ -153,8 +160,9 @@ public class WeaponItemTooltips {
         rate = rate == 0 ? 0 : 20 / rate;
 
         tooltip.add(Component.literal(" ")
-                .append(Component.translatable("info.ntgl.rate", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(rate)))
-                .withStyle(ChatFormatting.DARK_GREEN));
+                .append(Component.translatable("info.ntgl.rate", 
+                        Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(rate)).withStyle(ChatFormatting.DARK_GREEN))
+                .withStyle(ChatFormatting.GRAY)));
     }
 
     public static void addFuel(List<Component> tooltip, WeaponData weaponData) {
@@ -164,9 +172,8 @@ public class WeaponItemTooltips {
             var maxFuel = WeaponModifierHelper.getMaxFuel(fuelType.getId(), weaponData);
 
             tooltip.add(Component.literal(" ")
-                    .append(Component.translatable(fuelType.getDescriptionId()))
-                    .append(" : " + fuelAmount + "/" + maxFuel)
-                    .withStyle(ChatFormatting.DARK_GREEN));
+                    .append(Component.translatable(fuelType.getDescriptionId()).withStyle(ChatFormatting.GRAY))
+                    .append(Component.literal(": " + fuelAmount + "/" + maxFuel).withStyle(ChatFormatting.DARK_GREEN)));
         }
     }
 
@@ -178,15 +185,54 @@ public class WeaponItemTooltips {
         } else {
             int ammoCount = WeaponStateHelper.getAmmoCount(weaponData);
             tooltip.add(Component.literal(" ")
-                    .append(Component.translatable("info.ntgl.ammo", ammoCount + "/" + WeaponModifierHelper.getMaxAmmo(weaponData)))
-                    .withStyle(ChatFormatting.DARK_GREEN));
+                    .append(Component.translatable("info.ntgl.ammo", 
+                            Component.literal(ammoCount + "/" + WeaponModifierHelper.getMaxAmmo(weaponData)).withStyle(ChatFormatting.DARK_GREEN))
+                    .withStyle(ChatFormatting.GRAY)));
         }
     }
 
     public static void addDamage(List<Component> tooltip, WeaponData weaponData) {
         var damage = WeaponStateHelper.getProjectileDamage(weaponData);
         tooltip.add(Component.literal(" ")
-                .append(Component.translatable("info.ntgl.damage", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)))
-                .withStyle(ChatFormatting.DARK_GREEN));
+                .append(Component.translatable("info.ntgl.damage", 
+                        Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)).withStyle(ChatFormatting.DARK_GREEN))
+                .withStyle(ChatFormatting.GRAY)));
+    }
+
+    public static void addAttachmentsStats(List<Component> tooltip, ItemStack stack, WeaponData data) {
+        var validTypes = WeaponModifierHelper.getAttachmentTypes(data);
+        if (validTypes.isEmpty()) return;
+
+        tooltip.add(Component.empty());
+        tooltip.add(Component.translatable("info.ntgl.header.attachments").withStyle(ChatFormatting.DARK_GRAY));
+
+        boolean isShift = net.minecraft.client.gui.screens.Screen.hasShiftDown();
+
+        for (com.nukateam.ntgl.common.data.holders.AttachmentType type : validTypes) {
+            var attachmentItem = WeaponStateHelper.getAttachmentItem(type, stack);
+            var typeComponent = type.getTranslationComponent().withStyle(ChatFormatting.GRAY);
+
+            if (!attachmentItem.isEmpty()) {
+                tooltip.add(Component.literal(" ")
+                        .append(typeComponent)
+                        .append(": ")
+                        .append(attachmentItem.getHoverName().copy().withStyle(ChatFormatting.DARK_GREEN)));
+
+                if (isShift && attachmentItem.getItem() instanceof com.nukateam.ntgl.common.data.attachment.IAttachment<?> iAttachment) {
+                    var props = iAttachment.getProperties();
+                    var perks = props.getPerks(attachmentItem);
+                    if (perks != null) {
+                        for (Component perk : perks) {
+                            tooltip.add(Component.literal("   ").append(perk));
+                        }
+                    }
+                }
+            } else {
+                tooltip.add(Component.literal(" ")
+                        .append(typeComponent)
+                        .append(": ")
+                        .append(Component.translatable("info.ntgl.none").withStyle(ChatFormatting.DARK_GRAY)));
+            }
+        }
     }
 }

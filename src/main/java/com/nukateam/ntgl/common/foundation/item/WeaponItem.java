@@ -176,12 +176,19 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         }
 
         WeaponItemTooltips.addFuel(tooltip, data);
+        WeaponItemTooltips.addAttachmentsStats(tooltip, stack, data);
 
         boolean hasHandlingOptions = canShoot;
+        boolean hasAttachments = !WeaponModifierHelper.getAttachmentTypes(data).isEmpty();
+
         if (hasHandlingOptions) {
             if (net.minecraft.client.gui.screens.Screen.hasShiftDown()) {
                 WeaponItemTooltips.addHandlingStats(tooltip, data, true);
             } else {
+                tooltip.add(Component.translatable("info.ntgl.hold_shift").withStyle(ChatFormatting.DARK_GRAY));
+            }
+        } else if (hasAttachments) {
+            if (!net.minecraft.client.gui.screens.Screen.hasShiftDown()) {
                 tooltip.add(Component.translatable("info.ntgl.hold_shift").withStyle(ChatFormatting.DARK_GRAY));
             }
         }
