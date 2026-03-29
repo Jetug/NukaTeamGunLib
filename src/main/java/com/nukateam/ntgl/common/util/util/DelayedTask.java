@@ -38,6 +38,7 @@ public class DelayedTask {
     public static void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase != TickEvent.Phase.START) {
             MinecraftServer server = (MinecraftServer) LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER);
+            if (server == null) return;
             Iterator<Impl> it = tasks.iterator();
             while (it.hasNext()) {
                 Impl impl = it.next();
