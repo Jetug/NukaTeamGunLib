@@ -6,7 +6,7 @@
   "texture": {
     "default": "ntgl:textures/power_armor/t45.png"
   },
-
+  "id": "ntgl:example",
   "hide": ["body_bottom_frame"],
 
   "mods" : [

@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
-import com.nukateam.ntgl.modules.network.LevelLocation;
+import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.Config;
@@ -482,7 +482,7 @@ public class ProjectileEntity extends Entity{
         if (!this.wasTouchingWater) {
             wasTouchingWater = true;
             PacketHandler.getPlayChannel().sendToNearbyPlayers(
-                    () -> LevelLocation.create((ServerLevel) level(), pos, 32),
+                    () -> LevelLocation.create((ServerLevel)level(), pos, 32),
                     new S2CMessageProjectileHitFluid(
                             pos,
                             getBbWidth(),

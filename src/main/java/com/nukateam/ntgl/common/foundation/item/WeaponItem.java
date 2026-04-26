@@ -1,7 +1,10 @@
 package com.nukateam.ntgl.common.foundation.item;
 
+import com.google.common.collect.HashMultimap;
 import com.nukateam.geo.render.ProxyItemRenderer;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.animators.WeaponAnimator;
+import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
@@ -20,6 +23,7 @@ import com.nukateam.ntgl.client.render.renderers.weapon.*;
 import com.nukateam.ntgl.common.foundation.item.interfaces.*;
 import net.minecraft.*;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.*;
@@ -35,12 +39,17 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.*;
 import net.neoforged.neoforge.common.util.Lazy;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
+
+import javax.annotation.Nullable;
 
 import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 import static net.minecraft.world.item.component.ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT;
@@ -128,7 +137,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         WeaponStateHelper.setAmmoCount(new WeaponData(stack, null), getConfig().getGeneral().getMaxAmmo());
     }
 
-    public static Map<UUID, HashMultimap<Attribute, AttributeModifier>> PLAYER_MODIFIERS = new HashMap<>();
+    public static Map<UUID, HashMultimap<Holder<Attribute>, AttributeModifier>> PLAYER_MODIFIERS = new HashMap<>();
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
@@ -140,9 +149,35 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
                 if (mods != null) {
                     livingEntity.getAttributes().removeAttributeModifiers(mods);
                 }
-                WeaponItemUtils.applyAttributeModifiers(livingEntity, InteractionHand.MAIN_HAND);
-                WeaponItemUtils.applyAttributeModifiers(livingEntity, InteractionHand.OFF_HAND);
+                applyAttributeModifiers(livingEntity, InteractionHand.MAIN_HAND);
+                applyAttributeModifiers(livingEntity, InteractionHand.OFF_HAND);
             }
+        }
+    }
+
+    public static void applyAttributeModifiers(LivingEntity player, InteractionHand hand) {
+        var heldItem = player.getItemInHand(hand);
+
+        if (heldItem.getItem() instanceof IWeapon) {
+            var modifiers = WeaponModifierHelper.getAttributeModifiers(new WeaponData(heldItem, player));
+            var multiMap = HashMultimap.<Holder<Attribute>, AttributeModifier>create();
+
+            for (var modifier : modifiers) {
+                BuiltInRegistries.ATTRIBUTE.getHolder(modifier.getAttribute()).ifPresent((attributeHolder) -> {
+                    var attributeInstance = player.getAttribute(attributeHolder);
+                    if (attributeInstance != null) {
+                        var name = modifier.getAttribute().toString().replace(".", "_") + "_" + hand.toString().toLowerCase(Locale.ROOT);
+                        var id = ResourceLocation.parse(name);
+                        var newModifier = new AttributeModifier(id, modifier.getValue(), modifier.getOperation());
+
+                        if (!attributeInstance.hasModifier(id)) {
+                            attributeInstance.addTransientModifier(newModifier);
+                        }
+                        multiMap.put(attributeHolder, newModifier);
+                    }
+                });
+            }
+            WeaponItem.PLAYER_MODIFIERS.put(player.getUUID(), multiMap);
         }
     }
 
@@ -152,9 +187,8 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
         var data = new WeaponData(stack, null);
-        var tagCompound = stack.getOrCreateTag();
         WeaponItemTooltips.addAmmoType(tooltip, data);
         WeaponItemTooltips.addFireRate(tooltip, data);
         WeaponItemTooltips.addDamage(tooltip, data);
@@ -165,7 +199,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
             WeaponItemTooltips.addExplosionTip(tooltip, explosion);
         }
 
-        WeaponItemTooltips.addAmmo(tooltip, tagCompound, data);
+        WeaponItemTooltips.addAmmo(tooltip, data);
         WeaponItemTooltips.addFuel(tooltip, data);
 
         var name = NtglKeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
@@ -260,9 +294,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
                 .getFactory(projectile)
                 .create(world, entity, this, timeLeft);
     }
-
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {

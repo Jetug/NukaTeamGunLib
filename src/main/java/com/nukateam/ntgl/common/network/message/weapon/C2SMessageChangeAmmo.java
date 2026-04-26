@@ -1,14 +1,19 @@
-package com.nukateam.ntgl.common.network.message;
+package com.nukateam.ntgl.common.network.message.weapon;
 
+import com.mrcrayfish.framework.api.network.MessageContext;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
-import com.nukateam.ntgl.modules.network.IMessage;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraftforge.network.NetworkEvent;
 
-public class C2SMessageChangeAmmo implements IMessage<C2SMessageChangeAmmo> {
+public class C2SMessageChangeAmmo {
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageChangeAmmo> STREAM_CODEC = StreamCodec.of(
+            (buffer, message) -> encode(message, buffer),
+            buffer -> decode(buffer));
+
     private InteractionHand hand = InteractionHand.MAIN_HAND;
     private ResourceLocation ammo;
     private WeaponMode weaponMode;
@@ -21,29 +26,25 @@ public class C2SMessageChangeAmmo implements IMessage<C2SMessageChangeAmmo> {
         this.weaponMode = weaponMode;
     }
 
-    @Override
-    public void encode(C2SMessageChangeAmmo message, FriendlyByteBuf buffer) {
+    public static void encode(C2SMessageChangeAmmo message, FriendlyByteBuf buffer) {
         buffer.writeEnum(message.hand);
         buffer.writeUtf(message.ammo.toString());
         buffer.writeUtf(message.weaponMode.toString());
     }
 
-    @Override
-    public C2SMessageChangeAmmo decode(FriendlyByteBuf buffer) {
+    public static C2SMessageChangeAmmo decode(FriendlyByteBuf buffer) {
         return new C2SMessageChangeAmmo(buffer.readEnum(InteractionHand.class),
                 ResourceLocation.tryParse(buffer.readUtf()),
                 WeaponMode.getType(buffer.readUtf()));
     }
 
-    @Override
-    public void handle(C2SMessageChangeAmmo message, NetworkEvent.Context context) {
-        context.enqueueWork(() -> {
-            var player = context.getSender();
-            if (player != null) {
-                ServerPlayHandler.handleAmmoChange(message, player);
-            }
-        });
-        context.setPacketHandled(true);
+    public static void handle(C2SMessageChangeAmmo message, MessageContext context) {
+        context.execute(() ->
+            context.getPlayer().ifPresent((player) ->
+                ServerPlayHandler.handleAmmoChange(message, player)
+            )
+        );
+        context.setHandled(true);
     }
 
     public InteractionHand getHand() {

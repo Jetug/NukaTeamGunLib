@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.handlers;
 
+import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.audio.GunShotSound;
@@ -11,12 +12,14 @@ import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.foundation.init.NtglGameEvents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageGunSound;
 import com.nukateam.ntgl.common.util.trackers.EquipTracker;
 import com.nukateam.ntgl.common.event.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -127,7 +130,7 @@ public class GunEventHandler {
                     true);
 
             PacketHandler.getPlayChannel().sendToNearbyPlayers(
-                    () -> LevelLocation.create(wielder.level(), wielder.getX(), wielder.getY() + 1.0, wielder.getZ(), radius),
+                    () -> LevelLocation.create((ServerLevel)wielder.level(), wielder.getX(), wielder.getY() + 1.0, wielder.getZ(), radius),
                     messageSound);
         }
     }

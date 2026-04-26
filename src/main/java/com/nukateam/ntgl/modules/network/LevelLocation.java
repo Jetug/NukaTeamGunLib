@@ -28,7 +28,7 @@ public final class LevelLocation {
     }
 
     public static LevelLocation create(Level level, BlockPos pos) {
-        return new LevelLocation(level, pos.getCenter(), (double)16.0F);
+        return new LevelLocation(level, pos.getCenter(), 16.0F);
     }
 
     public static LevelLocation create(Level level, BlockPos pos, double range) {

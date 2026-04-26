@@ -8,11 +8,18 @@ import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
 import com.nukateam.ntgl.common.network.message.chassis.*;
 import com.nukateam.ntgl.common.network.message.weapon.*;
+import com.nukateam.ntgl.modules.data.message.S2CMessageUpdateEntityData;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+import java.util.function.Supplier;
 
 public class PacketHandler {
     private static FrameworkNetwork PLAY_CHANNEL;
@@ -23,7 +30,7 @@ public class PacketHandler {
 
     public static void init() {
         var id = 0;
-        PLAY_CHANNEL = FrameworkAPI.createNetworkBuilder(ResourceLocation.tryBuild(ChassisCore.MOD_ID, "cc_play"), 1)
+        PLAY_CHANNEL = FrameworkAPI.createNetworkBuilder(ResourceLocation.tryBuild(Ntgl.MOD_ID, "ntgl"), 1)
                 .registerPlayMessage(String.valueOf(id++), C2SActionPacket.class, C2SActionPacket.STREAM_CODEC, C2SActionPacket::handle, PacketFlow.SERVERBOUND)
                 .registerPlayMessage(String.valueOf(id++), C2SGenericPacket.class, C2SGenericPacket.STREAM_CODEC, C2SGenericPacket::handle, PacketFlow.SERVERBOUND)
                 .registerPlayMessage(String.valueOf(id++), S2CInventoryPacket.class, S2CInventoryPacket.STREAM_CODEC, S2CInventoryPacket::handle, PacketFlow.CLIENTBOUND)
@@ -34,8 +41,10 @@ public class PacketHandler {
                 .registerPlayMessage(String.valueOf(id++), C2SMessageReload.class, C2SMessageReload.STREAM_CODEC, C2SMessageReload::handle, PacketFlow.SERVERBOUND)
                 .registerPlayMessage(String.valueOf(id++), C2SMessageShoot.class, C2SMessageShoot.STREAM_CODEC, C2SMessageShoot::handle, PacketFlow.SERVERBOUND)
                 .registerPlayMessage(String.valueOf(id++), C2SMessageUnload.class, C2SMessageUnload.STREAM_CODEC, C2SMessageUnload::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageReloadStop.class, C2SMessageReloadStop.STREAM_CODEC, C2SMessageReloadStop::handle, PacketFlow.SERVERBOUND)
                 .registerPlayMessage(String.valueOf(id++), C2SMessageCraft.class, C2SMessageCraft.STREAM_CODEC, C2SMessageCraft::handle, PacketFlow.SERVERBOUND)
                 .registerPlayMessage(String.valueOf(id++), C2SMessageAttachments.class, C2SMessageAttachments.STREAM_CODEC, C2SMessageAttachments::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageChangeAmmo.class, C2SMessageChangeAmmo.STREAM_CODEC, C2SMessageChangeAmmo::handle, PacketFlow.SERVERBOUND)
                 .registerPlayMessage(String.valueOf(id++), C2SMessageShooting.class, C2SMessageShooting.STREAM_CODEC, C2SMessageShooting::handle, PacketFlow.SERVERBOUND)
                 .registerPlayMessage(String.valueOf(id++), C2SMessagePreFireSound.class, C2SMessagePreFireSound.STREAM_CODEC, C2SMessagePreFireSound::handle, PacketFlow.SERVERBOUND)
                 .registerPlayMessage(String.valueOf(id++), C2SMessageHandAction.class, C2SMessageHandAction.STREAM_CODEC, C2SMessageHandAction::handle, PacketFlow.SERVERBOUND)
@@ -56,6 +65,7 @@ public class PacketHandler {
                 .registerPlayMessage(String.valueOf(id++), S2CMessageProjectileHitFluid.class, S2CMessageProjectileHitFluid.STREAM_CODEC, S2CMessageProjectileHitFluid::handle, PacketFlow.CLIENTBOUND)
                 .registerPlayMessage(String.valueOf(id++), S2CMessageProjectileExplosion.class, S2CMessageProjectileExplosion.STREAM_CODEC, S2CMessageProjectileExplosion::handle, PacketFlow.CLIENTBOUND)
 
+                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateEntityData.class, S2CMessageUpdateEntityData.STREAM_CODEC, S2CMessageUpdateEntityData::handle, PacketFlow.CLIENTBOUND)
                 .build();
     }
 
@@ -63,5 +73,19 @@ public class PacketHandler {
         var levelLoc = LevelLocation.create((ServerLevel) entity.level(), entity.blockPosition());
         getPlayChannel().sendToNearbyPlayers(() -> levelLoc,
                 new S2CMessagePlayerAnimation(entity.getId(), animation, hand));
+    }
+
+    public void sendToNearbyPlayers(Supplier<LevelLocation> supplier, CustomPacketPayload message) {
+        var location = supplier.get();
+        var pos = location.pos();
+        PacketDistributor.sendToPlayersNear(location.level(), null, pos.x, pos.y, pos.z, location.range(), message);
+    }
+
+    public void sendToServer(CustomPacketPayload message) {
+        PacketDistributor.sendToServer(message);
+    }
+
+    public void sendToAll(CustomPacketPayload message) {
+        PacketDistributor.sendToAllPlayers(message);
     }
 }

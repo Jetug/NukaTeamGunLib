@@ -3,22 +3,30 @@ package com.nukateam.ntgl.common.util.util;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 
 public class WeaponItemTooltips {
+    public static final DecimalFormat ATTRIBUTE_MODIFIER_FORMAT = Util.make(
+            new DecimalFormat("#.##"),
+            (format) -> format.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT)));
+
     public static void addExplosionTip(List<Component> tooltip, ExplosionConfig explosion) {
         var damage = explosion.getDamage();
         tooltip.add(Component.translatable("info.ntgl.explosionDamage",
-                        ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage))
+                        ChatFormatting.WHITE + ATTRIBUTE_MODIFIER_FORMAT.format(damage))
                 .withStyle(ChatFormatting.GRAY));
 
         var radius = explosion.getRadius();
         tooltip.add(Component.translatable("info.ntgl.explosionRadius",
-                        ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(radius))
+                        ChatFormatting.WHITE + ATTRIBUTE_MODIFIER_FORMAT.format(radius))
                 .withStyle(ChatFormatting.GRAY));
     }
 
@@ -35,7 +43,7 @@ public class WeaponItemTooltips {
         rate = rate == 0 ? 0 : 20 / rate;
 
         tooltip.add(Component.translatable("info.ntgl.rate",
-                ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(rate))
+                ChatFormatting.WHITE + ATTRIBUTE_MODIFIER_FORMAT.format(rate))
                 .withStyle(ChatFormatting.GRAY));
     }
 
@@ -52,8 +60,8 @@ public class WeaponItemTooltips {
         }
     }
 
-    public static void addAmmo(List<Component> tooltip, CompoundTag tagCompound, WeaponData weaponData) {
-        if (tagCompound.getBoolean("IgnoreAmmo")) {
+    public static void addAmmo(List<Component> tooltip, WeaponData weaponData) {
+        if (WeaponStateHelper.isAmmoIgnored(weaponData)) {
             tooltip.add(Component.translatable("info.ntgl.ignore_ammo").withStyle(ChatFormatting.AQUA));
         } else {
             int ammoCount = WeaponStateHelper.getAmmoCount(weaponData);
@@ -67,7 +75,7 @@ public class WeaponItemTooltips {
     public static void addDamage(List<Component> tooltip, WeaponData weaponData) {
         var damage = WeaponStateHelper.getProjectileDamage(weaponData);
         tooltip.add(Component.translatable("info.ntgl.damage", ChatFormatting.WHITE
-                        + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)
+                        + ATTRIBUTE_MODIFIER_FORMAT.format(damage)
         ).withStyle(ChatFormatting.GRAY));
     }
 
@@ -75,7 +83,7 @@ public class WeaponItemTooltips {
         var damage = WeaponModifierHelper.getMeleeDamage(weaponData);
 
         tooltip.add(Component.translatable("info.ntgl.melee_damage",
-                ChatFormatting.WHITE + ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)
+                ChatFormatting.WHITE + ATTRIBUTE_MODIFIER_FORMAT.format(damage)
         ).withStyle(ChatFormatting.GRAY));
     }
 }

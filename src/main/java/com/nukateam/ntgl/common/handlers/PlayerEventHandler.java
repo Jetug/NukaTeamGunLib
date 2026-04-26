@@ -26,33 +26,7 @@ import java.util.*;
 
 @EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class PlayerEventHandler {
-//    public static final UUID SPEED_MODIFIER_ID = UUID.fromString("a1b2c3d4-5e6f-7890-1234-567890abcdef");
-//    public static final String MOVEMENT_SPEED = "custom_movement_speed";
-
-    protected static final ResourceLocation MOVEMENT_SPEED = ResourceLocation.withDefaultNamespace("movement_speed");
-
     private static final Map<Pair<InteractionHand, Player>, Slot> lastSelectedSlots = new HashMap<>();
-    public static final String ID = "WeaponId";
-
-    @SubscribeEvent
-    public static void onPlayerTick(PlayerTickEvent.Pre event) {
-        var player = event.getEntity();
-        var heldItem = player.getMainHandItem();
-        var movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-
-        if (movementSpeed != null) {
-            movementSpeed.removeModifier(MOVEMENT_SPEED);
-
-            if (heldItem.getItem() instanceof IWeapon) {
-                movementSpeed.removeModifier(MOVEMENT_SPEED);
-                movementSpeed.addTransientModifier(new AttributeModifier(
-                        MOVEMENT_SPEED,
-                        WeaponModifierHelper.getMovementSpeed(new WeaponData(heldItem, player)),
-                        AttributeModifier.Operation.ADD_MULTIPLIED_BASE
-                ));
-            }
-        }
-    }
 
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {

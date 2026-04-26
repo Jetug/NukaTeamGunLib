@@ -41,30 +41,4 @@ public class WeaponItemUtils {
             }
         }
     }
-
-    public static void applyAttributeModifiers(LivingEntity player, InteractionHand hand) {
-        var heldItem = player.getItemInHand(hand);
-
-        if (heldItem.getItem() instanceof IWeapon) {
-            var modifiers = WeaponModifierHelper.getAttributeModifiers(new WeaponData(heldItem, player));
-            var multiMap = HashMultimap.<Holder<Attribute>, AttributeModifier>create();
-
-            for (var modifier : modifiers) {
-                BuiltInRegistries.ATTRIBUTE.getHolder(modifier.getAttribute()).ifPresent((attributeHolder) -> {
-                    var attributeInstance = player.getAttribute(attributeHolder);
-                    if (attributeInstance != null) {
-                        var name = modifier.getAttribute().toString() + hand;
-                        var uuid = UUID.nameUUIDFromBytes(name.getBytes(StandardCharsets.UTF_8));
-                        var newModifier = new AttributeModifier(uuid, name, modifier.getValue(), modifier.getOperation());
-
-                        if (!attributeInstance.hasModifier(newModifier)) {
-                            attributeInstance.addTransientModifier(newModifier);
-                        }
-                        multiMap.put(attributeHolder, newModifier);
-                    }
-                });
-            }
-            WeaponItem.PLAYER_MODIFIERS.put(player.getUUID(), multiMap);
-        }
-    }
 }

@@ -1,7 +1,5 @@
 package com.nukateam.ntgl.modules.datapack.handlers;
 
-import com.nukateam.chassis_core.common.network.packet.S2CMessageUpdateChassisConfig;
-import com.nukateam.chassis_core.common.network.packet.S2CMessageUpdateEquipmentConfig;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.chassis.S2CMessageUpdateChassisConfig;

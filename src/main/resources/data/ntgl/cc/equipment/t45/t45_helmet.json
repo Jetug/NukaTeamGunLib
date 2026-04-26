@@ -5,6 +5,7 @@
   "texture": {
     "default": "ntgl:textures/power_armor/t45.png"
   },
+  "id": "ntgl:example",
   "hide": ["head_frame"],
 
   "attachments": [

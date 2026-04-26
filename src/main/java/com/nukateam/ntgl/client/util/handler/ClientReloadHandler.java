@@ -116,7 +116,7 @@ public class ClientReloadHandler {
                     PacketHandler.getPlayChannel().sendToServer(new C2SMessageReload(hand, data.weaponMode));
                     this.reloadingSlot = player.getInventory().selected;
 
-                    NeoForge.EVENT_BUS.post(new GunReloadEvent.Post(player, stack, hand));
+                    NeoForge.EVENT_BUS.post(new GunReloadEvent.Post(data, hand));
                 }
             }
         } else {

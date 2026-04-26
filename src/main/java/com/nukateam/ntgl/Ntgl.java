@@ -141,8 +141,8 @@ public class Ntgl {
 //        generator.addProvider(event.includeServer(), new GunGen(generator));
 //        generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
 
-        var damageTypeGenerator = new RegistrySetBuilder().add(Registries.DAMAGE_TYPE, NtglDamageTypes::bootstrap);
-        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(), damageTypeGenerator, Set.of(Ntgl.MOD_ID)));
+//        var damageTypeGenerator = new RegistrySetBuilder().add(Registries.DAMAGE_TYPE, NtglDamageTypes::bootstrap);
+//        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(), damageTypeGenerator, Set.of(Ntgl.MOD_ID)));
         generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
     }
 }

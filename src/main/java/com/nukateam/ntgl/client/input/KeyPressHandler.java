@@ -9,23 +9,23 @@ import com.nukateam.ntgl.modules.wheel.ActionWheelManager;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 import java.util.ArrayList;
 
 import static com.nukateam.ntgl.client.util.handler.ClientShootingHandler.isInGame;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT)
 public class KeyPressHandler {
     private static final ArrayList<KeyCommand> commands = new ArrayList<>();
 
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onClientTick(ClientTickEvent.Post event) {
         var player = Minecraft.getInstance().player;
-        if (event.phase == TickEvent.Phase.END && isInGame() && player != null) {
+        if (isInGame() && player != null) {
             for (var command : commands){
                 if (command.getKey().isDown()){
                     if(!command.keyPressed) {

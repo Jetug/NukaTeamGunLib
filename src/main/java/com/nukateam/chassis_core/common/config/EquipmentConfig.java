@@ -4,7 +4,7 @@ import com.nukateam.chassis_core.common.data.holders.ChassisPart;
 import com.nukateam.chassis_core.common.data.json.EquipmentAttachment;
 import com.nukateam.chassis_core.modules.config.annotation.Ignored;
 import com.nukateam.chassis_core.modules.config.annotation.Optional;
-import com.nukateam.chassis_core.modules.config.utils.NbtUtils;
+import com.nukateam.ntgl.common.util.util.NbtUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -35,7 +35,7 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
         tag.putString("model", model.toString());
         tag.putString("id", id.toString());
         tag.put("texture", NbtUtils.serializeStringMap(this.texture));
-        tag.put("attachments", NbtUtils.serializeArray(this.attachments));
+        tag.put("attachments", NbtUtils.serializeArray(this.attachments, provider));
         tag.put("hide", NbtUtils.serializeStringArray(this.hide));
         tag.put("mods", NbtUtils.serializeStringArray(this.mods));
 
@@ -63,10 +63,10 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
             this.attachments = NbtUtils.deserializeArray(tag.getCompound("attachments"), EquipmentAttachment::create);
         }
         if (tag.contains("hide", Tag.TAG_COMPOUND)) {
-            this.hide = NbtUtils.deserializeStringArray(tag.getCompound("hide"));
+            this.hide = NbtUtils.deserializeStringArrayList(tag.getCompound("hide"));
         }
         if (tag.contains("mods", Tag.TAG_COMPOUND)) {
-            this.mods = NbtUtils.deserializeStringArray(tag.getCompound("mods"));
+            this.mods = NbtUtils.deserializeStringArrayList(tag.getCompound("mods"));
         }
     }
 

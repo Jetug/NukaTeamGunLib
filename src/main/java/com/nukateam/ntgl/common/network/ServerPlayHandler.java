@@ -1,13 +1,10 @@
 package com.nukateam.ntgl.common.network;
-
-import com.nukateam.ntgl.common.data.constants.SoundTypes;
-import com.nukateam.ntgl.common.network.message.C2SMessageChangeAmmo;
-import com.nukateam.ntgl.modules.network.LevelLocation;
+import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageChangeAmmo;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.enums.SoundType;
-import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
@@ -27,6 +24,7 @@ import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -189,7 +187,7 @@ public class ServerPlayHandler {
 
             PacketHandler.getPlayChannel()
                     .sendToNearbyPlayers(() ->
-                            LevelLocation.create(shooter.level(), posX, posY, posZ, radius), messageSound);
+                            LevelLocation.create((ServerLevel) shooter.level(), posX, posY, posZ, radius), messageSound);
         }
     }
 
@@ -217,7 +215,7 @@ public class ServerPlayHandler {
                 var pitch = 0.9F + world.random.nextFloat() * 0.2F;
                 var radius = WeaponModifierHelper.getModifiedFireSoundRadius(data, Config.SERVER.gunShotMaxDistance.get());
                 var messageSound = new S2CMessageGunSound(fireSound, SoundSource.PLAYERS, (float) posX, (float) posY, (float) posZ, volume, pitch, player.getId(), false);
-                PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create(player.level(), posX, posY, posZ, radius), messageSound);
+                PacketHandler.getPlayChannel().sendToNearbyPlayers(() -> LevelLocation.create((ServerLevel)player.level(), posX, posY, posZ, radius), messageSound);
             }
         }
     }
@@ -236,10 +234,12 @@ public class ServerPlayHandler {
     }
 
 
-    public static void handleUnload(ServerPlayer player, C2SMessageUnload message) {
-        var stack = player.getItemInHand(message.getHand());
-        if (stack.getItem() instanceof IWeapon) {
-            unloadGun(new WeaponData(stack, player).setWeaponMode(message.getWeaponMode()));
+    public static void handleUnload(Player player, C2SMessageUnload message) {
+        if (!player.isSpectator()) {
+            var stack = player.getItemInHand(message.getHand());
+            if (stack.getItem() instanceof IWeapon) {
+                unloadGun(new WeaponData(stack, player).setWeaponMode(message.getWeaponMode()));
+            }
         }
     }
 
@@ -257,7 +257,7 @@ public class ServerPlayHandler {
 
         if (itemHolder.canReturnAmmo()) {
             var id = itemHolder.getId();
-            var item = BuiltInRegistries.ITEM.getValue(id);
+            var item = BuiltInRegistries.ITEM.get(id);
 
             if (item != null && data.wielder instanceof Player player && !player.isCreative()) {
                 givePlayerAmmo(player, item, count);
@@ -307,7 +307,7 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void handleAttachments(ServerPlayer player, InteractionHand hand) {
+    public static void handleAttachments(Player player, InteractionHand hand) {
         var heldItem = player.getItemInHand(hand);
         if (heldItem.getItem() instanceof IWeapon && ((IWeapon) heldItem.getItem()).getModifiedConfig(heldItem).getModules().attachmentScreen()) {
             player.openMenu(new SimpleMenuProvider((windowId, playerInventory, player1) ->
@@ -315,7 +315,7 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void handleReload(C2SMessageReload message, ServerPlayer player) {
+    public static void handleReload(C2SMessageReload message, Player player) {
         var hand = message.getHand();
         var weapon = player.getItemInHand(hand);
         var data = new WeaponData(weapon, player).setWeaponMode(message.getWeaponMode());
@@ -356,7 +356,7 @@ public class ServerPlayHandler {
         }
     }
 
-    public static void handleAmmoChange(C2SMessageChangeAmmo message, ServerPlayer player) {
+    public static void handleAmmoChange(C2SMessageChangeAmmo message, Player player) {
         var hand = message.getHand();
         var weapon = player.getItemInHand(hand);
         var isReloading = getReloadKey(hand);

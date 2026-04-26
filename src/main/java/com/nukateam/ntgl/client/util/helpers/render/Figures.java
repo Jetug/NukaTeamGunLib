@@ -54,9 +54,8 @@ public class Figures {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
 
-        buffer.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
 
         for (int i = 0; i <= segments; i++) {
             float angle = startRad + sweepRad * i / segments;
@@ -73,50 +72,41 @@ public class Figures {
             float innerY = centerY + sin * innerRadius;
 
             // Добавляем две точки для полоски
-            buffer.vertex(poseStack.last().pose(), outerX, outerY, 0)
-                    .color(r, g, b, a)
-                    .endVertex();
-            buffer.vertex(poseStack.last().pose(), innerX, innerY, 0)
-                    .color(r, g, b, a)
-                    .endVertex();
+            buffer.addVertex(poseStack.last().pose(), outerX, outerY, 0)
+                    .setColor(r, g, b, a);
+            buffer.addVertex(poseStack.last().pose(), innerX, innerY, 0)
+                    .setColor(r, g, b, a);
         }
 
-        BufferUploader.drawWithShader(buffer.end());
+        BufferUploader.drawWithShader(buffer.build());
 
-        buffer = tesselator.getBuilder();
-        buffer.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR);
+        buffer = tesselator.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR);
 
         float leftOuterX = centerX + Mth.cos(startRad) * radius;
         float leftOuterY = centerY + Mth.sin(startRad) * radius;
         float leftInnerX = centerX + Mth.cos(startRad) * (radius - thickness);
         float leftInnerY = centerY + Mth.sin(startRad) * (radius - thickness);
 
-        buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
-                .color(r, g, b, a)
-                .endVertex();
-        buffer.vertex(poseStack.last().pose(), leftOuterX, leftOuterY, 0)
-                .color(r, g, b, a)
-                .endVertex();
-        buffer.vertex(poseStack.last().pose(), leftInnerX, leftInnerY, 0)
-                .color(r, g, b, a)
-                .endVertex();
+        buffer.addVertex(poseStack.last().pose(), centerX, centerY, 0)
+                .setColor(r, g, b, a);
+        buffer.addVertex(poseStack.last().pose(), leftOuterX, leftOuterY, 0)
+                .setColor(r, g, b, a);
+        buffer.addVertex(poseStack.last().pose(), leftInnerX, leftInnerY, 0)
+                .setColor(r, g, b, a);
 
         float rightOuterX = centerX + Mth.cos(startRad + sweepRad) * radius;
         float rightOuterY = centerY + Mth.sin(startRad + sweepRad) * radius;
         float rightInnerX = centerX + Mth.cos(startRad + sweepRad) * (radius - thickness);
         float rightInnerY = centerY + Mth.sin(startRad + sweepRad) * (radius - thickness);
 
-        buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
-                .color(r, g, b, a)
-                .endVertex();
-        buffer.vertex(poseStack.last().pose(), rightInnerX, rightInnerY, 0)
-                .color(r, g, b, a)
-                .endVertex();
-        buffer.vertex(poseStack.last().pose(), rightOuterX, rightOuterY, 0)
-                .color(r, g, b, a)
-                .endVertex();
+        buffer.addVertex(poseStack.last().pose(), centerX, centerY, 0)
+                .setColor(r, g, b, a);
+        buffer.addVertex(poseStack.last().pose(), rightInnerX, rightInnerY, 0)
+                .setColor(r, g, b, a);
+        buffer.addVertex(poseStack.last().pose(), rightOuterX, rightOuterY, 0)
+                .setColor(r, g, b, a);
 
-        BufferUploader.drawWithShader(buffer.end());
+        BufferUploader.drawWithShader(buffer.build());
 
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
@@ -149,44 +139,36 @@ public class Figures {
         RenderSystem.lineWidth(lineWidth);
 
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
-
-        buffer.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
 
         for (int i = 0; i <= segments; i++) {
             float angle = startRad + sweepRad * i / segments;
             float x = centerX + Mth.cos(angle) * radius;
             float y = centerY + Mth.sin(angle) * radius;
 
-            buffer.vertex(poseStack.last().pose(), x, y, 0)
-                    .color(r, g, b, a)
-                    .endVertex();
+            buffer.addVertex(poseStack.last().pose(), x, y, 0)
+                    .setColor(r, g, b, a);
         }
 
-        BufferUploader.drawWithShader(buffer.end());
+        BufferUploader.drawWithShader(buffer.build());
 
-        buffer = tesselator.getBuilder();
-        buffer.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
+        buffer = tesselator.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
 
         float startX = centerX + Mth.cos(startRad) * radius;
         float startY = centerY + Mth.sin(startRad) * radius;
-        buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
-                .color(r, g, b, a)
-                .endVertex();
-        buffer.vertex(poseStack.last().pose(), startX, startY, 0)
-                .color(r, g, b, a)
-                .endVertex();
+        buffer.addVertex(poseStack.last().pose(), centerX, centerY, 0)
+                .setColor(r, g, b, a);
+        buffer.addVertex(poseStack.last().pose(), startX, startY, 0)
+                .setColor(r, g, b, a);
 
         float endX = centerX + Mth.cos(startRad + sweepRad) * radius;
         float endY = centerY + Mth.sin(startRad + sweepRad) * radius;
-        buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
-                .color(r, g, b, a)
-                .endVertex();
-        buffer.vertex(poseStack.last().pose(), endX, endY, 0)
-                .color(r, g, b, a)
-                .endVertex();
+        buffer.addVertex(poseStack.last().pose(), centerX, centerY, 0)
+                .setColor(r, g, b, a);
+        buffer.addVertex(poseStack.last().pose(), endX, endY, 0)
+                .setColor(r, g, b, a);
 
-        BufferUploader.drawWithShader(buffer.end());
+        BufferUploader.drawWithShader(buffer.build());
 
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
@@ -217,24 +199,21 @@ public class Figures {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
-        buffer.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
+        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
 
-        buffer.vertex(poseStack.last().pose(), centerX, centerY, 0)
-                .color(r, g, b, a)
-                .endVertex();
+        buffer.addVertex(poseStack.last().pose(), centerX, centerY, 0)
+                .setColor(r, g, b, a);
 
         for (int i = 0; i <= segments; i++) {
             float angle = startRad + sweepRad * i / segments;
             float x = centerX + Mth.cos(angle) * radius;
             float y = centerY + Mth.sin(angle) * radius;
 
-            buffer.vertex(poseStack.last().pose(), x, y, 0)
-                    .color(r, g, b, a)
-                    .endVertex();
+            buffer.addVertex(poseStack.last().pose(), x, y, 0)
+                    .setColor(r, g, b, a);
         }
 
-        BufferUploader.drawWithShader(buffer.end());
+        BufferUploader.drawWithShader(buffer.build());
 
         RenderSystem.enableDepthTest();
         RenderSystem.enableCull();

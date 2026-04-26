@@ -149,6 +149,18 @@ public class NbtUtils {
         return map;
     }
 
+    public static <T> ArrayList<T> deserializeArray(CompoundTag tag, Function<CompoundTag, T> deserializer){
+        var array = new ArrayList<T>();
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_COMPOUND)) {
+                var value = deserializer.apply(tag.getCompound(key));
+                array.add(value);
+            }
+        }
+
+        return array;
+    }
+
     public static ArrayList<Modules.Attachment> deserializeArray(CompoundTag tag, HolderLookup.Provider provider){
         var array = new ArrayList<Modules.Attachment>();
         for (var key: tag.getAllKeys()) {
@@ -201,6 +213,16 @@ public class NbtUtils {
             if(tag.contains(key, Tag.TAG_COMPOUND)) {
                 array.put(AttachmentType.getType(key), deserializeArray(tag.getCompound(key), provider));
             }
+        }
+
+        return array;
+    }
+
+    public static ArrayList<String> deserializeStringArrayList(CompoundTag tag){
+        var array = new ArrayList<String>();
+        for (var key: tag.getAllKeys()) {
+            if(tag.contains(key, Tag.TAG_STRING))
+                array.add(tag.getString(key));
         }
 
         return array;

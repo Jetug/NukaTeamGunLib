@@ -4,18 +4,15 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.nukateam.ntgl.client.util.helpers.render.Figures;
 import com.nukateam.ntgl.modules.wheel.ActionWheel;
 import com.nukateam.ntgl.modules.wheel.ActionWheelManager;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
-public class ActionWheelHud implements IGuiOverlay {
-    public static final IGuiOverlay HUD = new ActionWheelHud();
+public class ActionWheelHud {
     private static final int WHEEL_SIZE = 128;
 
-    @Override
-    public void render(ForgeGui gui, GuiGraphics graphics, float partialTick, int width, int height) {
+    public static void render(GuiGraphics graphics, DeltaTracker partialTick) {
         var minecraft = Minecraft.getInstance();
         var player = minecraft.player;
         if (player == null) return;
@@ -30,7 +27,7 @@ public class ActionWheelHud implements IGuiOverlay {
         }
     }
 
-    public void render(GuiGraphics guiGraphics, ActionWheel wheel) {
+    public static void render(GuiGraphics guiGraphics, ActionWheel wheel) {
         if (!wheel.isVisible() || wheel.getActions().isEmpty()) return;
         var minecraft = Minecraft.getInstance();
 
@@ -52,7 +49,7 @@ public class ActionWheelHud implements IGuiOverlay {
         guiGraphics.flush();
     }
 
-    private void renderWheel(ActionWheel wheel, GuiGraphics guiGraphics, float scale, int centerX, int centerY) {
+    private static void renderWheel(ActionWheel wheel, GuiGraphics guiGraphics, float scale, int centerX, int centerY) {
         var poseStack = guiGraphics.pose();
         poseStack.pushPose();
         {
@@ -92,7 +89,7 @@ public class ActionWheelHud implements IGuiOverlay {
         poseStack.popPose();
     }
 
-    private void renderSelectedSegment(ActionWheel wheel, GuiGraphics guiGraphics, int centerX, int centerY, float scale) {
+    private static void renderSelectedSegment(ActionWheel wheel, GuiGraphics guiGraphics, int centerX, int centerY, float scale) {
         var count = wheel.getActions().size();
         if (count == 0 || wheel.getSelectedSegment() < 0) return;
 
@@ -105,7 +102,7 @@ public class ActionWheelHud implements IGuiOverlay {
                 WHEEL_SIZE / 2f, startAngle, anglePerSegment, 0xF7FF00FF, 2);
     }
 
-    private void renderIconsAndText(ActionWheel wheel, GuiGraphics guiGraphics, int centerX, int centerY, float scale) {
+    private static void renderIconsAndText(ActionWheel wheel, GuiGraphics guiGraphics, int centerX, int centerY, float scale) {
         int count = wheel.getActions().size();
         if (count == 0) return;
 

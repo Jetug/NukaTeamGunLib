@@ -6,6 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 
 /**
@@ -16,27 +17,32 @@ public class C2SMessagePreFireSound  {
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 
-    public C2SMessagePreFireSound() {
-    }
+    private InteractionHand hand;
 
-    public C2SMessagePreFireSound(Player player) {
+    public C2SMessagePreFireSound() {}
+
+    public C2SMessagePreFireSound(InteractionHand hand) {
+        this.hand = hand;
     }
 
     public static void encode(C2SMessagePreFireSound message, FriendlyByteBuf buffer) {
-
+        buffer.writeEnum(message.hand);
     }
 
     public static C2SMessagePreFireSound decode(FriendlyByteBuf buffer) {
-        return new C2SMessagePreFireSound();
+        return new C2SMessagePreFireSound(buffer.readEnum(InteractionHand.class));
     }
 
     public static void handle(C2SMessagePreFireSound message, MessageContext context) {
         context.execute(() ->
-        {
-             context.getPlayer().ifPresent(player -> {
-                 ServerPlayHandler.handlePreFireSound(message, (ServerPlayer)player);
-            });
-        });
+            context.getPlayer().ifPresent(player ->
+                ServerPlayHandler.handlePreFireSound(message, (ServerPlayer)player)
+            )
+        );
         context.setHandled(true);
+    }
+
+    public InteractionHand getHand() {
+        return hand;
     }
 }

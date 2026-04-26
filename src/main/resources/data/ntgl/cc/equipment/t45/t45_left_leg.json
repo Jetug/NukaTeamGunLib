@@ -6,6 +6,7 @@
     "default": "ntgl:textures/power_armor/t45.png"
   },
 
+  "id": "ntgl:example",
   "hide" : ["left_toes_frame"],
 
   "attachments": [

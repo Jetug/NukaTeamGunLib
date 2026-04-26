@@ -27,13 +27,11 @@ public class C2SMessageReload  {
         this.weaponMode = weaponMode;
     }
 
-    @Override
     public static void encode(C2SMessageReload message, FriendlyByteBuf buffer) {
         buffer.writeEnum(message.hand);
         buffer.writeUtf(message.weaponMode.toString());
     }
 
-    @Override
     public static C2SMessageReload decode(FriendlyByteBuf buffer) {
         return new C2SMessageReload(
                 buffer.readEnum(InteractionHand.class),

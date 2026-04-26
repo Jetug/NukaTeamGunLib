@@ -118,7 +118,7 @@ public class General implements INBTSerializable<CompoundTag> {
         tag.putInt      (PROJECTILE_AMOUNT, this.projectileAmount);
         tag.putInt      (MULTISHOT_AMOUNT, this.multishotAmount);
         tag.putFloat    (SPREAD, this.spread);
-        tag.put         (ATTRIBUTE_MODIFIERS, NbtUtils.serializeArray(this.attributeModifiers));
+        tag.put         (ATTRIBUTE_MODIFIERS, NbtUtils.serializeArray(this.attributeModifiers, provider));
         tag.putBoolean  (ALWAYS_SPREAD, this.alwaysSpread);
         tag.putBoolean  (ONE_TIME_CHARGE, this.oneTimeCharge);
         tag.put         (AMMO, NbtUtils.serializeSet(this.ammo));

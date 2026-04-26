@@ -10,6 +10,7 @@ import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessagePreFireSound;
+import com.nukateam.ntgl.common.network.message.weapon.C2SMessageReloadStop;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessageShoot;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;

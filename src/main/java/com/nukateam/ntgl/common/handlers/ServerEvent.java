@@ -38,7 +38,7 @@ public class ServerEvent {
                 && shootTracker.cooldownEnded()
                 && !WeaponStateHelper.hasAmmo(data)
         ) {
-            reloadGun(hand, player);
+            reloadGun(hand, data);
         }
     }
 }

@@ -33,6 +33,10 @@ public class ClientEvents {
                 WeaponHud::render);
 
         event.registerBelow(VanillaGuiLayers.HOTBAR,
+                ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "action_wheel"),
+                ActionWheelHud::render);
+
+        event.registerBelow(VanillaGuiLayers.HOTBAR,
                 ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "debug"),
                 DebugHud::render);
 

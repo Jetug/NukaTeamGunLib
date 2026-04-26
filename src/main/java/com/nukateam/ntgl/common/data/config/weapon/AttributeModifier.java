@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.common.data.config.weapon;
 
 import com.google.gson.JsonObject;
+import com.nukateam.ntgl.common.util.annotation.Optional;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -11,6 +12,7 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 public class AttributeModifier implements INBTSerializable<CompoundTag> {
     protected ResourceLocation attribute;
     protected double value = 0;
+    @Optional
     protected Operation operation = Operation.ADD_MULTIPLIED_BASE;
 
     public static AttributeModifier create(CompoundTag tag) {
@@ -24,6 +26,8 @@ public class AttributeModifier implements INBTSerializable<CompoundTag> {
         CompoundTag tag = new CompoundTag();
         tag.putString("attribute", attribute.toString());
         tag.putDouble("value", value);
+        if(operation == null)
+            operation = Operation.ADD_MULTIPLIED_BASE;
         tag.putString("operation", operation.name());
         return tag;
     }

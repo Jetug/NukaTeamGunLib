@@ -360,6 +360,6 @@ public class ReloadTracker {
             startReloading(data, InteractionHand.OFF_HAND);
         }
 
-        NeoForge.EVENT_BUS.post(new GunReloadEvent.Post((ServerPlayer)entity, data.weapon, hand));
+        NeoForge.EVENT_BUS.post(new GunReloadEvent.Post(data, hand));
     }
 }
