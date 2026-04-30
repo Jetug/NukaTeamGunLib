@@ -8,7 +8,7 @@ tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
 
-version = mod_version
+version = "${minecraft_version}-${mod_version}"
 group = mod_group_id
 
 base {
@@ -17,20 +17,11 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-//configurations {
-//    library
-//    implementation.extendsFrom library
-//}
 
 runs {
-    // applies to all the run configs below
     configureEach {
         systemProperty 'forge.logging.markers', 'REGISTRIES'
         systemProperty 'forge.logging.console.level', 'debug'
-
-//        dependencies {
-//            runtime project.configurations.library
-//        }
 
         modSource project.sourceSets.main
     }
@@ -117,18 +108,14 @@ dependencies {
     compileOnly "mezz.jei:jei-1.21.1-common-api:19.25.0.322"
     compileOnly "mezz.jei:jei-1.21.1-neoforge-api:19.25.0.322"
     localRuntime "mezz.jei:jei-1.21.1-neoforge:19.25.0.322"
-
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
 }
 
-configurations.all {
-    resolutionStrategy {
-        // Принудительно используем только NeoForge версию
-        force 'io.github.llamalad7:mixinextras-neoforge:0.5.0'
-        // Исключаем Forge версию
-        exclude group: 'io.github.llamalad7', module: 'mixinextras-forge'
-    }
-}
+//configurations.all {
+//    resolutionStrategy {
+//        force 'io.github.llamalad7:mixinextras-neoforge:0.5.0'
+//        exclude group: 'io.github.llamalad7', module: 'mixinextras-forge'
+//    }
+//}
 
 tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
