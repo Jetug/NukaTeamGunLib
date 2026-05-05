@@ -1,20 +1,27 @@
 package com.nukateam.ntgl.common.network.message.weapon;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
+import com.nukateam.ntgl.common.network.message.chassis.S2CMessageUpdateEquipmentConfig;
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Objects;
 
-public class S2CMessageProjectileExplosion  {
+public class S2CMessageProjectileExplosion implements CustomPacketPayload {
+    public static final Type<S2CMessageProjectileExplosion> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "s2c_message_projectile_explosion"));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageProjectileExplosion> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
@@ -66,9 +73,8 @@ public class S2CMessageProjectileExplosion  {
         return new S2CMessageProjectileExplosion(position, knockback, config, toBlow);
     }
 
-    public static void handle(S2CMessageProjectileExplosion message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleMessageExplosion(message)));
-        supplier.setHandled(true);
+    public static void handle(S2CMessageProjectileExplosion message, IPayloadContext supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleMessageExplosion(message)));
     }
 
     public Vec3 getPosition() {
@@ -85,5 +91,10 @@ public class S2CMessageProjectileExplosion  {
 
     public List<BlockPos> getToBlow() {
         return toBlow;
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

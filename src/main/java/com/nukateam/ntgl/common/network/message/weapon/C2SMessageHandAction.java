@@ -1,14 +1,21 @@
 package com.nukateam.ntgl.common.network.message.weapon;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import com.nukateam.ntgl.common.network.enums.HandAction;
+import com.nukateam.ntgl.common.network.message.chassis.S2CMessageUpdateEquipmentConfig;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 
-public class C2SMessageHandAction  {
+public class C2SMessageHandAction implements CustomPacketPayload {
+    public static final Type<C2SMessageHandAction> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "c2s_message_hand_action"));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageHandAction> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
@@ -31,14 +38,13 @@ public class C2SMessageHandAction  {
         return new C2SMessageHandAction(buffer.readEnum(InteractionHand.class), buffer.readEnum(HandAction.class));
     }
 
-    public static void handle(C2SMessageHandAction message, MessageContext context) {
-        context.execute(() -> {
-            var player = context.getPlayer().get();
+    public static void handle(C2SMessageHandAction message, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            var player = context.player();
             if (player != null) {
                 ServerPlayHandler.handleHandAction(message, player);
             }
         });
-        context.setHandled(true);
     }
 
     public InteractionHand getHand() {
@@ -47,5 +53,10 @@ public class C2SMessageHandAction  {
 
     public HandAction getHandAction() {
         return handAction;
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

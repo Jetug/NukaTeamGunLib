@@ -1,10 +1,13 @@
 package com.nukateam.ntgl.common.network.message.weapon;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
+import com.nukateam.ntgl.common.network.message.chassis.S2CMessageUpdateEquipmentConfig;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,7 +16,10 @@ import net.minecraft.world.phys.Vec3;
 /**
  * Author: MrCrayfish
  */
-public class S2CMessageGunSound  {
+public class S2CMessageGunSound implements CustomPacketPayload {
+    public static final Type<S2CMessageGunSound> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "s2c_message_gun_sound"));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageGunSound> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
@@ -93,9 +99,8 @@ public class S2CMessageGunSound  {
         return new S2CMessageGunSound(id, category, x, y, z, volume, pitch, shooterId, reload);
     }
 
-    public static void handle(S2CMessageGunSound message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleMessageGunSound(message)));
-        supplier.setHandled(true);
+    public static void handle(S2CMessageGunSound message, IPayloadContext supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleMessageGunSound(message)));
     }
 
     public ResourceLocation getId() {
@@ -132,5 +137,10 @@ public class S2CMessageGunSound  {
 
     public boolean isReload() {
         return this.reload;
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

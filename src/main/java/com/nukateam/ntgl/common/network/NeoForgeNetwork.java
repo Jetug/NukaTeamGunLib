@@ -1,6 +1,6 @@
-package com.nukateam.ntgl.common.network.message;
+package com.nukateam.ntgl.common.network;
 
-import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.nukateam.ntgl.common.network.LevelLocation;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;

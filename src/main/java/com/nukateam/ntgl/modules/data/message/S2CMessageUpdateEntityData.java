@@ -1,15 +1,21 @@
 package com.nukateam.ntgl.modules.data.message;
-import com.mrcrayfish.framework.api.network.MessageContext;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.modules.data.DataEntry;
 import com.nukateam.ntgl.modules.data.DataKeyManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class S2CMessageUpdateEntityData {
+public class S2CMessageUpdateEntityData implements CustomPacketPayload {
+    public static final Type<S2CMessageUpdateEntityData> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "s2c_message_update_entity_data"));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageUpdateEntityData> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
@@ -47,13 +53,17 @@ public class S2CMessageUpdateEntityData {
         return new S2CMessageUpdateEntityData(entries);
     }
 
-    public static void handle(S2CMessageUpdateEntityData message, MessageContext supplier) {
-        supplier.execute((() -> {
+    public static void handle(S2CMessageUpdateEntityData message, IPayloadContext supplier) {
+        supplier.enqueueWork((() -> {
             message.entries.forEach(((dataEntry, entityData) -> {
                 DataKeyManager.getInstance().setData(dataEntry.getValue(), entityData.dataKeyId, entityData.entityId);
             }));
         }));
-        supplier.setHandled(true);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     public record EntityData(int entityId, int dataKeyId){}

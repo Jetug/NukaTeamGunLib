@@ -113,7 +113,6 @@ public class Ntgl {
 
     private void onCommonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            PacketHandler.init();
             ModSyncedDataKeys.register();
             ProjectileRegistry.registerProjectiles();
 

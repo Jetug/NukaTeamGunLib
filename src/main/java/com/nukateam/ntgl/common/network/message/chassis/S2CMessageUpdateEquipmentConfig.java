@@ -1,17 +1,22 @@
 package com.nukateam.ntgl.common.network.message.chassis;
 
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.nukateam.chassis_core.client.network.ClientPlayHandler;
 import com.nukateam.chassis_core.common.config.EquipmentConfig;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkEquipmentManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.Validate;
 
-public class S2CMessageUpdateEquipmentConfig  {
+public class S2CMessageUpdateEquipmentConfig implements CustomPacketPayload {
+    public static final Type<S2CMessageUpdateEquipmentConfig> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "s2c_message_update_equipment_config"));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageUpdateEquipmentConfig> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
@@ -31,12 +36,16 @@ public class S2CMessageUpdateEquipmentConfig  {
         return message;
     }
 
-    public static void handle(S2CMessageUpdateEquipmentConfig message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleUpdateEquipment(message)));
-        supplier.setHandled(true);
+    public static void handle(S2CMessageUpdateEquipmentConfig message, IPayloadContext supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleUpdateEquipment(message)));
     }
 
     public ImmutableMap<ResourceLocation, EquipmentConfig> getRegisteredConfig() {
         return this.registeredConfigs;
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

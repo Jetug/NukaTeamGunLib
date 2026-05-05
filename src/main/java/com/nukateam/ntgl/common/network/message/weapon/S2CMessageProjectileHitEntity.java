@@ -1,15 +1,22 @@
 package com.nukateam.ntgl.common.network.message.weapon;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
+import com.nukateam.ntgl.common.network.message.chassis.S2CMessageUpdateEquipmentConfig;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Author: MrCrayfish
  */
-public class S2CMessageProjectileHitEntity  {
+public class S2CMessageProjectileHitEntity implements CustomPacketPayload {
+    public static final Type<S2CMessageProjectileHitEntity> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "s2c_message_projectile_hit_entity"));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageProjectileHitEntity> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
@@ -47,9 +54,8 @@ public class S2CMessageProjectileHitEntity  {
         return new S2CMessageProjectileHitEntity(x, y, z, type, player);
     }
 
-    public static void handle(S2CMessageProjectileHitEntity message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleProjectileHitEntity(message)));
-        supplier.setHandled(true);
+    public static void handle(S2CMessageProjectileHitEntity message, IPayloadContext supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleProjectileHitEntity(message)));
     }
 
     public double getX() {
@@ -74,6 +80,11 @@ public class S2CMessageProjectileHitEntity  {
 
     public boolean isPlayer() {
         return this.player;
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 
     public static class HitType {

@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.handlers;
 
-import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.nukateam.ntgl.common.network.LevelLocation;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.audio.GunShotSound;

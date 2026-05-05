@@ -1,17 +1,23 @@
 package com.nukateam.ntgl.common.network.message.weapon;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 
 /**
  * Author: MrCrayfish
  */
-public class C2SMessageReloadStop{
+public class C2SMessageReloadStop implements CustomPacketPayload {
+    public static final Type<C2SMessageReloadStop> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "c2s_message_reload_stop"));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageReloadStop> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
@@ -33,20 +39,22 @@ public class C2SMessageReloadStop{
                 buffer.readEnum(InteractionHand.class));
     }
 
-    public static void handle(C2SMessageReloadStop message, MessageContext supplier) {
-        supplier.execute((() ->
+    public static void handle(C2SMessageReloadStop message, IPayloadContext supplier) {
+        supplier.enqueueWork((() ->
         {
-            supplier.getPlayer().ifPresent((player) -> {
-                if (player != null && !player.isSpectator()) {
-                    ServerPlayHandler.handleStopReload(message, player);
-                }
-            });
-
+            var player = supplier.player();
+            if (player != null && !player.isSpectator()) {
+                ServerPlayHandler.handleStopReload(message, player);
+            }
         }));
-        supplier.setHandled(true);
     }
 
     public InteractionHand getHand() {
         return hand;
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

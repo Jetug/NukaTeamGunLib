@@ -1,13 +1,20 @@
 package com.nukateam.ntgl.common.network.message.weapon;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
 import com.nukateam.ntgl.common.foundation.entity.projectile.GoreData;
+import com.nukateam.ntgl.common.network.message.chassis.S2CMessageUpdateEquipmentConfig;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 
-public class S2CMessageEntityDeathFx  {
+public class S2CMessageEntityDeathFx implements CustomPacketPayload {
+    public static final Type<S2CMessageEntityDeathFx> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "s2c_message_entity_death_fx"));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageEntityDeathFx> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
@@ -34,9 +41,8 @@ public class S2CMessageEntityDeathFx  {
         return new S2CMessageEntityDeathFx(entityId, data);
     }
 
-    public static void handle(S2CMessageEntityDeathFx message, MessageContext supplier) {
-        supplier.execute((() -> ClientPlayHandler.handleEntityDeathFx(message)));
-        supplier.setHandled(true);
+    public static void handle(S2CMessageEntityDeathFx message, IPayloadContext supplier) {
+        supplier.enqueueWork((() -> ClientPlayHandler.handleEntityDeathFx(message)));
     }
 
     public int getEntityId() {
@@ -45,5 +51,10 @@ public class S2CMessageEntityDeathFx  {
 
     public GoreData getData() {
         return this.data;
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

@@ -1,5 +1,5 @@
 package com.nukateam.ntgl.common.network;
-import com.mrcrayfish.framework.api.network.LevelLocation;
+import com.nukateam.ntgl.common.network.LevelLocation;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessageChangeAmmo;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;

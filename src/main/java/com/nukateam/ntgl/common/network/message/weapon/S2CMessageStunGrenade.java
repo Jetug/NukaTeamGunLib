@@ -1,12 +1,19 @@
 package com.nukateam.ntgl.common.network.message.weapon;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.handlers.ClientPlayHandler;
+import com.nukateam.ntgl.common.network.message.chassis.S2CMessageUpdateEquipmentConfig;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 
-public class S2CMessageStunGrenade  {
+public class S2CMessageStunGrenade implements CustomPacketPayload {
+    public static final Type<S2CMessageStunGrenade> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "s2c_message_stun_grenade"));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageStunGrenade> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
@@ -35,9 +42,8 @@ public class S2CMessageStunGrenade  {
         return new S2CMessageStunGrenade(x, y, z);
     }
 
-    public static void handle(S2CMessageStunGrenade message, MessageContext supplier) {
-        supplier.execute(() -> ClientPlayHandler.handleExplosionStunGrenade(message));
-        supplier.setHandled(true);
+    public static void handle(S2CMessageStunGrenade message, IPayloadContext supplier) {
+        supplier.enqueueWork(() -> ClientPlayHandler.handleExplosionStunGrenade(message));
     }
 
     public double getX() {
@@ -50,5 +56,10 @@ public class S2CMessageStunGrenade  {
 
     public double getZ() {
         return z;
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

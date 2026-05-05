@@ -1,15 +1,21 @@
 package com.nukateam.ntgl.common.network.message.chassis;
 
 import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 
-public class S2CInventoryPacket  {
+public class S2CInventoryPacket implements CustomPacketPayload {
+    public static final Type<S2CInventoryPacket> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "s2c_inventory_packet"));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, S2CInventoryPacket> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
@@ -38,8 +44,8 @@ public class S2CInventoryPacket  {
         return new S2CInventoryPacket(entityId, inventory);
     }
 
-    public static void handle(S2CInventoryPacket message, MessageContext supplier) {
-        supplier.execute((() ->
+    public static void handle(S2CInventoryPacket message, IPayloadContext supplier) {
+        supplier.enqueueWork((() ->
         {
             var player = Minecraft.getInstance().player;
             if (player != null) {
@@ -49,7 +55,11 @@ public class S2CInventoryPacket  {
                     powerArmor.setArmorData(message.inventory);
             }
         }));
-        supplier.setHandled(true);
 
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

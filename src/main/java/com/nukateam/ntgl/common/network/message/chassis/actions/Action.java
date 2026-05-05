@@ -1,6 +1,6 @@
 package com.nukateam.ntgl.common.network.message.chassis.actions;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import com.nukateam.chassis_core.common.network.ActionRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -13,10 +13,10 @@ public abstract class Action<T extends Action<T>> {
         return this.getClass().getCanonicalName();
     }
 
-    public void doServerAction(T message, MessageContext context, int entityId) {
+    public void doServerAction(T message, IPayloadContext context, int entityId) {
     }
 
-    public void doClientAction(T message, MessageContext context, int entityId) {
+    public void doClientAction(T message, IPayloadContext context, int entityId) {
     }
 
     public abstract void write(FriendlyByteBuf buffer);

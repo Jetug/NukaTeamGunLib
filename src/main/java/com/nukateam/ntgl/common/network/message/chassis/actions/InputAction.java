@@ -2,7 +2,7 @@ package com.nukateam.ntgl.common.network.message.chassis.actions;
 
 import com.nukateam.chassis_core.common.input.InputKey;
 import com.nukateam.chassis_core.common.input.KeyAction;
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.minecraft.network.FriendlyByteBuf;
 
 import static com.nukateam.chassis_core.common.input.CommonInputHandler.onKeyInput;
@@ -35,12 +35,7 @@ public class InputAction extends Action<InputAction> {
     }
 
     @Override
-    public void doServerAction(InputAction message, MessageContext context, int entityId) {
-        context.execute(() ->
-        {
-            context.getPlayer().ifPresent(player -> {
-                onKeyInput(message.key, message.action, player);
-            });
-        });
+    public void doServerAction(InputAction message, IPayloadContext context, int entityId) {
+        context.enqueueWork(() -> onKeyInput(message.key, message.action, context.player()));
     }
 }

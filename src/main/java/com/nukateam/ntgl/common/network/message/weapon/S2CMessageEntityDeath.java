@@ -1,15 +1,22 @@
 package com.nukateam.ntgl.common.network.message.weapon;
 
-import com.mrcrayfish.framework.api.network.MessageContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.enums.DeathType;
+import com.nukateam.ntgl.common.network.message.chassis.S2CMessageUpdateEquipmentConfig;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Objects;
 
-public class S2CMessageEntityDeath  {
+public class S2CMessageEntityDeath implements CustomPacketPayload {
+    public static final Type<S2CMessageEntityDeath> TYPE =
+            new Type<>(ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "s2c_message_entity_death"));
+
     public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageEntityDeath> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
@@ -49,10 +56,10 @@ public class S2CMessageEntityDeath  {
         return new S2CMessageEntityDeath(buf.readInt(), buf.readInt(), buf.readFloat(), buf.readFloat(), buf.readFloat());
     }
 
-    public static void handle(S2CMessageEntityDeath message, MessageContext supplier) {
-        supplier.execute((() -> {
+    public static void handle(S2CMessageEntityDeath message, IPayloadContext supplier) {
+        supplier.enqueueWork((() -> {
 //			if (Config.CLIENT.particle.enableDeathFX.get()) {
-//				Player player = Minecraft.getInstance().player; //TGPackets.getPlayerFromContext(ctx);
+//				Player player = Minecraft.getInstance().player; //TGPackets.playerFromContext(ctx);
 //				var entity = (LivingEntity) player.level().getEntity(message.entityId);
 //				DeathType deathtype = DeathType.values()[message.deathTypeId];
 //
@@ -70,25 +77,29 @@ public class S2CMessageEntityDeath  {
 //				}
 //			}
         }));
-        supplier.setHandled(true);
+    }
+
+    @Override
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 //
 //    public static class Handler implements IMessageHandler<S2CMessageEntityDeath, IMessage> {
 //
 //        @Override
-//        public IMessage onMessage(S2CMessageEntityDeath message, MessageContext ctx) {
+//        public IMessage onMessage(S2CMessageEntityDeath message, IPayloadContext ctx) {
 //            FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() -> handle(message, ctx));
 //            return null;
 //        }
 //
-//        private void handle(S2CMessageEntityDeath message, MessageContext ctx) {
+//        private void handle(S2CMessageEntityDeath message, IPayloadContext ctx) {
 //
 ////			System.out.println("Get Packet!");
 //
 //            //If deathFX are disabled, ignore packet
 //            if (TGConfig.cl_enableDeathFX) {
 //
-//                EntityPlayer ply = TGPackets.getPlayerFromContext(ctx);
+//                EntityPlayer ply = TGPackets.playerFromContext(ctx);
 //                EntityLivingBase entity = (LivingEntity) ply.world.getEntityByID(message.entityId);
 //                DeathType deathtype = DeathType.values()[message.deathTypeId];
 //
