@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 
 public class C2SMessageGrenade  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageGrenade> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageGrenade> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
     private KeyAction action;

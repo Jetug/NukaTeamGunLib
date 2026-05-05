@@ -9,7 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 
 public class C2SMessageAim  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageAim> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageAim> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

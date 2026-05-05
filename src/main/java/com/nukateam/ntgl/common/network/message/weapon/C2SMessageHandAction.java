@@ -9,7 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionHand;
 
 public class C2SMessageHandAction  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageHandAction> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageHandAction> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
     private InteractionHand hand = InteractionHand.MAIN_HAND;

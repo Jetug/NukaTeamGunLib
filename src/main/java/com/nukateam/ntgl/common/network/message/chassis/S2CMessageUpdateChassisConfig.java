@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.Validate;
 
 public class S2CMessageUpdateChassisConfig  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageUpdateChassisConfig> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageUpdateChassisConfig> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

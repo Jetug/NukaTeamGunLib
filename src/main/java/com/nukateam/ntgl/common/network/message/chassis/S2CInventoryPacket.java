@@ -10,7 +10,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
 public class S2CInventoryPacket  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CInventoryPacket> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CInventoryPacket> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

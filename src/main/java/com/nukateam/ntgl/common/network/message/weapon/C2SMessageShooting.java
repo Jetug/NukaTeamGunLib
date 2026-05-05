@@ -10,7 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
  * Author: MrCrayfish
  */
 public class C2SMessageShooting  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageShooting> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageShooting> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
     private boolean shooting;

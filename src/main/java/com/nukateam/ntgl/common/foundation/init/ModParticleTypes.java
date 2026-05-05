@@ -27,7 +27,7 @@ public class ModParticleTypes {
                         }
                         @Override
                         public StreamCodec<FriendlyByteBuf, BulletHoleData> streamCodec() {
-                            return BulletHoleData.STREAM_CODEC;
+                            return BulletHoleData.CODEC;
                         }
                     });
 
@@ -43,7 +43,7 @@ public class ModParticleTypes {
                         }
                         @Override
                         public StreamCodec<FriendlyByteBuf, TrailData> streamCodec() {
-                            return TrailData.STREAM_CODEC;
+                            return TrailData.CODEC;
                         }
                     });
 }

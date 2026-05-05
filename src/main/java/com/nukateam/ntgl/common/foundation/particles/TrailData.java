@@ -18,7 +18,7 @@ public class TrailData implements ParticleOptions {
                     Codec.BOOL.fieldOf("enchanted").forGetter(TrailData::isEnchanted)
             ).apply(b, TrailData::new));
 
-    public static final StreamCodec<FriendlyByteBuf, TrailData> STREAM_CODEC =
+    public static final StreamCodec<FriendlyByteBuf, TrailData> CODEC =
             StreamCodec.of(
                     (buf, data) -> buf.writeBoolean(data.enchanted),
                     buf -> new TrailData(buf.readBoolean())

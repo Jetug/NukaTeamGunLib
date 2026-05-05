@@ -11,7 +11,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 
 public class S2CMessageProjectileHitBlock  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageProjectileHitBlock> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageProjectileHitBlock> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

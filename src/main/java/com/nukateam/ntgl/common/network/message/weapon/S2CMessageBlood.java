@@ -12,7 +12,7 @@ import net.minecraft.world.phys.Vec3;
  * Author: MrCrayfish
  */
 public class S2CMessageBlood  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageBlood> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageBlood> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
     private Vec3 pos;

@@ -10,7 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
  * Author: MrCrayfish
  */
 public class S2CMessageProjectileHitEntity  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageProjectileHitEntity> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageProjectileHitEntity> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

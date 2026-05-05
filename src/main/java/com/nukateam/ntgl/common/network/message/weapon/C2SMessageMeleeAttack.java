@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 
 public class C2SMessageMeleeAttack  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageMeleeAttack> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageMeleeAttack> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

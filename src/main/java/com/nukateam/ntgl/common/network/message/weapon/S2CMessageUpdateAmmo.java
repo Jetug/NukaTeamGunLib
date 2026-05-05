@@ -15,7 +15,7 @@ import org.apache.commons.lang3.Validate;
  * Author: MrCrayfish
  */
 public class S2CMessageUpdateAmmo  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageUpdateAmmo> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageUpdateAmmo> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

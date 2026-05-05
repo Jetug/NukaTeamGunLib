@@ -9,7 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 
 @SuppressWarnings("ALL")
 public class C2SGenericPacket  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SGenericPacket> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SGenericPacket> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

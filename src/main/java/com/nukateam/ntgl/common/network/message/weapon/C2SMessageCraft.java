@@ -13,7 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
  * Author: MrCrayfish
  */
 public class C2SMessageCraft  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageCraft> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageCraft> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

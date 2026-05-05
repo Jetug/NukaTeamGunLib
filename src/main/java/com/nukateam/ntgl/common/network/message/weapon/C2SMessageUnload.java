@@ -12,7 +12,7 @@ import net.minecraft.world.InteractionHand;
  * Author: MrCrayfish
  */
 public class C2SMessageUnload  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageUnload> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageUnload> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             C2SMessageUnload::decode);
     private InteractionHand hand = InteractionHand.MAIN_HAND;

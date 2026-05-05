@@ -11,7 +11,7 @@ import static com.nukateam.chassis_core.common.util.helpers.PlayerUtils.isWearin
 
 @SuppressWarnings("ConstantConditions")
 public class C2SActionPacket {
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SActionPacket> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SActionPacket> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

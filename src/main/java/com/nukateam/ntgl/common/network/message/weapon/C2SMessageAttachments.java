@@ -13,7 +13,7 @@ import net.minecraft.world.InteractionHand;
  * Author: MrCrayfish
  */
 public class C2SMessageAttachments {
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageAttachments> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageAttachments> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

@@ -21,7 +21,7 @@ public record BulletHoleData(Direction direction, BlockPos pos) implements Parti
                     BlockPos.CODEC.fieldOf("pos").forGetter(BulletHoleData::pos)
             ).apply(b, BulletHoleData::new));
 
-    public static final StreamCodec<FriendlyByteBuf, BulletHoleData> STREAM_CODEC =
+    public static final StreamCodec<FriendlyByteBuf, BulletHoleData> CODEC =
             StreamCodec.of(
                     (buf, data) -> {
                         buf.writeEnum(data.direction);

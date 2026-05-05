@@ -10,7 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import java.util.Objects;
 
 public class S2CMessageEntityDeath  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageEntityDeath> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageEntityDeath> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
     int entityId;

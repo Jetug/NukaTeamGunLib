@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class S2CMessageProjectileExplosion  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageProjectileExplosion> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageProjectileExplosion> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
     private Vec3 position;

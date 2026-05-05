@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class S2CMessageUpdateEntityData {
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageUpdateEntityData> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageUpdateEntityData> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

@@ -12,7 +12,7 @@ import net.minecraft.world.InteractionHand;
  * Author: MrCrayfish
  */
 public class C2SMessageReloadStop{
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageReloadStop> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessageReloadStop> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

@@ -6,6 +6,7 @@ import com.mrcrayfish.framework.api.network.LevelLocation;
 import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
+import com.nukateam.ntgl.common.network.message.NeoForgeNetwork;
 import com.nukateam.ntgl.common.network.message.chassis.*;
 import com.nukateam.ntgl.common.network.message.weapon.*;
 import com.nukateam.ntgl.modules.data.message.S2CMessageUpdateEntityData;
@@ -36,45 +37,51 @@ public class PacketHandler {
     public static FrameworkNetwork getPlayChannel() {
         return PLAY_CHANNEL;
     }
+    
+//    private static final NeoForgeNetwork neoForgeNetwork = new NeoForgeNetwork();
+//    
+//    public static NeoForgeNetwork getPlayChannel() {
+//        return neoForgeNetwork;
+//    }
 
     public static void init() {
         var id = 0;
         PLAY_CHANNEL = FrameworkAPI.createNetworkBuilder(ResourceLocation.tryBuild(Ntgl.MOD_ID, "ntgl"), 1)
-                .registerPlayMessage(String.valueOf(id++), C2SActionPacket.class, C2SActionPacket.STREAM_CODEC, C2SActionPacket::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SGenericPacket.class, C2SGenericPacket.STREAM_CODEC, C2SGenericPacket::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CInventoryPacket.class, S2CInventoryPacket.STREAM_CODEC, S2CInventoryPacket::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateChassisConfig.class, S2CMessageUpdateChassisConfig.STREAM_CODEC, S2CMessageUpdateChassisConfig::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateEquipmentConfig.class, S2CMessageUpdateEquipmentConfig.STREAM_CODEC, S2CMessageUpdateEquipmentConfig::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SActionPacket.class, C2SActionPacket.CODEC, C2SActionPacket::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SGenericPacket.class, C2SGenericPacket.CODEC, C2SGenericPacket::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CInventoryPacket.class, S2CInventoryPacket.CODEC, S2CInventoryPacket::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateChassisConfig.class, S2CMessageUpdateChassisConfig.CODEC, S2CMessageUpdateChassisConfig::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateEquipmentConfig.class, S2CMessageUpdateEquipmentConfig.CODEC, S2CMessageUpdateEquipmentConfig::handle, PacketFlow.CLIENTBOUND)
 
-                .registerPlayMessage(String.valueOf(id++), C2SMessageAim.class, C2SMessageAim.STREAM_CODEC, C2SMessageAim::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SMessageReload.class, C2SMessageReload.STREAM_CODEC, C2SMessageReload::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SMessageShoot.class, C2SMessageShoot.STREAM_CODEC, C2SMessageShoot::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SMessageUnload.class, C2SMessageUnload.STREAM_CODEC, C2SMessageUnload::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SMessageReloadStop.class, C2SMessageReloadStop.STREAM_CODEC, C2SMessageReloadStop::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SMessageCraft.class, C2SMessageCraft.STREAM_CODEC, C2SMessageCraft::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SMessageAttachments.class, C2SMessageAttachments.STREAM_CODEC, C2SMessageAttachments::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SMessageChangeAmmo.class, C2SMessageChangeAmmo.STREAM_CODEC, C2SMessageChangeAmmo::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SMessageShooting.class, C2SMessageShooting.STREAM_CODEC, C2SMessageShooting::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SMessagePreFireSound.class, C2SMessagePreFireSound.STREAM_CODEC, C2SMessagePreFireSound::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SMessageHandAction.class, C2SMessageHandAction.STREAM_CODEC, C2SMessageHandAction::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SMessageMeleeAttack.class, C2SMessageMeleeAttack.STREAM_CODEC, C2SMessageMeleeAttack::handle, PacketFlow.SERVERBOUND)
-                .registerPlayMessage(String.valueOf(id++), C2SMessageGrenade.class, C2SMessageGrenade.STREAM_CODEC, C2SMessageGrenade::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageAim.class, C2SMessageAim.CODEC, C2SMessageAim::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageReload.class, C2SMessageReload.CODEC, C2SMessageReload::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageShoot.class, C2SMessageShoot.CODEC, C2SMessageShoot::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageUnload.class, C2SMessageUnload.CODEC, C2SMessageUnload::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageReloadStop.class, C2SMessageReloadStop.CODEC, C2SMessageReloadStop::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageCraft.class, C2SMessageCraft.CODEC, C2SMessageCraft::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageAttachments.class, C2SMessageAttachments.CODEC, C2SMessageAttachments::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageChangeAmmo.class, C2SMessageChangeAmmo.CODEC, C2SMessageChangeAmmo::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageShooting.class, C2SMessageShooting.CODEC, C2SMessageShooting::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessagePreFireSound.class, C2SMessagePreFireSound.CODEC, C2SMessagePreFireSound::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageHandAction.class, C2SMessageHandAction.CODEC, C2SMessageHandAction::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageMeleeAttack.class, C2SMessageMeleeAttack.CODEC, C2SMessageMeleeAttack::handle, PacketFlow.SERVERBOUND)
+                .registerPlayMessage(String.valueOf(id++), C2SMessageGrenade.class, C2SMessageGrenade.CODEC, C2SMessageGrenade::handle, PacketFlow.SERVERBOUND)
 
-                .registerPlayMessage(String.valueOf(id++), S2CMessagePlayerAnimation.class, S2CMessagePlayerAnimation.STREAM_CODEC, S2CMessagePlayerAnimation::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageEntityDeath.class, S2CMessageEntityDeath.STREAM_CODEC, S2CMessageEntityDeath::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageEntityDeathFx.class, S2CMessageEntityDeathFx.STREAM_CODEC, S2CMessageEntityDeathFx::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageStunGrenade.class, S2CMessageStunGrenade.STREAM_CODEC, S2CMessageStunGrenade::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateWeapons.class, S2CMessageUpdateWeapons.STREAM_CODEC, S2CMessageUpdateWeapons::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateAmmo.class, S2CMessageUpdateAmmo.STREAM_CODEC, S2CMessageUpdateAmmo::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateAttachments.class, S2CMessageUpdateAttachments.STREAM_CODEC, S2CMessageUpdateAttachments::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageBlood.class, S2CMessageBlood.STREAM_CODEC, S2CMessageBlood::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageGunSound.class, S2CMessageGunSound.STREAM_CODEC, S2CMessageGunSound::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageProjectileHitBlock.class, S2CMessageProjectileHitBlock.STREAM_CODEC, S2CMessageProjectileHitBlock::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageProjectileHitEntity.class, S2CMessageProjectileHitEntity.STREAM_CODEC, S2CMessageProjectileHitEntity::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageProjectileHitFluid.class, S2CMessageProjectileHitFluid.STREAM_CODEC, S2CMessageProjectileHitFluid::handle, PacketFlow.CLIENTBOUND)
-                .registerPlayMessage(String.valueOf(id++), S2CMessageProjectileExplosion.class, S2CMessageProjectileExplosion.STREAM_CODEC, S2CMessageProjectileExplosion::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessagePlayerAnimation.class, S2CMessagePlayerAnimation.CODEC, S2CMessagePlayerAnimation::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageEntityDeath.class, S2CMessageEntityDeath.CODEC, S2CMessageEntityDeath::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageEntityDeathFx.class, S2CMessageEntityDeathFx.CODEC, S2CMessageEntityDeathFx::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageStunGrenade.class, S2CMessageStunGrenade.CODEC, S2CMessageStunGrenade::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateWeapons.class, S2CMessageUpdateWeapons.CODEC, S2CMessageUpdateWeapons::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateAmmo.class, S2CMessageUpdateAmmo.CODEC, S2CMessageUpdateAmmo::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateAttachments.class, S2CMessageUpdateAttachments.CODEC, S2CMessageUpdateAttachments::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageBlood.class, S2CMessageBlood.CODEC, S2CMessageBlood::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageGunSound.class, S2CMessageGunSound.CODEC, S2CMessageGunSound::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageProjectileHitBlock.class, S2CMessageProjectileHitBlock.CODEC, S2CMessageProjectileHitBlock::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageProjectileHitEntity.class, S2CMessageProjectileHitEntity.CODEC, S2CMessageProjectileHitEntity::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageProjectileHitFluid.class, S2CMessageProjectileHitFluid.CODEC, S2CMessageProjectileHitFluid::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageProjectileExplosion.class, S2CMessageProjectileExplosion.CODEC, S2CMessageProjectileExplosion::handle, PacketFlow.CLIENTBOUND)
 
-                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateEntityData.class, S2CMessageUpdateEntityData.STREAM_CODEC, S2CMessageUpdateEntityData::handle, PacketFlow.CLIENTBOUND)
+                .registerPlayMessage(String.valueOf(id++), S2CMessageUpdateEntityData.class, S2CMessageUpdateEntityData.CODEC, S2CMessageUpdateEntityData::handle, PacketFlow.CLIENTBOUND)
                 .build();
     }
 

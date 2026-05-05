@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
  * Author: MrCrayfish
  */
 public class C2SMessagePreFireSound  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessagePreFireSound> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, C2SMessagePreFireSound> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
 

@@ -10,7 +10,7 @@ import net.minecraft.world.InteractionHand;
 import static com.nukateam.ntgl.client.handlers.ClientPlayHandler.*;
 
 public class S2CMessagePlayerAnimation  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessagePlayerAnimation> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessagePlayerAnimation> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
     int entityId;

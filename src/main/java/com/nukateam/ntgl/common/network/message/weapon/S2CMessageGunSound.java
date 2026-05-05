@@ -14,7 +14,7 @@ import net.minecraft.world.phys.Vec3;
  * Author: MrCrayfish
  */
 public class S2CMessageGunSound  {
-    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageGunSound> STREAM_CODEC = StreamCodec.of(
+    public static final StreamCodec<RegistryFriendlyByteBuf, S2CMessageGunSound> CODEC = StreamCodec.of(
             (buffer, message) -> encode(message, buffer),
             buffer -> decode(buffer));
     private ResourceLocation id;
