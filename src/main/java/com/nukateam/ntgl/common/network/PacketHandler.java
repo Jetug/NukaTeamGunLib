@@ -17,11 +17,20 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 import java.util.function.Supplier;
-
+//@EventBusSubscriber(modid = Ntgl.MOD_ID)
 public class PacketHandler {
+//    @SubscribeEvent
+//    public static void register(RegisterPayloadHandlersEvent event) {
+//        var registrar = event.registrar("1");
+//        registrar.playToServer(C2SMessageAim.TYPE, C2SMessageAim.CODEC, C2SMessageAim::handle);
+//    }
+
     private static FrameworkNetwork PLAY_CHANNEL;
 
     public static FrameworkNetwork getPlayChannel() {

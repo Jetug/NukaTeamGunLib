@@ -10,7 +10,7 @@
     "reloadTime": 10,
     "reloadEnd": 20,
     "reloadAmount": 1,
-    "recoilAngle": 15.0,
+    "recoilAngle": -15.0,
     "recoilKick": 1,
     "ammoPerShot": 2,
     "recoilAdsReduction": 0.6,
