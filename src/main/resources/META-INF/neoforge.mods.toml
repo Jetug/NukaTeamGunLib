@@ -27,7 +27,7 @@ side="BOTH"
 [[dependencies."${mod_id}"]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.21.1,)"
+versionRange="${ minecraft_version_range"
 ordering="NONE"
 side="BOTH"
 [[dependencies."${mod_id}"]]
@@ -36,18 +36,18 @@ mandatory=true
 versionRange="[4.8.2,)"
 ordering="AFTER"
 side="BOTH"
-#[[dependencies."${mod_id}"]]
-#modId="controllable"
-#mandatory=false
-#versionRange="[0.16.3,)"
-#ordering="AFTER"
-#side="CLIENT"
 [[dependencies."${mod_id}"]]
 modId="jei"
 mandatory=false
 versionRange="[12.1.1,)"
 ordering="AFTER"
 side="CLIENT"
+#[[dependencies."${mod_id}"]]
+#modId="controllable"
+#mandatory=false
+#versionRange="[0.16.3,)"
+#ordering="AFTER"
+#side="CLIENT"
 
 [modproperties.ntgl]
     catalogueImageIcon=""

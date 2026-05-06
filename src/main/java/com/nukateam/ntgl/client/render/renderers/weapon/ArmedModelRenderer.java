@@ -136,19 +136,19 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
 //                            poseStack.translate(-8 / 10d / 16d, 0, 0);
 //                            poseStack.translate(X / 10d / 16d, Y / 10d / 16d, Z / 10d / 16d);
 //                            poseStack.translate(X / 10d / 16d, Y / 10d / 16d, Z / 10d / 16d);
-                            poseStack.translate(-65 / 10d / 16d, 0 / 10d / 16d, Z / 10d / 16d);
+                            poseStack.translate(-65 / 10d / 16d, 0 / 10d / 16d, 0 / 10d / 16d);
                             renderRightArm(poseStack, bone, packedLight, bufferSource, false);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
 //                            poseStack.translate(4 / 10d / 16d, 0, -3 / 10d / 16d);
-                            poseStack.translate(50 / 10d / 16d, -20 / 10d / 16d, Z / 10d / 16d);
+                            poseStack.translate(50 / 10d / 16d, -20 / 10d / 16d, 0 / 10d / 16d);
                             renderRightArm(poseStack, bone, packedLight, bufferSource, true);
                         }
                     } else {
                         if (bone.getName().equals(LEFT_ARM)) {
-                            poseStack.translate(50 / 10d / 16d, -20 / 10d / 16d, Z / 10d / 16d);
+                            poseStack.translate(50 / 10d / 16d, -20 / 10d / 16d, 0 / 10d / 16d);
                             renderRightArm(poseStack, bone, packedLight, bufferSource, true);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
-                            poseStack.translate(-65 / 10d / 16d, 0 / 10d / 16d, Z / 10d / 16d);
+                            poseStack.translate(-65 / 10d / 16d, 0 / 10d / 16d, 0 / 10d / 16d);
                             renderRightArm(poseStack, bone, packedLight, bufferSource, false);
                         }
                     }

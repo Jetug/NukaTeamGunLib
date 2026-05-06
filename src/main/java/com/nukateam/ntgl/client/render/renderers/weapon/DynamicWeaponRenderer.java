@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
+import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.helpers.TransformUtils;
 import com.nukateam.ntgl.common.data.WeaponData;
@@ -71,6 +72,8 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
 
         poseStack.pushPose();
         {
+            poseStack.translate(0, 0, 25 / 10d / 16D);
+
             if(TransformUtils.isNonHand(transformType)){
                 poseStack.translate(0, -7.5D / 16D/* ClientDebug.Y / 10D / 16D*/, 0);
             }
