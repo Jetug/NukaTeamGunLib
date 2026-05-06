@@ -13,6 +13,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,26 +67,28 @@ public class RecoilHandler {
     }
 
     @SubscribeEvent
-    public void onRenderTick(ClientTickEvent.Post event) {
+    public void onCamera(ViewportEvent.ComputeCameraAngles event) {
+        var partialTick = event.getPartialTick();
+
         if (this.cameraRecoil <= 0)
             return;
 
-        Minecraft mc = Minecraft.getInstance();
+        var mc = Minecraft.getInstance();
         if (mc.player == null)
             return;
 
         if (!Config.SERVER.enableCameraRecoil.get())
             return;
 
-        float recoilAmount = this.cameraRecoil * mc.getTimer().getGameTimeDeltaTicks() * 0.15F;
-        float startProgress = this.progressCameraRecoil / this.cameraRecoil;
-        float endProgress = (this.progressCameraRecoil + recoilAmount) / this.cameraRecoil;
+        var recoilAmount = this.cameraRecoil * partialTick * 0.15F;
+        var startProgress = this.progressCameraRecoil / this.cameraRecoil;
+        var endProgress = (this.progressCameraRecoil + recoilAmount) / this.cameraRecoil;
 
-        float pitch = mc.player.getXRot();
+        var pitch = mc.player.getXRot();
         if (startProgress < 0.2F) {
-            mc.player.setXRot(pitch - ((endProgress - startProgress) / 0.2F) * this.cameraRecoil);
+            mc.player.setXRot((float) (pitch - ((endProgress - startProgress) / 0.2F) * this.cameraRecoil));
         } else {
-            mc.player.setXRot(pitch + ((endProgress - startProgress) / 0.8F) * this.cameraRecoil);
+            mc.player.setXRot((float) (pitch + ((endProgress - startProgress) / 0.8F) * this.cameraRecoil));
         }
 
         this.progressCameraRecoil += recoilAmount;
