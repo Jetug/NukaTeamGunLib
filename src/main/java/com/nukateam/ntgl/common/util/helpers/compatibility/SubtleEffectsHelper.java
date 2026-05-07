@@ -1,25 +1,26 @@
 package com.nukateam.ntgl.common.util.helpers.compatibility;
 
 import einstein.subtle_effects.init.ModConfigs;
-import einstein.subtle_effects.init.ModParticles;
 import einstein.subtle_effects.particle.option.SplashEmitterParticleOptions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 
 public class SubtleEffectsHelper {
     public static boolean doSplashEffect(Entity entity, Vec3 pos, boolean inLava) {
         var delta = entity.getDeltaMovement();
-        var particle = inLava ? ModParticles.LAVA_SPLASH_EMITTER.get() : ModParticles.WATER_SPLASH_EMITTER.get();
-        var velocity = (float)delta.length();
+        var fluid = BuiltInRegistries.FLUID.getKey(inLava ? Fluids.LAVA : Fluids.WATER);
+        var velocity = (float) delta.length();
 
-        if (!ModConfigs.ENTITIES.splashes.splashEffects) {
+        if (!ModConfigs.ENTITIES.splashes.splashEffects.get()) {
             return false;
         } else {
-            var splashEmitter = new SplashEmitterParticleOptions(particle, entity.getBbWidth(), entity.getBbHeight() * velocity, -1, -1);
+            var splashEmitter = new SplashEmitterParticleOptions(fluid, entity.getBbWidth(), entity.getBbHeight() * velocity, -1, -1);
             entity.level().addAlwaysVisibleParticle(splashEmitter, true,
                     pos.x(), pos.y() + 0.01, pos.z(),
                     0.0F, 0.0F, 0.0F);
@@ -29,15 +30,14 @@ public class SubtleEffectsHelper {
 
     public static boolean doSplashEffect(Vec3 pos, float size, float speed, boolean isInLava) {
         var level = Minecraft.getInstance().level;
-        var particle = isInLava ? ModParticles.LAVA_SPLASH_EMITTER.get() : ModParticles.WATER_SPLASH_EMITTER.get();
+        var fluid = BuiltInRegistries.FLUID.getKey(isInLava ? Fluids.LAVA : Fluids.WATER);
 
         var ratio = isInLava ? 2f : 1f;
 
-        if (!ModConfigs.ENTITIES.splashes.splashEffects) {
+        if (!ModConfigs.ENTITIES.splashes.splashEffects.get()) {
             return false;
-        }
-        else {
-            var splashEmitter = new SplashEmitterParticleOptions(particle, size, size * speed / ratio, -1, -1);
+        } else {
+            var splashEmitter = new SplashEmitterParticleOptions(fluid, size, size * speed / ratio, -1, -1);
             level.addAlwaysVisibleParticle(splashEmitter, true,
                     pos.x(), pos.y() + 0.01, pos.z(),
                     0.0F, 0.0F, 0.0F);
@@ -46,7 +46,7 @@ public class SubtleEffectsHelper {
     }
 
     public static void doExplosionSplash(Level level, float radius, Vec3 position) {
-        if (level.isClientSide && ModConfigs.ENTITIES.splashes.explosionsCauseSplashes) {
+        if (level.isClientSide && ModConfigs.ENTITIES.splashes.explosionsCauseSplashes.get()) {
             var pos = BlockPos.containing(position);
             var fluidState = level.getFluidState(pos);
 
@@ -66,8 +66,8 @@ public class SubtleEffectsHelper {
                     }
 
                     var type = fluidState.is(FluidTags.WATER) ?
-                            ModParticles.WATER_SPLASH_EMITTER.get() :
-                            fluidState.is(FluidTags.LAVA) ? ModParticles.LAVA_SPLASH_EMITTER.get() : null;
+                            BuiltInRegistries.FLUID.getKey(Fluids.WATER) :
+                            fluidState.is(FluidTags.LAVA) ? BuiltInRegistries.FLUID.getKey(Fluids.LAVA) : null;
 
                     if (type != null) {
                         var surfacePos = currentPos.below();

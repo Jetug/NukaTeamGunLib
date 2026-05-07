@@ -5,6 +5,7 @@ import com.nukateam.ntgl.common.foundation.init.NtglDamageTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.DamageTypeTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -18,9 +19,9 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Author: MrCrayfish
  */
-public class DamageTypeGen extends TagsProvider<DamageType> {
+public class DamageTypeGen extends DamageTypeTagsProvider {
     public DamageTypeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, Registries.DAMAGE_TYPE, lookupProvider, Ntgl.MOD_ID, existingFileHelper);
+        super(output, lookupProvider, Ntgl.MOD_ID, existingFileHelper);
     }
 
 //    @Override
@@ -30,13 +31,8 @@ public class DamageTypeGen extends TagsProvider<DamageType> {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        ResourceKey<DamageType> bulletKey = ResourceKey.create(
-                Registries.DAMAGE_TYPE,
-                ResourceLocation.fromNamespaceAndPath(Ntgl.MOD_ID, "bullet")
-        );
-
         this.tag(DamageTypeTags.IS_PROJECTILE)
-                .add(bulletKey);
+                .add(NtglDamageTypes.BULLET);
 
     }
 

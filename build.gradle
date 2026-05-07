@@ -65,6 +65,17 @@ repositories {
     flatDir {
         dirs 'libs'
     }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
     maven {
         name "KosmX's maven"
         url 'https://maven.kosmx.dev/'
@@ -93,14 +104,14 @@ dependencies {
     implementation "curse.maven:sophisticated-core-618298:7698330"
     implementation "curse.maven:sophisticated-backpacks-422301:7700124"
     implementation "curse.maven:travelers-backpack-321117:7095271"
-//    implementation "com.yyz:YyzsBackpack-neoforge:21.1.2"
+//    implementation "maven.modrinth:YyzsBackpack-neoforge:jiao2sMM" // 21.1.13
 
     implementation "curse.maven:kotlin-for-forge-351264:6994056"
     implementation "curse.maven:fzzy-config-1005914:7085021"
-    implementation 'einstein:subtleeffects-neoforge:1.21.1-1.13.1'
+    implementation "maven.modrinth:subtle-effects:s3Fo4cDk" // 1.21.1-1.14.3
 
     implementation 'curse.maven:controllable-317269:6850105'
-    implementation "dev.kosmx.player-anim:player-animation-lib-forge:2.0.1+1.21.1"
+    implementation "curse.maven:playeranimator-658587:7389814"
 
     compileOnly 'curse.maven:backpacked-352835:7573687'
     compileOnly "top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1:api"

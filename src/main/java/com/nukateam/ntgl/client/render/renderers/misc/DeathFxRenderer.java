@@ -7,23 +7,20 @@ import com.nukateam.ntgl.client.model.gibs.ModelGibsGeneric;
 import com.nukateam.ntgl.client.model.gibs.ModelGibsGeo;
 import com.nukateam.ntgl.common.foundation.entity.FlyingGib;
 import com.nukateam.ntgl.common.foundation.entity.projectile.GoreData;
-import com.nukateam.ntgl.common.foundation.init.ModSounds;
-import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.AgeableListModel;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
-import static com.nukateam.ntgl.ClientProxy.*;
+import static com.nukateam.ntgl.ClientProxy.setDamageType;
 
 @OnlyIn(Dist.CLIENT)
 public class DeathFxRenderer {
@@ -31,6 +28,7 @@ public class DeathFxRenderer {
     private static final ResourceLocation RES_LASER_EFFECT = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/fx/death/laser.png");
 
     private static final GoreData genericGore;
+
     static {
         genericGore = (new GoreData(null, 160, 21, 31))
                 .setTexture(ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/entity/gore.png"));
@@ -63,15 +61,9 @@ public class DeathFxRenderer {
 
     @OnlyIn(Dist.CLIENT)
     public static void addClientEntity(FlyingGib entity) {
-        try {
-            var level = Minecraft.getInstance().level;
-            var mtd = level.getClass().getDeclaredMethod("addEntity", int.class, Entity.class);
-            mtd.setAccessible(true);
-            mtd.invoke(level, level.random.nextInt(Integer.MAX_VALUE), entity);
-        }
-        catch (Exception e){
-            Ntgl.LOGGER.error("reflection fail", e);
-        }
+        entity.setId(Integer.MAX_VALUE);
+        var level = Minecraft.getInstance().level;
+        level.addEntity(entity);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -83,7 +75,7 @@ public class DeathFxRenderer {
 
         setDamageType(entity, data.deathType);
 
-        switch (data.deathType){
+        switch (data.deathType) {
             case GORE -> {
                 setupGoreData(entity, data);
                 data.gravity = 0.2f;
