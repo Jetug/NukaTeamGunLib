@@ -1,7 +1,7 @@
 {
   "values": [
-    "#forge:glass_panes",
-    "#forge:glass",
+    "#c:glass_panes",
+    "#c:glass_blocks",
     "#minecraft:candles",
     "minecraft:lily_pad",
     "minecraft:cocoa",

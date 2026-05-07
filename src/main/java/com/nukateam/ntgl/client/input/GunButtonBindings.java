@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.input;
 
+import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.binding.BindingRegistry;
 import com.mrcrayfish.controllable.client.binding.ButtonBinding;
 import com.mrcrayfish.controllable.client.binding.context.BindingContext;
@@ -9,12 +10,14 @@ import com.mrcrayfish.controllable.client.binding.handlers.impl.DropHandler;
 import com.mrcrayfish.controllable.client.input.Buttons;
 import org.jetbrains.annotations.NotNull;
 
+import javax.naming.ldap.Control;
+
 /**
  * Author: MrCrayfish
  */
 public class GunButtonBindings {
     public static final String CATEGORIES_NTGL = "button.categories.ntgl";
-    
+
     public static final ButtonBinding SHOOT = createGunBinding(Buttons.RIGHT_TRIGGER, "shoot");
     public static final ButtonBinding AIM = createGunBinding(Buttons.LEFT_TRIGGER, "aim");
     public static final ButtonBinding RELOAD = createGunBinding(Buttons.B, "reload");
@@ -25,14 +28,15 @@ public class GunButtonBindings {
     public static final ButtonBinding SELECT_AMMO = createGunBinding(Buttons.MISC, "ammo_select");
 
     public static void register() {
-        BindingRegistry.getInstance().register(SHOOT);
-        BindingRegistry.getInstance().register(AIM);
-        BindingRegistry.getInstance().register(RELOAD);
-        BindingRegistry.getInstance().register(OPEN_ATTACHMENTS);
-        BindingRegistry.getInstance().register(STEADY_AIM);
-        BindingRegistry.getInstance().register(INSPECT);
-        BindingRegistry.getInstance().register(SELECT_FIRE);
-        BindingRegistry.getInstance().register(SELECT_AMMO);
+        BindingRegistry registry = Controllable.getBindingRegistry();
+        registry.register(SHOOT);
+        registry.register(AIM);
+        registry.register(RELOAD);
+        registry.register(OPEN_ATTACHMENTS);
+        registry.register(STEADY_AIM);
+        registry.register(INSPECT);
+        registry.register(SELECT_FIRE);
+        registry.register(SELECT_AMMO);
     }
 
     private static @NotNull ButtonBinding createGunBinding(int button, String name) {

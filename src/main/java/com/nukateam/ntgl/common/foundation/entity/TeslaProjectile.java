@@ -119,9 +119,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
 
     private void powerCreeper(Creeper creeper) {
         if(random.nextFloat() <= getCreeperPowerChance()){
-            var nbt = creeper.serializeNBT(creeper.level().registryAccess());
-            nbt.putBoolean("powered", true);
-            creeper.deserializeNBT(creeper.level().registryAccess(), nbt);
+            creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
         }
     }
 

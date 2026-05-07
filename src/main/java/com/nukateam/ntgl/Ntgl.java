@@ -3,28 +3,30 @@ package com.nukateam.ntgl;
 import com.mojang.logging.LogUtils;
 import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.example.common.registery.EntityTypes;
-import com.nukateam.example.common.registery.*;
+import com.nukateam.example.common.registery.ExampleWeapons;
+import com.nukateam.example.common.registery.ModItemTabs;
 import com.nukateam.ntgl.client.handlers.ClientHandler;
+import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.handler.CrosshairHandler;
-import com.nukateam.ntgl.client.input.NtglKeyBinds;
-import com.nukateam.ntgl.common.registry.AmmoHolders;
 import com.nukateam.ntgl.common.data.holders.AnimationType;
-import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
-import com.nukateam.ntgl.common.datagen.*;
-import com.nukateam.ntgl.common.registry.ProjectileRegistry;
+import com.nukateam.ntgl.common.datagen.BlockTagGen;
+import com.nukateam.ntgl.common.datagen.DamageTypeGen;
+import com.nukateam.ntgl.common.datagen.ItemTagGen;
+import com.nukateam.ntgl.common.datagen.LootTableGen;
 import com.nukateam.ntgl.common.foundation.init.*;
-import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.registry.AmmoHolders;
+import com.nukateam.ntgl.common.registry.ProjectileRegistry;
+import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.modules.gunpack.GunPackModule;
-import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -35,7 +37,7 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.Set;
 
 @Mod(Ntgl.MOD_ID)
 public class Ntgl {
@@ -60,7 +62,7 @@ public class Ntgl {
         ModContainers.REGISTER.register(MOD_EVENT_BUS);
         ModEffects.REGISTER.register(MOD_EVENT_BUS);
         Projectiles.REGISTER.register(MOD_EVENT_BUS);
-        if(Ntgl.isDebugging()) {
+        if (Ntgl.isDebugging()) {
             ModItemTabs.register(MOD_EVENT_BUS);
         }
 
@@ -140,8 +142,15 @@ public class Ntgl {
 //        generator.addProvider(event.includeServer(), new GunGen(generator));
 //        generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
 
-//        var damageTypeGenerator = new RegistrySetBuilder().add(Registries.DAMAGE_TYPE, NtglDamageTypes::bootstrap);
-//        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(), damageTypeGenerator, Set.of(Ntgl.MOD_ID)));
-        generator.addProvider(event.includeServer(), new DamageTypeGen(output, lookupProvider, existingFileHelper));
+        var damageTypeGenerator = new RegistrySetBuilder()
+                .add(Registries.DAMAGE_TYPE, NtglDamageTypes::bootstrap);
+        var damageTypeProvider = generator.addProvider(event.includeServer(),
+                new DatapackBuiltinEntriesProvider(output,
+                        event.getLookupProvider(),
+                        damageTypeGenerator,
+                        Set.of(Ntgl.MOD_ID))
+        );
+        // To see the just-generated damage times, the next line should use the provider of the damage type datapack registry
+        generator.addProvider(event.includeServer(),  new DamageTypeGen(output, damageTypeProvider.getRegistryProvider(), existingFileHelper));
     }
 }
