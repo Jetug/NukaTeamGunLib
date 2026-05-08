@@ -6,7 +6,7 @@ import com.nukateam.ntgl.common.data.WeaponData;
 public class TestModifier implements IWeaponModifier {
     @Override
     public int modifyReloadTime(int reloadTime, WeaponData data) {
-//        var mainHandStack = data.shooter.getMainHandItem();
+//        var mainHandStack = data.owner.getMainHandItem();
 //
 //        if(ItemStack.matches(mainHandStack, data.gun)) {
 //            return 1;

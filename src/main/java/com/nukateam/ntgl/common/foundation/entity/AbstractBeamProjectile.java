@@ -4,7 +4,6 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
@@ -89,7 +88,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 
 
 	public void trace() {
-		if (shooter == null || level().isClientSide)
+		if (owner == null || level().isClientSide)
 			return;
 
 		var startVec = new Vec3(this.getX(), this.getY(), this.getZ());
@@ -101,12 +100,12 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		if (raytraceresult.getType() != HitResult.Type.MISS)
 			endVec = raytraceresult.getLocation();
 
-		var entityResult = this.findEntityOnPath(shooter, startVec, endVec);
+		var entityResult = this.findEntityOnPath(owner, startVec, endVec);
 
 		if (entityResult != null) {
 			raytraceresult = new ExtendedEntityRayTraceResult(entityResult);
 			if (((EntityHitResult)raytraceresult).getEntity() instanceof Player player) {
-				if (this.shooter instanceof Player && !((Player) this.shooter).canHarmPlayer(player)) {
+				if (this.owner instanceof Player && !((Player) this.owner).canHarmPlayer(player)) {
 					raytraceresult = null;
 				}
 			}

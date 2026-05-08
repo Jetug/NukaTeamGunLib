@@ -21,7 +21,7 @@ public class ContinuousLaserProjectile extends LaserProjectile {
     public void tick() {
         super.tick();
         if(isServerSide) {
-            if (shooter != null && shooter.isDeadOrDying()) {
+            if (owner != null && owner.isDeadOrDying()) {
                 this.remove(RemovalReason.KILLED);
             }
             if (!isRemoved())
@@ -31,9 +31,9 @@ public class ContinuousLaserProjectile extends LaserProjectile {
 
     @Override
     public void trace() {
-        if(shooter != null && isServerSide) {
-            setupDirection(shooter, weapon, (IWeapon) weapon.getItem());
-            setPos(shooter.getEyePosition());
+        if(owner != null && isServerSide) {
+            setupDirection(owner, weapon, (IWeapon) weapon.getItem());
+            setPos(owner.getEyePosition());
         }
         super.trace();
     }

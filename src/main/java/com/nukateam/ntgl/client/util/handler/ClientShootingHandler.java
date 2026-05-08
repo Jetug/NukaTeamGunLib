@@ -228,7 +228,7 @@ public class ClientShootingHandler {
         var heldItem = weaponData.weapon;
 
         if (heldItem.getItem() instanceof IWeapon
-                && (WeaponStateHelper.hasAmmo(weaponData) /*|| (shooter instanceof Player player && player.isCreative())*/)
+                && (WeaponStateHelper.hasAmmo(weaponData) /*|| (owner instanceof Player player && player.isCreative())*/)
                 && isGunMode(weaponData)
                 && !shooter.isSpectator()) {
             var isMainHand = shooter.getMainHandItem() == heldItem;

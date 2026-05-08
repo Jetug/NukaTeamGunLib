@@ -65,7 +65,7 @@ public class BulletTrail {
         }
 
         var shooter = this.getShooter();
-//        if (shooter instanceof Player && ((Player) shooter).isLocalPlayer()) {
+//        if (owner instanceof Player && ((Player) owner).isLocalPlayer()) {
         if(shooter instanceof LivingEntity) {
             shooter.level().addAlwaysVisibleParticle(this.particleData, true,
                     this.position.x(), this.position.y(), this.position.z(),
@@ -128,7 +128,7 @@ public class BulletTrail {
      * Gets the instance of the entity that shot the bullet. The entity is cached to avoid searching
      * for it every frame, especially when lots of bullet trails are being rendered.
      *
-     * @return the shooter entity
+     * @return the owner entity
      */
     @Nullable
     public Entity getShooter() {

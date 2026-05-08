@@ -7,7 +7,6 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.common.data.config.weapon.General;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
-import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.message.weapon.S2CMessageBlood;
 import com.nukateam.ntgl.common.network.message.weapon.S2CMessageProjectileHitBlock;
@@ -16,6 +15,7 @@ import com.nukateam.ntgl.common.network.message.weapon.S2CMessageProjectileHitFl
 import com.nukateam.ntgl.common.util.helpers.EntityResult;
 import com.nukateam.ntgl.common.util.helpers.RayTraceHelper;
 import com.nukateam.ntgl.common.util.interfaces.IDamageable;
+import com.nukateam.ntgl.common.util.interfaces.IProjectile;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.common.util.trackers.SpreadTracker;
 import com.nukateam.ntgl.common.util.interfaces.IHeadshotBox;
@@ -33,7 +33,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -60,7 +59,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ProjectileEntity extends Entity{
+public class ProjectileEntity extends Entity implements IProjectile {
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
     protected AmmoHolder ammoHolder;
@@ -69,7 +68,7 @@ public class ProjectileEntity extends Entity{
     protected boolean isServerSide = !level().isClientSide();
     protected boolean isRightHand;
     protected int shooterId;
-    protected LivingEntity shooter;
+    protected LivingEntity owner;
     protected General general;
     protected ProjectileConfig projectile = new ProjectileConfig();
     protected ItemStack weapon = ItemStack.EMPTY;
@@ -90,9 +89,9 @@ public class ProjectileEntity extends Entity{
         var weaponStack = data.weapon;
 
         this.weaponData = data;
-        this.shooter = data.wielder;
+        this.owner = data.wielder;
         this.weaponAction = data.weaponMode;
-        this.shooterId = shooter.getId();
+        this.shooterId = owner.getId();
         this.weapon = weaponStack;
         this.general = WeaponModifierHelper.getGeneral(data);
         this.projectile = WeaponStateHelper.getProjectileConfig(data);
@@ -102,18 +101,23 @@ public class ProjectileEntity extends Entity{
                 -projectile.getSize(), -projectile.getSize(), -projectile.getSize()));
         this.modifiedGravity = WeaponModifierHelper.getProjectileGravity(data, -0.04);
         this.life = WeaponModifierHelper.getProjectileLife(data, this.projectile.getLife());
-        var hand = shooter.getMainHandItem() == weaponStack ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        var hand = owner.getMainHandItem() == weaponStack ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         this.isRightHand = hand == InteractionHand.MAIN_HAND;
         this.ammo = setupAmmo(data);
         this.ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
         this.pierceCount = projectile.getPierceLevel();
-        var dir = this.getDirection(shooter, weaponStack, item);
+        var dir = this.getDirection(owner, weaponStack, item);
         var speed =  this.projectile.getSpeed();
 
         this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
-        this.setupDirection(shooter, weaponStack, item);
-        this.setupStartPosition(shooter);
+        this.setupDirection(owner, weaponStack, item);
+        this.setupStartPosition(owner);
+    }
+
+    @Override
+    public Entity getOwner() {
+        return owner;
     }
 
     @Override
@@ -242,10 +246,6 @@ public class ProjectileEntity extends Entity{
         return this.projectile;
     }
 
-    public LivingEntity getShooter() {
-        return this.shooter;
-    }
-
     public int getShooterId() {
         return this.shooterId;
     }
@@ -254,7 +254,7 @@ public class ProjectileEntity extends Entity{
         if(weapon.isEmpty())
             return 0;
 
-        var data = new WeaponData(this.weapon, this.shooter);
+        var data = new WeaponData(this.weapon, this.owner);
 
         float initialDamage = WeaponModifierHelper.getProjectileDamage(BuiltInRegistries.ITEM.getKey(ammo.getItem()), data);
 
@@ -305,7 +305,7 @@ public class ProjectileEntity extends Entity{
                 var entityHitResult = new ExtendedEntityRayTraceResult(hit);
 
                 if (entityHitResult.getEntity() instanceof Player playerTarget) {
-                    if (this.shooter instanceof Player playerShooter && !playerShooter.canHarmPlayer(playerTarget)) {
+                    if (this.owner instanceof Player playerShooter && !playerShooter.canHarmPlayer(playerTarget)) {
                         entityHitResult = null;
                     }
                 }
@@ -330,7 +330,7 @@ public class ProjectileEntity extends Entity{
         List<EntityResult> hitEntities = null;
 
         if (pierceCount == 0) {
-            var entityResult = this.findEntityOnPath(shooter, startVec, endVec);
+            var entityResult = this.findEntityOnPath(owner, startVec, endVec);
             if (entityResult != null) {
                 hitEntities = Collections.singletonList(entityResult);
             }
@@ -368,7 +368,7 @@ public class ProjectileEntity extends Entity{
 
         var closestDistance = Double.MAX_VALUE;
         for (Entity target : entities) {
-            if (!target.equals(this.shooter)) {
+            if (!target.equals(this.owner)) {
                 var result = this.getHitResult(target, startVec, endVec);
                 if (result == null) continue;
                 var hitPos = result.getHitPos();
@@ -389,7 +389,7 @@ public class ProjectileEntity extends Entity{
         List<EntityResult> hitEntities = new ArrayList<>();
         List<Entity> entities = this.level().getEntities(this, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0), PROJECTILE_TARGETS);
         for (Entity entity : entities) {
-            if (!entity.equals(this.shooter)) {
+            if (!entity.equals(this.owner)) {
                 EntityResult result = this.getHitResult(entity, startVec, endVec);
                 if (result == null)
                     continue;
@@ -428,8 +428,8 @@ public class ProjectileEntity extends Entity{
         var entity = entityHitResult.getEntity();
         var hitVec = entityHitResult.getLocation();
 
-        if (entity.getId() == this.shooter.getId()) return;
-        if (this.shooter instanceof Player player && entity.hasIndirectPassenger(player)) return;
+        if (entity.getId() == this.owner.getId()) return;
+        if (this.owner instanceof Player player && entity.hasIndirectPassenger(player)) return;
 
         burnEntity(entity);
         damageEntity(entityHitResult);
@@ -599,7 +599,7 @@ public class ProjectileEntity extends Entity{
     }
 
     protected float getCriticalDamage(ItemStack weapon, RandomSource rand, float damage) {
-        var data = new WeaponData(weapon, shooter);
+        var data = new WeaponData(weapon, owner);
         float chance = WeaponModifierHelper.getCriticalChance(data);
         if (rand.nextFloat() < chance) {
             return (float) (damage * Config.COMMON.gameplay.criticalDamageMultiplier.get());
@@ -629,11 +629,11 @@ public class ProjectileEntity extends Entity{
     private @NotNull DamageSource getDamageSource() {
         return new DamageSource(getProvider()
                 .registryOrThrow(Registries.DAMAGE_TYPE)
-                .getHolderOrThrow(projectile.getDamageType()), shooter);
+                .getHolderOrThrow(projectile.getDamageType()), owner);
     }
 
     private void sendEntityHitMessage(Entity entity, Vec3 hitVec, boolean headshot, boolean isCritical) {
-        if (this.shooter instanceof ServerPlayer playerShooter) {
+        if (this.owner instanceof ServerPlayer playerShooter) {
             var bodyHitType = headshot ? S2CMessageProjectileHitEntity.HitType.HEADSHOT : S2CMessageProjectileHitEntity.HitType.NORMAL;
             var hitType = isCritical ? S2CMessageProjectileHitEntity.HitType.CRITICAL : bodyHitType;
 
@@ -656,7 +656,7 @@ public class ProjectileEntity extends Entity{
 
         if (Config.COMMON.gameplay.improvedHitboxes.get()
                 && target instanceof ServerPlayer targetPlayer
-                && shooter instanceof ServerPlayer shooterPlayer) {
+                && owner instanceof ServerPlayer shooterPlayer) {
             int latency = shooterPlayer.connection.latency();
             int ping = (int) Math.floor((latency / 1000.0) * 20.0 + 0.5);
             boundingBox = BoundingBoxManager.getBoundingBox(targetPlayer, ping);
@@ -731,7 +731,7 @@ public class ProjectileEntity extends Entity{
     private void checkTargetBlock(BlockHitResult blockHitResult, BlockState state) {
         if (state.getBlock() instanceof TargetBlock targetBlock) {
             int power = ReflectionUtil.updateTargetBlock(targetBlock, this.level(), state, blockHitResult, this);
-            if (this.shooter instanceof ServerPlayer serverPlayer) {
+            if (this.owner instanceof ServerPlayer serverPlayer) {
                 serverPlayer.awardStat(Stats.TARGET_HIT);
                 CriteriaTriggers.TARGET_BLOCK_HIT.trigger(serverPlayer, this, blockHitResult.getLocation(), power);
             }

@@ -96,7 +96,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
     protected void onHitEntity(ExtendedEntityRayTraceResult entityHitResult) {
         super.onHitEntity(entityHitResult);
 
-        var entity = getShooter();
+        var entity = getOwner();
 
         if (!level().isClientSide) {
             if(entity instanceof Creeper creeper)
@@ -142,7 +142,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
                 distance = Math.sqrt(distance);
 
                 if (distance < CHAIN_RANGE && livingEntity.isAlive() && livingEntity != lastTarget) {
-                    if (!livingEntity.equals(shooter) && !livingEntity.equals(prevTarget)) {
+                    if (!livingEntity.equals(owner) && !livingEntity.equals(prevTarget)) {
                         var from = new Vec3(lastTarget.getX(), lastTarget.getY() + lastTarget.getEyeHeight() * 0.5f, lastTarget.getZ());
                         var to = new Vec3(livingEntity.getX(), livingEntity.getY() + livingEntity.getEyeHeight() * 0.5f, livingEntity.getZ());
 
@@ -161,7 +161,7 @@ public class TeslaProjectile extends AbstractBeamProjectile {
 
 //    @Override
 //    protected TGDamageSource getProjectileDamageSource() {
-//        TGDamageSource src = TGDamageSource.causeLightningDamage(this, this.shooter, DeathType.LASER);
+//        TGDamageSource src = TGDamageSource.causeLightningDamage(this, this.owner, DeathType.LASER);
 //        src.armorPenetration = this.penetration;
 //        src.setNoKnockback();
 //        src.goreChance=0.5f;
