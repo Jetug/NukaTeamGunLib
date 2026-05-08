@@ -20,34 +20,22 @@ config = "ntgl.mixin.json"
 
 [[dependencies."${mod_id}"]]
 modId="neoforge"
-mandatory=true
+type="required"
 versionRange="[${neo_version},)"
 ordering="NONE"
 side="BOTH"
 [[dependencies."${mod_id}"]]
 modId="minecraft"
-mandatory=true
+type="required"
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
 [[dependencies."${mod_id}"]]
 modId="geckolib"
-mandatory=true
+type="required"
 versionRange="[4.8.2,)"
 ordering="AFTER"
 side="BOTH"
-[[dependencies."${mod_id}"]]
-modId="jei"
-mandatory=false
-versionRange="[12.1.1,)"
-ordering="AFTER"
-side="CLIENT"
-#[[dependencies."${mod_id}"]]
-#modId="controllable"
-#mandatory=false
-#versionRange="[0.16.3,)"
-#ordering="AFTER"
-#side="CLIENT"
 
 [modproperties.ntgl]
     catalogueImageIcon=""

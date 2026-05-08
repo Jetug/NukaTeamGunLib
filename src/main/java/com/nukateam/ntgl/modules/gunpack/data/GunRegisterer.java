@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
@@ -92,12 +93,18 @@ public class GunRegisterer {
     }
 
     public static void processArchives() {
-        Path ntglPath = Paths.get("ntgl");
+        Path ntglPath = FMLPaths.GAMEDIR.get().resolve("ntgl");
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(ntglPath, "*.zip")) {
-            for (Path zipFile : stream) {
-                processPack(zipFile);
-                processZipArchive(zipFile);
+        try {
+            Files.createDirectories(ntglPath);
+
+            try (DirectoryStream<Path> stream =
+                         Files.newDirectoryStream(ntglPath, "*.zip")) {
+
+                for (Path zipFile : stream) {
+                    processPack(zipFile);
+                    processZipArchive(zipFile);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

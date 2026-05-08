@@ -49,7 +49,6 @@ public class C2SActionPacket implements CustomPacketPayload {
                 case DISMOUNT -> armor.exitArmor();
                 case OPEN_GUI -> armor.openGUI(player);
             }
-
         }));
     }
 

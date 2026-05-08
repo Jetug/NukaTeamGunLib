@@ -16,7 +16,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 import java.util.function.Supplier;
-@EventBusSubscriber(modid = Ntgl.MOD_ID)
+@EventBusSubscriber(modid = Ntgl.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class PacketHandler {
     private static final NeoForgeNetwork neoForgeNetwork = new NeoForgeNetwork();
 
