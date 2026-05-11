@@ -120,6 +120,11 @@ public class ProjectileEntity extends Entity implements IProjectile {
         return owner;
     }
 
+    @Deprecated
+    public Entity getShooter() {
+        return getOwner();
+    }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 

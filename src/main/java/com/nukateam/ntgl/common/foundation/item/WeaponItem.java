@@ -8,6 +8,7 @@ import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
+import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.foundation.init.NtglComponents;
@@ -22,6 +23,7 @@ import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.client.render.renderers.weapon.*;
 import com.nukateam.ntgl.common.foundation.item.interfaces.*;
 import net.minecraft.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -37,6 +39,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.loading.FMLEnvironment;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -188,24 +191,31 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
-        var data = new WeaponData(stack, null);
-        WeaponItemTooltips.addAmmoType(tooltip, data);
-        WeaponItemTooltips.addFireRate(tooltip, data);
-        WeaponItemTooltips.addDamage(tooltip, data);
-        WeaponItemTooltips.addMelleDamage(tooltip, data);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            var data = getWeaponData(stack);
+            WeaponItemTooltips.addAmmoType(tooltip, data);
+            WeaponItemTooltips.addFireRate(tooltip, data);
+            WeaponItemTooltips.addDamage(tooltip, data);
+            WeaponItemTooltips.addMelleDamage(tooltip, data);
 
-        var explosion = WeaponStateHelper.getProjectileConfig(data).getExplosion();
-        if(explosion.getRadius() > 0){
-            WeaponItemTooltips.addExplosionTip(tooltip, explosion);
+            var explosion = WeaponStateHelper.getProjectileConfig(data).getExplosion();
+            if (explosion.getRadius() > 0) {
+                WeaponItemTooltips.addExplosionTip(tooltip, explosion);
+            }
+
+            WeaponItemTooltips.addAmmo(tooltip, data);
+            WeaponItemTooltips.addFuel(tooltip, data);
+
+            var name = NtglKeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
+
+            tooltip.add(Component.translatable("info.ntgl.attachment_help", name)
+                    .withStyle(ChatFormatting.YELLOW));
         }
+    }
 
-        WeaponItemTooltips.addAmmo(tooltip, data);
-        WeaponItemTooltips.addFuel(tooltip, data);
-
-        var name = NtglKeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
-
-        tooltip.add(Component.translatable("info.ntgl.attachment_help", name)
-         .withStyle(ChatFormatting.YELLOW));
+    @OnlyIn(Dist.CLIENT)
+    protected WeaponData getWeaponData(ItemStack stack) {
+        return new WeaponData(stack, Minecraft.getInstance().player);
     }
 
     @Override
