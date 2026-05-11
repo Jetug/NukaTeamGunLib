@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.geo.render.ItemAnimator;
+import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.util.ClientDebug;
@@ -73,7 +74,9 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
             case LEFT_ARM, RIGHT_ARM -> {
                 bone.setHidden(true);
                 bone.setChildrenHidden(false);
-                renderArms(poseStack, bone, packedLight, packedOverlay, bufferSource);
+                if(Config.CLIENT.display.renderHands.get()) {
+                    renderArms(poseStack, bone, packedLight, packedOverlay, bufferSource);
+                }
             }
             case LEFT_ARM_ANIM, RIGHT_ARM_ANIM ->{
                 if(!TransformUtils.isFirstPerson(transformType)){

@@ -79,6 +79,7 @@ public class Config
         public final ModConfigSpec.BooleanValue restrictCameraRollToWeapons;
         public final ModConfigSpec.BooleanValue sprintAnimation;
         public final ModConfigSpec.DoubleValue bobbingIntensity;
+        public final ModConfigSpec.BooleanValue renderHands;
 
         public Display(ModConfigSpec.Builder builder)
         {
@@ -95,6 +96,7 @@ public class Config
                 this.restrictCameraRollToWeapons = builder.comment("When enabled, the Camera Roll Effect is only applied when holding a weapon.").define("restrictCameraRollToWeapons", true);
                 this.sprintAnimation = builder.comment("Enables the sprinting animation on weapons for better immersion. This only applies to weapons that support a sprinting animation.").define("sprintingAnimation", true);
                 this.bobbingIntensity = builder.comment("The intensity of the custom bobbing animation while holding a gun").defineInRange("bobbingIntensity", 1.0, 0.0, 2.0);
+                this.renderHands = builder.comment("Enables hand rendering.").define("renderHands", true);
             }
             builder.pop();
         }
