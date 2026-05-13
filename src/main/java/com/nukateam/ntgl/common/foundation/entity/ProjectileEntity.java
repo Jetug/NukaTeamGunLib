@@ -734,8 +734,8 @@ public class ProjectileEntity extends Entity implements IProjectile {
     }
 
     private void checkTargetBlock(BlockHitResult blockHitResult, BlockState state) {
-        if (state.getBlock() instanceof TargetBlock targetBlock) {
-            int power = ReflectionUtil.updateTargetBlock(targetBlock, this.level(), state, blockHitResult, this);
+        if (state.getBlock() instanceof TargetBlock) {
+            int power = TargetBlock.updateRedstoneOutput(this.level(), state, blockHitResult, this);
             if (this.owner instanceof ServerPlayer serverPlayer) {
                 serverPlayer.awardStat(Stats.TARGET_HIT);
                 CriteriaTriggers.TARGET_BLOCK_HIT.trigger(serverPlayer, this, blockHitResult.getLocation(), power);
