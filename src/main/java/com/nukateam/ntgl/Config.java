@@ -11,6 +11,35 @@ import java.util.List;
 
 public class Config
 {
+    static final ForgeConfigSpec clientSpec;
+    public static final Config.Client CLIENT;
+
+    static final ForgeConfigSpec commonSpec;
+    public static final Config.Common COMMON;
+
+    static final ForgeConfigSpec serverSpec;
+    public static final Config.Server SERVER;
+
+    static
+    {
+        final Pair<Client, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(Config.Client::new);
+        clientSpec = clientSpecPair.getRight();
+        CLIENT = clientSpecPair.getLeft();
+
+        final Pair<Common, ForgeConfigSpec> commonSpecPair = new ForgeConfigSpec.Builder().configure(Common::new);
+        commonSpec = commonSpecPair.getRight();
+        COMMON = commonSpecPair.getLeft();
+
+        final Pair<Server, ForgeConfigSpec> serverSpecPair = new ForgeConfigSpec.Builder().configure(Server::new);
+        serverSpec = serverSpecPair.getRight();
+        SERVER = serverSpecPair.getLeft();
+    }
+
+    public static void saveClientConfig()
+    {
+        clientSpec.save();
+    }
+
     /**
      * Client related config options
      */
@@ -408,35 +437,6 @@ public class Config
             }
             builder.pop();
         }
-    }
-
-    static final ForgeConfigSpec clientSpec;
-    public static final Config.Client CLIENT;
-
-    static final ForgeConfigSpec commonSpec;
-    public static final Config.Common COMMON;
-
-    static final ForgeConfigSpec serverSpec;
-    public static final Config.Server SERVER;
-
-    static
-    {
-        final Pair<Client, ForgeConfigSpec> clientSpecPair = new ForgeConfigSpec.Builder().configure(Config.Client::new);
-        clientSpec = clientSpecPair.getRight();
-        CLIENT = clientSpecPair.getLeft();
-
-        final Pair<Common, ForgeConfigSpec> commonSpecPair = new ForgeConfigSpec.Builder().configure(Common::new);
-        commonSpec = commonSpecPair.getRight();
-        COMMON = commonSpecPair.getLeft();
-
-        final Pair<Server, ForgeConfigSpec> serverSpecPair = new ForgeConfigSpec.Builder().configure(Server::new);
-        serverSpec = serverSpecPair.getRight();
-        SERVER = serverSpecPair.getLeft();
-    }
-
-    public static void saveClientConfig()
-    {
-        clientSpec.save();
     }
 }
 

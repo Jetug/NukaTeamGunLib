@@ -69,6 +69,4 @@ public class EntityEvents {
             PLAYER_MODIFIERS.put(player.getUUID(), multiMap);
         }
     }
-
-
 }
