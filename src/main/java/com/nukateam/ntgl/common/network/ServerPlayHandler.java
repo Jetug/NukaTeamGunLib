@@ -378,7 +378,6 @@ public class ServerPlayHandler {
         }
     }
 
-
     public static void handleMeleeAttack(C2SMessageMeleeAttack message, Player player) {
         var stack = player.getItemInHand(message.getHand());
         var gunData = new WeaponData(stack, player).setWeaponMode(message.getAction());

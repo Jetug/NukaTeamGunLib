@@ -95,9 +95,29 @@ public class ReloadTracker {
 
     @SubscribeEvent
     public static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        MinecraftServer server = event.getEntity().getServer();
+        var server = event.getEntity().getServer();
         if (server != null) {
             server.execute(() -> RELOAD_TRACKER_MAP.remove(event.getEntity()));
+        }
+    }
+
+    public static void startReloading(WeaponData data, InteractionHand arm){
+        var reloadKey = ModSyncedDataKeys.getReloadKey(arm);
+        reloadKey.setValue(data.wielder, true);
+        addTracker(data, arm);
+    }
+
+    public static void stopReloading(LivingEntity wielder, InteractionHand hand) {
+        var reloadKey = ModSyncedDataKeys.getReloadKey(hand);
+        reloadKey.setValue(wielder, false);
+        var tracker = RELOAD_TRACKER_MAP.get(wielder);
+
+        if(tracker != null){
+            var data = tracker.data;
+            reloadSecondHand(data, hand);
+            NeoForge.EVENT_BUS.post(new GunReloadEvent.Post(data, hand));
+            RELOAD_TRACKER_MAP.remove(wielder);
+            ModSyncedDataKeys.getReloadKey(hand).setValue(wielder, false);
         }
     }
 
@@ -312,26 +332,6 @@ public class ReloadTracker {
 
     private static void resetTracker(ReloadTracker tracker, WeaponData data) {
         tracker.reloadTick = WeaponModifierHelper.getReloadTime(data);
-    }
-
-    public static void startReloading(WeaponData data, InteractionHand arm){
-        var reloadKey = ModSyncedDataKeys.getReloadKey(arm);
-        reloadKey.setValue(data.wielder, true);
-        addTracker(data, arm);
-    }
-
-    public static void stopReloading(LivingEntity wielder, InteractionHand hand) {
-        var reloadKey = ModSyncedDataKeys.getReloadKey(hand);
-        reloadKey.setValue(wielder, false);
-        var tracker = RELOAD_TRACKER_MAP.get(wielder);
-
-        if(tracker != null){
-            var data = tracker.data;
-            reloadSecondHand(data, hand);
-            NeoForge.EVENT_BUS.post(new GunReloadEvent.Post(data, hand));
-            RELOAD_TRACKER_MAP.remove(wielder);
-//            DelayedTask.runAfter(4, () -> gun.playCockSound(wielder));
-        }
     }
 
     private static boolean addTracker(WeaponData data, InteractionHand arm) {

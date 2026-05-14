@@ -33,7 +33,6 @@ runs {
 
     server {
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        argument '--nogui'
     }
 
     gameTestServer {
@@ -104,6 +103,7 @@ dependencies {
     implementation "curse.maven:sophisticated-core-618298:7698330"
     implementation "curse.maven:sophisticated-backpacks-422301:7700124"
     implementation "curse.maven:travelers-backpack-321117:7095271"
+    compileOnly 'curse.maven:backpacked-352835:7573687'
 //    implementation "maven.modrinth:YyzsBackpack-neoforge:jiao2sMM" // 21.1.13
 
     implementation "curse.maven:kotlin-for-forge-351264:6994056"
@@ -113,7 +113,9 @@ dependencies {
     implementation 'curse.maven:controllable-317269:6850105'
     implementation "curse.maven:playeranimator-658587:7389814"
 
-    compileOnly 'curse.maven:backpacked-352835:7573687'
+    implementation "curse.maven:sodium-394468:6382651"
+    implementation "curse.maven:irisshaders-455508:6661598"
+
     compileOnly "top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1:api"
 
     compileOnly "mezz.jei:jei-1.21.1-common-api:19.25.0.322"

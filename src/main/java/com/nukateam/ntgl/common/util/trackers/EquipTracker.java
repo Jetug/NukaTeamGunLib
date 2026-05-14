@@ -47,16 +47,18 @@ public class EquipTracker {
         }
     }
 
-    private static void handTick(Player entity, InteractionHand arm) {
-        var key = new Pair<>(arm, entity);
+    private static void handTick(Player entity, InteractionHand hand) {
+        var key = new Pair<>(hand, entity);
         var tracker = TRACKER_MAP.get(key);
         if(tracker != null){
             if(tracker.equipTick > 0 && tracker.isSameItem()){
                 tracker.equipTick--;
             }
-            else stopEquip(entity, arm);
+            else stopEquip(entity, hand);
         }
-        else stopEquip(entity, arm);
+        else if(ModSyncedDataKeys.getEquipKey(hand).getValue(entity)) {
+            stopEquip(entity, hand);
+        }
     }
 
     public static boolean isEquiping(LivingEntity entity, InteractionHand arm){

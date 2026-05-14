@@ -47,7 +47,7 @@ public class DataKeyManager {
         });
 
         if (!entries.isEmpty()) {
-            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateEntityData());
+            PacketHandler.getPlayChannel().sendToAll(new S2CMessageUpdateEntityData(entries));
         }
     }
 }

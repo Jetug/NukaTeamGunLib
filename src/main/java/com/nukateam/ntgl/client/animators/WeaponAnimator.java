@@ -116,7 +116,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
         return new WeaponConfig();
     }
 
-    public void tick() {
+    protected void tick() {
         if (!(getStack().getItem() instanceof IWeapon))
             return;
         var data = getWeaponData();
@@ -139,9 +139,6 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
 
         setupCycledAnimations();
     }
-
-    @Deprecated
-    protected void tickStart() {}
 
     protected int getBarrelAmount() {
         return 1;

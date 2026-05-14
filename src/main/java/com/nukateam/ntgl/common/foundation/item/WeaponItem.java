@@ -140,49 +140,49 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         WeaponStateHelper.setAmmoCount(new WeaponData(stack, null), getConfig().getGeneral().getMaxAmmo());
     }
 
-    public static Map<UUID, HashMultimap<Holder<Attribute>, AttributeModifier>> PLAYER_MODIFIERS = new HashMap<>();
+//    public static Map<UUID, HashMultimap<Holder<Attribute>, AttributeModifier>> PLAYER_MODIFIERS = new HashMap<>();
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if(entity instanceof LivingEntity livingEntity) {
             WeaponItemUtils.checkAmmo(stack, entity, livingEntity);
 
-            if(isItemInHands(stack, livingEntity)) {
-                var mods = PLAYER_MODIFIERS.get(livingEntity.getUUID());
-                if (mods != null) {
-                    livingEntity.getAttributes().removeAttributeModifiers(mods);
-                }
-                applyAttributeModifiers(livingEntity, InteractionHand.MAIN_HAND);
-                applyAttributeModifiers(livingEntity, InteractionHand.OFF_HAND);
-            }
+//            if(isItemInHands(stack, livingEntity)) {
+//                var mods = PLAYER_MODIFIERS.get(livingEntity.getUUID());
+//                if (mods != null) {
+//                    livingEntity.getAttributes().removeAttributeModifiers(mods);
+//                }
+//                applyAttributeModifiers(livingEntity, InteractionHand.MAIN_HAND);
+//                applyAttributeModifiers(livingEntity, InteractionHand.OFF_HAND);
+//            }
         }
     }
 
-    public static void applyAttributeModifiers(LivingEntity player, InteractionHand hand) {
-        var heldItem = player.getItemInHand(hand);
-
-        if (heldItem.getItem() instanceof IWeapon) {
-            var modifiers = WeaponModifierHelper.getAttributeModifiers(new WeaponData(heldItem, player));
-            var multiMap = HashMultimap.<Holder<Attribute>, AttributeModifier>create();
-
-            for (var modifier : modifiers) {
-                BuiltInRegistries.ATTRIBUTE.getHolder(modifier.getAttribute()).ifPresent((attributeHolder) -> {
-                    var attributeInstance = player.getAttribute(attributeHolder);
-                    if (attributeInstance != null) {
-                        var name = modifier.getAttribute().toString().replace(".", "_") + "_" + hand.toString().toLowerCase(Locale.ROOT);
-                        var id = ResourceLocation.parse(name);
-                        var newModifier = new AttributeModifier(id, modifier.getValue(), modifier.getOperation());
-
-                        if (!attributeInstance.hasModifier(id)) {
-                            attributeInstance.addTransientModifier(newModifier);
-                        }
-                        multiMap.put(attributeHolder, newModifier);
-                    }
-                });
-            }
-            WeaponItem.PLAYER_MODIFIERS.put(player.getUUID(), multiMap);
-        }
-    }
+//    public static void applyAttributeModifiers(LivingEntity player, InteractionHand hand) {
+//        var heldItem = player.getItemInHand(hand);
+//
+//        if (heldItem.getItem() instanceof IWeapon) {
+//            var modifiers = WeaponModifierHelper.getAttributeModifiers(new WeaponData(heldItem, player));
+//            var multiMap = HashMultimap.<Holder<Attribute>, AttributeModifier>create();
+//
+//            for (var modifier : modifiers) {
+//                BuiltInRegistries.ATTRIBUTE.getHolder(modifier.getAttribute()).ifPresent((attributeHolder) -> {
+//                    var attributeInstance = player.getAttribute(attributeHolder);
+//                    if (attributeInstance != null) {
+//                        var name = modifier.getAttribute().toString().replace(".", "_") + "_" + hand.toString().toLowerCase(Locale.ROOT);
+//                        var id = ResourceLocation.parse(name);
+//                        var newModifier = new AttributeModifier(id, modifier.getValue(), modifier.getOperation());
+//
+//                        if (!attributeInstance.hasModifier(id)) {
+//                            attributeInstance.addTransientModifier(newModifier);
+//                        }
+//                        multiMap.put(attributeHolder, newModifier);
+//                    }
+//                });
+//            }
+//            WeaponItem.PLAYER_MODIFIERS.put(player.getUUID(), multiMap);
+//        }
+//    }
 
     private static boolean isItemInHands(ItemStack stack, LivingEntity livingEntity) {
         return stack == livingEntity.getItemInHand(InteractionHand.MAIN_HAND) ||
