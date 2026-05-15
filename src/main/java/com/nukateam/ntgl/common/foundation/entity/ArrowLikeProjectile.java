@@ -83,8 +83,8 @@ public class ArrowLikeProjectile extends ProjectileEntity {
 
     @Override
     protected void onExpired() {
-        if (!this.inGround && ExplosionUtils.isExplosive(projectile.getExplosion())) {
-            ExplosionUtils.createExplosion(this, projectile.getExplosion(), position());
+        if (!this.inGround && ExplosionUtils.isExplosive(getProjectile().getExplosion())) {
+            ExplosionUtils.createExplosion(this, getProjectile().getExplosion(), position());
         }
     }
 
@@ -100,7 +100,7 @@ public class ArrowLikeProjectile extends ProjectileEntity {
     }
 
     protected ItemStack getPickupItem() {
-        return this.ammo.copy();
+        return this.getItem().copy();
     }
 
     private void pickup(Player player) {

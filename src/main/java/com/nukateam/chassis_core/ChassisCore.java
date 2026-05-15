@@ -5,7 +5,6 @@ import com.nukateam.chassis_core.common.foundation.registery.ItemRegistry;
 import com.nukateam.chassis_core.modules.example.Example;
 import com.nukateam.ntgl.Ntgl;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.slf4j.Logger;
 
 public class ChassisCore {

@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.nukateam.ntgl.common.foundation.init.NtglEntityDataSerializers;
 import com.nukateam.ntgl.common.network.LevelLocation;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.common.data.config.weapon.General;
 import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
@@ -34,6 +34,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -62,7 +63,9 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class ProjectileEntity extends Entity implements IProjectile {
-    private static final EntityDataAccessor<ItemStack> AMMO = SynchedEntityData.defineId(ProjectileEntity.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<ItemStack> AMMO = getDataAccessor(EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<ProjectileConfig> PROJECTILE = getDataAccessor(NtglEntityDataSerializers.PROJECTILE_CONFIG.get());
+    private static final EntityDataAccessor<Integer> WIELDER_ID = getDataAccessor(EntityDataSerializers.INT);
 
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
@@ -73,10 +76,7 @@ public class ProjectileEntity extends Entity implements IProjectile {
     protected boolean isRightHand;
     protected int shooterId;
     protected LivingEntity owner;
-    protected General general;
-    protected ProjectileConfig projectile = new ProjectileConfig();
     protected ItemStack weapon = ItemStack.EMPTY;
-    protected ItemStack ammo = ItemStack.EMPTY;
     protected EntityDimensions entitySize;
     protected double modifiedGravity;
     protected int life;
@@ -89,33 +89,36 @@ public class ProjectileEntity extends Entity implements IProjectile {
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level level, WeaponData data) {
         this(entityType, level);
 
-        var item = (IWeapon) data.weapon.getItem();
+        var weaponItem = (IWeapon) data.weapon.getItem();
         var weaponStack = data.weapon;
+
+        var projectile = WeaponStateHelper.getProjectileConfig(data);
 
         this.weaponData = data;
         this.owner = data.wielder;
         this.weaponAction = data.weaponMode;
-        this.shooterId = owner.getId();
         this.weapon = weaponStack;
-        this.general = WeaponModifierHelper.getGeneral(data);
-        this.projectile = WeaponStateHelper.getProjectileConfig(data);
-        this.entitySize = EntityDimensions.fixed(this.projectile.getSize(), this.projectile.getSize());
+        this.entitySize = EntityDimensions.fixed(projectile.getSize(), projectile.getSize());
+        this.modifiedGravity = WeaponModifierHelper.getProjectileGravity(data, -0.04);
+        this.life = WeaponModifierHelper.getProjectileLife(data, projectile.getLife());
+        var hand = owner.getMainHandItem() == weaponStack ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        this.isRightHand = hand == InteractionHand.MAIN_HAND;
+        this.ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
+        this.pierceCount = projectile.getPierceLevel();
+
+        setOwnerId(owner.getId());
+        setItem(setupAmmo(data));
+        setProjectile(projectile);
         setBoundingBox(new AABB(
                 projectile.getSize(), projectile.getSize(), projectile.getSize(),
                 -projectile.getSize(), -projectile.getSize(), -projectile.getSize()));
-        this.modifiedGravity = WeaponModifierHelper.getProjectileGravity(data, -0.04);
-        this.life = WeaponModifierHelper.getProjectileLife(data, this.projectile.getLife());
-        var hand = owner.getMainHandItem() == weaponStack ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-        this.isRightHand = hand == InteractionHand.MAIN_HAND;
-        this.ammo = setupAmmo(data);
-        this.ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
-        this.pierceCount = projectile.getPierceLevel();
-        var dir = this.getDirection(owner, weaponStack, item);
-        var speed =  this.projectile.getSpeed();
+
+        var dir = this.getDirection(owner, weaponStack, weaponItem);
+        var speed =  projectile.getSpeed();
 
         this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
-        this.setupDirection(owner, weaponStack, item);
+        this.setupDirection(owner, weaponStack, weaponItem);
         this.setupStartPosition(owner);
     }
 
@@ -132,6 +135,8 @@ public class ProjectileEntity extends Entity implements IProjectile {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(AMMO, ItemStack.EMPTY);
+        builder.define(PROJECTILE, new ProjectileConfig());
+        builder.define(WIELDER_ID, -1);
     }
 
     @Override
@@ -140,13 +145,13 @@ public class ProjectileEntity extends Entity implements IProjectile {
         compound.put("Weapon", weapon.save(provider, new CompoundTag()));
         compound.putString("WeaponAction", weaponAction.toString());
         compound.putString("AmmoHolder", ammoHolder.toString());
-        compound.put("Projectile", this.projectile.serializeNBT(provider));
-        compound.put("General", this.general.serializeNBT(provider));
         compound.putDouble("ModifiedGravity", this.modifiedGravity);
         compound.putInt("MaxLife", this.life);
         compound.putBoolean("IsRightHand", this.isRightHand);
         compound.putInt("ShooterId", this.shooterId);
+
         compound.put("Ammo", getItem().save(provider, new CompoundTag()));
+        compound.put("Projectile", getProjectile().serializeNBT(provider));
     }
 
     private @NotNull RegistryAccess getProvider() {
@@ -159,19 +164,18 @@ public class ProjectileEntity extends Entity implements IProjectile {
         this.weapon = ItemStack.parseOptional(provider, compound.getCompound("Weapon"));
         this.weaponAction = WeaponMode.getType(compound.getString("WeaponAction"));
         this.ammoHolder = AmmoHolder.getType(compound.getString("AmmoHolder"));
-        this.projectile = ProjectileConfig.create(compound.getCompound("Projectile"));
-        this.general = General.create(compound.getCompound("General"));
         this.modifiedGravity = compound.getDouble("ModifiedGravity");
         this.life = compound.getInt("MaxLife");
         this.isRightHand = compound.getBoolean("IsRightHand");
         this.shooterId = compound.getInt("ShooterId");
-        this.entitySize = EntityDimensions.fixed(this.projectile.getSize(), this.projectile.getSize());
+        this.entitySize = EntityDimensions.fixed(this.getProjectile().getSize(), this.getProjectile().getSize());
 
         setBoundingBox(new AABB(
-                projectile.getSize(), projectile.getSize(), projectile.getSize(),
-                -projectile.getSize(), -projectile.getSize(), -projectile.getSize()));
+                getProjectile().getSize(), getProjectile().getSize(), getProjectile().getSize(),
+                -getProjectile().getSize(), -getProjectile().getSize(), -getProjectile().getSize()));
 
         setItem(ItemStack.parseOptional(provider, compound.getCompound("Ammo")));
+        setProjectile(ProjectileConfig.create(compound.getCompound("Projectile")));
     }
 
     @Override
@@ -215,15 +219,15 @@ public class ProjectileEntity extends Entity implements IProjectile {
 
     @Override
     protected double getDefaultGravity() {
-        return projectile.isGravity() || isAffectedByFluid() ? modifiedGravity : 0.0;
+        return getProjectile().isGravity() || isAffectedByFluid() ? modifiedGravity : 0.0;
     }
 
     private boolean isAffectedByFluid() {
-        return projectile.affectedByFluid() && this.isInFluidType();
+        return getProjectile().affectedByFluid() && this.isInFluidType();
     }
 
     public boolean isVisible(){
-        return projectile.isVisible();
+        return getProjectile().isVisible();
     }
 
     public boolean isRightHand(){
@@ -246,20 +250,28 @@ public class ProjectileEntity extends Entity implements IProjectile {
         this.entityData.set(AMMO, item);
     }
 
+    public ProjectileConfig getProjectile() {
+        return this.entityData.get(PROJECTILE);
+    }
+
+    public void setProjectile(ProjectileConfig projectile) {
+        this.entityData.set(PROJECTILE, projectile);
+    }
+
     public double getModifiedGravity() {
         return this.modifiedGravity;
     }
 
     public int getLife(){
-        return projectile.getLife();
+        return getProjectile().getLife();
     }
 
-    public ProjectileConfig getProjectile() {
-        return this.projectile;
+    public int getOwnerId() {
+        return this.entityData.get(WIELDER_ID);
     }
 
-    public int getShooterId() {
-        return this.shooterId;
+    public void setOwnerId(int id) {
+        this.entityData.set(WIELDER_ID, id);
     }
 
     public float getDamage() {
@@ -268,10 +280,10 @@ public class ProjectileEntity extends Entity implements IProjectile {
 
         var data = new WeaponData(this.weapon, this.owner);
 
-        float initialDamage = WeaponModifierHelper.getProjectileDamage(BuiltInRegistries.ITEM.getKey(ammo.getItem()), data);
+        float initialDamage = WeaponModifierHelper.getProjectileDamage(BuiltInRegistries.ITEM.getKey(getItem().getItem()), data);
 
-        if (this.projectile.isDamageReduceOverLife()) {
-            float modifier = ((float) this.projectile.getLife() - (float) (this.tickCount - 1)) / (float) this.projectile.getLife();
+        if (this.getProjectile().isDamageReduceOverLife()) {
+            float modifier = ((float) this.getProjectile().getLife() - (float) (this.tickCount - 1)) / (float) this.getProjectile().getLife();
             initialDamage *= modifier;
         }
 
@@ -288,7 +300,7 @@ public class ProjectileEntity extends Entity implements IProjectile {
 
         this.setPos(nextPosX, nextPosY, nextPosZ);
 
-        if (this.projectile.isGravity() || isAffectedByFluid()) {
+        if (this.getProjectile().isGravity() || isAffectedByFluid()) {
             this.setDeltaMovement(this.getDeltaMovement().add(0, this.getDefaultGravity(), 0));
         }
 
@@ -359,8 +371,8 @@ public class ProjectileEntity extends Entity implements IProjectile {
     protected void onProjectileTick() {}
 
     protected void onExpired() {
-        if(ExplosionUtils.isExplosive(projectile.getExplosion())){
-            ExplosionUtils.createExplosion(this, projectile.getExplosion(), position());
+        if(ExplosionUtils.isExplosive(getProjectile().getExplosion())){
+            ExplosionUtils.createExplosion(this, getProjectile().getExplosion(), position());
         }
     }
 
@@ -479,7 +491,7 @@ public class ProjectileEntity extends Entity implements IProjectile {
 
 
     protected void playHitSound() {
-        var hitSound = projectile.getHitSound();
+        var hitSound = getProjectile().getHitSound();
         if(hitSound != null) {
             var sound = BuiltInRegistries.SOUND_EVENT.get(hitSound);
             this.playSound(sound, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
@@ -518,7 +530,7 @@ public class ProjectileEntity extends Entity implements IProjectile {
     }
 
     protected void burnEntity(Entity entity) {
-        var burnTime = projectile.getBurnSeconds();
+        var burnTime = getProjectile().getBurnSeconds();
         if (burnTime > 0) {
             entity.igniteForSeconds(burnTime);
         }
@@ -537,8 +549,8 @@ public class ProjectileEntity extends Entity implements IProjectile {
     }
 
     protected void onContact(Vec3 hitVec) {
-        if(projectile.getExplosion().isExplodeOnContact() && ExplosionUtils.isExplosive(projectile.getExplosion())){
-            ExplosionUtils.createExplosion(this, projectile.getExplosion(), hitVec);
+        if(getProjectile().getExplosion().isExplodeOnContact() && ExplosionUtils.isExplosive(getProjectile().getExplosion())){
+            ExplosionUtils.createExplosion(this, getProjectile().getExplosion(), hitVec);
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -605,7 +617,7 @@ public class ProjectileEntity extends Entity implements IProjectile {
 
     protected void setupDirection(LivingEntity shooter, ItemStack weapon, IWeapon item) {
         var dir = this.getDirection(shooter, weapon, item);
-        var speed = this.projectile.getSpeed();
+        var speed = this.getProjectile().getSpeed();
         this.setDeltaMovement(dir.x * speed, dir.y * speed, dir.z * speed);
         this.updateHeading();
     }
@@ -641,7 +653,7 @@ public class ProjectileEntity extends Entity implements IProjectile {
     private @NotNull DamageSource getDamageSource() {
         return new DamageSource(getProvider()
                 .registryOrThrow(Registries.DAMAGE_TYPE)
-                .getHolderOrThrow(projectile.getDamageType()), owner);
+                .getHolderOrThrow(getProjectile().getDamageType()), owner);
     }
 
     private void sendEntityHitMessage(Entity entity, Vec3 hitVec, boolean headshot, boolean isCritical) {
@@ -748,5 +760,9 @@ public class ProjectileEntity extends Entity implements IProjectile {
                 CriteriaTriggers.TARGET_BLOCK_HIT.trigger(serverPlayer, this, blockHitResult.getLocation(), power);
             }
         }
+    }
+
+    private static @NotNull <T> EntityDataAccessor<T> getDataAccessor(EntityDataSerializer<T> serializer) {
+        return SynchedEntityData.defineId(ProjectileEntity.class, serializer);
     }
 }

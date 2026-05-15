@@ -39,7 +39,7 @@ public class LaserProjectile extends AbstractBeamProjectile {
 
     @Override
     protected void burnEntity(Entity entity) {
-        var burnTime = projectile.getBurnSeconds();
+        var burnTime = getProjectile().getBurnSeconds();
         if (burnTime > 0 && random.nextFloat() <= getEntityFireChance()) {
             entity.igniteForSeconds(burnTime);
         }

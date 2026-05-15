@@ -1,12 +1,15 @@
 package com.nukateam.ntgl.common.foundation.entity.throwable;
 
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
+import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
+import com.nukateam.ntgl.common.foundation.init.NtglEntityDataSerializers;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IProjectile;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundSource;
@@ -20,12 +23,13 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.jarjar.nio.util.Lazy;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable> extends ThrowableProjectile implements IProjectile {
-    private static final EntityDataAccessor<ItemStack> ITEM = SynchedEntityData.defineId(ThrowableItemEntity.class, EntityDataSerializers.ITEM_STACK);
-//    private static final EntityDataAccessor<CompoundTag> PROJECTILE = SynchedEntityData.defineId(ThrowableItemEntity.class, EntityDataSerializers.COMPOUND_TAG);
+    private static final EntityDataAccessor<ItemStack> ITEM = getDataAccessor(EntityDataSerializers.ITEM_STACK);
+    private static final Lazy<EntityDataAccessor<ProjectileConfig>> PROJECTILE = Lazy.of(() ->getDataAccessor(NtglEntityDataSerializers.PROJECTILE_CONFIG.get()));
 
-    protected ProjectileConfig projectile = new ProjectileConfig();
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
     private float gravityVelocity = 0.03F;
@@ -41,31 +45,32 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
 
     public ThrowableItemEntity(EntityType<? extends ThrowableItemEntity> entityType, Level world, LivingEntity thrower, T item) {
         super(entityType, thrower, world);
-        this.projectile = item.getConfig().getThrowable().getProjectile();
+        setProjectile(item.getConfig().getThrowable().getProjectile());
         this.setItem(new ItemStack(item));
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(ITEM, ItemStack.EMPTY);
+        builder.define(PROJECTILE.get(), new ProjectileConfig());
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         var provider = this.level().registryAccess();
-        compound.put("Projectile", this.projectile.serializeNBT(provider));
         compound.putBoolean("ShouldBounce", shouldBounce);
         compound.putFloat("GravityVelocity", gravityVelocity);
         compound.put("Item", getItem().save(provider, new CompoundTag()));
+        compound.put("Projectile", getProjectile().serializeNBT(provider));
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         var provider = this.level().registryAccess();
-        this.projectile = ProjectileConfig.create(compound.getCompound("Projectile"));
         this.shouldBounce = compound.getBoolean("ShouldBounce");
         this.gravityVelocity = compound.getFloat("GravityVelocity");
         setItem(ItemStack.parseOptional(provider, compound.getCompound("Item")));
+        setProjectile(ProjectileConfig.create(compound.getCompound("Projectile")));
     }
 
     @Override
@@ -96,7 +101,7 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
         if (this.shouldBounce) {
             double speed = this.getDeltaMovement().length();
             if (speed > 0.1) {
-                var damage = getProjectileConfig().getDamage();
+                var damage = getProjectile().getDamage();
                 entity.hurt(entity.damageSources().thrown(this, this.getOwner()), damage);
             }
             this.bounce(Direction.getNearest(this.getDeltaMovement().x(), this.getDeltaMovement().y(), this.getDeltaMovement().z()).getOpposite());
@@ -143,7 +148,7 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
 
     @Override
     public boolean isNoGravity() {
-        return !projectile.isGravity();
+        return !getProjectile().isGravity();
     }
 
 
@@ -158,8 +163,12 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
 //        return new ClientboundAddEntityPacket(this, p_entity, entity == null ? 0 : entity.getId());
 //    }
 
-    public ProjectileConfig getProjectileConfig() {
-        return projectile;
+    public ProjectileConfig getProjectile() {
+        return this.entityData.get(PROJECTILE.get());
+    }
+
+    public void setProjectile(ProjectileConfig projectile) {
+        this.entityData.set(PROJECTILE.get(), projectile);
     }
 
     public ItemStack getItem() {
@@ -199,5 +208,9 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
                 this.setDeltaMovement(this.getDeltaMovement().multiply(0.75, 0.75, -0.5));
                 break;
         }
+    }
+
+    private static @NotNull <T> EntityDataAccessor<T> getDataAccessor(EntityDataSerializer<T> serializer) {
+        return SynchedEntityData.defineId(ThrowableItemEntity.class, serializer);
     }
 }

@@ -57,7 +57,7 @@ public class LaserProjectileRenderer extends EntityRenderer<LaserProjectile> {
         var fadingValue = Math.sin(Math.sqrt(prog) * Math.PI);
         var radius = (float) (getLaserRadius() * fadingValue * 2);
         var glowRadius = (float) (getLaserGlowRadius() * fadingValue * 2);
-        var shooterId = projectile.getShooterId();
+        var shooterId = projectile.getOwnerId();
         var shooter = Minecraft.getInstance().level.getEntity(shooterId);
 
         if (shooter == null) return;

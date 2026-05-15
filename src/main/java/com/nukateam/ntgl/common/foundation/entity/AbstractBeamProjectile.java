@@ -120,7 +120,7 @@ public abstract class AbstractBeamProjectile extends ProjectileEntity {
 		laserPitch = this.getXRot();
 		laserYaw = this.getYRot();
 		if (distance <= 0) {
-			distance = this.projectile.getSpeed();
+			distance = this.getProjectile().getSpeed();
 		}
 
 		this.startVec  	= startVec;

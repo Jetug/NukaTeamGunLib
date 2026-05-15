@@ -21,7 +21,6 @@ import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.modules.gunpack.GunPackModule;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -54,36 +53,39 @@ public class Ntgl {
     public static boolean playerAnimatorLoaded = false;
     public static boolean subtleEffectsLoaded = false;
 
-    public Ntgl(IEventBus MOD_EVENT_BUS, ModContainer container) {
+    public Ntgl(IEventBus eventBus, ModContainer container) {
         container.registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         container.registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         container.registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
         //ModBlocks.REGISTER.register(bus);
-        ModContainers.REGISTER.register(MOD_EVENT_BUS);
-        ModEffects.REGISTER.register(MOD_EVENT_BUS);
-        Projectiles.REGISTER.register(MOD_EVENT_BUS);
+        ModContainers.REGISTER.register(eventBus);
+        ModEffects.REGISTER.register(eventBus);
+        Projectiles.REGISTER.register(eventBus);
         if (Ntgl.isDebugging()) {
-            ModItemTabs.register(MOD_EVENT_BUS);
+            ModItemTabs.register(eventBus);
         }
 
-        ExampleWeapons.register(MOD_EVENT_BUS);
-        ModParticleTypes.REGISTER.register(MOD_EVENT_BUS);
-        ModSounds.REGISTER.register(MOD_EVENT_BUS);
-        NtglComponents.REGISTER.register(MOD_EVENT_BUS);
-        ModEntityTypes.register(MOD_EVENT_BUS);
-        EntityTypes.register(MOD_EVENT_BUS);
-        MOD_EVENT_BUS.addListener(this::onCommonSetup);
-        MOD_EVENT_BUS.addListener(this::onClientSetup);
-        MOD_EVENT_BUS.addListener(this::onGatherData);
+        ExampleWeapons.register(eventBus);
+        ModParticleTypes.REGISTER.register(eventBus);
+        ModSounds.REGISTER.register(eventBus);
+        NtglComponents.REGISTER.register(eventBus);
+        ModEntityTypes.register(eventBus);
+        EntityTypes.register(eventBus);
+        NtglEntityDataSerializers.register(eventBus);
+
+
+        eventBus.addListener(this::onCommonSetup);
+        eventBus.addListener(this::onClientSetup);
+        eventBus.addListener(this::onGatherData);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            MOD_EVENT_BUS.addListener(NtglKeyBinds::registerKeyMappings);
-            MOD_EVENT_BUS.addListener(CrosshairHandler::onConfigReload);
+            eventBus.addListener(NtglKeyBinds::registerKeyMappings);
+            eventBus.addListener(CrosshairHandler::onConfigReload);
         }
 
-        GunPackModule.init(MOD_EVENT_BUS);
-        NtglGameEvents.register(MOD_EVENT_BUS);
-        new ChassisCore(MOD_EVENT_BUS);
+        GunPackModule.init(eventBus);
+        NtglGameEvents.register(eventBus);
+        new ChassisCore(eventBus);
 //        TravelersBackpack
         curiosLoaded = ModList.get().isLoaded("curios");
         controllableLoaded = ModList.get().isLoaded("controllable");

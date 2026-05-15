@@ -49,7 +49,7 @@ public class ThrowableGrenadeEntity<T extends Item & IThrowable & IWeapon> exten
     }
 
     public void explode() {
-        ExplosionUtils.createExplosion(this, projectile.getExplosion(), position());
+        ExplosionUtils.createExplosion(this, getProjectile().getExplosion(), position());
     }
 
     @Override

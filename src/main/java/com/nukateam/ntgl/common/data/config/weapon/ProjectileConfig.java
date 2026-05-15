@@ -410,4 +410,54 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag> {
         }
 
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProjectileConfig that)) return false;
+
+        return Float.compare(that.damage, damage) == 0
+                && Float.compare(that.size, size) == 0
+                && Float.compare(that.speed, speed) == 0
+                && life == that.life
+                && visible == that.visible
+                && gravity == that.gravity
+                && affectedByFluid == that.affectedByFluid
+                && damageReduceOverLife == that.damageReduceOverLife
+                && magazineMode == that.magazineMode
+                && trailColor == that.trailColor
+                && Double.compare(that.trailLengthMultiplier, trailLengthMultiplier) == 0
+                && projectileAmount == that.projectileAmount
+                && Float.compare(that.spread, spread) == 0
+                && pierceLevel == that.pierceLevel
+                && burnSeconds == that.burnSeconds
+                && java.util.Objects.equals(projectile, that.projectile)
+                && java.util.Objects.equals(damageType, that.damageType)
+                && java.util.Objects.equals(explosion, that.explosion)
+                && java.util.Objects.equals(hitSound, that.hitSound);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(
+                damage,
+                size,
+                speed,
+                life,
+                projectile,
+                damageType,
+                visible,
+                gravity,
+                affectedByFluid,
+                damageReduceOverLife,
+                magazineMode,
+                trailColor,
+                trailLengthMultiplier,
+                projectileAmount,
+                spread,
+                pierceLevel,
+                burnSeconds,
+                explosion,
+                hitSound
+        );
+    }
 }
