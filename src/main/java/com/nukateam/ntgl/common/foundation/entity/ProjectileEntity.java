@@ -33,6 +33,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -60,6 +62,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class ProjectileEntity extends Entity implements IProjectile {
+    private static final EntityDataAccessor<ItemStack> AMMO = SynchedEntityData.defineId(ProjectileEntity.class, EntityDataSerializers.ITEM_STACK);
+
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
     protected AmmoHolder ammoHolder;
@@ -126,14 +130,15 @@ public class ProjectileEntity extends Entity implements IProjectile {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {}
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(AMMO, ItemStack.EMPTY);
+    }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         var provider = getProvider();
         compound.put("Weapon", weapon.save(provider, new CompoundTag()));
         compound.putString("WeaponAction", weaponAction.toString());
-        compound.put("Ammo", ammo.save(provider, new CompoundTag()));
         compound.putString("AmmoHolder", ammoHolder.toString());
         compound.put("Projectile", this.projectile.serializeNBT(provider));
         compound.put("General", this.general.serializeNBT(provider));
@@ -141,6 +146,7 @@ public class ProjectileEntity extends Entity implements IProjectile {
         compound.putInt("MaxLife", this.life);
         compound.putBoolean("IsRightHand", this.isRightHand);
         compound.putInt("ShooterId", this.shooterId);
+        compound.put("Ammo", getItem().save(provider, new CompoundTag()));
     }
 
     private @NotNull RegistryAccess getProvider() {
@@ -152,7 +158,6 @@ public class ProjectileEntity extends Entity implements IProjectile {
         var provider = getProvider();
         this.weapon = ItemStack.parseOptional(provider, compound.getCompound("Weapon"));
         this.weaponAction = WeaponMode.getType(compound.getString("WeaponAction"));
-        this.ammo = ItemStack.parseOptional(provider, compound.getCompound("Ammo"));
         this.ammoHolder = AmmoHolder.getType(compound.getString("AmmoHolder"));
         this.projectile = ProjectileConfig.create(compound.getCompound("Projectile"));
         this.general = General.create(compound.getCompound("General"));
@@ -160,11 +165,13 @@ public class ProjectileEntity extends Entity implements IProjectile {
         this.life = compound.getInt("MaxLife");
         this.isRightHand = compound.getBoolean("IsRightHand");
         this.shooterId = compound.getInt("ShooterId");
-
         this.entitySize = EntityDimensions.fixed(this.projectile.getSize(), this.projectile.getSize());
+
         setBoundingBox(new AABB(
                 projectile.getSize(), projectile.getSize(), projectile.getSize(),
                 -projectile.getSize(), -projectile.getSize(), -projectile.getSize()));
+
+        setItem(ItemStack.parseOptional(provider, compound.getCompound("Ammo")));
     }
 
     @Override
@@ -231,12 +238,12 @@ public class ProjectileEntity extends Entity implements IProjectile {
         return this.weapon;
     }
 
-    public void setItem(ItemStack item) {
-        this.ammo = item;
+    public ItemStack getItem() {
+        return this.entityData.get(AMMO);
     }
 
-    public ItemStack getItem() {
-        return this.ammo;
+    public void setItem(ItemStack item) {
+        this.entityData.set(AMMO, item);
     }
 
     public double getModifiedGravity() {

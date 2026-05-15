@@ -48,37 +48,6 @@ public class AttachmentContainer extends AbstractContainerMenu {
         this.loaded = true;
     }
 
-//    public AttachmentContainer(int windowId, Inventory playerInventory) {
-//        super(ModContainers.ATTACHMENTS.get(), windowId);
-//        this.weapon = playerInventory.getSelected();
-//        this.playerInventory = playerInventory;
-//        var attachments = getGunAttachments(weapon);
-//
-//        weaponInventory = new SimpleContainer(attachments.size()){
-//            @Override
-//            public void setChanged() {
-//                super.setChanged();
-//                AttachmentContainer.this.slotsChanged(this);
-//            }
-//        };
-//
-//        var index = 0;
-//        for (var entry : attachments.entrySet()) {
-//            var attachmentType = entry.getKey();
-//            this.addSlot(new AttachmentSlot(this,
-//                    this.weaponInventory,
-//                    this.weapon,
-//                    attachmentType,
-//                    playerInventory.player,
-//                    index,
-//                    7 + index * SLOT_SIZE + 1,
-//                    ATTACHMENT_Y + 1));
-//            index++;
-//        }
-//
-//        addPlayerInventory(playerInventory);
-//    }
-
     public AttachmentContainer(int windowId, Inventory playerInventory) {
         super(ModContainers.ATTACHMENTS.get(), windowId);
         this.weapon = playerInventory.getSelected();

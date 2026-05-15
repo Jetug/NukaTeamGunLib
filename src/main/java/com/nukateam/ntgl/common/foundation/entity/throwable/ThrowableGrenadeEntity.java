@@ -31,9 +31,6 @@ public class ThrowableGrenadeEntity<T extends Item & IThrowable & IWeapon> exten
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {}
-
-    @Override
     public void tick() {
         super.tick();
         this.prevRotation = this.rotation;

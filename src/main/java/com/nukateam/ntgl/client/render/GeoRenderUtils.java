@@ -3,7 +3,6 @@ package com.nukateam.ntgl.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.nukateam.ntgl.client.util.ClientDebug;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -17,20 +16,16 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import software.bernie.geckolib.cache.object.GeoBone;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import software.bernie.geckolib.util.ClientUtil;
 
 public class GeoRenderUtils {
-    public static void renderRightArm(PoseStack poseStack, GeoBone bone, int packedLight,
-                                      MultiBufferSource bufferSource, boolean right) {
+    public static void renderArm(PoseStack poseStack, GeoBone bone, int packedLight,
+                                 MultiBufferSource bufferSource, boolean right) {
         var mc = Minecraft.getInstance();
         var playerModel = mc.getEntityModels().bakeLayer(ModelLayers.PLAYER);
         applyBoneTransform(poseStack, bone);
@@ -50,27 +45,6 @@ public class GeoRenderUtils {
         poseStack.scale(2f, 2f, 2f);
         renderArmorOnHand(mc.player, EquipmentSlot.CHEST, armorModelOuter,
                 poseStack, bufferSource, packedLight, right);
-        poseStack.popPose();
-    }
-
-
-    public static void renderLeftArm(PoseStack poseStack, GeoBone bone, int packedLight, MultiBufferSource bufferSource) {
-        var mc = Minecraft.getInstance();
-        var playerModel = mc.getEntityModels().bakeLayer(ModelLayers.PLAYER);
-        applyBoneTransform(poseStack, bone);
-        var playerSkin = ((LocalPlayer) ClientUtil.getClientPlayer()).getSkin().texture();
-
-        HumanoidModel<Player> armorModelOuter;
-        armorModelOuter = new HumanoidModel<>(mc.getEntityModels().bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR));
-
-        renderHand(playerModel.getChild("left_arm"), playerSkin, poseStack, bufferSource, packedLight);
-        renderHand(playerModel.getChild("left_sleeve"), playerSkin, poseStack, bufferSource, packedLight);
-
-        poseStack.pushPose();
-        poseStack.translate(0, -24 / 16d, 0);
-        poseStack.scale(2f, 2f, 2f);
-        renderArmorOnHand(mc.player, EquipmentSlot.CHEST, armorModelOuter,
-                poseStack, bufferSource, packedLight, true);
         poseStack.popPose();
     }
 
@@ -100,11 +74,6 @@ public class GeoRenderUtils {
                     renderModel(poseStack, bufferSource, packedLight, model, j, texture);
                 }
             }
-
-//            ArmorTrim armortrim = armorStack.get(DataComponents.TRIM);
-//            if (armortrim != null) {
-//                this.renderTrim(armorItem.getMaterial(), poseStack, bufferSource, packedLight, armortrim, model, false);
-//            }
 
             if (armorStack.hasFoil()) {
                 renderGlint(poseStack, bufferSource, packedLight, model);

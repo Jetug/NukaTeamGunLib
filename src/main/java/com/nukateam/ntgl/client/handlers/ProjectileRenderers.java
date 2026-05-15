@@ -13,7 +13,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
 @OnlyIn(Dist.CLIENT)
-@EventBusSubscriber(modid = Ntgl.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Ntgl.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ProjectileRenderers {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent

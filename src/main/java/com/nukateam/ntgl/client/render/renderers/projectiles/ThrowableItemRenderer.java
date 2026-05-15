@@ -56,8 +56,10 @@ public class ThrowableItemRenderer extends EntityRenderer<ThrowableItemEntity> {
             poseStack.scale(scale, scale, scale);
             poseStack.translate(0.0, 0.5, 0.0);
 
+            var item = entity.getItem();
+
             Minecraft.getInstance().getItemRenderer().renderStatic(
-                    entity.getItem(), ItemDisplayContext.NONE, light, OverlayTexture.NO_OVERLAY,
+                    item, ItemDisplayContext.GROUND, light, OverlayTexture.NO_OVERLAY,
                     poseStack, renderTypeBuffer, entity.level(), 0);
         }
         poseStack.popPose();

@@ -46,10 +46,10 @@ public class Projectiles {
     private static <T extends ProjectileEntity> DeferredHolder<EntityType<?>, EntityType<T>> registerProjectile(String id, BiFunction<EntityType<T>, Level, T> function) {
         return REGISTER.register(id, () -> EntityType.Builder.of(function::apply, MobCategory.MISC)
                 .sized(0.25F, 0.25F)
-                .setTrackingRange(0)
+                .setTrackingRange(100)
                 .noSummon()
                 .fireImmune()
-                .setShouldReceiveVelocityUpdates(false)
+                .setShouldReceiveVelocityUpdates(true)
 //                .setCustomClientFactory((spawnEntity, world) -> null)
                 .build(id));
     }

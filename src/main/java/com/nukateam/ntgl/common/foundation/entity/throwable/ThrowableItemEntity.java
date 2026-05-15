@@ -4,22 +4,17 @@ import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IProjectile;
-import com.nukateam.ntgl.common.util.util.StackUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.server.level.ServerEntity;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
@@ -27,6 +22,9 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
 public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable> extends ThrowableProjectile implements IProjectile {
+    private static final EntityDataAccessor<ItemStack> ITEM = SynchedEntityData.defineId(ThrowableItemEntity.class, EntityDataSerializers.ITEM_STACK);
+//    private static final EntityDataAccessor<CompoundTag> PROJECTILE = SynchedEntityData.defineId(ThrowableItemEntity.class, EntityDataSerializers.COMPOUND_TAG);
+
     protected ProjectileConfig projectile = new ProjectileConfig();
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
@@ -48,23 +46,26 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
     }
 
     @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(ITEM, ItemStack.EMPTY);
+    }
+
+    @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         var provider = this.level().registryAccess();
-        var stackTag = new CompoundTag();
-        this.item.save(provider, stackTag);
         compound.put("Projectile", this.projectile.serializeNBT(provider));
-        compound.putBoolean("shouldBounce", shouldBounce);
-        compound.putFloat("gravityVelocity", gravityVelocity);
-        compound.put("item", stackTag);
+        compound.putBoolean("ShouldBounce", shouldBounce);
+        compound.putFloat("GravityVelocity", gravityVelocity);
+        compound.put("Item", getItem().save(provider, new CompoundTag()));
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         var provider = this.level().registryAccess();
         this.projectile = ProjectileConfig.create(compound.getCompound("Projectile"));
-        this.shouldBounce = compound.getBoolean("shouldBounce");
-        this.gravityVelocity = compound.getFloat("gravityVelocity");
-        this.item = ItemStack.parseOptional(provider, compound.getCompound("item"));
+        this.shouldBounce = compound.getBoolean("ShouldBounce");
+        this.gravityVelocity = compound.getFloat("GravityVelocity");
+        setItem(ItemStack.parseOptional(provider, compound.getCompound("Item")));
     }
 
     @Override
@@ -162,11 +163,11 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
     }
 
     public ItemStack getItem() {
-        return this.item;
+        return this.entityData.get(ITEM);
     }
 
     public void setItem(ItemStack item) {
-        this.item = item;
+        this.entityData.set(ITEM, item);
     }
 
     public void setMaxLife(int maxLife) {

@@ -127,9 +127,9 @@ public class AttachmentSlot extends Slot {
         return 1;
     }
 
-    @Override
-    public boolean mayPickup(Player player) {
-        ItemStack itemstack = this.getItem();
-        return (itemstack.isEmpty() || player.isCreative()) && super.mayPickup(player);
-    }
+//    @Override
+//    public boolean mayPickup(Player player) {
+//        ItemStack itemstack = this.getItem();
+//        return (itemstack.isEmpty() || player.isCreative()) && super.mayPickup(player);
+//    }
 }
