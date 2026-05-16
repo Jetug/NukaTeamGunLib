@@ -26,6 +26,7 @@ import com.nukateam.ntgl.common.foundation.ModTags;
 import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.world.ExplosionUtils;
 import com.nukateam.ntgl.common.network.PacketHandler;
+import com.nukateam.ntgl.common.foundation.event.GunProjectileSpawnEvent;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -55,6 +56,9 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.*;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -69,6 +73,7 @@ public class ProjectileEntity extends Entity implements IProjectile {
 
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();
     protected static final Predicate<BlockState> IGNORE_LEAVES = input -> input != null && Config.COMMON.gameplay.ignoreLeaves.get() && input.getBlock() instanceof LeavesBlock;
+    protected final AnimatableInstanceCache cache = createInstanceCache(this);
     protected AmmoHolder ammoHolder;
     protected WeaponMode weaponAction;
     protected WeaponData weaponData;
@@ -81,6 +86,9 @@ public class ProjectileEntity extends Entity implements IProjectile {
     protected double modifiedGravity;
     protected int life;
     protected int pierceCount;
+    protected float damageMultiplier = 1.0f;
+    protected float criticalChanceMultiplier = 1.0f;
+    protected float criticalDamageMultiplier = 1.0f;
 
     public ProjectileEntity(EntityType<? extends Entity> entityType, Level worldIn) {
         super(entityType, worldIn);
@@ -188,15 +196,10 @@ public class ProjectileEntity extends Entity implements IProjectile {
         return true;
     }
 
-//    @Override
-//    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entity) {
-//        return super.getAddEntityPacket(entity);
-//    }
-//
-//    @Override
-//    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-//        return NetworkHooks.getEntitySpawningPacket(this);
-//    }
+    @Override
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
+    }
 
     @Override
     public void tick() {
@@ -289,6 +292,8 @@ public class ProjectileEntity extends Entity implements IProjectile {
 
         var projectileAmount = WeaponModifierHelper.getProjectileAmount(data);
         var damage = initialDamage / projectileAmount;
+
+        damage *= this.damageMultiplier;
 
         return Math.max(0F, damage);
     }
@@ -626,7 +631,7 @@ public class ProjectileEntity extends Entity implements IProjectile {
         var data = new WeaponData(weapon, owner);
         float chance = WeaponModifierHelper.getCriticalChance(data);
         if (rand.nextFloat() < chance) {
-            return (float) (damage * Config.COMMON.gameplay.criticalDamageMultiplier.get());
+            return (float) (damage * Config.COMMON.gameplay.criticalDamageMultiplier.get() * this.criticalDamageMultiplier);
         }
         return damage;
     }
@@ -636,7 +641,7 @@ public class ProjectileEntity extends Entity implements IProjectile {
         float gunSpread = WeaponModifierHelper.getSpread(data);
 
         if (gunSpread == 0F) {
-            return this.getVectorFromRotation(shooter.getXRot(), shooter.getYRot());
+            return this.getViewVector(shooter.getXRot(), shooter.getYRot());
         }
 
         if (!WeaponModifierHelper.isAlwaysSpread(data)) {
@@ -647,7 +652,9 @@ public class ProjectileEntity extends Entity implements IProjectile {
             gunSpread *= 0.5F;
         }
 
-        return this.getVectorFromRotation(shooter.getXRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread, shooter.getYHeadRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread);
+        return this.getViewVector(
+                shooter.getXRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread,
+                shooter.getYHeadRot() - (gunSpread / 2.0F) + random.nextFloat() * gunSpread);
     }
 
     private @NotNull DamageSource getDamageSource() {
@@ -732,7 +739,7 @@ public class ProjectileEntity extends Entity implements IProjectile {
         return new EntityResult(target, hitPos, headshot);
     }
 
-    private Vec3 getVectorFromRotation(float pitch, float yaw) {
+    private Vec3 getViewVector(float pitch, float yaw) {
         float f = Mth.cos(-yaw * 0.017453292F - (float) Math.PI);
         float f1 = Mth.sin(-yaw * 0.017453292F - (float) Math.PI);
         float f2 = -Mth.cos(-pitch * 0.017453292F);
@@ -764,5 +771,13 @@ public class ProjectileEntity extends Entity implements IProjectile {
 
     private static @NotNull <T> EntityDataAccessor<T> getDataAccessor(EntityDataSerializer<T> serializer) {
         return SynchedEntityData.defineId(ProjectileEntity.class, serializer);
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 }

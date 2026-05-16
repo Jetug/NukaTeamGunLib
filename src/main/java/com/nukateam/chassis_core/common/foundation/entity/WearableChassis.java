@@ -47,6 +47,7 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
     private static final Lazy<CustomHandRenderer> HAND_RENDERER = Lazy.of(() -> new CustomHandRenderer());
     public static final ResourceLocation DEFAULT_ICON = resourceLocation("textures/item/chassis.png");
     public static final float STEP_HEIGHT = 0.5f;
+    public static final double PLAYER_RIDING_OFFSET = -0.35;
     public final Speedometer speedometer = new Speedometer(this);
     private final AnimatableInstanceCache cache = createInstanceCache(this);
     protected boolean isJumping;
@@ -171,7 +172,7 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         if (passenger == null) return;
 
         var yOffset = 1.0f;
-        var posY = getY() + getPassengerRidingPosition(entity).y - yOffset;
+        var posY = getY() + getPassengersRidingOffset() + PLAYER_RIDING_OFFSET - yOffset;
         entity.setPos(getX(), posY, getZ());
 
         if (entity instanceof LivingEntity livingEntity)

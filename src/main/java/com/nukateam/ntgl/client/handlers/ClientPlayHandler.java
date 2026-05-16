@@ -9,6 +9,7 @@ import com.nukateam.ntgl.common.util.helpers.compatibility.EffectHelper;
 import com.nukateam.ntgl.common.util.world.ProjectileExplosion;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAmmoManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkAttachmentManager;
+import com.nukateam.ntgl.modules.datapack.managers.NetworkProjectileManager;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkWeaponManager;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.foundation.particles.*;
@@ -222,7 +223,11 @@ public class ClientPlayHandler {
     }
 
     public static void handleUpdateAmmo(S2CMessageUpdateAmmo message) {
-        NetworkAmmoManager.updateRegisteredAmmo(message);
+        NetworkAmmoManager.updateRegisteredAmmo(message.getRegisteredAmmo());
+    }
+
+    public static void handleUpdateProjectile(S2CMessageUpdateProjectiles message) {
+        NetworkProjectileManager.get().update(message.getRegisteredAmmo());
     }
 
     public static void handleUpdateAttachments(S2CMessageUpdateAttachments message) {

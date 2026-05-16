@@ -10,6 +10,8 @@ import com.nukateam.ntgl.common.data.holders.*;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
+import com.nukateam.ntgl.common.foundation.event.MeleeWeaponModifiersEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -374,7 +376,9 @@ public class WeaponModifierHelper {
         var finalSpread = new AtomicReference<>(spread);
 
         forEachAttachment(data, (modifier -> finalSpread.set(modifier.modifyProjectileSpread(finalSpread.get(), data))));
-        return finalSpread.get();
+        ProjectileSpreadEvent event = new ProjectileSpreadEvent(data, finalSpread.get());
+        MinecraftForge.EVENT_BUS.post(event);
+        return event.getSpread();
     }
 
     public static ArrayList<AttributeModifier> getAttributeModifiers(WeaponData data) {
@@ -469,7 +473,9 @@ public class WeaponModifierHelper {
         var time = getMelee(data).getCooldown();
         var finalTime = new AtomicInteger(time);
         forEachAttachment(data, (modifier -> finalTime.set(modifier.modifyMeleeCooldown(finalTime.get(), data))));
-        return finalTime.get();
+        MeleeWeaponModifiersEvent.Cooldown event = new MeleeWeaponModifiersEvent.Cooldown(data, finalTime.get());
+        MinecraftForge.EVENT_BUS.post(event);
+        return event.getModifier();
     }
 
     public static int getMeleeDelay(WeaponData data) {
@@ -490,7 +496,9 @@ public class WeaponModifierHelper {
         var value = getMelee(data).getDamage();
         var finalValue = new AtomicReference<>(value);
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMeleeDamage(finalValue.get(), data))));
-        return finalValue.get();
+        MeleeWeaponModifiersEvent.Damage event = new MeleeWeaponModifiersEvent.Damage(data, finalValue.get());
+        MinecraftForge.EVENT_BUS.post(event);
+        return event.getModifier();
     }
 
     public static float getMeleeDistance(WeaponData data) {

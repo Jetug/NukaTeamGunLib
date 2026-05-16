@@ -10,10 +10,8 @@
   "item.ntgl.round50": ".50 Round",
   "item.ntgl.round380": ".380 Round",
   "item.ntgl.round556": "5.56 Round",
-
   "effect.ntgl.blinded": "Blinded",
   "effect.ntgl.deafened": "Deafened",
-
   "block.ntgl.workbench": "Assembly Workbench",
   "item.ntgl.shell": "Shell",
   "item.ntgl.grenade": "Grenade",
@@ -34,7 +32,6 @@
   "itemGroup.ntgl.example": "NTGL Example",
   "itemGroup.ntgl.blocks": "NTGL blocks",
   "itemGroup.ntgl": "NTGL Guns",
-
   "death.attack.bullet": "%1$s was shot",
   "death.attack.bullet.player": "%1$s was shot by %2$s",
   "death.attack.bullet.item": "%1$s was shot by %2$s using %3$s",
@@ -47,10 +44,8 @@
   "death.attack.fire": "%1$s was incinerated",
   "death.attack.fire.player": "%1$s was incinerated by %2$s",
   "death.attack.fire.player.item": "%1$s was incinerated by %2$s using %3$s",
-
   "key.categories.ntgl.armor": "NTGL Armor",
   "key.ntgl.leave": "Exit armor",
-
   "key.categories.ntgl": "NTGL Weapons",
   "key.ntgl.melee": "Melee Attack",
   "key.ntgl.alt": "Alternative Attack",
@@ -61,7 +56,6 @@
   "key.ntgl.fire_select": "Fire Select",
   "key.ntgl.ammo_select": "Ammo Select",
   "key.ntgl.key_tips": "Show key tips",
-
   "subtitle.ntgl.stun.explosion": "Stun Grenade Explosion",
   "subtitle.ntgl.stun.ring": "Ringing",
   "subtitle.ntgl.fire": "Gunfire",
@@ -72,13 +66,11 @@
   "subtitle.ntgl.attach": "Attachment Attach",
   "subtitle.ntgl.cock": "Cocking Weapon",
   "ntgl.option_list.no_items": "No Items",
-
   "ntgl.options.gun_volume_button": "Gun Sounds",
   "ntgl.options.gun_volume": "Guns",
   "ntgl.options.adsSensitivity": "ADS Sensitivity",
   "ntgl.options.adsSensitivity.format": "ADS Sensitivity: %s",
   "ntgl.options.crosshair": "Crosshair",
-
   "ntgl.crosshair.arrow": "Arrow",
   "ntgl.crosshair.better_default": "Better Default",
   "ntgl.crosshair.box": "Box",
@@ -109,7 +101,6 @@
   "container.ntgl.attachments.window_help": "Click to move and rotate",
   "slot.ntgl.attachment.not_applicable": "\u00a7cNot applicable",
   "slot.ntgl.attachment.incompatible": "This doesn't seem to fit...",
-
   "slot.ntgl.attachment.scope": "Scope",
   "slot.ntgl.attachment.barrel": "Barrel",
   "slot.ntgl.attachment.stock": "Stock",
@@ -117,7 +108,7 @@
   "slot.ntgl.attachment.grip": "Grip",
   "slot.ntgl.attachment.magazine": "Magazine",
   "slot.ntgl.attachment.muzzle": "Muzzle",
-
+  "slot.ntgl.attachment.melee": "Melee",
   "enchantment.ntgl.quick_hands": "Quick Hands",
   "enchantment.ntgl.trigger_finger": "Trigger Finger",
   "enchantment.ntgl.lightweight": "Lightweight",
@@ -136,12 +127,10 @@
   "enchantment.ntgl.accelerator.desc": "Increases the speed of fired projectiles causing them to do more damage",
   "enchantment.ntgl.puncturing.desc": "Creates a chance that a bullet will deal critical damage",
   "enchantment.ntgl.fire_starter.desc": "Fired bullets will set blocks and entities on fire upon impact",
-
   "fire_mode.ntgl.semi": "Semi Auto",
   "fire_mode.ntgl.auto": "Auto",
   "fire_mode.ntgl.burst": "Burst",
   "fire_mode.ntgl.multi": "Multi Shot",
-
   "info.ntgl.rate": "Rounds Per Second: %s",
   "info.ntgl.damage": "Damage: %s",
   "info.ntgl.explosionDamage": "Explosion Damage: %s",
@@ -154,10 +143,21 @@
   "info.ntgl.attachment_help": "Press %s in-game for Attachments",
   "info.ntgl.burnable": "Fuel",
   "info.ntgl.water": "Water",
-
+  "info.ntgl.spread": "Spread: %s",
+  "info.ntgl.fire_mode": "Fire Mode: %s",
+  "info.ntgl.reload_time": "Reload Time: %ss",
+  "info.ntgl.knockback": "Knockback: %s",
+  "info.ntgl.fuse_time": "Fuse Time: %ss",
+  "info.ntgl.explodes_on_contact": "Explodes on Contact",
+  "info.ntgl.causes_fire": "Causes Fire",
+  "info.ntgl.destroys_blocks": "Destroys Blocks",
+  "info.ntgl.header.handling": "[ HANDLING ]",
+  "info.ntgl.header.bash": "[ MELEE BASH ]",
+  "info.ntgl.header.attachments": "[ ATTACHMENTS ]",
+  "info.ntgl.none": "None",
+  "info.ntgl.hold_shift": "Hold [SHIFT] for more details",
   "title.ntgl.default": "Main Weapon",
   "title.ntgl.under_barrel": "Under Barrel",
-
   "title.ntgl.ammo_type": "Ammo Type",
   "entity.ntgl.projectile": "Projectile",
   "entity.ntgl.spear": "Spear",
@@ -165,18 +165,15 @@
   "entity.ntgl.throwable_grenade": "Grenade",
   "entity.ntgl.throwable_stun_grenade": "Stun Grenade",
   "entity.ntgl.flame_projectile": "Flame",
-
   "info.ntgl.primary": "Primary",
   "info.ntgl.secondary": "Secondary",
   "info.ntgl.additional": "Additional",
   "info.ntgl.alternative": "Alternative",
-
   "info.ntgl.shot": "Shot",
   "info.ntgl.melee": "Melee",
   "info.ntgl.throw": "Throw",
   "info.ntgl.scope": "Scope",
   "info.ntgl.custom": "Custom",
-
   "perk.ntgl.title": "Perks:",
   "perk.ntgl.entry.positive": "+ %s",
   "perk.ntgl.entry.negative": "- %s",
@@ -195,10 +192,8 @@
   "perk.ntgl.rate": "Fire Rate: %s",
   "perk.ntgl.max_ammo": "Max Ammo: %s",
   "perk.ntgl.projectile_amount": "Projectiles Per Shot: %s",
-
   "gui.ntgl.assemble": "Assemble",
   "gui.ntgl.show_remaining": "Show Remaining",
-
   "button.controls.ntgl": "NTGL Weapons",
   "button.categories.ntgl": "NTGL Weapons",
   "ntgl.button.shoot": "Shoot Weapon",
@@ -209,7 +204,6 @@
   "ntgl.button.inspect": "Inspect",
   "ntgl.button.fire_select": "Select Fire Mode",
   "ntgl.button.ammo_select": "Select Ammo Type",
-
   "ntgl.category.workbench.title": "Assembling",
   "ntgl.category.workbench.materials": "Materials",
   "ntgl.action.aim": "Aim",

@@ -1,7 +1,9 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.nukateam.ntgl.client.helpers.MuzzleMatrixHelper;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.util.util.math.ExtendedEntityRayTraceResult;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -37,12 +39,49 @@ public class FlameProjectile extends ProjectileEntity {
     @Override
     protected void onProjectileTick() {
         if (this.level().isClientSide) {
-            for (int i = 5; i > 0; i--) {
-                this.level().addParticle(ParticleTypes.FLAME, true, this.getX() - (this.getDeltaMovement().x() / i), this.getY() - (this.getDeltaMovement().y() / i), this.getZ() - (this.getDeltaMovement().z() / i), 0, 0, 0);
+            int shooterId = this.getShooterId();
+
+            double startX = this.xOld;
+            double startY = this.yOld;
+            double startZ = this.zOld;
+
+            double offsetX = 0;
+            double offsetY = 0;
+            double offsetZ = 0;
+
+            if (this.tickCount < 10) {
+                Vec3 muzzleWorldPos = MuzzleMatrixHelper.getMuzzleWorldPosForEntity(shooterId, Minecraft.getInstance().getFrameTime());
+
+                if (muzzleWorldPos != null) {
+                    double blend = 1.0 - ((double) this.tickCount / 10.0);
+                    if (blend < 0) blend = 0;
+
+                    startX = this.xOld + (muzzleWorldPos.x() - this.xOld) * blend;
+                    startY = this.yOld + (muzzleWorldPos.y() - this.yOld) * blend;
+                    startZ = this.zOld + (muzzleWorldPos.z() - this.zOld) * blend;
+
+                    double endBlend = 1.0 - ((double) (this.tickCount + 1) / 10.0);
+                    if (endBlend < 0) endBlend = 0;
+                    offsetX = (muzzleWorldPos.x() - this.getX()) * endBlend;
+                    offsetY = (muzzleWorldPos.y() - this.getY()) * endBlend;
+                    offsetZ = (muzzleWorldPos.z() - this.getZ()) * endBlend;
+                }
+            }
+
+            double endX = this.getX() + offsetX;
+            double endY = this.getY() + offsetY;
+            double endZ = this.getZ() + offsetZ;
+
+            for (int i = 1; i <= 5; ++i) {
+                double fraction = (double) i / 5.0;
+                double px = startX + (endX - startX) * fraction;
+                double py = startY + (endY - startY) * fraction;
+                double pz = startZ + (endZ - startZ) * fraction;
+                this.level().addParticle(ParticleTypes.FLAME, true, px, py, pz, 0.0, 0.0, 0.0);
             }
             if (this.level().random.nextInt(2) == 0) {
-                this.level().addParticle(ParticleTypes.SMOKE, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
-                this.level().addParticle(ParticleTypes.FLAME, true, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+                this.level().addParticle(ParticleTypes.SMOKE, true, endX, endY, endZ, 0.0, 0.0, 0.0);
+                this.level().addParticle(ParticleTypes.FLAME, true, endX, endY, endZ, 0.0, 0.0, 0.0);
             }
         }
     }

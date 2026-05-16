@@ -21,6 +21,7 @@ public class JsonDeserializers {
     public static final JsonDeserializer<FireMode>  FIRE_MODE = (json, typeOfT, context) -> FireMode.getType(ResourceLocation.tryParse(json.getAsString()));
     public static final JsonDeserializer<AttachmentType> ATTACHMENT_TYPE = (json, typeOfT, context) -> AttachmentType.getType(ResourceLocation.tryParse(json.getAsString()));
     public static final JsonDeserializer<AmmoType> AMMO_TYPE = (json, typeOfT, context) -> AmmoType.getType(ResourceLocation.tryParse(json.getAsString()));
+    public static final JsonDeserializer<ProjectileVariant> PROJECTILE_VARIANT = (json, typeOfT, context) -> ProjectileVariant.getType(ResourceLocation.tryParse(json.getAsString()));
     public static final JsonDeserializer<WeaponModeMeta> WEAPON_MODE_META = (json, typeOfT, context) -> WeaponModeMeta.getType(ResourceLocation.tryParse(json.getAsString()));
     public static final JsonDeserializer<ProjectileType> PROJECTILE_TYPE = (json, typeOfT, context) -> ProjectileType.getType(json.getAsString());
     public static final JsonDeserializer<ResourceLocation> RESOURCE_LOCATION = (json, typeOfT, context) -> ResourceLocation.tryParse(json.getAsString());
@@ -57,6 +58,7 @@ public class JsonDeserializers {
         builder.registerTypeAdapter(LoadingType.class, LOADING_TYPE);
         builder.registerTypeAdapter(WeaponAction.class, WEAPON_TYPE);
         builder.registerTypeAdapter(WeaponMode.class, WEAPON_MODE);
+        builder.registerTypeAdapter(ProjectileVariant.class, PROJECTILE_VARIANT);
         builder.registerTypeAdapter(MeleeMode.class, MELEE_MODE);
         builder.registerTypeAdapter(ThrowMode.class, GRENADE_MODE);
         builder.registerTypeAdapter(AmmoHolder.class, SECONDARY_AMMO_TYPE);

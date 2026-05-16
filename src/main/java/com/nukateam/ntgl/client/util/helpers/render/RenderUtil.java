@@ -85,7 +85,7 @@ public class RenderUtil {
         addVertex(pose, consumer, colors, pMaxY, pMaxX, pMaxZ, 0, pMinV);
     }
 
-    public static void addVertex(PoseStack.Pose pose, VertexConsumer consumer, 
+    public static void addVertex(PoseStack.Pose pose, VertexConsumer consumer,
                                  Rgba colors, float pY, float pX, float pZ, float pU, float pV) {
         float red = colors.r();
         float green = colors.g();

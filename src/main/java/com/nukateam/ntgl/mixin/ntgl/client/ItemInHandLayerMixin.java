@@ -7,6 +7,7 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.Minecraft;
@@ -32,12 +33,17 @@ public class ItemInHandLayerMixin {
     private void renderArmWithItem(LivingEntity entity, ItemStack stack,
                                        ItemDisplayContext transformType, HumanoidArm arm,
                                        PoseStack poseStack, MultiBufferSource source, int light, CallbackInfo ci) {
-        var minecraft = Minecraft.getInstance();
-        var hand = minecraft.options.mainHand().get() == arm ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+        var hand = entity.getMainArm() == arm ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
 
         if(stack != entity.getItemInHand(hand)) return;
 
-        var oppositeHand = minecraft.options.mainHand().get() == arm ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+        boolean inPA = entity.getVehicle() instanceof WearableChassis;
+        if (inPA) {
+            ci.cancel();
+            return;
+        }
+
+        var oppositeHand = entity.getMainArm() == arm ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         var oppositeStack = entity.getItemInHand(oppositeHand);
 
         if (hand == InteractionHand.OFF_HAND) {

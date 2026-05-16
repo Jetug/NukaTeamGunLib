@@ -1,4 +1,4 @@
-package com.nukateam.chassis_core.common.data.json;
+package com.nukateam.chassis_core.common.data.enums;
 
 import com.google.gson.annotations.SerializedName;
 

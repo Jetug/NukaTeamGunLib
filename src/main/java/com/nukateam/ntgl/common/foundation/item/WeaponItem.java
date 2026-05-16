@@ -10,6 +10,7 @@ import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
+import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.foundation.entity.throwable.ThrowableItemEntity;
 import com.nukateam.ntgl.common.foundation.init.NtglComponents;
 import com.nukateam.ntgl.common.network.ServerPlayHandler;
@@ -106,21 +107,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         return id.get();
     }
 
-//    @Override
-//    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
-//        consumer.accept(new IClientItemExtensions() {
-//            private ProxyItemRenderer renderer;
-//
-//            @Override
-//            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-//                if (this.renderer == null)
-//                    this.renderer = new ProxyItemRenderer(getRenderer());
-//
-//                return this.renderer;
-//            }
-//        });
-//    }
-
     @Override
     public void createGeoRenderer(Consumer<GeoRenderProvider> consumer) {
         consumer.accept(new GeoRenderProvider() {
@@ -140,49 +126,12 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         WeaponStateHelper.setAmmoCount(new WeaponData(stack, null), getConfig().getGeneral().getMaxAmmo());
     }
 
-//    public static Map<UUID, HashMultimap<Holder<Attribute>, AttributeModifier>> PLAYER_MODIFIERS = new HashMap<>();
-
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if(entity instanceof LivingEntity livingEntity) {
             WeaponItemUtils.checkAmmo(stack, entity, livingEntity);
-
-//            if(isItemInHands(stack, livingEntity)) {
-//                var mods = PLAYER_MODIFIERS.get(livingEntity.getUUID());
-//                if (mods != null) {
-//                    livingEntity.getAttributes().removeAttributeModifiers(mods);
-//                }
-//                applyAttributeModifiers(livingEntity, InteractionHand.MAIN_HAND);
-//                applyAttributeModifiers(livingEntity, InteractionHand.OFF_HAND);
-//            }
         }
     }
-
-//    public static void applyAttributeModifiers(LivingEntity player, InteractionHand hand) {
-//        var heldItem = player.getItemInHand(hand);
-//
-//        if (heldItem.getItem() instanceof IWeapon) {
-//            var modifiers = WeaponModifierHelper.getAttributeModifiers(new WeaponData(heldItem, player));
-//            var multiMap = HashMultimap.<Holder<Attribute>, AttributeModifier>create();
-//
-//            for (var modifier : modifiers) {
-//                BuiltInRegistries.ATTRIBUTE.getHolder(modifier.getAttribute()).ifPresent((attributeHolder) -> {
-//                    var attributeInstance = player.getAttribute(attributeHolder);
-//                    if (attributeInstance != null) {
-//                        var name = modifier.getAttribute().toString().replace(".", "_") + "_" + hand.toString().toLowerCase(Locale.ROOT);
-//                        var id = ResourceLocation.parse(name);
-//                        var newModifier = new AttributeModifier(id, modifier.getValue(), modifier.getOperation());
-//
-//                        if (!attributeInstance.hasModifier(id)) {
-//                            attributeInstance.addTransientModifier(newModifier);
-//                        }
-//                        multiMap.put(attributeHolder, newModifier);
-//                    }
-//                });
-//            }
-//            WeaponItem.PLAYER_MODIFIERS.put(player.getUUID(), multiMap);
-//        }
-//    }
 
     private static boolean isItemInHands(ItemStack stack, LivingEntity livingEntity) {
         return stack == livingEntity.getItemInHand(InteractionHand.MAIN_HAND) ||
@@ -190,27 +139,58 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
-        if (FMLEnvironment.dist == Dist.CLIENT) {
-            var data = getWeaponData(stack);
-            WeaponItemTooltips.addAmmoType(tooltip, data);
-            WeaponItemTooltips.addFireRate(tooltip, data);
-            WeaponItemTooltips.addDamage(tooltip, data);
-            WeaponItemTooltips.addMelleDamage(tooltip, data);
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
+        var data = new WeaponData(stack, null);
+        var tagCompound = stack.getOrCreateTag();
 
-            var explosion = WeaponStateHelper.getProjectileConfig(data).getExplosion();
-            if (explosion.getRadius() > 0) {
-                WeaponItemTooltips.addExplosionTip(tooltip, explosion);
-            }
+        boolean canShoot = WeaponModifierHelper.canShoot(data);
+        boolean canThrow = WeaponModifierHelper.canThrow(data);
 
-            WeaponItemTooltips.addAmmo(tooltip, data);
-            WeaponItemTooltips.addFuel(tooltip, data);
-
-            var name = NtglKeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
-
-            tooltip.add(Component.translatable("info.ntgl.attachment_help", name)
-                    .withStyle(ChatFormatting.YELLOW));
+        ProjectileConfig projectileConfig = new ProjectileConfig();
+        if (canShoot) {
+            projectileConfig = WeaponStateHelper.getProjectileConfig(data);
+        } else if (canThrow) {
+            projectileConfig = WeaponModifierHelper.getThrowable(data).getProjectile();
         }
+
+        var explosion = projectileConfig.getExplosion();
+        boolean hasExplosion = explosion != null && explosion.getRadius() > 0;
+        boolean isPureMelee = !canShoot && !canThrow && !hasExplosion;
+
+        if (canShoot) {
+            WeaponItemTooltips.addRangedStats(tooltip, tagCompound, data);
+        }
+
+        if (hasExplosion) {
+            WeaponItemTooltips.addExplosionStats(tooltip, data, projectileConfig);
+        }
+
+        if (isPureMelee) {
+            WeaponItemTooltips.addVanillaMeleeStats(tooltip, data);
+        }
+
+        WeaponItemTooltips.addFuel(tooltip, data);
+        WeaponItemTooltips.addAttachmentsStats(tooltip, stack, data);
+
+        boolean hasHandlingOptions = canShoot;
+        boolean hasAttachments = !WeaponModifierHelper.getAttachmentTypes(data).isEmpty();
+
+        if (hasHandlingOptions) {
+            if (net.minecraft.client.gui.screens.Screen.hasShiftDown()) {
+                WeaponItemTooltips.addHandlingStats(tooltip, data, true);
+            } else {
+                tooltip.add(Component.translatable("info.ntgl.hold_shift").withStyle(ChatFormatting.DARK_GRAY));
+            }
+        } else if (hasAttachments) {
+            if (!net.minecraft.client.gui.screens.Screen.hasShiftDown()) {
+                tooltip.add(Component.translatable("info.ntgl.hold_shift").withStyle(ChatFormatting.DARK_GRAY));
+            }
+        }
+
+        var name = NtglKeyBinds.KEY_ATTACHMENTS.getKey().getDisplayName();
+
+        tooltip.add(Component.translatable("info.ntgl.attachment_help", name)
+                .withStyle(ChatFormatting.YELLOW));
     }
 
     @OnlyIn(Dist.CLIENT)

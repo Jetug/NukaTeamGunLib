@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.util.ClientDebug;
+import com.nukateam.ntgl.client.helpers.MuzzleMatrixHelper;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.helpers.TransformUtils;
 import com.nukateam.ntgl.common.data.WeaponData;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 
@@ -75,10 +77,9 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
             poseStack.translate(0, 0, 25 / 10d / 16D);
 
             if(TransformUtils.isNonHand(transformType)){
-                poseStack.translate(0, -7.5D / 16D/* ClientDebug.Y / 10D / 16D*/, 0);
+                poseStack.translate(0, -7.5D / 16D, 0);
             }
             else if(TransformUtils.isFirstPerson(transformType)){
-//                poseStack.translate(X / 10d / 16d, -25 / 10d / 16d, 5 / 10d / 16d);
                 poseStack.translate(0, -8.5 / 16D, 0.5 / 16D);
             }
             else poseStack.translate(0, -6 / 16D, 0);
@@ -98,6 +99,32 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
         if (bone.getName().equals(MUZZLE_FLASH)) {
             if (barrelItem != null) {
                 renderMuzzleFlash(poseStack);
+            }
+        }
+
+        if (!bone.isHidden() && bone.getName().startsWith(MUZZLE_FLASH)) {
+            Matrix4f mat = new Matrix4f(poseStack.last().pose());
+            mat.translate(
+                (bone.getPivotX() + bone.getPosX()) / 16.0f,
+                (bone.getPivotY() + bone.getPosY()) / 16.0f,
+                (bone.getPivotZ() + bone.getPosZ()) / 16.0f
+            );
+
+            boolean isFirstPerson = this.transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND
+                    || this.transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
+            boolean isThirdPerson = this.transformType == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND
+                    || this.transformType == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
+
+            LivingEntity entity = this.getRenderEntity();
+
+            if (entity != null) {
+                if (isFirstPerson) {
+                    MuzzleMatrixHelper.saveMuzzleMatrix(entity.getId(), mat, true);
+                    MuzzleMatrixHelper.lastMuzzleMatrix = mat;
+                } else if (isThirdPerson) {
+                    MuzzleMatrixHelper.saveMuzzleMatrix(entity.getId(), mat, false);
+                    MuzzleMatrixHelper.lastThirdPersonMuzzleMatrix = mat;
+                }
             }
         }
 
@@ -125,7 +152,7 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
         var length = barrelItem.getProperties().getLength();
         poseStack.translate(0, 0, -length / 16D);
         if (Ntgl.isDebugging())
-            poseStack.translate(-X / 10D / 16D, Y / 10D / 16D, Z / 10D / 16D);
+            poseStack.translate(-mfX / 10D / 16D, mfY / 10D / 16D, mfZ / 10D / 16D);
     }
 
     protected void prepareHiddenBones(ItemDisplayContext transformType) {

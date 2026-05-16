@@ -53,9 +53,12 @@ public class PacketHandler {
         registrar.playToClient(S2CMessageEntityDeath.TYPE, S2CMessageEntityDeath.CODEC, S2CMessageEntityDeath::handle);
         registrar.playToClient(S2CMessageEntityDeathFx.TYPE, S2CMessageEntityDeathFx.CODEC, S2CMessageEntityDeathFx::handle);
         registrar.playToClient(S2CMessageStunGrenade.TYPE, S2CMessageStunGrenade.CODEC, S2CMessageStunGrenade::handle);
+
         registrar.playToClient(S2CMessageUpdateWeapons.TYPE, S2CMessageUpdateWeapons.CODEC, S2CMessageUpdateWeapons::handle);
         registrar.playToClient(S2CMessageUpdateAmmo.TYPE, S2CMessageUpdateAmmo.CODEC, S2CMessageUpdateAmmo::handle);
+        registrar.playToClient(S2CMessageUpdateProjectiles.TYPE, S2CMessageUpdateProjectiles.CODEC, S2CMessageUpdateProjectiles::handle);
         registrar.playToClient(S2CMessageUpdateAttachments.TYPE, S2CMessageUpdateAttachments.CODEC, S2CMessageUpdateAttachments::handle);
+
         registrar.playToClient(S2CMessageBlood.TYPE, S2CMessageBlood.CODEC, S2CMessageBlood::handle);
         registrar.playToClient(S2CMessageGunSound.TYPE, S2CMessageGunSound.CODEC, S2CMessageGunSound::handle);
         registrar.playToClient(S2CMessageProjectileHitBlock.TYPE, S2CMessageProjectileHitBlock.CODEC, S2CMessageProjectileHitBlock::handle);

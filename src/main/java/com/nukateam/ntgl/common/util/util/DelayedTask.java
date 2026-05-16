@@ -37,6 +37,7 @@ public class DelayedTask {
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
         var server = (MinecraftServer) LogicalSidedProvider.WORKQUEUE.get(LogicalSide.SERVER);
+        if (server == null) return;
         var it = tasks.iterator();
         while (it.hasNext()) {
             var impl = it.next();
