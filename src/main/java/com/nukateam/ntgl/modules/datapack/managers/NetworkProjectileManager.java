@@ -5,7 +5,10 @@ import com.nukateam.chassis_core.modules.config.annotation.Validator;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.data.json.JsonDeserializers;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.modules.constants.Paths;
+import com.nukateam.ntgl.modules.datapack.ConfigUtils;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -51,48 +54,9 @@ public class NetworkProjectileManager extends SimplePreparableReloadListener<Map
     }
 
     @Override
-    protected Map<ResourceLocation, ProjectileConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-//        return DataUtils.getConfigMap(manager, (v) -> v instanceof IAmmo, ProjectileConfig.class, Paths.PROJECTILE);
-
-        var map = new HashMap<ResourceLocation, ProjectileConfig>();
-        var resources = new ArrayList<>(getJsonResources(manager, Paths.PROJECTILES).keySet());
-
-        resources.sort((r1, r2) -> {
-            if (r1.getNamespace().equals(r2.getNamespace())) return 0;
-            return r2.getNamespace().equals(Ntgl.MOD_ID) ? 1 : -1;
-        });
-
-        resources.forEach(resourceLocation ->
-        {
-            manager.getResource(resourceLocation).ifPresent(resource ->
-            {
-                try (var reader = new BufferedReader(new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
-                    var gun = GsonHelper.fromJson(JsonDeserializers.GSON_INSTANCE, reader, ProjectileConfig.class);
-
-                    if (Validator.isValidObject(gun)) {
-                        map.put(resourceLocation, gun);
-                    }
-                    else {
-                        Ntgl.LOGGER.error("Couldn't load data file {} as it is missing or malformed. Using default gun data", resourceLocation);
-                        map.putIfAbsent(resourceLocation,  ProjectileConfig.class.getDeclaredConstructor().newInstance());
-                    }
-                }
-                catch (InvalidObjectException e) {
-                    Ntgl.LOGGER.error("Missing required properties for {}", resourceLocation);
-                    e.printStackTrace();
-                }
-                catch (IOException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
-                    Ntgl.LOGGER.error("Couldn't parse data file {}", resourceLocation);
-                }
-                catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            });
-        });
-
-        return map;
+    protected Map<IAmmo, ProjectileConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
+        return ConfigUtils.getConfigMap(manager, BuiltInRegistries.ITEM, (v) -> v instanceof IAmmo, ProjectileConfig.class, Paths.PROJECTILES);
     }
-
 
     @Override
     protected void apply(Map<ResourceLocation, ProjectileConfig> objects, ResourceManager resourceManager, ProfilerFiller profiler) {
