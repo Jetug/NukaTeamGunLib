@@ -1,10 +1,10 @@
 package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.google.common.collect.ImmutableMap;
+import com.nukateam.chassis_core.modules.config.annotation.Validator;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.data.json.JsonDeserializers;
-import com.nukateam.ntgl.common.util.annotation.Validator;
 import com.nukateam.ntgl.modules.constants.Paths;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +13,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
@@ -105,7 +105,7 @@ public class NetworkProjectileManager extends SimplePreparableReloadListener<Map
         buffer.writeVarInt(PROGECTILE_CONFIGS.size());
         PROGECTILE_CONFIGS.forEach((id, ammo) -> {
             buffer.writeResourceLocation(id);
-            buffer.writeNbt(ammo.serializeNBT());
+            buffer.writeNbt(ammo.serializeNBT(null));
         });
     }
 

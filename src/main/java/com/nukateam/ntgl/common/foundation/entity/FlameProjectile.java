@@ -50,7 +50,7 @@ public class FlameProjectile extends ProjectileEntity {
             double offsetZ = 0;
 
             if (this.tickCount < 10) {
-                Vec3 muzzleWorldPos = MuzzleMatrixHelper.getMuzzleWorldPosForEntity(shooterId, Minecraft.getInstance().getFrameTime());
+                Vec3 muzzleWorldPos = MuzzleMatrixHelper.getMuzzleWorldPosForEntity(shooterId, Minecraft.getInstance().getTimer().getRealtimeDeltaTicks());
 
                 if (muzzleWorldPos != null) {
                     double blend = 1.0 - ((double) this.tickCount / 10.0);

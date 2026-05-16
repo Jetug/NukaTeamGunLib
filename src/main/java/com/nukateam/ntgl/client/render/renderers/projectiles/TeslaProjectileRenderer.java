@@ -50,7 +50,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
 
     public void render(TeslaProjectile projectile, float entityYaw, float partialTicks,
                         PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-        int shooterId = projectile.getShooterId();
+        int shooterId = projectile.getOwnerId();
         Vec3 muzzleWorldPos = MuzzleMatrixHelper.getMuzzleWorldPosForEntity(shooterId, partialTicks);
 
         if (muzzleWorldPos != null) {
@@ -124,7 +124,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
                 var yOffset = 0;
                 var color = new RGB(projectile.getProjectile().getColor()).toRgba();
 
-                RenderUtils.renderBeam(poseStack, bufferSource, getTextureLocation(projectile), partialTicks, 1.0F,
+                RenderUtil.renderBeam(poseStack, bufferSource, getTextureLocation(projectile), partialTicks, 1.0F,
                         gameTime, (float)yOffset - 0.1f, (float)(length + 0.1), color, radius, glowRadius);
 
             poseStack.popPose();
