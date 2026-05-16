@@ -172,7 +172,7 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         if (passenger == null) return;
 
         var yOffset = 1.0f;
-        var posY = getY() + getPassengerRidingPosition(entity) + PLAYER_RIDING_OFFSET - yOffset;
+        var posY = getY() + getPassengerRidingPosition(entity).y + PLAYER_RIDING_OFFSET - yOffset;
         entity.setPos(getX(), posY, getZ());
 
         if (entity instanceof LivingEntity livingEntity)
