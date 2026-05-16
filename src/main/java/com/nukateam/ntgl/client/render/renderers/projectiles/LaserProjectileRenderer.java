@@ -5,7 +5,6 @@ import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.helpers.render.RenderUtil;
 import com.nukateam.ntgl.client.helpers.MuzzleMatrixHelper;
-import com.nukateam.ntgl.client.util.helpers.render.RenderUtils;
 import com.nukateam.ntgl.common.data.holders.ProjectileVariant;
 import com.nukateam.ntgl.common.util.data.RGB;
 import com.nukateam.ntgl.common.util.data.Rgba;

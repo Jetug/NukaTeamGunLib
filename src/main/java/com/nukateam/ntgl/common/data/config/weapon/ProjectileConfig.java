@@ -12,12 +12,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraftforge.common.util.INBTSerializable;
 
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.minecraft.core.HolderLookup;
-import org.apache.commons.lang3.tuple.Pair;
+
 import javax.annotation.Nullable;
 
 import static com.nukateam.ntgl.common.data.json.JsonDeserializers.getDamageTypeResourceKey;

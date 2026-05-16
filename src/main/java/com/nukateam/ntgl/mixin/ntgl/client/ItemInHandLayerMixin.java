@@ -57,7 +57,7 @@ public class ItemInHandLayerMixin {
             ci.cancel();
             var layer = (ItemInHandLayer<?, ?>) (Object) this;
             renderArmWithGun(layer, entity, stack, transformType, hand, arm,
-                    poseStack, source, light, minecraft.getTimer().getGameTimeDeltaTicks());
+                    poseStack, source, light, Minecraft.getInstance().getTimer().getGameTimeDeltaTicks());
         }
     }
 

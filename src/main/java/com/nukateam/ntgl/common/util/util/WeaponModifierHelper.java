@@ -7,17 +7,18 @@ import com.nukateam.ntgl.common.data.config.weapon.*;
 import com.nukateam.ntgl.common.data.constants.SoundTypes;
 import com.nukateam.ntgl.common.data.holders.*;
 
+import com.nukateam.ntgl.common.foundation.event.ProjectileSpreadEvent;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import com.nukateam.ntgl.common.foundation.event.MeleeWeaponModifiersEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForge;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
@@ -376,8 +377,8 @@ public class WeaponModifierHelper {
         var finalSpread = new AtomicReference<>(spread);
 
         forEachAttachment(data, (modifier -> finalSpread.set(modifier.modifyProjectileSpread(finalSpread.get(), data))));
-        ProjectileSpreadEvent event = new ProjectileSpreadEvent(data, finalSpread.get());
-        MinecraftForge.EVENT_BUS.post(event);
+        var event = new ProjectileSpreadEvent(data, finalSpread.get());
+        NeoForge.EVENT_BUS.post(event);
         return event.getSpread();
     }
 
@@ -474,7 +475,7 @@ public class WeaponModifierHelper {
         var finalTime = new AtomicInteger(time);
         forEachAttachment(data, (modifier -> finalTime.set(modifier.modifyMeleeCooldown(finalTime.get(), data))));
         MeleeWeaponModifiersEvent.Cooldown event = new MeleeWeaponModifiersEvent.Cooldown(data, finalTime.get());
-        MinecraftForge.EVENT_BUS.post(event);
+        NeoForge.EVENT_BUS.post(event);
         return event.getModifier();
     }
 
@@ -497,7 +498,7 @@ public class WeaponModifierHelper {
         var finalValue = new AtomicReference<>(value);
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyMeleeDamage(finalValue.get(), data))));
         MeleeWeaponModifiersEvent.Damage event = new MeleeWeaponModifiersEvent.Damage(data, finalValue.get());
-        MinecraftForge.EVENT_BUS.post(event);
+        NeoForge.EVENT_BUS.post(event);
         return event.getModifier();
     }
 

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.helpers.MuzzleMatrixHelper;
-import com.nukateam.ntgl.client.util.helpers.render.RenderUtils;
 import com.nukateam.ntgl.common.data.holders.ProjectileVariant;
 import com.nukateam.ntgl.common.util.data.RGB;
 import com.nukateam.ntgl.client.util.helpers.render.RenderUtil;
@@ -41,7 +40,7 @@ public class TeslaProjectileRenderer extends EntityRenderer<TeslaProjectile> {
     @Override
     public ResourceLocation getTextureLocation(TeslaProjectile entity) {
         var variant = entity.getProjectile().getProjectileVariant();
-        return variant == ProjectileVariant.STANDARD ? TESLA_TEXTURE : variant.getIcon();
+        return variant == ProjectileVariant.STANDARD ? texture : variant.getIcon();
     }
 
     @Override

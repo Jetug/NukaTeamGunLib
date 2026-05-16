@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 
+
 import java.util.*;
 
 public class EquipmentConfig implements INBTSerializable<CompoundTag>{
@@ -20,7 +21,6 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
     @Ignored  public ResourceLocation model;
     @Ignored  public ResourceLocation id;
     @Ignored  public HashMap<String, ResourceLocation> texture;
-    //    @Optional public int[] uv;
     @Ignored  public ArrayList<EquipmentAttachment> attachments = new ArrayList<>();
     @Optional public ArrayList<String> hide = new ArrayList<>();
     @Optional public ArrayList<String> mods = new ArrayList<>();

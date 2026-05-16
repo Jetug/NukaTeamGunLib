@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.common.foundation.event;
 
 import com.nukateam.ntgl.common.data.WeaponData;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 
 public abstract class MeleeWeaponModifiersEvent extends Event {
 

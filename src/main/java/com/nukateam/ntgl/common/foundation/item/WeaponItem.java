@@ -139,9 +139,8 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
         var data = new WeaponData(stack, null);
-        var tagCompound = stack.getOrCreateTag();
 
         boolean canShoot = WeaponModifierHelper.canShoot(data);
         boolean canThrow = WeaponModifierHelper.canThrow(data);
@@ -158,7 +157,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         boolean isPureMelee = !canShoot && !canThrow && !hasExplosion;
 
         if (canShoot) {
-            WeaponItemTooltips.addRangedStats(tooltip, tagCompound, data);
+            WeaponItemTooltips.addRangedStats(tooltip, data);
         }
 
         if (hasExplosion) {
@@ -170,7 +169,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
         }
 
         WeaponItemTooltips.addFuel(tooltip, data);
-        WeaponItemTooltips.addAttachmentsStats(tooltip, stack, data);
+        WeaponItemTooltips.addAttachmentsStats(tooltip, data);
 
         boolean hasHandlingOptions = canShoot;
         boolean hasAttachments = !WeaponModifierHelper.getAttachmentTypes(data).isEmpty();

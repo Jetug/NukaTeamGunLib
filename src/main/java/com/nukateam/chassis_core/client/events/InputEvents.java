@@ -13,7 +13,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import org.lwjgl.glfw.GLFW;
 
-import static com.nukateam.chassis_core.client.ClientConfig.OPTIONS;
 import static com.nukateam.chassis_core.common.network.PacketSender.doServerAction;
 import static com.nukateam.chassis_core.common.util.helpers.PlayerUtils.getLocalPlayer;
 import static com.nukateam.chassis_core.common.util.helpers.PlayerUtils.stopWearingArmor;
@@ -42,12 +41,13 @@ public class InputEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
     public static void onMouseKeyInput(InputEvent.MouseButton.Post event) {
+        var options = Minecraft.getInstance().options;
         switch (event.getAction()) {
             case GLFW.GLFW_PRESS -> {
 
             }
             case GLFW.GLFW_RELEASE -> {
-                if (event.getButton() != OPTIONS.keyUse.getKey().getValue() && isNotInGame()) return;
+                if (event.getButton() != options.keyUse.getKey().getValue() && isNotInGame()) return;
                 handleInput(event.getButton(), KeyAction.RELEASE);
             }
         }

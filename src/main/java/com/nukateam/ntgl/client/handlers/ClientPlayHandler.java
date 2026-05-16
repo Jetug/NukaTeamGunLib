@@ -223,7 +223,7 @@ public class ClientPlayHandler {
     }
 
     public static void handleUpdateAmmo(S2CMessageUpdateAmmo message) {
-        NetworkAmmoManager.updateRegisteredAmmo(message.getRegisteredAmmo());
+        NetworkAmmoManager.updateRegisteredAmmo(message);
     }
 
     public static void handleUpdateProjectile(S2CMessageUpdateProjectiles message) {

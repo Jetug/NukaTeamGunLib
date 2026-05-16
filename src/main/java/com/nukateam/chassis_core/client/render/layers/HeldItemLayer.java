@@ -1,6 +1,8 @@
 package com.nukateam.chassis_core.client.render.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.renderer.GeoRenderer;
@@ -45,8 +47,8 @@ public class HeldItemLayer<T extends GeoAnimatable> extends BlockAndItemGeoLayer
                     var isWeapon = stack.getItem() instanceof com.nukateam.geo.interfaces.DynamicGeoItem;
 
                     if (isWeapon) {
-                        var globalId = new net.minecraft.resources.ResourceLocation("nukacraft", "global_offsets");
-                        var id = net.minecraftforge.registries.ForgeRegistries.ITEMS.getKey(stack.getItem());
+                        var globalId = ResourceLocation.fromNamespaceAndPath("nukacraft", "global_offsets");
+                        var id = BuiltInRegistries.ITEM.getKey(stack.getItem());
                         var global = com.nukateam.ntgl.client.util.PAWeaponOffsets.get(globalId);
                         var offset = com.nukateam.ntgl.client.util.PAWeaponOffsets.get(id);
 

@@ -34,6 +34,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -57,8 +59,8 @@ import net.minecraft.world.phys.*;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -66,7 +68,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ProjectileEntity extends Entity implements IProjectile {
+import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
+
+public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
     private static final EntityDataAccessor<ItemStack> AMMO = getDataAccessor(EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<ProjectileConfig> PROJECTILE = getDataAccessor(NtglEntityDataSerializers.PROJECTILE_CONFIG.get());
     private static final EntityDataAccessor<Integer> WIELDER_ID = getDataAccessor(EntityDataSerializers.INT);
@@ -194,11 +198,6 @@ public class ProjectileEntity extends Entity implements IProjectile {
     @Override
     public boolean shouldRenderAtSqrDistance(double distance) {
         return true;
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
