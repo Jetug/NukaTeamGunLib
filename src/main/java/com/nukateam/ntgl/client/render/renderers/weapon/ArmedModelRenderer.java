@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.*;
+import static com.nukateam.ntgl.client.util.ClientDebug.*;
 
 public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
     public static final String RIGHT_ARM = "right_arm";
@@ -111,7 +112,7 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
             poseStack.pushPose();
             {
                 RenderUtil.prepMatrixForBone(poseStack, bone);
-                poseStack.translate(0.01, -0.27, 0.05);
+//                poseStack.translate(0.01, -0.27, 0.05);
                 poseStack.scale(bone.getScaleX(), bone.getScaleY(), bone.getScaleZ());
 
                 if(ChassisHelper.isPlayerInChassis()){
@@ -133,18 +134,18 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
                     if (isRightHand) {
                         if (bone.getName().equals(LEFT_ARM)) {
                             poseStack.translate(-65 / 10d / 16d, 0 / 10d / 16d, 0 / 10d / 16d);
-                            renderArm(poseStack, bone, packedLight, bufferSource, false);
+                            renderArm(poseStack, bone, packedLight, bufferSource, packedLight, HumanoidArm.LEFT);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
                             poseStack.translate(50 / 10d / 16d, -20 / 10d / 16d, 0 / 10d / 16d);
-                            renderArm(poseStack, bone, packedLight, bufferSource, true);
+                            renderArm(poseStack, bone, packedLight, bufferSource, packedLight, HumanoidArm.RIGHT);
                         }
                     } else {
                         if (bone.getName().equals(LEFT_ARM)) {
                             poseStack.translate(50 / 10d / 16d, -20 / 10d / 16d, 0 / 10d / 16d);
-                            renderArm(poseStack, bone, packedLight, bufferSource, true);
+                            renderArm(poseStack, bone, packedLight, bufferSource, packedLight, HumanoidArm.RIGHT);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
                             poseStack.translate(-65 / 10d / 16d, 0 / 10d / 16d, 0 / 10d / 16d);
-                            renderArm(poseStack, bone, packedLight, bufferSource, false);
+                            renderArm(poseStack, bone, packedLight, bufferSource, packedLight, HumanoidArm.LEFT);
                         }
                     }
                 }

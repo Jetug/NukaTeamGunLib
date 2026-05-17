@@ -10,9 +10,11 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
@@ -22,6 +24,8 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import software.bernie.geckolib.cache.object.GeoBone;
 import net.minecraft.client.Minecraft;
 import software.bernie.geckolib.util.ClientUtil;
+
+import static com.nukateam.ntgl.client.util.ClientDebug.*;
 
 public class GeoRenderUtils {
     public static void renderArm(PoseStack poseStack, GeoBone bone, int packedLight,
@@ -46,6 +50,39 @@ public class GeoRenderUtils {
         renderArmorOnHand(mc.player, EquipmentSlot.CHEST, armorModelOuter,
                 poseStack, bufferSource, packedLight, right);
         poseStack.popPose();
+    }
+
+    public static void renderArm(PoseStack poseStack, GeoBone bone, int packedLight,
+                                 MultiBufferSource bufferSource, int light, HumanoidArm arm) {
+        applyBoneTransform(poseStack, bone);
+//        poseStack.mulPose(Axis.ZP.rotationDegrees(180f));
+//        var normal = new Matrix3f(poseStack.last().normal());
+//        var pose = new Matrix4f(poseStack.last().pose());
+//        var poseStack2 = new PoseStack();
+//        poseStack2.last().normal().mul(normal);
+//        poseStack2.last().pose().mul(pose);
+        poseStack.pushPose();
+//        poseStack.translate(0, -24 / 16d, 0);
+        poseStack.translate(X / 10d / 16d, Y / 10d / 16d, Z / 10d / 16d);
+//        poseStack.scale(2f, 2f, 2f);
+        renderFirstPersonArm(Minecraft.getInstance().player, arm, poseStack, light);
+        poseStack.popPose();
+
+//        Minecraft.getInstance().renderBuffers().bufferSource().endBatch();
+
+    }
+
+    public static void renderFirstPersonArm(LocalPlayer player, HumanoidArm hand, PoseStack matrixStack, int combinedLight) {
+        var mc = Minecraft.getInstance();
+        var renderManager = mc.getEntityRenderDispatcher();
+        var renderer = (PlayerRenderer) renderManager.getRenderer(player);
+        var buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+
+        if (hand == HumanoidArm.RIGHT) {
+            renderer.renderRightHand(matrixStack, buffer, combinedLight, player);
+        } else {
+            renderer.renderLeftHand(matrixStack, buffer, combinedLight, player);
+        }
     }
 
     private static void renderArmorOnHand(Player player, EquipmentSlot slot,
