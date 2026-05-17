@@ -1,14 +1,10 @@
 package com.nukateam.ntgl.modules.datapack.managers;
 
 import com.google.common.collect.ImmutableMap;
-import com.nukateam.chassis_core.modules.config.annotation.Validator;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.data.json.JsonDeserializers;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.modules.constants.Paths;
-import com.nukateam.ntgl.modules.datapack.ConfigUtils;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -23,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InvalidObjectException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,8 +49,35 @@ public class NetworkProjectileManager extends SimplePreparableReloadListener<Map
     }
 
     @Override
-    protected Map<IAmmo, ProjectileConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        return ConfigUtils.getConfigMap(manager, BuiltInRegistries.ITEM, (v) -> v instanceof IAmmo, ProjectileConfig.class, Paths.PROJECTILES);
+    protected Map<ResourceLocation, ProjectileConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
+        var map = new HashMap<ResourceLocation, ProjectileConfig>();
+        var resources = new ArrayList<>(getJsonResources(manager, Paths.PROJECTILES).keySet());
+
+        resources.sort((r1, r2) -> {
+            if (r1.getNamespace().equals(r2.getNamespace())) return 0;
+            return r2.getNamespace().equals(Ntgl.MOD_ID) ? 1 : -1;
+        });
+
+        resources.forEach(resourceLocation ->
+        {
+            manager.getResource(resourceLocation).ifPresent(resource ->
+            {
+                try (var reader = new BufferedReader(new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
+                    var gun = GsonHelper.fromJson(JsonDeserializers.GSON_INSTANCE, reader, ProjectileConfig.class);
+                    map.put(resourceLocation, gun);
+
+                }
+                catch (InvalidObjectException e) {
+                    Ntgl.LOGGER.error("Missing required properties for {}", resourceLocation);
+                    e.printStackTrace();
+                }
+                catch (IOException e) {
+                    Ntgl.LOGGER.error("Couldn't parse data file {}", resourceLocation);
+                }
+            });
+        });
+
+        return map;
     }
 
     @Override

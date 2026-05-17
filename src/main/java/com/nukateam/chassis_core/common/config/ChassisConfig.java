@@ -1,8 +1,8 @@
 package com.nukateam.chassis_core.common.config;
 
 import com.nukateam.chassis_core.common.data.holders.ChassisPart;
-import com.nukateam.chassis_core.modules.config.annotation.Ignored;
 import com.nukateam.chassis_core.modules.config.utils.NbtUtils;
+import com.nukateam.ntgl.common.util.annotation.Ignored;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -12,7 +12,8 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.LinkedHashSet;
 
 public class ChassisConfig implements INBTSerializable<CompoundTag>{
-    @Ignored private LinkedHashSet<ChassisPart> parts;
+    @Ignored
+    private LinkedHashSet<ChassisPart> parts;
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {

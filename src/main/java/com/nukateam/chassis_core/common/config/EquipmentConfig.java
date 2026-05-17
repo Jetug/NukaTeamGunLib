@@ -1,8 +1,8 @@
 package com.nukateam.chassis_core.common.config;
 
 import com.nukateam.chassis_core.common.data.holders.ChassisPart;
-import com.nukateam.chassis_core.modules.config.annotation.Ignored;
-import com.nukateam.chassis_core.modules.config.annotation.Optional;
+import com.nukateam.ntgl.common.util.annotation.Ignored;
+import com.nukateam.ntgl.common.util.annotation.Optional;
 import com.nukateam.ntgl.common.util.util.NbtUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +15,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class EquipmentConfig implements INBTSerializable<CompoundTag>{
-    @Ignored  private ChassisPart part;
+    @Ignored
+    private ChassisPart part;
     @Optional LinkedHashSet<ResourceLocation> chassis;
     @Optional public ResourceLocation parent;
     @Ignored  public ResourceLocation model;

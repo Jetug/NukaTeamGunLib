@@ -2,16 +2,13 @@ package com.nukateam.ntgl.modules.datapack;
 
 import com.google.gson.JsonSyntaxException;
 import com.nukateam.chassis_core.ChassisCore;
-import com.nukateam.chassis_core.modules.config.annotation.Validator;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.json.JsonDeserializers;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -23,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class ConfigUtils {
