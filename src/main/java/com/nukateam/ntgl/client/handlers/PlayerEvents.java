@@ -13,6 +13,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 
 import java.lang.reflect.InvocationTargetException;
 
+import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderHand;
 import static com.nukateam.ntgl.client.util.ClientDebug.*;
 
 @EventBusSubscriber(value = Dist.CLIENT)
@@ -54,13 +55,16 @@ public class PlayerEvents {
 //        poseStack.popPose();
 
 //        event.setCanceled(true);
-//
-//        var mc = Minecraft.getInstance();
-//        var partialTicks = event.getPartialTick();
-//        var buffer = event.getMultiBufferSource();
-//        var poseStack = event.getPoseStack();
-//        var packedLight = event.getPackedLight();
-//        var player = mc.player;
+
+        var mc = Minecraft.getInstance();
+        var partialTicks = event.getPartialTick();
+        var buffer = event.getMultiBufferSource();
+        var poseStack = event.getPoseStack();
+        var packedLight = event.getPackedLight();
+        var player = mc.player;
+
+//        renderHand(Minecraft.getInstance().player, HumanoidArm.RIGHT, poseStack, buffer, partialTicks, packedLight);
+
 //        poseStack.pushPose();
 //        {
 ////        renderHand(mc.player, poseStack, buffer, partialTicks, event.getPackedLight());
