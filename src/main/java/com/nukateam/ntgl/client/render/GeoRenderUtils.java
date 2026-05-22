@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.Camera;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -13,92 +12,86 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.ScreenEffectRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.level.GameType;
 import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
 import org.joml.Quaternionf;
 import software.bernie.geckolib.cache.object.GeoBone;
 import net.minecraft.client.Minecraft;
+import software.bernie.geckolib.util.RenderUtil;
 
 import java.lang.reflect.InvocationTargetException;
 
 import static com.nukateam.ntgl.client.util.ClientDebug.*;
+import static software.bernie.geckolib.util.RenderUtil.*;
 
 public class GeoRenderUtils {
-    public static void renderArm(PoseStack poseStack2, GeoBone bone, int packedLight,
+    public static void renderArm(PoseStack poseStack, GeoBone bone, int packedLight,
                                  MultiBufferSource bufferSource, int light, float partialTick, HumanoidArm arm) {
         var minecraft = Minecraft.getInstance();
 
-//        minecraft.gameRenderer.resetProjectionMatrix(minecraft.gameRenderer.getProjectionMatrix(minecraft.gameRenderer.getFov(camera, partialTick, false)));
-
-        var camera = minecraft.gameRenderer.getMainCamera();
-        var quaternionf = camera.rotation().conjugate(new Quaternionf());
-        var projectionMatrix = new Matrix4f().rotation(quaternionf);
-        var posestack = new PoseStack();
-
-        posestack.pushPose();
+//        var poseStack = new PoseStack();
+        poseStack.pushPose();
         {
-            posestack.mulPose(projectionMatrix.invert(new Matrix4f()));
-            var matrix4fstack = RenderSystem.getModelViewStack();
-            matrix4fstack.pushMatrix().mul(projectionMatrix);
-            {
-                RenderSystem.applyModelViewMatrix();
+            poseStack.mulPose(minecraft.gameRenderer.getMainCamera().rotation());
+            RenderUtil.prepMatrixForBone(poseStack, bone);
+//            translateMatrixToBone(poseStack, bone);
+//            translateToPivotPoint(poseStack, bone);
+//            rotateMatrixAroundBone(poseStack, bone);
+//            scaleMatrixForBone(poseStack, bone);
+//            translateAwayFromPivotPoint(poseStack, bone);
 
-//        this.bobHurt(posestack, partialTick);
-//        if (this.minecraft.options.bobView().get()) {
-//            this.bobView(posestack, partialTick);
-//        }
 
-                var poseStack = new PoseStack();
-                applyBoneTransform(poseStack, bone);
-                poseStack.pushPose();
-                {
-//            poseStack.translate(X / 10d / 16d, Y / 10d / 16d, Z / 10d / 16d);
+//            applyBoneTransform(poseStack, bone);
+            poseStack.translate(X / 10d / 16d, Y / 10d / 16d, Z / 10d / 16d);
 //            renderFirstPersonArm(Minecraft.getInstance().player, arm, poseStack, bufferSource, light);
-                    renderHand(Minecraft.getInstance().player, HumanoidArm.RIGHT, poseStack, bufferSource, partialTick, light);
+//            renderHand(Minecraft.getInstance().player, HumanoidArm.RIGHT, poseStack, bufferSource, partialTick, light);
 
-                }
-                poseStack.popPose();
-
-//            boolean flag = minecraft.getCameraEntity() instanceof LivingEntity && ((LivingEntity) minecraft.getCameraEntity()).isSleeping();
-//            if (minecraft.options.getCameraType().isFirstPerson()
-//                    && !flag
-//                    && !minecraft.options.hideGui
-//                    && minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR) {
-//                lightTexture.turnOnLightLayer();
-//                itemInHandRenderer
-//                        .renderHandsWithItems(
-//                                partialTick,
-//                                posestack,
-//                                renderBuffers.bufferSource(),
-//                                minecraft.player,
-//                                minecraft.getEntityRenderDispatcher().getPackedLightCoords(minecraft.player, partialTick)
-//                        );
-//                lightTexture.turnOffLightLayer();
-//            }
-
-
-            }
-            matrix4fstack.popMatrix();
-            RenderSystem.applyModelViewMatrix();
+            var playerrenderer = (PlayerRenderer)minecraft.getEntityRenderDispatcher().<AbstractClientPlayer>getRenderer(minecraft.player);
+            playerrenderer.renderRightHand(poseStack, bufferSource, packedLight, minecraft.player);
         }
-        posestack.popPose();
-//        if (minecraft.options.getCameraType().isFirstPerson() && !flag) {
-//            ScreenEffectRenderer.renderScreenEffect(minecraft, posestack);
+        poseStack.popPose();
+//
+////        minecraft.gameRenderer.resetProjectionMatrix(minecraft.gameRenderer.getProjectionMatrix(minecraft.gameRenderer.getFov(camera, partialTick, false)));
+//
+//        var camera = minecraft.gameRenderer.getMainCamera();
+//        var quaternionf = camera.rotation().conjugate(new Quaternionf());
+//        var projectionMatrix = new Matrix4f().rotation(quaternionf);
+//        var poseStack = new PoseStack();
+//
+//        poseStack.pushPose();
+//        {
+//            poseStack.mulPose(projectionMatrix.invert(new Matrix4f()));
+//            var matrix4fstack = RenderSystem.getModelViewStack();
+//            matrix4fstack.pushMatrix().mul(projectionMatrix);
+//            {
+//                RenderSystem.applyModelViewMatrix();
+//
+//                poseStack.pushPose();
+//                {
+//                    RenderUtil.prepMatrixForBone(poseStack, bone);
+//
+//                    applyBoneTransform(poseStack, bone);
+////            poseStack.translate(X / 10d / 16d, Y / 10d / 16d, Z / 10d / 16d);
+////            renderFirstPersonArm(Minecraft.getInstance().player, arm, poseStack, bufferSource, light);
+//                    renderHand(Minecraft.getInstance().player, HumanoidArm.RIGHT, poseStack, bufferSource, partialTick, light);
+//
+//                }
+//                poseStack.popPose();
+//
+//            }
+//            matrix4fstack.popMatrix();
+//            RenderSystem.applyModelViewMatrix();
 //        }
+//        poseStack.popPose();
     }
 
     public static void renderFirstPersonArm(

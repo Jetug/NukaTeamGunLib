@@ -107,7 +107,7 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
         if (isRightHand || isLeftHand) {
             poseStack.pushPose();
             {
-                RenderUtil.prepMatrixForBone(poseStack, bone);
+//                RenderUtil.prepMatrixForBone(poseStack, bone);
 //                poseStack.translate(0.01, -0.27, 0.05);
                 poseStack.scale(bone.getScaleX(), bone.getScaleY(), bone.getScaleZ());
 
