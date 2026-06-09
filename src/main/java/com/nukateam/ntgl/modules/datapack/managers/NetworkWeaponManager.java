@@ -1,6 +1,5 @@
 package com.nukateam.ntgl.modules.datapack.managers;
 
-import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.modules.constants.Paths;
@@ -19,6 +18,7 @@ import net.minecraft.world.item.Item;
 
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -40,9 +40,8 @@ public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWe
     }
 
     @Override
-    protected Map<IWeapon, WeaponConfig> prepare(ResourceManager manager, ProfilerFiller profiler) {
-        Map<IWeapon, WeaponConfig> map = ConfigUtils.getConfigMap(manager, BuiltInRegistries.ITEM, (v) -> v instanceof IWeapon, WeaponConfig.class, Paths.WEAPONS);
-        return map;
+    protected @NotNull Map<IWeapon, WeaponConfig> prepare(@NotNull ResourceManager manager, @NotNull ProfilerFiller profiler) {
+        return ConfigUtils.getConfigMap(manager, BuiltInRegistries.ITEM, (v) -> v instanceof IWeapon, WeaponConfig.class, Paths.WEAPONS);
     }
 
     @Override

@@ -108,10 +108,9 @@ public class WeaponStateHelper {
         if(!ammoId.isEmpty()){
             return AmmoHolder.getType(ammoId);
         }
-        else {
-            var ammoItems = WeaponModifierHelper.getAmmoItems(data);
-            return SetUtils.getFirst(ammoItems);
-        }
+
+        var ammoItems = WeaponModifierHelper.getAmmoItems(data);
+        return SetUtils.getFirst(ammoItems);
     }
 
     public static AmmoHolder getCurrentAmmoWithoutCheck(WeaponData data) {
@@ -121,11 +120,8 @@ public class WeaponStateHelper {
         if(!ammoId.isEmpty()){
             return AmmoHolder.getType(ammoId);
         }
-        else {
-            var firstAmmo = SetUtils.getFirst(ammoItems);
-            setCurrentAmmo(data, firstAmmo.getId());
-            return firstAmmo;
-        }
+
+        return SetUtils.getFirst(ammoItems);
     }
 
     private static String getAmmo(ItemStack stack) {
@@ -146,15 +142,12 @@ public class WeaponStateHelper {
         if(!fireModId.isEmpty()){
             var currentFireMode = FireMode.getType(fireModId);
             if (currentFireMode == null || !fireModes.contains(currentFireMode)) {
-                setFireMode(data, SetUtils.getFirst(fireModes));
                 return SetUtils.getFirst(fireModes);
             }
             else return currentFireMode;
         }
-        else {
-            setFireMode(data, SetUtils.getFirst(fireModes));
-            return SetUtils.getFirst(fireModes);
-        }
+
+        return SetUtils.getFirst(fireModes);
     }
 
     public static void setFireMode(WeaponData data, FireMode fireMode) {
@@ -175,7 +168,7 @@ public class WeaponStateHelper {
 
     //ATTACHAEMTS
     public static CompoundTag getAttachments(ItemStack stack){
-        return stack.getOrDefault(NtglComponents.ATTACHMENTS, new CompoundTag());
+        return NtglComponents.getAttachmentsTag(stack);
     }
 
     public static ArrayList<ItemStack> getAttachmentItems(ItemStack weapon, HolderLookup.Provider lookupProvider) {
@@ -193,7 +186,12 @@ public class WeaponStateHelper {
     public static ItemStack getAttachmentItem(AttachmentType type, WeaponData data) {
         var attachment = getAttachments(data.weapon);
         if (attachment.contains(type.toString(), Tag.TAG_COMPOUND)) {
-            return ItemStack.parseOptional(data.registryAccess(), attachment.getCompound(type.toString()));
+            var registryAccess = data.registryAccess();
+            if (registryAccess == null) {
+                return ItemStack.EMPTY;
+            }
+
+            return ItemStack.parseOptional(registryAccess, attachment.getCompound(type.toString()));
         }
         return ItemStack.EMPTY;
     }
@@ -210,11 +208,12 @@ public class WeaponStateHelper {
 
     public static void writeAttachments(Collection<ItemStack> attachments, WeaponData data){
         var tag = new CompoundTag();
+        var registryAccess = data.requireRegistryAccess();
 
         for (var itemStack : attachments) {
             if (itemStack.getItem() instanceof IAttachment attachment) {
                 var tagKey = attachment.getType();
-                tag.put(tagKey.toString(), itemStack.save(data.registryAccess(), new CompoundTag()));
+                tag.put(tagKey.toString(), itemStack.save(registryAccess, new CompoundTag()));
             }
         }
 
@@ -222,7 +221,7 @@ public class WeaponStateHelper {
     }
 
     public static void setAttachments(ItemStack stack, CompoundTag attachments){
-        stack.set(NtglComponents.ATTACHMENTS, attachments);
+        NtglComponents.setAttachmentsTag(stack, attachments);
     }
 
     //SCOPE
@@ -321,12 +320,9 @@ public class WeaponStateHelper {
 
     public static String getVariant(ItemStack stack) {
         var gunTag = NtglComponents.getWeaponTag(stack);
-        if (!gunTag.contains(WeaponItem.VARIANT, Tag.TAG_STRING)) {
-            gunTag.putString(WeaponItem.VARIANT, "default");
-            NtglComponents.setWeaponTag(stack, gunTag);
-        }
-
-        return gunTag.getString(WeaponItem.VARIANT);
+        return gunTag.contains(WeaponItem.VARIANT, Tag.TAG_STRING)
+                ? gunTag.getString(WeaponItem.VARIANT)
+                : "default";
     }
 
     public static void switchThrowMode(WeaponData data){
@@ -348,15 +344,12 @@ public class WeaponStateHelper {
             var currentMode = ThrowMode.getType(modeId);
 
             if (currentMode == null || !modes.contains(currentMode)) {
-                setThrowMode(stack, SetUtils.getFirst(modes));
                 return SetUtils.getFirst(modes);
             }
             else return currentMode;
         }
-        else {
-            setThrowMode(stack, SetUtils.getFirst(modes));
-            return SetUtils.getFirst(modes);
-        }
+
+        return SetUtils.getFirst(modes);
     }
 
     private static String getThrowMode(ItemStack stack){

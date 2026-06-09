@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class FuelUtils {
     public static CompoundTag getOrCreateFuelTag(ItemStack stack) {
-        return stack.getOrDefault(NtglComponents.FUEL, new CompoundTag());
+        return NtglComponents.getFuelTag(stack);
     }
 
     public static boolean hasFuel(WeaponData data){
@@ -54,7 +54,7 @@ public class FuelUtils {
     public static void setFuel(ItemStack stack, AmmoHolder ammoHolder, int value) {
         var fuelTag = getOrCreateFuelTag(stack);
         fuelTag.putInt(ammoHolder.toString(), value);
-        stack.set(NtglComponents.FUEL, fuelTag);
+        NtglComponents.setFuelTag(stack, fuelTag);
     }
 
     public static void addFuel(WeaponData data, AmmoHolder ammoHolder, int value) {
