@@ -168,9 +168,9 @@ public class WeaponModifierHelper {
     }
 
     public static HashMap<WeaponMode, WeaponSettings> getWeaponModes(WeaponData data) {
-        var value = new AtomicReference<>(getConfig(data).getModes());
+        var value = new AtomicReference<>(new HashMap<>(getConfig(data).getModes()));
         forEachAttachment(data, (modifier -> value.set(modifier.modifyWeaponModes(value.get(), data))));
-        return value.get();
+        return new HashMap<>(value.get());
     }
 
     public static int getProjectileAmount(WeaponData data) {
@@ -201,10 +201,10 @@ public class WeaponModifierHelper {
     }
 
     public static Set<FireMode> getFireModes(WeaponData data) {
-        var fireMode = getGeneral(data).getFireModes();
+        Set<FireMode> fireMode = new LinkedHashSet<>(getGeneral(data).getFireModes());
         var finalFireMode = new AtomicReference<>(fireMode);
         forEachAttachment(data, (modifier -> finalFireMode.set(modifier.modifyFireModes(finalFireMode.get(), data))));
-        return finalFireMode.get();
+        return new LinkedHashSet<>(finalFireMode.get());
     }
 
     public static GripType getGripType(WeaponData data) {
@@ -239,9 +239,9 @@ public class WeaponModifierHelper {
 //    }
 
     public static Fuel getFuel(ResourceLocation type, WeaponData data) {
-        var value = new AtomicReference<>(getConfig(data).getFuelConfig(type));
+        var value = new AtomicReference<>(getConfig(data).getFuelConfig(type).copy());
         forEachAttachment(data, (modifier -> value.set(modifier.modifyFuel(value.get(), data))));
-        return value.get();
+        return value.get() != null ? value.get().copy() : null;
     }
 
     public static ResourceLocation getAnimation(AnimationType type, WeaponData data) {
@@ -292,23 +292,23 @@ public class WeaponModifierHelper {
     }
 
     public static LinkedHashSet<ThrowMode> getThrowModes(WeaponData data) {
-        var value = new AtomicReference<>(getThrowable(data).getThrowModes());
+        var value = new AtomicReference<>(new LinkedHashSet<>(getThrowable(data).getThrowModes()));
         forEachAttachment(data, (modifier -> value.set(modifier.modifyThrowModes(value.get(), data))));
-        return value.get();
+        return new LinkedHashSet<>(value.get());
     }
 
     public static Set<AmmoHolder> getAmmoItems(WeaponData data) {
-        var items = getGeneral(data).getAmmo();
+        Set<AmmoHolder> items = new LinkedHashSet<>(getGeneral(data).getAmmo());
         var value = new AtomicReference<>(items);
         forEachAttachment(data, (modifier -> value.set(modifier.modifyAmmoItems(value.get(), data))));
-        return value.get();
+        return new LinkedHashSet<>(value.get());
     }
 
     public static Set<AmmoHolder> getAllFuel(WeaponData data) {
-        var items = getGeneral(data).getFuel();
+        Set<AmmoHolder> items = new LinkedHashSet<>(getGeneral(data).getFuel());
         var weapon = new AtomicReference<>(items);
         forEachAttachment(data, (modifier -> weapon.set(modifier.modifyFuelItems(weapon.get(), data))));
-        return weapon.get();
+        return new LinkedHashSet<>(weapon.get());
     }
 
     public static AmmoHolder getFirstAmmoItem(WeaponData data) {
@@ -383,11 +383,11 @@ public class WeaponModifierHelper {
     }
 
     public static ArrayList<AttributeModifier> getAttributeModifiers(WeaponData data) {
-        var value = getGeneral(data).getAttributeModifiers();
+        var value = new ArrayList<>(getGeneral(data).getAttributeModifiers());
         var finalValue = new AtomicReference<>(value);
 
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyAttributeModifiers(finalValue.get(), data))));
-        return (ArrayList<AttributeModifier>)finalValue.get().clone();
+        return new ArrayList<>(finalValue.get());
     }
 
     public static float getFireSoundVolume(WeaponData data) {
@@ -539,10 +539,10 @@ public class WeaponModifierHelper {
         var item = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);
 
         if(getAmmoData(data, ammoId) != null) {
-            config = getAmmoData(data, ammoId).getProjectile();
+            config = getAmmoData(data, ammoId).getProjectile().copy();
         }
         else if(item.canReturnAmmo() && BuiltInRegistries.ITEM.get(item.getId()) instanceof IAmmo ammoItem) {
-            config = ammoItem.getAmmo();
+            config = ammoItem.getAmmo().copy();
         }
         if(config == null) {
             config = new ProjectileConfig();
@@ -550,19 +550,19 @@ public class WeaponModifierHelper {
 
         var finalValue = new AtomicReference<>(config);
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyProjectile(finalValue.get(), data))));
-        return finalValue.get();
+        return finalValue.get().copy();
     }
 
     public static AmmoConfig getAmmoConfig(ResourceLocation ammoId, WeaponData data) {
-        var finalValue = new AtomicReference<>(getAmmoData(data, ammoId).getAmmo());
+        var finalValue = new AtomicReference<>(getAmmoData(data, ammoId).getAmmo().copy());
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyAmmo(finalValue.get(), data))));
-        return finalValue.get();
+        return finalValue.get().copy();
     }
 
     public static AmmoConfig getFuelAmmoConfig(ResourceLocation ammoId, WeaponData data) {
-        var finalValue = new AtomicReference<>(getConfig(data).getFuelAmmoConfig(ammoId));
+        var finalValue = new AtomicReference<>(getConfig(data).getFuelAmmoConfig(ammoId).copy());
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyFuelAmmo(finalValue.get(), data))));
-        return finalValue.get();
+        return finalValue.get().copy();
     }
 
     public static Integer getMaxFuel(ResourceLocation type, WeaponData data) {

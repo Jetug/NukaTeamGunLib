@@ -65,7 +65,7 @@ public class Fuel implements INBTSerializable<CompoundTag> {
         projectile.max = this.max;
         projectile.amountPerUse = this.amountPerUse;
         projectile.mandatory = this.mandatory;
-        projectile.ammo = this.ammo;
+        projectile.ammo = this.ammo.copy();
 
         return projectile;
     }

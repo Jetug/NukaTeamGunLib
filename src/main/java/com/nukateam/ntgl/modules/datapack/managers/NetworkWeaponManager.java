@@ -51,8 +51,8 @@ public class NetworkWeaponManager extends SimplePreparableReloadListener<Map<IWe
         objects.forEach((abstractItem, gun) -> {
             if(abstractItem instanceof Item item) {
                 Validate.notNull(BuiltInRegistries.ITEM.getKey(item));
-                builder.put(BuiltInRegistries.ITEM.getKey(item), gun);
-                abstractItem.setConfig(new ConfigSupplier<>(gun));
+                builder.put(BuiltInRegistries.ITEM.getKey(item), gun.copy());
+                abstractItem.setConfig(new ConfigSupplier<>(gun.copy()));
             }
         });
 

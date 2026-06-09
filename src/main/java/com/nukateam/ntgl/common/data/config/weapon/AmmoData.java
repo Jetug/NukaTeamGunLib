@@ -39,8 +39,8 @@ public class AmmoData implements INBTSerializable<CompoundTag> {
 
     public AmmoData copy() {
         var config = new AmmoData();
-        config.ammo = this.ammo;
-        config.projectile = this.projectile;
+        config.ammo = this.ammo.copy();
+        config.projectile = this.projectile.copy();
 
         return config;
     }

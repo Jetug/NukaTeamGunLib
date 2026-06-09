@@ -62,7 +62,15 @@ public class Modules implements INBTSerializable<CompoundTag> {
 
     public Modules copy() {
         Modules modules = new Modules();
-        modules.attachments = new LinkedHashMap<>(this.attachments);
+        modules.attachmentScreen = this.attachmentScreen;
+        modules.attachments = new LinkedHashMap<>();
+        this.attachments.forEach((type, attachments) -> {
+            var copiedAttachments = new ArrayList<Attachment>();
+            for (var attachment : attachments) {
+                copiedAttachments.add(attachment.copy());
+            }
+            modules.attachments.put(type, copiedAttachments);
+        });
         return modules;
     }
 
@@ -134,10 +142,10 @@ public class Modules implements INBTSerializable<CompoundTag> {
                 attachments.item = this.item;
             }
             if (this.hide != null) {
-                attachments.hide = this.hide;
+                attachments.hide = new ArrayList<>(this.hide);
             }
             if (this.bones != null) {
-                attachments.bones = this.bones;
+                attachments.bones = new ArrayList<>(this.bones);
             }
             attachments.offset = this.offset;
 

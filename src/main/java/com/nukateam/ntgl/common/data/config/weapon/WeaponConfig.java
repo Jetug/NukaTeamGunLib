@@ -143,11 +143,30 @@ public class WeaponConfig implements INBTSerializable<CompoundTag> {
         gun.sounds      = (HashMap<String, ResourceLocation>) this.sounds.clone();
         gun.textures    = (HashMap<String, ResourceLocation>) this.textures.clone();
         gun.animations  = (HashMap<AnimationType, ResourceLocation>) this.animations.clone();
-        gun.ammoData    = (LinkedHashMap<ResourceLocation, AmmoData>) this.ammoData.clone();
-        gun.fuel        = (LinkedHashMap<ResourceLocation, Fuel>) this.fuel.clone();
+        gun.ammoData    = copyAmmoData(this.ammoData);
+        gun.fuel        = copyFuel(this.fuel);
+        gun.modes       = copyModes(this.modes);
         gun.modules     = this.modules.copy();
-        gun.zoom        = this.zoom.copy();
+        gun.zoom        = this.zoom != null ? this.zoom.copy() : null;
         return gun;
+    }
+
+    private static LinkedHashMap<ResourceLocation, AmmoData> copyAmmoData(LinkedHashMap<ResourceLocation, AmmoData> source) {
+        var result = new LinkedHashMap<ResourceLocation, AmmoData>();
+        source.forEach((key, value) -> result.put(key, value.copy()));
+        return result;
+    }
+
+    private static LinkedHashMap<ResourceLocation, Fuel> copyFuel(LinkedHashMap<ResourceLocation, Fuel> source) {
+        var result = new LinkedHashMap<ResourceLocation, Fuel>();
+        source.forEach((key, value) -> result.put(key, value.copy()));
+        return result;
+    }
+
+    private static HashMap<WeaponMode, WeaponSettings> copyModes(HashMap<WeaponMode, WeaponSettings> source) {
+        var result = new HashMap<WeaponMode, WeaponSettings>();
+        source.forEach((mode, settings) -> result.put(mode, settings.copy()));
+        return result;
     }
 
     public static WeaponConfig create(ResourceLocation id, CompoundTag tag) {
