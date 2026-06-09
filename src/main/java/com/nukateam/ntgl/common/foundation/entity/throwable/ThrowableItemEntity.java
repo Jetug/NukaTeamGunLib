@@ -23,12 +23,11 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.jarjar.nio.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable> extends ThrowableProjectile implements IProjectile {
     private static final EntityDataAccessor<ItemStack> ITEM = getDataAccessor(EntityDataSerializers.ITEM_STACK);
-    private static final Lazy<EntityDataAccessor<ProjectileConfig>> PROJECTILE = Lazy.of(() ->getDataAccessor(NtglEntityDataSerializers.PROJECTILE_CONFIG.get()));
+    private static final EntityDataAccessor<ProjectileConfig> PROJECTILE = getDataAccessor(NtglEntityDataSerializers.PROJECTILE_CONFIG_SERIALIZER);
 
     private ItemStack item = ItemStack.EMPTY;
     private boolean shouldBounce;
@@ -68,7 +67,7 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(ITEM, ItemStack.EMPTY);
-        builder.define(PROJECTILE.get(), new ProjectileConfig());
+        builder.define(PROJECTILE, new ProjectileConfig());
     }
 
     @Override
@@ -180,11 +179,11 @@ public abstract class ThrowableItemEntity<T extends Item & IWeapon & IThrowable>
 //    }
 
     public ProjectileConfig getProjectile() {
-        return this.entityData.get(PROJECTILE.get());
+        return this.entityData.get(PROJECTILE);
     }
 
     public void setProjectile(ProjectileConfig projectile) {
-        this.entityData.set(PROJECTILE.get(), projectile);
+        this.entityData.set(PROJECTILE, projectile);
     }
 
     public ItemStack getItem() {

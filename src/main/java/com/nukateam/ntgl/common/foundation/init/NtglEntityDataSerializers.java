@@ -17,25 +17,27 @@ public class NtglEntityDataSerializers {
     public static final DeferredRegister<EntityDataSerializer<?>> SERIALIZERS =
             DeferredRegister.create(NeoForgeRegistries.Keys.ENTITY_DATA_SERIALIZERS, Ntgl.MOD_ID);
 
-    public static final Supplier<EntityDataSerializer<ProjectileConfig>> PROJECTILE_CONFIG =
-            SERIALIZERS.register("projectile_config",
-                    () -> EntityDataSerializer.forValueType(
-                            StreamCodec.of(
-                                    NtglEntityDataSerializers::writeProjectile,
-                                    NtglEntityDataSerializers::readProjectile
-                            )
+    public static final EntityDataSerializer<ProjectileConfig> PROJECTILE_CONFIG_SERIALIZER =
+            EntityDataSerializer.forValueType(
+                    StreamCodec.of(
+                            NtglEntityDataSerializers::writeProjectile,
+                            NtglEntityDataSerializers::readProjectile
                     )
             );
 
-    public static final Supplier<EntityDataSerializer<General>> GENERAL_CONFIG =
-            SERIALIZERS.register("general_config",
-                    () -> EntityDataSerializer.forValueType(
-                            StreamCodec.of(
-                                    NtglEntityDataSerializers::writeGeneral,
-                                    NtglEntityDataSerializers::readGeneral
-                            )
+    public static final EntityDataSerializer<General> GENERAL_CONFIG_SERIALIZER =
+            EntityDataSerializer.forValueType(
+                    StreamCodec.of(
+                            NtglEntityDataSerializers::writeGeneral,
+                            NtglEntityDataSerializers::readGeneral
                     )
             );
+
+    public static final Supplier<EntityDataSerializer<ProjectileConfig>> PROJECTILE_CONFIG =
+            SERIALIZERS.register("projectile_config", () -> PROJECTILE_CONFIG_SERIALIZER);
+
+    public static final Supplier<EntityDataSerializer<General>> GENERAL_CONFIG =
+            SERIALIZERS.register("general_config", () -> GENERAL_CONFIG_SERIALIZER);
 
     private static void writeProjectile(RegistryFriendlyByteBuf buf, ProjectileConfig config) {
         CompoundTag tag = config.serializeNBT(buf.registryAccess());
