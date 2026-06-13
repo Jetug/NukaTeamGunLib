@@ -72,7 +72,7 @@ public class ThrowableConfig implements INBTSerializable<CompoundTag> {
         config.mode = (LinkedHashSet<ThrowMode>)mode.clone();
         config.prepareTime = prepareTime;
         config.throwTime = throwTime;
-        config.ammoData = ammoData;
+        config.ammoData = ammoData.copy();
         return config;
     }
 

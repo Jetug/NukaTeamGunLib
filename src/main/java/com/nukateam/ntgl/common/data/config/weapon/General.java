@@ -279,7 +279,7 @@ public class General implements INBTSerializable<CompoundTag> {
      */
     public General copy() {
         General general = new General();
-        general.fireMode = this.fireMode;
+        general.fireMode = new LinkedHashSet<>(this.fireMode);
         general.fullCharge = this.fullCharge;
         general.enchantable = this.enchantable;
         general.silenced = this.silenced;

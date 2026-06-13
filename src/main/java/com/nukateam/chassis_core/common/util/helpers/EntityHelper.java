@@ -66,7 +66,7 @@ public class EntityHelper {
         tag.remove(CHASSIS_ENTITY_ID);
         tag.remove(ENTITY_TAG);
         tag.remove(ENTITY_UUID);
-        NtglComponents.setWeaponTag(stack, tag);
+        NtglComponents.setChassisTag(stack, tag);
 
     }
 }

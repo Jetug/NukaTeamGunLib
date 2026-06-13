@@ -72,7 +72,7 @@ import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
 public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
     private static final EntityDataAccessor<ItemStack> AMMO = getDataAccessor(EntityDataSerializers.ITEM_STACK);
-    private static final EntityDataAccessor<ProjectileConfig> PROJECTILE = getDataAccessor(NtglEntityDataSerializers.PROJECTILE_CONFIG.get());
+    private static final EntityDataAccessor<ProjectileConfig> PROJECTILE = getDataAccessor(NtglEntityDataSerializers.PROJECTILE_CONFIG_SERIALIZER);
     private static final EntityDataAccessor<Integer> WIELDER_ID = getDataAccessor(EntityDataSerializers.INT);
 
     protected static final Predicate<Entity> PROJECTILE_TARGETS = input -> input != null && input.isPickable() && !input.isSpectator();

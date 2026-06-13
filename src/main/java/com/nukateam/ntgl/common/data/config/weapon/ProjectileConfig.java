@@ -198,7 +198,7 @@ public class ProjectileConfig implements INBTSerializable<CompoundTag> {
         projectile.damageType = this.damageType;
         projectile.projectileAmount = this.projectileAmount;
         projectile.spread = this.spread;
-        projectile.explosion = this.explosion;
+        projectile.explosion = this.explosion.copy();
         projectile.hitSound = this.hitSound;
         return projectile;
     }

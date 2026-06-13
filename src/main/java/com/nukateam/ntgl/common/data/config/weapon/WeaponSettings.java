@@ -80,9 +80,11 @@ public class WeaponSettings implements INBTSerializable<CompoundTag> {
         gun.general = this.general.copy();
         gun.melee = this.melee.copy();
         gun.throwable = this.throwable.copy();
-        gun.zoom = this.zoom.copy();
-        gun.ammoData = (LinkedHashMap<ResourceLocation, AmmoData>) this.ammoData.clone();
-        gun.fuel = (LinkedHashMap<ResourceLocation, Fuel>) this.fuel.clone();
+        gun.zoom = this.zoom != null ? this.zoom.copy() : null;
+        gun.ammoData = new LinkedHashMap<>();
+        this.ammoData.forEach((id, ammo) -> gun.ammoData.put(id, ammo.copy()));
+        gun.fuel = new LinkedHashMap<>();
+        this.fuel.forEach((id, fuel) -> gun.fuel.put(id, fuel.copy()));
         return gun;
     }
 

@@ -88,19 +88,39 @@ public class NtglComponents {
                             .networkSynchronized(ByteBufCodecs.STRING_UTF8)
             );
 
+    private static CompoundTag copyOrEmpty(@Nullable CompoundTag tag) {
+        return tag == null ? new CompoundTag() : tag.copy();
+    }
+
     public static CompoundTag getWeaponTag(ItemStack stack) {
-        return stack.getOrDefault(WEAPON_COMPONENT.get(), new CompoundTag());
+        return copyOrEmpty(stack.get(WEAPON_COMPONENT.get()));
     }
 
     public static @Nullable CompoundTag setWeaponTag(ItemStack stack, CompoundTag tag) {
-        return stack.set(WEAPON_COMPONENT.get(), tag.copy());
+        return stack.set(WEAPON_COMPONENT.get(), copyOrEmpty(tag));
     }
 
     public static CompoundTag getChassisTag(ItemStack stack) {
-        return stack.getOrDefault(CHASSIS_COMPONENT.get(), new CompoundTag());
+        return copyOrEmpty(stack.get(CHASSIS_COMPONENT.get()));
     }
 
     public static @Nullable CompoundTag setChassisTag(ItemStack stack, CompoundTag tag) {
-        return stack.set(CHASSIS_COMPONENT.get(), tag);
+        return stack.set(CHASSIS_COMPONENT.get(), copyOrEmpty(tag));
+    }
+
+    public static CompoundTag getFuelTag(ItemStack stack) {
+        return copyOrEmpty(stack.get(FUEL.get()));
+    }
+
+    public static @Nullable CompoundTag setFuelTag(ItemStack stack, CompoundTag tag) {
+        return stack.set(FUEL.get(), copyOrEmpty(tag));
+    }
+
+    public static CompoundTag getAttachmentsTag(ItemStack stack) {
+        return copyOrEmpty(stack.get(ATTACHMENTS.get()));
+    }
+
+    public static @Nullable CompoundTag setAttachmentsTag(ItemStack stack, CompoundTag tag) {
+        return stack.set(ATTACHMENTS.get(), copyOrEmpty(tag));
     }
 }
