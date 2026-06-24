@@ -179,26 +179,12 @@ public class AimingHandler {
         if (zoom == null)
             return;
 
-        float progress = (float) this.localTracker.getNormalProgress((float) event.getPartialTick());
-
-        // УБИРАЕМ return при progress == 0
-        // if (progress == 0) return; // <-- УДАЛИТЬ ЭТУ СТРОКУ
-
+        var progress = (float) this.localTracker.getNormalProgress((float) event.getPartialTick());
         var time = PropertyHelper.getSightAnimations(heldItem).getFovCurve().apply(progress);
         var modifier = WeaponStateHelper.getFovModifier(weaponData);
-        modifier = (1.0F - modifier) * (float) time;
+        modifier = (1.0F - modifier) * time;
 
-        // Применяем модификатор ВСЕГДА, даже если progress = 0
-        // При progress = 0, time = 0, значит modifier = 0, FOV не меняется
         event.setFOV(event.getFOV() - event.getFOV() * modifier);
-
-        Ntgl.LOGGER.debug(
-                "progress={}, time={}, modifier={}, fov={}",
-                progress,
-                time,
-                modifier,
-                event.getFOV()
-        );
     }
 
     @SubscribeEvent
@@ -333,7 +319,7 @@ public class AimingHandler {
     public class AimTracker {
         private double currentAim;
         private double previousAim;
-        private double targetAim; // Добавляем целевое значение
+        private double targetAim;
 
         public AimTracker() {
             this.currentAim = 0;
@@ -351,14 +337,12 @@ public class AimingHandler {
 
             this.previousAim = this.currentAim;
 
-            // Определяем целевое значение
             if (ModSyncedDataKeys.AIMING.getValue(player) || (player.isLocalPlayer() && AimingHandler.this.isAiming())) {
                 this.targetAim = MAX_AIM_PROGRESS;
             } else {
                 this.targetAim = 0;
             }
 
-            // Плавно двигаемся к цели
             var speed = WeaponModifierHelper.getModifiedAimDownSightSpeed(weaponData);
             if (this.currentAim < this.targetAim) {
                 this.currentAim += speed;
