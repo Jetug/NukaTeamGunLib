@@ -158,6 +158,9 @@ public class AimingHandler {
         }
     }
 
+    private float lastFov = 0;
+    private float targetFov = 0;
+
     @SubscribeEvent
     public void onFovUpdate(ViewportEvent.ComputeFov event) {
         if (!WeaponRenderingHandler.get().getUsedConfiguredFov())
@@ -179,12 +182,21 @@ public class AimingHandler {
         if (zoom == null)
             return;
 
-        var progress = (float) this.localTracker.getNormalProgress((float) event.getPartialTick());
-        var time = PropertyHelper.getSightAnimations(heldItem).getFovCurve().apply(progress);
-        var modifier = WeaponStateHelper.getFovModifier(weaponData);
-        modifier = (1.0F - modifier) * time;
+        float progress = (float) this.localTracker.getNormalProgress((float) event.getPartialTick());
+        float defaultFov = mc.options.fov().get().floatValue();
 
-        event.setFOV(event.getFOV() - event.getFOV() * modifier);
+        if (progress > 0) {
+            var time = PropertyHelper.getSightAnimations(heldItem).getFovCurve().apply(progress);
+            var modifier = WeaponStateHelper.getFovModifier(weaponData);
+            modifier = (1.0F - modifier) * (float) time;
+            targetFov = defaultFov - defaultFov * modifier;
+        } else {
+            targetFov = defaultFov;
+        }
+
+        // Плавная интерполяция
+        lastFov = (float) Mth.lerp(0.1, lastFov, targetFov);
+        event.setFOV(lastFov);
     }
 
     @SubscribeEvent
@@ -319,7 +331,7 @@ public class AimingHandler {
     public class AimTracker {
         private double currentAim;
         private double previousAim;
-        private double targetAim;
+        private double targetAim; // Добавляем целевое значение
 
         public AimTracker() {
             this.currentAim = 0;
@@ -337,12 +349,14 @@ public class AimingHandler {
 
             this.previousAim = this.currentAim;
 
+            // Определяем целевое значение
             if (ModSyncedDataKeys.AIMING.getValue(player) || (player.isLocalPlayer() && AimingHandler.this.isAiming())) {
                 this.targetAim = MAX_AIM_PROGRESS;
             } else {
                 this.targetAim = 0;
             }
 
+            // Плавно двигаемся к цели
             var speed = WeaponModifierHelper.getModifiedAimDownSightSpeed(weaponData);
             if (this.currentAim < this.targetAim) {
                 this.currentAim += speed;
