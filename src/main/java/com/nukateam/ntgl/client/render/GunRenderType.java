@@ -3,7 +3,7 @@ package com.nukateam.ntgl.client.render;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
+import com.nukateam.ntgl.client.util.handler.WeaponRenderingHandler;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 
@@ -27,7 +27,7 @@ public final class GunRenderType extends RenderType {
             VertexFormat.Mode.QUADS, 256, true, false,
             RenderType.CompositeState.builder()
                     .setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
-                    .setTextureState(new RenderStateShard.TextureStateShard(GunRenderingHandler.MUZZLE_FLASH_TEXTURE, false, false))
+                    .setTextureState(new RenderStateShard.TextureStateShard(WeaponRenderingHandler.MUZZLE_FLASH_TEXTURE, false, false))
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).createCompositeState(true));
 
     private GunRenderType(String nameIn, VertexFormat formatIn, VertexFormat.Mode drawModeIn, int bufferSizeIn, boolean useDelegateIn, boolean needsSortingIn, Runnable setupTaskIn, Runnable clearTaskIn) {

@@ -10,8 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.LivingEntity;
-import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
-import com.nukateam.ntgl.client.util.ClientDebug;
+import com.nukateam.ntgl.client.util.handler.WeaponRenderingHandler;
 import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 
@@ -86,7 +85,7 @@ public class HeldItemLayer<T extends GeoAnimatable> extends BlockAndItemGeoLayer
                         poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(rz));
                         poseStack.translate(dx, dy, dz);
 
-                        com.nukateam.ntgl.client.util.handler.GunRenderingHandler.get().renderWeapon(
+                        WeaponRenderingHandler.get().renderWeapon(
                                 actualShooter, stack,
                                 isLeftHand ? net.minecraft.world.item.ItemDisplayContext.THIRD_PERSON_LEFT_HAND : net.minecraft.world.item.ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
                                 poseStack, bufferSource, packedLight

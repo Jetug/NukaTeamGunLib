@@ -1,7 +1,7 @@
 package com.nukateam.ntgl.mixin.ntgl.client;
 
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
-import com.nukateam.ntgl.client.util.handler.GunRenderingHandler;
+import com.nukateam.ntgl.client.util.handler.WeaponRenderingHandler;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 
@@ -9,7 +9,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
-import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.*;
@@ -72,13 +71,13 @@ public class ItemInHandLayerMixin {
             layer.getParentModel().translateToHand(arm, poseStack);
             poseStack.mulPose(Axis.XP.rotationDegrees(-90F));
             poseStack.mulPose(Axis.YP.rotationDegrees(180F));
-            GunRenderingHandler.get().applyWeaponScale(stack, poseStack);
+            WeaponRenderingHandler.get().applyWeaponScale(stack, poseStack);
 
             var gripType = WeaponModifierHelper.getGripType(new WeaponData(stack, entity));
             var aimProgress = AimingHandler.get().getAimProgress(entity, deltaTicks);
             gripType.getHeldAnimation()
                     .applyHeldItemTransforms(entity, hand, aimProgress, poseStack, source);
-            GunRenderingHandler.get().renderWeapon(entity, stack, transformType, poseStack, source, light);
+            WeaponRenderingHandler.get().renderWeapon(entity, stack, transformType, poseStack, source, light);
         }
         poseStack.popPose();
     }

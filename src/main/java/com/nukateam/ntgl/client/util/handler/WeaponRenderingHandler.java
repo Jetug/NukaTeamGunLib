@@ -9,16 +9,13 @@ import com.nukateam.ntgl.client.util.helpers.PropertyHelper;
 import com.nukateam.ntgl.client.util.helpers.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
-import com.nukateam.ntgl.common.data.holders.AttachmentType;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
-import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -56,13 +53,13 @@ import java.util.*;
 import static com.nukateam.ntgl.client.util.helpers.PropertyHelper.*;
 
 @SuppressWarnings("removal")
-public class GunRenderingHandler {
-    private static GunRenderingHandler instance;
+public class WeaponRenderingHandler {
+    private static WeaponRenderingHandler instance;
     public static final ResourceLocation GUI_ICONS_LOCATION = new ResourceLocation( "textures/gui/icons.png"); // Kinda hacky
 
-    public static GunRenderingHandler get() {
+    public static WeaponRenderingHandler get() {
         if (instance == null) {
-            instance = new GunRenderingHandler();
+            instance = new WeaponRenderingHandler();
         }
         return instance;
     }
@@ -95,7 +92,7 @@ public class GunRenderingHandler {
     @Nullable
     private ItemStack renderingWeapon;
 
-    private GunRenderingHandler() {
+    private WeaponRenderingHandler() {
     }
 
     @Nullable

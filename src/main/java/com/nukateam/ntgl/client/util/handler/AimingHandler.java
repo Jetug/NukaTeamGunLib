@@ -1,6 +1,7 @@
 package com.nukateam.ntgl.client.util.handler;
 
 
+import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
 import com.nukateam.example.common.registery.ExampleWeapons;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
 import com.nukateam.ntgl.client.util.helpers.PropertyHelper;
@@ -121,7 +122,7 @@ public class AimingHandler {
             if (tracker != null)
                 return (float) tracker.getNormalProgress(partialTicks);
         }
-        if (entity instanceof com.nukateam.chassis_core.common.foundation.entity.WearableChassis chassis && chassis.getFirstPassenger() instanceof LivingEntity passenger) {
+        if (entity instanceof WearableChassis chassis && chassis.getFirstPassenger() instanceof LivingEntity passenger) {
             return getAimProgress(passenger, partialTicks);
         }
         return 1.0F;
@@ -159,7 +160,7 @@ public class AimingHandler {
 
     @SubscribeEvent
     public void onFovUpdate(ViewportEvent.ComputeFov event) {
-        if (!GunRenderingHandler.get().getUsedConfiguredFov())
+        if (!WeaponRenderingHandler.get().getUsedConfiguredFov())
             return;
 
         var mc = Minecraft.getInstance();
