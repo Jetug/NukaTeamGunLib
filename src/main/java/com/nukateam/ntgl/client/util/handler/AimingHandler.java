@@ -172,21 +172,33 @@ public class AimingHandler {
         if (!(heldItem.getItem() instanceof IWeapon))
             return;
 
-        if (AimingHandler.get().getNormalisedAdsProgress() == 0)
-            return;
-
         if (ModSyncedDataKeys.RELOADING_RIGHT.getValue(mc.player))
             return;
 
         var zoom = WeaponModifierHelper.getZoom(weaponData);
-
         if (zoom == null)
             return;
 
-        var time = PropertyHelper.getSightAnimations(heldItem).getFovCurve().apply(this.normalisedAdsProgress);
+        float progress = (float) this.localTracker.getNormalProgress((float) event.getPartialTick());
+
+        // УБИРАЕМ return при progress == 0
+        // if (progress == 0) return; // <-- УДАЛИТЬ ЭТУ СТРОКУ
+
+        var time = PropertyHelper.getSightAnimations(heldItem).getFovCurve().apply(progress);
         var modifier = WeaponStateHelper.getFovModifier(weaponData);
         modifier = (1.0F - modifier) * (float) time;
+
+        // Применяем модификатор ВСЕГДА, даже если progress = 0
+        // При progress = 0, time = 0, значит modifier = 0, FOV не меняется
         event.setFOV(event.getFOV() - event.getFOV() * modifier);
+
+        Ntgl.LOGGER.debug(
+                "progress={}, time={}, modifier={}, fov={}",
+                progress,
+                time,
+                modifier,
+                event.getFOV()
+        );
     }
 
     @SubscribeEvent
@@ -321,6 +333,13 @@ public class AimingHandler {
     public class AimTracker {
         private double currentAim;
         private double previousAim;
+        private double targetAim; // Добавляем целевое значение
+
+        public AimTracker() {
+            this.currentAim = 0;
+            this.previousAim = 0;
+            this.targetAim = 0;
+        }
 
         private void handleAiming(WeaponData weaponData) {
             assert weaponData.weapon != null && weaponData.wielder instanceof Player;
@@ -331,21 +350,25 @@ public class AimingHandler {
                 return;
 
             this.previousAim = this.currentAim;
+
+            // Определяем целевое значение
             if (ModSyncedDataKeys.AIMING.getValue(player) || (player.isLocalPlayer() && AimingHandler.this.isAiming())) {
-                if (this.currentAim < MAX_AIM_PROGRESS) {
-                    var speed = WeaponModifierHelper.getModifiedAimDownSightSpeed(weaponData);
-                    this.currentAim += speed;
-                    if (this.currentAim > MAX_AIM_PROGRESS) {
-                        this.currentAim = (int) MAX_AIM_PROGRESS;
-                    }
-                }
+                this.targetAim = MAX_AIM_PROGRESS;
             } else {
-                if (this.currentAim > 0) {
-                    var speed = WeaponModifierHelper.getModifiedAimDownSightSpeed(weaponData);
-                    this.currentAim -= speed;
-                    if (this.currentAim < 0) {
-                        this.currentAim = 0;
-                    }
+                this.targetAim = 0;
+            }
+
+            // Плавно двигаемся к цели
+            var speed = WeaponModifierHelper.getModifiedAimDownSightSpeed(weaponData);
+            if (this.currentAim < this.targetAim) {
+                this.currentAim += speed;
+                if (this.currentAim > this.targetAim) {
+                    this.currentAim = this.targetAim;
+                }
+            } else if (this.currentAim > this.targetAim) {
+                this.currentAim -= speed;
+                if (this.currentAim < this.targetAim) {
+                    this.currentAim = this.targetAim;
                 }
             }
         }

@@ -29,6 +29,17 @@
     "maxTargets": 0,
     "knockback": 0.6
   },
+  "modes": {
+    "ntgl:secondary": {
+      "general": {
+        "action": "ntgl:scope"
+      },
+      "zoom": {
+        "offset": [0.0, -2.0, 0.0],
+        "fovModifier": 0.7
+      }
+    }
+  },
   "sounds": {
     "fire": "ntgl:item.pistol10mm.fire",
     "reload": "ntgl:item.pistol10mm.reload",

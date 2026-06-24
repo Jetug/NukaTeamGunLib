@@ -55,7 +55,6 @@ import static com.nukateam.ntgl.client.util.helpers.PropertyHelper.*;
 @SuppressWarnings("removal")
 public class WeaponRenderingHandler {
     private static WeaponRenderingHandler instance;
-    public static final ResourceLocation GUI_ICONS_LOCATION = new ResourceLocation( "textures/gui/icons.png"); // Kinda hacky
 
     public static WeaponRenderingHandler get() {
         if (instance == null) {
@@ -66,7 +65,6 @@ public class WeaponRenderingHandler {
 
     public static final ResourceLocation MUZZLE_FLASH_TEXTURE = ResourceLocation.tryBuild(Ntgl.MOD_ID, "textures/effect/muzzle_flash.png");
 
-    private final Random random = new Random();
     private final Set<Integer> entityIdForMuzzleFlash = new HashSet<>();
     private final Set<Integer> entityIdForDrawnMuzzleFlash = new HashSet<>();
     private final Map<Integer, Float> entityIdToRandomValue = new HashMap<>();
@@ -394,22 +392,24 @@ public class WeaponRenderingHandler {
         }
     }
 
-
     private void applyAimingTransforms(PoseStack poseStack, ItemStack heldItem, Vector3f pos, int offset) {
-//        if (!Config.CLIENT.display.oldAnimations.get()) {
         var x = pos.x();
         var y = pos.y();
         var z = pos.z();
         poseStack.translate(x * offset, y, z);
         poseStack.translate(0, -0.25, 0.25);
-        var aiming = (float) Math.sin(Math.toRadians(AimingHandler.get().getNormalisedAdsProgress() * 180F));
+
+        float rawProgress = (float) AimingHandler.get().getNormalisedAdsProgress();
+        // Используем smoothstep для плавного начала
+        float smoothProgress = rawProgress * rawProgress * (3 - 2 * rawProgress);
+        float aiming = (float) Math.sin(Math.toRadians(smoothProgress * 180F));
         aiming = getSightAnimations(heldItem).getAimTransformCurve().apply(aiming);
+
         poseStack.mulPose(Axis.ZP.rotationDegrees(aiming * 10F * offset));
         poseStack.mulPose(Axis.XP.rotationDegrees(aiming * 5F));
         poseStack.mulPose(Axis.YP.rotationDegrees(aiming * 5F * offset));
         poseStack.translate(0, 0.25, -0.25);
         poseStack.translate(-x * offset, -y, -z);
-//        }
     }
 
     private void applySwayTransforms(PoseStack poseStack, ItemStack heldItem, LocalPlayer player, Vector3f translation, float partialTicks) {
