@@ -222,53 +222,53 @@ public class InputHandler {
             return;
         }
         if (NtglKeyBinds.KEY_DEBUG_X_ADD.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) ClientDebug.X += 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmX += 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmX += 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gX += 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmX += 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmX += 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hX += 1; else if(ClientDebug.tuningMode == 7) ClientDebug.emX += 1; else if(ClientDebug.tuningMode == 8) ClientDebug.hudX += 1; else if(ClientDebug.tuningMode == 9) ClientDebug.gpX += 1; else ClientDebug.mfX += 1;
-            syncDebugToOffsets(); return;
+            ClientDebug.addX(1);
+            return;
         }
         if (NtglKeyBinds.KEY_DEBUG_Y_ADD.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) ClientDebug.Y += 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmY += 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmY += 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gY += 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmY += 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmY += 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hY += 1; else if(ClientDebug.tuningMode == 7) ClientDebug.emY += 1; else if(ClientDebug.tuningMode == 8) ClientDebug.hudY += 1; else if(ClientDebug.tuningMode == 9) ClientDebug.gpY += 1; else ClientDebug.mfY += 1;
-            syncDebugToOffsets(); return;
+            ClientDebug.addY(1);
+            return;
         }
         if (NtglKeyBinds.KEY_DEBUG_Z_ADD.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) ClientDebug.Z += 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmZ += 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmZ += 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gZ += 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmZ += 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmZ += 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hZ += 1; else if(ClientDebug.tuningMode == 7) ClientDebug.emZ += 1; else if(ClientDebug.tuningMode == 8) ClientDebug.hudZ += 1; else if(ClientDebug.tuningMode == 9) ClientDebug.gpZ += 1; else ClientDebug.mfZ += 1;
-            syncDebugToOffsets(); return;
+            ClientDebug.addZ(1);
+            return;
         }
         if (NtglKeyBinds.KEY_DEBUG_X_SUB.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) ClientDebug.X -= 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmX -= 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmX -= 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gX -= 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmX -= 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmX -= 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hX -= 1; else if(ClientDebug.tuningMode == 7) ClientDebug.emX -= 1; else if(ClientDebug.tuningMode == 8) ClientDebug.hudX -= 1; else if(ClientDebug.tuningMode == 9) ClientDebug.gpX -= 1; else ClientDebug.mfX -= 1;
-            syncDebugToOffsets(); return;
+            ClientDebug.addX(-1);
+            return;
         }
         if (NtglKeyBinds.KEY_DEBUG_Y_SUB.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) ClientDebug.Y -= 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmY -= 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmY -= 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gY -= 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmY -= 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmY -= 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hY -= 1; else if(ClientDebug.tuningMode == 7) ClientDebug.emY -= 1; else if(ClientDebug.tuningMode == 8) ClientDebug.hudY -= 1; else if(ClientDebug.tuningMode == 9) ClientDebug.gpY -= 1; else ClientDebug.mfY -= 1;
-            syncDebugToOffsets(); return;
+            ClientDebug.addY(-1);
+            return;
         }
         if (NtglKeyBinds.KEY_DEBUG_Z_SUB.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) ClientDebug.Z -= 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmZ -= 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmZ -= 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gZ -= 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmZ -= 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmZ -= 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hZ -= 1; else if(ClientDebug.tuningMode == 7) ClientDebug.emZ -= 1; else if(ClientDebug.tuningMode == 8) ClientDebug.hudZ -= 1; else if(ClientDebug.tuningMode == 9) ClientDebug.gpZ -= 1; else ClientDebug.mfZ -= 1;
-            syncDebugToOffsets(); return;
+            ClientDebug.addZ(-1);
+            return;
         }
-        if (NtglKeyBinds.KEY_DEBUG_RX_ADD.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) ClientDebug.RX += 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmRX += 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmRX += 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gRX += 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmRX += 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmRX += 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hRX += 1;
-            syncDebugToOffsets(); return;
-        }
-        if (NtglKeyBinds.KEY_DEBUG_RY_ADD.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) ClientDebug.RY += 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmRY += 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmRY += 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gRY += 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmRY += 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmRY += 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hRY += 1;
-            syncDebugToOffsets(); return;
-        }
-        if (NtglKeyBinds.KEY_DEBUG_RZ_ADD.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) ClientDebug.RZ += 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmRZ += 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmRZ += 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gRZ += 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmRZ += 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmRZ += 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hRZ += 1;
-            syncDebugToOffsets(); return;
-        }
-        if (NtglKeyBinds.KEY_DEBUG_RX_SUB.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) ClientDebug.RX -= 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmRX -= 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmRX -= 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gRX -= 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmRX -= 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmRX -= 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hRX -= 1;
-            syncDebugToOffsets(); return;
-        }
-        if (NtglKeyBinds.KEY_DEBUG_RY_SUB.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) ClientDebug.RY -= 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmRY -= 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmRY -= 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gRY -= 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmRY -= 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmRY -= 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hRY -= 1;
-            syncDebugToOffsets(); return;
-        }
-        if (NtglKeyBinds.KEY_DEBUG_RZ_SUB.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) ClientDebug.RZ -= 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmRZ -= 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmRZ -= 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gRZ -= 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmRZ -= 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmRZ -= 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hRZ -= 1;
-            syncDebugToOffsets(); return;
-        }
+//        if (NtglKeyBinds.KEY_DEBUG_RX_ADD.consumeClick()) {
+//            if(ClientDebug.tuningMode == 0) ClientDebug.RX += 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmRX += 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmRX += 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gRX += 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmRX += 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmRX += 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hRX += 1;
+//            syncDebugToOffsets(); return;
+//        }
+//        if (NtglKeyBinds.KEY_DEBUG_RY_ADD.consumeClick()) {
+//            if(ClientDebug.tuningMode == 0) ClientDebug.RY += 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmRY += 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmRY += 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gRY += 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmRY += 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmRY += 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hRY += 1;
+//            syncDebugToOffsets(); return;
+//        }
+//        if (NtglKeyBinds.KEY_DEBUG_RZ_ADD.consumeClick()) {
+//            if(ClientDebug.tuningMode == 0) ClientDebug.RZ += 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmRZ += 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmRZ += 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gRZ += 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmRZ += 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmRZ += 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hRZ += 1;
+//            syncDebugToOffsets(); return;
+//        }
+//        if (NtglKeyBinds.KEY_DEBUG_RX_SUB.consumeClick()) {
+//            if(ClientDebug.tuningMode == 0) ClientDebug.RX -= 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmRX -= 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmRX -= 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gRX -= 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmRX -= 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmRX -= 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hRX -= 1;
+//            syncDebugToOffsets(); return;
+//        }
+//        if (NtglKeyBinds.KEY_DEBUG_RY_SUB.consumeClick()) {
+//            if(ClientDebug.tuningMode == 0) ClientDebug.RY -= 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmRY -= 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmRY -= 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gRY -= 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmRY -= 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmRY -= 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hRY -= 1;
+//            syncDebugToOffsets(); return;
+//        }
+//        if (NtglKeyBinds.KEY_DEBUG_RZ_SUB.consumeClick()) {
+//            if(ClientDebug.tuningMode == 0) ClientDebug.RZ -= 1; else if(ClientDebug.tuningMode == 1) ClientDebug.rArmRZ -= 1; else if(ClientDebug.tuningMode == 2) ClientDebug.lArmRZ -= 1; else if(ClientDebug.tuningMode == 3) ClientDebug.gRZ -= 1; else if(ClientDebug.tuningMode == 4) ClientDebug.grArmRZ -= 1; else if(ClientDebug.tuningMode == 5) ClientDebug.glArmRZ -= 1; else if(ClientDebug.tuningMode == 6) ClientDebug.hRZ -= 1;
+//            syncDebugToOffsets(); return;
+//        }
         if (NtglKeyBinds.KEY_DEBUG_SHOW.consumeClick()) {
             ClientDebug.isHidden = !ClientDebug.isHidden;
             return;
@@ -300,18 +300,8 @@ public class InputHandler {
             return;
         }
         if (NtglKeyBinds.KEY_DEBUG_ZERO.consumeClick()) {
-            if(ClientDebug.tuningMode == 0) { ClientDebug.X=0; ClientDebug.Y=0; ClientDebug.Z=0; ClientDebug.RX=0; ClientDebug.RY=0; ClientDebug.RZ=0; }
-            else if(ClientDebug.tuningMode == 1) { ClientDebug.rArmX=0; ClientDebug.rArmY=0; ClientDebug.rArmZ=0; ClientDebug.rArmRX=0; ClientDebug.rArmRY=0; ClientDebug.rArmRZ=0; }
-            else if(ClientDebug.tuningMode == 2) { ClientDebug.lArmX=0; ClientDebug.lArmY=0; ClientDebug.lArmZ=0; ClientDebug.lArmRX=0; ClientDebug.lArmRY=0; ClientDebug.lArmRZ=0; }
-            else if(ClientDebug.tuningMode == 3) { ClientDebug.gX=0; ClientDebug.gY=0; ClientDebug.gZ=0; ClientDebug.gRX=0; ClientDebug.gRY=0; ClientDebug.gRZ=0; }
-            else if(ClientDebug.tuningMode == 4) { ClientDebug.grArmX=0; ClientDebug.grArmY=0; ClientDebug.grArmZ=0; ClientDebug.grArmRX=0; ClientDebug.grArmRY=0; ClientDebug.grArmRZ=0; }
-            else if(ClientDebug.tuningMode == 5) { ClientDebug.glArmX=0; ClientDebug.glArmY=0; ClientDebug.glArmZ=0; ClientDebug.glArmRX=0; ClientDebug.glArmRY=0; ClientDebug.glArmRZ=0; }
-            else if(ClientDebug.tuningMode == 6) { ClientDebug.hX=0; ClientDebug.hY=0; ClientDebug.hZ=0; ClientDebug.hRX=0; ClientDebug.hRY=0; ClientDebug.hRZ=0; }
-            else if(ClientDebug.tuningMode == 7) { ClientDebug.emX=0; ClientDebug.emY=0; ClientDebug.emZ=0; }
-            else if(ClientDebug.tuningMode == 8) { ClientDebug.hudX=0; ClientDebug.hudY=0; ClientDebug.hudZ=0; }
-            else if(ClientDebug.tuningMode == 9) { ClientDebug.gpX=0; ClientDebug.gpY=0; ClientDebug.gpZ=0; }
-            else { ClientDebug.mfX=0; ClientDebug.mfY=0; ClientDebug.mfZ=0; }
-            syncDebugToOffsets(); return;
+            ClientDebug.resetCurrent();
+            syncDebugToOffsets();
         }
     }
 
