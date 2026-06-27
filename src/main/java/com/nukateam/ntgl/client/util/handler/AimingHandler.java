@@ -183,18 +183,18 @@ public class AimingHandler {
             return;
 
         float progress = (float) this.localTracker.getNormalProgress((float) event.getPartialTick());
-        float defaultFov = mc.options.fov().get().floatValue();
+        float currentFov =  (float) event.getFOV();
+
 
         if (progress > 0) {
             var time = PropertyHelper.getSightAnimations(heldItem).getFovCurve().apply(progress);
             var modifier = WeaponStateHelper.getFovModifier(weaponData);
             modifier = (1.0F - modifier) * (float) time;
-            targetFov = defaultFov - defaultFov * modifier;
+            targetFov = currentFov - currentFov * modifier;
         } else {
-            targetFov = defaultFov;
+            targetFov = currentFov;
         }
 
-        // Плавная интерполяция
         lastFov = (float) Mth.lerp(0.1, lastFov, targetFov);
         event.setFOV(lastFov);
     }

@@ -6,6 +6,9 @@ public class ClientDebug {
     public static int X = 0;
     public static int Y = 0;
     public static int Z = 0;
+
+
+
     public static int RX = 0;
     public static int RY = 0;
     public static int RZ = 0;
@@ -65,7 +68,7 @@ public class ClientDebug {
     public static int mfY = 0;
     public static int mfZ = 0;
 
-    public static int tuningMode = 0;
+    public static TuningMode tuningMode = TuningMode.GLOBAL_WEAPON;
     public static boolean isHidden = false;
     public static ResourceLocation currentlyTuningItem = null;
 }

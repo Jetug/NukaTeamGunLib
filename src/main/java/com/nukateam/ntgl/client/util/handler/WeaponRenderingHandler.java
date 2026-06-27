@@ -335,13 +335,6 @@ public class WeaponRenderingHandler {
                 yOffset += gunOrigin.y * 0.0625 * scaleY;
                 zOffset += gunOrigin.z * 0.0625 * scaleZ;
 
-                /* Translate to iron sight */
-                var ironSightCamera = getIronSightCamera(heldItem, modifiedWeaponConfig).subtract(gunOrigin);
-                xOffset += ironSightCamera.x * 0.0625 * scaleX;
-                yOffset += ironSightCamera.y * 0.0625 * scaleY;
-                zOffset += ironSightCamera.z * 0.0625 * scaleZ;
-                zOffset += 0.72;
-
                 /* Controls the direction of the following translations, changes depending on the main hand. */
                 var side = isRight ? 1.0F : -1.0F;
                 var time = AimingHandler.get().getNormalisedAdsProgress();
@@ -354,11 +347,20 @@ public class WeaponRenderingHandler {
                 yOffset += 7.2 * 0.0625;
                 zOffset += 5.5 * 0.0625;
 
+
                 if(Ntgl.isDebugging()) {
                     xOffset += (double) ClientDebug.X / 10 * 0.0625;
                     yOffset += (double) ClientDebug.Y / 10 * 0.0625;
                     zOffset += (double) ClientDebug.Z / 10 * 0.0625;
                 }
+
+                /* Translate to iron sight */
+                var ironSightCamera = getIronSightCamera(heldItem, modifiedWeaponConfig).subtract(gunOrigin);
+                xOffset += ironSightCamera.x * 0.0625 * scaleX;
+                yOffset += ironSightCamera.y * 0.0625 * scaleY;
+                zOffset += ironSightCamera.z * 0.0625 * scaleZ;
+                zOffset += 0.72;
+
 
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
                 poseStack.translate(-xOffset * side * transition, -yOffset * transition, -zOffset * transition);

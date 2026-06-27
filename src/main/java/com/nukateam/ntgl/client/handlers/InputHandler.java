@@ -5,6 +5,7 @@ import com.nukateam.ntgl.client.input.*;
 import com.nukateam.ntgl.client.settings.NtglOptions;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.PAWeaponOffsets;
+import com.nukateam.ntgl.client.util.TuningMode;
 import com.nukateam.ntgl.client.util.handler.*;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.holders.*;
@@ -209,23 +210,13 @@ public class InputHandler {
         if (!Ntgl.isDebugging()) return;
 
         if (NtglKeyBinds.KEY_DEBUG_TUNING_MODE.consumeClick()) {
-            ClientDebug.tuningMode = (ClientDebug.tuningMode + 1) % 11;
+
+            var id = (ClientDebug.tuningMode.ordinal() + 1) % TuningMode.values().length;
+            ClientDebug.tuningMode = TuningMode.values()[id];
+
             var player = Minecraft.getInstance().player;
             if(player != null) {
-                String mode = "";
-                switch(ClientDebug.tuningMode) {
-                    case 0: mode = "Unique Weapon"; break;
-                    case 1: mode = "Unique Right Arm"; break;
-                    case 2: mode = "Unique Left Arm"; break;
-                    case 3: mode = "Global Weapon"; break;
-                    case 4: mode = "Global Right Arm"; break;
-                    case 5: mode = "Global Left Arm"; break;
-                    case 6: mode = "Passenger Head"; break;
-                    case 7: mode = "Emissive Layer"; break;
-                    case 8: mode = "Gun HUD"; break;
-                    case 9: mode = "Grenade Pose"; break;
-                    case 10: mode = "Muzzle Flash"; break;
-                }
+                String mode = ClientDebug.tuningMode.getName();
                 player.displayClientMessage(Component.literal("Tuning Mode: " + mode), true);
             }
             return;
