@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.helpers.MuzzleMatrixHelper;
+import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
 import com.nukateam.ntgl.client.util.helpers.TransformUtils;
 import com.nukateam.ntgl.common.data.WeaponData;
@@ -15,6 +16,7 @@ import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.item.attachment.BarrelItem;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import net.minecraftforge.client.ClientCommandHandler;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -71,6 +73,10 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
 
         poseStack.pushPose();
         {
+            var offset = WeaponModifierHelper.getWeaponOffset(new WeaponData(stack, entity));
+            poseStack.translate(offset.x / 16D, offset.y / 16D, offset.z / 16D);
+            poseStack.translate(weaponX / 10d / 16D , weaponY / 10d / 16D, weaponZ / 10d / 16D);
+
             if(TransformUtils.isNonHand(transformType)){
                 poseStack.translate(0, -7.5D / 16D, 0);
             }
@@ -147,7 +153,7 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
         var length = barrelItem.getProperties().getLength();
         poseStack.translate(0, 0, -length / 16D);
         if (Ntgl.isDebugging())
-            poseStack.translate(-mfX / 10D / 16D, mfY / 10D / 16D, mfZ / 10D / 16D);
+            poseStack.translate(-muzzleFlashX / 10D / 16D, muzzleFlashY / 10D / 16D, muzzleFlashZ / 10D / 16D);
     }
 
     protected void prepareHiddenBones(ItemDisplayContext transformType) {

@@ -1,15 +1,8 @@
 package com.nukateam.chassis_core.client.render.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import com.nukateam.geo.interfaces.DynamicGeoItem;
-import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.client.util.ClientDebug;
-import com.nukateam.ntgl.client.util.PAWeaponOffsets;
-import com.nukateam.ntgl.common.foundation.item.WeaponItem;
+displayimport com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.renderer.GeoRenderer;
@@ -51,55 +44,10 @@ public class HeldItemLayer<T extends GeoAnimatable> extends BlockAndItemGeoLayer
                     var isWeapon = stack.getItem() instanceof WeaponItem;
 
                     if (isWeapon) {
-//                        var globalId = new ResourceLocation("nukacraft", "global_offsets");
-//                        var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
-//                        var global = PAWeaponOffsets.get(globalId);
-//                        var offset = PAWeaponOffsets.get(id);
-//
-//                        float dx = 0;
-//                        float dy = 0;
-//                        float dz = 0;
-//                        float rx = 0;
-//                        float ry = 0;
-//                        float rz = 0;
-//
-//                        var isDebuggingItem = Ntgl.isDebugging() && ClientDebug.currentlyTuningItem != null && ClientDebug.currentlyTuningItem.equals(id);
-//
-//                        if (isDebuggingItem) {
-//                            dx = (ClientDebug.X + ClientDebug.gX) / 16.0F;
-//                            dy = (ClientDebug.Y + ClientDebug.gY) / 16.0F;
-//                            dz = (ClientDebug.Z + ClientDebug.gZ) / 16.0F;
-//                            rx = ClientDebug.RX + ClientDebug.gRX;
-//                            ry = ClientDebug.RY + ClientDebug.gRY;
-//                            rz = ClientDebug.RZ + ClientDebug.gRZ;
-//                        } else {
-//                            float ux = offset != null ? offset.x : 0;
-//                            float uy = offset != null ? offset.y : 0;
-//                            float uz = offset != null ? offset.z : 0;
-//                            float urx = offset != null ? offset.rx : 0;
-//                            float ury = offset != null ? offset.ry : 0;
-//                            float urz = offset != null ? offset.rz : 0;
-//
-//                            float gx = global != null ? global.x : 0;
-//                            float gy = global != null ? global.y : 0;
-//                            float gz = global != null ? global.z : 0;
-//                            float grx = global != null ? global.rx : 0;
-//                            float gry = global != null ? global.ry : 0;
-//                            float grz = global != null ? global.rz : 0;
-//
-//                            dx = (ux + gx) / 16.0F;
-//                            dy = (uy + gy) / 16.0F;
-//                            dz = (uz + gz) / 16.0F;
-//                            rx = urx + grx;
-//                            ry = ury + gry;
-//                            rz = urz + grz;
-//                        }
-//
 //                        poseStack.mulPose(Axis.XP.rotationDegrees(rx));
 //                        poseStack.mulPose(Axis.YP.rotationDegrees(ry));
 //                        poseStack.mulPose(Axis.ZP.rotationDegrees(rz));
-//                        poseStack.translate(dx, dy, dz);
-
+                        poseStack.translate(-7.5 / 16d, -8.0 / 16d, -15.5 / 16d);
                         WeaponRenderingHandler.get().renderWeapon(
                                 actualShooter, stack,
                                 isLeftHand ? ItemDisplayContext.THIRD_PERSON_LEFT_HAND : ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,

@@ -7,21 +7,25 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
 public class DebugHud {
-    private static final int BAR_OFFSET_X = 140;
-    private static final int OFFSET_Y = 15;
+    private static final int OFFSET_Y = 12;
 
     public static final IGuiOverlay DEBUG_HUD = ((gui, graphics, partialTick, width, height) -> {
         var minecraft = Minecraft.getInstance();
         if(ClientDebug.isHidden || !Ntgl.isDebugging() || minecraft.player == null) return;
         var x = width - 70;
 
-        renderAmmoCounter(graphics, "x", ClientDebug.X, x, OFFSET_Y);
-        renderAmmoCounter(graphics, "y", ClientDebug.Y, x, OFFSET_Y * 2);
-        renderAmmoCounter(graphics, "z", ClientDebug.Z, x, OFFSET_Y * 3);
+        renderString(graphics, "Mode: " + ClientDebug.tuningMode.getName(), x - 80, OFFSET_Y);
+        renderAmmoCounter(graphics, "x", ClientDebug.getX(), x, OFFSET_Y * 2);
+        renderAmmoCounter(graphics, "y", ClientDebug.getY(), x, OFFSET_Y * 3);
+        renderAmmoCounter(graphics, "z", ClientDebug.getZ(), x, OFFSET_Y * 4);
     });
 
     private static void renderAmmoCounter(GuiGraphics graphics, String label, float val, int x, int y) {
         var text = label + ":" + val;
+        graphics.drawString(Minecraft.getInstance().font, text, x, y, 0xFFFFFFFF, true);
+    }
+
+    private static void renderString(GuiGraphics graphics, String text, int x, int y) {
         graphics.drawString(Minecraft.getInstance().font, text, x, y, 0xFFFFFFFF, true);
     }
 }

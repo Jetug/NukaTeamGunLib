@@ -7,12 +7,22 @@ public class ClientDebug {
     public static int Y = 0;
     public static int Z = 0;
 
+    public static int weaponX = 0;
+    public static int weaponY = 0;
+    public static int weaponZ = 0;
+
     public static int RX = 0;
     public static int RY = 0;
     public static int RZ = 0;
+
+    public static int scopeX = 0;
+    public static int scopeY = 0;
+    public static int scopeZ = 0;
+
     public static int rArmX = 0;
     public static int rArmY = 0;
     public static int rArmZ = 0;
+
     public static int rArmRX = 0;
     public static int rArmRY = 0;
     public static int rArmRZ = 0;
@@ -20,140 +30,89 @@ public class ClientDebug {
     public static int lArmX = 0;
     public static int lArmY = 0;
     public static int lArmZ = 0;
+
     public static int lArmRX = 0;
     public static int lArmRY = 0;
     public static int lArmRZ = 0;
 
-    public static int gX = 0;
-    public static int gY = 0;
-    public static int gZ = 0;
-
     public static int gRX = 0;
     public static int gRY = 0;
     public static int gRZ = 0;
-    public static int grArmX = 0;
-    public static int grArmY = 0;
-    public static int grArmZ = 0;
-    public static int grArmRX = 0;
-    public static int grArmRY = 0;
-    public static int grArmRZ = 0;
-    public static int glArmX = 0;
-    public static int glArmY = 0;
-    public static int glArmZ = 0;
-    public static int glArmRX = 0;
-    public static int glArmRY = 0;
-    public static int glArmRZ = 0;
-
-    public static int hX = 0;
-    public static int hY = 0;
-    public static int hZ = 0;
-    public static int hRX = 0;
-    public static int hRY = 0;
-    public static int hRZ = 0;
-
-    public static int emX = 0;
-    public static int emY = 0;
-    public static int emZ = 0;
 
     public static int hudX = 0;
     public static int hudY = 0;
     public static int hudZ = 0;
 
-    public static int gpX = 0;
-    public static int gpY = 0;
-    public static int gpZ = 0;
-
-    public static int mfX = 0;
-    public static int mfY = 0;
-    public static int mfZ = 0;
+    public static int muzzleFlashX = 0;
+    public static int muzzleFlashY = 0;
+    public static int muzzleFlashZ = 0;
 
     // ============ GETTERS ============
     public static int getX() {
         switch (tuningMode) {
-            case UNIQUE_WEAPON -> { return X; }
-            case UNIQUE_RIGHT_ARM -> { return rArmX; }
-            case UNIQUE_LEFT_ARM -> { return lArmX; }
-            case GLOBAL_WEAPON -> { return gX; }
-            case GLOBAL_RIGHT_ARM -> { return grArmX; }
-            case GLOBAL_LEFT_ARM -> { return glArmX; }
-            case PASSENGER_HEAD -> { return hX; }
-            case EMISSIVE_LAYER -> { return emX; }
+            case GENERIC -> { return X; }
+            case WEAPON_POSITION -> { return weaponX; }
+            case RIGHT_ARM -> { return rArmX; }
+            case LEFT_ARM -> { return lArmX; }
+            case WEAPON_SCOPE -> { return scopeX; }
             case GUN_HUD -> { return hudX; }
-            case GRENADE_POSE -> { return gpX; }
-            case MUZZLE_FLASH -> { return mfX; }
+            case MUZZLE_FLASH -> { return muzzleFlashX; }
             default -> { return 0; }
         }
     }
 
     public static int getY() {
         switch (tuningMode) {
-            case UNIQUE_WEAPON -> { return Y; }
-            case UNIQUE_RIGHT_ARM -> { return rArmY; }
-            case UNIQUE_LEFT_ARM -> { return lArmY; }
-            case GLOBAL_WEAPON -> { return gY; }
-            case GLOBAL_RIGHT_ARM -> { return grArmY; }
-            case GLOBAL_LEFT_ARM -> { return glArmY; }
-            case PASSENGER_HEAD -> { return hY; }
-            case EMISSIVE_LAYER -> { return emY; }
+            case GENERIC -> { return Y; }
+            case WEAPON_POSITION -> { return weaponY; }
+            case RIGHT_ARM -> { return rArmY; }
+            case LEFT_ARM -> { return lArmY; }
+            case WEAPON_SCOPE -> { return scopeY; }
             case GUN_HUD -> { return hudY; }
-            case GRENADE_POSE -> { return gpY; }
-            case MUZZLE_FLASH -> { return mfY; }
+            case MUZZLE_FLASH -> { return muzzleFlashY; }
             default -> { return 0; }
         }
     }
 
     public static int getZ() {
         switch (tuningMode) {
-            case UNIQUE_WEAPON -> { return Z; }
-            case UNIQUE_RIGHT_ARM -> { return rArmZ; }
-            case UNIQUE_LEFT_ARM -> { return lArmZ; }
-            case GLOBAL_WEAPON -> { return gZ; }
-            case GLOBAL_RIGHT_ARM -> { return grArmZ; }
-            case GLOBAL_LEFT_ARM -> { return glArmZ; }
-            case PASSENGER_HEAD -> { return hZ; }
-            case EMISSIVE_LAYER -> { return emZ; }
+            case GENERIC -> { return Z; }
+            case WEAPON_POSITION -> { return weaponZ; }
+            case RIGHT_ARM -> { return rArmZ; }
+            case LEFT_ARM -> { return lArmZ; }
+            case WEAPON_SCOPE -> { return scopeZ; }
             case GUN_HUD -> { return hudZ; }
-            case GRENADE_POSE -> { return gpZ; }
-            case MUZZLE_FLASH -> { return mfZ; }
+            case MUZZLE_FLASH -> { return muzzleFlashZ; }
             default -> { return 0; }
         }
     }
 
     public static int getRX() {
         switch (tuningMode) {
-            case UNIQUE_WEAPON -> { return RX; }
-            case UNIQUE_RIGHT_ARM -> { return rArmRX; }
-            case UNIQUE_LEFT_ARM -> { return lArmRX; }
-            case GLOBAL_WEAPON -> { return gRX; }
-            case GLOBAL_RIGHT_ARM -> { return grArmRX; }
-            case GLOBAL_LEFT_ARM -> { return glArmRX; }
-            case PASSENGER_HEAD -> { return hRX; }
+            case GENERIC -> { return RX; }
+            case RIGHT_ARM -> { return rArmRX; }
+            case LEFT_ARM -> { return lArmRX; }
+            case WEAPON_SCOPE -> { return gRX; }
             default -> { return 0; }
         }
     }
 
     public static int getRY() {
         switch (tuningMode) {
-            case UNIQUE_WEAPON -> { return RY; }
-            case UNIQUE_RIGHT_ARM -> { return rArmRY; }
-            case UNIQUE_LEFT_ARM -> { return lArmRY; }
-            case GLOBAL_WEAPON -> { return gRY; }
-            case GLOBAL_RIGHT_ARM -> { return grArmRY; }
-            case GLOBAL_LEFT_ARM -> { return glArmRY; }
-            case PASSENGER_HEAD -> { return hRY; }
+            case GENERIC -> { return RY; }
+            case RIGHT_ARM -> { return rArmRY; }
+            case LEFT_ARM -> { return lArmRY; }
+            case WEAPON_SCOPE -> { return gRY; }
             default -> { return 0; }
         }
     }
 
     public static int getRZ() {
         switch (tuningMode) {
-            case UNIQUE_WEAPON -> { return RZ; }
-            case UNIQUE_RIGHT_ARM -> { return rArmRZ; }
-            case UNIQUE_LEFT_ARM -> { return lArmRZ; }
-            case GLOBAL_WEAPON -> { return gRZ; }
-            case GLOBAL_RIGHT_ARM -> { return grArmRZ; }
-            case GLOBAL_LEFT_ARM -> { return glArmRZ; }
-            case PASSENGER_HEAD -> { return hRZ; }
+            case GENERIC -> { return RZ; }
+            case RIGHT_ARM -> { return rArmRZ; }
+            case LEFT_ARM -> { return lArmRZ; }
+            case WEAPON_SCOPE -> { return gRZ; }
             default -> { return 0; }
         }
     }
@@ -161,92 +120,70 @@ public class ClientDebug {
     // ============ SETTERS ============
     public static void setX(int value) {
         switch (tuningMode) {
-            case UNIQUE_WEAPON -> X = value;
-            case UNIQUE_RIGHT_ARM -> rArmX = value;
-            case UNIQUE_LEFT_ARM -> lArmX = value;
-            case GLOBAL_WEAPON -> gX = value;
-            case GLOBAL_RIGHT_ARM -> grArmX = value;
-            case GLOBAL_LEFT_ARM -> glArmX = value;
-            case PASSENGER_HEAD -> hX = value;
-            case EMISSIVE_LAYER -> emX = value;
+            case GENERIC -> X = value;
+            case WEAPON_POSITION -> weaponX = value;
+            case RIGHT_ARM -> rArmX = value;
+            case LEFT_ARM -> lArmX = value;
+            case WEAPON_SCOPE -> scopeX = value;
             case GUN_HUD -> hudX = value;
-            case GRENADE_POSE -> gpX = value;
-            case MUZZLE_FLASH -> mfX = value;
+            case MUZZLE_FLASH -> muzzleFlashX = value;
         }
     }
 
     public static void setY(int value) {
         switch (tuningMode) {
-            case UNIQUE_WEAPON -> Y = value;
-            case UNIQUE_RIGHT_ARM -> rArmY = value;
-            case UNIQUE_LEFT_ARM -> lArmY = value;
-            case GLOBAL_WEAPON -> gY = value;
-            case GLOBAL_RIGHT_ARM -> grArmY = value;
-            case GLOBAL_LEFT_ARM -> glArmY = value;
-            case PASSENGER_HEAD -> hY = value;
-            case EMISSIVE_LAYER -> emY = value;
+            case GENERIC -> Y = value;
+            case WEAPON_POSITION -> weaponY = value;
+            case RIGHT_ARM -> rArmY = value;
+            case LEFT_ARM -> lArmY = value;
+            case WEAPON_SCOPE -> scopeY = value;
             case GUN_HUD -> hudY = value;
-            case GRENADE_POSE -> gpY = value;
-            case MUZZLE_FLASH -> mfY = value;
+            case MUZZLE_FLASH -> muzzleFlashY = value;
         }
     }
 
     public static void setZ(int value) {
         switch (tuningMode) {
-            case UNIQUE_WEAPON -> Z = value;
-            case UNIQUE_RIGHT_ARM -> rArmZ = value;
-            case UNIQUE_LEFT_ARM -> lArmZ = value;
-            case GLOBAL_WEAPON -> gZ = value;
-            case GLOBAL_RIGHT_ARM -> grArmZ = value;
-            case GLOBAL_LEFT_ARM -> glArmZ = value;
-            case PASSENGER_HEAD -> hZ = value;
-            case EMISSIVE_LAYER -> emZ = value;
+            case GENERIC -> Z = value;
+            case WEAPON_POSITION -> weaponZ = value;
+            case RIGHT_ARM -> rArmZ = value;
+            case LEFT_ARM -> lArmZ = value;
+            case WEAPON_SCOPE -> scopeZ = value;
             case GUN_HUD -> hudZ = value;
-            case GRENADE_POSE -> gpZ = value;
-            case MUZZLE_FLASH -> mfZ = value;
+            case MUZZLE_FLASH -> muzzleFlashZ = value;
         }
     }
 
     public static void setRX(int value) {
         switch (tuningMode) {
-            case UNIQUE_WEAPON -> RX = value;
-            case UNIQUE_RIGHT_ARM -> rArmRX = value;
-            case UNIQUE_LEFT_ARM -> lArmRX = value;
-            case GLOBAL_WEAPON -> gRX = value;
-            case GLOBAL_RIGHT_ARM -> grArmRX = value;
-            case GLOBAL_LEFT_ARM -> glArmRX = value;
-            case PASSENGER_HEAD -> hRX = value;
+            case GENERIC -> RX = value;
+            case RIGHT_ARM -> rArmRX = value;
+            case LEFT_ARM -> lArmRX = value;
+            case WEAPON_SCOPE -> gRX = value;
             default -> {}
         }
     }
 
     public static void setRY(int value) {
         switch (tuningMode) {
-            case UNIQUE_WEAPON -> RY = value;
-            case UNIQUE_RIGHT_ARM -> rArmRY = value;
-            case UNIQUE_LEFT_ARM -> lArmRY = value;
-            case GLOBAL_WEAPON -> gRY = value;
-            case GLOBAL_RIGHT_ARM -> grArmRY = value;
-            case GLOBAL_LEFT_ARM -> glArmRY = value;
-            case PASSENGER_HEAD -> hRY = value;
+            case GENERIC -> RY = value;
+            case RIGHT_ARM -> rArmRY = value;
+            case LEFT_ARM -> lArmRY = value;
+            case WEAPON_SCOPE -> gRY = value;
             default -> {}
         }
     }
 
     public static void setRZ(int value) {
         switch (tuningMode) {
-            case UNIQUE_WEAPON -> RZ = value;
-            case UNIQUE_RIGHT_ARM -> rArmRZ = value;
-            case UNIQUE_LEFT_ARM -> lArmRZ = value;
-            case GLOBAL_WEAPON -> gRZ = value;
-            case GLOBAL_RIGHT_ARM -> grArmRZ = value;
-            case GLOBAL_LEFT_ARM -> glArmRZ = value;
-            case PASSENGER_HEAD -> hRZ = value;
+            case GENERIC -> RZ = value;
+            case RIGHT_ARM -> rArmRZ = value;
+            case LEFT_ARM -> lArmRZ = value;
+            case WEAPON_SCOPE -> gRZ = value;
             default -> {}
         }
     }
 
-    // ============ ADDERS (используют set и get) ============
     public static void addX(int value) {
         setX(getX() + value);
     }
@@ -280,7 +217,7 @@ public class ClientDebug {
         setRZ(0);
     }
 
-    public static TuningMode tuningMode = TuningMode.GLOBAL_WEAPON;
+    public static TuningMode tuningMode = TuningMode.GENERIC;
     public static boolean isHidden = false;
     public static ResourceLocation currentlyTuningItem = null;
 }

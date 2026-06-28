@@ -9,10 +9,16 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public class Positioned implements INBTSerializable<CompoundTag> {
+public class Display implements INBTSerializable<CompoundTag> {
     public static final String OFFSET = "Offset";
 
     @Optional protected Vec3 offset = Vec3.ZERO;
+
+    public static Display create(CompoundTag tag){
+        var config = new Display();
+        config.deserializeNBT(tag);
+        return config;
+    }
 
     @Override
     public CompoundTag serializeNBT() {
@@ -38,8 +44,8 @@ public class Positioned implements INBTSerializable<CompoundTag> {
     }
 
 
-    public Positioned copy() {
-        var positioned = new Positioned();
+    public Display copy() {
+        var positioned = new Display();
         positioned.offset = this.offset;
         return positioned;
     }
@@ -47,25 +53,25 @@ public class Positioned implements INBTSerializable<CompoundTag> {
     public static class Builder extends AbstractBuilder<Builder> {
     }
 
-    protected static abstract class AbstractBuilder<T extends AbstractBuilder<T>> extends SuperBuilder<Positioned, T> {
-        private final Positioned positioned;
+    protected static abstract class AbstractBuilder<T extends AbstractBuilder<T>> extends SuperBuilder<Display, T> {
+        private final Display display;
 
         private AbstractBuilder() {
-            this(new Positioned());
+            this(new Display());
         }
 
-        protected AbstractBuilder(Positioned positioned) {
-            this.positioned = positioned;
+        protected AbstractBuilder(Display display) {
+            this.display = display;
         }
 
         public T setOffset(Vec3 offset) {
-            this.positioned.offset = offset;
+            this.display.offset = offset;
             return this.self();
         }
 
         @Override
-        public Positioned build() {
-            return this.positioned.copy();
+        public Display build() {
+            return this.display.copy();
         }
     }
 }

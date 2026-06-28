@@ -338,6 +338,10 @@ public interface IWeaponModifier {
         return value;
     }
 
+    default Vec3 modifyWeaponOffset(Vec3 value, WeaponData data) {
+        return value;
+    }
+
     default ProjectileConfig modifyProjectile(ProjectileConfig value, WeaponData data) {
         return value;
     }

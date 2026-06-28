@@ -195,6 +195,9 @@
   "animations": {
     "ntgl:reload": "ntgl:revolver_reload"
   },
+  "display": {
+    "offset": [1.0, -7.0, 0.0]
+  },
   "textures": {
     "default" : "ntgl:textures/weapons/classic10mm/classic10mm.png",
     "blue"    : "ntgl:textures/weapons/classic10mm/classic10mm_blue.png",

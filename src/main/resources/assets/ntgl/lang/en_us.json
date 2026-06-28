@@ -62,6 +62,20 @@
   "key.ntgl.ammo_select": "Ammo Select",
   "key.ntgl.key_tips": "Show key tips",
 
+  "key.ntgl.debug_x_add": "X Position +",
+  "key.ntgl.debug_y_add": "Y Position +",
+  "key.ntgl.debug_z_add": "Z Position +",
+  "key.ntgl.debug_y_sub": "X Position -",
+  "key.ntgl.debug_z_sub": "Y Position -",
+  "key.ntgl.debug_x_sub": "Z Position -",
+
+  "key.ntgl.debug_rx_add": "X Rotation +",
+  "key.ntgl.debug_ry_add": "Y Rotation +",
+  "key.ntgl.debug_rz_add": "Z Rotation +",
+  "key.ntgl.debug_rx_sub": "X Rotation -",
+  "key.ntgl.debug_ry_sub": "Y Rotation -",
+  "key.ntgl.debug_rz_sub": "Z Rotation -",
+
   "subtitle.ntgl.stun.explosion": "Stun Grenade Explosion",
   "subtitle.ntgl.stun.ring": "Ringing",
   "subtitle.ntgl.fire": "Gunfire",

@@ -349,9 +349,9 @@ public class WeaponRenderingHandler {
 
 
                 if(Ntgl.isDebugging()) {
-                    xOffset += (double) ClientDebug.X / 10 * 0.0625;
-                    yOffset += (double) ClientDebug.Y / 10 * 0.0625;
-                    zOffset += (double) ClientDebug.Z / 10 * 0.0625;
+                    xOffset += (double) ClientDebug.scopeX / 10 * 0.0625;
+                    yOffset += (double) ClientDebug.scopeY / 10 * 0.0625;
+                    zOffset += (double) ClientDebug.scopeZ / 10 * 0.0625;
                 }
 
                 /* Translate to iron sight */
