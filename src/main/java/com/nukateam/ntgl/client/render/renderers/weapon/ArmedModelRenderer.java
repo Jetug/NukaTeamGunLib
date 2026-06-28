@@ -57,13 +57,7 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
         this.firstRightRender = true;
         this.firstLeftRender  = true;
         this.currentEntity = entity;
-
-        poseStack.pushPose();
-        {
-//            poseStack.translate(0, -6 / 16D, 0);
-            super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
-        }
-        poseStack.popPose();
+        super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
     }
 
     @Override

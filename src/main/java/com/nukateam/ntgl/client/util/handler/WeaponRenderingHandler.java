@@ -261,9 +261,7 @@ public class WeaponRenderingHandler {
                 float equipProgress = this.getEquipProgress(event.getPartialTick());
                 poseStack.translate(0, equipProgress * -0.6F, 0);
                 poseStack.mulPose(Axis.XP.rotationDegrees(equipProgress * -50F));
-
                 poseStack.translate(0.15 * offset, -1.0, -1.3);//Jetug
-
 
     //          this.applySprintingTransforms(player, heldItem, hand, poseStack, event.getPartialTick());
     //            this.applyRecoilTransforms(poseStack, heldItem, modifiedGun);

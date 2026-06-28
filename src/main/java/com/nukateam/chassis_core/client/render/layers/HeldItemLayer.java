@@ -1,7 +1,7 @@
 package com.nukateam.chassis_core.client.render.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-displayimport com.nukateam.ntgl.common.foundation.item.WeaponItem;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;

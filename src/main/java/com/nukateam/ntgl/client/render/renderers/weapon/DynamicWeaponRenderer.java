@@ -77,13 +77,16 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
             poseStack.translate(offset.x / 16D, offset.y / 16D, offset.z / 16D);
             poseStack.translate(weaponX / 10d / 16D , weaponY / 10d / 16D, weaponZ / 10d / 16D);
 
-            if(TransformUtils.isNonHand(transformType)){
-                poseStack.translate(0, -7.5D / 16D, 0);
+//            if(TransformUtils.isNonHand(transformType)){
+//                poseStack.translate(0, -7.5D / 16D, 0);
+//            }
+            if(TransformUtils.isFirstPerson(transformType)){
+                poseStack.translate(1.5 / 16D, 5.0 / 16D, 1.5 / 16D);
             }
-            else if(TransformUtils.isFirstPerson(transformType)){
-                poseStack.translate(0, -8.5 / 16D, 0.5 / 16D);
+            else if(TransformUtils.isThirdPerson(transformType)){
+                poseStack.translate(0.0 / 16D, 10.0 / 16D, 2.5 / 16D);
             }
-            else poseStack.translate(0, -6 / 16D, 0);
+            else poseStack.translate(0, 3.3 / 16D, 0);
             super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
         }
         poseStack.popPose();
