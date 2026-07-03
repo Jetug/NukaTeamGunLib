@@ -26,6 +26,7 @@ public class ExampleWeapons {
     public static final RegistryObject<WeaponItem> GATLING = registerGun("gatling");
     public static final RegistryObject<WeaponItem> REVOLVER = registerGun("revolver");
     public static final RegistryObject<WeaponItem> HAMMER = registerGun("hammer");
+    public static final RegistryObject<WeaponItem> DEATHCLAW_GAUNTLET = registerGun("deathclaw_gauntlet");
 
     public static final RegistryObject<Item> GRENADE = ITEMS.register("grenade",
             () -> new WeaponItem(new Item.Properties()));

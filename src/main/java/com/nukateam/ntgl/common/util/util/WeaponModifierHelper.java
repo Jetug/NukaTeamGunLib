@@ -533,6 +533,12 @@ public class WeaponModifierHelper {
         return finalValue.get();
     }
 
+    public static Vec3 getNonHandOffset(WeaponData data) {
+        var finalValue = new AtomicReference<>(getDisplay(data).getNonHandOffset());
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyNonHandOffset(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
     public static ProjectileConfig getProjectileConfig(ResourceLocation ammoId, WeaponData data) {
         ProjectileConfig config = null;
         var item = WeaponStateHelper.getCurrentAmmoWithoutCheck(data);

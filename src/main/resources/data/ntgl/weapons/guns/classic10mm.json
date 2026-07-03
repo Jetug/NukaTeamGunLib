@@ -178,6 +178,10 @@
       }
     }
   },
+  "display": {
+    "offset": [0.0, 0.0, 0.0],
+    "nonHandOffset": [0.0, 0.0, 0.0]
+  },
   "zoom": {
     "offset": [0.0, 4.8, 0.0],
     "fovModifier": 0.7,
@@ -194,9 +198,6 @@
   },
   "animations": {
     "ntgl:reload": "ntgl:revolver_reload"
-  },
-  "display": {
-    "offset": [1.0, -7.0, 0.0]
   },
   "textures": {
     "default" : "ntgl:textures/weapons/classic10mm/classic10mm.png",

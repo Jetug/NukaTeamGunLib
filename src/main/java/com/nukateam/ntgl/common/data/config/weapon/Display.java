@@ -11,8 +11,10 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public class Display implements INBTSerializable<CompoundTag> {
     public static final String OFFSET = "Offset";
+    public static final String NON_HAND_OFFSET = "NonHandOffset";
 
     @Optional protected Vec3 offset = Vec3.ZERO;
+    @Optional protected Vec3 nonHandOffset = Vec3.ZERO;
 
     public static Display create(CompoundTag tag){
         var config = new Display();
@@ -22,8 +24,9 @@ public class Display implements INBTSerializable<CompoundTag> {
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
+        var tag = new CompoundTag();
         tag.put(OFFSET, NbtUtils.writeVec3(offset));
+        tag.put(NON_HAND_OFFSET, NbtUtils.writeVec3(nonHandOffset));
         return tag;
     }
 
@@ -31,6 +34,9 @@ public class Display implements INBTSerializable<CompoundTag> {
     public void deserializeNBT(CompoundTag tag) {
         if (tag.contains(OFFSET, Tag.TAG_COMPOUND)) {
             this.offset = NbtUtils.readVec3(tag.getCompound(OFFSET));
+        }
+        if (tag.contains(NON_HAND_OFFSET, Tag.TAG_COMPOUND)) {
+            this.nonHandOffset = NbtUtils.readVec3(tag.getCompound(NON_HAND_OFFSET));
         }
     }
 
@@ -43,10 +49,14 @@ public class Display implements INBTSerializable<CompoundTag> {
         return this.offset;
     }
 
+    public Vec3 getNonHandOffset() {
+        return this.nonHandOffset;
+    }
 
     public Display copy() {
         var positioned = new Display();
         positioned.offset = this.offset;
+        positioned.nonHandOffset = this.nonHandOffset;
         return positioned;
     }
 
