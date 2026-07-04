@@ -130,18 +130,18 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
                     if (isRightHand) {
                         if (bone.getName().equals(LEFT_ARM)) {
                             poseStack.translate(-65 / 10d / 16d, 0 / 10d / 16d, 0 / 10d / 16d);
-                            GeoRenderUtils.renderArm(poseStack, bone, packedLight, bufferSource, packedLight, partialTick, HumanoidArm.LEFT);
+                            GeoRenderUtils.renderArm(poseStack, bone, packedLight, bufferSource, false);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
                             poseStack.translate(50 / 10d / 16d, -20 / 10d / 16d, 0 / 10d / 16d);
-                            GeoRenderUtils.renderArm(poseStack, bone, packedLight, bufferSource, packedLight, partialTick, HumanoidArm.RIGHT);
+                            GeoRenderUtils.renderArm(poseStack, bone, packedLight, bufferSource, true);
                         }
                     } else {
                         if (bone.getName().equals(LEFT_ARM)) {
                             poseStack.translate(50 / 10d / 16d, -20 / 10d / 16d, 0 / 10d / 16d);
-                            GeoRenderUtils.renderArm(poseStack, bone, packedLight, bufferSource, packedLight, partialTick, HumanoidArm.RIGHT);
+                            GeoRenderUtils.renderArm(poseStack, bone, packedLight, bufferSource, true);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
                             poseStack.translate(-65 / 10d / 16d, 0 / 10d / 16d, 0 / 10d / 16d);
-                            GeoRenderUtils.renderArm(poseStack, bone, packedLight, bufferSource, packedLight, partialTick, HumanoidArm.LEFT);
+                            GeoRenderUtils.renderArm(poseStack, bone, packedLight, bufferSource, false);
                         }
                     }
                 }
