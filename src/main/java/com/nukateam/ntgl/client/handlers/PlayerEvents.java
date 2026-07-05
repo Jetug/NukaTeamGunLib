@@ -13,9 +13,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 
 import java.lang.reflect.InvocationTargetException;
 
-import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderHand;
-import static com.nukateam.ntgl.client.util.ClientDebug.*;
-
 @EventBusSubscriber(value = Dist.CLIENT)
 public class PlayerEvents {
     @OnlyIn(Dist.CLIENT)

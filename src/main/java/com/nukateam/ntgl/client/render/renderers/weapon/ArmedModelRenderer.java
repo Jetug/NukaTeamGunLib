@@ -4,15 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.geo.render.ItemAnimator;
-import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
-import com.nukateam.ntgl.client.render.GeoRenderUtils;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.util.helpers.TransformUtils;
 import com.nukateam.ntgl.common.util.helpers.compatibility.ChassisHelper;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -21,6 +18,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+
+import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderLeftArm;
+import static com.nukateam.ntgl.client.render.GeoRenderUtils.renderRightArm;
 
 public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
     public static final String RIGHT_ARM = "right_arm";
@@ -52,7 +52,7 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
 
         poseStack.pushPose();
         {
-            poseStack.translate(0, 0, -50 / 10d / 16d);
+//            poseStack.translate(0, -6 / 16D, 0);
             super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
         }
         poseStack.popPose();
@@ -61,16 +61,15 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
     @Override
     public void renderRecursively(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
                                   MultiBufferSource bufferSource, VertexConsumer buffer,
-                                  boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+                                  boolean isReRender, float partialTick, int packedLight, int packedOverlay,
+                                  int color) {
         poseStack.pushPose();
 
         switch (bone.getName()) {
             case LEFT_ARM, RIGHT_ARM -> {
                 bone.setHidden(true);
                 bone.setChildrenHidden(false);
-                if(Config.CLIENT.display.renderHands.get()) {
-                    renderArms(poseStack, bone, packedLight, packedOverlay, bufferSource, partialTick);
-                }
+                renderArms(poseStack, bone, packedLight, packedOverlay, color);
             }
             case LEFT_ARM_ANIM, RIGHT_ARM_ANIM ->{
                 if(!TransformUtils.isFirstPerson(transformType)){
@@ -81,12 +80,13 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
         }
 
         super.renderRecursively(poseStack, animatable, bone, renderType, bufferSource,
-                buffer, isReRender, partialTick, packedLight,
-                packedOverlay, colour);
+                this.bufferSource.getBuffer(renderType), isReRender, partialTick, packedLight,
+                packedOverlay, color);
         poseStack.popPose();
     }
 
-    protected void renderArms(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay, MultiBufferSource bufferSource, float partialTick) {
+
+    protected void renderArms(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay, int color) {
         var client = Minecraft.getInstance();
         if(client.player == null) return;
 
@@ -107,8 +107,8 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
         if (isRightHand || isLeftHand) {
             poseStack.pushPose();
             {
-//                RenderUtil.prepMatrixForBone(poseStack, bone);
-//                poseStack.translate(0.01, -0.27, 0.05);
+//                RenderUtils.prepMatrixForBone(poseStack, bone);
+                poseStack.translate(0.01, -0.27, 0.05);
                 poseStack.scale(bone.getScaleX(), bone.getScaleY(), bone.getScaleZ());
 
                 if(ChassisHelper.isPlayerInChassis()){
@@ -127,21 +127,26 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
                     }
                 }
                 else {
+                    var playerSkin = Minecraft.getInstance().player.getSkin().texture();
+                    var arm = this.bufferSource.getBuffer(RenderType.entitySolid(playerSkin));
+                    var sleeve = this.bufferSource.getBuffer(RenderType.entityTranslucent(playerSkin));
+
                     if (isRightHand) {
                         if (bone.getName().equals(LEFT_ARM)) {
-                            poseStack.translate(-65 / 10d / 16d, 0 / 10d / 16d, 0 / 10d / 16d);
-                            GeoRenderUtils.renderArm(poseStack, bone, packedLight, bufferSource, false);
+                            poseStack.translate(-8 / 10d / 16d, 0, 0);
+//                            poseStack.translate(X / 10d / 16d, Y / 10d / 16d, Z / 10d / 16d);
+                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve, color);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
-                            poseStack.translate(50 / 10d / 16d, -20 / 10d / 16d, 0 / 10d / 16d);
-                            GeoRenderUtils.renderArm(poseStack, bone, packedLight, bufferSource, true);
+                            poseStack.translate(4 / 10d / 16d, 0, -3 / 10d / 16d);
+                            renderRightArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve, color);
                         }
                     } else {
                         if (bone.getName().equals(LEFT_ARM)) {
-                            poseStack.translate(50 / 10d / 16d, -20 / 10d / 16d, 0 / 10d / 16d);
-                            GeoRenderUtils.renderArm(poseStack, bone, packedLight, bufferSource, true);
+                            poseStack.translate(4 / 10d / 16d, 0, -3 / 10d / 16d);
+                            renderRightArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve, color);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
-                            poseStack.translate(-65 / 10d / 16d, 0 / 10d / 16d, 0 / 10d / 16d);
-                            GeoRenderUtils.renderArm(poseStack, bone, packedLight, bufferSource, false);
+                            poseStack.translate(-8 / 10d / 16d, 0, 0);
+                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve, color);
                         }
                     }
                 }
