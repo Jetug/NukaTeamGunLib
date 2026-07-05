@@ -36,5 +36,4 @@ public class GeoRenderUtils {
         var playerEntityRenderer = (PlayerRenderer) client.getEntityRenderDispatcher().getRenderer(client.player);
         return playerEntityRenderer.getModel();
     }
-
 }

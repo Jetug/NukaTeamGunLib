@@ -52,6 +52,7 @@
   "key.ntgl.leave": "Exit armor",
 
   "key.categories.ntgl": "NTGL Weapons",
+  "key.categories.debug": "NTGL Debug",
   "key.ntgl.melee": "Melee Attack",
   "key.ntgl.alt": "Alternative Attack",
   "key.ntgl.reload": "Reload",
@@ -75,6 +76,10 @@
   "key.ntgl.debug_rx_sub": "X Rotation -",
   "key.ntgl.debug_ry_sub": "Y Rotation -",
   "key.ntgl.debug_rz_sub": "Z Rotation -",
+
+  "key.ntgl.debug_zero": "Reset",
+  "key.ntgl.debug_show": "Show / Hide Debug",
+  "key.ntgl.debug_tuning_mode": "Tuning Mode",
 
   "subtitle.ntgl.stun.explosion": "Stun Grenade Explosion",
   "subtitle.ntgl.stun.ring": "Ringing",
