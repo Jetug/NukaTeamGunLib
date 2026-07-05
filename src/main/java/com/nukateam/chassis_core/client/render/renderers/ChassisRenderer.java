@@ -43,48 +43,6 @@ public class ChassisRenderer<T extends WearableChassis> extends DynamicGeoEntity
     public ChassisRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model) {
         super(renderManager, model);
         addRenderLayer(new HeldItemLayer<>(this, this::getItemForBone));
-//        addRenderLayer(new BlockAndItemGeoLayer<T>(this) {
-//            @Nullable
-//            @Override
-//            protected ItemStack getStackForBone(GeoBone bone, T animatable) {
-//                return switch (bone.getName()) {
-//                    case LEFT_HAND -> offHandItem;
-//                    case RIGHT_HAND -> mainHandItem;
-//                    default -> null;
-//                };
-//            }
-//
-//            @Override
-//            protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, T animatable) {
-//                return switch (bone.getName()) {
-//                    case LEFT_HAND  -> ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
-//                    case RIGHT_HAND -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
-//                    default -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
-//                };
-//            }
-//
-//            // Do some quick render modifications depending on what the item is
-//            @Override
-//            protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, T animatable,
-//                                              MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
-//                if (stack == mainHandItem) {
-//                    poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
-//
-//                    if (stack.getItem() instanceof ShieldItem)
-//                        poseStack.translate(0, 0.125, -0.25);
-//                }
-//                else if (stack == offHandItem) {
-//                    poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
-//
-//                    if (stack.getItem() instanceof ShieldItem) {
-//                        poseStack.translate(0, 0.125, 0.25);
-//                        poseStack.mulPose(Axis.YP.rotationDegrees(180));
-//                    }
-//                }
-//
-//                super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
-//            }
-//        });
     }
 
     @Override

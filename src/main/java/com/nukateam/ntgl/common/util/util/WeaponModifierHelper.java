@@ -90,6 +90,11 @@ public class WeaponModifierHelper {
         return config.getZoom(weaponData.weaponMode);
     }
 
+    public static Display getDisplay(WeaponData weaponData) {
+        var config = getConfig(weaponData);
+        return config.getDisplay();
+    }
+
     public static ThrowableConfig getThrowable(WeaponData weaponData) {
         var config = getConfig(weaponData);
         return config.getThrowable(weaponData.weaponMode);
@@ -531,6 +536,18 @@ public class WeaponModifierHelper {
     public static Vec3 getSightOffset(WeaponData data) {
         var finalValue = new AtomicReference<>(getZoom(data).getOffset());
         forEachAttachment(data, (modifier -> finalValue.set(modifier.modifySightOffset(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+    public static Vec3 getWeaponOffset(WeaponData data) {
+        var finalValue = new AtomicReference<>(getDisplay(data).getOffset());
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyWeaponOffset(finalValue.get(), data))));
+        return finalValue.get();
+    }
+
+    public static Vec3 getNonHandOffset(WeaponData data) {
+        var finalValue = new AtomicReference<>(getDisplay(data).getNonHandOffset());
+        forEachAttachment(data, (modifier -> finalValue.set(modifier.modifyNonHandOffset(finalValue.get(), data))));
         return finalValue.get();
     }
 

@@ -28,7 +28,7 @@ public class ClientHandler {
     public static void setup() {
         NeoForge.EVENT_BUS.register(AimingHandler.get());
         NeoForge.EVENT_BUS.register(CrosshairHandler.get());
-        NeoForge.EVENT_BUS.register(GunRenderingHandler.get());
+        NeoForge.EVENT_BUS.register(WeaponRenderingHandler.get());
         NeoForge.EVENT_BUS.register(RecoilHandler.get());
         NeoForge.EVENT_BUS.register(ClientReloadHandler.get());
         NeoForge.EVENT_BUS.register(ClientShootingHandler.get());

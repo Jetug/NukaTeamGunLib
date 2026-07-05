@@ -9,26 +9,26 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 
 public class GeoRenderUtils {
-    public static void renderRightArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay, VertexConsumer arm, VertexConsumer sleeve, int color) {
+    public static void renderRightArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay, VertexConsumer arm, VertexConsumer sleeve) {
         var playerEntityModel = getPlayerModel();
         playerEntityModel.rightArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         playerEntityModel.rightArm.setRotation(0, 0, 0);
-        playerEntityModel.rightArm.render(poseStack, arm, packedLight, packedOverlay, color);
+        playerEntityModel.rightArm.render(poseStack, arm, packedLight, packedOverlay, 0xFFFFFFFF);
 
         playerEntityModel.rightSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         playerEntityModel.rightSleeve.setRotation(0, 0, 0);
-        playerEntityModel.rightSleeve.render(poseStack, sleeve, packedLight, packedOverlay, color);
+        playerEntityModel.rightSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 0xFFFFFFFF);
     }
 
-    public static void renderLeftArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay, VertexConsumer arm, VertexConsumer sleeve, int color) {
+    public static void renderLeftArm(PoseStack poseStack, GeoBone bone, int packedLight, int packedOverlay, VertexConsumer arm, VertexConsumer sleeve) {
         var playerEntityModel = getPlayerModel();
         playerEntityModel.leftArm.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         playerEntityModel.leftArm.setRotation(0, 0, 0);
-        playerEntityModel.leftArm.render(poseStack, arm, packedLight, packedOverlay, color);
+        playerEntityModel.leftArm.render(poseStack, arm, packedLight, packedOverlay, 0xFFFFFFFF);
 
         playerEntityModel.leftSleeve.setPos(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
         playerEntityModel.leftSleeve.setRotation(0, 0, 0);
-        playerEntityModel.leftSleeve.render(poseStack, sleeve, packedLight, packedOverlay, color);
+        playerEntityModel.leftSleeve.render(poseStack, sleeve, packedLight, packedOverlay, 0xFFFFFFFF);
     }
 
     public static PlayerModel<AbstractClientPlayer> getPlayerModel() {
@@ -36,5 +36,4 @@ public class GeoRenderUtils {
         var playerEntityRenderer = (PlayerRenderer) client.getEntityRenderDispatcher().getRenderer(client.player);
         return playerEntityRenderer.getModel();
     }
-
 }

@@ -52,12 +52,12 @@ import static com.nukateam.ntgl.client.util.helpers.PropertyHelper.*;
 import static com.nukateam.ntgl.common.foundation.init.NtglComponents.*;
 
 @SuppressWarnings("removal")
-public class GunRenderingHandler {
+public class WeaponRenderingHandler {
     public static final String SCALE = "Scale";
-    private static GunRenderingHandler instance;
-    public static GunRenderingHandler get() {
+    private static WeaponRenderingHandler instance;
+    public static WeaponRenderingHandler get() {
         if (instance == null) {
-            instance = new GunRenderingHandler();
+            instance = new WeaponRenderingHandler();
         }
         return instance;
     }
@@ -90,7 +90,7 @@ public class GunRenderingHandler {
     @Nullable
     private ItemStack renderingWeapon;
 
-    private GunRenderingHandler() {
+    private WeaponRenderingHandler() {
     }
 
     @Nullable
@@ -324,13 +324,6 @@ public class GunRenderingHandler {
                 yOffset += gunOrigin.y * 0.0625 * scaleY;
                 zOffset += gunOrigin.z * 0.0625 * scaleZ;
 
-                /* Translate to iron sight */
-                var ironSightCamera = getIronSightCamera(heldItem, modifiedWeaponConfig).subtract(gunOrigin);
-                xOffset += ironSightCamera.x * 0.0625 * scaleX;
-                yOffset += ironSightCamera.y * 0.0625 * scaleY;
-                zOffset += ironSightCamera.z * 0.0625 * scaleZ;
-                zOffset += 0.72;
-
                 /* Controls the direction of the following translations, changes depending on the main hand. */
                 var side = isRight ? 1.0F : -1.0F;
                 var time = AimingHandler.get().getNormalisedAdsProgress();
@@ -343,11 +336,20 @@ public class GunRenderingHandler {
                 yOffset += 7.2 * 0.0625;
                 zOffset += 5.5 * 0.0625;
 
+
                 if(Ntgl.isDebugging()) {
-                    xOffset += (double) ClientDebug.X / 10 * 0.0625;
-                    yOffset += (double) ClientDebug.Y / 10 * 0.0625;
-                    zOffset += (double) ClientDebug.Z / 10 * 0.0625;
+                    xOffset += (double) ClientDebug.scopeX / 10 * 0.0625;
+                    yOffset += (double) ClientDebug.scopeY / 10 * 0.0625;
+                    zOffset += (double) ClientDebug.scopeZ / 10 * 0.0625;
                 }
+
+                /* Translate to iron sight */
+                var ironSightCamera = getIronSightCamera(heldItem, modifiedWeaponConfig).subtract(gunOrigin);
+                xOffset += ironSightCamera.x * 0.0625 * scaleX;
+                yOffset += ironSightCamera.y * 0.0625 * scaleY;
+                zOffset += ironSightCamera.z * 0.0625 * scaleZ;
+                zOffset += 0.72;
+
 
                 /* Reverses the first person translations of the item in order to position it in the center of the screen */
                 poseStack.translate(-xOffset * side * transition, -yOffset * transition, -zOffset * transition);

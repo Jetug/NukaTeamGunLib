@@ -134,19 +134,18 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
                     if (isRightHand) {
                         if (bone.getName().equals(LEFT_ARM)) {
                             poseStack.translate(-8 / 10d / 16d, 0, 0);
-//                            poseStack.translate(X / 10d / 16d, Y / 10d / 16d, Z / 10d / 16d);
-                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve, color);
+                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
                             poseStack.translate(4 / 10d / 16d, 0, -3 / 10d / 16d);
-                            renderRightArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve, color);
+                            renderRightArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve);
                         }
                     } else {
                         if (bone.getName().equals(LEFT_ARM)) {
                             poseStack.translate(4 / 10d / 16d, 0, -3 / 10d / 16d);
-                            renderRightArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve, color);
+                            renderRightArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve);
                         } else if (bone.getName().equals(RIGHT_ARM)) {
                             poseStack.translate(-8 / 10d / 16d, 0, 0);
-                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve, color);
+                            renderLeftArm(poseStack, bone, packedLight, packedOverlay, arm, sleeve);
                         }
                     }
                 }

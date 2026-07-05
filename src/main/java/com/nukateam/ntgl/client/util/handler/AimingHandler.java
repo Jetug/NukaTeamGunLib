@@ -15,7 +15,6 @@ import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.helpers.compatibility.PlayerReviveHelper;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessageAim;
-import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import com.nukateam.ntgl.Ntgl;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -150,9 +149,12 @@ public class AimingHandler {
         }
     }
 
+    private float lastFov = 0;
+    private float targetFov = 0;
+
     @SubscribeEvent
     public void onFovUpdate(ViewportEvent.ComputeFov event) {
-        if (!GunRenderingHandler.get().getUsedConfiguredFov())
+        if (!WeaponRenderingHandler.get().getUsedConfiguredFov())
             return;
 
         var mc = Minecraft.getInstance();
@@ -175,10 +177,21 @@ public class AimingHandler {
         if (zoom == null)
             return;
 
-        var time = PropertyHelper.getSightAnimations(heldItem).getFovCurve().apply(this.normalisedAdsProgress);
-        var modifier = WeaponStateHelper.getFovModifier(weaponData);
-        modifier = (1.0F - modifier) * (float) time;
-        event.setFOV(event.getFOV() - event.getFOV() * modifier);
+        float progress = (float) this.localTracker.getNormalProgress((float) event.getPartialTick());
+        float defaultFov = mc.options.fov().get().floatValue();
+
+        if (progress > 0) {
+            var time = PropertyHelper.getSightAnimations(heldItem).getFovCurve().apply(progress);
+            var modifier = WeaponStateHelper.getFovModifier(weaponData);
+            modifier = (1.0F - modifier) * (float) time;
+            targetFov = defaultFov - defaultFov * modifier;
+        } else {
+            targetFov = defaultFov;
+        }
+
+        // Плавная интерполяция
+        lastFov = (float) Mth.lerp(0.1, lastFov, targetFov);
+        event.setFOV(lastFov);
     }
 
     @SubscribeEvent
@@ -313,6 +326,13 @@ public class AimingHandler {
     public class AimTracker {
         private double currentAim;
         private double previousAim;
+        private double targetAim;
+
+        public AimTracker() {
+            this.currentAim = 0;
+            this.previousAim = 0;
+            this.targetAim = 0;
+        }
 
         private void handleAiming(WeaponData weaponData) {
             assert weaponData.weapon != null && weaponData.wielder instanceof Player;
@@ -323,21 +343,25 @@ public class AimingHandler {
                 return;
 
             this.previousAim = this.currentAim;
+
+            // Определяем целевое значение
             if (ModSyncedDataKeys.AIMING.getValue(player) || (player.isLocalPlayer() && AimingHandler.this.isAiming())) {
-                if (this.currentAim < MAX_AIM_PROGRESS) {
-                    var speed = WeaponModifierHelper.getModifiedAimDownSightSpeed(weaponData);
-                    this.currentAim += speed;
-                    if (this.currentAim > MAX_AIM_PROGRESS) {
-                        this.currentAim = (int) MAX_AIM_PROGRESS;
-                    }
-                }
+                this.targetAim = MAX_AIM_PROGRESS;
             } else {
-                if (this.currentAim > 0) {
-                    var speed = WeaponModifierHelper.getModifiedAimDownSightSpeed(weaponData);
-                    this.currentAim -= speed;
-                    if (this.currentAim < 0) {
-                        this.currentAim = 0;
-                    }
+                this.targetAim = 0;
+            }
+
+            // Плавно двигаемся к цели
+            var speed = WeaponModifierHelper.getModifiedAimDownSightSpeed(weaponData);
+            if (this.currentAim < this.targetAim) {
+                this.currentAim += speed;
+                if (this.currentAim > this.targetAim) {
+                    this.currentAim = this.targetAim;
+                }
+            } else if (this.currentAim > this.targetAim) {
+                this.currentAim -= speed;
+                if (this.currentAim < this.targetAim) {
+                    this.currentAim = this.targetAim;
                 }
             }
         }

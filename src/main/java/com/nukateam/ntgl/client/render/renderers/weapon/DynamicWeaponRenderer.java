@@ -74,15 +74,21 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
 
         poseStack.pushPose();
         {
-            poseStack.translate(0, 0, 25 / 10d / 16D);
+            var offset = WeaponModifierHelper.getWeaponOffset(new WeaponData(stack, entity));
+            poseStack.translate(offset.x / 16D, offset.y / 16D, offset.z / 16D);
+            poseStack.translate(weaponX / 10d / 16D , weaponY / 10d / 16D, weaponZ / 10d / 16D);
 
-            if(TransformUtils.isNonHand(transformType)){
-                poseStack.translate(0, -7.5D / 16D, 0);
+            if(TransformUtils.isFirstPerson(transformType)){
+                poseStack.translate(1.5 / 16D, -1.0 / 16D, 0.0 / 16D);
             }
-            else if(TransformUtils.isFirstPerson(transformType)){
-                poseStack.translate(0, -8.5 / 16D, 0.5 / 16D);
+            else if(TransformUtils.isThirdPerson(transformType)){
+                poseStack.translate(0.0 / 16D, 3.5 / 16D, 2.5 / 16D);
             }
-            else poseStack.translate(0, -6 / 16D, 0);
+            else {
+                var staticOffset = WeaponModifierHelper.getNonHandOffset(new WeaponData(stack, entity));
+                poseStack.translate(staticOffset.x / 16D, staticOffset.y / 16D, staticOffset.z / 16D);
+                poseStack.translate(0, -0.5 / 16D, 0 / 16d);
+            }
             super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
         }
         poseStack.popPose();
@@ -102,6 +108,9 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
             }
         }
 
+        if(bone.getName().startsWith(MUZZLE_FLASH) && !TransformUtils.isHandTransform(transformType)) {
+            bone.setHidden(true);
+        }
         if (!bone.isHidden() && bone.getName().startsWith(MUZZLE_FLASH)) {
             Matrix4f mat = new Matrix4f(poseStack.last().pose());
             mat.translate(
@@ -152,7 +161,7 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
         var length = barrelItem.getProperties().getLength();
         poseStack.translate(0, 0, -length / 16D);
         if (Ntgl.isDebugging())
-            poseStack.translate(-mfX / 10D / 16D, mfY / 10D / 16D, mfZ / 10D / 16D);
+            poseStack.translate(-muzzleFlashX / 10D / 16D, muzzleFlashY / 10D / 16D, muzzleFlashZ / 10D / 16D);
     }
 
     protected void prepareHiddenBones(ItemDisplayContext transformType) {

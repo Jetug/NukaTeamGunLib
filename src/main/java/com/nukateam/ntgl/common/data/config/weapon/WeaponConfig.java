@@ -52,6 +52,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag> {
     protected LinkedHashMap<ResourceLocation, Fuel> fuel = new LinkedHashMap<>();
     protected HashMap<String, ResourceLocation> sounds = new HashMap<>();
     protected HashMap<String, ResourceLocation> textures = new HashMap<>();
+    protected Display display = new Display();
 
     private static General getWeapon(){
         var gun = new General();
@@ -72,6 +73,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag> {
         tag.put(AMMO_DATA, NbtUtils.serializeMap(this.ammoData, provider));
         tag.put(SECONDARY_AMMO, NbtUtils.serializeMap(this.fuel, provider));
         tag.put(MODES, NbtUtils.serializeMap(this.modes, provider));
+        tag.put(DISPLAY, this.display.serializeNBT(provider));
         if (this.zoom != null) {
             tag.put("Zoom", this.zoom.serializeNBT(provider));
         }
@@ -118,6 +120,9 @@ public class WeaponConfig implements INBTSerializable<CompoundTag> {
         if(tag.contains("Zoom", Tag.TAG_COMPOUND)) {
             this.zoom = Zoom.create(tag.getCompound("Zoom"));
         }
+        if(tag.contains(DISPLAY, Tag.TAG_COMPOUND)) {
+            this.display = Display.create(tag.getCompound(DISPLAY));
+        }
     }
 
     public JsonObject toJsonObject() {
@@ -130,8 +135,10 @@ public class WeaponConfig implements INBTSerializable<CompoundTag> {
         GunJsonUtil.addObjectIfNotEmpty(object, "sounds"  , gson.toJsonTree(this.sounds).getAsJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modules" , this.modules.toJsonObject());
         GunJsonUtil.addObjectIfNotEmpty(object, "modes"   , gson.toJsonTree(this.modes).getAsJsonObject());
-        if (this.zoom != null)
+        if (zoom != null)
             object.add("zoom", this.zoom.toJsonObject());
+        if (display != null)
+            object.add("display", this.display.toJsonObject());
         return object;
     }
 
@@ -148,6 +155,7 @@ public class WeaponConfig implements INBTSerializable<CompoundTag> {
         gun.modes       = copyModes(this.modes);
         gun.modules     = this.modules.copy();
         gun.zoom        = this.zoom != null ? this.zoom.copy() : null;
+        gun.display     = this.display.copy();
         return gun;
     }
 
@@ -319,6 +327,10 @@ public class WeaponConfig implements INBTSerializable<CompoundTag> {
         if(mode == WeaponMode.PRIMARY)
             return zoom;
         else return modes.getOrDefault(mode, new WeaponSettings()).getZoom();
+    }
+
+    public Display getDisplay() {
+        return display;
     }
 
     public HashMap<WeaponMode, WeaponSettings> getModes() {
