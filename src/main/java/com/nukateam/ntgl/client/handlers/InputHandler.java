@@ -241,6 +241,13 @@ public class InputHandler {
         assert player != null;
         var heldItem = player.getItemInHand(hand);
         var modes = new ArrayList<>(WeaponModifierHelper.getWeaponModes(new WeaponData(heldItem, player)).keySet());
+
+        modes = new ArrayList<>(modes.stream().filter((mode) -> {
+            var weaponData = new WeaponData(heldItem, player).setWeaponMode(mode);
+            var maxAmmo = WeaponModifierHelper.getMaxAmmo(weaponData);
+            return maxAmmo > 0;
+        }).toList());
+
         modes.add(WeaponMode.PRIMARY);
 
         var actions = new ArrayList<ActionWheel.WheelAction>();
