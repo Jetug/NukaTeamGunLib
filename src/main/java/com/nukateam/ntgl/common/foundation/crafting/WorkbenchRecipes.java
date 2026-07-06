@@ -2,9 +2,11 @@ package com.nukateam.ntgl.common.foundation.crafting;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -12,23 +14,27 @@ import java.util.stream.Collectors;
  */
 public class WorkbenchRecipes {
     public static boolean isEmpty(Level level) {
-        return level.getRecipeManager().getRecipes().stream()
-                .noneMatch(recipe -> recipe.getType() == ModRecipeType.WORKBENCH.get());
+        return level.getRecipeManager()
+                .getAllRecipesFor(ModRecipeTypes.WORKBENCH.get())
+                .isEmpty();
     }
 
-    public static NonNullList<WorkbenchRecipe> getAll(Level level) {
-        return level.getRecipeManager().getRecipes().stream()
-                .filter(recipe -> recipe.getType() == ModRecipeType.WORKBENCH.get())
-                .map(recipe -> (WorkbenchRecipe) recipe)
-                .collect(Collectors.toCollection(NonNullList::create));
+    public static List<WorkbenchRecipe> getAll(Level level) {
+        return (List<WorkbenchRecipe>)level.getRecipeManager()
+                .getAllRecipesFor(ModRecipeTypes.WORKBENCH.get())
+                .stream()
+                .map(RecipeHolder::value)
+                .toList();
     }
 
     @Nullable
     public static WorkbenchRecipe getRecipeById(Level level, ResourceLocation id) {
-        return level.getRecipeManager().getRecipes().stream()
-                .filter(recipe -> recipe.getType() == ModRecipeType.WORKBENCH.get())
-                .map(recipe -> (WorkbenchRecipe) recipe)
-                .filter(recipe -> recipe.getId().equals(id))
-                .findFirst().orElse(null);
+        return (WorkbenchRecipe)level.getRecipeManager()
+                .getAllRecipesFor(ModRecipeTypes.WORKBENCH.get())
+                .stream()
+                .filter(holder -> holder.id().equals(id))
+                .map(RecipeHolder::value)
+                .findFirst()
+                .orElse(null);
     }
 }

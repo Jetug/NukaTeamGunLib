@@ -11,12 +11,12 @@ import net.neoforged.neoforge.registries.DeferredRegister;
  * Author: MrCrayfish
  */
 
-public class ModRecipeType {
+public class ModRecipeTypes {
     public static final DeferredRegister<RecipeType<?>> REGISTER = DeferredRegister.create(Registries.RECIPE_TYPE, Ntgl.MOD_ID);
 
-    public static final DeferredHolder<RecipeType<?>, RecipeType<Recipe<?>>> WORKBENCH = create("workbench");
+    public static final DeferredHolder<RecipeType<?>, RecipeType<?>> WORKBENCH = create("workbench");
 
-    private static <T extends Recipe<?>> DeferredHolder<RecipeType<?>, RecipeType<Recipe<?>>> create(String name) {
+    private static <T extends Recipe<?>> DeferredHolder<RecipeType<?>, RecipeType<?>> create(String name) {
         return REGISTER.register(name, () -> new RecipeType<>() {
             @Override
             public String toString() {

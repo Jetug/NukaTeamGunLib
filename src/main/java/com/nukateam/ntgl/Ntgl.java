@@ -2,6 +2,7 @@ package com.nukateam.ntgl;
 
 import com.mojang.logging.LogUtils;
 import com.nukateam.chassis_core.ChassisCore;
+import com.nukateam.example.common.NtglExample;
 import com.nukateam.example.common.registery.EntityTypes;
 import com.nukateam.example.common.registery.ExampleWeapons;
 import com.nukateam.example.common.registery.ModItemTabs;
@@ -14,6 +15,7 @@ import com.nukateam.ntgl.common.datagen.BlockTagGen;
 import com.nukateam.ntgl.common.datagen.DamageTypeGen;
 import com.nukateam.ntgl.common.datagen.ItemTagGen;
 import com.nukateam.ntgl.common.datagen.LootTableGen;
+import com.nukateam.ntgl.common.foundation.crafting.ModRecipeTypes;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.registry.AmmoHolders;
 import com.nukateam.ntgl.common.registry.ProjectileRegistry;
@@ -61,6 +63,7 @@ public class Ntgl {
         ModContainers.REGISTER.register(eventBus);
         ModEffects.REGISTER.register(eventBus);
         Projectiles.REGISTER.register(eventBus);
+        ModRecipeTypes.REGISTER.register(eventBus);
         if (Ntgl.isDebugging()) {
             ModItemTabs.register(eventBus);
         }
@@ -72,7 +75,6 @@ public class Ntgl {
         ModEntityTypes.register(eventBus);
         EntityTypes.register(eventBus);
         NtglEntityDataSerializers.register(eventBus);
-
 
         eventBus.addListener(this::onCommonSetup);
         eventBus.addListener(this::onClientSetup);
@@ -86,6 +88,8 @@ public class Ntgl {
         GunPackModule.init(eventBus);
         NtglGameEvents.register(eventBus);
         new ChassisCore(eventBus);
+        new NtglExample(eventBus);
+
 //        TravelersBackpack
         curiosLoaded = ModList.get().isLoaded("curios");
         controllableLoaded = ModList.get().isLoaded("controllable");

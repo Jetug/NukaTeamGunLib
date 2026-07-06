@@ -98,7 +98,7 @@ public class MathUtil {
     /**
      * Returns a rotation angle that is inbetween two other rotation angles. par1 and par2 are the angles between which
      * to interpolate, par3 is probably a float between 0.0 and 1.0 that tells us where "between" the two angles we are.
-     * Example: par1 = 30, par2 = 50, par3 = 0.5, then return = 40
+     * NtglExample: par1 = 30, par2 = 50, par3 = 0.5, then return = 40
      */
     public static float interpolateRotation(float prevYawOffset, float yawOffset, float partialTicks) {
         float f;
