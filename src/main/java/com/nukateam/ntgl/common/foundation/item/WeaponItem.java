@@ -62,7 +62,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     public static final String VARIANT = "variant";
     private final Lazy<ResourceLocation> id = Lazy.of(this::getRegistryName);
     private final WeakHashMap<CompoundTag, WeaponConfig> modifiedGunCache = new WeakHashMap<>();
-    private final Lazy<DefaultWeaponRendererGeo> WEAPON_RENDERER = Lazy.of(() -> new DefaultWeaponRendererGeo());
+    private final Lazy<DefaultWeaponRendererGeo> WEAPON_RENDERER = Lazy.of(DefaultWeaponRendererGeo::new);
     private WeaponConfig weaponConfig = new WeaponConfig();
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 

@@ -3,6 +3,7 @@ package com.nukateam.geo.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.interfaces.DynamicGeoItem;
+import com.nukateam.ntgl.client.registry.WeaponRegistry;
 import net.minecraft.client.Minecraft;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
@@ -103,6 +104,7 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
             if(animatorFactory == null) {
                 var dynamicItem = (DynamicGeoItem) stack.getItem();
                 animatorFactory = dynamicItem.getAnimatorFactory();
+//                animatorFactory = WeaponRegistry.getAnimator(dynamicItem) dynamicItem.getAnimatorFactory();
             }
             animatorsByTransform.put(key, animatorFactory.apply(transformType, this));
         }
