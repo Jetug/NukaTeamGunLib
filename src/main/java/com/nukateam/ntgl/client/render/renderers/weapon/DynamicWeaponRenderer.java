@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.geo.render.ItemAnimator;
+import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.helpers.MuzzleMatrixHelper;
 import com.nukateam.ntgl.client.util.handler.AimingHandler;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 
 import static com.nukateam.ntgl.client.util.ClientDebug.*;
 
-public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedModelRenderer<Animator> {
+public class DynamicWeaponRenderer extends ArmedModelRenderer {
     public static final String MUZZLE_FLASH = "muzzle_flash";
     protected MultiBufferSource bufferSource;
     protected ArrayList<ItemStack> gunAttachments;
@@ -43,7 +44,7 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
     protected ItemStack gunStack;
     private ItemDisplayContext transformType;
 
-    public DynamicWeaponRenderer(GeoModel<Animator> model) {
+    public DynamicWeaponRenderer(GeoModel<WeaponAnimator> model) {
         super(model);
     }
 
@@ -95,7 +96,7 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
     }
 
     @Override
-    public void renderRecursively(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
+    public void renderRecursively(PoseStack poseStack, WeaponAnimator animatable, GeoBone bone, RenderType renderType,
                                   MultiBufferSource bufferSource, VertexConsumer buffer,
                                   boolean isReRender, float partialTick, int packedLight, int packedOverlay,
                                   int colour) {
@@ -146,7 +147,7 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
         poseStack.popPose();
     }
     
-    protected void renderRecursivelyPost(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
+    protected void renderRecursivelyPost(PoseStack poseStack, WeaponAnimator animatable, GeoBone bone, RenderType renderType,
                                          MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender,
                                          float partialTick, int packedLight, int packedOverlay, int colour) {}
 
