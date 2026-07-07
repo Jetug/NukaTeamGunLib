@@ -47,7 +47,7 @@ public class C2SMessageCraft implements CustomPacketPayload {
         {
             supplier.enqueueWork(() ->
             {
-//                    ServerPlayHandler.handleCraft((ServerPlayer)supplier.player(), message.id, message.pos);
+                ServerPlayHandler.handleCraft((ServerPlayer)supplier.player(), message.id, message.pos);
             });
         });
     }

@@ -1,4 +1,7 @@
 package com.nukateam.ntgl.common.network;
+import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
+import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
+import com.nukateam.ntgl.common.foundation.event.WorkbenchCraftEvent;
 import com.nukateam.ntgl.common.network.LevelLocation;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessageChangeAmmo;
 import com.nukateam.ntgl.Config;
@@ -21,6 +24,7 @@ import com.nukateam.ntgl.common.util.util.*;
 import com.nukateam.ntgl.common.event.GunFireEvent;
 import com.nukateam.ntgl.common.event.GunReloadEvent;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -30,6 +34,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.EntityType;
@@ -425,5 +430,40 @@ public class ServerPlayHandler {
 
     public static void reloadGun(InteractionHand hand, WeaponData data) {
         handleReload(new C2SMessageReload(hand, data.weaponMode), (ServerPlayer) data.wielder);
+    }
+
+    /**
+     * Crafts the specified item at the workstation the player is currently using.
+     * This is only intended for use on the logical server.
+     *
+     * @param player the player who is crafting
+     * @param id     the id of an item which is registered as a valid workstation recipe
+     * @param pos    the block position of the workstation the player is using
+     */
+    public static void handleCraft(ServerPlayer player, ResourceLocation id, BlockPos pos) {
+        Level world = player.level();
+
+        if (player.containerMenu instanceof WorkbenchContainer workbench) {
+            if (workbench.getPos().equals(pos)) {
+                var recipe = WorkbenchRecipes.getRecipeById(world, id);
+                if (recipe == null || !recipe.materials().isEmpty())
+                    return;
+
+                var event = new WorkbenchCraftEvent(player, recipe.result().copy());
+                if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
+                    if (event.getRejectionMessage() != null) {
+                        player.displayClientMessage(event.getRejectionMessage(), true);
+                    }
+                    return;
+                }
+
+                recipe.consumeMaterials(player);
+                Containers.dropItemStack(world,
+                        pos.getX() + 0.5,
+                        pos.getY() + 1.125,
+                        pos.getZ() + 0.5,
+                        recipe.result());
+            }
+        }
     }
 }

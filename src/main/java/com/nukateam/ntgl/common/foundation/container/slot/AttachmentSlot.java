@@ -1,21 +1,21 @@
 package com.nukateam.ntgl.common.foundation.container.slot;
 
 import com.nukateam.ntgl.common.data.WeaponData;
+import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.data.holders.AttachmentType;
-
-import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
-import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.foundation.container.AttachmentContainer;
 import com.nukateam.ntgl.common.foundation.init.ModSounds;
-import com.nukateam.ntgl.common.data.attachment.IAttachment;
+import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
+import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.getConfig;
 
@@ -64,7 +64,7 @@ public class AttachmentSlot extends Slot {
             if(attachments == null)
                 return false;
 
-            var id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+            var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
             var canAttachType = modifiedGun.canAttachType(this.type);
             var isRightType = attachment.getType().equals(this.type);
             var canAttach = attachment.canAttachTo(this.weapon);
@@ -90,16 +90,16 @@ public class AttachmentSlot extends Slot {
     }
 
     public static void checkAmmoCount(ItemStack stack, LivingEntity entity) {
-        var data = new WeaponData(stack, entity);
-        var maxAmmo = WeaponModifierHelper.getMaxAmmo(data);
-        var ammoCount = WeaponStateHelper.getAmmoCount(data);
+        var gunData = new WeaponData(stack, entity);
+        var maxAmmo = WeaponModifierHelper.getMaxAmmo(gunData  );
+        var ammoCount = WeaponStateHelper.getAmmoCount(gunData);
         var diff = ammoCount - maxAmmo;
 
         if(diff > 0){
-            WeaponStateHelper.setAmmoCount(data, maxAmmo);
-            var ammoHolder = WeaponStateHelper.getCurrentAmmo(data);
+            WeaponStateHelper.setAmmoCount(new WeaponData(stack, entity), maxAmmo);
+            var ammoHolder = WeaponStateHelper.getCurrentAmmo(gunData);
             if(ammoHolder.canReturnAmmo()) {
-                var ammoItem = BuiltInRegistries.ITEM.get(ammoHolder.getId());
+                var ammoItem = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
                 var dropStack = new ItemStack(ammoItem, diff);
 
                 if (entity instanceof Player player && !player.addItem(dropStack)) {
@@ -127,9 +127,9 @@ public class AttachmentSlot extends Slot {
         return 1;
     }
 
-//    @Override
-//    public boolean mayPickup(Player player) {
-//        ItemStack itemstack = this.getItem();
-//        return (itemstack.isEmpty() || player.isCreative()) && super.mayPickup(player);
-//    }
+    @Override
+    public boolean mayPickup(Player player) {
+        ItemStack itemstack = this.getItem();
+        return (itemstack.isEmpty() || player.isCreative() || !EnchantmentHelper.hasBindingCurse(itemstack)) && super.mayPickup(player);
+    }
 }

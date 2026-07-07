@@ -60,7 +60,7 @@ public class Ntgl {
         container.registerConfig(ModConfig.Type.COMMON, Config.commonSpec);
         container.registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
         //ModBlocks.REGISTER.register(bus);
-        ModContainers.REGISTER.register(eventBus);
+        NtglContainers.REGISTER.register(eventBus);
         ModEffects.REGISTER.register(eventBus);
         Projectiles.REGISTER.register(eventBus);
         ModRecipeTypes.REGISTER.register(eventBus);

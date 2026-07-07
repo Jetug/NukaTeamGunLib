@@ -49,7 +49,7 @@ public class AttachmentContainer extends AbstractContainerMenu {
     }
 
     public AttachmentContainer(int windowId, Inventory playerInventory) {
-        super(ModContainers.ATTACHMENTS.get(), windowId);
+        super(NtglContainers.ATTACHMENTS.get(), windowId);
         this.weapon = playerInventory.getSelected();
         this.playerInventory = playerInventory;
         this.player = playerInventory.player;

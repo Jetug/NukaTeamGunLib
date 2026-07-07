@@ -4,7 +4,6 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import net.neoforged.bus.api.Event;
 
 public abstract class MeleeWeaponModifiersEvent extends Event {
-
     private final WeaponData weaponData;
     
     public MeleeWeaponModifiersEvent(WeaponData weaponData) {
