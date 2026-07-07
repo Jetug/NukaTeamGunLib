@@ -30,8 +30,6 @@ public class WeaponRegistry {
     public static BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<?>, WeaponAnimator> getAnimator(Item item) {
         return (BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<?>, WeaponAnimator>) ANIMATORS.computeIfAbsent(item,
                 (i) -> getAnimatorFactory());
-
-//        registerAnimator(new Item(null), SusAnimator::new);
     }
 
 
