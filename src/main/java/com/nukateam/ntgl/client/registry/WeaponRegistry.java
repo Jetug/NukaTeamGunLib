@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.client.registry;
 
+import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.client.render.renderers.weapon.DefaultWeaponRendererGeo;
@@ -15,7 +16,7 @@ import java.util.function.BiFunction;
 
 public class WeaponRegistry {
     private static final Map<Item, DynamicWeaponRenderer<?>> RENDERERS = new HashMap<>();
-    private static final Map<Item, BiFunction<ItemDisplayContext, DynamicWeaponRenderer<WeaponAnimator>, WeaponAnimator>>
+    private static final Map<Item, BiFunction<ItemDisplayContext, ?, ?>>
             ANIMATORS = new HashMap<>();
 
     public static DynamicWeaponRenderer<?> getRenderer(Item item) {
@@ -26,11 +27,16 @@ public class WeaponRegistry {
         RENDERERS.put(item, renderer);
     }
 
-    public static BiFunction<ItemDisplayContext, DynamicWeaponRenderer<WeaponAnimator>, WeaponAnimator> getAnimator(Item item) {
-        return ANIMATORS.get(item);
+    public static <Animator extends ItemAnimator>BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> getAnimator(Item item) {
+        return (BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator>)ANIMATORS.computeIfAbsent(item,
+                (i) -> (s, d) -> new WeaponAnimator(s, d));
     }
 
-    public static void registerAnimator(Item item, BiFunction<ItemDisplayContext, DynamicWeaponRenderer<WeaponAnimator>, WeaponAnimator> renderer) {
+    public <Animator extends ItemAnimator> BiFunction<ItemDisplayContext, DynamicWeaponRenderer<WeaponAnimator>, WeaponAnimator> getAnimatorFactory() {
+        return WeaponAnimator::new;
+    }
+
+    public static <Animator extends ItemAnimator> void registerAnimator(Item item, BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> renderer) {
         ANIMATORS.put(item, renderer);
     }
 }
