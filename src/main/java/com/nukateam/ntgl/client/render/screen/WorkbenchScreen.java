@@ -11,15 +11,16 @@ import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.attachment.IAttachment;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
+import com.nukateam.ntgl.modules.crafting.recipe.WorkbenchIngredient;
+import com.nukateam.ntgl.modules.crafting.recipe.WorkbenchRecipe;
+import com.nukateam.ntgl.modules.crafting.recipe.WorkbenchRecipes;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IAmmo;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessageCraft;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import com.nukateam.ntgl.modules.crafting.registry.ModRecipeTypes;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkWeaponManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -75,6 +76,12 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         this.imageWidth = 275;
         this.imageHeight = 184;
         this.materials = new ArrayList<>();
+        var s = playerInventory.player.level().getRecipeManager().getRecipes().size();
+        var d = playerInventory.player.level().getRecipeManager().getAllRecipesFor(ModRecipeTypes.WORKBENCH.get()).size();
+
+        s = d;
+        d = s;
+
         this.createTabs(WorkbenchRecipes.getAllHolders(playerInventory.player.level()));
         if (!this.tabs.isEmpty()) {
             this.imageHeight += 28;

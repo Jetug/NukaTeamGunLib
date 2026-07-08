@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.crafting;
+package com.nukateam.ntgl.modules.crafting.recipe;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

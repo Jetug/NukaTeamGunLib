@@ -1,8 +1,7 @@
 package com.nukateam.ntgl.common.network;
 import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
+import com.nukateam.ntgl.modules.crafting.recipe.WorkbenchRecipes;
 import com.nukateam.ntgl.common.foundation.event.WorkbenchCraftEvent;
-import com.nukateam.ntgl.common.network.LevelLocation;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessageChangeAmmo;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;

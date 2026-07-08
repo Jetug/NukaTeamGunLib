@@ -15,13 +15,13 @@ import com.nukateam.ntgl.common.datagen.BlockTagGen;
 import com.nukateam.ntgl.common.datagen.DamageTypeGen;
 import com.nukateam.ntgl.common.datagen.ItemTagGen;
 import com.nukateam.ntgl.common.datagen.LootTableGen;
-import com.nukateam.ntgl.common.foundation.crafting.ModRecipeTypes;
+import com.nukateam.ntgl.modules.crafting.*;
+import com.nukateam.ntgl.modules.crafting.registry.ModRecipeTypes;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.registry.AmmoHolders;
 import com.nukateam.ntgl.common.registry.ProjectileRegistry;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
-import com.nukateam.ntgl.modules.gunpack.GunPackModule;
-import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
+import com.nukateam.ntgl.modules.gunpack.*;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -64,7 +64,6 @@ public class Ntgl {
         NtglContainers.REGISTER.register(eventBus);
         ModEffects.REGISTER.register(eventBus);
         Projectiles.REGISTER.register(eventBus);
-        ModRecipeTypes.REGISTER.register(eventBus);
         if (Ntgl.isDebugging()) {
             ModItemTabs.register(eventBus);
         }
@@ -88,6 +87,7 @@ public class Ntgl {
         }
 
         GunPackModule.init(eventBus);
+        CraftingModule.init(eventBus);
         NtglGameEvents.register(eventBus);
         new ChassisCore(eventBus);
 

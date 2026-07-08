@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.crafting;
+package com.nukateam.ntgl.modules.crafting.recipe;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,7 +12,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  * Author: MrCrayfish
  */
 public class WorkbenchRecipeSerializer implements RecipeSerializer<WorkbenchRecipe> {
-
     public static final MapCodec<WorkbenchRecipe> CODEC =
             RecordCodecBuilder.mapCodec(instance -> instance.group(
                     ItemStack.CODEC.fieldOf("result").forGetter(WorkbenchRecipe::result),

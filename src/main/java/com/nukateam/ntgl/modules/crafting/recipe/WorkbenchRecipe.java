@@ -1,7 +1,8 @@
-package com.nukateam.ntgl.common.foundation.crafting;
+package com.nukateam.ntgl.modules.crafting.recipe;
 
-import com.nukateam.ntgl.common.foundation.init.ModRecipeSerializers;
+import com.nukateam.ntgl.modules.crafting.registry.ModRecipeSerializers;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
+import com.nukateam.ntgl.modules.crafting.registry.ModRecipeTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

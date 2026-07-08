@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.crafting;
+package com.nukateam.ntgl.modules.crafting.recipe;
 
 import com.nukateam.example.common.registery.ExampleWeapons;
 import net.minecraft.data.CachedOutput;

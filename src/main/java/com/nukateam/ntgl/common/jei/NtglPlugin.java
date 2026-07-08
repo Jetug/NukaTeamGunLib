@@ -1,8 +1,8 @@
 package com.nukateam.ntgl.common.jei;
 
 import com.nukateam.ntgl.Ntgl;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipes;
+import com.nukateam.ntgl.modules.crafting.recipe.WorkbenchRecipe;
+import com.nukateam.ntgl.modules.crafting.recipe.WorkbenchRecipes;
 import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;

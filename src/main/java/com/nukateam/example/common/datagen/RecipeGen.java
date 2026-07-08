@@ -1,8 +1,8 @@
 package com.nukateam.example.common.datagen;
 
 import com.nukateam.example.common.registery.ExampleWeapons;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchIngredient;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipeBuilder;
+import com.nukateam.ntgl.modules.crafting.recipe.WorkbenchIngredient;
+import com.nukateam.ntgl.modules.crafting.recipe.WorkbenchRecipeBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;

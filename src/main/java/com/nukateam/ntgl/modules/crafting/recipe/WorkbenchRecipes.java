@@ -1,5 +1,6 @@
-package com.nukateam.ntgl.common.foundation.crafting;
+package com.nukateam.ntgl.modules.crafting.recipe;
 
+import com.nukateam.ntgl.modules.crafting.registry.ModRecipeTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -8,7 +9,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Author: MrCrayfish
+ * Author: Jetug
  */
 public class WorkbenchRecipes {
     public static boolean isEmpty(Level level) {

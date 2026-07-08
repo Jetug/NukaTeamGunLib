@@ -1,4 +1,4 @@
-package com.nukateam.ntgl.common.foundation.crafting;
+package com.nukateam.ntgl.modules.crafting.recipe;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

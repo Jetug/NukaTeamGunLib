@@ -1,12 +1,9 @@
 package com.nukateam.ntgl.common.jei;
 
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.util.helpers.render.ModelRenderUtil;
-import com.nukateam.ntgl.common.foundation.crafting.WorkbenchRecipe;
+import com.nukateam.ntgl.modules.crafting.recipe.WorkbenchRecipe;
 import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -21,18 +18,11 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-
-import java.awt.*;
 
 /**
  * Author: MrCrayfish

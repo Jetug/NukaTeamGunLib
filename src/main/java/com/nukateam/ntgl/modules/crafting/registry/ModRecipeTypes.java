@@ -1,6 +1,7 @@
-package com.nukateam.ntgl.common.foundation.crafting;
+package com.nukateam.ntgl.modules.crafting.registry;
 
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.modules.crafting.recipe.WorkbenchRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
