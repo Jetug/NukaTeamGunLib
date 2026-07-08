@@ -15,6 +15,7 @@ import java.util.List;
 
 public record WorkbenchRecipe(ItemStack result, List<WorkbenchIngredient> materials) implements Recipe<WorkbenchRecipeInput> {
     public WorkbenchRecipe(ItemStack result, List<WorkbenchIngredient> materials) {
+        System.out.println("WorkbenchRecipe CREATED: " + result);
         this.result = result;
         this.materials = List.copyOf(materials);
     }

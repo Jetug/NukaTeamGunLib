@@ -76,8 +76,15 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         this.imageWidth = 275;
         this.imageHeight = 184;
         this.materials = new ArrayList<>();
-        var s = playerInventory.player.level().getRecipeManager().getRecipes().size();
-        var d = playerInventory.player.level().getRecipeManager().getAllRecipesFor(ModRecipeTypes.WORKBENCH.get()).size();
+        var level = playerInventory.player.level();
+        var s = level.getRecipeManager().getRecipes().size();
+        var d = level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.WORKBENCH.get()).size();
+
+        level.getRecipeManager().getRecipes().forEach(holder -> {
+            if (holder.id().getNamespace().equals("ntgl")) {
+                System.out.println(holder.id() + " -> " + holder.value().getClass());
+            }
+        });
 
         s = d;
         d = s;

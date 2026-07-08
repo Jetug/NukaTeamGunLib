@@ -1,0 +1,14 @@
+{
+  "type": "ntgl:workbench",
+  "result": {
+    "id": "ntgl:pistol10mm"
+  },
+  "materials": [
+    {
+      "ingredient": {
+        "tag": "c:ingots/iron"
+      },
+      "count": 14
+    }
+  ]
+}

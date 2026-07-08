@@ -13,10 +13,13 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
  */
 public class WorkbenchRecipeSerializer implements RecipeSerializer<WorkbenchRecipe> {
     public static final MapCodec<WorkbenchRecipe> CODEC =
-            RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    ItemStack.CODEC.fieldOf("result").forGetter(WorkbenchRecipe::result),
-                    WorkbenchIngredient.CODEC.listOf().fieldOf("materials").forGetter(WorkbenchRecipe::materials)
-            ).apply(instance, WorkbenchRecipe::new));
+            RecordCodecBuilder.mapCodec(instance -> {
+                System.out.println("Workbench codec used");
+                return instance.group(
+                        ItemStack.CODEC.fieldOf("result").forGetter(WorkbenchRecipe::result),
+                        WorkbenchIngredient.CODEC.listOf().fieldOf("materials").forGetter(WorkbenchRecipe::materials)
+                ).apply(instance, WorkbenchRecipe::new);
+            });
 
     public static final StreamCodec<RegistryFriendlyByteBuf, WorkbenchRecipe> STREAM_CODEC =
             StreamCodec.composite(
