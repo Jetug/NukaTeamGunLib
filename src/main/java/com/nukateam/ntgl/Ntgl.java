@@ -21,6 +21,7 @@ import com.nukateam.ntgl.common.registry.AmmoHolders;
 import com.nukateam.ntgl.common.registry.ProjectileRegistry;
 import com.nukateam.ntgl.common.util.managers.BoundingBoxManager;
 import com.nukateam.ntgl.modules.gunpack.GunPackModule;
+import com.nukateam.ntgl.modules.gunpack.regestry.ModBlocks;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -72,6 +73,7 @@ public class Ntgl {
         ModParticleTypes.REGISTER.register(eventBus);
         ModSounds.REGISTER.register(eventBus);
         NtglComponents.REGISTER.register(eventBus);
+        ModTileEntities.REGISTER.register(eventBus);
         ModEntityTypes.register(eventBus);
         EntityTypes.register(eventBus);
         NtglEntityDataSerializers.register(eventBus);
@@ -88,7 +90,9 @@ public class Ntgl {
         GunPackModule.init(eventBus);
         NtglGameEvents.register(eventBus);
         new ChassisCore(eventBus);
-        new NtglExample(eventBus);
+
+        if(isDebugging())
+            new NtglExample(eventBus);
 
 //        TravelersBackpack
         curiosLoaded = ModList.get().isLoaded("curios");

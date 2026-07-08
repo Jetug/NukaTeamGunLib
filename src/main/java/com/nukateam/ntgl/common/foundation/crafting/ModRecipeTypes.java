@@ -14,9 +14,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModRecipeTypes {
     public static final DeferredRegister<RecipeType<?>> REGISTER = DeferredRegister.create(Registries.RECIPE_TYPE, Ntgl.MOD_ID);
 
-    public static final DeferredHolder<RecipeType<?>, RecipeType<?>> WORKBENCH = create("workbench");
+    public static final DeferredHolder<RecipeType<?>, RecipeType<WorkbenchRecipe>> WORKBENCH = create("workbench");
 
-    private static <T extends Recipe<?>> DeferredHolder<RecipeType<?>, RecipeType<?>> create(String name) {
+    private static <T extends Recipe<?>> DeferredHolder<RecipeType<?>, RecipeType<T>> create(String name) {
         return REGISTER.register(name, () -> new RecipeType<>() {
             @Override
             public String toString() {

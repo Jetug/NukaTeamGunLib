@@ -19,10 +19,8 @@ import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.weapon.C2SMessageCraft;
 import com.nukateam.ntgl.common.util.util.InventoryUtil;
-import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import com.nukateam.ntgl.modules.datapack.managers.NetworkWeaponManager;
-import net.irisshaders.iris.uniforms.builtin.BuiltinReplacementUniforms;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -50,6 +48,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 /**
@@ -76,7 +75,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         this.imageWidth = 275;
         this.imageHeight = 184;
         this.materials = new ArrayList<>();
-        this.createTabs(WorkbenchRecipes.getAll(playerInventory.player.level()));
+        this.createTabs(WorkbenchRecipes.getAllHolders(playerInventory.player.level()));
         if (!this.tabs.isEmpty()) {
             this.imageHeight += 28;
         }
@@ -89,8 +88,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             this.topPos += 28;
         }
 
-        this.addRenderableWidget(Button.builder(Component.literal("<"), button ->
-        {
+        this.addRenderableWidget(Button.builder(Component.literal("<"), button -> {
             int index = this.currentTab.getCurrentIndex();
             if (index - 1 < 0) {
                 this.loadItem(this.currentTab.getRecipes().size() - 1);
@@ -98,8 +96,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 this.loadItem(index - 1);
             }
         }).pos(this.leftPos + 9, this.topPos + 18).size(15, 20).build());
-        this.addRenderableWidget(Button.builder(Component.literal(">"), button ->
-        {
+        this.addRenderableWidget(Button.builder(Component.literal(">"), button -> {
             int index = this.currentTab.getCurrentIndex();
             if (index + 1 >= this.currentTab.getRecipes().size()) {
                 this.loadItem(0);
@@ -107,12 +104,10 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 this.loadItem(index + 1);
             }
         }).pos(this.leftPos + 153, this.topPos + 18).size(15, 20).build());
-        this.btnCraft = this.addRenderableWidget(Button.builder(Component.translatable("gui.ntgl.workbench.assemble"), button ->
-        {
+        this.btnCraft = this.addRenderableWidget(Button.builder(Component.translatable("gui.ntgl.workbench.assemble"), button -> {
             int index = this.currentTab.getCurrentIndex();
-            var recipe = this.currentTab.getRecipes().get(index);
-            ResourceLocation registryName = recipe.getId();
-            PacketHandler.getPlayChannel().sendToServer(new C2SMessageCraft(registryName, this.workbench.getBlockPos()));
+            var holder = this.currentTab.getRecipes().get(index);
+            PacketHandler.getPlayChannel().sendToServer(new C2SMessageCraft(holder.id(), this.workbench.getBlockPos()));
         }).pos(this.leftPos + 195, this.topPos + 16).size(74, 20).build());
         this.btnCraft.active = false;
         this.checkBoxMaterials = this.addRenderableWidget(new CheckBox(this.leftPos + 172, this.topPos + 51, Component.translatable("gui.ntgl.workbench.show_remaining")));
@@ -180,7 +175,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             }
         }
 
-        if(filteredMaterials == null) return;
+        if (filteredMaterials == null) return;
 
         for (int i = 0; i < this.filteredMaterials.size(); i++) {
             int itemX = startX + 172;
@@ -232,14 +227,14 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
 
             var currentItem = this.displayStack;
             var builder = new StringBuilder(currentItem.getHoverName().getString());
-            
+
             if (currentItem.getCount() > 1) {
                 builder.append(ChatFormatting.GOLD);
                 builder.append(ChatFormatting.BOLD);
                 builder.append(" x ");
                 builder.append(currentItem.getCount());
             }
-            
+
             graphics.drawCenteredString(this.font, builder.toString(), startX + 88, startY + 22, Color.WHITE.getRGB());
 
             renderGun(graphics, partialTicks, startX, startY, currentItem);
@@ -251,7 +246,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
 
                 var materialItem = this.filteredMaterials.get(i);
                 var stack = materialItem.getDisplayStack();
-                
+
                 if (!stack.isEmpty()) {
                     Lighting.setupForFlatItems();
                     if (materialItem.isEnabled()) {
@@ -264,7 +259,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                     if (this.font.width(name) > 55) {
                         name = this.font.plainSubstrByWidth(name, 50).trim() + "...";
                     }
-                    
+
                     graphics.drawString(this.font, name, startX + 172 + 22, startY + i * 19 + 6 + 63, Color.WHITE.getRGB());
                     graphics.renderItem(stack, startX + 172 + 2, startY + i * 19 + 1 + 63);
 
@@ -277,8 +272,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                     graphics.renderItemDecorations(this.font, stack, startX + 172 + 2, startY + i * 19 + 1 + 63);
                 }
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             Ntgl.LOGGER.error(e.getMessage(), e);
         }
     }
@@ -297,9 +291,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             poseStack.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount + partialTicks));
             RenderSystem.applyModelViewMatrix();
             MultiBufferSource.BufferSource buffer = minecraft.renderBuffers().bufferSource();
-            Minecraft.getInstance().getItemRenderer().render(currentItem, ItemDisplayContext.FIXED,
-                    false, graphics.pose(), buffer, 15728880,
-                    OverlayTexture.NO_OVERLAY, ModelRenderUtil.getModel(currentItem));
+            Minecraft.getInstance().getItemRenderer().render(currentItem, ItemDisplayContext.FIXED, false, graphics.pose(), buffer, 15728880, OverlayTexture.NO_OVERLAY, ModelRenderUtil.getModel(currentItem));
             buffer.endBatch();
         }
         poseStack.popPose();
@@ -345,13 +337,19 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
     }
 
     private void loadItem(int index) {
-        var recipe = this.currentTab.getRecipes().get(index);
+
+        RecipeHolder<WorkbenchRecipe> holder = this.currentTab.getRecipes().get(index);
+
+        WorkbenchRecipe recipe = holder.value();
+
         this.displayStack = recipe.result().copy();
 
         this.materials.clear();
 
         List<WorkbenchIngredient> ingredients = recipe.materials();
+
         if (ingredients != null) {
+
             for (WorkbenchIngredient ingredient : ingredients) {
                 MaterialItem item = new MaterialItem(ingredient);
                 item.updateEnabledState();
@@ -389,8 +387,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         }
 
         public void tick() {
-            if (this.ingredient == null)
-                return;
+            if (this.ingredient == null) return;
 
             this.updateEnabledState();
             long currentTime = System.currentTimeMillis();
@@ -413,24 +410,25 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         }
     }
 
-    private void createTabs(List<WorkbenchRecipe> recipes) {
-        List<WorkbenchRecipe> weapons = new ArrayList<>();
-        List<WorkbenchRecipe> attachments = new ArrayList<>();
-        List<WorkbenchRecipe> ammo = new ArrayList<>();
-        List<WorkbenchRecipe> misc = new ArrayList<>();
+    private void createTabs(List<RecipeHolder<WorkbenchRecipe>> recipes) {
+        List<RecipeHolder<WorkbenchRecipe>> weapons = new ArrayList<>();
+        List<RecipeHolder<WorkbenchRecipe>> attachments = new ArrayList<>();
+        List<RecipeHolder<WorkbenchRecipe>> ammo = new ArrayList<>();
+        List<RecipeHolder<WorkbenchRecipe>> misc = new ArrayList<>();
 
-        for (var recipe : recipes) {
+        for (var holder : recipes) {
+            var recipe = holder.value();
             var output = recipe.result();
-            if(output == null) continue;
+            if (output == null) continue;
 
             if (output.getItem() instanceof IWeapon) {
-                weapons.add(recipe);
+                weapons.add(holder);
             } else if (output.getItem() instanceof IAttachment) {
-                attachments.add(recipe);
+                attachments.add(holder);
             } else if (this.isAmmo(output)) {
-                ammo.add(recipe);
-            }else {
-                misc.add(recipe);
+                ammo.add(holder);
+            } else {
+                misc.add(holder);
             }
         }
 
@@ -439,11 +437,11 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
 //            icon.getOrCreateTag().putInt("AmmoCount", ExampleWeapons.PISTOL.get().getGun().getGeneral().getMaxAmmo());
 //            this.tabs.add(new Tab(icon, "weapons", weapons));
 //            var cat = new ArrayList<String>();
-            var categoryRecipes = new HashMap<String, List<WorkbenchRecipe>>();
+            var categoryRecipes = new HashMap<String, List<RecipeHolder<WorkbenchRecipe>>>();
 
-            for (var recipe : weapons){
-                var weaponStack = recipe.result();
-                var gunItem = (IWeapon)weaponStack.getItem();
+            for (var recipe : weapons) {
+                var weaponStack = recipe.value().result();
+                var gunItem = (IWeapon) weaponStack.getItem();
                 var category = gunItem.getModifiedConfig(weaponStack).getGeneral().getCategory();
                 var buff = categoryRecipes.getOrDefault(category, new ArrayList<>());
 
@@ -451,12 +449,12 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
                 categoryRecipes.put(category, buff);
             }
 
-            for (var entry : categoryRecipes.entrySet()){
+            for (var entry : categoryRecipes.entrySet()) {
                 var recipeList = entry.getValue();
                 var category = entry.getKey();
 
                 if (!recipeList.isEmpty()) {
-                    var item = recipeList.get(0).result().getItem();
+                    var item = recipeList.get(0).value().result().getItem();
                     var icon = new ItemStack(item);
                     var player = Minecraft.getInstance().player;
                     var gunData = new WeaponData(icon, player);
@@ -472,7 +470,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         }
 
         if (!ammo.isEmpty()) {
-            var item = ammo.get(0).result().getItem();
+            var item = ammo.get(0).value().result().getItem();
             var icon = new ItemStack(item);
 //            this.tabs.add(new Tab(new ItemStack(ExampleWeapons.ROUND10MM.get()), "projectile", projectile));
             this.tabs.add(new Tab(icon, "projectile", ammo));
@@ -488,8 +486,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
     }
 
     private boolean isAmmo(ItemStack stack) {
-        if (stack != null && stack.getItem() instanceof IAmmo)
-            return true;
+        if (stack != null && stack.getItem() instanceof IAmmo) return true;
 
         var id = BuiltInRegistries.ITEM.getKey(stack.getItem());
         Objects.requireNonNull(id);
@@ -498,7 +495,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
             var ammo = gunItem.getConfig().getGeneral().getAmmo();
 
             for (var a : ammo) {
-                if(a.getId().equals(id)){
+                if (a.getId().equals(id)) {
                     return true;
                 }
             }
@@ -509,21 +506,21 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
     private static class Tab {
         private final ItemStack icon;
         private final String id;
-        private final List<WorkbenchRecipe> items;
+        private final List<RecipeHolder<WorkbenchRecipe>> items;
         private int currentIndex;
 
-        public Tab(ItemStack icon, String id, List<WorkbenchRecipe> items) {
+        public Tab(ItemStack icon, String id, List<RecipeHolder<WorkbenchRecipe>> items) {
             this.icon = icon;
             this.id = id;
             this.items = items;
         }
 
         public ItemStack getIcon() {
-            return this.icon;
+            return icon;
         }
 
         public String getTabKey() {
-            return "gui.ntgl.workbench.tab." + this.id;
+            return "gui.ntgl.workbench.tab." + id;
         }
 
         public void setCurrentIndex(int currentIndex) {
@@ -531,11 +528,11 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchContainer>
         }
 
         public int getCurrentIndex() {
-            return this.currentIndex;
+            return currentIndex;
         }
 
-        public List<WorkbenchRecipe> getRecipes() {
-            return this.items;
+        public List<RecipeHolder<WorkbenchRecipe>> getRecipes() {
+            return items;
         }
     }
 }

@@ -4,6 +4,7 @@ import com.nukateam.ntgl.common.foundation.container.WorkbenchContainer;
 import com.nukateam.ntgl.common.foundation.blockentity.inventory.IStorageBlock;
 import com.nukateam.ntgl.common.foundation.init.ModTileEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,7 +22,7 @@ import javax.annotation.Nullable;
  * Author: MrCrayfish
  */
 public class WorkbenchBlockEntity extends SyncedBlockEntity implements IStorageBlock {
-    private NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 
     public WorkbenchBlockEntity(BlockPos pos, BlockState state) {
         super(ModTileEntities.WORKBENCH.get(), pos, state);
@@ -33,14 +34,15 @@ public class WorkbenchBlockEntity extends SyncedBlockEntity implements IStorageB
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        ContainerHelper.saveAllItems(tag, this.inventory);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        ContainerHelper.saveAllItems(tag, inventory, registries);
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        ContainerHelper.loadAllItems(tag, this.inventory);
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+        super.loadAdditional(tag, registries);
+        ContainerHelper.loadAllItems(tag, inventory, registries);
     }
 
     @Override

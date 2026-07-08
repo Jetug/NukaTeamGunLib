@@ -1,20 +1,18 @@
 package com.nukateam.ntgl.common.foundation.block;
 
 import com.mojang.serialization.MapCodec;
+import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
 import com.nukateam.ntgl.common.util.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -29,23 +27,17 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class WorkbenchBlock extends RotatedObjectBlock{
+public class WorkbenchBlock extends BaseEntityBlock {
     private final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
 
-    public WorkbenchBlock(Block.Properties properties) {
+    public WorkbenchBlock(BlockBehaviour.Properties properties) {
         super(properties);
-    }
-
-    @Override
-    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return 6;
     }
 
     private VoxelShape getShape(BlockState state) {
         if (SHAPES.containsKey(state)) {
             return SHAPES.get(state);
         }
-        Direction direction = state.getValue(FACING);
         List<VoxelShape> shapes = new ArrayList<>();
         shapes.add(box(0.1, 0, 0.1, 15.9, 15.9, 15.9));
         VoxelShape shape = VoxelShapeHelper.combineAll(shapes);
@@ -74,11 +66,11 @@ public class WorkbenchBlock extends RotatedObjectBlock{
         return InteractionResult.SUCCESS;
     }
 
-//    @Nullable
-//    @Override
-//    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-//        return new WorkbenchBlockEntity(pos, state);
-//    }
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new WorkbenchBlockEntity(pos, state);
+    }
 
     @Override
     protected MapCodec<? extends WorkbenchBlock> codec() {

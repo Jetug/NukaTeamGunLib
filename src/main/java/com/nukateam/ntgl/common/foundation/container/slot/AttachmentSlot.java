@@ -8,6 +8,7 @@ import com.nukateam.ntgl.common.foundation.init.ModSounds;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.nukateam.ntgl.common.util.util.WeaponModifierHelper.getConfig;
 
@@ -64,7 +64,7 @@ public class AttachmentSlot extends Slot {
             if(attachments == null)
                 return false;
 
-            var id = ForgeRegistries.ITEMS.getKey(stack.getItem());
+            var id = BuiltInRegistries.ITEM.getKey(stack.getItem());
             var canAttachType = modifiedGun.canAttachType(this.type);
             var isRightType = attachment.getType().equals(this.type);
             var canAttach = attachment.canAttachTo(this.weapon);
@@ -99,7 +99,7 @@ public class AttachmentSlot extends Slot {
             WeaponStateHelper.setAmmoCount(new WeaponData(stack, entity), maxAmmo);
             var ammoHolder = WeaponStateHelper.getCurrentAmmo(gunData);
             if(ammoHolder.canReturnAmmo()) {
-                var ammoItem = ForgeRegistries.ITEMS.getValue(ammoHolder.getId());
+                var ammoItem = BuiltInRegistries.ITEM.get(ammoHolder.getId());
                 var dropStack = new ItemStack(ammoItem, diff);
 
                 if (entity instanceof Player player && !player.addItem(dropStack)) {
@@ -130,6 +130,6 @@ public class AttachmentSlot extends Slot {
     @Override
     public boolean mayPickup(Player player) {
         ItemStack itemstack = this.getItem();
-        return (itemstack.isEmpty() || player.isCreative() || !EnchantmentHelper.hasBindingCurse(itemstack)) && super.mayPickup(player);
+        return (itemstack.isEmpty() || player.isCreative()) && super.mayPickup(player);
     }
 }

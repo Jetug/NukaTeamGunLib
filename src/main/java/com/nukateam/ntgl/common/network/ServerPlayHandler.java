@@ -445,7 +445,7 @@ public class ServerPlayHandler {
 
         if (player.containerMenu instanceof WorkbenchContainer workbench) {
             if (workbench.getPos().equals(pos)) {
-                var recipe = WorkbenchRecipes.getRecipeById(world, id);
+                var recipe = WorkbenchRecipes.getRecipeById(world, id).value();
                 if (recipe == null || !recipe.materials().isEmpty())
                     return;
 
