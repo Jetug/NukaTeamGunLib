@@ -2,14 +2,15 @@ package com.nukateam.ntgl.client.util.handler;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.client.registry.WeaponRegistry;
 import com.nukateam.ntgl.client.util.ClientDebug;
 import com.nukateam.ntgl.client.util.helpers.PropertyHelper;
 import com.nukateam.ntgl.client.util.helpers.render.ModelRenderUtil;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IWeapon;
 import com.nukateam.ntgl.common.foundation.item.interfaces.IThrowable;
 import com.nukateam.ntgl.common.util.util.WeaponModifierHelper;
@@ -491,14 +492,14 @@ public class WeaponRenderingHandler {
     public void renderWeapon(@Nullable LivingEntity entity, ItemStack renderStack,
                              ItemDisplayContext transformType, PoseStack poseStack,
                              MultiBufferSource bufferSource, int packedLight) {
-        if (renderStack.getItem() instanceof DynamicGeoItem weaponItem) {
+        if (renderStack.getItem() instanceof WeaponItem weaponItem) {
             poseStack.pushPose();
             {
                 ModelRenderUtil.applyTransformType(renderStack, poseStack, transformType, entity);
 
                 this.renderingWeapon = renderStack;
 
-                weaponItem.getRenderer().render(
+                WeaponRegistry.getRenderer(weaponItem).render(
                         entity,
                         renderStack,
                         transformType,

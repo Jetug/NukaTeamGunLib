@@ -5,6 +5,7 @@ import com.nukateam.geo.render.ProxyItemRenderer;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.client.input.NtglKeyBinds;
+import com.nukateam.ntgl.client.registry.WeaponRegistry;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.data.config.weapon.WeaponConfig;
@@ -19,7 +20,6 @@ import com.nukateam.ntgl.modules.datapack.ConfigSupplier;
 import com.nukateam.ntgl.common.util.util.FuelUtils;
 import com.nukateam.ntgl.common.util.interfaces.IWeaponModifier;
 import com.nukateam.ntgl.common.util.util.*;
-import com.nukateam.geo.interfaces.DynamicGeoItem;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.ntgl.client.render.renderers.weapon.*;
 import com.nukateam.ntgl.common.foundation.item.interfaces.*;
@@ -41,6 +41,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.loading.FMLEnvironment;
+import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -58,11 +59,10 @@ import javax.annotation.Nullable;
 import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 import static net.minecraft.world.item.component.ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT;
 
-public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowable{
+public class WeaponItem extends Item implements GeoItem, IWeapon, IThrowable{
     public static final String VARIANT = "variant";
     private final Lazy<ResourceLocation> id = Lazy.of(this::getRegistryName);
     private final WeakHashMap<CompoundTag, WeaponConfig> modifiedGunCache = new WeakHashMap<>();
-    private final Lazy<DefaultWeaponRendererGeo> WEAPON_RENDERER = Lazy.of(() -> new DefaultWeaponRendererGeo());
     private WeaponConfig weaponConfig = new WeaponConfig();
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -76,16 +76,6 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
     @Override
     public IWeaponModifier[] getModifiers() {
         return modifiers;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public DynamicGeoItemRenderer getRenderer() {
-        return WEAPON_RENDERER.get();
-    }
-
-    @Override
-    public BiFunction<ItemDisplayContext, DynamicWeaponRenderer<WeaponAnimator>, WeaponAnimator> getAnimatorFactory() {
-        return WeaponAnimator::new;
     }
 
     @Override
@@ -115,8 +105,7 @@ public class WeaponItem extends Item implements DynamicGeoItem, IWeapon, IThrowa
             @Override
             public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
                 if (this.renderer == null)
-                    this.renderer = new ProxyItemRenderer(getRenderer());
-
+                    this.renderer = new ProxyItemRenderer(WeaponRegistry.getRenderer(WeaponItem.this));
                 return this.renderer;
             }
         });

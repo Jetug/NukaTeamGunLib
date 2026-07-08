@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.Config;
+import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.util.helpers.TransformUtils;
@@ -23,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.*;
 
-public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
+public class ArmedModelRenderer extends DynamicGeoItemRenderer<WeaponAnimator> {
     public static final String RIGHT_ARM = "right_arm";
     public static final String LEFT_ARM = "left_arm";
     public static final String RIGHT_ARM_ANIM = "right_arm_anim";
@@ -33,7 +34,7 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
     protected boolean firstLeftRender = true;
     private ItemDisplayContext transformType;
 
-    public ArmedModelRenderer(GeoModel<Animator> model) {
+    public ArmedModelRenderer(GeoModel<WeaponAnimator> model) {
         super(model);
         addRenderLayer(new GlowingLayer<>(this));
         ClientTickHandler.addTicker(this, this::tick);
@@ -60,7 +61,7 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
     }
 
     @Override
-    public void renderRecursively(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
+    public void renderRecursively(PoseStack poseStack, WeaponAnimator animatable, GeoBone bone, RenderType renderType,
                                   MultiBufferSource bufferSource, VertexConsumer buffer,
                                   boolean isReRender, float partialTick, int packedLight, int packedOverlay,
                                   int colour) {

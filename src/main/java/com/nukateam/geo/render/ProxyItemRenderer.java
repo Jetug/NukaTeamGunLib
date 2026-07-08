@@ -1,6 +1,7 @@
 package com.nukateam.geo.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.item.Item;
@@ -10,9 +11,9 @@ import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 
 public class ProxyItemRenderer<T extends Item & GeoAnimatable> extends GeoItemRenderer<T> {
-    private final DynamicGeoItemRenderer<ItemAnimator> renderer;
+    private final DynamicGeoItemRenderer<WeaponAnimator> renderer;
 
-    public ProxyItemRenderer(DynamicGeoItemRenderer<ItemAnimator> renderer) {
+    public ProxyItemRenderer(DynamicGeoItemRenderer<WeaponAnimator> renderer) {
         super(new PlaceholderModel<>());
         this.renderer = renderer;
     }

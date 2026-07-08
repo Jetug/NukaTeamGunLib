@@ -2,7 +2,9 @@ package com.nukateam.geo.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.nukateam.geo.interfaces.DynamicGeoItem;
+import com.nukateam.ntgl.client.animators.WeaponAnimator;
+import com.nukateam.ntgl.client.registry.WeaponRegistry;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import net.minecraft.client.Minecraft;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
@@ -26,25 +28,25 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
-public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoObjectRenderer<Animator> {
-    private final Map<Pair<LivingEntity, ItemDisplayContext>, Animator> animatorsByTransform = new HashMap<>();
-    private BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> animatorFactory = null;
+public class DynamicGeoItemRenderer<Animator extends WeaponAnimator> extends GeoObjectRenderer<WeaponAnimator> {
+    private final Map<Pair<LivingEntity, ItemDisplayContext>, WeaponAnimator> animatorsByTransform = new HashMap<>();
+    private BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<?>, WeaponAnimator> animatorFactory = null;
     private ItemStack currentStack;
     private ItemDisplayContext currentTransform;
     protected LivingEntity currentEntity;
     private LivingEntity buffEntity = null;
 
-    public DynamicGeoItemRenderer(GeoModel<Animator> model) {
+    public DynamicGeoItemRenderer(GeoModel<WeaponAnimator> model) {
         super(model);
     }
 
-    public DynamicGeoItemRenderer(GeoModel<Animator> model, BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<Animator>, Animator> animatorFactory) {
+    public DynamicGeoItemRenderer(GeoModel<WeaponAnimator> model, BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<?>, WeaponAnimator> animatorFactory) {
         super(model);
         this.animatorFactory = animatorFactory;
     }
 
     @Override
-    public void defaultRender(PoseStack poseStack, Animator animatable,
+    public void defaultRender(PoseStack poseStack, WeaponAnimator animatable,
                               MultiBufferSource bufferSource, @Nullable RenderType renderType,
                               @Nullable VertexConsumer buffer, float yaw, float partialTick, int packedLight) {
         animatable.setStack(currentStack);
@@ -53,7 +55,7 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
 
 
     @Override
-    public void actuallyRender(PoseStack poseStack, Animator animatable, BakedGeoModel model,
+    public void actuallyRender(PoseStack poseStack, WeaponAnimator animatable, BakedGeoModel model,
                                RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer,
                                boolean isReRender, float partialTick, int packedLight, int packedOverlay,
                                int colour) {
@@ -97,12 +99,11 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
         super.render(poseStack, getAnimator(currentEntity, transformType, stack), bufferSource, renderType, buffer, packedLight, partialTick);
     }
 
-    public Animator getAnimator(LivingEntity entity, ItemDisplayContext transformType, ItemStack stack) {
+    public WeaponAnimator getAnimator(LivingEntity entity, ItemDisplayContext transformType, ItemStack stack) {
         var key = Pair.of(entity, transformType);
         if (!animatorsByTransform.containsKey(key)) {
             if(animatorFactory == null) {
-                var dynamicItem = (DynamicGeoItem) stack.getItem();
-                animatorFactory = dynamicItem.getAnimatorFactory();
+                animatorFactory = WeaponRegistry.getAnimator(stack.getItem());
             }
             animatorsByTransform.put(key, animatorFactory.apply(transformType, this));
         }
@@ -118,7 +119,7 @@ public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoOb
         this.buffEntity = entity;
     }
 
-    private void setupRender(Animator animatable, boolean isReRender, float partialTick, boolean shouldSit, float netHeadYaw, float limbSwingAmount, float limbSwing) {
+    private void setupRender(WeaponAnimator animatable, boolean isReRender, float partialTick, boolean shouldSit, float netHeadYaw, float limbSwingAmount, float limbSwing) {
         var headPitch = 0;
         var motionThreshold = 0;
         var velocity = Vec3.ZERO;//nukateam

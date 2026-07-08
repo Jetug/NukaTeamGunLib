@@ -48,7 +48,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     public static final String THROW_SAFE = "throw_safe";
     public static final String VOID = "void";
 
-    protected final DynamicWeaponRenderer<WeaponAnimator> renderer;
+    protected final DynamicGeoItemRenderer<WeaponAnimator> renderer;
     protected final Minecraft minecraft = Minecraft.getInstance();
     protected final ClientShootingHandler shootingHandler = ClientShootingHandler.get();
     protected final ClientReloadHandler reloadHandler = ClientReloadHandler.get();
@@ -81,7 +81,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
     protected int throwingTime;
     private WeaponData data;
 
-    public WeaponAnimator(ItemDisplayContext transformType, DynamicWeaponRenderer<WeaponAnimator> renderer) {
+    public WeaponAnimator(ItemDisplayContext transformType, DynamicGeoItemRenderer<WeaponAnimator> renderer) {
         super(transformType);
         this.renderer = renderer;
         this.arm = getArm();

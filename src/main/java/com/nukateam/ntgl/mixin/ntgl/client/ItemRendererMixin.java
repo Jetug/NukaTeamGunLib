@@ -1,7 +1,8 @@
 package com.nukateam.ntgl.mixin.ntgl.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.nukateam.geo.interfaces.DynamicGeoItem;
+import com.nukateam.ntgl.client.registry.WeaponRegistry;
+import com.nukateam.ntgl.common.foundation.item.WeaponItem;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,8 +21,8 @@ public class ItemRendererMixin {
     public void renderStatic(LivingEntity pEntity, ItemStack pItemStack, ItemDisplayContext pTransformType,
                              boolean pLeftHand, PoseStack poseStack, MultiBufferSource pBuffer, Level pLevel,
                              int pCombinedLight, int pCombinedOverlay, int pSeed, CallbackInfo ci) {
-        if(pItemStack.getItem() instanceof DynamicGeoItem gunItem){
-            gunItem.getRenderer().setEntity(pEntity);
+        if(pItemStack.getItem() instanceof WeaponItem weaponItem){
+            WeaponRegistry.getRenderer(weaponItem).setEntity(pEntity);
         }
     }
 }
