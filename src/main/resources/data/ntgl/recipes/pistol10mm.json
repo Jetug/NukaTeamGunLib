@@ -1,8 +1,5 @@
 {
   "type": "ntgl:workbench",
-  "result": {
-    "id": "ntgl:pistol10mm"
-  },
   "materials": [
     {
       "ingredient": {
@@ -10,5 +7,8 @@
       },
       "count": 14
     }
-  ]
+  ],
+  "result": {
+    "id": "ntgl:pistol10mm"
+  }
 }

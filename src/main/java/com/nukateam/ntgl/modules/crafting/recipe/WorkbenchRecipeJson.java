@@ -32,20 +32,32 @@ public record WorkbenchRecipeJson(ResourceLocation id, JsonObject json) {
         }
 
         public Builder ingredient(ItemLike item, int amount) {
-            var object = new JsonObject();
-            object.addProperty("item", BuiltInRegistries.ITEM.getKey(item.asItem()).toString());
-            object.addProperty("count", amount);
+            var ingredient = new JsonObject();
 
-            materials.add(object);
+            var object = new JsonObject();
+            object.addProperty(
+                    "item",
+                    BuiltInRegistries.ITEM.getKey(item.asItem()).toString()
+            );
+
+            ingredient.add("ingredient", object);
+            ingredient.addProperty("count", amount);
+
+            materials.add(ingredient);
 
             return this;
         }
 
         public Builder ingredient(TagKey<Item> tag, int amount) {
+            var ingredient = new JsonObject();
+
             var object = new JsonObject();
             object.addProperty("tag", tag.location().toString());
-            object.addProperty("count", amount);
-            materials.add(object);
+
+            ingredient.add("ingredient", object);
+            ingredient.addProperty("count", amount);
+
+            materials.add(ingredient);
 
             return this;
         }
@@ -55,7 +67,7 @@ public record WorkbenchRecipeJson(ResourceLocation id, JsonObject json) {
             root.addProperty("type", "ntgl:workbench");
             root.add("materials", materials);
             var resultJson = new JsonObject();
-            resultJson.addProperty("item", BuiltInRegistries.ITEM.getKey(result.asItem()).toString());
+            resultJson.addProperty("id", BuiltInRegistries.ITEM.getKey(result.asItem()).toString());
 
             if (count > 1) resultJson.addProperty("count", count);
 
