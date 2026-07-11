@@ -37,8 +37,8 @@ public class WorkbenchRecipeProvider implements DataProvider {
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
     protected void addRecipes(Consumer<WorkbenchRecipeJson> consumer) {
-        consumer.accept(WorkbenchRecipeJson.builder(ExampleWeapons.PISTOL10MM.get())
-                .ingredient(Tags.Items.INGOTS_IRON, 14).build());
+//        consumer.accept(WorkbenchRecipeJson.builder(ExampleWeapons.PISTOL10MM.get())
+//                .ingredient(Tags.Items.INGOTS_IRON, 14).build());
     }
 
     @Override

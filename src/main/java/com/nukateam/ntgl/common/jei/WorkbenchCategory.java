@@ -122,7 +122,7 @@ public class WorkbenchCategory implements IRecipeCategory<WorkbenchRecipe> {
 
             poseStack.mulPose(Axis.XP.rotationDegrees(-5F));
 
-            var partialTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+            var partialTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
             var player = Minecraft.getInstance().player;
 
             if (player != null) {
