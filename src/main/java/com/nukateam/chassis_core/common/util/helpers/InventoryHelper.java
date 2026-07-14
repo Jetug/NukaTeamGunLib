@@ -18,7 +18,8 @@ public class InventoryHelper {
             var itemStack = inventory.getItem(slotId);
             var compoundNBT = new CompoundTag();
             compoundNBT.putByte(SLOT_TAG, (byte) slotId);
-            itemStack.save(lookupProvider, compoundNBT);
+            if(!itemStack.isEmpty())
+                itemStack.save(lookupProvider, compoundNBT);
             nbtTags.add(compoundNBT);
         }
 

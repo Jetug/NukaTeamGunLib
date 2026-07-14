@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.*;
 
-public class ArmedModelRenderer extends DynamicGeoItemRenderer<WeaponAnimator> {
+public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
     public static final String RIGHT_ARM = "right_arm";
     public static final String LEFT_ARM = "left_arm";
     public static final String RIGHT_ARM_ANIM = "right_arm_anim";
@@ -34,7 +34,7 @@ public class ArmedModelRenderer extends DynamicGeoItemRenderer<WeaponAnimator> {
     protected boolean firstLeftRender = true;
     private ItemDisplayContext transformType;
 
-    public ArmedModelRenderer(GeoModel<WeaponAnimator> model) {
+    public ArmedModelRenderer(GeoModel<Animator> model) {
         super(model);
         addRenderLayer(new GlowingLayer<>(this));
         ClientTickHandler.addTicker(this, this::tick);
@@ -61,7 +61,7 @@ public class ArmedModelRenderer extends DynamicGeoItemRenderer<WeaponAnimator> {
     }
 
     @Override
-    public void renderRecursively(PoseStack poseStack, WeaponAnimator animatable, GeoBone bone, RenderType renderType,
+    public void renderRecursively(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
                                   MultiBufferSource bufferSource, VertexConsumer buffer,
                                   boolean isReRender, float partialTick, int packedLight, int packedOverlay,
                                   int colour) {

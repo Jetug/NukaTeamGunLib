@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 import static com.nukateam.ntgl.client.util.ClientDebug.*;
 
-public class DynamicWeaponRenderer extends ArmedModelRenderer {
+public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedModelRenderer<Animator> {
     public static final String MUZZLE_FLASH = "muzzle_flash";
     protected MultiBufferSource bufferSource;
     protected ArrayList<ItemStack> gunAttachments;
@@ -44,7 +44,7 @@ public class DynamicWeaponRenderer extends ArmedModelRenderer {
     protected ItemStack gunStack;
     private ItemDisplayContext transformType;
 
-    public DynamicWeaponRenderer(GeoModel<WeaponAnimator> model) {
+    public DynamicWeaponRenderer(GeoModel<Animator> model) {
         super(model);
     }
 
@@ -96,7 +96,7 @@ public class DynamicWeaponRenderer extends ArmedModelRenderer {
     }
 
     @Override
-    public void renderRecursively(PoseStack poseStack, WeaponAnimator animatable, GeoBone bone, RenderType renderType,
+    public void renderRecursively(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
                                   MultiBufferSource bufferSource, VertexConsumer buffer,
                                   boolean isReRender, float partialTick, int packedLight, int packedOverlay,
                                   int colour) {
@@ -147,7 +147,7 @@ public class DynamicWeaponRenderer extends ArmedModelRenderer {
         poseStack.popPose();
     }
     
-    protected void renderRecursivelyPost(PoseStack poseStack, WeaponAnimator animatable, GeoBone bone, RenderType renderType,
+    protected void renderRecursivelyPost(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,
                                          MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender,
                                          float partialTick, int packedLight, int packedOverlay, int colour) {}
 

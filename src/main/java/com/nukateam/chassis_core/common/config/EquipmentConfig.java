@@ -18,9 +18,9 @@ public class EquipmentConfig implements INBTSerializable<CompoundTag>{
     @Ignored
     private ChassisPart part;
     @Optional LinkedHashSet<ResourceLocation> chassis;
-    @Optional public ResourceLocation parent;
-    @Ignored  public ResourceLocation model;
-    @Ignored  public ResourceLocation id;
+    @Optional public ResourceLocation parent = ResourceLocation.tryParse("void");
+    @Ignored  public ResourceLocation model = ResourceLocation.tryParse("void");
+    @Ignored  public ResourceLocation id = ResourceLocation.tryParse("void");
     @Ignored  public HashMap<String, ResourceLocation> texture;
     @Ignored  public ArrayList<EquipmentAttachment> attachments = new ArrayList<>();
     @Optional public ArrayList<String> hide = new ArrayList<>();

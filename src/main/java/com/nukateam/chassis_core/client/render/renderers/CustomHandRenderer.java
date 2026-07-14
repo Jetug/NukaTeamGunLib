@@ -37,7 +37,6 @@ public class CustomHandRenderer extends GeoObjectRenderer<HandAnimator> {
 
     public CustomHandRenderer() {
         super(new RightHandModel());
-//        addRenderLayer(new HandEquipmentLayer<>(this));
     }
 
     @Override
@@ -55,8 +54,7 @@ public class CustomHandRenderer extends GeoObjectRenderer<HandAnimator> {
     public void renderRecursively(PoseStack poseStack, HandAnimator animatable, GeoBone bone,
                                   RenderType renderType, MultiBufferSource bufferSource,
                                   VertexConsumer buffer, boolean isReRender, float partialTick,
-                                  int packedLight, int packedOverlay,
-                                  int colour) {
+                                  int packedLight, int packedOverlay, int colour) {
         if(PlayerUtils.isLocalWearingChassis() && (Objects.equals(bone.getName(), RIGHT_HAND_BONE) || Objects.equals(bone.getName(), LEFT_HAND_BONE))){
             var chassis = PlayerUtils.getLocalPlayerChassis();
             if(chassis.isEquipmentVisible(getArmorSlot())) {
@@ -75,8 +73,6 @@ public class CustomHandRenderer extends GeoObjectRenderer<HandAnimator> {
 
             poseStack.pushPose();
             {
-//                var modelPose = animatable.getSecondaryBoneTransform();
-//                poseStack.mulPoseMatrix(modelPose.last().pose());
                 translateArmor(poseStack);
 
                 for (var bone : armorBones) {
@@ -119,11 +115,9 @@ public class CustomHandRenderer extends GeoObjectRenderer<HandAnimator> {
         }
     }
 
-    protected void renderBone(GeoBone armorBone, PoseStack poseStack, VertexConsumer buffer,
-                            MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay,
-                            int colour) {
+    protected void renderBone(GeoBone armorBone, PoseStack poseStack, VertexConsumer buffer, MultiBufferSource bufferSource,
+                              float partialTick, int packedLight, int packedOverlay, int color) {
         var chassis = PlayerUtils.getLocalPlayerChassis();
-
         var textureOverride = GeoUtils.getTextureForBone(armorBone, chassis);
         var texture = textureOverride == null ? getTextureLocation(this.animatable) : textureOverride;
 
@@ -131,16 +125,18 @@ public class CustomHandRenderer extends GeoObjectRenderer<HandAnimator> {
             var renderTypeOverride = getRenderType(this.animatable, texture, bufferSource, partialTick);
             buffer = bufferSource.getBuffer(renderTypeOverride);
 
-            for (var cube : armorBone.getCubes()) {
-                poseStack.pushPose();
-                {
-                    var newCube = new GeoCube(cube.quads(), new Vec3(0, 0, 0),
-                            cube.rotation(), cube.size(), cube.inflate(), cube.mirror());
-                    renderCube(poseStack, newCube, buffer, packedLight, packedOverlay, colour);
-                }
-                poseStack.popPose();
-            }
+            this.renderChildCubes(armorBone, poseStack, buffer, packedLight, packedOverlay, color);
             buffer = bufferSource.getBuffer(getRenderType(this.animatable, getTextureLocation(this.animatable), bufferSource, partialTick));
         }
+    }
+
+    protected void renderChildCubes(GeoBone armorBone, PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+        for(var cube : armorBone.getCubes()) {
+            poseStack.pushPose();
+            var newCube = new GeoCube(cube.quads(), new Vec3(0.0F, 0.0F, 0.0F), cube.rotation(), cube.size(), cube.inflate(), cube.mirror());
+            this.renderCube(poseStack, newCube, buffer, packedLight, packedOverlay, color);
+            poseStack.popPose();
+        }
+
     }
 }

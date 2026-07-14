@@ -1,8 +1,10 @@
 package com.nukateam.chassis_core.common.foundation;
 
 import com.nukateam.chassis_core.common.data.holders.ChassisPart;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.LazyLoadedValue;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Supplier;
@@ -15,13 +17,13 @@ public class ChassisArmorMaterial {
     private final int[] slotProtections;
     private final float toughness;
     private final int enchantmentValue;
-    private final SoundEvent sound;
+    private final Holder<SoundEvent> sound;
     private final float knockbackResistance;
     private final LazyLoadedValue<Ingredient> repairIngredient;
 
     public ChassisArmorMaterial(String name, int durabilityMultiplier, int[] slotProtections,
                                 float toughness, int enchantmentValue,
-                                SoundEvent sound, float knockbackResistance,
+                                Holder<SoundEvent> sound, float knockbackResistance,
                                 Supplier<Ingredient> p_40481_) {
         this.name = name;
         this.durabilityMultiplier = durabilityMultiplier;
@@ -59,7 +61,7 @@ public class ChassisArmorMaterial {
         return this.enchantmentValue;
     }
 
-    public SoundEvent getEquipSound() {
+    public Holder<SoundEvent> getEquipSound() {
         return this.sound;
     }
 

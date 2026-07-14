@@ -28,25 +28,25 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
-public class DynamicGeoItemRenderer<Animator extends WeaponAnimator> extends GeoObjectRenderer<WeaponAnimator> {
-    private final Map<Pair<LivingEntity, ItemDisplayContext>, WeaponAnimator> animatorsByTransform = new HashMap<>();
-    private BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<?>, WeaponAnimator> animatorFactory = null;
+public class DynamicGeoItemRenderer<Animator extends ItemAnimator> extends GeoObjectRenderer<Animator> {
+    private final Map<Pair<LivingEntity, ItemDisplayContext>, ItemAnimator> animatorsByTransform = new HashMap<>();
+    private BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<?>, Animator> animatorFactory = null;
     private ItemStack currentStack;
     private ItemDisplayContext currentTransform;
     protected LivingEntity currentEntity;
     private LivingEntity buffEntity = null;
 
-    public DynamicGeoItemRenderer(GeoModel<WeaponAnimator> model) {
+    public DynamicGeoItemRenderer(GeoModel<Animator> model) {
         super(model);
     }
 
-    public DynamicGeoItemRenderer(GeoModel<WeaponAnimator> model, BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<?>, WeaponAnimator> animatorFactory) {
+    public DynamicGeoItemRenderer(GeoModel<Animator> model, BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<?>, Animator> animatorFactory) {
         super(model);
         this.animatorFactory = animatorFactory;
     }
 
     @Override
-    public void defaultRender(PoseStack poseStack, WeaponAnimator animatable,
+    public void defaultRender(PoseStack poseStack, Animator animatable,
                               MultiBufferSource bufferSource, @Nullable RenderType renderType,
                               @Nullable VertexConsumer buffer, float yaw, float partialTick, int packedLight) {
         animatable.setStack(currentStack);
@@ -55,7 +55,7 @@ public class DynamicGeoItemRenderer<Animator extends WeaponAnimator> extends Geo
 
 
     @Override
-    public void actuallyRender(PoseStack poseStack, WeaponAnimator animatable, BakedGeoModel model,
+    public void actuallyRender(PoseStack poseStack, Animator animatable, BakedGeoModel model,
                                RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer,
                                boolean isReRender, float partialTick, int packedLight, int packedOverlay,
                                int colour) {
@@ -99,16 +99,17 @@ public class DynamicGeoItemRenderer<Animator extends WeaponAnimator> extends Geo
         super.render(poseStack, getAnimator(currentEntity, transformType, stack), bufferSource, renderType, buffer, packedLight, partialTick);
     }
 
-    public WeaponAnimator getAnimator(LivingEntity entity, ItemDisplayContext transformType, ItemStack stack) {
+    public Animator getAnimator(LivingEntity entity, ItemDisplayContext transformType, ItemStack stack) {
         var key = Pair.of(entity, transformType);
         if (!animatorsByTransform.containsKey(key)) {
             if(animatorFactory == null) {
-                animatorFactory = WeaponRegistry.getAnimator(stack.getItem());
+                animatorFactory = (BiFunction<ItemDisplayContext, DynamicGeoItemRenderer<?>, Animator>)
+                        WeaponRegistry.getAnimator(stack.getItem());
             }
             animatorsByTransform.put(key, animatorFactory.apply(transformType, this));
         }
 
-        return animatorsByTransform.get(key);
+        return (Animator)animatorsByTransform.get(key);
     }
 
     public LivingEntity getRenderEntity() {
@@ -119,7 +120,7 @@ public class DynamicGeoItemRenderer<Animator extends WeaponAnimator> extends Geo
         this.buffEntity = entity;
     }
 
-    private void setupRender(WeaponAnimator animatable, boolean isReRender, float partialTick, boolean shouldSit, float netHeadYaw, float limbSwingAmount, float limbSwing) {
+    private void setupRender(Animator animatable, boolean isReRender, float partialTick, boolean shouldSit, float netHeadYaw, float limbSwingAmount, float limbSwing) {
         var headPitch = 0;
         var motionThreshold = 0;
         var velocity = Vec3.ZERO;//nukateam
