@@ -164,15 +164,18 @@ public abstract class WearableChassis extends Chassis implements GeoEntity {
         return null;
     }
 
+    public double getPassengersRidingOffset() {
+        return STANDING_DIMENSIONS.height() * 0.75D;
+    }
+
     @Override
     public void positionRider(Entity entity, MoveFunction pCallback) {
         super.positionRider(entity, pCallback);
 
         var passenger = getControllingPassenger();
         if (passenger == null) return;
-
         var yOffset = 1.0f;
-        var posY = getY() + getPassengerRidingPosition(entity).y + PLAYER_RIDING_OFFSET - yOffset;
+        var posY = getY() + getPassengersRidingOffset() + PLAYER_RIDING_OFFSET - yOffset;
         entity.setPos(getX(), posY, getZ());
 
         if (entity instanceof LivingEntity livingEntity)
