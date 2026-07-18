@@ -4,6 +4,7 @@ import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.client.gui.screen.ChassisScreen;
 import com.nukateam.chassis_core.common.foundation.container.menu.DynamicChassisMenu;
 import com.nukateam.chassis_core.common.foundation.entity.WearableChassis;
+import com.nukateam.ntgl.client.util.ClientDebug;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
@@ -26,8 +27,8 @@ public class DynamicChassisScreen extends ChassisScreen<DynamicChassisMenu> {
         float scale = 1.0F / Math.max(1.0E-4F, powerArmor.getScale());
 
         InventoryScreen.renderEntityInInventoryFollowsMouse(graphics,
-                this.leftPos + 32,
-                this.topPos + 73,
+                this.leftPos - 32 + ClientDebug. X,
+                this.topPos - 73 + ClientDebug.Y,
                 this.leftPos + 105,
                 this.topPos + 149,
                 (int) (scale * 23.0F),

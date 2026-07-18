@@ -1,7 +1,6 @@
 package com.nukateam.chassis_core.common.foundation.entity;
 
 import com.google.common.collect.ImmutableMap;
-import com.nukateam.chassis_core.ChassisCore;
 import com.nukateam.chassis_core.Global;
 import com.nukateam.chassis_core.client.animators.HandAnimator;
 import com.nukateam.chassis_core.client.render.renderers.CustomHandRenderer;
@@ -32,7 +31,6 @@ import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
 import java.util.Map;
 
 import static com.nukateam.chassis_core.common.data.constants.Resources.resourceLocation;
@@ -42,7 +40,6 @@ import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
 public abstract class WearableChassis extends Chassis implements GeoEntity {
     public static final float ROTATION = (float) Math.PI / 180F;
-    public static final int EFFECT_DURATION = 9;
     public final HandAnimator HAND_ENTITY;
     private static final Lazy<CustomHandRenderer> HAND_RENDERER = Lazy.of(() -> new CustomHandRenderer());
     public static final ResourceLocation DEFAULT_ICON = resourceLocation("textures/item/chassis.png");

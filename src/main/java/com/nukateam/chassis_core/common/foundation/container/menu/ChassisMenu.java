@@ -35,21 +35,7 @@ public abstract class ChassisMenu extends AbstractContainerMenu {
     protected int size;
 
     public ChassisMenu(MenuType<?> pMenuType, int containerId, Inventory playerInventory, FriendlyByteBuf buf, int inventoryPosY) {
-        this(pMenuType, containerId,
-                new SimpleContainer(256),
-                playerInventory,
-                (Chassis) Minecraft.getInstance().level.getEntity(buf.readInt()),
-                inventoryPosY);
-
-//        super(pMenuType, containerId);
-//        this.chassis = (Chassis) Minecraft.getInstance().level.getEntity(buf.readInt());
-//        this.container = new SimpleContainer(256);
-//        this.container.startOpen(playerInventory.player);
-//        this.inventoryPosY = inventoryPosY;
-//        this.hotbarPosY = inventoryPosY + 58;
-//        this.size = container.getContainerSize();
-//        addPlayerInventory(playerInventory);
-//        addPlayerHotbar(playerInventory);
+        this(pMenuType, containerId, playerInventory, buf, inventoryPosY, resolveChassis(buf));
     }
 
     public ChassisMenu(MenuType<?> pMenuType, int containerId, Container container, Inventory playerInventory,
@@ -65,9 +51,22 @@ public abstract class ChassisMenu extends AbstractContainerMenu {
         addPlayerHotbar(playerInventory);
     }
 
+    private ChassisMenu(MenuType<?> pMenuType, int containerId, Inventory playerInventory, FriendlyByteBuf buf, int inventoryPosY, Chassis chassis) {
+        this(pMenuType, containerId, chassis.inventory, playerInventory, chassis, inventoryPosY);
+    }
+
+    private static Chassis resolveChassis(FriendlyByteBuf buf) {
+        return (Chassis) Minecraft.getInstance().level.getEntity(buf.readInt());
+    }
+
     @Override
     public boolean stillValid(Player playerIn) {
         return this.container.stillValid(playerIn) && this.chassis.isAlive() && this.chassis.distanceTo(playerIn) < 8.0F;
+    }
+
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
     }
 
     @Override

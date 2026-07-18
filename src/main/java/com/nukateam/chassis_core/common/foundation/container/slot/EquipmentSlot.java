@@ -20,6 +20,6 @@ public class EquipmentSlot extends Slot {
     public boolean mayPlace(ItemStack stack) {
         return super.mayPlace(stack)
                 && stack.getItem() instanceof ChassisEquipment item
-                && Objects.equals(item.part, bodyPart);
+                && item.part.equals(bodyPart);
     }
 }
