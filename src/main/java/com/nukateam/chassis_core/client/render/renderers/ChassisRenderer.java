@@ -181,10 +181,10 @@ public class ChassisRenderer<T extends WearableChassis> extends DynamicGeoEntity
 
                     var skin = humanoidRenderer.getTextureLocation(passenger);
                     var head = this.bufferSource.getBuffer(RenderType.entitySolid(skin));
-                    var hat = this.bufferSource.getBuffer(RenderType.entityTranslucent(skin));
+//                    var hat = this.bufferSource.getBuffer(RenderType.entityTranslucent(skin));
 
                     renderHumanoidPart(poseStack, bone, packedLight, packedOverlay, humanoidModel, head);
-                    renderHumanoidPart(poseStack, bone, packedLight, packedOverlay, humanoidModel, hat);
+//                    renderHumanoidPart(poseStack, bone, packedLight, packedOverlay, humanoidModel, hat);
                 }
                 poseStack.popPose();
             }
