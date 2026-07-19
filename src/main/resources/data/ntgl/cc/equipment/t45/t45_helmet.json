@@ -1,16 +1,26 @@
 {
   "part": "ntgl:head",
-  "chassis": ["ntgl:example_chassis"],
-  "model": "ntgl:geo/power_armor/t45.geo.json",
-  "texture": {
-    "default": "ntgl:textures/power_armor/t45.png"
-  },
   "hide": ["head_frame"],
+  "id": "ntgl:t45",
 
   "attachments": [
     {
-      "frame": "head",
+      "frame": "head_base",
       "armor": "helmet"
+    },
+    {
+      "frame": "frame_visor",
+      "armor": "visor"
+    },
+    {
+      "frame": "frame_scaner",
+      "armor": "helmet_scaner"
     }
-  ]
+  ],
+  "chassis": ["ntgl:power_armor_frame"],
+  "model": "ntgl:geo/power_armor/t45.geo.json",
+
+  "texture": {
+    "default": "ntgl:textures/power_armor/t45/t45_material.png"
+  }
 }
