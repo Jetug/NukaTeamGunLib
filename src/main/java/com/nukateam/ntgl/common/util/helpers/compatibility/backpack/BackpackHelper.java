@@ -26,7 +26,7 @@ public class BackpackHelper {
             return context;
         }
         catch (Exception e){
-            Ntgl.LOGGER.error(e.getMessage());
+            Ntgl.LOGGER.error(e.getMessage(), e);
             return AmmoContext.NONE;
         }
     }
@@ -51,7 +51,7 @@ public class BackpackHelper {
             return context;
         }
         catch (Exception e){
-            Ntgl.LOGGER.error(e.getMessage());
+            Ntgl.LOGGER.error(e.getMessage(), e);
             return AmmoContext.NONE;
         }
     }

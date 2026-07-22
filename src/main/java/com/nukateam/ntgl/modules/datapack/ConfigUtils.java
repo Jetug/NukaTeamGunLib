@@ -78,7 +78,7 @@ public class ConfigUtils {
                                 e.printStackTrace();
                             } catch (Exception e) {
                                 Ntgl.LOGGER.error("Something wrong with resource {}", resourceLocation);
-                                Ntgl.LOGGER.error(e.getMessage());
+                                Ntgl.LOGGER.error(e.getMessage(), e);
                                 e.printStackTrace();
                             }
                         });

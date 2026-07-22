@@ -230,7 +230,7 @@ public class WeaponAnimator extends ItemAnimator implements IConfigProvider<Weap
 
                 return animation != null ? event.setAndContinue(animation): PlayState.STOP;
             } catch (Exception e) {
-                Ntgl.LOGGER.error(e.getMessage());
+                Ntgl.LOGGER.error(e.getMessage(), e);
                 return PlayState.STOP;
             }
         };
