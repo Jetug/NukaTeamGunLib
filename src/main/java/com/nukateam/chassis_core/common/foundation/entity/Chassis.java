@@ -257,7 +257,9 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
     }
 
     public boolean isEquipmentVisible(ChassisPart chassisPart) {
-        return !getEquipment(chassisPart).isEmpty() && hasArmor(chassisPart);
+        var equipment = getEquipment(chassisPart);
+        var hasArmor = hasArmor(chassisPart);
+        return !equipment.isEmpty() && hasArmor;
     }
 
     public boolean hasArmor(ChassisPart chassisPart) {
