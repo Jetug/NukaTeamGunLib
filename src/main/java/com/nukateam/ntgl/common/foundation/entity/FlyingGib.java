@@ -23,6 +23,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.util.Lazy;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.Optional;
 
 import static com.nukateam.ntgl.common.foundation.entity.projectile.DeathEffect.*;
 import static net.minecraft.network.syncher.SynchedEntityData.defineId;
@@ -35,7 +38,7 @@ public class FlyingGib extends Entity {
     public static final EntityDataAccessor<Float> GRAVITY = defineId(FlyingGib.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<CompoundTag> DATA = defineId(FlyingGib.class, EntityDataSerializers.COMPOUND_TAG);
     public static final int LIFE = 20 * 3;
-    private final Lazy<LivingEntity> localEntity = Lazy.of(() -> (LivingEntity)Minecraft.getInstance().level.getEntity(getEntityId()));
+    private final Lazy<Optional<LivingEntity>> localEntity = Lazy.of(() -> Optional.ofNullable((LivingEntity)Minecraft.getInstance().level.getEntity(getEntityId())));
 
     private RandomSource rand;
 //    private double xDelta = 0;
@@ -199,9 +202,9 @@ public class FlyingGib extends Entity {
         return data;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT) @Nullable
     public LivingEntity getLocalEntity(){
-        return localEntity.get();
+        return localEntity.get().isPresent() ? localEntity.get().get() : null;
     }
 
     @Override
