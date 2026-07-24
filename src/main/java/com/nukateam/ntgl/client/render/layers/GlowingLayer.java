@@ -30,11 +30,14 @@ public class GlowingLayer<T extends GeoAnimatable> extends GeoRenderLayer<T> {
     @Override
     public void render(PoseStack poseStack, T animatable, BakedGeoModel bakedModel, RenderType renderType,
                        MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        var model = (IGlowingModel<T>)getRenderer().getGeoModel();
-        var texture = model.getGlowingTextureResource(animatable);
+        var model = getRenderer().getGeoModel();
 
-        if(resourceExists(texture)) {
-            renderLayer(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, texture);
+        if(model instanceof IGlowingModel glowingModel) {
+            var texture = glowingModel.getGlowingTextureResource(animatable);
+
+            if (resourceExists(texture)) {
+                renderLayer(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, texture);
+            }
         }
     }
 

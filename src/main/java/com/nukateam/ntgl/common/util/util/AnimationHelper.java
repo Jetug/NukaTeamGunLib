@@ -66,10 +66,15 @@ public class AnimationHelper<T extends GeoAnimatable> {
 
     @Nullable
     public Animation getAnimation(String animationName){
-        var map = GeckoLibCache.getBakedAnimations();
-        var animationResource = model.getAnimationResource(animatable);
-        var bakedAnimations = map.get(animationResource);
-        return bakedAnimations.animations().get(animationName);
+        try {
+            var map = GeckoLibCache.getBakedAnimations();
+            var animationResource = model.getAnimationResource(animatable);
+            var bakedAnimations = map.get(animationResource);
+            return bakedAnimations != null ? bakedAnimations.animations().get(animationName) : null;
+        }
+        catch (NullPointerException e){
+            return null;
+        }
     }
 
     public boolean hasAnimation(String animationName){
