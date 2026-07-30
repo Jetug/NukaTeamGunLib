@@ -12,15 +12,19 @@ import net.minecraft.world.entity.player.Inventory;
 import static com.nukateam.chassis_core.modules.example.common.registery.ContainerRegistry.*;
 
 public class ExampleChassisMenu extends ChassisMenu {
-    public static final int SIZE = 7;
     private static final int INVENTORY_POS_Y = 84;
 
     public ExampleChassisMenu(int i, Inventory playerInventory, FriendlyByteBuf buf) {
-        this(i, new SimpleContainer(SIZE), playerInventory, null);
+        super(EXAMPLE_CHASSIS_MENU.get(), i, playerInventory, buf, INVENTORY_POS_Y);
+        createSlots();
     }
 
     public ExampleChassisMenu(int containerId, Container container, Inventory playerInventory, Chassis entity) {
         super(EXAMPLE_CHASSIS_MENU.get(), containerId, container, playerInventory, entity, INVENTORY_POS_Y);
+        createSlots();
+    }
+
+    private void createSlots() {
         createSlot(ChassisPart.HELMET, new Pos2I(82, 11));
         createSlot(ChassisPart.BODY_ARMOR, new Pos2I(82, 32));
         createSlot(ChassisPart.RIGHT_ARM_ARMOR, new Pos2I(61, 26));

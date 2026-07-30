@@ -45,7 +45,7 @@ public class ChassisArmorMaterial {
         } else if (part.equals(ChassisPart.LEFT_LEG_ARMOR) || part.equals(ChassisPart.RIGHT_LEG_ARMOR)) {
             return 3;
         } else {
-            throw new IllegalStateException("Unexpected value: " + this);
+            return 0;
         }
     }
 

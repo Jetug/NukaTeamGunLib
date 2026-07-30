@@ -2,6 +2,7 @@ package com.nukateam.ntgl.common.foundation.block;
 
 import com.mojang.serialization.MapCodec;
 import com.nukateam.ntgl.common.foundation.blockentity.WorkbenchBlockEntity;
+import com.nukateam.ntgl.common.foundation.init.ModTileEntities;
 import com.nukateam.ntgl.common.util.util.VoxelShapeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -69,7 +70,7 @@ public class WorkbenchBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new WorkbenchBlockEntity(pos, state);
+        return new WorkbenchBlockEntity(ModTileEntities.WORKBENCH.get(), pos, state);
     }
 
     @Override

@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
@@ -24,8 +25,8 @@ import javax.annotation.Nullable;
 public class WorkbenchBlockEntity extends SyncedBlockEntity implements IStorageBlock {
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 
-    public WorkbenchBlockEntity(BlockPos pos, BlockState state) {
-        super(ModTileEntities.WORKBENCH.get(), pos, state);
+    public WorkbenchBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     @Override

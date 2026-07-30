@@ -6,10 +6,11 @@ import com.nukateam.chassis_core.common.config.ChassisConfig;
 import com.nukateam.chassis_core.common.config.EquipmentConfig;
 import com.nukateam.chassis_core.common.data.holders.*;
 import com.nukateam.chassis_core.common.events.ContainerChangedEvent;
-import com.nukateam.chassis_core.common.foundation.container.menu.DynamicChassisMenu;
+import com.nukateam.chassis_core.common.foundation.container.menu.*;
 import com.nukateam.chassis_core.common.foundation.item.ChassisArmor;
 import com.nukateam.chassis_core.common.foundation.item.ChassisEquipment;
 import com.nukateam.chassis_core.common.foundation.item.StackUtils;
+import com.nukateam.chassis_core.modules.example.common.container.ExampleChassisMenu;
 import com.nukateam.ntgl.modules.datapack.Configs;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.network.message.chassis.S2CInventoryPacket;
@@ -356,7 +357,7 @@ public class Chassis extends EmptyLivingEntity implements ContainerListener {
         return new MenuProvider() {
             @Override
             public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-                return new DynamicChassisMenu(containerId, inventory, playerInventory, Chassis.this);
+                return new ExampleChassisMenu(containerId, inventory, playerInventory, Chassis.this);
             }
 
             @Override

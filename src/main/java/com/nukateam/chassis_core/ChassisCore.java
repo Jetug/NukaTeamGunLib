@@ -1,6 +1,5 @@
 package com.nukateam.chassis_core;
 
-import com.nukateam.chassis_core.common.foundation.registery.ContainerRegistry;
 import com.nukateam.chassis_core.common.foundation.registery.ItemRegistry;
 import com.nukateam.chassis_core.modules.example.Example;
 import com.nukateam.ntgl.Ntgl;
@@ -13,7 +12,6 @@ public class ChassisCore {
 
     public ChassisCore(IEventBus MOD_EVENT_BUS) {
         ItemRegistry.register(MOD_EVENT_BUS);
-        ContainerRegistry.register(MOD_EVENT_BUS);
         Example.init(MOD_EVENT_BUS);
     }
 }

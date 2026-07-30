@@ -22,13 +22,6 @@ public class ExampleChassisScreen extends ChassisScreen<ExampleChassisMenu> {
     }
 
     @Override
-    protected void init() {
-        super.init();
-    }
-
-
-
-    @Override
     protected void renderEntity(GuiGraphics graphics, WearableChassis powerArmor) {
         float scale = 1.0F / Math.max(1.0E-4F, powerArmor.getScale());
 
