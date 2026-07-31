@@ -318,10 +318,34 @@ public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
     protected void rayTraceTargets() {
         var startVec = this.position();
         var endVec = startVec.add(this.getDeltaMovement());
-        var result = (HitResult) rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this), getBlockFilter());
+
+        // --- vanilla / normal-world block raytrace ---
+        HitResult result = (HitResult) rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this), getBlockFilter());
+
+        // The BlockHitResult's own getLocation() is authoritative for the vanilla-world hit
+        // (it's already in global space). For a sub-level hit, SableSupport hands back a
+        // BlockHitResult whose blockPos is LOCAL (real storage location, needed for
+        // getBlockState/destroyBlock/etc.) but whose getLocation() has already been converted
+        // to GLOBAL space — so comparing/using getLocation() here is correct either way.
+        double bestDistSqr = result.getType() == HitResult.Type.MISS
+                ? Double.MAX_VALUE
+                : startVec.distanceToSqr(result.getLocation());
+
+        // SABLE: also test against blocks belonging to any sub-level whose plot currently
+        // overlaps this ray segment (getAllIntersecting + inverse pose transform).
+        var subLevelHit = SableSupport.findSubLevelBlockHit(this.level(), startVec, endVec, getBlockFilter(), this);
+        if (subLevelHit != null) {
+            double subLevelDistSqr = startVec.distanceToSqr(subLevelHit.getLocation());
+            if (subLevelDistSqr < bestDistSqr) {
+                bestDistSqr = subLevelDistSqr;
+                result = subLevelHit;
+            }
+        }
 
         if (result.getType() != HitResult.Type.MISS) {
             if (!(result instanceof BlockHitResult bhr && !level().getBlockState(bhr.getBlockPos()).getFluidState().isEmpty())) {
+                // getLocation() is global here (see note above), so entity search below still
+                // operates in the correct (global) coordinate space.
                 endVec = result.getLocation();
             }
         }
@@ -400,7 +424,12 @@ public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
                 var result = this.getHitResult(target, startVec, endVec);
                 if (result == null) continue;
                 var hitPos = result.getHitPos();
-                var distanceToHit = startVec.distanceTo(hitPos);
+
+                // SABLE: use the sub-level-aware distance instead of a raw distanceTo, so
+                // targets riding/standing on a sub-level are ranked correctly even though
+                // Sable already fixes Entity#distanceToSqr for tracking entities in general.
+                var distanceToHit = SableSupport.distanceSquared(this.level(), startVec, hitPos);
+
                 if (distanceToHit < closestDistance) {
                     hitVec = hitPos;
                     hitEntity = target;
@@ -438,6 +467,11 @@ public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
             }
 
             var pos = blockHitResult.getBlockPos();
+            // SABLE: if this hit came from SableSupport.findSubLevelBlockHit, the BlockPos is a
+            // *local plot-grid* position, not a normal world position — getBlockState still works
+            // because it's the same Level, but anything that needs the *visual*/global position
+            // (particles, network hit location, block-break checks against unrelated systems)
+            // must go through SableSupport.toGlobal(...) first. See onHitBlock/onHitEntity below.
             var state = this.level().getBlockState(pos);
 
             if (!state.getFluidState().isEmpty()) {
@@ -461,7 +495,11 @@ public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
 
         burnEntity(entity);
         damageEntity(entityHitResult);
-        PacketHandler.getPlayChannel().sendToTrackingEntity(() -> entity, new S2CMessageBlood(hitVec));
+
+        // SABLE: project the blood-effect position to global space before sending it to
+        // clients — harmless no-op when Sable isn't installed or the position isn't in a plot.
+        var globalHitVec = SableSupport.toGlobal(this.level(), hitVec);
+        PacketHandler.getPlayChannel().sendToTrackingEntity(() -> entity, new S2CMessageBlood(globalHitVec));
         onContact(hitVec);
         handlePierce(HitTarget.ENTITY);
 
@@ -509,10 +547,14 @@ public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
 
         if (!this.wasTouchingWater) {
             wasTouchingWater = true;
+
+            // SABLE: fluid hit position projected to global space for the nearby-players packet.
+            var globalPos = SableSupport.toGlobal(this.level(), pos);
+
             PacketHandler.getPlayChannel().sendToNearbyPlayers(
-                    () -> LevelLocation.create((ServerLevel)level(), pos, 32),
+                    () -> LevelLocation.create((ServerLevel)level(), globalPos, 32),
                     new S2CMessageProjectileHitFluid(
-                            pos,
+                            globalPos,
                             getBbWidth(),
                             (float)getDeltaMovement().length(),
                             isLava,
@@ -554,7 +596,11 @@ public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
 
     protected void onContact(Vec3 hitVec) {
         if(getProjectile().getExplosion().isExplodeOnContact() && ExplosionUtils.isExplosive(getProjectile().getExplosion())){
-            ExplosionUtils.createExplosion(this, getProjectile().getExplosion(), hitVec);
+            // SABLE: explosions must be centered on the GLOBAL position — if hitVec came from a
+            // sub-level-local block hit, an un-projected position would blow up the wrong spot
+            // (somewhere in the plotgrid instead of where the player actually sees the impact).
+            var globalHitVec = SableSupport.toGlobal(this.level(), hitVec);
+            ExplosionUtils.createExplosion(this, getProjectile().getExplosion(), globalHitVec);
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -579,7 +625,7 @@ public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
         this.xRotO = this.getXRot();
     }
 
-    protected static BlockHitResult rayTraceBlocks(Level level, ClipContext context, Predicate<BlockState> ignorePredicate) {
+    public static BlockHitResult rayTraceBlocks(Level level, ClipContext context, Predicate<BlockState> ignorePredicate) {
         return RayTraceHelper.performRayTrace(context, (rayTraceContext, blockPos) -> {
             var blockState = level.getBlockState(blockPos);
             if (ignorePredicate.test(blockState)) return null;
@@ -667,14 +713,26 @@ public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
             var bodyHitType = headshot ? S2CMessageProjectileHitEntity.HitType.HEADSHOT : S2CMessageProjectileHitEntity.HitType.NORMAL;
             var hitType = isCritical ? S2CMessageProjectileHitEntity.HitType.CRITICAL : bodyHitType;
 
+            // SABLE: project to global before sending — the client's world renders the target
+            // at its global position, so the hit-marker position must match that, not the raw
+            // (possibly plot-local) hitVec.
+            var globalHitVec = SableSupport.toGlobal(this.level(), hitVec);
+
             PacketHandler.getPlayChannel().sendToPlayer(() -> playerShooter,
-                    new S2CMessageProjectileHitEntity(hitVec.x, hitVec.y, hitVec.z, hitType, entity instanceof Player));
+                    new S2CMessageProjectileHitEntity(globalHitVec.x, globalHitVec.y, globalHitVec.z, hitType, entity instanceof Player));
         }
     }
 
     private void sendHitBlockMessage(BlockHitResult hitResult, Vec3 hitVec) {
         var blockPos = hitResult.getBlockPos();
-        var message = new S2CMessageProjectileHitBlock(hitVec, blockPos, hitResult.getDirection());
+
+        // SABLE: if blockPos/hitVec came from a sub-level-local hit, translate both to global
+        // space before building the client-facing packet (particles/decals must appear where
+        // the player visually sees the sub-level, not at the raw plotgrid coordinates).
+        var globalHitVec = SableSupport.toGlobal(this.level(), hitVec);
+        var globalBlockPos = SableSupport.toGlobalBlockPos(this.level(), blockPos);
+
+        var message = new S2CMessageProjectileHitBlock(globalHitVec, globalBlockPos, hitResult.getDirection());
         PacketHandler.getPlayChannel()
                 .sendToTrackingChunk(() -> level().getChunkAt(blockPos), message);
     }
