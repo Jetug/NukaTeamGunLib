@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.nukateam.geo.render.DynamicGeoItemRenderer;
 import com.nukateam.geo.render.ItemAnimator;
 import com.nukateam.ntgl.Config;
-import com.nukateam.ntgl.client.animators.WeaponAnimator;
 import com.nukateam.ntgl.client.handlers.ClientTickHandler;
 import com.nukateam.ntgl.client.render.layers.GlowingLayer;
 import com.nukateam.ntgl.client.util.helpers.TransformUtils;
@@ -22,6 +21,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import static com.nukateam.ntgl.Ntgl.irisLoaded;
 import static com.nukateam.ntgl.client.render.GeoRenderUtils.*;
 
 public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGeoItemRenderer<Animator> {
@@ -71,7 +71,7 @@ public class ArmedModelRenderer<Animator extends ItemAnimator> extends DynamicGe
             case LEFT_ARM, RIGHT_ARM -> {
                 bone.setHidden(true);
                 bone.setChildrenHidden(false);
-                if(Config.CLIENT.display.renderHands.get()) {
+                if(!irisLoaded && Config.CLIENT.display.renderHands.get()) {
                     renderArms(poseStack, bone, packedLight, packedOverlay, bufferSource);
                 }
             }

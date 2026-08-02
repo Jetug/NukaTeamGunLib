@@ -27,6 +27,7 @@ import com.nukateam.ntgl.common.foundation.init.ModSyncedDataKeys;
 import com.nukateam.ntgl.common.util.world.ExplosionUtils;
 import com.nukateam.ntgl.common.network.PacketHandler;
 import com.nukateam.ntgl.common.foundation.event.GunProjectileSpawnEvent;
+import com.nukateam.ntgl.common.compat.sable.SableSupport;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -70,6 +71,34 @@ import java.util.function.Predicate;
 
 import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
+/**
+ * === Sable integration notes ===
+ * <p>
+ * Sable ("dev.ryanhcode.sable") stores sub-level blocks in the SAME {@link Level}, but at
+ * extreme/reserved coordinates inside a "plotgrid". Sub-levels are rendered and interacted with
+ * at a separate, dynamic global pose (position + orientation).
+ * <p>
+ * This means a naive {@code rayTraceBlocks(this.level(), ...)} along the projectile's straight-line
+ * global path will NEVER see sub-level blocks, because in raw chunk storage they live somewhere
+ * completely different in the plotgrid — the ray only "sees" whatever is actually loaded at those
+ * literal coordinates, which for a sub-level's visible position is usually nothing.
+ * <p>
+ * Everything below marked with "// SABLE:" uses the confirmed public API from sable-companion
+ * (https://github.com/ryanhcode/sable-companion) which is a soft/JiJ dependency:
+ * - safe to call unconditionally, even if Sable itself is not installed (no-ops in that case)
+ * - {@code SableCompanion.INSTANCE.projectOutOfSubLevel(level, pos)} — local plot position -> global
+ * - {@code SableCompanion.INSTANCE.distanceSquaredWithSubLevels(level, a, b)} — correct global distance
+ * - {@code SableCompanion.INSTANCE.getContaining(level, pos)} / {@code isInPlotGrid(level, pos)}
+ * <p>
+ * There is currently NO documented public API (in sable-companion's README) for the REVERSE
+ * query we actually need for block raytracing: "given a point in global/visual space, find the
+ * sub-level (if any) whose current pose places its plot at that point, and give me the local
+ * plot-space coordinate to test against real block data". That query almost certainly exists
+ * internally (Sable's own entity-kicking / interaction mixins must do something equivalent), but
+ * it isn't part of the documented compatibility surface. Until that's confirmed against Sable's
+ * actual source or their Discord, this is isolated behind {@link SableSupport#findSubLevelBlockHit}
+ * as an explicit extension point — see that class for details and a safe no-op default.
+ */
 public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
     private static final EntityDataAccessor<ItemStack> AMMO = getDataAccessor(EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<ProjectileConfig> PROJECTILE = getDataAccessor(NtglEntityDataSerializers.PROJECTILE_CONFIG_SERIALIZER);
@@ -726,13 +755,14 @@ public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
     private void sendHitBlockMessage(BlockHitResult hitResult, Vec3 hitVec) {
         var blockPos = hitResult.getBlockPos();
 
-        // SABLE: if blockPos/hitVec came from a sub-level-local hit, translate both to global
-        // space before building the client-facing packet (particles/decals must appear where
-        // the player visually sees the sub-level, not at the raw plotgrid coordinates).
+        // SABLE: hitVec must be GLOBAL (so the particle/decal appears where the player visually
+        // sees the sub-level). blockPos must stay LOCAL — the real block data (and therefore its
+        // texture/BlockState) only exists at the local plot-grid coordinate; converting it to
+        // global here would make the client's getBlockState(blockPos) resolve to air, which is
+        // exactly what caused block-hit particles to render with no texture.
         var globalHitVec = SableSupport.toGlobal(this.level(), hitVec);
-        var globalBlockPos = SableSupport.toGlobalBlockPos(this.level(), blockPos);
 
-        var message = new S2CMessageProjectileHitBlock(globalHitVec, globalBlockPos, hitResult.getDirection());
+        var message = new S2CMessageProjectileHitBlock(globalHitVec, blockPos, hitResult.getDirection());
         PacketHandler.getPlayChannel()
                 .sendToTrackingChunk(() -> level().getChunkAt(blockPos), message);
     }

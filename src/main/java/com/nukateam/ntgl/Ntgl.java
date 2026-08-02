@@ -16,7 +16,6 @@ import com.nukateam.ntgl.common.datagen.DamageTypeGen;
 import com.nukateam.ntgl.common.datagen.ItemTagGen;
 import com.nukateam.ntgl.common.datagen.LootTableGen;
 import com.nukateam.ntgl.modules.crafting.*;
-import com.nukateam.ntgl.modules.crafting.registry.ModRecipeTypes;
 import com.nukateam.ntgl.common.foundation.init.*;
 import com.nukateam.ntgl.common.registry.AmmoHolders;
 import com.nukateam.ntgl.common.registry.ProjectileRegistry;
@@ -55,6 +54,7 @@ public class Ntgl {
     public static boolean playerReviveLoaded = false;
     public static boolean playerAnimatorLoaded = false;
     public static boolean subtleEffectsLoaded = false;
+    public static boolean irisLoaded = false;
 
     public Ntgl(IEventBus eventBus, ModContainer container) {
         container.registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
@@ -101,10 +101,10 @@ public class Ntgl {
         sophisticatedLoaded = ModList.get().isLoaded("sophisticatedbackpacks");
         travelersLoaded = ModList.get().isLoaded("travelersbackpack");
         yyzBackpackLoaded = ModList.get().isLoaded("yyzsbackpack");
-
         playerReviveLoaded = ModList.get().isLoaded("playerrevive");
         playerAnimatorLoaded = ModList.get().isLoaded("playeranimator");
         subtleEffectsLoaded = ModList.get().isLoaded("subtle_effects");
+        irisLoaded = ModList.get().isLoaded("iris");
 
         AmmoHolders.register();
         AnimationType.register();

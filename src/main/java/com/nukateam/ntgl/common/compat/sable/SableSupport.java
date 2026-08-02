@@ -1,19 +1,19 @@
-package com.nukateam.ntgl.common.foundation.entity;
+package com.nukateam.ntgl.common.compat.sable;
 
+import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import dev.ryanhcode.sable.companion.SubLevelAccess;
 import dev.ryanhcode.sable.companion.math.BoundingBox3d;
 import dev.ryanhcode.sable.companion.math.Pose3dc;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.fml.ModList;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.AABB;
 
 import java.util.function.Predicate;
 
