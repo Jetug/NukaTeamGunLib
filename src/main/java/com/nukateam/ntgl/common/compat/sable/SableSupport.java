@@ -18,7 +18,6 @@ import net.minecraft.world.phys.Vec3;
 import java.util.function.Predicate;
 
 public final class SableSupport {
-
     private SableSupport() {}
 
     /**
@@ -40,6 +39,30 @@ public final class SableSupport {
         return BlockPos.containing(global);
     }
 
+    /** Convenience wrapper: sub-levels whose current global footprint overlaps the given AABB. */
+    public static Iterable<? extends SubLevelAccess> getIntersecting(Level level, AABB aabb) {
+        return SableCompanion.INSTANCE.getAllIntersecting(level, new BoundingBox3d(aabb));
+    }
+
+    /**
+     * For a GLOBAL point and radius, returns the LOCAL (plot-space) equivalent of that point for
+     * every sub-level whose plot overlaps a sphere of that radius around it. Intended for
+     * area-effect things like explosions: run your normal "destroy blocks around this position"
+     * logic once per returned local position (against the same {@link Level}), in addition to the
+     * normal pass around the original global position.
+     */
+    public static Iterable<Vec3> toLocalPositions(Level level, Vec3 globalPos, double radius) {
+        AABB aabb = new AABB(
+                globalPos.x - radius, globalPos.y - radius, globalPos.z - radius,
+                globalPos.x + radius, globalPos.y + radius, globalPos.z + radius);
+
+        var result = new java.util.ArrayList<Vec3>();
+        for (SubLevelAccess subLevel : getIntersecting(level, aabb)) {
+            result.add(subLevel.logicalPose().transformPositionInverse(globalPos));
+        }
+        return result;
+    }
+
     /**
      * Raytraces the given GLOBAL-space segment against every sub-level whose current global
      * footprint overlaps it, returning the closest hit (or {@code null} if none).
@@ -57,18 +80,16 @@ public final class SableSupport {
                                                       Predicate<BlockState> blockFilter,
                                                       Entity self) {
         AABB sweptAabb = new AABB(start, end).inflate(1.0);
-        BoundingBox3d sweptBox = new BoundingBox3d(sweptAabb);
 
         BlockHitResult best = null;
         double bestDistSqr = Double.MAX_VALUE;
 
-        for (SubLevelAccess subLevel : SableCompanion.INSTANCE.getAllIntersecting(level, sweptBox)) {
+        for (SubLevelAccess subLevel : getIntersecting(level, sweptAabb)) {
             Pose3dc pose = subLevel.logicalPose();
 
-            Vec3 localStart = pose.transformPositionInverse(start);
-            Vec3 localEnd = pose.transformPositionInverse(end);
-
-            ClipContext clipContext = new ClipContext(localStart, localEnd,
+            var localStart = pose.transformPositionInverse(start);
+            var localEnd = pose.transformPositionInverse(end);
+            var clipContext = new ClipContext(localStart, localEnd,
                     ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, self);
             BlockHitResult localResult = ProjectileEntity.rayTraceBlocks(level, clipContext, blockFilter);
 

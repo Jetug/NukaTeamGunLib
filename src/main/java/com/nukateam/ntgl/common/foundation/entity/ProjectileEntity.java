@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.foundation.entity;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.init.NtglEntityDataSerializers;
 import com.nukateam.ntgl.common.network.LevelLocation;
 import com.nukateam.ntgl.common.data.WeaponData;
@@ -71,34 +72,6 @@ import java.util.function.Predicate;
 
 import static software.bernie.geckolib.util.GeckoLibUtil.createInstanceCache;
 
-/**
- * === Sable integration notes ===
- * <p>
- * Sable ("dev.ryanhcode.sable") stores sub-level blocks in the SAME {@link Level}, but at
- * extreme/reserved coordinates inside a "plotgrid". Sub-levels are rendered and interacted with
- * at a separate, dynamic global pose (position + orientation).
- * <p>
- * This means a naive {@code rayTraceBlocks(this.level(), ...)} along the projectile's straight-line
- * global path will NEVER see sub-level blocks, because in raw chunk storage they live somewhere
- * completely different in the plotgrid — the ray only "sees" whatever is actually loaded at those
- * literal coordinates, which for a sub-level's visible position is usually nothing.
- * <p>
- * Everything below marked with "// SABLE:" uses the confirmed public API from sable-companion
- * (https://github.com/ryanhcode/sable-companion) which is a soft/JiJ dependency:
- * - safe to call unconditionally, even if Sable itself is not installed (no-ops in that case)
- * - {@code SableCompanion.INSTANCE.projectOutOfSubLevel(level, pos)} — local plot position -> global
- * - {@code SableCompanion.INSTANCE.distanceSquaredWithSubLevels(level, a, b)} — correct global distance
- * - {@code SableCompanion.INSTANCE.getContaining(level, pos)} / {@code isInPlotGrid(level, pos)}
- * <p>
- * There is currently NO documented public API (in sable-companion's README) for the REVERSE
- * query we actually need for block raytracing: "given a point in global/visual space, find the
- * sub-level (if any) whose current pose places its plot at that point, and give me the local
- * plot-space coordinate to test against real block data". That query almost certainly exists
- * internally (Sable's own entity-kicking / interaction mixins must do something equivalent), but
- * it isn't part of the documented compatibility surface. Until that's confirmed against Sable's
- * actual source or their Discord, this is isolated behind {@link SableSupport#findSubLevelBlockHit}
- * as an explicit extension point — see that class for details and a safe no-op default.
- */
 public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
     private static final EntityDataAccessor<ItemStack> AMMO = getDataAccessor(EntityDataSerializers.ITEM_STACK);
     private static final EntityDataAccessor<ProjectileConfig> PROJECTILE = getDataAccessor(NtglEntityDataSerializers.PROJECTILE_CONFIG_SERIALIZER);
@@ -347,30 +320,25 @@ public class ProjectileEntity extends Entity implements GeoEntity, IProjectile {
     protected void rayTraceTargets() {
         var startVec = this.position();
         var endVec = startVec.add(this.getDeltaMovement());
+        var result = (HitResult) rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this), getBlockFilter());
 
-        // --- vanilla / normal-world block raytrace ---
-        HitResult result = (HitResult) rayTraceBlocks(this.level(), new ClipContext(startVec, endVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this), getBlockFilter());
-
-        // The BlockHitResult's own getLocation() is authoritative for the vanilla-world hit
-        // (it's already in global space). For a sub-level hit, SableSupport hands back a
-        // BlockHitResult whose blockPos is LOCAL (real storage location, needed for
-        // getBlockState/destroyBlock/etc.) but whose getLocation() has already been converted
-        // to GLOBAL space — so comparing/using getLocation() here is correct either way.
         double bestDistSqr = result.getType() == HitResult.Type.MISS
                 ? Double.MAX_VALUE
                 : startVec.distanceToSqr(result.getLocation());
 
         // SABLE: also test against blocks belonging to any sub-level whose plot currently
         // overlaps this ray segment (getAllIntersecting + inverse pose transform).
-        var subLevelHit = SableSupport.findSubLevelBlockHit(this.level(), startVec, endVec, getBlockFilter(), this);
-        if (subLevelHit != null) {
-            double subLevelDistSqr = startVec.distanceToSqr(subLevelHit.getLocation());
-            if (subLevelDistSqr < bestDistSqr) {
-                bestDistSqr = subLevelDistSqr;
-                result = subLevelHit;
+
+        if(Ntgl.sableLoaded) {
+            var subLevelHit = SableSupport.findSubLevelBlockHit(this.level(), startVec, endVec, getBlockFilter(), this);
+            if (subLevelHit != null) {
+                double subLevelDistSqr = startVec.distanceToSqr(subLevelHit.getLocation());
+                if (subLevelDistSqr < bestDistSqr) {
+                    bestDistSqr = subLevelDistSqr;
+                    result = subLevelHit;
+                }
             }
         }
-
         if (result.getType() != HitResult.Type.MISS) {
             if (!(result instanceof BlockHitResult bhr && !level().getBlockState(bhr.getBlockPos()).getFluidState().isEmpty())) {
                 // getLocation() is global here (see note above), so entity search below still

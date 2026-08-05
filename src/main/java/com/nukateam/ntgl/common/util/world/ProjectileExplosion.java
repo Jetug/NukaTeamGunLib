@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
+import com.nukateam.ntgl.common.compat.sable.SableSupport;
 import com.nukateam.ntgl.common.data.config.weapon.ExplosionConfig;
 import com.nukateam.ntgl.common.foundation.ModTags;
 import com.nukateam.ntgl.common.util.helpers.compatibility.EffectHelper;
@@ -40,6 +41,8 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Set;
+
 
 public class ProjectileExplosion extends Explosion {
     private static final ExplosionDamageCalculator DEFAULT_CONTEXT = new ExplosionDamageCalculator();
@@ -181,6 +184,11 @@ public class ProjectileExplosion extends Explosion {
             for(BlockPos blockpos : toBlow) {
                 var blockState = this.level.getBlockState(blockpos);
 
+                if (Math.abs(blockpos.getX()) > 100000) {
+                    System.out.println("[NTGL] toBlow entry " + blockpos + " state=" + blockState
+                            + " passesCheck=" + (!blockState.isAir() && (canBrakeGlass && blockState.is(ModTags.Blocks.FRAGILE) || interactsWithBlocks)));
+                }
+
                 if (!blockState.isAir() && ((canBrakeGlass && blockState.is(ModTags.Blocks.FRAGILE)) || interactsWithBlocks)) {
                     var immutableBLockPos = blockpos.immutable();
                     this.level.getProfiler().push("explosion_blocks");
@@ -205,6 +213,9 @@ public class ProjectileExplosion extends Explosion {
                     }
 
                     blockState.onBlockExploded(this.level, blockpos, this);
+                    if (Math.abs(blockpos.getX()) > 100000) {
+                        System.out.println("[NTGL] destroyed " + blockpos + " before=" + blockState + " after=" + this.level.getBlockState(blockpos));
+                    }
                     this.level.getProfiler().pop();
                 }
             }
@@ -246,6 +257,30 @@ public class ProjectileExplosion extends Explosion {
     private void destroyBlocks() {
         var set = Sets.<BlockPos>newHashSet();
 
+        collectExplodedBlocks(set, this.pos);
+        int normalCount = set.size();
+
+        var aabb = new AABB(pos.x - radius, pos.y - radius, pos.z - radius,
+                pos.x + radius, pos.y + radius, pos.z + radius);
+        int subLevelsFound = 0;
+        for (var sl : SableSupport.getIntersecting(this.level, aabb)) {
+            subLevelsFound++;
+            var pose = sl.logicalPose();
+            Vec3 local = pose.transformPositionInverse(this.pos);
+            Vec3 roundTrip = pose.transformPosition(local);
+            System.out.println("[NTGL] pos=" + this.pos + " -> local=" + local + " -> roundTrip=" + roundTrip);
+            collectExplodedBlocks(set, local);
+        }
+        System.out.println("[NTGL] normal=" + normalCount + " subLevelsFound=" + subLevelsFound);
+
+        long solid = set.stream().filter(p -> !this.level.getBlockState(p).isAir()).count();
+        System.out.println("[NTGL] normal=" + normalCount + " subLevelsFound=" + subLevelsFound
+                + " total=" + set.size() + " solid=" + solid);
+
+        this.getToBlow().addAll(set);
+    }
+
+    private void collectExplodedBlocks(Set<BlockPos> set, Vec3 origin) {
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
@@ -258,9 +293,9 @@ public class ProjectileExplosion extends Explosion {
                         d1 = d1 / d3;
                         d2 = d2 / d3;
                         var f = this.radius * (0.7F + this.level.random.nextFloat() * 0.6F);
-                        var blockX = pos.x;
-                        var blockY = pos.y;
-                        var blockZ = pos.z;
+                        var blockX = origin.x;
+                        var blockY = origin.y;
+                        var blockZ = origin.z;
 
                         for (; f > 0.0F; f -= 0.225F) {
                             var pos = BlockPos.containing(blockX, blockY, blockZ);
@@ -284,7 +319,5 @@ public class ProjectileExplosion extends Explosion {
                 }
             }
         }
-
-        this.getToBlow().addAll(set);
     }
 }
