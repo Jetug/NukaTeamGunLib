@@ -36,9 +36,6 @@ public class ExampleWeapons {
 //    public static final DeferredHolder<Item, Item> MISSILE = ITEMS.register("missile",
 //            () -> new AmmoItem(new Item.Properties().tab(ModItemTabs.WEAPONS)));
 
-    public static final DeferredHolder<Item, Item> GRENADE_OG = ITEMS.register("grenade_old",
-            () -> new WeaponItem(new Item.Properties()));
-
     public static final DeferredHolder<Item, Item> STUN_GRENADE = ITEMS.register("stun_grenade",
             () -> new StunGrenadeItem(new Item.Properties()));
 
