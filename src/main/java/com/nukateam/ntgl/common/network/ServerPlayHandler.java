@@ -361,6 +361,11 @@ public class ServerPlayHandler {
     }
 
     public static void handleAmmoChange(C2SMessageChangeAmmo message, Player player) {
+        if (message.getAmmo() == null) {
+            Ntgl.LOGGER.warn("Dropping C2SMessageChangeAmmo with a malformed ammo id from {}", player.getName().getString());
+            return;
+        }
+
         var hand = message.getHand();
         var weapon = player.getItemInHand(hand);
         var isReloading = getReloadKey(hand);

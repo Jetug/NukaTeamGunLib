@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.data.holders;
 
+import com.nukateam.ntgl.Ntgl;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -10,6 +11,15 @@ import java.util.function.*;
 
 public class AmmoHolder extends ResourceHolder {
     private static final Map<ResourceLocation, AmmoHolder> ammoTypeMap = new HashMap<>();
+
+    private static final ResourceLocation EMPTY_ID = ResourceLocation.fromNamespaceAndPath("minecraft", "air");
+
+    private static final Map<ResourceLocation, AmmoHolder> fallbackCache = new LinkedHashMap<>(16, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<ResourceLocation, AmmoHolder> eldest) {
+            return size() > 64;
+        }
+    };
 
     private boolean canReturnAmmo = false;
     private Function<ItemStack, Boolean> isAcceptable = (stack) -> false;
@@ -48,11 +58,34 @@ public class AmmoHolder extends ResourceHolder {
     }
 
     public static AmmoHolder getType(String id) {
-        return getType(ResourceLocation.tryParse(id));
+        ResourceLocation parsed = ResourceLocation.tryParse(id);
+        if (parsed == null) {
+            Ntgl.LOGGER.error("Malformed ammo id '{}', falling back to {}", id, EMPTY_ID);
+            return getType(EMPTY_ID);
+        }
+        return getType(parsed);
     }
 
     public static AmmoHolder getType(ResourceLocation id) {
-        return ammoTypeMap.getOrDefault(id, createDefault(id));
+        if (id == null) {
+            Ntgl.LOGGER.error("Null ammo id passed to getType, falling back to {}", EMPTY_ID);
+            return getType(EMPTY_ID);
+        }
+
+        AmmoHolder registered = ammoTypeMap.get(id);
+        if (registered != null) {
+            return registered;
+        }
+
+        AmmoHolder cached = fallbackCache.get(id);
+        if (cached != null) {
+            return cached;
+        }
+
+        Ntgl.LOGGER.warn("Ammo id '{}' is not registered, using a default holder", id);
+        AmmoHolder fallback = createDefault(id);
+        fallbackCache.put(id, fallback);
+        return fallback;
     }
 
     private static AmmoHolder createDefault(ResourceLocation id){
@@ -69,7 +102,6 @@ public class AmmoHolder extends ResourceHolder {
                 .canReturnAmmo()
                 .build();
 
-        registerType(holder);
         return holder;
     }
 
