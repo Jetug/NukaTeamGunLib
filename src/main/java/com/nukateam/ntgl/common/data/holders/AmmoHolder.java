@@ -10,16 +10,17 @@ import java.util.*;
 import java.util.function.*;
 
 public class AmmoHolder extends ResourceHolder {
-    private static final Map<ResourceLocation, AmmoHolder> ammoTypeMap = new HashMap<>();
+    private static final Map<ResourceLocation, AmmoHolder> ammoTypeMap = Collections.synchronizedMap(new HashMap<>());
 
     private static final ResourceLocation EMPTY_ID = ResourceLocation.fromNamespaceAndPath("minecraft", "air");
 
-    private static final Map<ResourceLocation, AmmoHolder> fallbackCache = new LinkedHashMap<>(16, 0.75f, true) {
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<ResourceLocation, AmmoHolder> eldest) {
-            return size() > 64;
-        }
-    };
+    private static final Map<ResourceLocation, AmmoHolder> fallbackCache = Collections.synchronizedMap(
+            new LinkedHashMap<>(16, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<ResourceLocation, AmmoHolder> eldest) {
+                    return size() > 64;
+                }
+            });
 
     private boolean canReturnAmmo = false;
     private Function<ItemStack, Boolean> isAcceptable = (stack) -> false;
@@ -82,7 +83,9 @@ public class AmmoHolder extends ResourceHolder {
             return cached;
         }
 
-        Ntgl.LOGGER.warn("Ammo id '{}' is not registered, using a default holder", id);
+        if (!id.equals(EMPTY_ID)) {
+            Ntgl.LOGGER.debug("Ammo id '{}' is not registered, using a default holder", id);
+        }
         AmmoHolder fallback = createDefault(id);
         fallbackCache.put(id, fallback);
         return fallback;

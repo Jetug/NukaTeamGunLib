@@ -7,7 +7,6 @@ import com.nukateam.ntgl.Config;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.WeaponData;
 import com.nukateam.ntgl.common.data.enums.SoundType;
-import com.nukateam.ntgl.common.data.holders.AmmoHolder;
 import com.nukateam.ntgl.common.data.holders.WeaponMode;
 import com.nukateam.ntgl.common.data.holders.FireMode;
 import com.nukateam.ntgl.common.data.holders.WeaponAction;
@@ -373,7 +372,6 @@ public class ServerPlayHandler {
         var notReloading = !isReloading.getValue(player);
         var canSwitch = WeaponModifierHelper.getAmmoItems(data).size() > 1;
         var ammoItems = WeaponModifierHelper.getAmmoItems(data);
-        var ammoHolder = new AmmoHolder(message.getAmmo());
         var ammoAllowed = ammoItems.stream().filter((i) -> i.getId().equals(message.getAmmo())).count() > 0;
 
         if (notReloading && canSwitch && ammoAllowed) {
