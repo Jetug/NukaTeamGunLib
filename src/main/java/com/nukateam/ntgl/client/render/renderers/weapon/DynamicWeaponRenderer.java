@@ -18,6 +18,7 @@ import com.nukateam.ntgl.common.util.data.Rgba;
 import com.nukateam.ntgl.common.foundation.item.attachment.BarrelItem;
 import com.nukateam.ntgl.common.util.util.WeaponStateHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
+import software.bernie.geckolib.util.RenderUtil;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -28,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.registries.Registries;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,8 @@ import static com.nukateam.ntgl.client.util.ClientDebug.*;
 
 public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedModelRenderer<Animator> {
     public static final String MUZZLE_FLASH = "muzzle_flash";
+    public static final String MUZZLE_FLAME = "flame";
+
     protected MultiBufferSource bufferSource;
     protected ArrayList<ItemStack> gunAttachments;
     protected ArrayList<Modules.Attachment> configAttachments;
@@ -43,6 +47,12 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
     protected WeaponConfig weaponConfig;
     protected ItemStack gunStack;
     private ItemDisplayContext transformType;
+    private Matrix4f bestMuzzleMatrix;
+    private int bestMuzzleScore = -1;
+
+    private static final int MUZZLE_GEOMETRY_SCORE = 4;
+    private static final int MUZZLE_VISIBLE_SCORE = 2;
+    private static final int MUZZLE_CANONICAL_SCORE = 1;
 
     public DynamicWeaponRenderer(GeoModel<Animator> model) {
         super(model);
@@ -54,6 +64,8 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
                        @Nullable RenderType renderType, @Nullable VertexConsumer buffer, int packedLight) {
         this.bufferSource = bufferSource;
         this.transformType = transformType;
+        this.bestMuzzleMatrix = null;
+        this.bestMuzzleScore = -1;
         var data = new WeaponData(stack, entity);
         this.weaponConfig = WeaponModifierHelper.getConfig(data);
         this.gunStack = stack;
@@ -93,6 +105,8 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
             super.render(entity, stack, transformType, poseStack, bufferSource, renderType, buffer, packedLight);
         }
         poseStack.popPose();
+
+        recordBestMuzzle();
     }
 
     @Override
@@ -103,39 +117,16 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
         poseStack.pushPose();
         renderAttachments(bone);
 
-        if (bone.getName().equals(MUZZLE_FLASH)) {
-            if (barrelItem != null) {
-                renderMuzzleFlash(poseStack);
-            }
+        if (bone.getName().equals(MUZZLE_FLASH) && barrelItem != null) {
+            renderMuzzleFlash(poseStack);
         }
 
-        if(bone.getName().startsWith(MUZZLE_FLASH) && !TransformUtils.isHandTransform(transformType)) {
+        if (bone.getName().startsWith(MUZZLE_FLASH) && !TransformUtils.isHandTransform(transformType)) {
             bone.setHidden(true);
         }
-        if (!bone.isHidden() && bone.getName().startsWith(MUZZLE_FLASH)) {
-            Matrix4f mat = new Matrix4f(poseStack.last().pose());
-            mat.translate(
-                (bone.getPivotX() + bone.getPosX()) / 16.0f,
-                (bone.getPivotY() + bone.getPosY()) / 16.0f,
-                (bone.getPivotZ() + bone.getPosZ()) / 16.0f
-            );
 
-            boolean isFirstPerson = this.transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND
-                    || this.transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
-            boolean isThirdPerson = this.transformType == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND
-                    || this.transformType == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
-
-            LivingEntity entity = this.getRenderEntity();
-
-            if (entity != null) {
-                if (isFirstPerson) {
-                    MuzzleMatrixHelper.saveMuzzleMatrix(entity.getId(), mat, true);
-                    MuzzleMatrixHelper.lastMuzzleMatrix = mat;
-                } else if (isThirdPerson) {
-                    MuzzleMatrixHelper.saveMuzzleMatrix(entity.getId(), mat, false);
-                    MuzzleMatrixHelper.lastThirdPersonMuzzleMatrix = mat;
-                }
-            }
+        if (TransformUtils.isHandTransform(transformType) && isMuzzleBone(bone)) {
+            considerMuzzleCandidate(poseStack, bone);
         }
 
         renderRecursivelyPost(poseStack, animatable, bone, renderType, bufferSource,
@@ -145,6 +136,84 @@ public class DynamicWeaponRenderer<Animator extends ItemAnimator> extends ArmedM
                 this.bufferSource.getBuffer(renderType), isReRender, partialTick, packedLight,
                 packedOverlay, colour);
         poseStack.popPose();
+    }
+
+    protected static boolean isMuzzleBone(GeoBone bone) {
+        return isCanonicalMuzzleName(bone.getName()) || bone.getName().startsWith(MUZZLE_FLASH);
+    }
+
+    private static boolean isCanonicalMuzzleName(String name) {
+        return name.equals(MUZZLE_FLASH) || name.equals(MUZZLE_FLAME);
+    }
+
+    private void considerMuzzleCandidate(PoseStack poseStack, GeoBone bone) {
+        var centroid = getFlashCentroid(bone);
+        var score = (centroid == null ? 0 : MUZZLE_GEOMETRY_SCORE)
+                + (isParentChainHidden(bone) ? 0 : MUZZLE_VISIBLE_SCORE)
+                + (isCanonicalMuzzleName(bone.getName()) ? MUZZLE_CANONICAL_SCORE : 0);
+
+        if (bestMuzzleMatrix != null && score <= bestMuzzleScore) return;
+
+        poseStack.pushPose();
+        RenderUtil.prepMatrixForBone(poseStack, bone);
+        var mat = new Matrix4f(poseStack.last().pose());
+        poseStack.popPose();
+
+        if (centroid != null) {
+            var muzzle = new Vector3f(centroid);
+            mat.transformPosition(muzzle);
+            mat.m30(muzzle.x).m31(muzzle.y).m32(muzzle.z);
+        } else {
+            mat.translate(bone.getPivotX() / 16f, bone.getPivotY() / 16f, bone.getPivotZ() / 16f);
+        }
+
+        bestMuzzleScore = score;
+        bestMuzzleMatrix = mat;
+    }
+
+    private static boolean isParentChainHidden(GeoBone bone) {
+        for (var parent = bone.getParent(); parent != null; parent = parent.getParent()) {
+            if (parent.isHidden()) return true;
+        }
+        return false;
+    }
+
+    private void recordBestMuzzle() {
+        if (bestMuzzleMatrix == null) return;
+
+        var isFirstPerson = TransformUtils.isFirstPerson(transformType);
+        var isThirdPerson = TransformUtils.isThirdPerson(transformType);
+        if (!isFirstPerson && !isThirdPerson) return;
+
+        var entity = this.getRenderEntity();
+        if (entity == null) return;
+
+        MuzzleMatrixHelper.saveMuzzleMatrix(entity.getId(), bestMuzzleMatrix, isFirstPerson);
+        if (isFirstPerson) {
+            MuzzleMatrixHelper.lastMuzzleMatrix = bestMuzzleMatrix;
+        } else {
+            MuzzleMatrixHelper.lastThirdPersonMuzzleMatrix = bestMuzzleMatrix;
+        }
+    }
+
+    @Nullable
+    private static Vector3f getFlashCentroid(GeoBone bone) {
+        var cubes = bone.getCubes();
+        if (cubes.isEmpty()) return null;
+
+        var sum = new Vector3f();
+        var count = 0;
+        for (var cube : cubes) {
+            for (var quad : cube.quads()) {
+                if (quad == null) continue;
+                for (var vertex : quad.vertices()) {
+                    if (vertex == null) continue;
+                    sum.add(vertex.position());
+                    count++;
+                }
+            }
+        }
+        return count == 0 ? null : sum.div(count);
     }
     
     protected void renderRecursivelyPost(PoseStack poseStack, Animator animatable, GeoBone bone, RenderType renderType,

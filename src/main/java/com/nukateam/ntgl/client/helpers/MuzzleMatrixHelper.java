@@ -36,15 +36,9 @@ public class MuzzleMatrixHelper {
         Vector3f viewPos = new Vector3f(0, 0, 0);
         matrix.transformPosition(viewPos);
 
-        org.joml.Vector3f left = camera.getLeftVector();
-        org.joml.Vector3f up = camera.getUpVector();
-        org.joml.Vector3f look = camera.getLookVector();
+        var world = camera.getPosition().add(viewPos.x(), viewPos.y(), viewPos.z());
 
-        double wx = -left.x() * viewPos.x() + up.x() * viewPos.y() - look.x() * viewPos.z();
-        double wy = -left.y() * viewPos.x() + up.y() * viewPos.y() - look.y() * viewPos.z();
-        double wz = -left.z() * viewPos.x() + up.z() * viewPos.y() - look.z() * viewPos.z();
-
-        return camera.getPosition().add(wx, wy, wz);
+        return world;
     }
 
     public static Vec3 getMuzzleWorldPos(float partialTicks) {
