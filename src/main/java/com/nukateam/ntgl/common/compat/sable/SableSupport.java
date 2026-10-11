@@ -1,5 +1,6 @@
 package com.nukateam.ntgl.common.compat.sable;
 
+import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.foundation.entity.ProjectileEntity;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import dev.ryanhcode.sable.companion.SubLevelAccess;
@@ -25,11 +26,13 @@ public final class SableSupport {
      * a sub-level's plot.
      */
     public static double distanceSquared(Level level, Vec3 a, Vec3 b) {
+        if (!Ntgl.sableLoaded) return a.distanceToSqr(b);
         return SableCompanion.INSTANCE.distanceSquaredWithSubLevels(level, a, b);
     }
 
     /** Projects a position out of a sub-level plot into global space; a safe no-op otherwise. */
     public static Vec3 toGlobal(Level level, Vec3 pos) {
+        if (!Ntgl.sableLoaded) return pos;
         return SableCompanion.INSTANCE.projectOutOfSubLevel(level, pos);
     }
 
