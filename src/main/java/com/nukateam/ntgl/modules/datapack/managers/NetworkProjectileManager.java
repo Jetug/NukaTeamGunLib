@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.nukateam.ntgl.Ntgl;
 import com.nukateam.ntgl.common.data.config.weapon.ProjectileConfig;
 import com.nukateam.ntgl.common.data.json.JsonDeserializers;
+import com.nukateam.ntgl.common.network.message.weapon.S2CMessageUpdateProjectiles;
 import com.nukateam.ntgl.modules.constants.Paths;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +27,7 @@ import java.util.Map;
 
 public class NetworkProjectileManager extends SimplePreparableReloadListener<Map<ResourceLocation, ProjectileConfig>> {
     private static NetworkProjectileManager instance;
+    private static Map<ResourceLocation, ProjectileConfig> clientRegisteredProjectiles = new HashMap<>();
     private Map<ResourceLocation, ProjectileConfig> PROGECTILE_CONFIGS = new HashMap<>();
 
     @Nullable
@@ -41,6 +43,7 @@ public class NetworkProjectileManager extends SimplePreparableReloadListener<Map
 
     public static void onServerStopped() {
         NetworkProjectileManager.instance = null;
+        clientRegisteredProjectiles = new HashMap<>();
     }
 
     @NotNull
@@ -115,12 +118,10 @@ public class NetworkProjectileManager extends SimplePreparableReloadListener<Map
         return ImmutableMap.of();
     }
 
-    /**
-     * Updates registered projectile from data provided by the server
-     */
-    public void update(Map<ResourceLocation, ProjectileConfig> registeredAmmo) {
-        if (registeredAmmo != null) {
-            PROGECTILE_CONFIGS = registeredAmmo;
+    public static void updateRegisteredProjectiles(S2CMessageUpdateProjectiles message) {
+        var registered = message.getRegisteredAmmo();
+        if (registered != null) {
+            clientRegisteredProjectiles = registered;
         }
     }
 
